@@ -996,60 +996,19 @@ input.signUp::-webkit-input-placeholder{
 }
 
 .ribbon:after{
-    display: block;
     position: absolute;
     content: "premium";
-    
     top: 14px;
     right: -15px;
     width: 84px;
     height: 20px;
     z-index: 9999;
     
-    background: transparent;
-    background-image:
-        
-        -webkit-linear-gradient(45deg, 
-        transparent 0%,
-        transparent 77%,
-        rgba(255,255,255,0.3) 80%,
-        rgba(255,255,255,0.3) 81%, 
-        rgba(0,0,0,0.5) 82%,
-        transparent 83%
-        ),
-        
-        -webkit-linear-gradient(-45deg,
-        transparent 0%,
-        transparent 17%,
-        rgba(0,0,0,0.5) 18%,
-        rgba(255,255,255,0.3) 19%,
-        rgba(255,255,255,0.3) 20%,
-        transparent 23%
-        );
-    background-image:
-        -moz-linear-gradient(45deg, 
-        transparent 0%,
-        transparent 77%,
-        rgba(255,255,255,0.3) 80%,
-        rgba(255,255,255,0.3) 81%, 
-        rgba(0,0,0,0.5) 82%,
-        transparent 83%
-        ),
-        -moz-linear-gradient(-45deg,
-        transparent 0%,
-        transparent 17%,
-        rgba(0,0,0,0.5) 18%,
-        rgba(255,255,255,0.3) 19%,
-        rgba(255,255,255,0.3) 20%,
-        transparent 23%
-        );
-    
     -webkit-transform: rotateZ(45deg);
     -moz-transform: rotateZ(45deg);
     
     color: rgba(255,255,255,1);
-    font-size: 12px;
-    font-family: georgia, 'Times New Roman', Times, serif;
+    font-size: 13px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: center;
-    text-shadow: 0 1px rgba(255,255,25,0.1);
 }
