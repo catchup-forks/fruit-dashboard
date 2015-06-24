@@ -26,5 +26,20 @@ class NoteHelper {
 
 		return Redirect::route('dashboard.dashboard')
 			->with('success', 'Note widget added.');
-	}
+	} # / function wizard
+
+
+	public static function createDashboardData($widget){
+
+		$dataArray = array();
+
+		$widgetObject = json_decode($widget->widget_source);
+		$current_value = Data::where('widget_id', $widget->id)->first()->data_object;
+		$current_value = str_replace('[%LINEBREAK%]', "\n", $current_value);
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
+
 }

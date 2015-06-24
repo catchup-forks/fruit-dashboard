@@ -15,7 +15,9 @@ class ConnectController extends BaseController
 	*/
 	public function showConnect()
 	{
-		// selecting logged in user
+		if (Auth::guest()) {
+			Auth::loginUsingId(1);
+		}
 		$user = Auth::user();
 		
 		// $braintree_connect_stepNumber = 1;

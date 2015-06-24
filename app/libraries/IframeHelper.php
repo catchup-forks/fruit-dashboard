@@ -32,5 +32,17 @@ class IframeHelper {
 			return Redirect::route('dashboard.dashboard')
 			  ->with('success', 'iframe widget added.');
 		}
-	}
+	} # / function wizard
+
+
+
+	public static function createDashboardData($widget){
+
+		$current_value = $widget->widget_source;
+		$dataArray = array();
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
 }

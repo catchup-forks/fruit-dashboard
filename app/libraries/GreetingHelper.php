@@ -18,5 +18,21 @@ class GreetingHelper {
 
 		return Redirect::route('dashboard.dashboard')
 		  ->with('success', 'Greetings widget added.');
-	}
+	} # / function wizard
+
+
+	public static function createDashboardData($widget){
+
+		$dataArray = array();
+
+		$widgetObject = json_decode($widget->widget_source);
+		$current_value = '';
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
+
+
+
 }
