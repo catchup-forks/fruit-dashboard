@@ -973,6 +973,16 @@ input.signUp::-webkit-input-placeholder{
 	font-size:18px;
 }
 
+.link-white {
+	color: #fff;
+  text-decoration: underline;
+  transition: all .3s;
+}
+.link-white:hover,
+.link-white:focus {
+  opacity: .8;
+  color: #fff;
+}
 /* premium ribbon */
 .ribbon:before{
     content: "";

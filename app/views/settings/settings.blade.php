@@ -635,7 +635,7 @@
 			<script type="text/javascript">
 				init.push(function () {
 					// if error slide down
-					@if (errors->first('name')|| $errors->first('name_password'))
+					@if ($errors->first('name')|| $errors->first('name_password'))
 					$('#editNameForm').slideUp('fast', function (){
 						$('#changeNameForm').slideDown('fast');
 					});

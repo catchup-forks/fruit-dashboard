@@ -18,10 +18,10 @@
       <!-- Form -->
       {{ Form::open(array('action' => 'AuthController@doSignupOnDashboard', 'id' => 'signup-form_id' )) }}
         {{ Form::text('name', Input::old('name'), array('autofocus' => true, 'autocomplete' => 'off', 'class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'username_id')) }}
-        <button type="button" id="signup-next" class="btn btn-flat btn-info btn-sm">Next</button>
       </div>
 
-      <div class="signup-form hidden-form">
+      <div class="signup-form hidden-form panel-padding text-center">
+        <span id="yourNameId" class="greetings-text white-text textShadow">Register</span>
         <div class="form-group">
           {{ Form::text('email', Input::old('email'), array('placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg', 'id' => 'email_id')) }}
         </div> <!-- / Username -->
@@ -33,10 +33,9 @@
         <div class="form-actions">
           {{ Form::submit('Sign up' , array(
             'id' => 'id_submit',
-            'class' => 'btn btn-success',
+            'class' => 'btn btn-success btn-flat',
             'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");')) }}
-            <span class="white-text">or <a class="white-text" href="signin">Login here</a></span>
-            <!-- <a href="#" class="forgot-password" id="forgot-password-link">Forgot your password?</a> -->
+            <span class="white-text">or <a class="link-white" href="signin">Login here</a></span>
           </div> <!-- / .form-actions -->
           {{ Form::close() }}
       </div>
@@ -83,17 +82,17 @@
     @endif
     $('#username_id').on('keydown', function (event){
       var keycode = (event.keyCode ? event.keyCode : event.which);
-      if(keycode == '13'){
+      if(keycode == '13' || keycode == '9'){
         event.preventDefault();
-        $('#signup-next').click();
+        $('.yourname-form').slideUp('fast', function (){
+          $('.signup-form').slideDown('fast', function() {
+            $('#email_id').focus();
+          });
+        });
       }    
     });
     $('#signup-next').on('click', function (){
-      $('.yourname-form').slideUp('fast', function (){
-        $('.signup-form').slideDown('fast', function() {
-          $('#email_id').focus();
-        });
-      });
+      
     });
   });
 @endif
