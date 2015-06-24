@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder {
         //$this->call('UserTableExtendSeeder');
         //$this->call('supdashboarddbTableSeeder');
         //$this->call('ConnectedServicesSeeder');
-        $this->call('ExtendDefaultsSeeder');
+        //$this->call('ExtendDefaultsSeeder');
     }
 
 }
