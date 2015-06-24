@@ -1044,3 +1044,15 @@ input.signUp::-webkit-input-placeholder{
 	 margin:10px;
 	 padding:0;
 }
+
+.noteClass{
+	padding:10px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+	border: none;
+    overflow: auto;
+    outline: none;
+    opacity: 0.75;
+    font-family: Georgia, "Times New Roman", Times, serif;
+}

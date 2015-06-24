@@ -4,7 +4,7 @@
 	
 	{{Form::textarea('note', $currentValue, array(
 		'id' => $id,
-		'class' => 'text-fill-note note'
+		'class' => 'noteClass text-fill-note note'
 		)
 	)}}
 </li>
