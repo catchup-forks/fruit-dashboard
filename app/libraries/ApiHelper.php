@@ -29,5 +29,16 @@ class ApiHelper {
 				'dailyBackgroundURL' => Auth::user()->dailyBackgroundURL()
 		));
 
-	}
+	} # / function wizard
+
+
+	public static function createDashboardData($widget){
+
+		$current_value = 'just a moment.';
+		$dataArray = array();
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
 }

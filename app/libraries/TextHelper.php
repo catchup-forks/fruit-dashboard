@@ -62,4 +62,18 @@ class TextHelper {
 
 		} # / switch ($step)
 	} # / function wizard
+
+
+
+	public static function createDashboardData($widget){
+
+		$current_value = $widget->widget_source;
+		$dataArray = array();
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
+
+
 } # / class TextHelper

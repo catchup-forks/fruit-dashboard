@@ -4,6 +4,8 @@ use Google\Spreadsheet\ServiceRequestFactory;
 
 class GooglespreadsheetHelper {
 
+
+
 	public static function wizard($step = NULL){
 
 		# user is the authenticated user
@@ -180,10 +182,62 @@ class GooglespreadsheetHelper {
 				break; # / default
 
 		} # /switch ($step)
-
-
-
 	} # /function wizard
+
+
+
+
+	public static function createDashboardData($widget){
+
+		$current_value = "";
+		$dataArray = array();
+
+		switch ($widget->widget_type) {
+			case 'google-spreadsheet-text-column':
+				$dataObjects = Data::where('widget_id', $widget->id)
+										->orderBy('date','asc')
+										->get();
+				foreach ($dataObjects as $dataObject) {
+					$array = json_decode($dataObject->data_object, true);
+					foreach ($array as $key => $value) {
+						$current_value = $value;
+						$dataArray = array_add($dataArray, $key, $current_value);
+					}
+				}
+				break; # / case 'google-spreadsheet-text-column'
+
+			case 'google-spreadsheet-text-column-random';
+				$dataObject = Data::where('widget_id', $widget->id)
+										->orderBy(DB::raw('RAND()'))
+										->first();
+				$array = json_decode($dataObject->data_object, true);
+				$current_value = array_values($array)[0];
+				break; # / case 'google-spreadsheet-text-column-random';
+
+			default:
+				$dataObjects = Data::where('widget_id', $widget->id)
+										->orderBy('date','asc')
+										->get();
+				foreach ($dataObjects as $dataObject) {
+					try {
+						$array = json_decode($dataObject->data_object, true);
+						if (!empty($array)) {
+							$current_value = array_values($array)[0];
+							$dataArray = array_add($dataArray, $dataObject->date, $current_value);							
+						}
+					} catch (Exception $e) {
+						Log::error($e);
+					}
+				}
+				break; # / default
+
+		} # / switch ($widget->$widget_type) {
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
+
 
 	public static function disconnect($user){
 
