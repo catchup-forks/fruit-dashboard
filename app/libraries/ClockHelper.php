@@ -19,4 +19,27 @@ class ClockHelper {
 		return Redirect::route('dashboard.dashboard')
 		  ->with('success', 'Clock widget added.');
 	}
+
+
+
+	public static function createDashboardData($widget){
+
+		$dataArray = array();
+
+		$widgetObject = json_decode($widget->widget_source);
+		
+		$ct = Carbon::now(); // ct == current time
+		if ($ct->minute < 10)
+		{
+			$current_value = $ct->hour.':0'.$ct->minute;
+		} else {
+			$current_value = $ct->hour.':'.$ct->minute;
+		}
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
+
+
 }

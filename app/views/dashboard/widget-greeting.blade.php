@@ -14,31 +14,40 @@
     <p class='greetings-text white-text textShadow text-center'>
       
       <div class="yourname-form">
-      <span id="yourNameId" class="greetings-text white-text textShadow text-center">What's your name?</span>
+      <span class="greetings-text white-text textShadow text-center">
+        What's your name?
+      </span>
       <!-- Form -->
       {{ Form::open(array('action' => 'AuthController@doSignupOnDashboard', 'id' => 'signup-form_id' )) }}
         {{ Form::text('name', Input::old('name'), array('autofocus' => true, 'autocomplete' => 'off', 'class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'username_id')) }}
-        <button type="button" id="signup-next" class="btn btn-flat btn-info btn-sm">Next</button>
       </div>
 
-      <div class="signup-form hidden-form">
+      <div class="youremail-form hidden-form">
+        <span class="greetings-text white-text textShadow text-center">
+          Hey<span class="username"></span>, what is your email address?
+        </span>
         <div class="form-group">
-          {{ Form::text('email', Input::old('email'), array('placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg', 'id' => 'email_id')) }}
-        </div> <!-- / Username -->
+          {{ Form::text('email', Input::old('email'), array('class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'email_id')) }}
+        </div>
+      </div> <!-- / Username -->
 
+      <div class="yourpassword-form hidden-form">
+        <span class="greetings-text white-text textShadow text-center">
+          …and give me a password please, and we are done.
+        </span>
         <div class="form-group">
-          {{ Form::password('password', array('placeholder' => 'Password', 'class' => 'form-control input-lg', 'id' => 'password_id')) }}
-        </div> <!-- / Password -->
+          {{ Form::password('password', array('class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'password_id')) }}
+        </div>
+      </div> <!-- / Password -->
 
-        <div class="form-actions">
-          {{ Form::submit('Sign up' , array(
-            'id' => 'id_submit',
-            'class' => 'btn btn-success',
-            'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");')) }}
-            <span class="white-text">or <a class="white-text" href="signin">Login here</a></span>
-            <!-- <a href="#" class="forgot-password" id="forgot-password-link">Forgot your password?</a> -->
-          </div> <!-- / .form-actions -->
-          {{ Form::close() }}
+      <div class="form-actions hidden-form">
+        {{ Form::submit('Sign up' , array(
+          'id' => 'id_submit',
+          'class' => 'btn btn-success btn-flat',
+          'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");')) }}
+          <span class="white-text">or <a class="link-white" href="signin">Login here</a></span>
+        </div> <!-- / .form-actions -->
+        {{ Form::close() }}
       </div>
 
     </p>
@@ -76,25 +85,35 @@
 // if user is not registered, signup form
 @else 
   init.push(function () {
-    @if (Session::get('error'))
-      $('.yourname-form').slideUp('fast', function (){
-        $('.signup-form').slideDown('fast');
-      });
-    @endif
+    
     $('#username_id').on('keydown', function (event){
       var keycode = (event.keyCode ? event.keyCode : event.which);
-      if(keycode == '13'){
+      if(keycode == '13' || keycode == '9'){
         event.preventDefault();
-        $('#signup-next').click();
+        $('.yourname-form').slideUp('fast', function (){
+          $('.youremail-form').slideDown('fast', function() {
+            $('#email_id').focus();
+          });
+        });
       }    
     });
-    $('#signup-next').on('click', function (){
-      $('.yourname-form').slideUp('fast', function (){
-        $('.signup-form').slideDown('fast', function() {
-          $('#email_id').focus();
+
+    $('#email_id').on('keydown', function (event){
+      var keycode = (event.keyCode ? event.keyCode : event.which);
+      if(keycode == '13' || keycode == '9'){
+        event.preventDefault();
+        $('.youremail-form').slideUp('fast', function (){
+          $('.yourpassword-form').slideDown('fast', function() {
+            $('#password_id').focus();
+          });
         });
-      });
+      }    
     });
+
+    $('#password_id').on('keydown', function (event){
+      
+    });
+    
   });
 @endif
 </script> 

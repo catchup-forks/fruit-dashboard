@@ -12,7 +12,7 @@
       <!-- add new widget -->
       <div>
         <a href="{{ URL::route('connect.connect') }}">
-          <i class="dropdown-icon fa fa-2x fa-plus" id="addNewWidget"></i>
+          <i class="dropdown-icon fa fa-2x fa-plus" id="addNewWidget" alt="Add new widget" title="Add new widget"></i>
         </a>
       </div>
 
