@@ -182,7 +182,7 @@
         })
 
         $("#textWidgetId").bind('resize', function(e){
-          $("p.textWidgetClass").fitText(0.3);
+          $("p.textWidgetClass").fitText(0.8);
         })
       });
     </script>
