@@ -180,6 +180,10 @@
         $("#digitClock").bind('resize', function(e){
           $("h1.digitTime").fitText(0.3);
         })
+
+        $("#textWidgetId").bind('resize', function(e){
+          $("p.textWidgetClass").fitText(0.3);
+        })
       });
     </script>
     <!-- /fittext -->
