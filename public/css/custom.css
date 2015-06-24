@@ -1012,3 +1012,25 @@ input.signUp::-webkit-input-placeholder{
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     text-align: center;
 }
+
+#freePlan{
+	border: 1px solid #e4e4e4;
+	z-index: 999;
+}
+
+#premiumPlan{
+	border-top: 1px solid #e4e4e4;
+	border-right: 1px solid #e4e4e4;
+	border-bottom: 1px solid #e4e4e4;
+}
+
+#plansContainer{
+	margin-top:100px;
+	background-color:#fff;
+	width:75%;
+}
+
+.containerHeader{
+	 margin:10px;
+	 padding:0;
+}
