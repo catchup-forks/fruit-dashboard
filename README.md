@@ -5,9 +5,7 @@ Fruit Analytics is a dashboard solution for startup companies.
 ## How to build your local development box?
   - download & install [Virtualbox]
   - download & install [Vagrant] (max 1.6.5)
-  - download & install [Sourcetree]
 
-### In Sourcetree
   - clone ```abfinformatika/vagrant-lamp``` → ```[YOUR_WORKING_DIRECTORY]```
   - clone ```tryfruit/fruit-dashboard``` → ```[YOUR_WORKING_DIRECTORY/vagrant-lamp/sites/fruit-dashboard]```
 
@@ -31,13 +29,7 @@ cd /var/www/fruit-dashboard
 wget .env.local.php [ask for it from fellow developers]
 ```
 
-####Install laravel
-```sh
-cd /var/www/fruit-dashboard
-composer global require "laravel/installer=~1.1"
-```
-
-####Update the dependencies
+####Install laravel and update the dependencies
 ```sh
 cd /var/www/fruit-dashboard
 composer update
@@ -49,10 +41,18 @@ cd /var/www/fruit-dashboard/scripts
 sh run_sql_commands
 ```
 
+####Do the migrations
+```sh
+cd /var/www/fruit-dashboard
+php artisan migrate
+```
+
 ####Migrate an external dependencys database
 ```sh
 cd /var/www/fruit-dashboard
 php artisan migrate --package=barryvdh/laravel-async-queue
+OR use this custom command
+php artisan migrate:external
 ```
 
 ####Setup cron
@@ -101,5 +101,4 @@ Open ```http://localhost:8001/ ```
 **...aaaaaand you are done.**
 
 [Virtualbox]:https://www.virtualbox.org/
-[Vagrant]:https://www.vagrantup.com
-[Sourcetree]:https://www.sourcetreeapp.com
+[Vagrant]:https://www.vagrantup.com/downloads-archive.html
