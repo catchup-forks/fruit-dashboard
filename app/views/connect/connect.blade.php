@@ -15,7 +15,7 @@
                 <p>Clock</p>
               </div>          <!-- content -->
               </a>
-            </div>
+              </div>
             </div>          <!-- col-xs-2 -->
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
               <div class="settingsWidget white-background">
@@ -27,7 +27,7 @@
               </a>
             </div>
             </div>          <!-- col-xs-2 -->
-            <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
+            <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
               <a href="{{ URL::route('connect/new', ['provider' => 'chart', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
@@ -37,7 +37,7 @@
               </a>
             </div>
             </div>          <!-- col-xs-2 -->
-            <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
+            <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
               <a href="{{ URL::route('connect/new', ['provider' => 'list', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
@@ -47,7 +47,7 @@
               </a>
             </div>
             </div>          <!-- col-xs-2 -->
-            <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
+            <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
               <a href="{{ URL::route('connect.addwidget', 'iframe') }}">
               <div class="settingsWidgetContent">
@@ -97,7 +97,7 @@
               </a>
             </div>
             </div>          <!-- col-xs-2 -->
-            <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
+            <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
               <a href="{{ URL::route('connect/new', ['provider' => 'googlespreadsheet', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
@@ -107,7 +107,7 @@
               </a>
             </div>
             </div>          <!-- col-xs-2 -->
-            <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
+            <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
               <a href="{{ URL::route('connect.addwidget', 'api') }}">
               <div class="settingsWidgetContent">

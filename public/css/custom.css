@@ -968,11 +968,47 @@ button#signup-next{
 div.form-actions{
 	text-align: center;
 }
-/*
-input.placeholderSize{
-	font-size: 15px;
-}*/
 
 input.signUp::-webkit-input-placeholder{
 	font-size:18px;
+}
+
+/* premium ribbon */
+.ribbon:before{
+    content: "";
+    display: block;
+    position: absolute;
+    top: 13px;
+    right: -17px;
+    z-index: 999;
+    
+    width: 86px;
+    height: 20px;
+    
+    text-align: center;
+    -webkit-transform: rotateZ(45deg);
+    -moz-transform: rotateZ(45deg);
+    
+    /* Rhombus */
+    border-width: 0 20px 20px 20px;
+    border-style: solid;
+    border-color: transparent transparent #600 transparent;
+}
+
+.ribbon:after{
+    position: absolute;
+    content: "premium";
+    top: 14px;
+    right: -15px;
+    width: 84px;
+    height: 20px;
+    z-index: 9999;
+    
+    -webkit-transform: rotateZ(45deg);
+    -moz-transform: rotateZ(45deg);
+    
+    color: rgba(255,255,255,1);
+    font-size: 13px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    text-align: center;
 }
