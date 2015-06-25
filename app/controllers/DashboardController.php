@@ -56,7 +56,7 @@ class DashboardController extends BaseController
 		#####################################################
 		# prepare stuff for other widgets start
 
-        if (1) {
+        if (Auth::user()->dashboards->count() == 0) {
 
 			# this probably shouldn't happen
 
