@@ -676,6 +676,9 @@ body {
 }
 
 i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog{
+	position: fixed;
+	top: 25px;
+	right: 25px;
 	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
 	-webkit-text-stroke-width: 0.5px;
 	-webkit-text-stroke-color: #ccc;
@@ -923,7 +926,7 @@ button.cancelButton{
 }
 
 #addNewWidget{
-	position: absolute;
+	position: fixed;
 	bottom: 25px;
 	left: 25px;
 	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
