@@ -6,8 +6,8 @@
   <!-- If user is registered -->
   @if (Auth::user()->id != 1)
   	<p class='greetings-text white-text textShadow text-center'>Good <span class='greeting'></span>
-      @if(isset(Auth::user()->name)), 
-      <input id="userName" value="{{ Auth::user()->name }}" class="form-control white-text textShadow text-center userName" name="userName" type="text">@endif!
+      @if(isset(Auth::user()->name))
+      <span class="greeting-comma">,</span><input id="userName" value="{{ Auth::user()->name }}" class="form-control white-text textShadow text-center userName" name="userName" type="text">@endif!
     </p>
   <!-- If user is not registered -->  
   @else 
@@ -65,7 +65,18 @@
 // if user is registered, saveUserName function
 @if (Auth::user()->id != 1)
   init.push(function () {
+    
+    if ($('#userName').val().length === 0){
+      $('.greeting-comma').addClass('hidden-form');
+    }
+
     function saveUserName(event) {
+      if ($('#userName').val().length === 0){
+        $('.greeting-comma').addClass('hidden-form');
+      }
+      else {
+        $('.greeting-comma').removeClass('hidden-form');
+      }
       var keycode = (event.keyCode ? event.keyCode : event.which);
       if(keycode == '13'){
         event.preventDefault();  

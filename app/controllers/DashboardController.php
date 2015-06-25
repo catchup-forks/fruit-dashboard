@@ -56,7 +56,7 @@ class DashboardController extends BaseController
 		#####################################################
 		# prepare stuff for other widgets start
 
-        if (Auth::user()->dashboards->count() == 0) {
+        if (1) {
 
 			# this probably shouldn't happen
 
@@ -75,7 +75,7 @@ class DashboardController extends BaseController
             $widget->widget_name = 'clock widget';
             $widget->widget_type = 'clock';
             $widget->widget_source = '{}';
-            $widget->position = '{"size_x":6,"size_y":4,"col":3,"row":1}';
+            $widget->position = '{"size_x":10,"size_y":9,"col":1,"row":1}';
             $widget->dashboard_id = $user->dashboards()->first()->id;
             $widget->save();
 
@@ -84,12 +84,12 @@ class DashboardController extends BaseController
             $widget->widget_name = 'greeting widget';
             $widget->widget_type = 'greeting';
             $widget->widget_source = '{}';
-            $widget->position = '{"size_x":6,"size_y":3,"col":3,"row":5}';
+            $widget->position = '{"size_x":10,"size_y":9,"col":1,"row":3}';
             $widget->dashboard_id = $user->dashboards()->first()->id;
             $widget->save();
 
             // quote widget
-            $widget = new Widget;
+            /*$widget = new Widget;
             $widget->widget_name = 'quote widget';
             $widget->widget_type = 'quote';
 			$widget_data = array(
@@ -99,9 +99,9 @@ class DashboardController extends BaseController
 			);
 			$widget_json = json_encode($widget_data);
             $widget->widget_source = $widget_json;
-            $widget->position = '{"size_x":10,"size_y":1,"col":2,"row":8}';
+            $widget->position = '{"size_x":5,"size_y":1,"col":2,"row":5}';
             $widget->dashboard_id = $user->dashboards()->first()->id;
-            $widget->save();
+            $widget->save();*/
         }
 
 		$widgets = Auth::user()->dashboards()->first()->widgets;
