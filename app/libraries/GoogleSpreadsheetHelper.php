@@ -111,6 +111,7 @@ class GooglespreadsheetHelper {
 				$widget = new Widget;
 				$widget->widget_name = Session::get('worksheetName').' - '.Session::get('spreadsheetName');
 				$widget->widget_type = Session::get('type');
+				$widget->widget_provider = 'googlespreadsheet';
 				$widget->widget_source = $widget_json;
 				$widget->widget_ready = false;
 				$widget->dashboard_id = $user->dashboards()->first()->id;

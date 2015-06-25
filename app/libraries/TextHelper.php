@@ -45,6 +45,7 @@ class TextHelper {
 				$widget = new Widget;
 				$widget->widget_name = 'text widget';
 				$widget->widget_type = 'text';
+				$widget->widget_provider = 'text';
 				$widget->widget_source = Input::get('text');
 				$widget->widget_ready = true;
 				$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
