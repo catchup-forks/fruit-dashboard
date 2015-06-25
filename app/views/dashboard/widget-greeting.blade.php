@@ -14,7 +14,7 @@
     <p class='greetings-text white-text textShadow text-center'>
       
       <div class="yourname-form">
-      <span class="greetings-text white-text textShadow text-center">
+      <span class="greetings-text-name white-text textShadow text-center">
         What's your name?
       </span>
       <!-- Form -->
@@ -22,17 +22,17 @@
         {{ Form::text('name', Input::old('name'), array('autofocus' => true, 'autocomplete' => 'off', 'class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'username_id')) }}
       </div>
 
-      <div class="youremail-form hidden-form">
-        <span class="greetings-text white-text textShadow text-center">
+      <div class="youremail-form hidden-form text-center">
+        <span class="greetings-text-email white-text textShadow">
           Hey<span class="username"></span>, what is your email address?
         </span>
         <div class="form-group">
-          {{ Form::text('email', Input::old('email'), array('class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'email_id')) }}
+          {{ Form::text('email', Input::old('email'), array('autocomplete' => 'off', 'autocorrect' => 'off', 'class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'email_id')) }}
         </div>
       </div> <!-- / Username -->
 
-      <div class="yourpassword-form hidden-form">
-        <span class="greetings-text white-text textShadow text-center">
+      <div class="yourpassword-form hidden-form text-center">
+        <span class="greetings-text-password white-text textShadow">
           …and give me a password please, and we are done.
         </span>
         <div class="form-group">
