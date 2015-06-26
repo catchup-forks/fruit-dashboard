@@ -12,7 +12,7 @@
 
             {{ Form::open(
             array(
-            'url'=>'connect/quote/2',
+            'url'=>'connect/quote/set-everything',
             'method' => 'post',
             )
             ) }}

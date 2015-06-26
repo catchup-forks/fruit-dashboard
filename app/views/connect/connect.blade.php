@@ -9,7 +9,7 @@
         <div class="col-md-10 col-md-offset-1">
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
               <div class="settingsWidget white-background">
-              <a href="{{ URL::route('connect.addwidget', 'clock') }}">
+              <a href="{{ URL::route('connect/new', ['provider' => 'clock', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
                 <span class="icon fa fa-clock-o fa-3x"></span>
                 <p>Clock</p>
@@ -49,7 +49,7 @@
             </div>          <!-- col-xs-2 -->
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
-              <a href="{{ URL::route('connect.addwidget', 'iframe') }}">
+              <a href="{{ URL::route('connect/new', ['provider' => 'iframe', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
                 <span class="icon fa fa-file-text-o fa-3x"></span>
                 <p>iframe</p>
@@ -59,7 +59,7 @@
             </div>          <!-- col-xs-2 -->
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
               <div class="settingsWidget white-background">
-              <a href="{{ URL::route('connect.addwidget', 'quote') }}">
+              <a href="{{ URL::route('connect/new', ['provider' => 'quote', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
                 <span class="icon fa fa-quote-left fa-3x"></span>
                 <p>Quotes</p>
@@ -69,7 +69,7 @@
             </div>          <!-- col-xs-2 -->            
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
               <div class="settingsWidget white-background">
-              <a href="{{ URL::route('connect.addwidget', 'note') }}">
+              <a href="{{ URL::route('connect/new', ['provider' => 'note', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
                 <span class="icon fa fa-pencil fa-3x"></span>
                 <p>Notes</p>
@@ -79,7 +79,7 @@
             </div>          <!-- col-xs-2 -->
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding">
               <div class="settingsWidget white-background">
-              <a href="{{ URL::route('connect.addwidget', 'greeting') }}">
+              <a href="{{ URL::route('connect/new', ['provider' => 'greeting', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
                 <span class="icon fa fa-comment-o fa-3x"></span>
                 <p>Greetings</p>
@@ -109,7 +109,7 @@
             </div>          <!-- col-xs-2 -->
             <div class="col-md-2 col-sm-3 col-xs-4 no-padding ribbon">
               <div class="settingsWidget white-background">
-              <a href="{{ URL::route('connect.addwidget', 'api') }}">
+              <a href="{{ URL::route('connect/new', ['provider' => 'api', 'step' => 'init']) }}">
               <div class="settingsWidgetContent">
                 <span class="icon fa fa-code fa-3x"></span>
                 <p>Webhook / API</p>
