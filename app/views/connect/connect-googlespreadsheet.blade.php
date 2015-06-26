@@ -95,6 +95,10 @@
                   </select>
                 </div>
 
+                @if (isset($type))
+                    <input type="hidden" name="type" value="{{ $type }}"/>
+                @endif
+
                 {{ Form::submit('Save', array(
                 'class' => 'btn btn-flat btn-info btn-sm pull-right'
                 )) }}

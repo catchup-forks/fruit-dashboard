@@ -24,6 +24,7 @@ class IframeHelper {
 			$widget = new Widget;
 			$widget->widget_name = 'iframe widget';
 			$widget->widget_type = 'iframe';
+			$widget->widget_provider = 'iframe';
 			$widget->widget_source = $widget_json;
 			$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
 			$widget->position = '{"size_x":6,"size_y":8,"col":1,"row":1}';

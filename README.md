@@ -69,6 +69,8 @@ crontab -e
 2-59/5 * * * * /usr/bin/php /var/www/fruit-dashboard/artisan metrics:calc
 # daily summary email
 0 9 * * * /usr/bin/php /var/www/fruit-dashboard/artisan metrics:send
+# daily quote database refresh
+0 1 * * * /usr/bin/php /var/www/fruit-dashboard/artisan db:seed --class=QuoteTableSeeder
 ```
 
 #### Some small fixes, till the vendor package is fixed

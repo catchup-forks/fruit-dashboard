@@ -11,6 +11,7 @@ class ApiHelper {
 		$widget = new Widget;
 		$widget->widget_name = 'API widget';
 		$widget->widget_type = 'api';
+		$widget->widget_provider = 'api';
 		$widget->widget_source = $widgetJson;
 		$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
 		$widget->position = '{"size_x":3,"size_y":3,"col":1,"row":1}';

@@ -30,6 +30,7 @@ class QuoteHelper {
 			$widget = new Widget;
 			$widget->widget_name = 'quote widget';
 			$widget->widget_type = 'quote';
+			$widget->widget_provider = 'quote';
 			$widget->widget_source = $widget_json;
 			$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
 			$widget->position = '{"size_x":6,"size_y":2,"col":1,"row":1}';
