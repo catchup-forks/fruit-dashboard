@@ -102,6 +102,7 @@
       if(keycode == '13' || keycode == '9'){
         event.preventDefault();
         $('.yourname-form').slideUp('fast', function (){
+          $('.youremail-form').find('span.username').html(' ' + $('#username_id').val());
           $('.youremail-form').slideDown('fast', function() {
             $('#email_id').focus();
           });
