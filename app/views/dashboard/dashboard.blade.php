@@ -10,7 +10,7 @@
   @section('pageContent')
 
   <!-- add new widget -->
-  <div>
+  <div class="add-new-widget">
     <a href="{{ URL::route('connect.connect') }}">
       <i class="dropdown-icon fa fa-2x fa-plus" id="addNewWidget" alt="Add new widget" title="Add new widget"></i>
     </a>
@@ -110,11 +110,17 @@
     {{ HTML::script('js/jquery.easing.1.3.js') }}
 
     @if (Auth::user()->id == 1)
+
+    <!-- Events for unregistered user -->
     <script type="text/javascript">
-    // Grid event helpers
-    // if user is not logged in
+    
     init.push(function(){
       $('.gs-close-widgets').on('click', function(event){
+        event.preventDefault();
+        $('#modal-signin-signup').modal('show');
+        return false;
+      });
+      $('.add-new-widget').on('click', function(event){
         event.preventDefault();
         $('#modal-signin-signup').modal('show');
         return false;
