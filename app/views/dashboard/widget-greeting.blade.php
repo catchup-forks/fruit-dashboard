@@ -13,16 +13,16 @@
   @else 
     <p class='greetings-text white-text textShadow text-center'>
       
-      <div class="yourname-form">
+      <div class="yourname-form panel-padding">
       <span class="greetings-text-name white-text textShadow text-center">
         What's your name?
       </span>
       <!-- Form -->
-      {{ Form::open(array('action' => 'AuthController@doSignupOnDashboard', 'id' => 'signup-form_id' )) }}
+      {{ Form::open(array('action' => 'AuthController@doSignup', 'id' => 'signup-form_id' )) }}
         {{ Form::text('name', Input::old('name'), array('autofocus' => true, 'autocomplete' => 'off', 'class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'username_id')) }}
       </div>
 
-      <div class="youremail-form hidden-form text-center">
+      <div class="youremail-form panel-padding hidden-form text-center">
         <span class="greetings-text-email white-text textShadow">
           Hey<span class="username"></span>, what is your email address?
         </span>
@@ -31,9 +31,9 @@
         </div>
       </div> <!-- / Username -->
 
-      <div class="yourpassword-form hidden-form text-center">
+      <div class="yourpassword-form panel-padding hidden-form text-center">
         <span class="greetings-text-password white-text textShadow">
-          …and give me a password please, and we are done.
+          …and you'll need a password.
         </span>
         <div class="form-group">
           {{ Form::password('password', array('class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'password_id')) }}

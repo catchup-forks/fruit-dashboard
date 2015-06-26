@@ -132,9 +132,8 @@ Route::post('cancelSubscription', array(
     'uses'      => 'PaymentController@doCancelSubscription'
 ));
 
-
 Route::post('doSignupOnDashboard', array(
-    'uses'      => 'AuthController@doSignupOnDashboard'
+    'uses'      => 'AuthController@doSignup'
 ));
 
 

@@ -56,54 +56,6 @@ class DashboardController extends BaseController
 		#####################################################
 		# prepare stuff for other widgets start
 
-        if (Auth::user()->dashboards->count() == 0) {
-
-			# this probably shouldn't happen
-
-            // create first dashboard for user
-            $dashboard = new Dashboard;
-            $dashboard->dashboard_name = "Dashboard #1";
-            $dashboard->save();
-
-            // attach dashboard & user
-            Auth::user()->dashboards()->attach($dashboard->id, array('role' => 'owner'));
-
-            // create default widgets
-
-            // clock widget
-            $widget = new Widget;
-            $widget->widget_name = 'clock widget';
-            $widget->widget_type = 'clock';
-            $widget->widget_source = '{}';
-            $widget->position = '{"size_x":10,"size_y":9,"col":1,"row":1}';
-            $widget->dashboard_id = $user->dashboards()->first()->id;
-            $widget->save();
-
-            // greeting widget
-            $widget = new Widget;
-            $widget->widget_name = 'greeting widget';
-            $widget->widget_type = 'greeting';
-            $widget->widget_source = '{}';
-            $widget->position = '{"size_x":10,"size_y":9,"col":1,"row":3}';
-            $widget->dashboard_id = $user->dashboards()->first()->id;
-            $widget->save();
-
-            // quote widget
-            /*$widget = new Widget;
-            $widget->widget_name = 'quote widget';
-            $widget->widget_type = 'quote';
-			$widget_data = array(
-				'type'      =>  'quote-inspirational',
-				'refresh'   =>  'daily',
-				'language'   =>  'english'
-			);
-			$widget_json = json_encode($widget_data);
-            $widget->widget_source = $widget_json;
-            $widget->position = '{"size_x":5,"size_y":1,"col":2,"row":5}';
-            $widget->dashboard_id = $user->dashboards()->first()->id;
-            $widget->save();*/
-        }
-
 		$widgets = Auth::user()->dashboards()->first()->widgets;
 
 		foreach ($widgets as $widget) {
