@@ -30,7 +30,7 @@
         </div>
 
         <div class="form-group w-icon">
-          {{ Form::text('email', Input::old('email'), array('placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg', 'id' => 'email_id')) }}
+          {{ Form::text('email', Input::old('email'), array('autofocus' => true, 'placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg', 'id' => 'email_id')) }}
           <span class="fa fa-envelope signup-form-icon"></span>
         </div>
 

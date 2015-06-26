@@ -45,7 +45,7 @@
 			</div> <!-- / .signin-text -->
 
 			<div class="form-group w-icon">
-				{{ Form::text('email', Input::old('email'), array('placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg signUp', 'id' => 'username_id')) }}
+				{{ Form::text('email', Input::old('email'), array('autofocus' => true, 'placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg signUp', 'id' => 'username_id')) }}
 				<span class="fa fa-envelope signin-form-icon"></span>
 			</div> <!-- / Username -->
 
