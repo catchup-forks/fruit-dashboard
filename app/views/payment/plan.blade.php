@@ -23,7 +23,7 @@
           <li>Create graphs</li>
           <li>Up to 3 service connections</li>
           <li>Premium support</li>
-          <a href='/plans/{{snake_case(camel_case($plans[0]->name))}}' class='bg-light-green darker'><h4>START TRIAL</h4></a>
+          <a href='#' class='bg-light-green darker'><h4>START TRIAL</h4></a>
         </ul>
       </div>
       <!-- /Trial Plan -->
