@@ -2,6 +2,17 @@
 
 class QuoteHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'quote',
+			'caption' => 'Quote widget',
+			'icon' => 'fa-quote-left',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		switch ($step) {

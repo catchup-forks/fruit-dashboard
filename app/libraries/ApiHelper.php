@@ -2,6 +2,17 @@
 
 class ApiHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'api',
+			'caption' => 'API / Webhook',
+			'icon' => 'fa-code',
+			'premium' => true,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		// save the widget

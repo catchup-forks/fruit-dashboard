@@ -63,8 +63,41 @@ class ConnectController extends BaseController
 	   
 		// // prepare stuff for google drive auth
 		// $client = GooglespreadsheetHelper::setGoogleClient();
+
+
+		# identify plugins
+
+        # read the libraries directory, search for helpers
+
+        $dir = 'app/libraries';
+        $widgetListArray = array();
+
+        $i = 0;
+        if ($handle = opendir($dir)) {
+            while (($file = readdir($handle)) !== false){
+                if (substr($file, -10)=='Helper.php') {
+
+					# create class name, f.e. StripeHelper.php --> StripeHelper
+					$widgetClassName = substr($file, 0, -4);
+
+					# method name
+					$widgetMethodName = 'getConnectPageWidgetData';
+
+					# check if class & method exists, f.e. StripeHelper::getConnectIcon
+					if(class_exists($widgetClassName) && method_exists($widgetClassName, $widgetMethodName)){
+
+						# get icon, premium flag etc.
+						$connectPageWidgetData = $widgetClassName::$widgetMethodName();
+	                    $widgetListArray = array_add($widgetListArray, $i, $connectPageWidgetData);
+	                    $i++;
+
+					}
+
+                }
+            }
+        }
 		
-		// returning view
+		# returning view
 		return View::make('connect.connect',
 			array(
 				'user'                          => $user,
@@ -78,8 +111,12 @@ class ConnectController extends BaseController
 				// google spreadsheet stuff
 				// 'googleSpreadsheetButtonUrl'    => $client->createAuthUrl(),
 
+				# background stuff
 				'isBackgroundOn' => Auth::user()->isBackgroundOn,
 				'dailyBackgroundURL' => Auth::user()->dailyBackgroundURL(),
+
+				# list of widgets
+				'widgetListArray' => $widgetListArray,
 
 			)
 		);

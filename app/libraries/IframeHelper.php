@@ -2,6 +2,17 @@
 
 class IframeHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'iframe',
+			'caption' => 'iframe widget',
+			'icon' => 'fa-file-text-o',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		switch ($step) {

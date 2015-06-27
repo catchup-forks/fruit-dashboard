@@ -4,6 +4,15 @@ use Google\Spreadsheet\ServiceRequestFactory;
 
 class GooglespreadsheetHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'googlespreadsheet',
+			'caption' => 'Google Spreadsheet',
+			'icon' => 'fa-google',
+			'premium' => true,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
 
 
 	public static function wizard($step = NULL){
