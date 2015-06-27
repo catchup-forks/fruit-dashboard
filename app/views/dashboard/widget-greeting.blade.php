@@ -5,10 +5,8 @@
   </a>
   <!-- If user is registered -->
   @if (Auth::user()->id != 1)
-  	<p class='greetings-text white-text textShadow text-center'>Good <span class='greeting'></span>
-      @if(isset(Auth::user()->name))
-      <span class="greeting-comma">,</span><input id="userName" value="{{ Auth::user()->name }}" class="form-control white-text textShadow text-center userName" name="userName" type="text">
-      @endif!
+  	<p class='greetings-text white-text textShadow text-center'>
+      Good <span class='greeting'></span>@if(isset(Auth::user()->name))<span class="greeting-comma">,</span> {{ Auth::user()->name }}@endif!
     </p>
   <!-- If user is not registered -->  
   @else 
