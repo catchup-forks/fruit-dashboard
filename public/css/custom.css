@@ -668,6 +668,32 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	vertical-align: middle;
 }
 
+
+/* homebutton start */
+#homeButton{
+	color: #ffffff;
+	position: fixed;
+	top: 25px;
+	right: 50px;
+  	text-shadow: 4px 4px 30px #000;
+  	-webkit-text-stroke-width: 0.5px;
+	-webkit-text-stroke-color: #333;
+	opacity: 0.9;
+}
+
+#homeButton:hover{
+	color: #dddddd;
+	cursor: pointer;
+  	text-shadow: 4px 4px 30px #000;
+  	-webkit-text-stroke-width: 0.5px;
+	-webkit-text-stroke-color: #333;
+	opacity: 1;
+}
+/* homebutton end */
+
+
+/* settings button start */
+
 #settingsIcon{
 	position: absolute;
 	top: 25px;
@@ -675,39 +701,52 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	z-index: 1000;
 }
 
-#homeButton{
-	position: fixed;
-	top: 25px;
-	right: 50px;
-	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
-	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: #ccc;
-}
-
-#homeButton:hover{
-	color: #333;
-	cursor: pointer;
-	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
-	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: #ccc;
-}
-
 i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog{
+	color: #ffffff;
 	position: fixed;
 	top: 25px;
 	right: 25px;
 	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
 	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: #ccc;
+	-webkit-text-stroke-color: #333;
+	opacity: 0.9;
 }
 
 i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog:hover{
-	color: #333;
+	color: #dddddd;
 	cursor: pointer;
 	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
 	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: #ccc;
+	-webkit-text-stroke-color: #333;
+	opacity: 1;
 }
+
+/* settings end start */
+
+
+/* add new widget button start */
+
+#addNewWidget{
+	color: #ffffff;
+	position: fixed;
+	bottom: 25px;
+	left: 25px;
+	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
+	-webkit-text-stroke-width: 0.5px;
+	-webkit-text-stroke-color: #333;
+	opacity: 0.9;
+}
+
+#addNewWidget:hover{
+	color: #dddddd;
+	cursor: pointer;
+	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
+	-webkit-text-stroke-width: 0.5px;
+	-webkit-text-stroke-color: #333;
+	opacity: 1;
+}
+
+/* add new widget button start */
 
 .widget-close {
 	margin-top:-16px;
@@ -942,23 +981,6 @@ button.cancelButton{
 	margin-right: 3px;
 }
 
-#addNewWidget{
-	position: fixed;
-	bottom: 25px;
-	left: 25px;
-	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
-	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: #ccc;
-	color: #555;
-}
-
-#addNewWidget:hover{
-	color: #333;
-	cursor: pointer;
-	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
-	-webkit-text-stroke-width: 0.5px;
-	-webkit-text-stroke-color: #ccc;
-}
 /* greetings input style */
 input.userName{
 	width: 100%;
