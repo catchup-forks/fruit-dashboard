@@ -2,44 +2,56 @@
 
 class QuoteHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'quote',
+			'caption' => 'Quote widget',
+			'icon' => 'fa-quote-left',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
-		if (!$step){
-			return View::make('connect.connect-quote')
-				->with(array(
+		switch ($step) {
+
+			case 'init':
+				return View::make('connect.connect-quote')->with(array(
 					'isBackgroundOn' => Auth::user()->isBackgroundOn,
 					'dailyBackgroundURL' => Auth::user()->dailyBackgroundURL(),
-				)
-			);
-		}
+				));
+				break;
 
-		if ($step == 2) {
+			case 'set-everything':
 			
-			$type = Input::get('type');
-			$refresh = Input::get('refresh');
-			$language = Input::get('language');                
+				$type = Input::get('type');
+				$refresh = Input::get('refresh');
+				$language = Input::get('language');                
 
-			# save the widget
-			$widget_data = array(
-				'type'      =>  $type,
-				'refresh'   =>  $refresh,
-				'language'   =>  $language
-			);
-			$widget_json = json_encode($widget_data);
+				# save the widget
+				$widget_data = array(
+					'type'      =>  $type,
+					'refresh'   =>  $refresh,
+					'language'   =>  $language
+				);
+				$widget_json = json_encode($widget_data);
 
-			$widget = new Widget;
-			$widget->widget_name = 'quote widget';
-			$widget->widget_type = 'quote';
-			$widget->widget_provider = 'quote';
-			$widget->widget_source = $widget_json;
-			$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
-			$widget->position = '{"size_x":6,"size_y":2,"col":1,"row":1}';
-			$widget->save();
+				$widget = new Widget;
+				$widget->widget_name = 'quote widget';
+				$widget->widget_type = 'quote';
+				$widget->widget_provider = 'quote';
+				$widget->widget_source = $widget_json;
+				$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
+				$widget->position = '{"size_x":6,"size_y":2,"col":1,"row":1}';
+				$widget->save();
 
-			return Redirect::route('dashboard.dashboard')
-			  ->with('success', 'Quote widget added.');
-		}
-	} # / function wizard
+				return Redirect::route('dashboard.dashboard')
+				  ->with('success', 'Quote widget added.');
+			 	break;
+		} # / switch ($step)
+	} # / function wizard()
 
 	public static function createDashboardData($widget){
 

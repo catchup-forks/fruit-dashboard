@@ -15,7 +15,7 @@
 
             {{ Form::open(
             array(
-            'url'=>'connect/iframe/2',
+            'url'=>'connect/iframe/set-url',
             'method' => 'post',
             )
             ) }}

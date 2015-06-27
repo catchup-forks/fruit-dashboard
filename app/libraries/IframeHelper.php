@@ -2,39 +2,52 @@
 
 class IframeHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'iframe',
+			'caption' => 'iframe widget',
+			'icon' => 'fa-file-text-o',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
-		if (!$step){
-			return View::make('connect.connect-iframe')->with(array(
-				'isBackgroundOn' => Auth::user()->isBackgroundOn,
-				'dailyBackgroundURL' => Auth::user()->dailyBackgroundURL(),
-			));
-		}
+		switch ($step) {
 
-		if ($step == 2) {
-			
-			$url = Input::get('fullURL');
+			case 'init':
+				return View::make('connect.connect-iframe')->with(array(
+					'isBackgroundOn' => Auth::user()->isBackgroundOn,
+					'dailyBackgroundURL' => Auth::user()->dailyBackgroundURL(),
+				));
+				break;
 
-			# save the widget
-			$widget_data = array(
-				'iframeURL'   => $url
-			);
-			$widget_json = json_encode($widget_data);
+			case 'set-url':
+				$url = Input::get('fullURL');
 
-			$widget = new Widget;
-			$widget->widget_name = 'iframe widget';
-			$widget->widget_type = 'iframe';
-			$widget->widget_provider = 'iframe';
-			$widget->widget_source = $widget_json;
-			$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
-			$widget->position = '{"size_x":6,"size_y":8,"col":1,"row":1}';
-			$widget->save();
+				# save the widget
+				$widget_data = array(
+					'iframeURL'   => $url
+				);
+				$widget_json = json_encode($widget_data);
 
-			return Redirect::route('dashboard.dashboard')
-			  ->with('success', 'iframe widget added.');
-		}
+				$widget = new Widget;
+				$widget->widget_name = 'iframe widget';
+				$widget->widget_type = 'iframe';
+				$widget->widget_provider = 'iframe';
+				$widget->widget_source = $widget_json;
+				$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
+				$widget->position = '{"size_x":6,"size_y":8,"col":1,"row":1}';
+				$widget->save();
+
+				return Redirect::route('dashboard.dashboard')
+				  ->with('success', 'iframe widget added.');
+				break;
+
+		} # / switch ($step)
 	} # / function wizard
-
 
 
 	public static function createDashboardData($widget){

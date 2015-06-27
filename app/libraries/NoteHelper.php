@@ -2,6 +2,17 @@
 
 class NoteHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'note',
+			'caption' => 'Note widget',
+			'icon' => 'fa-pencil',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		// save the widget

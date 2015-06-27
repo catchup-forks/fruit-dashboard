@@ -2,6 +2,17 @@
 
 class ClockHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'clock',
+			'caption' => 'Clock widget',
+			'icon' => 'fa-clock-o',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		// save the widget

@@ -2,6 +2,17 @@
 
 class TextHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'text',
+			'caption' => 'Text widget',
+			'icon' => 'fa-font',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		switch ($step) {

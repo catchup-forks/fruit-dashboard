@@ -2,6 +2,17 @@
 
 class GreetingHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'greeting',
+			'caption' => 'Greeting widget',
+			'icon' => 'fa-comment-o',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		// save the widget
