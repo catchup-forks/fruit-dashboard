@@ -1,5 +1,7 @@
 <div class="btn-group" id="settingsIcon">
-	@if(!isset($onDashboard))<a class='link-button' id="homeButton" href="/" alt="Dashboard" title="Dashboard"><i class="fa fa-2x fa-home"></i></a>@endif
+@if(!isset($onDashboard))
+	<a class='link-button' id="homeButton" href="/" alt="Dashboard" title="Dashboard"><i class="fa fa-2x fa-home"></i></a>
+@endif
 	<i class="dropdown-icon fa fa-2x fa-cog" id="rightDropDown"  alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></i>
 	<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="rightDropDown">
 		<li role="presentation" class="add-new-widget">
