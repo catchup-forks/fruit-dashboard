@@ -9,7 +9,7 @@
 
 @section('pageContent')
 
-<body class="theme-asphalt page-signup" style="">
+<body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif class="theme-asphalt page-signup" style="">
 
   <!-- Container -->
   <div class="signup-container">
@@ -30,7 +30,7 @@
         </div>
 
         <div class="form-group w-icon">
-          {{ Form::text('email', Input::old('email'), array('placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg', 'id' => 'email_id')) }}
+          {{ Form::text('email', Input::old('email'), array('autofocus' => true, 'placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg', 'id' => 'email_id')) }}
           <span class="fa fa-envelope signup-form-icon"></span>
         </div>
 

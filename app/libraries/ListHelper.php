@@ -2,6 +2,17 @@
 
 class ListHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'list',
+			'caption' => 'List widget',
+			'icon' => 'fa-list',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		switch ($step) {

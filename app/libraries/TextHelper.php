@@ -2,6 +2,17 @@
 
 class TextHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'text',
+			'caption' => 'Text widget',
+			'icon' => 'fa-font',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		switch ($step) {
@@ -45,6 +56,7 @@ class TextHelper {
 				$widget = new Widget;
 				$widget->widget_name = 'text widget';
 				$widget->widget_type = 'text';
+				$widget->widget_provider = 'text';
 				$widget->widget_source = Input::get('text');
 				$widget->widget_ready = true;
 				$widget->dashboard_id = Auth::user()->dashboards()->first()->id;
@@ -62,4 +74,18 @@ class TextHelper {
 
 		} # / switch ($step)
 	} # / function wizard
+
+
+
+	public static function createDashboardData($widget){
+
+		$current_value = $widget->widget_source;
+		$dataArray = array();
+
+		return [$current_value, $dataArray];
+
+	} # / function createDashboardData
+
+
+
 } # / class TextHelper

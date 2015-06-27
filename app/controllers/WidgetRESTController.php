@@ -95,6 +95,27 @@ class WidgetRESTController extends BaseController {
 
 
 	/**
+	 * Save user name.
+	 *
+	 * @param  int  $widgetId
+	 * @param  string $newName
+	 * @return Response
+	 */
+
+	public function saveUserName($newName)
+	{
+		// selecting logged in user
+		$user = Auth::user(); 
+		
+		$user->name = $newName;
+			
+		$user->save();
+		
+		return Response::make('everything okay',200);
+	}	
+
+
+	/**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response

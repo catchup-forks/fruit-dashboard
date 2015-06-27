@@ -12,7 +12,7 @@
 
             {{ Form::open(
             array(
-            'url'=>'connect/quote/2',
+            'url'=>'connect/quote/set-everything',
             'method' => 'post',
             )
             ) }}
@@ -42,6 +42,12 @@
             {{ Form::submit('Save', array(
             'class' => 'btn btn-flat btn-info btn-sm pull-right'
             )) }}
+
+            <a href="{{ URL::route('connect.connect')}}">
+                {{ Form::button('Cancel', array(
+                'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                )) }}
+            </a>
 
             {{ Form::close() }}
             @endif

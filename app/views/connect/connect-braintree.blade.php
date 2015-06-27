@@ -94,6 +94,12 @@
                 {{ Form::submit('Save API keys', array(
                     'id' => 'id_submit',
                     'class' => 'btn btn-primary btn-sm btn-flat text-center',)) }}
+
+                <a href="{{ URL::route('connect.connect')}}">
+                  {{ Form::button('Cancel', array(
+                  'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                  )) }}
+                </a>
               </div>
             </div>
             <!-- /Submit -->

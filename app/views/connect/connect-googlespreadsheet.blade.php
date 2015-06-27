@@ -28,7 +28,12 @@
                 {{ Form::submit('Save', array(
                 'class' => 'btn btn-flat btn-info btn-sm pull-right'
                 )) }}
-                <a href="{{ URL::route('connect.connect')}}"><button class="btn btn-warning btn-sm btn-flat pull-right" type="button">Cancel</button></a>
+                
+                <a href="{{ URL::route('connect.connect')}}">
+                  {{ Form::button('Cancel', array(
+                  'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                  )) }}
+                </a>
 
                 {{ Form::close() }}
             @endif
@@ -60,7 +65,12 @@
                 {{ Form::submit('Next >', array(
                 'class' => 'btn btn-flat btn-info btn-sm pull-right'
                 )) }}
-                <a href="{{ URL::route('connect.connect')}}"><button class="btn btn-warning btn-sm btn-flat pull-right" type="button">Cancel</button></a>
+                
+                <a href="{{ URL::route('connect.connect')}}">
+                  {{ Form::button('Cancel', array(
+                  'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                  )) }}
+                </a>
 
                 {{ Form::close() }}
 
@@ -85,10 +95,18 @@
                   </select>
                 </div>
 
+                @if (isset($type))
+                    <input type="hidden" name="type" value="{{ $type }}"/>
+                @endif
+
                 {{ Form::submit('Save', array(
                 'class' => 'btn btn-flat btn-info btn-sm pull-right'
                 )) }}
-                <a href="{{ URL::route('connect.connect')}}"><button class="btn btn-warning btn-sm btn-flat pull-right" type="button">Cancel</button></a>
+                <a href="{{ URL::route('connect.connect')}}">
+                  {{ Form::button('Cancel', array(
+                  'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                  )) }}
+                </a>
 
                 {{ Form::close() }}
 

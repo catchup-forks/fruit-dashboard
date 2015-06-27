@@ -30,6 +30,11 @@
                             <span>No</span>
                           @endif
                           <button id="editBackground" class="btn btn-flat btn-info btn-sm pull-right" type="button" onClick= '_gaq.push(["_trackEvent", "Edit", "Editing background"]);mixpanel.track("Editing background");'>Edit</button>
+                          <a href="{{ URL::route('connect.connect')}}">
+                            {{ Form::button('Cancel', array(
+                            'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                            )) }}
+                          </a>
                         </p>
                       </div>
                     </div> <!-- / .form-group -->

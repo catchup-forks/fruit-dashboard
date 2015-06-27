@@ -14,8 +14,34 @@ class PaymentController extends BaseController
 	{
 		$plans = Braintree_Plan::all();
 
+		try {
+			$customer = Braintree_Customer::find('fruit_analytics_user_'.Auth::user()->id);
+		}
+		catch(Braintree_Exception_NotFound $e) {
+			// no such customer yet, lets make it
+
+			$result = Braintree_Customer::create(array(
+				'id'        => 'fruit_analytics_user_'.Auth::user()->id,
+				'email'     => Auth::user()->email,
+				'firstName' => Auth::user()->email,
+			));
+			if($result->success)
+			{
+				$customer = $result->customer;
+			} else {
+				// needs error handling
+			}
+		}
+
+		// generate clientToken for the user to make payment
+		$clientToken = Braintree_ClientToken::generate(array(
+			"customerId" => $customer->id
+		));
+		
+		
 		return View::make('payment.plan',array(
-			'plans' => $plans
+			'plans' => $plans,
+			'clientToken'   =>$clientToken,
 		));
 	}
 

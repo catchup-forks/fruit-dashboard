@@ -18,8 +18,16 @@ class AuthController extends BaseController
     {
         if (Auth::check()) {
             Auth::logout();
-        } 
-        return View::make('auth.signin');
+        }
+        $user = User::find(1);
+        
+        return View::make('auth.signin',
+            array(
+                // background stuff
+                'isBackgroundOn' => $user->isBackgroundOn,
+                'dailyBackgroundURL' => $user->dailyBackgroundURL(), 
+            )
+        );
     }
 
     /*
@@ -91,7 +99,14 @@ class AuthController extends BaseController
         if (Auth::check()) {
             Auth::logout();
         } 
-        return View::make('auth.signup');
+        $user = User::find(1);
+        return View::make('auth.signup',
+            array(
+                // background stuff
+                'isBackgroundOn' => $user->isBackgroundOn,
+                'dailyBackgroundURL' => $user->dailyBackgroundURL(), 
+            )
+        );
     }
 
     /*
@@ -128,6 +143,8 @@ class AuthController extends BaseController
             // set auth info
             $user->email = Input::get('email');
             $user->password = Hash::make(Input::get('password'));
+            // if name input
+            $user->name = Input::get('name');
             $user->ready = 'notConnected';
             $user->summaryEmailFrequency = 'daily';
             $user->plan = 'free';
@@ -150,7 +167,7 @@ class AuthController extends BaseController
             $widget->widget_name = 'clock widget';
             $widget->widget_type = 'clock';
             $widget->widget_source = '{}';
-            $widget->position = '{"size_x":6,"size_y":4,"col":3,"row":1}';
+            $widget->position = '{"size_x":8,"size_y":6,"col":1,"row":1}';
             $widget->dashboard_id = $user->dashboards()->first()->id;
             $widget->save();
 
@@ -159,7 +176,7 @@ class AuthController extends BaseController
             $widget->widget_name = 'greeting widget';
             $widget->widget_type = 'greeting';
             $widget->widget_source = '{}';
-            $widget->position = '{"size_x":6,"size_y":3,"col":3,"row":5}';
+            $widget->position = '{"size_x":6,"size_y":3,"col":2,"row":10}';
             $widget->dashboard_id = $user->dashboards()->first()->id;
             $widget->save();
 
@@ -174,7 +191,7 @@ class AuthController extends BaseController
             );
             $widget_json = json_encode($widget_data);
             $widget->widget_source = $widget_json;
-            $widget->position = '{"size_x":10,"size_y":1,"col":2,"row":8}';
+            $widget->position = '{"size_x":6,"size_y":2,"col":2,"row":7}';
             $widget->dashboard_id = $user->dashboards()->first()->id;
             $widget->save();
 

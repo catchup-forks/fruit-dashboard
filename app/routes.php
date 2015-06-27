@@ -132,6 +132,10 @@ Route::post('cancelSubscription', array(
     'uses'      => 'PaymentController@doCancelSubscription'
 ));
 
+Route::post('doSignupOnDashboard', array(
+    'uses'      => 'AuthController@doSignup'
+));
+
 
 // connect routes
 Route::get('connect', array(
@@ -152,12 +156,6 @@ Route::any('import/{provider}',array(
 
 Route::any('connect/{provider}/{step?}', array(
     'before' => 'auth',
-    'uses' => 'ConnectController@connectWizard'
-));
-
-Route::any('connect.addwidget/{provider?}/{step?}', array(
-    'before' => 'auth',
-    'as'    => 'connect.addwidget',
     'uses' => 'ConnectController@connectWizard'
 ));
 
@@ -248,6 +246,11 @@ Route::post('/widgets/save-text/{widgetId}/{text?}', array(
 
 Route::post('/widgets/settings/name/{widgetId}/{newName}', array(
     'uses'  => 'WidgetRESTController@saveWidgetName',
+));
+
+Route::post('/widgets/settings/username/{newName}', array(
+    'before'    => 'auth',
+    'uses'  => 'WidgetRESTController@saveUserName',
 ));
 
 /*

@@ -9,21 +9,48 @@
 
   @section('pageContent')
 
-      <!-- widget list -->
-      <div class="container">
-        <div class="row">
-          <div class="gridster not-visible">
-            <ul>
-              @for ($i = 0; $i < count($allFunctions); $i++)
+  <!-- add new widget -->
+  <div class="add-new-widget">
+    <a href="{{ URL::route('connect.connect') }}">
+      <i class="dropdown-icon fa fa-2x fa-plus" id="addNewWidget" alt="Add new widget" title="Add new widget"></i>
+    </a>
+  </div>
 
-                @include('dashboard.widget', ['widget_data' => $allFunctions[$i]])
+  <!-- widget list -->
+  <div class="container">
+    <div class="row">
+      <div class="gridster not-visible">
+        <ul>
+          @for ($i = 0; $i < count($allFunctions); $i++)
 
-              @endfor
-            </ul>
-          </div>
-        </div>
+            @include('dashboard.widget', ['widget_data' => $allFunctions[$i]])
+
+          @endfor
+        </ul>
       </div>
-      <!-- /widget list -->
+    </div>
+  </div>
+  <!-- /widget list -->
+
+  <!-- Modals -->
+  <div id="modal-signin-signup" class="modal fade" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">Subscribe!</h4>
+        </div>
+        <div class="modal-body">
+          If you want to customize your dashboard, please sign in or sign up.
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-success" href="{{ URL::route('auth.signin') }}">Sign in</a>
+          <a class="btn btn-success" href="{{ URL::route('auth.signup') }}">Sign up</a>
+        </div>
+      </div> <!-- / .modal-content -->
+    </div> <!-- / .modal-dialog -->
+  </div>
+  <!-- /Modals -->
 
   @stop
 
@@ -32,57 +59,76 @@
     <!-- Grid functions -->
     <script type="text/javascript">
      $(document).ready(function() {
-         var gridster;
-         var positioning = [];
-         var widget_width = $(window).width()/12-15;
-         var widget_height = $(window).height()/12-20;
+      var gridster;
+      var positioning = [];
+      var widget_width = $(window).width()/12-15;
+      var widget_height = $(window).height()/12-20;
 
-         $(function(){
-
-           gridster = $(".gridster ul").gridster({
-             /* widget_base_dimenions - finer resizable steps*/
-             widget_base_dimensions: [widget_width, widget_height],
-             widget_margins: [5, 5],
-             helper: 'clone',
-             serialize_params: function ($w, wgd) {
-                 return {
-                   id: $w.data().id,
-                   col: wgd.col,
-                   row: wgd.row,
-                   size_x: wgd.size_x,
-                   size_y: wgd.size_y,
-                 };
-               },
-             resize: {
-               enabled: true,
-               stop: function(e, ui, $widget) {
-                positioning = gridster.serialize();
-                positioning = JSON.stringify(positioning);
-                $.ajax({
-                  type: "POST",
-                  url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
-                });
-               }
-             },
-             draggable: {
-               stop: function(e, ui, $widget) {
-                positioning = gridster.serialize();
-                positioning = JSON.stringify(positioning);
-                $.ajax({
-                  type: "POST",
-                  url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
-                });
-               }
-             }
-           }).data('gridster');
-
-         });
+      $(function(){
+        gridster = $(".gridster ul").gridster({
+          /* widget_base_dimenions - finer resizable steps*/
+          widget_base_dimensions: [widget_width, widget_height],
+          widget_margins: [5, 5],
+          helper: 'clone',
+          serialize_params: function ($w, wgd) {
+            return {
+              id: $w.data().id,
+              col: wgd.col,
+              row: wgd.row,
+              size_x: wgd.size_x,
+              size_y: wgd.size_y,
+            };
+          },
+          resize: {
+            enabled: true,
+            stop: function(e, ui, $widget) {
+              positioning = gridster.serialize();
+              positioning = JSON.stringify(positioning);
+              $.ajax({
+                type: "POST",
+                url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
+              });
+            }
+          },
+          draggable: {
+            stop: function(e, ui, $widget) {
+              positioning = gridster.serialize();
+              positioning = JSON.stringify(positioning);
+              $.ajax({
+                type: "POST",
+                url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
+              });
+            }
+          }  
+        }).data('gridster');
+      });
      });
     </script>
     <!-- /Grid functions -->
 
     {{ HTML::script('js/jquery.color.js') }}
     {{ HTML::script('js/jquery.easing.1.3.js') }}
+
+    @if (Auth::user()->id == 1)
+
+    <!-- Events for unregistered user -->
+    <script type="text/javascript">
+    
+    init.push(function(){
+      $('.gs-close-widgets').on('click', function(event){
+        event.preventDefault();
+        $('#modal-signin-signup').modal('show');
+        return false;
+      });
+      $('.add-new-widget').on('click', function(event){
+        event.preventDefault();
+        $('#modal-signin-signup').modal('show');
+        return false;
+      });
+    });
+   
+    </script>
+    @endif
 
     <!-- Saving text and settings -->
     <script type="text/javascript">
@@ -118,9 +164,11 @@
             });            
           }
         }
+
         // user finished typing
         $('.save-widget-name').click(saveWidgetName);
         $('.note').keyup(_.debounce(sendText,500));
+        
       });
     </script>
     <!-- /Saving text -->
@@ -170,6 +218,10 @@
 
         $("#digitClock").bind('resize', function(e){
           $("h1.digitTime").fitText(0.3);
+        })
+
+        $("#textWidgetId").bind('resize', function(e){
+          $("p.textWidgetClass").fitText(0.8);
         })
       });
     </script>

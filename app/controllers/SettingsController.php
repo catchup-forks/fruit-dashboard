@@ -97,7 +97,7 @@ class SettingsController extends BaseController
 	{
 		// Validation rules
 		$rules = array(
-			'name' => 'required|unique:users,name',
+			'name' => 'required',
 			);
 		// run the validation rules on the inputs
 		$validator = Validator::make(Input::all(), $rules);

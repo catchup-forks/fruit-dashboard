@@ -2,6 +2,17 @@
 
 class ChartHelper {
 
+	public static function getConnectPageWidgetData(){
+		$widgetData = [
+			'provider' => 'chart',
+			'caption' => 'Chart widget',
+			'icon' => 'fa-bar-chart',
+			'premium' => false,
+		];
+		return $widgetData;
+	} # / function getConnectPageWidgetData
+
+
 	public static function wizard($step = NULL){
 
 		switch ($step) {

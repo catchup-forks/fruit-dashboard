@@ -15,7 +15,7 @@
 
             {{ Form::open(
             array(
-            'url'=>'connect/iframe/2',
+            'url'=>'connect/iframe/set-url',
             'method' => 'post',
             )
             ) }}
@@ -27,6 +27,12 @@
             {{ Form::submit('Save', array(
             'class' => 'btn btn-flat btn-info btn-sm pull-right'
             )) }}
+
+            <a href="{{ URL::route('connect.connect')}}">
+                {{ Form::button('Cancel', array(
+                'class' => 'btn btn-warning btn-sm btn-flat pull-right cancelButton'
+                )) }}
+            </a>
 
             {{ Form::close() }}
 
