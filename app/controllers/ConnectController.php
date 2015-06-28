@@ -69,7 +69,7 @@ class ConnectController extends BaseController
 
         # read the libraries directory, search for helpers
 
-        $dir = public_path().'app/libraries';
+        $dir = public_path().'/app/libraries';
         $widgetListArray = array();
 
         $i = 0;
