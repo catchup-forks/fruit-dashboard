@@ -1114,3 +1114,7 @@ input.signUp::-webkit-input-placeholder{
 	line-height: 1.7em;
 	font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+p.textWidgetClass{
+  word-wrap: break-word;
+}
