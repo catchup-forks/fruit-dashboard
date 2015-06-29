@@ -9,9 +9,9 @@
     <div class="row">
 
       <!-- Trial Plan -->
-      <div id="freePlan" class='plan-col col-xs-3 col-xs-offset-3'>
+      <div id="trialPlan" class='plan-col col-xs-3 col-xs-offset-3'>
         <div class='plan-header bg-light-green darker'>
-          <h4>Free</h4>
+          <h4>Trial</h4>
           <span>{{$plans[0]->description}}</span>
         </div>
         <div class='plan-pricing bg-light-green darken'>
@@ -23,7 +23,7 @@
           <li>Create graphs</li>
           <li>Up to 3 service connections</li>
           <li>Premium support</li>
-          <a href='#' class='bg-light-green darker' data-plan="trial"><h4>START TRIAL</h4></a>
+          <a href='#' class='bg-light-green darker' data-toggle="modal" data-target="#modal-trial"><h4>START TRIAL</h4></a>
         </ul>
       </div>
       <!-- /Trial Plan -->
@@ -43,7 +43,7 @@
           <li>Create graphs</li>
           <li>Up to 3 service connections</li>
           <li>Premium support</li>
-          <a class='bg-light-green darker' data-toggle="modal" data-target="#modal-payment" href="#" data-plan="apple_pack"><h4>SIGN UP</h4></a>
+          <a class='bg-light-green darker' data-toggle="modal" data-target="#modal-payment" href="#"><h4>SIGN UP</h4></a>
         </ul>
       </div>
       <!-- /Premium Plan -->
@@ -58,7 +58,7 @@
 <div id="modal-payment" class="modal fade" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
   <div class="modal-dialog modal-md">
     <div class="modal-content">
-      <form id="checkout" method="post" action="{{ URL::route ('payment.planname', array('apple_pack')) }}">
+      <form id="checkout" method="post" action="{{ URL::route ('payment.plan.name', array('apple_pack')) }}">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
         <h4 class="modal-title">Subscribe!</h4>
@@ -81,14 +81,14 @@
       <form id="checkout" method="post" action="">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-        <h4 class="modal-title">Subscribe!</h4>
+        <h4 class="modal-title">Start trial!</h4>
       </div>
       <div class="modal-body">
       yep its free for 30 days
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <a class='btn btn-info' value="Subscribe" href="plan/trial">Subscribe</a>
+        <a class='btn btn-info' value="Subscribe" href="{{ URL::route ('payment.plan.trial') }}">Start trial</a>
       </div>
     </form>
     </div> <!-- / .modal-content -->

@@ -211,9 +211,15 @@ Route::get('/plans', array(
     'uses'      => 'PaymentController@showPlans'
 ));
 
+Route::get('/plans/trial', array(
+    'before'    => 'auth',
+    'as'        => 'payment.plan.trial',
+    'uses'      => 'PaymentController@doTrial'
+));
+
 Route::post('/plans/{planName}', array(
     'before'    => 'auth',
-    'as'        => 'payment.planname',
+    'as'        => 'payment.plan.name',
     'uses'      => 'PaymentController@doPayPlan'
 ));
 

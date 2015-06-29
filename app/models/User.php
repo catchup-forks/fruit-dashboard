@@ -133,7 +133,7 @@ class User extends Eloquent implements UserInterface
 
     public function isTrialEnded()
     {
-        $trialEndDate = Carbon::parse($this->created_at)->addDays(30);
+        $trialEndDate = Carbon::parse($this->trial_started)->addDays(30);
 
         if ($this->plan == 'trial_ended' 
             || ($this->plan == 'trial' && $trialEndDate->isPast()))
@@ -173,7 +173,7 @@ class User extends Eloquent implements UserInterface
         $days = 100;
 
         $now = Carbon::now();
-        $signup = Carbon::parse($this->created_at);
+        $signup = Carbon::parse($this->trial_started);
 
         $days = $now->diffInDays($signup->addDays(30), false);
 

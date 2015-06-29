@@ -160,4 +160,18 @@ class PaymentController extends BaseController
 				->with('error','No valid subscription');
 		}
 	}
+
+    // change user plan to trial
+    public function doTrial ()
+    {
+        $user = Auth::user();
+        $user->plan = 'trial';
+        $user->trial_started = Carbon::now();
+        $user->save();
+
+        return Redirect::route('payment.plan')
+            ->with('success','Trial has started!');
+    }
+
+
 }
