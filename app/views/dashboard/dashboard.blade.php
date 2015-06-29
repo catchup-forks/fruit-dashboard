@@ -125,6 +125,11 @@
         $('#modal-signin-signup').modal('show');
         return false;
       });
+      $('.dragging').on('click', function(event){
+        event.preventDefault();
+        $('#modal-signin-signup').modal('show');
+        return false;
+      });
     });
    
     </script>
@@ -221,7 +226,7 @@
         })
 
         $("#textWidgetId").bind('resize', function(e){
-          $("p.textWidgetClass").fitText(0.8);
+          $("p.textWidgetClass").fitText(1.1, { minFontSize: '16px', maxFontSize: '48px' });
         })
       });
     </script>
