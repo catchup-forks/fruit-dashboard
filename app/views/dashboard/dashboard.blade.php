@@ -125,11 +125,6 @@
         $('#modal-signin-signup').modal('show');
         return false;
       });
-      $('.dragging').on('click', function(event){
-        event.preventDefault();
-        $('#modal-signin-signup').modal('show');
-        return false;
-      });
     });
    
     </script>
