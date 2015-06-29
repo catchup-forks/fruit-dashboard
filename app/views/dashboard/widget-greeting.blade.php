@@ -17,7 +17,6 @@
         What's your name?
       </span>
       <!-- Form -->
-      {{ Form::open(array('action' => 'AuthController@doSignup', 'id' => 'signup-form_id' )) }}
         {{ Form::text('name', Input::old('name'), array('autofocus' => true, 'autocomplete' => 'off', 'class' => 'form-control input-lg greetings-text white-text textShadow text-center userName', 'id' => 'username_id')) }}
       </div>
 
@@ -46,7 +45,6 @@
           'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");')) }}
           <span class="white-text">or <a class="link-white" href="signin">Login here</a></span>
         </div> <!-- / .form-actions -->
-        {{ Form::close() }}
       </div>
 
     </p>
