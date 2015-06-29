@@ -126,7 +126,6 @@ Route::post('settingsFrequency', array(
     'uses' => 'SettingsController@doSettingsFrequency'
 ));
 
-
 Route::post('cancelSubscription', array(
     'before'    => 'auth',
     'uses'      => 'PaymentController@doCancelSubscription'
@@ -212,15 +211,9 @@ Route::get('/plans', array(
     'uses'      => 'PaymentController@showPlans'
 ));
 
-Route::get('/plans/{planName}', array(
-    'before'    => 'auth',
-    'as'        => 'payment.payplan',
-    'uses'      => 'PaymentController@showPayPlan'
-));
-
 Route::post('/plans/{planName}', array(
     'before'    => 'auth',
-    'as'        => 'payment.payplan',
+    'as'        => 'payment.planname',
     'uses'      => 'PaymentController@doPayPlan'
 ));
 

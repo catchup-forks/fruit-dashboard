@@ -42,43 +42,10 @@ class PaymentController extends BaseController
 		return View::make('payment.plan',array(
 			'plans' => $plans,
 			'clientToken'   =>$clientToken,
+			// background stuff
+			'isBackgroundOn' => Auth::user()->isBackgroundOn,
+			'dailyBackgroundURL' => Auth::user()->dailyBackgroundURL(),
 		));
-	}
-
-
-	// Renders specific plan payment page
-	public function showPayPlan($planName)
-	{
-		try {
-			$customer = Braintree_Customer::find('fruit_analytics_user_'.Auth::user()->id);
-		}
-		catch(Braintree_Exception_NotFound $e) {
-			// no such customer yet, lets make it
-
-			$result = Braintree_Customer::create(array(
-				'id'        => 'fruit_analytics_user_'.Auth::user()->id,
-				'email'     => Auth::user()->email,
-				'firstName' => Auth::user()->email,
-			));
-			if($result->success)
-			{
-				$customer = $result->customer;
-			} else {
-				// needs error handling
-			}
-		}
-
-		// generate clientToken for the user to make payment
-		$clientToken = Braintree_ClientToken::generate(array(
-			"customerId" => $customer->id
-		));
-		
-		$plans = BraintreeHelper::getPlanDictionary();
-
-		return View::make('payment.payplan', array(
-			'planName'      =>$plans[$planName]->name,
-			'clientToken'   =>$clientToken,
-		)); 
 	}
 
 	// Execute the payment process
@@ -142,6 +109,10 @@ class PaymentController extends BaseController
 					->with('error',"Couldn't process subscription, try again later.");
 			}
 		}
+        else {
+            return Redirect::route('payment.plan')
+                ->with('error',"Notoken.");
+        }
 	}
 
 	// Execute the cancellation
