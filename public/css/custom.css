@@ -701,7 +701,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 	z-index: 1000;
 }
 
-i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog{
+i#rightDropDown{
 	color: #ffffff;
 	position: fixed;
 	top: 25px;
@@ -712,6 +712,14 @@ i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog{
 	opacity: 0.9;
 }
 
+i#homeIcon{
+  color: #ffffff;
+  text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #333;
+  opacity: 0.9;
+}
+
 i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog:hover{
 	color: #dddddd;
 	cursor: pointer;
@@ -719,6 +727,15 @@ i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog:hover{
 	-webkit-text-stroke-width: 0.5px;
 	-webkit-text-stroke-color: #333;
 	opacity: 1;
+}
+
+i#homeIcon:hover{
+  color: #dddddd;
+  cursor: pointer;
+  text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #333;
+  opacity: 1;
 }
 
 /* settings end start */
@@ -735,6 +752,7 @@ i#rightDropDown.dropdown-icon.fa.fa-2x.fa-cog:hover{
 	-webkit-text-stroke-width: 0.5px;
 	-webkit-text-stroke-color: #333;
 	opacity: 0.9;
+  z-index: 9999;
 }
 
 #addNewWidget:hover{
