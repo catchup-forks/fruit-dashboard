@@ -98,6 +98,12 @@
                 type: "POST",
                 url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
               });
+            },
+            start: function(e, ui, $widget){
+              @if (Auth::user()->id == 1){
+                $('#modal-signin-signup').modal('show')
+                };
+              @endif
             }
           }  
         }).data('gridster');

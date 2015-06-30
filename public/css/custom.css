@@ -1005,22 +1005,26 @@ input.userName{
 	margin: 0 auto;
 	display: inline;
 	background: 0;
-  	border: 0;
-  	border-bottom: 3px solid #fff;
+  border: 0;
+  border-bottom: 3px solid #fff;
 	height: auto;
-  	color: #fff;
+  color: #fff;
 	outline: none;
-  	text-align: center;
-  	font-size: 54px;
-  	font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  text-align: center;
+  font-size: 54px;
+  font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 input.userName:focus{
 	border-bottom: 3px solid #fff !important;
 }
 
-input:.userName:-webkit-autofill {
-    background-color: transparent !important;
+input.userName:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
+}
+
+input.userName:-webkit-autofill:focus{
+    -webkit-box-shadow: 0 0 0px 1000px #fff inset;
 }
 
 div.yourname-form{
