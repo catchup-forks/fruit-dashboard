@@ -1141,25 +1141,57 @@ p.textWidgetClass{
   word-wrap: break-word;
 }
 
-#install-button{
+/* chrome eytension inline install */
+.install-app{
   padding: 20px 40px;
-  display: inline-block;
-  border-radius: 3px;
-  box-shadow: 0 0 40px rgba(0,0,0,0.4);
-  font-size: 1.2em;
-  font-weight: bold;
-  text-shadow: none;
-  background: rgba(255,255,255,0.95);
-  color: black;
+  font-size: 2em;
+  font-weight: normal;
+  background: transparent;
+  color: #fff;
+  border: none;
   margin: 10px;
 }
 
-a#install-button:hover{
-  background: 
+.install-app:link,
+.install-app:visited,
+.install-app:hover,
+.install-app:active{
+  background: none !important;
+  -webkit-transition: all 0.15s ease;
+  font-size:2.1em;
+  color: #fff;
 }
 
 #plus{
   margin-right: 4px;
+  font-size: 1em;
+  vertical-align: -6%;
+}
+
+#install-complete{
   font-size: 1.2em;
-  vertical-align: -3%;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 10px auto;
+  position: relative;
+  display: none;
+}
+
+#install-failure{
+  font-size: 1.2em;
+  font-weight: bold;
+  letter-spacing: 1px;
+  margin: 10px auto;
+  position: relative;
+  display: none;
+}
+
+.install-app:link,
+.install-app:visited,
+.install-app:hover,
+.install-app:active{
+  background: none !important;
+  -webkit-transition: all 0.15s ease;
+  font-size:2.1em;
+  color: #fff;
 }

@@ -51,9 +51,26 @@
     </div> <!-- / .modal-dialog -->
   </div>
   <!-- /Modals -->
-  {{-- <div class="text-center installButton">
-      <a type="button" id="install-button" class="btn btn-default" onclick="chrome.webstore.install()"><i id="plus" class="fa fa-plus"></i>Add to Chrome</a>
-  </div> --}}
+
+  <!-- chrome button -->
+  @if (Auth::user()->id == 1)
+    <div class="text-center">
+      <div id="install-app" class="install-app btn btn-default" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', handleInstallSuccess, handleInstallFailure);">
+        <i id="plus" class="fa fa-plus"></i>Add to Chrome
+      </div>
+      <div id="install-complete" class="install-complete white-text">
+        Install successful, open a new tab to start your journey.
+      </div>
+      <div id="install-failure" class="install-failure white-text">
+        <div id="try-again" class="install-app btn btn-default" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', handleInstallSuccess, handleInstallFailure);">
+          <i id="plus" class="fa fa-plus"></i>Try Again
+        </div>
+        <br />
+        Could not install extension.
+      </div>
+    </div>
+  @endif
+
   @stop
 
   @section('pageScripts')
@@ -355,6 +372,26 @@
     @endif
     </script> 
     <!-- /greetings widget end -->
+
+    <!-- chrome inline install -->
+    <script type="text/javascript">
+      if(chrome.app.isInstalled){
+        document.getElementById('install-app').style.display = 'none';
+      }
+      
+      //successful install
+      function handleInstallSuccess(){
+        $('.install-app').hide();
+        $('.install-complete').show();
+      }
+
+      //failured install
+      function handleInstallFailure(){
+        $('.install-app').hide();
+        $('.install-failure').show();
+        $('#try-again').show();
+      }
+    </script>
 
   @append
 
