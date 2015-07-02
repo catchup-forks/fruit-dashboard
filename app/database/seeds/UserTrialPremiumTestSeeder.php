@@ -10,8 +10,8 @@ class UserTrialPremiumTestSeeder extends Seeder
             'id'       => '2',
             'email'    => 'asdf@asdf.asdf',
             'password' => Hash::make('1234'),
-            'plan' => 'trial_ended',
-            'trial_started' => Carbon::now()->subDay(31)
+            'plan' => 'trial',
+            'trial_started' => Carbon::now()->subDays(31)
         ));
         UserTrialPremiumTestSeeder::addWidgetsToUser(2);
 
@@ -19,8 +19,8 @@ class UserTrialPremiumTestSeeder extends Seeder
             'id'       => '3',
             'email'    => 'asd@asd.asd',
             'password' => Hash::make('1234'),
-            'plan' => 'trial_ended',
-            'trial_started' => Carbon::now()->subDay(23)
+            'plan' => 'trial',
+            'trial_started' => Carbon::now()->subDays(23)
         ));
         UserTrialPremiumTestSeeder::addWidgetsToUser(3);
 
@@ -28,8 +28,8 @@ class UserTrialPremiumTestSeeder extends Seeder
             'id'       => '4',
             'email'    => 'as@as.as',
             'password' => Hash::make('1234'),
-            'plan' => 'trial_ended',
-            'trial_started' => Carbon::now()->subDay(1)
+            'plan' => 'trial',
+            'trial_started' => Carbon::now()->subDays(1)
         ));
         UserTrialPremiumTestSeeder::addWidgetsToUser(4);
 
@@ -37,10 +37,19 @@ class UserTrialPremiumTestSeeder extends Seeder
             'id'       => '5',
             'email'    => 'ase@ase.ase',
             'password' => Hash::make('1234'),
-            'plan' => 'trial_ended',
-            'trial_started' => Carbon::now()->subDay(24)
+            'plan' => 'trial',
+            'trial_started' => Carbon::now()->subDays(26)
         ));
         UserTrialPremiumTestSeeder::addWidgetsToUser(5);
+
+        User::create(array(
+            'id'       => '6',
+            'email'    => 'asef@asef.asef',
+            'password' => Hash::make('1234'),
+            'plan' => 'trial',
+            'trial_started' => Carbon::now()->subDays(33)
+        ));
+        UserTrialPremiumTestSeeder::addWidgetsToUser(6);
 
     }
 

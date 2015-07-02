@@ -356,9 +356,8 @@
     </script> 
     <!-- /greetings widget end -->
 
-    <!-- growl if trial ends -->
+    <!-- growl if trial ends 
 
-    @if (Auth::user()->trialWillEndExactlyInDays(7) > 0)
       <script type="text/javascript">
         init.push(function () {
           $.growl.error({
@@ -368,9 +367,8 @@
           });
         });
       </script>
-    @endif
 
-    <!-- growl if trial ends -->
+    -->
 
   @append
 
