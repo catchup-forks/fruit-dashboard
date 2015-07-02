@@ -373,25 +373,19 @@
     </script> 
     <!-- /greetings widget end -->
 
-    <!-- chrome inline install -->
-    <script type="text/javascript">
-      if(chrome.app.isInstalled){
-        document.getElementById('install-app').style.display = 'none';
-      }
-      
-      //successful install
-      function handleInstallSuccess(){
-        $('.install-app').hide();
-        $('.install-complete').show();
-      }
+    <!-- growl if trial ends 
 
-      //failured install
-      function handleInstallFailure(){
-        $('.install-app').hide();
-        $('.install-failure').show();
-        $('#try-again').show();
-      }
-    </script>
+      <script type="text/javascript">
+        init.push(function () {
+          $.growl.error({
+            message: "Your trial period will end in {{ Auth::user()->daysRemaining() }}",
+            size: "large",
+            duration: 5000
+          });
+        });
+      </script>
+
+    -->
 
   @append
 

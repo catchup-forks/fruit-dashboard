@@ -28,10 +28,10 @@ class DashboardController extends BaseController
 
 		$allMetrics = array();
 
-		if (Auth::user()->ready != 'notConnected') {
+		if ($user->ready != 'notConnected') {
 			$currentMetrics = Calculator::currentMetrics();
 
-			$metricValues = Metric::where('user', Auth::user()->id)
+			$metricValues = Metric::where('user', $user->id)
 									->orderBy('date','desc')
 									->take(31)
 									->get();
@@ -56,7 +56,7 @@ class DashboardController extends BaseController
 		#####################################################
 		# prepare stuff for other widgets start
 
-		$widgets = Auth::user()->dashboards()->first()->widgets;
+		$widgets = $user->dashboards()->first()->widgets;
 
 		foreach ($widgets as $widget) {
 
@@ -123,7 +123,6 @@ class DashboardController extends BaseController
 		# prepare stuff for other widgets end
 		#####################################################
 
-		$user = Auth::user();
 		$client = GooglespreadsheetHelper::setGoogleClient();
 
 		return View::make('dashboard.dashboard',

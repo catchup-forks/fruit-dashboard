@@ -135,11 +135,15 @@ class User extends Eloquent implements UserInterface
     {
         $trialEndDate = Carbon::parse($this->trial_started)->addDays(30);
 
-        if ($this->plan == 'trial_ended' 
-            || ($this->plan == 'trial' && $trialEndDate->isPast()))
-        {
+        if ($this->plan == 'trial' && $trialEndDate->isPast()){
+            $this->detachPremiumWidgets();
             return true;
-        } else {
+        } 
+        else if ($this->plan == 'trial_ended'){
+            return true;
+        }
+        else 
+        {
             return false;
         }
     }
@@ -257,6 +261,30 @@ class User extends Eloquent implements UserInterface
 
         return $dailyBackgroundURL;
 
+    }
+
+    /*
+    |-------------------------------------
+    | Widget detach helper
+    |-------------------------------------
+    */
+
+    public function detachPremiumWidgets () {
+         
+        foreach ($this->dashboards as $dashboard){
+            $widgets = Widget::where('dashboard_id','=', $dashboard->pivot->dashboard_id)->get();
+            Log::info($widgets);
+            foreach ($widgets as $widget){
+               
+                if((strpos($widget->widget_type, 'google-spreadsheet') !== false ) ||
+                        ($widget->widget_type == 'api')){
+                    $widget->delete();
+                }
+            }
+            $dashboard->save();
+        }
+
+        $this->plan == 'trial_ended';
     }
 
 }
