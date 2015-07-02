@@ -51,7 +51,9 @@
     </div> <!-- / .modal-dialog -->
   </div>
   <!-- /Modals -->
-
+  {{-- <div class="text-center installButton">
+      <a type="button" id="install-button" class="btn btn-default" onclick="chrome.webstore.install()"><i id="plus" class="fa fa-plus"></i>Add to Chrome</a>
+  </div> --}}
   @stop
 
   @section('pageScripts')
