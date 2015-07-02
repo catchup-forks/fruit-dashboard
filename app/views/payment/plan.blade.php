@@ -103,6 +103,7 @@
 <script type="text/javascript">
 init.push(function(){
   $('#modal-payment').on('show.bs.modal', function (event) {
+    $(this).find('#dropin').empty();
     braintree.setup(
       '{{ $clientToken }}',
       'dropin', {

@@ -354,5 +354,21 @@
     </script> 
     <!-- /greetings widget end -->
 
+    <!-- growl if trial ends -->
+
+    @if (Auth::user()->trialWillEndExactlyInDays(7) > 0)
+      <script type="text/javascript">
+        init.push(function () {
+          $.growl.error({
+            message: "Your trial period will end in {{ Auth::user()->daysRemaining() }}",
+            size: "large",
+            duration: 5000
+          });
+        });
+      </script>
+    @endif
+
+    <!-- growl if trial ends -->
+
   @append
 

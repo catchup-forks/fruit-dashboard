@@ -129,22 +129,58 @@ class ConnectController extends BaseController
 	*/
 	public function connectWizard($provider, $step = NULL)
 	{
+		$user = Auth::user();
+		$plan = $user->plan;
+		# plan is true if user can have premium widgets
+		if ($plan == 'premium' || $plan == 'trial'){
+			$plan = true;
+		}
+		else {
+			$plan = false;
+		}
+		Log::info($provider);
+		# if provider is not premium
+		if ($provider != 'api' && $provider != 'googlespreadsheet'){
+			# create class name, f.e. stripe --> StripeHelper
+			$widgetClassName = ucfirst($provider).'Helper';
+			$widgetMethodName = 'wizard';
 
-		# create class name, f.e. stripe --> StripeHelper
-		$widgetClassName = ucfirst($provider).'Helper';
-		$widgetMethodName = 'wizard';
+			# check if class & method exists, f.e. StripeHelper::wizard
+			if(class_exists($widgetClassName) && method_exists($widgetClassName, $widgetMethodName)){
 
-		# check if class & method exists, f.e. StripeHelper::wizard
-		if(class_exists($widgetClassName) && method_exists($widgetClassName, $widgetMethodName)){
+				# it does, launch wizard
+				return $widgetClassName::$widgetMethodName($step);
 
-			# it does, launch wizard
-			return $widgetClassName::$widgetMethodName($step);
+			} else {
 
-		} else {
+				# it does not, go back to connect page
+				return Redirect::route('connect.connect')
+					->with('error', 'Unknown provider.');			
+			}
+		}
+		# if provider is premium and user has premium plan
+		else if ($plan){
+			# create class name, f.e. stripe --> StripeHelper
+			$widgetClassName = ucfirst($provider).'Helper';
+			$widgetMethodName = 'wizard';
 
+			# check if class & method exists, f.e. StripeHelper::wizard
+			if(class_exists($widgetClassName) && method_exists($widgetClassName, $widgetMethodName)){
+
+				# it does, launch wizard
+				return $widgetClassName::$widgetMethodName($step);
+
+			} else {
+
+				# it does not, go back to connect page
+				return Redirect::route('connect.connect')
+					->with('error', 'Unknown provider.');			
+			}
+		}
+		else {
 			# it does not, go back to connect page
-			return Redirect::route('connect.connect')
-				->with('error', 'Unknown provider.');			
+			return Redirect::route('payment.plan')
+				->with('error', 'For adding premium widgets you need to subscribe.');		
 		}
 	}
 

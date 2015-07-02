@@ -74,11 +74,7 @@ Route::filter('api_key', function() {
 
 Route::filter('trial_ended', function()
 {
-    // if (Auth::user()->isTrialEnded())
-    // {
-    //     return Redirect::route('payment.plan')
-    //         ->with('error','Trial period ended.');
-    // }
+    Auth::user()->isTrialEnded();
 });
 
 Route::filter('cancelled', function()

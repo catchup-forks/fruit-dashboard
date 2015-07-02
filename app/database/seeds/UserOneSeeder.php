@@ -13,6 +13,7 @@ class UserOneSeeder extends Seeder
 	            'id'       => '1',
 	            'email'    => 'demo@demo.demo',
 	            'password' => Hash::make('1234'),
+                'plan' => 'premium',
 	        ));
 	        $user = User::find(1);
     	}
