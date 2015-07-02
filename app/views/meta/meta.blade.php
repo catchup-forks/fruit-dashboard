@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="google-site-verification" content="U9OKu73fwRtvrHvcI9E_-8SNkMRyj00--Qd4aoualvE" />
     <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp">
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
 
