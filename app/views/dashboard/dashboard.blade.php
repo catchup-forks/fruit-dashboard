@@ -373,6 +373,26 @@
     </script> 
     <!-- /greetings widget end -->
 
+    <!-- chrome inline install -->
+    <script type="text/javascript">
+      if(chrome.app.isInstalled){
+        document.getElementById('install-app').style.display = 'none';
+      }
+      
+      //successful install
+      function handleInstallSuccess(){
+        $('.install-app').hide();
+        $('.install-complete').show();
+      }
+
+      //failured install
+      function handleInstallFailure(){
+        $('.install-app').hide();
+        $('.install-failure').show();
+        $('#try-again').show();
+      }
+    </script>
+
     <!-- growl if trial ends 
 
       <script type="text/javascript">
