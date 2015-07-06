@@ -1142,56 +1142,43 @@ p.textWidgetClass{
 }
 
 /* chrome eytension inline install */
-.install-app{
+#add-to-chrome{
+  margin-bottom: 10px;
+}
+
+.install-button{
   padding: 20px 40px;
-  font-size: 2em;
-  font-weight: normal;
-  background: transparent;
-  color: #fff;
+  font-size: 1.4em;
+  border-radius: 3px;
   border: none;
-  margin: 10px;
-}
-
-.install-app:link,
-.install-app:visited,
-.install-app:hover,
-.install-app:active{
-  background: none !important;
+  background: #fff;
+  color: #000;
+  font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-transition: all 0.15s ease;
-  font-size:2.1em;
-  color: #fff;
 }
 
-#plus{
-  margin-right: 4px;
-  font-size: 1em;
-  vertical-align: -6%;
-}
-
-#install-complete{
+#install-plus{
+  margin-right: 3px;
   font-size: 1.2em;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin: 10px auto;
-  position: relative;
+  vertical-align: -3%;
+}
+
+#add-to-chrome:hover,
+#try-again:hover{
+  background: white !important;
+  color: black;
+  transform: scale(1.035);
+  -webkit-transition: all 0.15s ease;
+}
+
+#failure-install,
+#success-install{
   display: none;
 }
 
-#install-failure{
-  font-size: 1.2em;
-  font-weight: bold;
-  letter-spacing: 1px;
-  margin: 10px auto;
-  position: relative;
-  display: none;
-}
-
-.install-app:link,
-.install-app:visited,
-.install-app:hover,
-.install-app:active{
-  background: none !important;
-  -webkit-transition: all 0.15s ease;
-  font-size:2.1em;
+.install-text{
   color: #fff;
+  font-size: 1.4em;
+  font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin-bottom: 10px;
 }

@@ -55,18 +55,23 @@
   <!-- chrome button -->
   @if (Auth::user()->id == 1)
     <div class="text-center">
-      <div id="install-app" class="install-app btn btn-default" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', handleInstallSuccess, handleInstallFailure);">
-        <i id="plus" class="fa fa-plus"></i>Add to Chrome
+
+      <!-- add-to-chrome -->
+      <div id="add-to-chrome" class="btn btn-default install-button" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', successInstall, failureInstall);">
+        <i id="install-plus" class="fa fa-plus"></i>Add to Chrome
       </div>
-      <div id="install-complete" class="install-complete white-text">
+
+      <!-- success-install -->
+      <div id="success-install" class="install-text textShadow">
         Install successful, open a new tab to start your journey.
       </div>
-      <div id="install-failure" class="install-failure white-text">
-        <div id="try-again" class="install-app btn btn-default" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', handleInstallSuccess, handleInstallFailure);">
-          <i id="plus" class="fa fa-plus"></i>Try Again
+
+      <!-- failure-install -->
+      <div id="failure-install">
+        <div id="try-again" class="btn btn-default install-button" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', successInstall, failureInstall)">
+          <i id="install-plus" class="fa fa-plus"></i>Try again
         </div>
-        <br />
-        Could not install extension.
+        <p  class="install-text textShadow">Could not install extension.</p>
       </div>
     </div>
   @endif
@@ -376,22 +381,20 @@
     <!-- chrome inline install -->
     <script type="text/javascript">
       if(chrome.app.isInstalled){
-        document.getElementById('install-app').style.display = 'none';
-      }
-      
-      //successful install
-      function handleInstallSuccess(){
-        $('.install-app').hide();
-        $('.install-complete').show();
+        document.getElementById('add-to-chrome').style.display = 'none';
       }
 
-      //failured install
-      function handleInstallFailure(){
-        $('.install-app').hide();
-        $('.install-failure').show();
-        $('#try-again').show();
+      function successInstall(){
+        $('#add-to-chrome').hide();
+        $('#success-install').fadeTo(1000, 1);
+      }
+
+      function failureInstall(){
+        $('#add-to-chrome').hide();
+        $('#failure-install').fadeTo(1000, 1);
       }
     </script>
+    <!-- /chrome inline install -->
 
     <!-- growl if trial ends 
 
