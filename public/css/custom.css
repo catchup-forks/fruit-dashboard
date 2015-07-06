@@ -703,7 +703,7 @@ only screen and (min-device-pixel-ratio: 1.5) {
 
 i#rightDropDown{
 	color: #ffffff;
-	position: fixed;
+  position: fixed;
 	top: 25px;
 	right: 25px;
 	text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);

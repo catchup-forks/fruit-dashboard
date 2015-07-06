@@ -10,6 +10,7 @@
             <div class="panel-body bordered sameHeight">
 
             @if (isset($step) && ($step == 'show-greeting'))
+                <h4><i class="fa fa-link"></i>&nbsp;&nbsp;Onboarding Wizard - Name, Email, Psswd</h4>
 
                 {{ Form::open(
                 array(
@@ -17,6 +18,13 @@
                 'method' => 'post',
                 )
                 ) }}
+
+                <label for="wizard-name">What's your name?</label>
+                <input type="text" name="wizard-name"/><br />
+                <label for="wizard-name">What's your email?</label>
+                <input type="email" name="wizard-name"/><br />
+                <label for="wizard-name">Pick a password!</label>
+                <input type="password" name="wizard-name"/><br />
 
                 <input type="hidden" name="tesztname" value="tesztvalue"/>
 
