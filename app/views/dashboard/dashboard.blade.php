@@ -52,6 +52,30 @@
   </div>
   <!-- /Modals -->
 
+  <!-- chrome button -->
+  @if (Auth::user()->id == 1)
+    <div class="text-center">
+
+      <!-- add-to-chrome -->
+      <div id="add-to-chrome" class="btn btn-default install-button" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', successInstall, failureInstall);">
+        <i id="install-plus" class="fa fa-plus"></i>Add to Chrome
+      </div>
+
+      <!-- success-install -->
+      <div id="success-install" class="install-text textShadow">
+        Install successful, open a new tab to start your journey.
+      </div>
+
+      <!-- failure-install -->
+      <div id="failure-install">
+        <div id="try-again" class="btn btn-default install-button" onclick="chrome.webstore.install('https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp', successInstall, failureInstall)">
+          <i id="install-plus" class="fa fa-plus"></i>Try again
+        </div>
+        <p  class="install-text textShadow">Could not install extension.</p>
+      </div>
+    </div>
+  @endif
+  
   @stop
 
   @section('pageScripts')
