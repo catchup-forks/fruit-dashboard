@@ -50,6 +50,21 @@
       </div> <!-- / .modal-content -->
     </div> <!-- / .modal-dialog -->
   </div>
+
+  <!-- just a signup-modal -->
+  <div id="modal-signup" class="modal fade" tabindex="-1" role="dialog" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-md">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+          <h4 class="modal-title">Subscribe!</h4>
+        </div>
+        <div class="modal-body">
+          <a href="{{ URL::route('auth.signup') }}">Sign up</a> to save your custom dashboard
+        </div>
+      </div> <!-- / .modal-content -->
+    </div> <!-- / .modal-dialog -->
+  </div>
   <!-- /Modals -->
 
   <!-- chrome button -->
@@ -125,7 +140,7 @@
             },
             start: function(e, ui, $widget){
               @if (Auth::user()->id == 1){
-                $('#modal-signin-signup').modal('show')
+                $('#modal-signup').modal('show')
                 };
               @endif
             }

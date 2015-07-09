@@ -1182,3 +1182,7 @@ p.textWidgetClass{
   font-family: "HelveticaNeue-Medium", "Helvetica Neue Medium", "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-bottom: 10px;
 }
+
+#modal-signup a{
+  text-decoration: underline;
+}
