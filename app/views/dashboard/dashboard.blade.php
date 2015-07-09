@@ -372,5 +372,23 @@
     </script> 
     <!-- /greetings widget end -->
 
+    <!-- chrome inline install -->
+    <script type="text/javascript">
+      if(chrome.app.isInstalled){
+        document.getElementById('add-to-chrome').style.display = 'none';
+      }
+
+      function successInstall(){
+        $('#add-to-chrome').hide();
+        $('#success-install').fadeTo(1000, 1);
+      }
+
+      function failureInstall(){
+        $('#add-to-chrome').hide();
+        $('#failure-install').fadeTo(1000, 1);
+      }
+    </script>
+    <!-- /chrome inline install -->
+
   @append
 
