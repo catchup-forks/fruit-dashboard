@@ -3,19 +3,27 @@
 class Dashboard extends Eloquent
 {
 
-    // MASS ASSIGNMENT -------------------------------------------------------
-    protected $fillable = array('*');
+    // -- Fields -- //
+    protected $fillable = array('name', 'background');
 
-    // DEFINE RELATIONSHIPS --------------------------------------------------
 
-    // each dashboard has many widgets    
+    // -- Relations -- //
+    /**
+     * Returning the corresponding Widget objects.
+     *
+     * @return an array of general Widget objects.
+    */
     public function widgets() {
         return $this->hasMany('Widget');
     }
 
-    // each dashboard can belong to many users
-    public function users() {
-        return $this->belongsToMany('User', 'users_dashboards', 'dashboard_id', 'user_id');
+    /**
+     * Returning the corresponding User object.
+     *
+     * @return a User object.
+    */
+    public function user() {
+        return $this->belongsTo('User');
     }
 
 }

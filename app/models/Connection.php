@@ -2,13 +2,16 @@
 
 class Connection extends Eloquent
 {
-    // MASS ASSIGNMENT -------------------------------------------------------
-    protected $fillable = array('*');
+    // -- Fields -- //
+    protected $fillable = array('token', 'type');
 
-    // DEFINE RELATIONSHIPS --------------------------------------------------
+    // -- Relations -- //
+    /**
+     * Returning the corresponding user object.
+     *
+     * @return a User object.
+    */
     public function user() {
         return $this->belongsTo('User');
     }
 }
-
-?>

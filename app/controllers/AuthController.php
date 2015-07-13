@@ -60,7 +60,8 @@ class AuthController extends BaseController
                 // auth successful!
 
                 // if user has no dashboards created yet
-                if (Auth::user()->dashboards->count() == 0) {
+                if (Auth::user()->dashboards->count() == 0)
+                {
                     // create first dashboard for user
                     $dashboard = new Dashboard;
                     $dashboard->dashboard_name = "Dashboard #1";
