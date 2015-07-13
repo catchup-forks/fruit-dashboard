@@ -1,0 +1,29 @@
+{
+  "name": "fruit-dashboard",
+  "version": "1.0.0",
+  "description": "Startup stats on your new Chrome tab",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tryfruit/fruit-dashboard.git"
+  },
+  "author": "ABF informatika",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tryfruit/fruit-dashboard/issues"
+  },
+  "homepage": "https://github.com/tryfruit/fruit-dashboard#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-csslint": "^0.4.0",
+    "grunt-contrib-less": "^1.0.1",
+    "grunt-contrib-watch": "^0.6.1",
+    "jit-grunt": "^0.9.1",
+    "load-grunt-config": "^0.17.2",
+    "load-grunt-tasks": "^3.2.0",
+    "time-grunt": "^1.2.1"
+  }
+}
