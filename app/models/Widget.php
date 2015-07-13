@@ -4,7 +4,7 @@ class Widget extends Eloquent
 {
     // -- Fields -- //
     protected $guarded = array('state', 'settings', 'position');
-    protected $fillable = array('name', 'type', 'is_premium');
+    protected $fillable = array('name', 'description', 'type', 'is_premium');
 
     // -- Relations -- //
     /**

@@ -6,8 +6,8 @@ use Illuminate\Auth\UserInterface;
 class User extends Eloquent implements UserInterface
 {
     // -- Fields -- //
-    protected $guarded = array('password');
-    protected $fillable = array('email', 'name', 'language', 'gender', 'phone_number', 'birthday');
+    protected $guarded = array('password', 'remember_token');
+    protected $fillable = array('email', 'name', 'gender', 'phone_number', 'date_of_birth');
 
     // -- Relations -- //
     /**
@@ -45,6 +45,7 @@ class User extends Eloquent implements UserInterface
     {
         return $this->hasOne('Settings');
     }
+    use UserTrait;
 
     /**
      * Testing if the user has connected a stripe account

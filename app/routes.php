@@ -5,6 +5,10 @@ Route::get('/', function()
     return Redirect::route('dashboard.dashboard');
 });
 
+Route::get('/testing', array(
+    'as' => 'dev.testing_page',
+    'uses' => 'DevController@showTesting'
+));
 /*
 |--------------------------------------------------------------------------
 | Dev routes (these routes are for testing API-s only)

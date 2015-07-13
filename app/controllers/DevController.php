@@ -28,6 +28,11 @@ class DevController extends BaseController
         return View::make('email.payment.upgrade');
     }
 
+    public function showTesting() {
+        Log::info("TESTING");
+        Log::info(User::find(1)->dashboards->all());
+        return "hello";
+    }
 
     public function show()
     {
@@ -60,7 +65,7 @@ class DevController extends BaseController
     }
 
 
-    
+
 
     public function showBraintree()
     {
