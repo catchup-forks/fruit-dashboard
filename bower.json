@@ -17,5 +17,11 @@
   "dependencies": {
     "bootstrap": "~3.3.5",
     "fontawesome": "~4.3.0"
+  },
+  "devDependencies": {
+    "gridster": "~0.5.6",
+    "underscore": "~1.8.3",
+    "jquery-resize": "https://github.com/cowboy/jquery-resize",
+    "FitText.js": "~1.2.0"
   }
 }
