@@ -1,14 +1,8 @@
 module.exports = {
+  // less --> css --> lint --> copy
   process_less: {
-    files: ['assets/*/*.less'], // which files to watch
-    tasks: ['less', 'csslint'],
-    options: {
-      nospawn: true
-    }
-  },
-  lint_css: {
-    files: ['assets/*/*.css'],
-    tasks: ['csslint'],
+    files: ['assets/*/*.less'],
+    tasks: ['compile-less'],
     options: {
       nospawn: true
     }
