@@ -1,16 +1,20 @@
 <?php
 
-class Subscription extends Eloquent
+class StripeSubscription extends Eloquent
 {
     // -- Fields -- //
     protected $fillable = array(
+        'start',
         'status',
+        'customer',
         'ended_at',
         'canceled_at',
-        'current_period_start',
-        'current_period_end',
-        'discount'
+        'quantity',
+        'discount',
+        'trial_start',
+        'trial_end'
     );
+
 
     // -- Relations -- //
     /**
@@ -22,11 +26,11 @@ class Subscription extends Eloquent
         return $this->belongsTo('User');
     }
     /**
-     * Returning the corresponding plan object.
+     * Returning the corresponding stripeplan object.
      *
-     * @return a Plan object.
+     * @return a StripePlan object.
     */
     public function plan() {
-        return $this->belongsTo('Plan');
+        return $this->belongsTo('StripePlan');
     }
 }

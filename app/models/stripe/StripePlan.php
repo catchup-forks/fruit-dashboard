@@ -1,6 +1,6 @@
 <?php
 
-class Plan extends Eloquent
+class StripePlan extends Eloquent
 {
     // -- Fields -- //
     protected $fillable = array(
@@ -8,7 +8,9 @@ class Plan extends Eloquent
         'interval_count',
         'amount',
         'name',
-        'description'
+        'livemode',
+        'currency',
+        'plan_id'
     );
 
     // -- Relations -- //
@@ -18,6 +20,6 @@ class Plan extends Eloquent
      * @return an array with the Subscriptions.
     */
     public function subscriptions() {
-        return $this->hasMany('Subscription');
+        return $this->hasMany('StripeSubscription');
     }
 }
