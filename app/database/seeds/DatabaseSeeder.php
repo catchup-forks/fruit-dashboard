@@ -9,7 +9,7 @@ class DatabaseSeeder extends Seeder {
      */
     public function run()
     {
-        if (App::environment('local')) {
+        if (App::environment('local', 'development')) {
             Eloquent::unguard();
             
             $this->call('UserTableSeeder');
