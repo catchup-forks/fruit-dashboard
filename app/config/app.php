@@ -26,7 +26,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost:8001',
+	'url' => 'https://your.domain.com',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -78,8 +78,7 @@ return array(
 	|
 	*/
 
-	'key' => 'jonGECb12pD0a8AkPW9ut0tCsHkD1D61',
-
+	'key' => 'your-32-char-encryption-key-here',
 	'cipher' => MCRYPT_RIJNDAEL_128,
 
 	/*
