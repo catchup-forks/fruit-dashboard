@@ -1,4 +1,12 @@
-// GENERAL ALIGNMENT
+// VARIABLES
+
+@alpha:           85%;
+@darken:          25%;
+@white:           #fff;
+@panel-bg:        #fff;
+@margin:          25px;
+
+// GENERAL ALIGNMENT & POSITIONING
 
 .vertical-center {
   min-height: 100%;  /* Fallback */
@@ -7,11 +15,46 @@
   align-items: center;
 }
 
+.position-bl {
+  position: fixed;
+  bottom: @margin;
+  left: @margin;
+}
+
+.position-tr {
+  position: absolute;
+  top: @margin;
+  right: @margin;
+}
+
+.position-tl {
+  position: absolute;
+  top: @margin;
+  left: @margin;
+}
+
+.z-top {
+  z-index: 9999;
+}
+
+
+// DESIGN ELEMENTS
+
+.drop-shadow {
+  text-shadow: 1px 1px 3px #141414;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #333;
+}
+
+.color-hovered:hover {
+  color: darken(@white, @darken);
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
 
 // PANELS
-@alpha:           85%;
-@darken:          25%;
-@panel-bg:        #fff;
 
 .panel-transparent {
   background: none;

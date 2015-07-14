@@ -1,46 +1,56 @@
-<div class="btn-group" id="settingsIcon">
-@if(!isset($onDashboard))
-	<a class='link-button' id="homeButton" href="/" alt="Dashboard" title="Dashboard"><i class="fa fa-2x fa-home"></i></a>
+@if(!isset($onDashboard))  
+  <div class="position-tl drop-shadow z-top">
+    <a href="/" alt="Dashboard" title="Dashboard">
+      <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
+    </a>  
+  </div>
 @endif
-	<i class="dropdown-icon fa fa-2x fa-cog" id="rightDropDown"  alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></i>
-	<ul class="dropdown-menu pull-right" role="menu" aria-labelledby="rightDropDown">
-		<li role="presentation" class="add-new-widget">
+
+<div class="btn-group position-tr z-top cursor-pointer">
+	
+	<!-- dropdown menu icon -->
+	<span class="dropdown-icon fa fa-2x fa-cog fa-inverse color-hovered drop-shadow" alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></span>
+
+	<!-- dropdown menu elements -->
+	<ul class="dropdown-menu pull-right" role="menu">
+		<li>
 			<a href="{{ URL::route('connect.connect') }}">
-				<i class="dropdown-icon fa fa-plus-circle"></i>&nbsp;&nbsp;Add New Widget
+				<span class="fa fa-plus-circle"></span> Add New Widget
 			</a>
 		</li>
-		<li role="presentation">
+		<li>
 			<a href="{{ URL::route('settings.settings') }}">
-				<i class="dropdown-icon fa fa-cogs"></i>&nbsp;&nbsp;Settings
+				<span class="fa fa-cogs"></span> Settings
 			</a>
 		</li>
-		<li role="presentation">
+		<li>
 			<a href="https://fruitdashboard.uservoice.com/">
-				<i class="dropdown-icon fa fa-bullhorn"></i>&nbsp;&nbsp;Feedback
+				<span class="fa fa-bullhorn"></span> Feedback
 			</a>
 		</li>
-		<li role="presentation">
+		<li>
 			<a target="_blank" href="https://github.com/tryfruit/fruit-dashboard/">
-				<i class="dropdown-icon fa fa-puzzle-piece"></i>&nbsp;&nbsp;Contribute
+				<span class="fa fa-puzzle-piece"></span> Contribute
 			</a>
 		</li>
 		@if (Auth::check() && Auth::user()->id==1)
-		<li role="presentation">
+		<li>
 			<a onClick= '_gaq.push(["_trackEvent", "Sign up", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signup') }}">
-				<i class="dropdown-icon fa fa-cloud"></i>&nbsp;&nbsp;Sign up
+				<span class="fa fa-cloud"></span> Sign up
 			</a>
 		</li>
-		<li role="presentation">
+		<li>
 			<a onClick= '_gaq.push(["_trackEvent", "Sign in", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signin') }}">
-				<i class="dropdown-icon fa fa-sign-in"></i>&nbsp;&nbsp;Sign in
+				<span class="fa fa-sign-in"></span> Sign in
 			</a>
 		</li>
 		@else
-		<li role="presentation">
+		<li>
 			<a onClick= '_gaq.push(["_trackEvent", "Sign out", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signout') }}">
-				<i class="dropdown-icon fa fa-sign-out"></i>&nbsp;&nbsp;Sign out
+				<span class="fa fa-sign-out"></span> Sign out
 			</a>
 		</li>
 		@endif
 	</ul>
-</div>
+
+</div> <!-- /.btn-group -->

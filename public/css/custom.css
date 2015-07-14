@@ -5,6 +5,35 @@
   display: flex;
   align-items: center;
 }
+.position-bl {
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+}
+.position-tr {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+}
+.position-tl {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+}
+.z-top {
+  z-index: 9999;
+}
+.drop-shadow {
+  text-shadow: 1px 1px 3px #141414;
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #333;
+}
+.color-hovered:hover {
+  color: #bfbfbf;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
 .panel-transparent {
   background: none;
 }
