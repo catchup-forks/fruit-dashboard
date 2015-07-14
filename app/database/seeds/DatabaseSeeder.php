@@ -9,13 +9,15 @@ class DatabaseSeeder extends Seeder {
      */
     public function run()
     {
-        Eloquent::unguard();
-        //$this->call('UserOneSeeder');
-        //$this->call('UserTrialPremiumTestSeeder');
-        //$this->call('UserTableExtendSeeder');
-        //$this->call('supdashboarddbTableSeeder');
-        //$this->call('ConnectedServicesSeeder');
-        //$this->call('ExtendDefaultsSeeder');
+        if (App::environment('local', 'development')) {
+            Eloquent::unguard();
+            
+            $this->call('UserTableSeeder');
+            $this->call('UserTableExtendSeeder');
+            $this->call('supdashboarddbTableSeeder');
+            $this->call('ConnectedServicesSeeder');
+            $this->call('ExtendDefaultsSeeder');
+        };
     }
 
 }

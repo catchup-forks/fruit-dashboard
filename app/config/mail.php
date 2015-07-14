@@ -28,7 +28,7 @@ return array(
 	|
 	*/
 
-	'host' => 'smtp.abfinformatika.hu',
+	'host' => $_ENV['SMTP_HOST'],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return array(
 	|
 	*/
 
-	'port' => 587,
+	'port' => $_ENV['SMTP_PORT'],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => array('address' => 'hello@analytics.tryfruit.com', 'name' => 'Fruit Analytics'),
+	'from' => $_ENV['DEFAULT_FROM'],
 
 	/*
 	|--------------------------------------------------------------------------

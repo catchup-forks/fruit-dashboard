@@ -1,15 +1,20 @@
-/bootstrap/compiled.php
+# ---- Composer ---- #
 /vendor
 composer.phar
 composer.lock
+
+# ---- Configurations ---- #
 .env.*.php
-.env.php
+/scripts
+
+# ---- Filesystem ---- #
 .DS_Store
 Thumbs.db
-startServer
-error_log
-/emails
-/public/img/backgrounds-production
+
+# ---- Frontend compilers ---- #
 bower_components/
 node_modules/
 public/dist/
+
+# ---- Other FIXME? ---- #
+/public/img/backgrounds-production
