@@ -1186,3 +1186,25 @@ p.textWidgetClass{
 #modal-signup a{
   text-decoration: underline;
 }
+
+#setup-widget,
+#broken-widget,
+#trial-widget{
+  padding: 30px;
+  text-shadow: 4px 4px 30px #000;
+}
+
+#setup-widget i,
+#broken-widget i,
+#trial-widget i{
+  text-shadow: 1px 1px 3px rgba(20, 20, 20, 1);
+  -webkit-text-stroke-width: 0.5px;
+  -webkit-text-stroke-color: #333;
+}
+
+#setup-widget:hover,
+#broken-widget:hover,
+#trial-widget:hover{
+  color: #dddddd;
+  cursor: pointer;
+}
