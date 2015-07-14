@@ -1,0 +1,1 @@
+<a href="{{$stripe_connect_url}}">Connect stripe</a>

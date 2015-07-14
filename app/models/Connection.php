@@ -3,7 +3,11 @@
 class Connection extends Eloquent
 {
     // -- Fields -- //
-    protected $fillable = array('token', 'type');
+    protected $fillable = array(
+        'access_token',
+        'refresh_token',
+        'type'
+    );
 
     // -- Relations -- //
     /**

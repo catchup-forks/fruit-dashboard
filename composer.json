@@ -11,27 +11,19 @@
 		"ext-curl" : "*",
 		"ext-json" : "*",
 		"stripe/stripe-php": "*",
-		"doctrine/dbal" : "*",
-		"nwidart/db-exporter": "1.0",
-		"nesbot/carbon": "~1.14",
-		"guzzlehttp/guzzle": "~5.2",
-		"waavi/mailman": "1.1.*@dev",
 		"bradleyboy/laravel-braintree": "dev-master",
-		"intercom/intercom-php": "~1.0",
 		"google/apiclient": "1.0.*@beta",
 		"asimlqt/php-google-spreadsheet-client": "2.3.*"
 	},
 
-
 	"autoload": {
 		"classmap": [
-			"app/libraries",
 			"app/commands",
 			"app/controllers",
 			"app/models",
 			"app/database/migrations",
 			"app/database/seeds",
-			"app/tests/TestCase.php"
+			"app/exceptions.php"
 		]
 	},
 	"scripts": {
@@ -52,7 +44,5 @@
 	},
 	"minimum-stability": "stable",
 	"require-dev": {
-		"phpunit/phpunit" : "4.3.*",
-		"paypal/rest-api-sdk-php" : "*"
 	}
 }

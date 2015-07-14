@@ -6,7 +6,10 @@ class Settings extends Eloquent
     protected $table = 'data';
 
     // -- Fields -- //
-    protected $fillable = array('newsletter', 'background_enabled');
+    protected $fillable = array(
+        'newsletter',
+        'background_enabled'
+    );
 
     // -- Relations -- //
     /**
