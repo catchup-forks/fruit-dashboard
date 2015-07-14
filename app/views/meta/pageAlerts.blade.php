@@ -4,7 +4,8 @@
       $.growl.error({
         message: "{{ Session::get('error')}}",
         size: "large",
-        duration: 5000
+        duration: 5000,
+        location: "br"
       });
     });
   </script>
@@ -17,7 +18,8 @@
         title: "Success!",
         message: "{{ Session::get('success')}}",
         size: "large",
-        duration: 5000
+        duration: 5000,
+        location: "br"
       });
     });
   </script>

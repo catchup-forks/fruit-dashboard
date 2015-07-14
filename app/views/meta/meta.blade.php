@@ -34,6 +34,10 @@
       {{ HTML::style('css/jquery.gridster.min.css') }}
       <!-- /Gridster CSS-->
 
+      <!-- Growl CSS -->
+      {{ HTML::style('css/jquery.growl.css') }}
+      <!-- /Growl CSS-->
+
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -75,6 +79,7 @@
     {{ HTML::script('js/underscore-min.js'); }}
     {{ HTML::script('js/jquery.ba-resize.min.js'); }}
     {{ HTML::script('js/jquery.fittext.js'); }}
+    {{ HTML::script('js/jquery.growl.js'); }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->
@@ -86,6 +91,10 @@
     @section('pageScripts')
     @show
     <!-- /Page specific scripts -->
+
+    @section ('pageAlert')
+      @include('meta.pageAlerts')
+    @show
 
     <!-- GoogleAnalytics -->
     {{ HTML::script('js/google_analytics.js'); }}
