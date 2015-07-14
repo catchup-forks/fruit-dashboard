@@ -1,7 +1,6 @@
 <?php
 
 return array(
-
 	/*
 	|--------------------------------------------------------------------------
 	| Application Debug Mode
@@ -26,7 +25,7 @@ return array(
 	|
 	*/
 
-	'url' => 'https://your.domain.com',
+	'url' => $_ENV['APP_URL'],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -78,7 +77,7 @@ return array(
 	|
 	*/
 
-	'key' => 'your-32-char-encryption-key-here',
+	'key' => $_ENV['APP_SECRET_KEY'],
 	'cipher' => MCRYPT_RIJNDAEL_128,
 
 	/*
@@ -151,6 +150,7 @@ return array(
 	*/
 
 	'aliases' => array(
+
 		# Base Laravel classes
 		'App'               => 'Illuminate\Support\Facades\App',
 		'Artisan'           => 'Illuminate\Support\Facades\Artisan',
