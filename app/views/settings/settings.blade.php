@@ -13,7 +13,7 @@
 			<div class="col-md-10 col-md-offset-1">
 				<div class="row">
 					<div class="col-sm-6 col-sm-offset-3 account-form-wrapper">
-					<div class="panel-body account-form bordered getHeight">
+					<div class="panel-body account-form bordered getHeight white-background">
 						<h4><i class="fa fa-cog"></i>&nbsp;&nbsp;Account settings</h4>
 						<!-- Name -->
 						{{ Form::open(array(
@@ -246,7 +246,7 @@
 				<div class="col-md-10 col-md-offset-1">
 					<div class="row">
 						<div class="col-sm-6 col-sm-offset-3 notification-form-wrapper">
-							<div class="panel-body account-form bordered getHeight">
+							<div class="panel-body account-form bordered getHeight white-background">
 								<h4><i class="fa fa-cog"></i>&nbsp;&nbsp;Notification settings</h4>
 
 								<!-- Summary Email Frequency -->
@@ -319,7 +319,7 @@
 				<div class="col-md-10 col-md-offset-1">
 					<div class="row">
 						<div class="col-sm-6 col-sm-offset-3 subscription-form-wrapper">
-							<div class="panel-body account-form bordered getHeight">
+							<div class="panel-body account-form bordered getHeight white-background">
 								<h4><i class="fa fa-cog"></i>&nbsp;&nbsp;Subscription settings</h4>
 
 							 <!-- Subscription -->
@@ -388,7 +388,7 @@
 				<div class="col-md-10 col-md-offset-1">
 				<div class="row">
 				 <div class="col-sm-6 col-sm-offset-3 connect-form connection-form-wrapper">
-					<div class="panel-body bordered sameHeight">
+					<div class="panel-body bordered sameHeight white-background">
 						<h4><i class="fa fa-link"></i>&nbsp;&nbsp;Manage connections</h4>
 						<div class="list-group">
 						{{--
@@ -483,7 +483,7 @@
 
 		@if (Session::get('errors') || Session::get('error'))
 			<script type="text/javascript">
-				init.push(function () {
+				$(document).ready(function() {
 					// if error slide down
 					@if ($errors->first('name')|| $errors->first('name_password'))
 					$('#editNameForm').slideUp('fast', function (){
@@ -508,7 +508,7 @@
 		@endif 
 
 		<script type="text/javascript">
-			init.push(function () {
+			$(document).ready(function() {
 				// event listeners for hidden forms
 				$('#editName').on('click', function (){
 					$('#editNameForm').slideUp('fast', function (){

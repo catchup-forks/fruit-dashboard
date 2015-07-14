@@ -27,13 +27,11 @@
 
       // Resizer() resizes items based on the object width divided by the compressor * 10
       var resizer = function () {
-        $this.css('font-size', Math.max(Math.min($this.width() / (compressor*10), $this.parent().parent().height() / (compressor*5), parseFloat(settings.maxFontSize)), parseFloat(settings.minFontSize)));
+        $this.css('font-size', Math.max(Math.min($this.width() / (compressor*10), parseFloat(settings.maxFontSize)), parseFloat(settings.minFontSize)));
       };
 
       // Call once to set.
-      $(window).load(function(){
-        resizer();
-      });
+      resizer();
 
       // Call on resize. Opera debounces their resize by default.
       $(window).on('resize.fittext orientationchange.fittext', resizer);

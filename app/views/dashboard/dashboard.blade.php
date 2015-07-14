@@ -130,9 +130,6 @@
     </script>
     <!-- /Grid functions -->
 
-    {{ HTML::script('js/jquery.color.js') }}
-    {{ HTML::script('js/jquery.easing.1.3.js') }}
-
     @if (Auth::user()->id == 1)
 
     <!-- Events for unregistered user -->
@@ -237,8 +234,7 @@
 
     <!-- fittext -->
     <script type="text/javascript">
-      $(document).ready(function()
-      {
+      $(document).ready(function() {
 
         $("#digitClock").bind('resize', function(e){
           $("h1.digitTime").fitText(0.3);
@@ -247,6 +243,7 @@
         $("#textWidgetId").bind('resize', function(e){
           $("p.textWidgetClass").fitText(0.8);
         })
+        
       });
     </script>
     <!-- /fittext -->
@@ -309,7 +306,7 @@
     <script type="text/javascript">
     // if user is registered, saveUserName function
     @if (Auth::user()->id != 1)
-      init.push(function () {
+      $(document).ready(function() {
 
         function saveUserName(event) {
           if ($('#userName').val().length === 0){
@@ -336,7 +333,7 @@
       });
     // if user is not registered, signup form
     @else 
-      init.push(function () {
+      $(document).ready(function() {
         
         $('#username_id').on('keydown', function (event){
           var keycode = (event.keyCode ? event.keyCode : event.which);
