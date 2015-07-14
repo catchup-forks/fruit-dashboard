@@ -1,18 +1,27 @@
-# Configuration related
-local.dev
-
-/bootstrap/compiled.php
+# ---- Composer ---- #
 /vendor
 composer.phar
 composer.lock
+
+# ---- Configurations ---- #
+# - Known configurations - #
+local.dev
+# - Configuration files  - #
 .env.*.php
 .env.php
+
+# ---- Filesystem ---- #
 .DS_Store
 Thumbs.db
+
+# ---- Frontend compilers ---- #
+bower_components/
+node_modules/
+public/dist/
+
+# ---- Other FIXME? ---- #
+/bootstrap/compiled.php
 startServer
 error_log
 /emails
 /public/img/backgrounds-production
-bower_components/
-node_modules/
-public/dist/
