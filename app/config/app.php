@@ -95,6 +95,7 @@ return array(
 
 	'providers' => array(
 
+		# Base Laravel packages
 		'Illuminate\Foundation\Providers\ArtisanServiceProvider',
 		'Illuminate\Auth\AuthServiceProvider',
 		'Illuminate\Cache\CacheServiceProvider',
@@ -122,9 +123,7 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
-		'Barryvdh\Queue\AsyncServiceProvider',
-		'Nwidart\DbExporter\DbExportHandlerServiceProvider',
-		'Waavi\Mailman\MailmanServiceProvider',
+		# Braintree payment package
 		'Bradleyboy\Laravel\BraintreeServiceProvider',
 	),
 
@@ -153,7 +152,7 @@ return array(
 	*/
 
 	'aliases' => array(
-
+		# Base Laravel classes
 		'App'               => 'Illuminate\Support\Facades\App',
 		'Artisan'           => 'Illuminate\Support\Facades\Artisan',
 		'Auth'              => 'Illuminate\Support\Facades\Auth',
@@ -192,10 +191,8 @@ return array(
 		'URL'               => 'Illuminate\Support\Facades\URL',
 		'Validator'         => 'Illuminate\Support\Facades\Validator',
 		'View'              => 'Illuminate\Support\Facades\View',
-		
-		'Carbon'						=> 'Carbon\Carbon',
-		'Client'						=> 'GuzzleHttp\Client',
-		'Mailman' 					=> 'Waavi\Mailman\Facades\Facade',
+
+		'Carbon'			=> 'Carbon\Carbon',
 	),
 
 );

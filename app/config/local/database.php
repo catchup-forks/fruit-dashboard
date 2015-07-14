@@ -22,9 +22,9 @@ return array(
        'mysql' => array(
         'driver'    => 'mysql',
         'host'      => 'localhost',
-        'database'  => 'supdashboarddb',
-        'username'  => 'SUpDashboardRoot',
-        'password'  => 'SUpDashboardPassword',
+        'database'  => 'fruitdashboarddb',
+        'username'  => 'FDRoot',
+        'password'  => 'FDPassword',
         'charset'   => 'utf8',
         'collation' => 'utf8_unicode_ci',
         'prefix'    => '',
