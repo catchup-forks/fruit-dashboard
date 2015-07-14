@@ -44,13 +44,6 @@ $env = $app->detectEnvironment(function()
 });
 
 /*
-$env = $app->detectEnvironment(array(
-   'development' => array('precise64','homestead','andy94'),
-   'production' => array('server.abfinformatika.hu',)
-));
-*/
-
-/*
 |--------------------------------------------------------------------------
 | Bind Paths
 |--------------------------------------------------------------------------
