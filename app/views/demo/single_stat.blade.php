@@ -461,7 +461,7 @@
 
     <script type="text/javascript">
     // datepicker start
-    init.push(function () {
+    $(document).ready(function() {
       $('#startDateStat').datepicker({
         startDate: "{{ $data['firstDay'] }}",
         endDate: "{{ $data['dateInterval']['stopDate'] }}", 

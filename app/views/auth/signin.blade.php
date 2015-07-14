@@ -70,7 +70,7 @@
 
 <script type="text/javascript">
   // Resize BG
-  init.push(function () {
+  $(document).ready(function() {
     var $ph  = $('#page-signup-bg'),
         $img = $ph.find('> img');
 
@@ -86,7 +86,7 @@
   });
 
   // Show/Hide password reset form on click
-  init.push(function () {
+  $(document).ready(function() {
     $('#forgot-password-link').click(function () {
       $('#password-reset-form').fadeIn(400);
       return false;

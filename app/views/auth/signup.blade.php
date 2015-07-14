@@ -101,7 +101,7 @@
 
 	<script type="text/javascript">
 	// Resize BG
-	init.push(function () {
+	$(document).ready(function() {
 		var $ph  = $('#page-signup-bg'),
 		$img = $ph.find('> img');
 
