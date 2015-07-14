@@ -17,6 +17,7 @@
 
 <div class="vertical-center">
 	<div class="container">
+		
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3">
 				<div class="panel panel-default panel-transparent">
@@ -37,7 +38,7 @@
 				<div class="panel panel-default panel-transparent">
 					<div class="panel-heading">
 						<h3 class="panel-title text-center">
-							Create account
+							Create your account
 						</h3>
 					</div> <!-- /.panel-heading -->
 				  <div class="panel-body">
@@ -83,6 +84,8 @@
 				
 	</div> <!-- /.container -->
 </div> <!-- /.vertical-center -->
+
+</body>
 	
 	@stop
 
