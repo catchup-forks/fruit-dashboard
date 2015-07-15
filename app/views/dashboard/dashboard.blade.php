@@ -79,7 +79,7 @@
        }
      }).data('gridster');
      
-      $('.not-visible').removeClass('not-visible');
+      $('.gridster.not-visible').fadeIn(500);
 
     });
   </script>

@@ -92,6 +92,11 @@
     @show
     <!-- /Page specific scripts -->
 
+    <!-- Widget specific scripts -->
+    @section('widgetScripts')
+    @show
+    <!-- /Widget specific scripts -->
+
     @section ('pageAlert')
       @include('meta.pageAlerts')
     @show
