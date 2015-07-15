@@ -6,6 +6,14 @@
   </div>
 @endif
 
+<!-- add new widget button -->
+<div class="position-bl drop-shadow z-top">
+  <a href="{{ URL::route('connect.connect') }}" alt="Add new widget" title="Add new widget">
+    <span class="fa fa-plus-circle fa-2x fa-inverse color-hovered"></span>
+  </a>  
+</div>
+
+
 <div class="btn-group position-tr z-top cursor-pointer">
 	
 	<!-- dropdown menu icon -->
