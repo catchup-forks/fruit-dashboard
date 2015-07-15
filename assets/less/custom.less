@@ -4,9 +4,20 @@
 @darken:          25%;
 @white:           #fff;
 @panel-bg:        #fff;
+@gridster-bg:     #E6E6E6;
 @margin:          25px;
 
 // GENERAL ALIGNMENT & POSITIONING
+
+
+html, body {
+  height: 100%;
+}
+
+.fill-height {
+  height: 100%;
+  overflow-y: hidden;
+}
 
 .vertical-center {
   min-height: 100%;  /* Fallback */
@@ -31,6 +42,10 @@
   position: absolute;
   top: @margin;
   left: @margin;
+}
+
+.not-visible {
+  display: none;
 }
 
 .z-top {
@@ -68,4 +83,16 @@
 .panel-transparent .panel-body {
   background: @panel-bg; /* Fallback */
   background: fade(@panel-bg, @alpha);
+}
+
+// GRIDSTER
+
+.gridster ul li {
+  list-style: none;
+  cursor: default;
+}
+
+.gridster ul li:hover {
+  background: @gridster-bg; /* Fallback */
+  background: fade(@gridster-bg, @alpha/2);
 }
