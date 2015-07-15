@@ -26,15 +26,15 @@ class CreateStripeSubscriptionsTable extends Migration {
             $table->string('customer', 127);
             $table->integer('quantity')->unsigned();
             $table->enum('status', array('active', 'inactive', 'trialing', 'past_due', 'canceled', 'unpaid'));
-            $table->float('discount')->default(0);
+            $table->float('discount')->nullable();
 
             $table->dateTime('start');
             $table->dateTime('current_period_start');
             $table->dateTime('current_period_end');
             $table->dateTime('canceled_at')->nullable();
             $table->dateTime('ended_at')->nullable();
-            $table->dateTime('trial_start');
-            $table->dateTime('trial_end');
+            $table->dateTime('trial_start')->nullable();
+            $table->dateTime('trial_end')->nullable();
 
         });
      }

@@ -15,22 +15,10 @@ class StripeSubscription extends Eloquent
         'trial_end'
     );
 
+    // -- Options -- //
+    public $timestamps = FALSE;
 
     // -- Relations -- //
-    /**
-     * Returning the corresponding user object.
-     *
-     * @return a User object.
-    */
-    public function user() {
-        return $this->belongsTo('User');
-    }
-    /**
-     * Returning the corresponding stripeplan object.
-     *
-     * @return a StripePlan object.
-    */
-    public function plan() {
-        return $this->belongsTo('StripePlan');
-    }
+    public function user() { return $this->belongsTo('User'); }
+    public function plan() { return $this->belongsTo('StripePlan'); }
 }

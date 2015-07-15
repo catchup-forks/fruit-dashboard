@@ -18,51 +18,24 @@ class User extends Eloquent implements UserInterface
         'date_of_birth'
     );
 
-    // -- Relations -- //
-    /**
-     * Returning all connections related to the user.
-     *
-     * @return an array with the connections.
-    */
-    public function connections() {
-        return $this->hasMany('Connection');
-    }
-
-    /**
-     * Returning all subscriptions related to the user.
-     *
-     * @return an array with the subscriptions.
-    */
-    public function subscriptions() {
-        return $this->hasMany('Subscriptions');
-    }
-    /**
-     * Returning all dashboards related to the user.
-     *
-     * @return an array with the dashboards.
-    */
-    public function dashboards() {
-        return $this->hasMany('Dashboard');
-    }
-
-    /**
-     * Returning User settings.
-     *
-     * @return A settings object.
-    */
-    public function settings()
-    {
-        return $this->hasOne('Settings');
-    }
+    // -- Relations -- //https://connect.stripe.com/oauth/token
+    public function connections() { return $this->hasMany('Connection'); }
+    public function subscriptions() { return $this->hasMany('Subscriptions'); }
+    public function dashboards() { return $this->hasMany('Dashboard'); }
+    public function settings() { return $this->hasOne('Settings'); }
 
     use UserTrait;
 
     /**
-     * Testing if the user has connected a stripe account
-     * * @return boolean
+     * Testing if the user has connected a stripe account.
+
+     * @return boolean
     */
-    public function isStripeConnected()
-    {
+    public function isStripeConnected() {
+        if (Connection::where('user_id', $this->id)
+                      ->where('type', 'stripe')->first() !== null) {
+            return True;
+        }
         return False;
     }
 
@@ -71,13 +44,11 @@ class User extends Eloquent implements UserInterface
      *
      * @return boolean
     */
-    public function isBraintreeConnected()
-    {
+    public function isBraintreeConnected() {
         return False;
     }
 
-    public function isGoogleSpreadsheetConnected()
-    {
+    public function isGoogleSpreadsheetConnected() {
         return False;
     }
 

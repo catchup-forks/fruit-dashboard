@@ -13,13 +13,11 @@ class StripePlan extends Eloquent
         'plan_id'
     );
 
+
+    // -- Options -- //
+    public $timestamps = FALSE;
+
     // -- Relations -- //
-    /**
-     * Returning the corresponding subscription objects.
-     *
-     * @return an array with the Subscriptions.
-    */
-    public function subscriptions() {
-        return $this->hasMany('StripeSubscription');
-    }
+    public function subscriptions() {return $this->hasMany('StripeSubscription'); }
+    public function user() { return $this->belongsTo('User'); }
 }
