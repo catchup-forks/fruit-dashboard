@@ -5,14 +5,17 @@
   data-sizex="{{ $widget_data['position']['x'] }}" 
   data-sizey="{{ $widget_data['position']['y'] }}">
 
-  
-
-  <!--a class='link-button' href='' data-toggle="modal" data-target='#widget-settings-{{ $id }}'><span class="gs-option-widgets"></span></a-->
-
   <a href="{{ URL::route('connect.deletewidget', $id) }}">
-    <span class="fa fa-times fa-inverse position-tr-sm"></span>
+    <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm"></span>
   </a>
-  
+
+  {{-- uncomment for a settings cog --}}
+  {{-- 
+  <a href="#">
+    <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm"></span>
+  </a>
+   --}}
+
   <div id="digitClock">
   	<h1 id="digitTime" class="no-margin text-white drop-shadow text-center">{{ $currentTime }}</h1>
   </div> <!-- /#digitTime -->
@@ -47,14 +50,15 @@
      }
 
      startTime();
+     // fit the clock on page load
+     $('#digitTime').fitText(0.3);
+
+      // bind fittext to a resize event
+      $('#digitClock').bind('resize', function(e){
+        $('#digitTime').fitText(0.3);
+      })
 
    });
-
-    $(document).ready(function() {
-   	 	$('#digitClock').bind('resize', function(e){
-   	 	  $('#digitTime').fitText(0.3);
-   	 	})
-   	});
  </script>
  <!-- /script for clock -->
 

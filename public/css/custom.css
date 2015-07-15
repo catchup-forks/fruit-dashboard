@@ -18,6 +18,11 @@ body {
   bottom: 25px;
   left: 25px;
 }
+.position-bl-sm {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+}
 .position-tr {
   position: absolute;
   top: 25px;
@@ -80,4 +85,10 @@ body {
   background: #e6e6e6;
   /* Fallback */
   background: rgba(230, 230, 230, 0.425);
+}
+.gs-w span {
+  display: none;
+}
+.gs-w:hover span {
+  display: inline-block;
 }

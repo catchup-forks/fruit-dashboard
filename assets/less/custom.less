@@ -31,6 +31,12 @@ html, body {
   left: @margin;
 }
 
+.position-bl-sm {
+  position: absolute;
+  bottom: @margin/5;
+  left: @margin/5;
+}
+
 .position-tr {
   position: absolute;
   top: @margin;
@@ -42,6 +48,7 @@ html, body {
   top: @margin/5;
   right: @margin/5;
 }
+
 .position-tl {
   position: absolute;
   top: @margin;
@@ -111,4 +118,12 @@ html, body {
 .gridster ul li:hover {
   background: @gridster-bg; /* Fallback */
   background: fade(@gridster-bg, @alpha/2);
+}
+
+.gs-w span {
+  display: none;
+}
+
+.gs-w:hover span {
+  display: inline-block;
 }
