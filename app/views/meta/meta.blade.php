@@ -46,9 +46,9 @@
       {{ HTML::style('css/custom.css') }}
       <!-- /Custom styles -->
       
-      <!-- Google Analytics events -->
-      {{ HTML::script('js/google_events.js'); }}
-      <!-- /Google Analytics events -->
+      <!-- Google Analytics -->
+      @include('meta.google-analytics')
+      <!-- Google Analytics -->
 
       <!-- Mixpanel event -->
       {{ HTML::script('js/mixpanel_events.js') }}
@@ -99,10 +99,6 @@
     @section ('pageAlert')
       @include('meta.pageAlerts')
     @show
-
-    <!-- GoogleAnalytics -->
-    {{ HTML::script('js/google_analytics.js'); }}
-    <!-- GoogleAnalytics -->
   @show
      
 </html>
