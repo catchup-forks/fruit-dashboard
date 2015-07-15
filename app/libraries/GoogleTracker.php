@@ -37,22 +37,27 @@ class GoogleTracker {
      *     (string) (ea) [Req] Event Action.
      *     (string) (el) Event label.
      *     (int)    (ev) Event value.
-     * @return (boolean) (true)
+     * @return (boolean) (status) True if production server, else false
      */
     public function sendEvent($eventData) {
-        /* Make the analytics url */
-        $url = $this->makeEventUrl(
-            $eventData['ec'], 
-            $eventData['ea'],
-            $eventData['el'],
-            $eventData['ev']);
+        if (App::environment('production')) {
+            /* Make the analytics url */
+            $url = $this->makeEventUrl(
+                $eventData['ec'], 
+                $eventData['ea'],
+                $eventData['el'],
+                $eventData['ev']);
 
-        /* Send the request */
-        $client = new GuzzleClient();
-        $response = $client->get($url);
+            /* Send the request */
+            $client = new GuzzleClient();
+            $response = $client->get($url);
 
-        /* Return */
-        return true;
+            /* Return */
+            return true;
+        } else {
+            /* Return */
+            return false;
+        }
     }
 
     /**
