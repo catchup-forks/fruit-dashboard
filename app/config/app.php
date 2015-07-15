@@ -192,6 +192,7 @@ return array(
 		'View'              => 'Illuminate\Support\Facades\View',
 
 		'Carbon'			=> 'Carbon\Carbon',
+		'GuzzleClient'		=> 'GuzzleHttp\Client',
 	),
 
 );
