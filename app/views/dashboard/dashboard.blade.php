@@ -9,32 +9,80 @@
 
   @section('pageContent')
 
-  <!-- add new widget -->
-  <div class="position-bl drop-shadow z-top">
-    <a href="{{ URL::route('connect.connect') }}" alt="Add new widget" title="Add new widget">
-      <span class="fa fa-plus-circle fa-2x fa-inverse color-hovered"></span>
-    </a>  
-  </div>
+  <div class="container grid-base fill-height">
+    <div class="gridster not-visible">
+      <ul>
+        @for ($i = 0; $i < count($allFunctions); $i++)
 
-  <!-- widget list -->
-  <div class="container">
-    <div class="row">
-      <div class="gridster not-visible">
-        <ul>
-          @for ($i = 0; $i < count($allFunctions); $i++)
+          @include('dashboard.widget', ['widget_data' => $allFunctions[$i]])
 
-            @include('dashboard.widget', ['widget_data' => $allFunctions[$i]])
-
-          @endfor
-        </ul>
-      </div>
+        @endfor
+      </ul>
     </div>
-  </div>
-  <!-- /widget list -->
+  </div> <!-- /.container -->
   
   @stop
 
   @section('pageScripts')
+
+  <script type="text/javascript">
+    
+    // Gridster builds the interactive dashboard.
+    $(function(){
+
+
+      var gridster;
+      var positioning = [];
+      var containerWidth = $('.grid-base').width();
+      var containerHeight = $('.grid-base').height();
+      var numberOfCols = 12;
+      var numberOfRows = 9;
+      var margin = 5;
+      var widget_width = (containerWidth / numberOfCols) - (margin * 2);
+      var widget_height = (containerHeight / numberOfRows) - (margin * 2);
+     
+     gridster = $('.gridster ul').gridster({
+       widget_base_dimensions: [widget_width, widget_height],
+       widget_margins: [margin, margin],
+       min_cols: numberOfCols,
+       min_rows: numberOfRows,
+       snap_up: false,
+       serialize_params: function ($w, wgd) {
+         return {
+           id: $w.data().id,
+           col: wgd.col,
+           row: wgd.row,
+           size_x: wgd.size_x,
+           size_y: wgd.size_y,
+         };
+       },
+       resize: {
+         enabled: true,
+         stop: function(e, ui, $widget) {
+           positioning = gridster.serialize();
+           positioning = JSON.stringify(positioning);
+           $.ajax({
+             type: "POST",
+             url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
+           });
+         }
+       },
+       draggable: {
+         stop: function(e, ui, $widget) {
+           positioning = gridster.serialize();
+           positioning = JSON.stringify(positioning);
+           $.ajax({
+             type: "POST",
+             url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
+           });
+         }
+       }
+     }).data('gridster');
+     
+      $('.not-visible').removeClass('not-visible');
+
+    });
+  </script>
 
   @append
 
