@@ -31,6 +31,8 @@ $env = $app->detectEnvironment(function()
 	{
 		if (basename(dirname(__DIR__)) == 'development-dashboard.tryfruit.com') {
 			return 'development';
+		} elseif (basename(dirname(__DIR__)) == 'fd-dev.tryfruit.com') {
+			return 'development';
 		} elseif (basename(dirname(__DIR__)) == 'staging-dashboard.tryfruit.com') {
 			return 'staging';
 		} elseif (basename(dirname(__DIR__)) == 'dashboard.tryfruit.com') {
