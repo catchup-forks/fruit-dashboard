@@ -86,9 +86,9 @@ body {
   /* Fallback */
   background: rgba(230, 230, 230, 0.425);
 }
-.gs-w span {
+.gs-w span.display-hovered {
   display: none;
 }
-.gs-w:hover span {
+.gs-w:hover span.display-hovered {
   display: inline-block;
 }

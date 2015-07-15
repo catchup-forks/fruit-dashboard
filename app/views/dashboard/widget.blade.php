@@ -4,6 +4,24 @@
    ])
 @else
 
+<li
+  data-id='{{ $widget_data['widget_id'] }}' 
+  data-row="{{ $widget_data['position']['row'] }}" 
+  data-col="{{ $widget_data['position']['col'] }}" 
+  data-sizex="{{ $widget_data['position']['x'] }}" 
+  data-sizey="{{ $widget_data['position']['y'] }}">
+
+  <a href="{{ URL::route('connect.deletewidget', $widget_data['widget_id']) }}">
+    <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
+  </a>
+
+  {{-- uncomment for a settings cog --}}
+  {{-- 
+  <a href="#">
+    <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
+  </a>
+   --}}
+
   @if ($widget_data['widget_type'] == 'clock')
     @include('dashboard.widget-clock', [
       'currentTime' => $widget_data['currentValue'],
@@ -75,5 +93,7 @@
       'id' => $widget_data['widget_id']
      ])
   @endif
+
+  </li>
 
 @endif
