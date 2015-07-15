@@ -1,83 +1,114 @@
-html,
-body {
+// VARIABLES
+
+@alpha:           85%;
+@darken:          25%;
+@white:           #fff;
+@panel-bg:        #fff;
+@gridster-bg:     #E6E6E6;
+@margin:          25px;
+
+// GENERAL ALIGNMENT & POSITIONING
+
+html, body {
   height: 100%;
 }
+
 .fill-height {
   height: 100%;
   overflow-y: hidden;
 }
+
 .vertical-center {
-  min-height: 100%;
-  /* Fallback */
+  min-height: 100%;  /* Fallback */
   min-height: 100vh;
   display: flex;
   align-items: center;
 }
+
 .position-bl {
   position: fixed;
-  bottom: 25px;
-  left: 25px;
+  bottom: @margin;
+  left: @margin;
 }
+
 .position-tr {
   position: absolute;
-  top: 25px;
-  right: 25px;
+  top: @margin;
+  right: @margin;
 }
+
 .position-tr-sm {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: @margin/5;
+  right: @margin/5;
 }
 .position-tl {
   position: absolute;
-  top: 25px;
-  left: 25px;
+  top: @margin;
+  left: @margin;
 }
+
 .no-padding {
   padding: 0;
 }
+
 .no-margin {
   margin: 0;
 }
+
 .not-visible {
   display: none;
 }
+
 .z-top {
   z-index: 9999;
 }
+
+
+// DESIGN ELEMENTS
+
 .drop-shadow {
   text-shadow: 1px 1px 3px #141414;
   -webkit-text-stroke-width: 0.5px;
   -webkit-text-stroke-color: #333;
 }
+
 .color-hovered:hover {
-  color: #bfbfbf;
+  color: darken(@white, @darken);
 }
+
 .cursor-pointer {
   cursor: pointer;
 }
+
 .text-white {
-  color: #ffffff;
+  color: @white;
 }
+
+// PANELS
+
 .panel-transparent {
   background: none;
 }
+
 .panel-transparent .panel-heading {
-  background: #bfbfbf;
-  /* Fallback */
-  background: rgba(191, 191, 191, 0.85);
+  background: darken(@panel-bg, @darken); /* Fallback */
+  background: fade(darken(@panel-bg, @darken), @alpha);
 }
+
 .panel-transparent .panel-body {
-  background: #ffffff;
-  /* Fallback */
-  background: rgba(255, 255, 255, 0.85);
+  background: @panel-bg; /* Fallback */
+  background: fade(@panel-bg, @alpha);
 }
+
+// GRIDSTER AND WIDGETS
+
 .gridster ul li {
   list-style: none;
   cursor: default;
 }
+
 .gridster ul li:hover {
-  background: #e6e6e6;
-  /* Fallback */
-  background: rgba(230, 230, 230, 0.425);
+  background: @gridster-bg; /* Fallback */
+  background: fade(@gridster-bg, @alpha/2);
 }

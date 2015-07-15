@@ -61,7 +61,7 @@
     @endif
 
     <script type="text/javascript">
-      init.push(function () {
+      $(document).ready(function() {
         $('.ui-wizard').pixelWizard({
           onChange: function () {
             console.log('Current step: ' + this.currentStep());

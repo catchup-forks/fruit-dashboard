@@ -5,7 +5,6 @@
   @stop
 
 @section('pageStylesheet')
-<!-- Facebook Conversion Code for Katt -->
 
 @stop
 
@@ -14,108 +13,82 @@
 
 @section('pageContent')
 
-<body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif class="theme-asphalt page-signin" style="">
-	<!-- Container -->
-	<div class="signin-container">
+<body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif>
 
-		<!-- Left side -->
-		<div class="signin-info">
-			<a href="/" class="logo">
-				Fruit Dashboard
-			</a> <!-- / .logo -->
-			<div class="slogan">
-				The new tab for your startup.
-			</div> <!-- / .slogan -->
-			<!--ul>
-				<li><i class="fa fa-sitemap signin-icon"></i> Attach your favourite </li>
-				<li><i class="fa fa-file-text-o signin-icon"></i> Discuss it with your coworkers</li>
-				<li><i class="fa fa-outdent signin-icon"></i> Your dashboard at your new tab</li>
-				<li><i class="fa fa-heart signin-icon"></i> Designed with love</li>
-			</ul--> <!-- / Info list -->
-		</div>
-		<!-- / Left side -->
+<div class="vertical-center">
+	<div class="container">
+		
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-default panel-transparent">
+				  <div class="panel-body">
+				  	<h1 class="text-center">
+				  		Fruit Dashboard
+				  	</h1>
+				  	<p class="lead text-center">
+				  		The new tab for your startup.
+				  	</p>	
+				  </div> <!-- /.panel-body -->
+				</div> <!-- /.panel -->
+			</div> <!-- /.col-md-6 -->
+		</div> <!-- /.row -->
 
-		<!-- Right side -->
-		<div class="signin-form">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-default panel-transparent">
+					<div class="panel-heading">
+						<h3 class="panel-title text-center">
+							Create your account
+						</h3>
+					</div> <!-- /.panel-heading -->
+				  <div class="panel-body">
+				  	
+				  	<!-- Form -->
+				  	{{ Form::open(array('route' => 'auth.signup', 'id' => 'signup-form_id' )) }}
 
-			<!-- Form -->
-			{{ Form::open(array('route' => 'auth.signup', 'id' => 'signup-form_id' )) }}
-			<div class="signin-text">
-				<span>Create an account</span>
-			</div> <!-- / .signin-text -->
+				  	<form autocomplete="off">
+				  		<!-- Chrome only fills the first two input fields. -->
+				  		<!-- By adding these two hidden ones Chrome autofill can be hidden. -->
+				  		<input style="display:none">
+				  		<input type="password" style="display:none">
+				  		<!-- End of Chrome autofill hack. -->
 
-			<div class="form-group w-icon">
-				{{ Form::text('email', Input::old('email'), array('autofocus' => true, 'placeholder' => 'Email@provider.com', 'class' => 'form-control input-lg signUp', 'id' => 'username_id')) }}
-				<span class="fa fa-envelope signin-form-icon"></span>
-			</div> <!-- / Username -->
+				  		{{ Form::text('email', Input::old('email'), array('autofocus' => true, 'placeholder' => 'email@provider.com', 'class' => 'form-control form-group input-lg col-sm-12', 'id' => 'username_id')) }}
+				  		{{ Form::password('password', array('placeholder' => 'choose a password', 'class' => 'form-control form-group input-lg col-sm-12', 'id' => 'password_id')) }}				  	
 
-			<div class="form-group w-icon">
-				{{ Form::password('password', array('placeholder' => 'Password', 'class' => 'form-control input-lg', 'id' => 'password_id')) }}
-				<span class="fa fa-lock signin-form-icon"></span>
-			</div> <!-- / Password -->
+				  		{{ Form::submit('Sign up' , array(
+				  			'id' => 'id_submit',
+				  			'class' => 'btn btn-primary pull-right',
+				  			'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");')) }}
 
-			<div class="form-actions">
-				{{ Form::submit('Sign up' , array(
-					'id' => 'id_submit',
-					'class' => 'signin-btn bg-primary',
-					'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");')) }}
-					<!-- <a href="#" class="forgot-password" id="forgot-password-link">Forgot your password?</a> -->
-				</div> <!-- / .form-actions -->
-				{{ Form::close() }}
-				<!-- / Form -->
+				  	</form>
 
-				<!-- Password reset form -->
-				<div class="password-reset-form" id="password-reset-form">
-					<div class="header">
-						<div class="signin-text">
-							<span>Password reset</span>
-							<div class="close">×</div>
-						</div> <!-- / .signin-text -->
-					</div> <!-- / .header -->
+			  		{{ Form::close() }}
+			  		<!-- / Form -->	
 
-					<!-- Form -->
-					<form action="index.html" id="password-reset-form_id" novalidate="novalidate">
-						<div class="form-group w-icon">
-							<input type="text" name="password_reset_email" id="p_email_id" class="form-control input-lg" placeholder="Enter your email">
-							<span class="fa fa-envelope signin-form-icon"></span>
-						</div> <!-- / Email -->
+				  </div> <!-- /.panel-body -->
+				</div> <!-- /.panel -->
+			</div> <!-- /.col-md-6 -->
+		</div> <!-- /.row -->
 
-						<div class="form-actions">
-							<input type="submit" value="SEND PASSWORD RESET LINK" class="signin-btn bg-primary">
-						</div> <!-- / .form-actions -->
-					</form>
-					<!-- / Form -->
-				</div>
-				<!-- / Password reset form -->
-			</div>
-			<!-- Right side -->
-		</div>
-		<!-- / Container -->
-		<div class="not-a-member">
-			Already have an account? <a href="{{ URL::route('auth.signin') }}">Sign in</a>.
-		</div>
+
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">
+				<div class="panel panel-default panel-transparent">
+				  <div class="panel-body text-center">
+				  	Already have an account? <a href="{{ URL::route('auth.signin') }}">Sign in</a>.
+				  </div> <!-- /.panel-body -->
+				</div> <!-- /.panel -->
+			</div> <!-- /.col-md-6 -->
+		</div> <!-- /.row -->
+				
+	</div> <!-- /.container -->
+</div> <!-- /.vertical-center -->
+
+</body>
 	
 	@stop
 
 	@section('pageScripts')
-
-	<script type="text/javascript">
-	// Resize BG
-	init.push(function () {
-		var $ph  = $('#page-signup-bg'),
-		$img = $ph.find('> img');
-
-		$(window).on('resize', function () {
-			$img.attr('style', '');
-			if ($img.height() < $ph.height()) {
-				$img.css({
-					height: '100%',
-					width: 'auto'
-				});
-			}
-		});	
-	});
-
-</script>
 
 @stop

@@ -9,64 +9,6 @@
     @if($data['id'] == "uc") User Churn @endif
   @stop
 
-@section('navbar')
-
-<div id="main-navbar" class="navbar" role="navigation">
-  <!-- Main menu toggle -->
-  <button type="button" id="main-menu-toggle"><i class="navbar-icon fa fa-bars icon"></i><span class="hide-menu-text">HIDE MENU</span></button>
-  
-  <div class="navbar-inner">
-    <!-- Main navbar header -->
-    <div class="navbar-header">
-
-      <!-- Logo -->
-      <a href="http://analytics.tryfruit.com" class="navbar-brand">
-        Fruit Analytics
-      </a>
-      <a href="{{ URL::route('demo.dashboard') }}" class="navbar-brand">
-        Dashboard
-      </a>
-
-      <!-- Main navbar toggle -->
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-navbar-collapse"><i class="navbar-icon fa fa-bars"></i></button>
-
-    </div> <!-- / .navbar-header -->
-
-    <div id="main-navbar-collapse" class="collapse navbar-collapse main-navbar-collapse">
-      <div>
-        <div class="right clearfix">
-          <ul class="nav navbar-nav pull-right right-navbar-nav">
-
-<!-- 3. $NAVBAR_ICON_BUTTONS =======================================================================
-
-            Navbar Icon Buttons
-
-            NOTE: .nav-icon-btn triggers a dropdown menu on desktop screens only. On small screens .nav-icon-btn acts like a hyperlink.
-
-            Classes:
-            * 'nav-icon-btn-info'
-            * 'nav-icon-btn-success'
-            * 'nav-icon-btn-warning'
-            * 'nav-icon-btn-danger' 
--->
-            
-            
-<!-- /3. $END_NAVBAR_ICON_BUTTONS -->
-            
-            <li>
-              <a href="{{ URL::route('auth.signup') }}">
-                <i class="dropdown-icon fa fa-rocket"></i>&nbsp;&nbsp;Sign up
-              </a>
-            </li>
-          </ul> <!-- / .navbar-nav -->
-        </div> <!-- / .right -->
-      </div>
-    </div> <!-- / #main-navbar-collapse -->
-  </div> <!-- / .navbar-inner -->
-</div> <!-- / #main-navbar -->
-
-@stop
-
   @section('pageContent')
 
     <div id="content-wrapper">
@@ -78,12 +20,17 @@
           <div class="col-md-4 col-lg-5">
               <small><strong>CHOOSE A METRIC:</strong></small><br>
               <select class="form-control input-lg" onChange="window.location.href=this.value">
-                <option value="{{ URL::route('demo.single_stat', 'au') }}" @if($data['id'] == "au") selected @endif>Active Users</option>
-                <option value="{{ URL::route('demo.single_stat', 'arr') }}" @if($data['id'] == "arr") selected @endif>Annual Run Rate</option>
-                <option value="{{ URL::route('demo.single_stat', 'arpu') }}" @if($data['id'] == "arpu") selected @endif>Average Revenue Per User</option>
-                <option value="{{ URL::route('demo.single_stat', 'cancellations') }}" @if($data['id'] == "cancellations") selected @endif>Cancellations</option>
-                <option value="{{ URL::route('demo.single_stat', 'mrr') }}" @if($data['id'] == "mrr") selected @endif>Monthly Recurring Revenue</option>
-                <option value="{{ URL::route('demo.single_stat', 'uc') }}" @if($data['id'] == "uc") selected @endif>User Churn</option>
+                <option value="{{ URL::route('dashboard.dashboard') }}">Back to dashboard</option>
+                @if ($isFinancialStuffConnected == 1)
+                  @foreach ($currentMetrics as $key => $value)
+                    <option value="{{ URL::route('dashboard.single_stat', $key) }}" @if($data['id'] == $key) selected @endif>{{ $value['metricName'] }}</option>
+                  @endforeach
+                @endif
+                @foreach ($widgets as $widget)
+                  @if ($widget->widget_type=='google-spreadsheet-line-column')
+                  <option value="{{ URL::route('dashboard.single_stat', $widget->id) }}" @if($data['id'] == $widget->id) selected @endif>{{ $widget->widget_name }}</option>
+                  @endif
+                @endforeach
               </select>
           </div>
                   
@@ -115,6 +62,7 @@
           </div>
         </div> <!-- / .row .panel-body -->
 
+        @if ($metric_type == 'financial')
         <!-- Change numbers -->
         <div class="row panel-body margin-vr-sm bordered">
           <div class="statistic-description">
@@ -357,6 +305,7 @@
             </div>
           </div> <!-- /.statistic-description  -->
         </div> <!-- /.row -->
+        @endif
 
 
         <!-- Metric description -->
@@ -367,7 +316,9 @@
           <div class="col-md-11">
             <p class='lead'>{{ $metricDetails['metricDescription'] }}</p>            
           </div>
+
         </div>
+
 
       {{--    
 
@@ -1056,7 +1007,7 @@
         {
           return x1 + x2.slice(0,2) + '%';
         }
-        return "Something is not right";
+        return 'Something is not right'
       }
 
     });

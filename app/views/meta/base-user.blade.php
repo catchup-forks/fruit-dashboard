@@ -2,13 +2,9 @@
 
 @section('body')
 
-	<body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif class="theme-asphalt">
+	<body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif>
 			@section('navbar')
 				@include('meta.navbar')
-			@show
-
-			@section ('pageAlert')
-				@include('meta.pageAlerts')
 			@show
 			
 			@section('pageContent')

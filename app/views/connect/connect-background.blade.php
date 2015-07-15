@@ -87,7 +87,7 @@
 
 
     <script type="text/javascript">
-      init.push(function () {
+      $(document).ready(function() {
         // event listeners for hidden forms
         $('#editBackground').on('click', function (){
           $('#editBackgroundForm').slideUp('fast', function (){
