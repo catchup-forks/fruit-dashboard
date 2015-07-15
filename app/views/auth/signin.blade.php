@@ -4,9 +4,6 @@
     Sign in
   @stop
 
-@section('navbar')
-@stop
-
 @section('pageContent')
 
 <body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif>

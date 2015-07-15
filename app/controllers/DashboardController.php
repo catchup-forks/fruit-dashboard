@@ -16,11 +16,12 @@ class DashboardController extends BaseController
 	public function showDashboard()
 	{
 
-		# if the user is not logged in, load user with id=1
+		# If a visitor gets here render the signup wizard instead.
 
 		if (Auth::guest()) {
-			Auth::loginUsingId(1);
+			return Redirect::route('auth.signup');
 		}
+
 		$user = Auth::user();
 
 		#####################################################

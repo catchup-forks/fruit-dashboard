@@ -92,3 +92,19 @@ body {
 .gs-w:hover span.display-hovered {
   display: inline-block;
 }
+.no-shadow-plus-border {
+  border-bottom: 3px solid #fff;
+  box-shadow: none;
+}
+.greetings-name {
+  border: 0;
+  height: auto;
+  background: 0;
+  font-size: 54px;
+  border-bottom: 3px solid #fff;
+  box-shadow: none;
+}
+input.greetings-name:focus {
+  border-bottom: 3px solid #fff;
+  box-shadow: none;
+}

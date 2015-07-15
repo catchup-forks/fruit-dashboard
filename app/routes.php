@@ -82,7 +82,6 @@ Route::any('signout', array(
 
 // metric graph routes
 Route::get('dashboard', array(
-    'before' => 'trial_ended',
     'as' => 'dashboard.dashboard',
     'uses' => 'DashboardController@showDashboard'
 ));
