@@ -26,7 +26,6 @@
   @section('pageScripts')
 
   <script type="text/javascript">
-    
     // Gridster builds the interactive dashboard.
     $(function(){
 

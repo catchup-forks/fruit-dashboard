@@ -15,6 +15,20 @@
       @endif
     </title>
 
+    @section('tracking')
+      <!-- Google Analytics -->
+      @include('tracking.google-analytics')
+      <!-- /Google Analytics -->
+
+      <!-- Intercom IO -->
+      @include('tracking.intercom-io')
+      <!-- /Intercom IO -->
+
+      <!-- Mixpanel -->
+      @include('tracking.mixpanel')
+      <!-- /Mixpanel -->
+    @show
+
     @section('stylesheet')
       <!-- Fonts -->
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
@@ -45,22 +59,6 @@
       <!-- Custom styles -->
       {{ HTML::style('css/custom.css') }}
       <!-- /Custom styles -->
-      
-      <!-- Google Analytics -->
-      @include('meta.google-analytics')
-      <!-- /Google Analytics -->
-
-      <!-- Intercom IO -->
-      @include('meta.intercom-io')
-      <!-- /Intercom IO -->
-
-      <!-- Mixpanel event -->
-      {{ HTML::script('js/mixpanel_events.js') }}
-      <!-- / Mixpanel event -->
-
-      <!-- Mixpanel user tracking -->
-      {{ HTML::script('js/mixpanel_users.js') }}
-      <!-- / Mixpanel user tracking -->
 
       <!-- Page specific stylesheet -->
       @section('pageStylesheet')
