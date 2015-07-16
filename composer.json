@@ -21,6 +21,7 @@
 	"autoload": {
 		"classmap": [
 			"app/libraries",
+			"app/libraries/eventTracking",
 			"app/commands",
 			"app/controllers",
 			"app/models",

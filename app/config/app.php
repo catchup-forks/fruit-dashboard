@@ -193,6 +193,7 @@ return array(
 
 		'Carbon'			=> 'Carbon\Carbon',
 		'GuzzleClient'		=> 'GuzzleHttp\Client',
+		'IntercomClient'	=> 'Intercom\IntercomBasicAuthClient',
 	),
 
 );

@@ -5,10 +5,12 @@
   window.intercomSettings = {
     app_id: '{{ $_ENV['INTERCOM_APP_ID'] }}',
     @if (Auth::user())
+        user_id: {{ Auth::user()->id }},
         name: '{{ Auth::user()->email }}',
         email: '{{ Auth::user()->email }}',
         created_at: {{ strtotime(Auth::user()->created_at) }},
     @else
+        user_id: 0,
         name: 'Anonymous user',
         email: 'anonymous@user.com',
         created_at: {{ Carbon::now()->timestamp }},

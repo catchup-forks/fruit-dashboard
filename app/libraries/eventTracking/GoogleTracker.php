@@ -10,7 +10,8 @@
 *           'ec' => 'Category', // Required.
 *           'ea' => 'Action',   // Required.
 *           'el' => 'Label',
-*           'ev' => 0);
+*           'ev' => 0,
+*       );
 *       $tracker->sendEvent($eventData);
 * -------------------------------------------------------------------------- 
 */
