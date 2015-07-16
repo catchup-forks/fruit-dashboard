@@ -1,20 +1,21 @@
 <?php
 
 
-/*
-|--------------------------------------------------------------------------
-| AuthController: Handles the authentication related sites
-|--------------------------------------------------------------------------
-*/
+/**
+ * --------------------------------------------------------------------------
+ * AuthController: Handles the authentication related sites
+ * --------------------------------------------------------------------------
+ */
 class AuthController extends BaseController
 {
 
-    /*
-    |===================================================
-    | <GET> | showSignin: renders the signin page
-    |===================================================
-    */
-    public function showSignin()
+    /**
+     * getSignin
+     * --------------------------------------------------
+     * @return Renders the signin page
+     * --------------------------------------------------
+     */
+    public function getSignin()
     {
         if (Auth::check()) {
             Auth::logout();
@@ -30,12 +31,13 @@ class AuthController extends BaseController
         );
     }
 
-    /*
-    |===================================================
-    | <POST> | doSignin: signs in the user
-    |===================================================
-    */
-    public function doSignin()
+    /**
+     * postSignin
+     * --------------------------------------------------
+     * @return Processes the signin request, signs in the user
+     * --------------------------------------------------
+     */
+    public function postSignin()
     {
         // Validation
         $rules = array(
@@ -89,11 +91,25 @@ class AuthController extends BaseController
         }
     }
 
-    /*
-    |===================================================
-    | <GET> | showSignup: renders the signup page
-    |===================================================
-    */
+    /**
+     * anySignout
+     * --------------------------------------------------
+     * @return Signs out the user
+     * --------------------------------------------------
+     */
+    public function anySignout()
+    {
+        Auth::logout();
+        return Redirect::route('dashboard.dashboard')->with('success', 'Good bye.');
+    }
+
+    /**
+     * showSignup
+     * --------------------------------------------------
+     * @return 
+     * @todo THIS FUNCTION IS OBSOLETE
+     * --------------------------------------------------
+     */
     public function showSignup()
     {
         if (Auth::check()) {
@@ -109,11 +125,13 @@ class AuthController extends BaseController
         );
     }
 
-    /*
-    |===================================================
-    | <POST> | doSignin: signs up the user
-    |===================================================
-    */
+    /**
+     * doSignup
+     * --------------------------------------------------
+     * @return 
+     * @todo THIS FUNCTION IS OBSOLETE
+     * --------------------------------------------------
+     */
     public function doSignup()
     {
         // Validation rules
@@ -205,15 +223,4 @@ class AuthController extends BaseController
                 ->with('success', 'Welcome to your new dashboard :)');
         }
     }
-
-    /*
-    |===================================================
-    | <ANY> | doSignout: signs out the user
-    |===================================================
-    */
-    public function doSignout()
-    {
-        Auth::logout();
-        return Redirect::route('dashboard.dashboard')->with('success', 'Good bye.');
-    }
-}
+} /* AuthController */

@@ -32,6 +32,7 @@ class GoogleTracker {
 
     /**
      * sendEvent: 
+     * --------------------------------------------------
      * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
      *     (string) (ec) [Req] Event Category.
@@ -39,6 +40,7 @@ class GoogleTracker {
      *     (string) (el) Event label.
      *     (int)    (ev) Event value.
      * @return (boolean) (status) True if production server, else false
+     * --------------------------------------------------
      */
     public function sendEvent($eventData) {
         if (App::environment('production')) {
@@ -63,12 +65,14 @@ class GoogleTracker {
 
     /**
      * makeEventUrl: 
+     * --------------------------------------------------
      * Makes the dispatch url from the arguments.
      * @param (string) (ec) [Req] Event Category.
      * @param (string) (ea) [Req] Event Action.
      * @param (string) (el) Event label.
      * @param (int)    (ev) Event value.
      * @return (string) (url) The event POST url
+     * --------------------------------------------------
      */
     private function makeEventUrl($ec, $ea, $el, $ev) {
         /* Initialize replacer arrays to escape special chars in the url */

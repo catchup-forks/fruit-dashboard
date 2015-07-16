@@ -27,11 +27,13 @@ class MixpanelTracker {
 
     /**
      * sendEvent: 
+     * --------------------------------------------------
      * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
      *     (string) (en) [Req] Event Name.
      *     (array)  (meta) Custom metadata
      * @return (boolean) (status) True if production server, else false
+     * --------------------------------------------------
      */
     public function sendEvent($eventData) {
         if (App::environment('production')) {

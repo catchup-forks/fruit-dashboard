@@ -11,6 +11,7 @@ class SignupWizardController extends BaseController
 
     /**
      * getAuthentication
+     * --------------------------------------------------
      * @return Renders the authentication step
      */
     public function getAuthentication() {
@@ -20,7 +21,9 @@ class SignupWizardController extends BaseController
 
     /**
      * postAuthentication
+     * --------------------------------------------------
      * @return Saves the user authentication data
+     * --------------------------------------------------
      */
     public function postAuthentication() {
         /* Render the page */
@@ -29,6 +32,7 @@ class SignupWizardController extends BaseController
 
     /**
      * getPersonalWidgets
+     * --------------------------------------------------
      * @return Renders the personal widget setup step
      */
     public function getPersonalWidgets() {
@@ -38,6 +42,7 @@ class SignupWizardController extends BaseController
 
     /**
      * postPersonalWidgets
+     * --------------------------------------------------
      * @return Saves the user personal widget settings
      */
     public function postPersonalWidgets() {
@@ -46,19 +51,21 @@ class SignupWizardController extends BaseController
     }
 
     /**
-     * getFinancialConnect
+     * getFinancialConnections
+     * --------------------------------------------------
      * @return Renders the financial connections step
      */
-    public function getFinancialConnect() {
+    public function getFinancialConnections() {
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
     }
 
     /**
-     * postFinancialConnect
+     * postFinancialConnections
+     * --------------------------------------------------
      * @return Saves the financial connection setting
      */
-    public function postFinancialConnect() {
+    public function postFinancialConnections() {
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
     }

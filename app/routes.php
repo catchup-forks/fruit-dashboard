@@ -15,51 +15,39 @@ Route::get('/', function() {
  * --------------------------------------------------------------------------
  */
 Route::controller('signup', 'SignupWizardController', array(
-    'getAuthentication'     => 'signup.authentication',
-    'postAuthentication'    => 'signup.authentication',
-    'getPersonalWidgets'    => 'signup.personal-widgets',
-    'postPersonalWidgets'   => 'signup.personal-widgets',
-    'getFinancialConnect'   => 'signup.financial-connect',
-    'postFinancialConnect'  => 'signup.financial-connect',
+    'getAuthentication'         => 'signup.authentication',
+    'postAuthentication'        => 'signup.authentication',
+    'getPersonalWidgets'        => 'signup.personal-widgets',
+    'postPersonalWidgets'       => 'signup.personal-widgets',
+    'getFinancialConnections'   => 'signup.financial-connections',
+    'postFinancialConnections'  => 'signup.financial-connections',
 ));
 
+/**
+ * --------------------------------------------------------------------------
+ * /auth | Authentication urls
+ * --------------------------------------------------------------------------
+ */
+Route::controller('auth', 'AuthController', array(
+    'getSignin'  => 'auth.signin',
+    'postSignin' => 'auth.signin',
+    'anySignout' => 'auth.signout',
+));
+/**
+ * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
+ */
 Route::get('signup', array(
     'as' => 'auth.signup',
     'uses' => 'AuthController@showSignup'
 ));
 
+/**
+ * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
+ */
 Route::post('signup', array(
     'as' => 'auth.signup',
     'uses' => 'AuthController@doSignup'
 ));
-
-
-// sign in routes
-Route::get('signin', array(
-    'as' => 'auth.signin',
-    'uses' => 'AuthController@showSignin'
-));
-
-Route::post('signin', array(
-    'as' => 'auth.signin',
-    'uses' => 'AuthController@doSignin'
-));
-
-
-// sign out route
-Route::any('signout', array(
-    'as' => 'auth.signout',
-    'uses' => 'AuthController@doSignout'
-));
-
-
-
-
-
-
-
-
-
 
 
 /*
