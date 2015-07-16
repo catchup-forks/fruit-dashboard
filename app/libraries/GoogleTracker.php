@@ -70,16 +70,20 @@ class GoogleTracker {
      * @return (string) (url) The event POST url
      */
     private function makeEventUrl($ec, $ea, $el, $ev) {
+        /* Initialize replacer arrays to escape special chars in the url */
+        $och = array(' ',   '/',  '\\' );
+        $ech = array('%20', '%2', '%5C');
+        
         /* Create url with data */
         $url = $this->url.'?';
         $url .= 'v='.$this->version;
         $url .= '&tid='.$this->trackingID;
         $url .= '&cid='.$this->clientID;
         $url .= '&t=event';
-        $url .= '&ec='.$ec;
-        $url .= '&ea='.$ea;
+        $url .= '&ec='.str_replace($och, $ech, $ec);
+        $url .= '&ea='.str_replace($och, $ech, $ea);
         if (!is_null($el)) {
-            $url .= '&el='.$el;
+            $url .= '&el='.str_replace($och, $ech, $el);
         };
         if (!is_null($ev)) {
             $url .= '&ev='.strval($ev);

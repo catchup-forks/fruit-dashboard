@@ -14,30 +14,7 @@
 			@section('footer')
 				@include('meta.footer')
 			@show
-
-			@section('intercomScript')
-
-				<!-- Intercom Script -->
-				<script>
-		    	window.intercomSettings = {
-					@if (Auth::user())
-				    	name: "{{ Auth::user()->email }}",
-				        email: "{{ Auth::user()->email }}",
-				        created_at: "{{ Auth::user()->created_at }}",
-		    		@else
-		    			name: 'Demo',
-		    			email: 'Demo',
-		    			created_at: {{ strtotime('2015-03-17'); }},
-		    		@endif
-			    	app_id: "nch9zmp2"
-		    	};
-				</script>
-		
-				{{ HTML::script('js/intercom_io.js'); }}
-				<!-- / Intercom Script -->
-
-			@show
-		
+	
 			@section('mixpanelUserTracking')
 				<script type="text/javascript">
 					@if(Auth::user())

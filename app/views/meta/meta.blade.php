@@ -48,7 +48,11 @@
       
       <!-- Google Analytics -->
       @include('meta.google-analytics')
-      <!-- Google Analytics -->
+      <!-- /Google Analytics -->
+
+      <!-- Intercom IO -->
+      @include('meta.intercom-io')
+      <!-- /Intercom IO -->
 
       <!-- Mixpanel event -->
       {{ HTML::script('js/mixpanel_events.js') }}
