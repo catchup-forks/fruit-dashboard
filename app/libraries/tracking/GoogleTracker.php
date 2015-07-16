@@ -32,7 +32,7 @@ class GoogleTracker {
 
     /**
      * sendEvent: 
-     * Dispatches a google event based on the arguments.
+     * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
      *     (string) (ec) [Req] Event Category.
      *     (string) (ea) [Req] Event Action.
@@ -63,7 +63,7 @@ class GoogleTracker {
 
     /**
      * makeEventUrl: 
-     * Dispatches a google event based on the arguments.
+     * Makes the dispatch url from the arguments.
      * @param (string) (ec) [Req] Event Category.
      * @param (string) (ea) [Req] Event Action.
      * @param (string) (el) Event label.

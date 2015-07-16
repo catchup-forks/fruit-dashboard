@@ -2,10 +2,10 @@
 
 /**
 * -------------------------------------------------------------------------- 
-* IntercomTracker: 
+* MixpanelTracker: 
 *       Wrapper functions for server-side event tracking    
 * Usage:
-*       $tracker = new IntercomTracker();
+*       $tracker = new MixpanelTracker();
 *       $eventData = array(
 *           'en' => 'Event name', // Required.
 *           'meta' => array(
@@ -16,16 +16,13 @@
 *       $tracker->sendEvent($eventData);
 * -------------------------------------------------------------------------- 
 */
-class IntercomTracker {
+class MixpanelTracker {
     /* Class properties */
-    private $intercom;
+    private $mixpanel;
 
     /* Constructor */
     public function __construct(){
-        $this->intercom = IntercomClient::factory(array(
-            'app_id'  => $_ENV['INTERCOM_APP_ID'],
-            'api_key' => $_ENV['INTERCOM_API_KEY'],
-        ));
+        $this->mixpanel = Mixpanel::getInstance($_ENV['MIXPANEL_TOKEN']);
     }
 
     /**
@@ -39,13 +36,13 @@ class IntercomTracker {
     public function sendEvent($eventData) {
         if (App::environment('production')) {
             /* Build and send the request */
-            $this->intercom->createEvent(array(
-                "event_name" => $eventData['en'],
-                "created_at" => Carbon::now()->timestamp,
-                "user_id" => (Auth::user() ? Auth::user()->id : 0),
-                "metadata" => $eventData['meta']
-            ));
+            $this->mixpanel->track(
+                $eventData['en'],
+                $eventData['meta']
+            );
 
+            error_log($eventData['en']);
+            
             /* Return */
             return true;
         } else {
@@ -53,4 +50,4 @@ class IntercomTracker {
             return false;
         }
     }
-} /* IntercomTracker */
+} /* MixpanelTracker */
