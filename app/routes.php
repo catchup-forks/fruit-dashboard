@@ -1,9 +1,66 @@
 <?php
 
-Route::get('/', function()
-{
+/**
+ * --------------------------------------------------------------------------
+ * Global app routes
+ * --------------------------------------------------------------------------
+ */
+Route::get('/', function() {
     return Redirect::route('dashboard.dashboard');
 });
+
+/**
+ * --------------------------------------------------------------------------
+ * /signup | Signup wizard urls
+ * --------------------------------------------------------------------------
+ */
+Route::controller('signup', 'SignupWizardController', array(
+    'getAuthentication'     => 'signup.authentication',
+    'postAuthentication'    => 'signup.authentication',
+    'getPersonalWidgets'    => 'signup.personal-widgets',
+    'postPersonalWidgets'   => 'signup.personal-widgets',
+    'getFinancialConnect'   => 'signup.financial-connect',
+    'postFinancialConnect'  => 'signup.financial-connect',
+));
+
+Route::get('signup', array(
+    'as' => 'auth.signup',
+    'uses' => 'AuthController@showSignup'
+));
+
+Route::post('signup', array(
+    'as' => 'auth.signup',
+    'uses' => 'AuthController@doSignup'
+));
+
+
+// sign in routes
+Route::get('signin', array(
+    'as' => 'auth.signin',
+    'uses' => 'AuthController@showSignin'
+));
+
+Route::post('signin', array(
+    'as' => 'auth.signin',
+    'uses' => 'AuthController@doSignin'
+));
+
+
+// sign out route
+Route::any('signout', array(
+    'as' => 'auth.signout',
+    'uses' => 'AuthController@doSignout'
+));
+
+
+
+
+
+
+
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,41 +100,7 @@ if(!App::environment('production'))
     ));
 }
 
-/*
-|--------------------------------------------------------------------------
-| Auth Routes
-|--------------------------------------------------------------------------
-*/
 
-// sign up routes
-Route::get('signup', array(
-    'as' => 'auth.signup',
-    'uses' => 'AuthController@showSignup'
-));
-
-Route::post('signup', array(
-    'as' => 'auth.signup',
-    'uses' => 'AuthController@doSignup'
-));
-
-
-// sign in routes
-Route::get('signin', array(
-    'as' => 'auth.signin',
-    'uses' => 'AuthController@showSignin'
-));
-
-Route::post('signin', array(
-    'as' => 'auth.signin',
-    'uses' => 'AuthController@doSignin'
-));
-
-
-// sign out route
-Route::any('signout', array(
-    'as' => 'auth.signout',
-    'uses' => 'AuthController@doSignout'
-));
 
 
 // metric graph routes
