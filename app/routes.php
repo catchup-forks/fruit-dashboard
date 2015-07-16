@@ -49,7 +49,9 @@ Route::post('signup', array(
     'uses' => 'AuthController@doSignup'
 ));
 
-
+/**
+ * @todo: Development ROUTES should be moved into separated controllers
+ */
 /*
 |--------------------------------------------------------------------------
 | Dev routes (these routes are for testing API-s only)
@@ -69,7 +71,6 @@ if(!App::environment('production'))
         'as' => 'dev.braintree',
         'uses' => 'DevController@doBraintreePayment'
     ));
-
 
     Route::get('/users', array(
         'before' => 'auth|api_key',
