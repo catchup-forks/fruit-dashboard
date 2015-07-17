@@ -2,21 +2,22 @@
 
 class Widget extends Eloquent
 {
-    // MASS ASSIGNMENT -------------------------------------------------------
-    protected $fillable = array('*');
+    // -- Fields -- //
+    protected $guarded = array(
+        'state',
+        'settings',
+        'position'
+    );
+    protected $fillable = array(
+        'name',
+        'description',
+        'type',
+        'is_premium'
+    );
 
-    // DEFINE RELATIONSHIPS --------------------------------------------------
-
-    // each widget has lots of data
-    public function data() {
-        return $this->hasMany('Data');
-    }
-
-    // each widget has one connection
-    public function connection() {
-        return $this->hasOne('Connection');
-    }
+    // -- Relations -- //
+    public function data() { return $this->hasOne('Data'); }
+    public function dashboard() { return $this->hasOne('Dashboard'); }
 
 }
-
 ?>

@@ -3,83 +3,52 @@
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 
-
 class User extends Eloquent implements UserInterface
 {
-    protected $guarded = array();
+    // -- Fields -- //
+    protected $guarded = array(
+        'password',
+        'remember_token');
 
-    // DEFINE RELATIONSHIPS --------------------------------------------------
-    // each user has many connection
-    public function connections() {
-        return $this->hasMany('Connection');
-    }
+    protected $fillable = array(
+        'email',
+        'name',
+        'gender',
+        'phone_number',
+        'date_of_birth'
+    );
 
-    // each user BELONGS to many dashboards
-    public function dashboards() {
-        return $this->belongsToMany('Dashboard', 'users_dashboards', 'user_id', 'dashboard_id');
-    }
+    // -- Relations -- //https://connect.stripe.com/oauth/token
+    public function connections() { return $this->hasMany('Connection'); }
+    public function subscriptions() { return $this->hasMany('Subscriptions'); }
+    public function dashboards() { return $this->hasMany('Dashboard'); }
+    public function settings() { return $this->hasOne('Settings'); }
 
     use UserTrait;
+
     /**
-     * Testing if the user has connected a stripe account
-     *
+     * Testing if the user has connected a stripe account.
+
      * @return boolean
     */
-    public function isStripeConnected()
-    {
-        // at this point validation like this is all right
-        if (strlen($this->stripe_key) > 16 
-            || strlen($this->stripeUserId) > 1) {
-            // long enough key
+    public function isStripeConnected() {
+        if (Connection::where('user_id', $this->id)
+                      ->where('service', 'stripe')->first() !== null) {
             return True;
         }
-        // no key is given
         return False;
     }
 
      /**
-     * Testing if the user has connected a paypal account
+     * Testing if the user has connected a braintree account
      *
      * @return boolean
     */
-    public function isPayPalConnected()
-    {
-        // at this point validation like this is all right
-        if (strlen($this->paypal_key) > 16) {
-            // refreshtoken is longer than 16
-            return True;
-        }
-        // no valid refreshtoken is stored
+    public function isBraintreeConnected() {
         return False;
     }
 
-    public function isGoogleSpreadsheetConnected()
-    {
-        // at this point validation like this is all right
-        if (strlen($this->googleSpreadsheetRefreshToken) > 1) {
-            // long enough key
-            return True;
-        }
-        // no key is given
-        return False;
-    }
-
-
-    /**
-     * Testing if the user has connected at least one financial account
-     *
-     * @return boolean
-    */
-    public function isFinancialStuffConnected()
-    {
-        if ($this->isStripeConnected() 
-            || $this->isPayPalConnected()
-            ) 
-        {
-            // connected
-            return True;
-        }
-        // not connected
+    public function isGoogleSpreadsheetConnected() {
         return False;
     }
 
@@ -91,11 +60,11 @@ class User extends Eloquent implements UserInterface
     */
     public function isConnected()
     {
-        if ($this->isStripeConnected() 
+        if ($this->isStripeConnected()
             || $this->isPayPalConnected()
-            || $this->isBraintreeConnected() 
+            || $this->isBraintreeConnected()
             || $this->isGoogleSpreadsheetConnected()
-            ) 
+            )
         {
             // connected
             return True;
@@ -104,25 +73,6 @@ class User extends Eloquent implements UserInterface
         return False;
     }
 
-    public function isBraintreeConnected()
-    {
-        if ($this->isBraintreeCredentialsValid() && $this->btWebhookConnected && $this->ready=='connected')
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isBraintreeCredentialsValid()
-    {
-        if (strlen($this->btPublicKey) > 2)
-        {
-            return true;
-        }
-
-        return false;
-    }
 
 
     /*
@@ -138,18 +88,18 @@ class User extends Eloquent implements UserInterface
         if ($this->plan == 'trial' && $trialEndDate->isPast()){
             $this->detachPremiumWidgets();
             return true;
-        } 
+        }
         else if ($this->plan == 'trial_ended'){
             return true;
         }
-        else 
+        else
         {
             return false;
         }
     }
 
     public function trialWillEndInDays($days)
-    {   
+    {
         $daysRemaining = $this->daysRemaining();
 
         if ($this->plan == 'trial' && $daysRemaining < $days)
@@ -201,7 +151,7 @@ class User extends Eloquent implements UserInterface
         }
         if($this->plan != 'free')
         {
-            // the user is good paying customer (or trial period, whatever), 
+            // the user is good paying customer (or trial period, whatever),
             // let him/her connect more
             return true;
         } elseif($this->connectedServices < $_ENV['MAX_FREE_CONNECTIONS'])
@@ -210,7 +160,7 @@ class User extends Eloquent implements UserInterface
             return true;
         } else
         {
-            // the user is not paying (or trial ended), 
+            // the user is not paying (or trial ended),
             // and reached maximum number of allowed connections
             // don't let more connections
             return false;
@@ -229,7 +179,7 @@ class User extends Eloquent implements UserInterface
         # get the number of day in the year
         $numberOfDayInYear = date('z');
 
-        # if there is backgrounds-production directory, go with that, otherwise go with backgrounds 
+        # if there is backgrounds-production directory, go with that, otherwise go with backgrounds
         # (backgrounds-production is too large to be included in the git repository)
 
         $directory = '/img/backgrounds-production/';
@@ -245,7 +195,7 @@ class User extends Eloquent implements UserInterface
         if ($handle = opendir($dir)) {
             while (($file = readdir($handle)) !== false){
                 if (!in_array($file, array('.', '..')) && !is_dir($dir.$file) && !(substr($file, 0, 1 ) === ".")) {
-                    $fileListArray = array_add($fileListArray, $i, $file);                    
+                    $fileListArray = array_add($fileListArray, $i, $file);
                     $i++;
                 }
             }
@@ -270,12 +220,12 @@ class User extends Eloquent implements UserInterface
     */
 
     public function detachPremiumWidgets () {
-         
+
         foreach ($this->dashboards as $dashboard){
             $widgets = Widget::where('dashboard_id','=', $dashboard->pivot->dashboard_id)->get();
             Log::info($widgets);
             foreach ($widgets as $widget){
-               
+
                 if((strpos($widget->widget_type, 'google-spreadsheet') !== false ) ||
                         ($widget->widget_type == 'api')){
                     $widget->delete();

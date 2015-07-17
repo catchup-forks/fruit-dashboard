@@ -99,7 +99,7 @@ body {
 .greetings-name {
   border: 0;
   height: auto;
-  background: 0;
+  background: 0 !important;
   font-size: 54px;
   border-bottom: 3px solid #fff;
   box-shadow: none;
