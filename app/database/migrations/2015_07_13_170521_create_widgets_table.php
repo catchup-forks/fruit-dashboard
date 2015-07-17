@@ -16,7 +16,7 @@ class CreateWidgetsTable extends Migration {
 
             $table->integer('dashboard_id')->unsigned();
             $table->foreign('dashboard_id')
-                  ->references('id')->on('users')
+                  ->references('id')->on('dashboards')
                   ->onDelete('cascade');
             $table->integer('data_id')->unsigned()->nullable();
             $table->foreign('data_id')

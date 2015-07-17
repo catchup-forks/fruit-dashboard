@@ -7,7 +7,7 @@ class Settings extends Eloquent
 
     // -- Fields -- //
     protected $fillable = array(
-        'newsletter',
+        'newsletter_frequency',
         'background_enabled'
     );
 
