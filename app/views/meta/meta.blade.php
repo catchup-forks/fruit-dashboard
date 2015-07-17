@@ -99,7 +99,7 @@
     <!-- /Widget specific scripts -->
 
     @section ('pageAlert')
-      @include('meta.pageAlerts')
+      @include('meta.page-alerts')
     @show
   @show
      

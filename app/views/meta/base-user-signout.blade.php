@@ -28,7 +28,7 @@
 @show
 
 @section ('pageAlert')
-@include('meta.pageAlerts')
+@include('meta.page-alerts')
 @show
 
 @section('pageContent')
