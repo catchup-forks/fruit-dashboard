@@ -31,7 +31,7 @@
 			"app/models",
 			"app/database/migrations",
 			"app/database/seeds",
-			"app/exceptions.php",
+			"app/exceptions",
 		]
 	},
 	"scripts": {

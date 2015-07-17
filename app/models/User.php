@@ -33,7 +33,7 @@ class User extends Eloquent implements UserInterface
     */
     public function isStripeConnected() {
         if (Connection::where('user_id', $this->id)
-                      ->where('type', 'stripe')->first() !== null) {
+                      ->where('service', 'stripe')->first() !== null) {
             return True;
         }
         return False;

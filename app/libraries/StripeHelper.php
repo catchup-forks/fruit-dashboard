@@ -46,7 +46,7 @@ class StripeHelper
 
         // Getting access token from DB.
         $token = Connection::where('user_id', $user->id)
-                           ->where('type', 'stripe')
+                           ->where('service', 'stripe')
                            ->first()
                            ->access_token;
 
@@ -93,7 +93,7 @@ class StripeHelper
         $connection = new Connection(array(
             'access_token'  => $response['access_token'],
             'refresh_token' => $response['refresh_token'],
-            'type'          => 'stripe',
+            'service'          => 'stripe',
         ));
         $connection['user_id'] = $this->user->id;
         $connection->save();
@@ -132,7 +132,11 @@ class StripeHelper
         }
 
         // Delete old, save new.
-        StripePlan::where('user_id', $this->user->id)->delete();
+        foreach (StripePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
+            StripeSubscription::where('plan_id', $stripePlan->id)->delete();
+        }
+
+        stripeplan::where('user_id', $this->user->id)->delete();
         foreach ($plans as $plan) {
             $plan->save();
         }
@@ -151,7 +155,6 @@ class StripeHelper
         $this->connect($this->user);
 
         // Deleting all subscription to avoid constraints.
-        StripeSubscription::where('user_id', $this->user->id)->delete();
         $this->updatePlans();
         $subscriptions = array();
 
@@ -178,7 +181,6 @@ class StripeHelper
                     return array();
                 }
                 $new_subscription->plan()->associate($plan);
-                $new_subscription->user()->associate($this->user);
                 array_push($subscriptions, $new_subscription);
             }
         }

@@ -12,12 +12,5 @@ class Settings extends Eloquent
     );
 
     // -- Relations -- //
-    /**
-     * Returning the corresponding User object.
-     *
-     * @return a User object.
-    */
-    public function user() {
-        return $this->belongsTo('User');
-    }
+    public function user() { return $this->belongsTo('User'); }
 }

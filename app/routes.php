@@ -2,7 +2,7 @@
 
 Route::get('/', function()
 {
-    return Redirect::route('dashboard.dashboard');
+    return Redirect::route('dev.testing_page');
 });
 
 Route::get('/testing', array(

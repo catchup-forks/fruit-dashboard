@@ -6,16 +6,9 @@ class Connection extends Eloquent
     protected $fillable = array(
         'access_token',
         'refresh_token',
-        'type'
+        'service'
     );
 
     // -- Relations -- //
-    /**
-     * Returning the corresponding user object.
-     *
-     * @return a User object.
-    */
-    public function user() {
-        return $this->belongsTo('User');
-    }
+    public function user() { return $this->belongsTo('User'); }
 }

@@ -13,20 +13,6 @@ class Subscription extends Eloquent
     );
 
     // -- Relations -- //
-    /**
-     * Returning the corresponding user object.
-     *
-     * @return a User object.
-    */
-    public function user() {
-        return $this->belongsTo('User');
-    }
-    /**
-     * Returning the corresponding plan object.
-     *
-     * @return a Plan object.
-    */
-    public function plan() {
-        return $this->belongsTo('Plan');
-    }
+    public function user() { return $this->belongsTo('User'); }
+    public function plan() { return $this->belongsTo('Plan'); }
 }

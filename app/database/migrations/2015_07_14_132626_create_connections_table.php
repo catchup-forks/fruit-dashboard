@@ -21,7 +21,7 @@ class CreateConnectionsTable extends Migration {
 
             $table->string('access_token', 127);
             $table->string('refresh_token', 127);
-            $table->string('type', 31);
+            $table->string('service', 31);
 
             $table->timestamps();
         });

@@ -12,12 +12,5 @@ class Plan extends Eloquent
     );
 
     // -- Relations -- //
-    /**
-     * Returning the corresponding subscription objects.
-     *
-     * @return an array with the Subscriptions.
-    */
-    public function subscriptions() {
-        return $this->hasMany('Subscription');
-    }
+    public function subscriptions() { return $this->hasMany('Subscription'); }
 }
