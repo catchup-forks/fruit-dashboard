@@ -6,7 +6,7 @@
 
 @section('pageContent')
 
-<body @if(isset($isBackgroundOn)) @if($isBackgroundOn) style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed" @endif @endif>
+<body style="background: url({{$dailyBackgroundURL}}) no-repeat center center fixed">
 
 <div class="vertical-center">
   <div class="container">
