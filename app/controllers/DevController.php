@@ -36,7 +36,7 @@ class DevController extends Controller
         $clockWidget = new ClockWidget(array(
             'settings' => '',
             'state'    => 'active',
-            'position' => '{"sizex": 2, "sizey": 2, "row": 0, "col": 0}'
+            'position' => '{"size_x": 2, "size_y": 2, "row": 0, "col": 0}'
         ));
         $clockWidget->dashboard()
                 ->associate($user->dashboards()->first());

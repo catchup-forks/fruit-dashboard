@@ -6,21 +6,32 @@ class WidgetRESTController extends BaseController {
      * Save widget position.
      *
      * @param  int  $userId
-     * @param  string $json The position of the widget
      * @return Response
      */
-    public function saveWidgetPosition($userId, $json) {
+    public function saveWidgetPosition($userId) {
+        // Escaping invalid data.
+        if (!isset($_POST['position'])) {
+            throw new BadPosition("Missing data.", 1);
+        }
+
         $user = User::where('id','=',$userId)->first();
 
         if ($user) {
-            $widgetData = json_decode($json, TRUE);
+            $widgetData = json_decode($_POST['position'], TRUE)[0];
+
+            // Escaping invalid data.
+            if (!isset($widgetData['id'])) {
+                throw new BadPosition("Invalid json postion value: ".$_POST['position']."", 1);
+            }
+
             $widget = Widget::find($widgetData['id']);
 
             if ($widget === null) {
-                // Widget not found.
+                throw new BadPosition("Invalid widget: ".$_POST['position']."", 1);
                 return;
             }
-            $widget->setPosition($json);
+
+            $widget->setPosition($widgetData);
             return Response::make('everything okay', 200);
 
         } else {

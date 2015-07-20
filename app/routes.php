@@ -24,6 +24,11 @@ Route::get('/testing/select_personal_widgets', array(
     'uses' => 'DevController@showSelectPersonalWidgets'
 ));
 
+Route::post('/widgets/save-position/{userId}', array(
+    'uses'  => 'WidgetRESTController@saveWidgetPosition',
+));
+
+
 
 /**
  * --------------------------------------------------------------------------
@@ -291,10 +296,6 @@ Route::post('/api/events/braintree/{webhookId}', array(
  * @todo: Move these to the GeneralWidgetController
  */
 // AJAX endpoints
-Route::post('/widgets/save-position/{userId}/{position}', array(
-    'uses'  => 'WidgetRESTController@saveWidgetPosition',
-));
-
 Route::post('/widgets/save-text/{widgetId}/{text?}', array(
     'uses'  => 'WidgetRESTController@saveWidgetText',
 ));

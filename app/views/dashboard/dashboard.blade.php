@@ -62,9 +62,10 @@
          stop: function(e, ui, $widget) {
            positioning = gridster.serialize();
            positioning = JSON.stringify(positioning);
-           $.ajax({
+         $.ajax({
              type: "POST",
-             url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
+             data: {'position': positioning},
+             url: "/widgets/save-position/{{Auth::user()->id}}/"
            });
          }
        },
@@ -74,7 +75,8 @@
            positioning = JSON.stringify(positioning);
            $.ajax({
              type: "POST",
-             url: "/widgets/save-position/{{Auth::user()->id}}/" + positioning
+             data: positioning,
+             url: "/widgets/save-position/{{Auth::user()->id}}/"
            });
          }
        }

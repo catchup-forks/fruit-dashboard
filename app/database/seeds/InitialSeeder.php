@@ -6,6 +6,7 @@ class InitialSeeder extends Seeder
     public function run()
     {
         WidgetDescriptor::create(array(
+            'id'          => 1,
             'name'        => 'Clock widget',
             'description' => 'A simple clock',
             'type'        => 'clock',
@@ -22,6 +23,19 @@ class InitialSeeder extends Seeder
             'description' => 'Wouldn\'t it be great to receive a greeting message from your favourite browser every time you open a new tab?.',
             'type'        => 'greetings',
             'is_premium'  => FALSE
+        ));
+        Dashboard::create(array(
+            'id'         => '1',
+            'user_id'    => '1',
+            'name'       => 'First personal dashboard',
+            'background' => TRUE,
+        ));
+        ClockWidget::create(array(
+            'id'            => '1',
+            'dashboard_id'  => '1',
+            'descriptor_id' => '1',
+            'state'         => 'active',
+            'position'      => '{"col":3,"row":1,"size_x":3,"size_y":1}',
         ));
     }
 

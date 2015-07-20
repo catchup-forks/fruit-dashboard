@@ -23,22 +23,20 @@ class Widget extends Eloquent
      * @returns Position Object.
     */
     public function getPosition() {
-        Log::info(json_decode($this->position, TRUE));
         return json_decode($this->position);
     }
 
      /**
      * Setting the position of the model.
      *
-     * @param string (json) $json_position.
+     * @param array $decoded position from json.
      * @returns string A valid stripe conenct URI.
     */
-    public function setPosition($json_position) {
+    public function setPosition(array $decoded_position) {
         $valid_keys = array('size_x', 'size_y', 'col', 'row');
         $position = array();
 
         // Testing json position corruption.
-        $decoded_position = json_decode($json_position);
         if ($decoded_position === null) {
             throw new BadPosition("Invalid json postion value: $json_position", 1);
         }
@@ -48,8 +46,8 @@ class Widget extends Eloquent
             if (in_array($key, $valid_keys)) {
                 // There's a match in the array, saving position.
                 $position[$key] = $value;
-                // Removing to handle duplications.
-                unset($valid_keys, $key);
+                // Removing key to handle duplications.
+                unset($valid_keys[array_search($key, $valid_keys)]);
             }
         }
 

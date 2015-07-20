@@ -8,8 +8,8 @@
   data-id='{{ $widget->id }}'
   data-row="{{ $widget->getPosition()->row }}"
   data-col="{{ $widget->getPosition()->col }}"
-  data-sizex="{{ $widget->getPosition()->sizex }}"
-  data-sizey="{{ $widget->getPosition()->sizey }}"
+  data-sizex="{{ $widget->getPosition()->size_x }}"
+  data-sizey="{{ $widget->getPosition()->size_y }}"
 
   <a href="{{ URL::route('connect.deletewidget', $widget['widget_id']) }}">
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
