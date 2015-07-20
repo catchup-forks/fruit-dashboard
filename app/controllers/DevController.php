@@ -55,7 +55,7 @@ class DevController extends Controller
         $user = User::find(1);
 
         $stripe = new StripeHelper($user);
-        Log::info($stripe->calculateMRR());
+        Log::info($stripe->calculateMRR(TRUE));
 
         return Redirect::route('dev.testing_page');
     }
