@@ -23,6 +23,7 @@ class User extends Eloquent implements UserInterface
     public function subscriptions() { return $this->hasMany('Subscriptions'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
+    public function stripePlans() { return $this->hasMany('StripePlan'); }
 
     use UserTrait;
 
@@ -32,8 +33,8 @@ class User extends Eloquent implements UserInterface
      * @return boolean
     */
     public function isStripeConnected() {
-        if (Connection::where('user_id', $this->id)
-                      ->where('service', 'stripe')->first() !== null) {
+        if ($this->connections()->where('service', 'stripe')
+                                ->first() !== null) {
             return True;
         }
         return False;
@@ -52,9 +53,8 @@ class User extends Eloquent implements UserInterface
         return False;
     }
 
-
     /**
-     * Testing if the user has connected at least one account
+     * Testing if the user has connected at least one account.
      *
      * @return boolean
     */
@@ -64,16 +64,13 @@ class User extends Eloquent implements UserInterface
             || $this->isPayPalConnected()
             || $this->isBraintreeConnected()
             || $this->isGoogleSpreadsheetConnected()
-            )
-        {
+            ) {
             // connected
             return True;
         }
         // not connected
         return False;
     }
-
-
 
     /*
     |-------------------------------------

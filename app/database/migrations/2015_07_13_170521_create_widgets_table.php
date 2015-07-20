@@ -18,20 +18,20 @@ class CreateWidgetsTable extends Migration {
             $table->foreign('dashboard_id')
                   ->references('id')->on('dashboards')
                   ->onDelete('cascade');
+
+            $table->integer('descriptor_id')->unsigned();
+            $table->foreign('descriptor_id')
+                  ->references('id')->on('widget_descriptors')
+                  ->onDelete('cascade');
+
             $table->integer('data_id')->unsigned()->nullable();
             $table->foreign('data_id')
                   ->references('id')->on('data');
 
-            $table->string('name', 127);
-            $table->longtext('description')->nullable();
-
             $table->string('position', 127);
             $table->string('settings', 255);
 
-            $table->boolean('is_premium');
-
-            $table->enum('type', array('clock', 'quote', 'greeting', 'financial'));
-            $table->enum('state', array('active', 'setup_required'));
+            $table->enum('state', array('active', 'setup_required', 'hidden'));
         });
      }
 

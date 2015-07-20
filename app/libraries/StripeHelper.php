@@ -39,23 +39,22 @@ class StripeHelper
      * @returns The stripe plans.
      * @throws StripeNotConnected
     */
-    public function connect($user) {
-        if (!$user->isStripeConnected()) {
+    public function connect() {
+        if (!$this->user->isStripeConnected()) {
             throw new StripeNotConnected();
         }
 
         // Getting access token from DB.
-        $token = Connection::where('user_id', $user->id)
-                           ->where('service', 'stripe')
-                           ->first()
-                           ->access_token;
+        $token = $this->user->connections()
+            ->where('service', 'stripe')
+            ->first()->access_token;
 
         // Setting API key.
         \Stripe\Stripe::setApiKey($token);
     }
 
     /**
-     * Retrieving the access, and refresh tokens for the first time.
+     * Retrieving the access, and refresh tokens from authentication code.
      *
      * @param string $code The returned code by stripe.
      * @returns None
@@ -81,12 +80,17 @@ class StripeHelper
 
         // Invalid/No answer from Stripe.
         if ($response === null) {
-            throw new StripeConnectFailed('Stripe server error, please try again.', 1);
+            throw new StripeConnectFailed('Stripe connection error, please try again.', 1);
         }
 
         // Error handling.
         if (isset($response['error'])) {
             throw new StripeConnectFailed('Your connection expired, please try again.', 1);
+        }
+
+        // Deleting previous connnection.
+        if ($this->user->isStripeConnected()) {
+            $this->user->connections()->where('service', 'stripe')->delete();
         }
 
         // Creating a Connection instance, and saving to DB.
@@ -100,20 +104,102 @@ class StripeHelper
     }
 
     /**
+     * Retrieving the access token from a refresh token.
+     *
+     * @param string $code The returned code by stripe.
+     * @returns None
+     * @throws StripeConnectFailed
+    */
+    public function getNewAccessToken() {
+        // Building POST request.
+        if (!$this->user->isStripeConnected()) {
+            throw new StripeNotConnected();
+        }
+        $stripe_connection = $this->user->connections()->where('service', 'stripe')->first();
+        $url= Config::get('constants.STRIPE_ACCESS_TOKEN_URI');
+        $post_kwargs = 'client_secret=' . Config::get('constants.STRIPE_SECRET_KEY');
+        $post_kwargs .= '&refresh_token=' . $stripe_connection->refresh_token;
+        $post_kwargs .= '&grant_type=' . 'refresh_token';
+
+        // POST settings.
+        $ch = curl_init( $url );
+        curl_setopt( $ch, CURLOPT_POST, 1);
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, $post_kwargs);
+        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt( $ch, CURLOPT_HEADER, 0);
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+
+        // Retrieving response.
+        $response = json_decode(curl_exec( $ch ), TRUE);
+
+        // Invalid/No answer from Stripe.
+        if ($response === null) {
+            throw new StripeConnectFailed('Stripe server error, please try again.', 1);
+        }
+
+        // Error handling.
+        if (isset($response['error'])) {
+            throw new StripeConnectFailed('Your connection expired, please try again.', 1);
+        }
+
+        // Saving new token.
+        $stripe_connection->access_token = $response['access_token'];
+        $stripe_connection->save();
+
+    }
+    /**
+     * Calculating the MRR for the user.
+     *
+     * @param $update, boolean Whether or not sync the db.
+     * @returns float The value of the mrr.
+     * @throws StripeNotConnected
+    */
+    public function calculateMRR($update=False) {
+        $mrr = 0;
+
+        // Updating database, with the latest data.
+        if ($update) {
+            $this->updateSubscriptions();
+        }
+
+        // Iterating through the plans and subscriptions.
+        foreach ($this->user->stripePlans()->get() as $plan) {
+            foreach ($plan->subscriptions()->get() as $subscription) {
+                // Dealing only with active subscriptions.
+                if ($subscription->status == 'active') {
+                    //
+                    $value = $plan->amount * $subscription->quantity;
+                    switch ($plan->interval) {
+                        case 'day'  : $value *= 30; break;
+                        case 'week' : $value *= 4.33; break;
+                        case 'month': $value *= 1; break;
+                        case 'year' : $value *= 1/12; break;
+                        default: break;
+                    }
+                    $mrr += $value;
+                }
+            }
+        }
+        return $mrr;
+    }
+
+    // -- Private section -- //
+
+    /**
      * Updating the current stripe Plans.
      *
      * @returns The stripe plans.
      * @throws StripeNotConnected
     */
-    public function updatePlans() {
+    private function updatePlans() {
         // Connecting to stripe, and making query.
-        $this->connect($this->user);
+        $this->connect();
         try {
             $decoded_data = json_decode(
                 $this->loadJSON(\Stripe\Plan::all()), TRUE);
         } catch (\Stripe\Error\Authentication $e) {
             // Access token expired. Calling handler.
-            $this->getNewToken();
+            $this->getNewAccessToken();
         }
 
         // Getting the plans.
@@ -150,9 +236,9 @@ class StripeHelper
      * @returns The stripe plans.
      * @throws StripeNotConnected
     */
-    public function updateSubscriptions() {
+    private function updateSubscriptions() {
         // Connecting to stripe.
-        $this->connect($this->user);
+        $this->connect();
 
         // Deleting all subscription to avoid constraints.
         $this->updatePlans();
@@ -193,7 +279,6 @@ class StripeHelper
         return $subscriptions;
     }
 
-    // -- Private section -- //
     /**
      * Getting the stripe plans from an already setup stripe connection.
      *
@@ -212,13 +297,13 @@ class StripeHelper
     */
     private function getCustomers() {
         // Connecting to stripe, and making query.
-        $this->connect($this->user);
+        $this->connect();
         try {
             $decoded_data = json_decode(
                 $this->loadJSON(\Stripe\Customer::all()), TRUE);
         } catch (\Stripe\Error\Authentication $e) {
             // Access token expired. Calling handler.
-            $this->getNewToken();
+            $this->getNewAccessToken();
         }
 
         // Getting the plans.

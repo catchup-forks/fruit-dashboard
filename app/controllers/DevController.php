@@ -14,6 +14,7 @@ class DevController extends Controller
             Log::info('Stripe authentication failed for user ' + Input::get('error_description'));
         }
         $messages = array();
+
         // Looking for code.
         if (Input::get('code') !== null) {
 
@@ -26,6 +27,20 @@ class DevController extends Controller
                 Log::info($e->getMessage());
             }
         }
+        $dashboard = new Dashboard(array(
+            'name'       => 'High dashboard',
+            'background' => TRUE
+        ));
+        $dashboard->user()->associate($user);
+        $dashboard->save();
+        $clockWidget = new ClockWidget(array(
+            'settings' => '',
+            'state'    => 'hidden',
+            'position' => '{"size_x": 2, "size_y": 2, "row": 0, "col": 0}'
+        ));
+        $clockWidget->dashboard()
+                ->associate($user->dashboards()->first());
+        $clockWidget->save();
 
         // Return.
         return View::make('connectstripe')
@@ -40,8 +55,23 @@ class DevController extends Controller
         $user = User::find(1);
 
         $stripe = new StripeHelper($user);
-        $stripe->updateSubscriptions();
+        Log::info($stripe->calculateMRR(TRUE));
 
         return Redirect::route('dev.testing_page');
     }
+
+    /* PROTOTYPE CONTROLLERS */
+    public function showSignup() {
+
+    }
+
+    /* Login required at this point
+       Sending the widgetdescriptors to the view.
+    */
+    public function showSelectPersonalWidgets() {
+        return View::make('select_personal_widgets')
+            ->with('personalWidgets', WidgetDescriptor::where('type', '!=', 'financial')
+            ->get());
+    }
+
 }

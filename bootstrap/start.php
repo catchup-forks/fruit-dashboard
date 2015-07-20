@@ -27,7 +27,7 @@ $app = new Illuminate\Foundation\Application;
 $env = $app->detectEnvironment(function()
 {
 	$hostname = gethostname();
-	if ($hostname == 'server.abfinformatika.hu') 
+	if ($hostname == 'server.abfinformatika.hu')
 	{
 		if (basename(dirname(__DIR__)) == 'development-dashboard.tryfruit.com') {
 			return 'development';

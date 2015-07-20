@@ -44,7 +44,11 @@ class DashboardController extends BaseController
                     $metricsArray[$metric->date] = $metric->$statID;
                 }
                 ksort($metricsArray);
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
                 $array = $statDetails['metricClass']::show($metricsArray);
                 $array = array_add($array, 'widget_type', 'financial');
                 $allMetrics[] = $array;
@@ -120,7 +124,11 @@ class DashboardController extends BaseController
             );
             $allMetrics[] = $newMetricArray;
         } // /foreach
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
         # prepare stuff for other widgets end
         #####################################################
 
@@ -131,7 +139,11 @@ class DashboardController extends BaseController
                 'user'                          => $user,
                 // widgets
                 'allFunctions'                                  => $allMetrics,
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
                 // stripe stuff
                 'stripeButtonUrl'               => OAuth2::getAuthorizeURL(),
 
@@ -144,17 +156,43 @@ class DashboardController extends BaseController
                 // background stuff
                 'isBackgroundOn'                                => $user->isBackgroundOn,
                 'dailyBackgroundURL'                        => $user->dailyBackgroundURL(),
+<<<<<<< HEAD
                 
+=======
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
                 // to hide home button if on dashboard
                 'onDashboard'                                   => true,
             )
         );
     }
+<<<<<<< HEAD
+=======
+    /**
+     * Controller: showDashboard
+     *
+     * @return
+     * @todo This function should be removed from here
+     *
+     */
+    public function showDashboard() {
+        $user = Auth::user();
+
+        // Return.
+        return View::make('dashboard.dashboard')
+            ->with('dashboards', $user->dashboards);
+    }
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
 
     /**
      * showSinglestat
      * --------------------------------------------------
+<<<<<<< HEAD
      * @return 
+=======
+     * @return
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
      * @todo This function should be removed from here
      * --------------------------------------------------
      */
@@ -168,7 +206,11 @@ class DashboardController extends BaseController
                 ->with('error','Trial period ended.');
         }
         */
+<<<<<<< HEAD
         
+=======
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
         #####################################################
         # prepare stuff for stripe & braintree metrics start
 
@@ -180,7 +222,11 @@ class DashboardController extends BaseController
                                     ->orderBy('date','desc')
                                     ->take(31)
                                     ->get();
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
             foreach ($currentMetrics as $metricID => $statClassName) {
                 $metricsArray = array();
                 foreach ($metricValues as $metric) {
@@ -208,7 +254,11 @@ class DashboardController extends BaseController
                 return Redirect::route('dashboard.dashboard')
                     ->with('error', 'Widget does not exist.');
             }
+<<<<<<< HEAD
         } else 
+=======
+        } else
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
 
         # prepare stuff for stripe & braintree metrics end
         #####################################################
@@ -222,7 +272,11 @@ class DashboardController extends BaseController
 
             if (!$widget || $widget->data()->count() == 0) {
                 return Redirect::route('dashboard.dashboard')
+<<<<<<< HEAD
                     ->with('error', 'This widget is not yet filled with data. Try again in a few minutes.');                
+=======
+                    ->with('error', 'This widget is not yet filled with data. Try again in a few minutes.');
+>>>>>>> 9d904e9ec6e7764ce5969b69b2e90e3c33b7b7c4
             }
 
             # get min/max date
