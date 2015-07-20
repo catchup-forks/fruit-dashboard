@@ -44,7 +44,7 @@ class DashboardController extends BaseController
                     $metricsArray[$metric->date] = $metric->$statID;
                 }
                 ksort($metricsArray);
-                
+
                 $array = $statDetails['metricClass']::show($metricsArray);
                 $array = array_add($array, 'widget_type', 'financial');
                 $allMetrics[] = $array;
@@ -120,7 +120,7 @@ class DashboardController extends BaseController
             );
             $allMetrics[] = $newMetricArray;
         } // /foreach
-        
+
         # prepare stuff for other widgets end
         #####################################################
 
@@ -131,7 +131,7 @@ class DashboardController extends BaseController
                 'user'                          => $user,
                 // widgets
                 'allFunctions'                                  => $allMetrics,
-                
+
                 // stripe stuff
                 'stripeButtonUrl'               => OAuth2::getAuthorizeURL(),
 
@@ -144,17 +144,32 @@ class DashboardController extends BaseController
                 // background stuff
                 'isBackgroundOn'                                => $user->isBackgroundOn,
                 'dailyBackgroundURL'                        => $user->dailyBackgroundURL(),
-                
+
                 // to hide home button if on dashboard
                 'onDashboard'                                   => true,
             )
         );
     }
+    /**
+     * Controller: showDashboard
+     *
+     * @return
+     * @todo This function should be removed from here
+     *
+     */
+    public function showDashboard() {
+        $user = Auth::user();
+
+        // Return.
+        return View::make('dashboard.dashboard')
+            ->with('dashboards', $user->dashboards);
+    }
+
 
     /**
      * showSinglestat
      * --------------------------------------------------
-     * @return 
+     * @return
      * @todo This function should be removed from here
      * --------------------------------------------------
      */
@@ -168,7 +183,7 @@ class DashboardController extends BaseController
                 ->with('error','Trial period ended.');
         }
         */
-        
+
         #####################################################
         # prepare stuff for stripe & braintree metrics start
 
@@ -180,7 +195,7 @@ class DashboardController extends BaseController
                                     ->orderBy('date','desc')
                                     ->take(31)
                                     ->get();
-            
+
             foreach ($currentMetrics as $metricID => $statClassName) {
                 $metricsArray = array();
                 foreach ($metricValues as $metric) {
@@ -208,7 +223,7 @@ class DashboardController extends BaseController
                 return Redirect::route('dashboard.dashboard')
                     ->with('error', 'Widget does not exist.');
             }
-        } else 
+        } else
 
         # prepare stuff for stripe & braintree metrics end
         #####################################################
@@ -222,7 +237,7 @@ class DashboardController extends BaseController
 
             if (!$widget || $widget->data()->count() == 0) {
                 return Redirect::route('dashboard.dashboard')
-                    ->with('error', 'This widget is not yet filled with data. Try again in a few minutes.');                
+                    ->with('error', 'This widget is not yet filled with data. Try again in a few minutes.');
             }
 
             # get min/max date
