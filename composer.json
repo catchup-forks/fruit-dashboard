@@ -13,7 +13,8 @@
         "mixpanel/mixpanel-php" : "2.*",
         "nesbot/carbon": "~1.14",
         "google/apiclient": "1.0.*@beta",
-        "bradleyboy/laravel-braintree": "dev-master"
+        "bradleyboy/laravel-braintree": "dev-master",
+        "stripe/stripe-php": "*"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.3.*"
