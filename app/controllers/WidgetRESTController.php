@@ -2,196 +2,178 @@
 
 class WidgetRESTController extends BaseController {
 
-	/**
-	 * Save widget position.
-	 *
-	 * @param  int  $userId
-	 * @param  string $positions
-	 * @return Response
-	 */
-	public function saveWidgetPosition($userId, $json)
-	{
-		$user = User::where('id','=',$userId)->first();
+    /**
+     * Save widget position.
+     *
+     * @param  int  $userId
+     * @param  string $json The position of the widget
+     * @return Response
+     */
+    public function saveWidgetPosition($userId, $json) {
+        $user = User::where('id','=',$userId)->first();
 
-		if ($userId==1) {
-			return Response::make('suggest user to register',200);
-		}
+        if ($user) {
+            $widgetData = json_decode($json, TRUE);
+            $widget = Widget::find($widgetData['id']);
 
-		if ($user)
-		{
-			$widgetPositions = json_decode($json);
-			// Log::info($widgetPositions);
+            if ($widget === null) {
+                // Widget not found.
+                return;
+            }
+            $widget->setPosition($json);
+            return Response::make('everything okay', 200);
 
-			foreach ($widgetPositions as $widgetPosition) 
-			{
-				$widget = Widget::find($widgetPosition->id);
+        } else {
+            // no such user
+            return Response::json(array('error' => 'no such user'));
+        }
+    }
 
-				if($widget)
-				{
-					$pos = [
-						"col" 		=> $widgetPosition->col,
-						"row" 		=> $widgetPosition->row,
-						"size_x" 	=> $widgetPosition->size_x,
-						"size_y" 	=> $widgetPosition->size_y
-					];
-					$widget->position = json_encode($pos);
-					$widget->save();
-				}
-			}
+    /**
+     * Save widget text.
+     *
+     * @param  int  $widgetId
+     * @param  string $text
+     * @return Response
+     */
 
-			return Response::make('everything okay',200);
+    public function saveWidgetText($widgetId, $text = '')
+    {
+        $widgetData = Data::where('widget_id', $widgetId)->first();
 
-		} else {
-			// no such user
-			return Response::json(array('error' => 'no such user'));
-		}
-	}
+        if ($widgetData)
+        {
+            $widgetData->data_object = $text;
+            $widgetData->save();
 
-	/**
-	 * Save widget text.
-	 *
-	 * @param  int  $widgetId
-	 * @param  string $text
-	 * @return Response
-	 */
+            return Response::make('everything okay',200);
+        } else {
+            return Response::json(array('error' => 'bad widget id'));
+        }
+    }
 
-	public function saveWidgetText($widgetId, $text = '')
-	{
-		$widgetData = Data::where('widget_id', $widgetId)->first();
+    /**
+     * Save widget name.
+     *
+     * @param  int  $widgetId
+     * @param  string $newName
+     * @return Response
+     */
 
-		if ($widgetData)
-		{
-			$widgetData->data_object = $text;
-			$widgetData->save();
+    public function saveWidgetName($widgetId, $newName)
+    {
+        $widget = Widget::find($widgetId);
 
-			return Response::make('everything okay',200);		
-		} else {
-			return Response::json(array('error' => 'bad widget id'));
-		}
-	}
+        if ($widget)
+        {
+            $widget->widget_name = $newName;
+            $widget->save();
 
-	/**
-	 * Save widget name.
-	 *
-	 * @param  int  $widgetId
-	 * @param  string $newName
-	 * @return Response
-	 */
-
-	public function saveWidgetName($widgetId, $newName)
-	{
-		$widget = Widget::find($widgetId);
-
-		if ($widget)
-		{
-			$widget->widget_name = $newName;
-			$widget->save();
-
-			return Response::make('everything okay',200);		
-		} else {
-			return Response::json(array('error' => 'bad widget id'));
-		}
-	}	
+            return Response::make('everything okay',200);
+        } else {
+            return Response::json(array('error' => 'bad widget id'));
+        }
+    }
 
 
-	/**
-	 * Save user name.
-	 *
-	 * @param  int  $widgetId
-	 * @param  string $newName
-	 * @return Response
-	 */
+    /**
+     * Save user name.
+     *
+     * @param  int  $widgetId
+     * @param  string $newName
+     * @return Response
+     */
 
-	public function saveUserName($newName)
-	{
-		// selecting logged in user
-		$user = Auth::user(); 
-		
-		$user->name = $newName;
-			
-		$user->save();
-		
-		return Response::make('everything okay',200);
-	}	
+    public function saveUserName($newName)
+    {
+        // selecting logged in user
+        $user = Auth::user();
 
+        $user->name = $newName;
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
-	public function index()
-	{
-		//
-	}
+        $user->save();
+
+        return Response::make('everything okay',200);
+    }
 
 
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return Response
-	 */
-	public function create()
-	{
-		//
-	}
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        //
+    }
 
 
-	/**
-	 * Store a newly created resource in storage.
-	 *
-	 * @return Response
-	 */
-	public function store()
-	{
-		//
-	}
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        //
+    }
 
 
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store()
+    {
+        //
+    }
 
 
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function edit($id)
-	{
-		//
-	}
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        //
+    }
 
 
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		$dashboard = Dashboard::where('user_id','=',$id);
-	}
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id)
+    {
+        //
+    }
 
 
-	/**
-	 * Remove the specified resource from storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function destroy($id)
-	{
-		//
-	}
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function update($id)
+    {
+        $dashboard = Dashboard::where('user_id','=',$id);
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
 }

@@ -75,7 +75,7 @@ Route::post('signup', array(
  * @todo: This route originally used the 'before' => 'trial_ended' filter.
  */
 Route::controller('', 'DashboardController', array(
-    'showDashboard'  => 'dashboard.dashboard',
+    'getDashboard'  => 'dashboard.dashboard',
 ));
 
 /**

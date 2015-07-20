@@ -1,96 +1,96 @@
-@if (isset($widget_data['widget_ready']) && $widget_data['widget_ready'] == false)
+@if (isset($widget['widget_ready']) && $widget['widget_ready'] == false)
   @include('dashboard.widget-notready', [
-    'id' => $widget_data['widget_id']
+    'id' => $widget['widget_id']
    ])
 @else
 
 <li
-  data-id='{{ $widget_data['widget_id'] }}' 
-  data-row="{{ $widget_data['position']['row'] }}" 
-  data-col="{{ $widget_data['position']['col'] }}" 
-  data-sizex="{{ $widget_data['position']['x'] }}" 
-  data-sizey="{{ $widget_data['position']['y'] }}">
+  data-id='{{ $widget->id }}'
+  data-row="{{ $widget->getPosition()->row }}"
+  data-col="{{ $widget->getPosition()->col }}"
+  data-sizex="{{ $widget->getPosition()->sizex }}"
+  data-sizey="{{ $widget->getPosition()->sizey }}"
 
-  <a href="{{ URL::route('connect.deletewidget', $widget_data['widget_id']) }}">
+  <a href="{{ URL::route('connect.deletewidget', $widget['widget_id']) }}">
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 
   {{-- uncomment for a settings cog --}}
-  {{-- 
+  {{--
   <a href="#">
     <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
   </a>
    --}}
 
-  @if ($widget_data['widget_type'] == 'clock')
+  @if ($widget->descriptor->type == 'clock')
     @include('dashboard.widget-clock', [
-      'currentTime' => $widget_data['currentValue'],
-      'id' => $widget_data['widget_id']
+      'currentTime' => $widget['currentValue'],
+      'id' => $widget['widget_id']
      ])
   @endif
 
-  @if ($widget_data['widget_type'] =='google-spreadsheet-text-cell')
+  @if ($widget['widget_type'] =='google-spreadsheet-text-cell')
     @include('dashboard.widget-text', [
-      'text' => $widget_data['currentValue'], 
-      'id' => $widget_data['widget_id']
+      'text' => $widget['currentValue'],
+      'id' => $widget['widget_id']
     ])
   @endif
 
-  @if ($widget_data['widget_type'] =='google-spreadsheet-text-column')
+  @if ($widget['widget_type'] =='google-spreadsheet-text-column')
     @include('dashboard.widget-list', [
-      'list' => $widget_data['history'], 
-      'id' => $widget_data['widget_id']
+      'list' => $widget['history'],
+      'id' => $widget['widget_id']
     ])
   @endif
 
-  @if ($widget_data['widget_type'] =='iframe')
+  @if ($widget['widget_type'] =='iframe')
     @include('dashboard.widget-iframe', [
-      'iframeUrl' => json_decode($widget_data["currentValue"], true)['iframeURL'],
-      'id' => $widget_data['widget_id']
+      'iframeUrl' => json_decode($widget["currentValue"], true)['iframeURL'],
+      'id' => $widget['widget_id']
     ])
   @endif
 
-  @if ($widget_data['widget_type'] =='google-spreadsheet-text-column-random')
+  @if ($widget['widget_type'] =='google-spreadsheet-text-column-random')
     @include('dashboard.widget-text', [
-      'text' => $widget_data['currentValue'], 
-      'id' => $widget_data['widget_id']
+      'text' => $widget['currentValue'],
+      'id' => $widget['widget_id']
     ])
   @endif
 
-  @if ($widget_data['widget_type'] =='quote')
+  @if ($widget['widget_type'] =='quote')
     @include('dashboard.widget-quote', [
-      'quote' => json_decode($widget_data['currentValue'],true)['quote'], 
-      'author' => json_decode($widget_data['currentValue'],true)['author'], 
-      'id' => $widget_data['widget_id']
+      'quote' => json_decode($widget['currentValue'],true)['quote'],
+      'author' => json_decode($widget['currentValue'],true)['author'],
+      'id' => $widget['widget_id']
     ])
   @endif
 
-  @if($widget_data['widget_type'] == 'note')
+  @if($widget['widget_type'] == 'note')
     @include('dashboard.widget-note', [
-      'id' => $widget_data['widget_id'],
-      'currentValue' => $widget_data['currentValue'], 
-      'position' => $widget_data['position']
-    ])    
+      'id' => $widget['widget_id'],
+      'currentValue' => $widget['currentValue'],
+      'position' => $widget['position']
+    ])
   @endif
 
-  @if($widget_data['widget_type'] == 'greeting')
+  @if($widget['widget_type'] == 'greeting')
     @include('dashboard.widget-greeting', [
-      'id' => $widget_data['widget_id'],
-      'position' => $widget_data['position']
+      'id' => $widget['widget_id'],
+      'position' => $widget['position']
     ])
   @endif
 
-  @if($widget_data['widget_type'] == 'google-spreadsheet-line-column')
+  @if($widget['widget_type'] == 'google-spreadsheet-line-column')
     @include('dashboard.widget-graph', [
-      'id' => $widget_data['widget_id'],
-      'position' => $widget_data['position']
+      'id' => $widget['widget_id'],
+      'position' => $widget['position']
     ])
   @endif
 
-  @if ($widget_data['widget_type'] == 'text')
+  @if ($widget['widget_type'] == 'text')
     @include('dashboard.widget-text', [
-      'text' => $widget_data['currentValue'], 
-      'id' => $widget_data['widget_id']
+      'text' => $widget['currentValue'],
+      'id' => $widget['widget_id']
      ])
   @endif
 

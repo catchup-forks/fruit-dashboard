@@ -8,161 +8,21 @@
  */
 class DashboardController extends BaseController
 {
-    /**
-     * getDashboard
-     * --------------------------------------------------
-     * @return Renders the dashboard page
-     * --------------------------------------------------
-     */
-    public function getDashboard()
-    {
-        # If a visitor gets here render the signup wizard instead.
-
-        if (Auth::guest()) {
-            return Redirect::route('auth.signup');
-        }
-
-        $user = Auth::user();
-
-        #####################################################
-        # prepare stuff for stripe & braintree metrics start
-
-        $allMetrics = array();
-
-        if ($user->ready != 'notConnected') {
-            $currentMetrics = Calculator::currentMetrics();
-
-            $metricValues = Metric::where('user', $user->id)
-                                    ->orderBy('date','desc')
-                                    ->take(31)
-                                    ->get();
-
-            foreach ($currentMetrics as $statID => $statDetails) {
-
-                $metricsArray = array();
-                foreach ($metricValues as $metric) {
-                    $metricsArray[$metric->date] = $metric->$statID;
-                }
-                ksort($metricsArray);
-
-                $array = $statDetails['metricClass']::show($metricsArray);
-                $array = array_add($array, 'widget_type', 'financial');
-                $allMetrics[] = $array;
-            }
-        }
-
-        # prepare stuff for stripe & braintree metrics end
-        #####################################################
-
-        #####################################################
-        # prepare stuff for other widgets start
-
-        $widgets = $user->dashboards()->first()->widgets;
-
-        foreach ($widgets as $widget) {
-
-            # update widget_provider, if not set
-            if (!$widget->widget_provider) {
-                if (strpos('google-spreadsheet', $widget->widget_type)!==false) {
-                    $widget->widget_provider = 'googlespreadsheet';
-                } else {
-                    $widget->widget_provider = $widget->widget_type;
-                }
-                $widget->save();
-            }
-
-            $current_value = "";
-            $dataArray = array();
-
-            if ($widget->widget_ready == true) {
-
-                # create class name, f.e. stripe --> StripeHelper
-                $widgetClassName = ucfirst($widget->widget_provider).'Helper';
-
-                # method name
-                $widgetMethodName = 'createDashboardData';
-
-                # check if class & method exists, f.e. StripeHelper::createDashboardData
-                if(class_exists($widgetClassName) && method_exists($widgetClassName, $widgetMethodName)){
-
-                    # it does, create dashboard data
-                    list($current_value, $dataArray) = $widgetClassName::$widgetMethodName($widget);
-
-                } else {
-
-                    # it does not, log an error
-                    Log::error($widget->widget_type.' does not exist.');
-                }
-            }
-
-
-            $widgetPosition = json_decode($widget->position);
-            $position = [
-                'x'     => $widgetPosition->size_x,
-                'y'     => $widgetPosition->size_y,
-                'col'   => $widgetPosition->col,
-                'row'   => $widgetPosition->row,
-            ];
-
-            $newMetricArray = array(
-                "widget_id" => $widget->id,
-                "widget_type" => $widget->widget_type,
-                "widget_position" => $position,
-                "widget_type" => $widget->widget_type,
-                "widget_ready" => $widget->widget_ready,
-                "statName" => str_limit($widget->widget_name, $limit = 25, $end = '...'),
-                "fullName" => $widget->widget_name,
-                "positiveIsGood" => "true",
-                "history" => $dataArray,
-                "currentValue" => $current_value,
-                "oneMonthChange" => "",
-                "position" => $position,
-            );
-            $allMetrics[] = $newMetricArray;
-        } // /foreach
-
-        # prepare stuff for other widgets end
-        #####################################################
-
-        $client = GooglespreadsheetHelper::setGoogleClient();
-
-        return View::make('dashboard.dashboard',
-            array(
-                'user'                          => $user,
-                // widgets
-                'allFunctions'                                  => $allMetrics,
-
-                // stripe stuff
-                'stripeButtonUrl'               => OAuth2::getAuthorizeURL(),
-
-                // braintree stuff
-                //'braintree_connect_stepNumber'  => $braintree_connect_stepNumber,
-
-                // google spreadsheet stuff
-                'googleSpreadsheetButtonUrl'    => $client->createAuthUrl(),
-
-                // background stuff
-                'isBackgroundOn'                                => $user->isBackgroundOn,
-                'dailyBackgroundURL'                        => $user->dailyBackgroundURL(),
-
-                // to hide home button if on dashboard
-                'onDashboard'                                   => true,
-            )
-        );
-    }
-    /**
-     * Controller: showDashboard
+   /**
+     * Controller: getDashboard
      *
      * @return
      * @todo This function should be removed from here
      *
      */
-    public function showDashboard() {
-        $user = Auth::user();
+    public function getDashboard() {
+        Auth::loginUsingId(1);
+
+        // Getting the different types of widgets.
 
         // Return.
         return View::make('dashboard.dashboard')
-            ->with('dashboards', $user->dashboards);
+            ->with('dashboards', Auth::user()->dashboards);
     }
 
 

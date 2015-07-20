@@ -97,7 +97,7 @@ class StripeHelper
         $connection = new Connection(array(
             'access_token'  => $response['access_token'],
             'refresh_token' => $response['refresh_token'],
-            'service'          => 'stripe',
+            'service'       => 'stripe',
         ));
         $connection['user_id'] = $this->user->id;
         $connection->save();

@@ -12,15 +12,17 @@
   <div class="container grid-base fill-height">
     <div class="gridster not-visible">
       <ul>
-        @for ($i = 0; $i < count($allFunctions); $i++)
-
-          @include('dashboard.widget', ['widget_data' => $allFunctions[$i]])
-
-        @endfor
+        @foreach ($dashboards as $dashboard)
+          @foreach ($dashboard->widgets as $widget)
+            @if ($widget->status != 'hidden')
+              @include('dashboard.widget', ['widget' => $widget])
+            @endif
+          @endforeach
+        @endforeach
       </ul>
     </div>
   </div> <!-- /.container -->
-  
+
   @stop
 
   @section('pageScripts')
@@ -39,7 +41,7 @@
       var margin = 5;
       var widget_width = (containerWidth / numberOfCols) - (margin * 2);
       var widget_height = (containerHeight / numberOfRows) - (margin * 2);
-     
+
      gridster = $('.gridster ul').gridster({
        widget_base_dimensions: [widget_width, widget_height],
        widget_margins: [margin, margin],
@@ -77,7 +79,7 @@
          }
        }
      }).data('gridster');
-     
+
       $('.gridster.not-visible').fadeIn(500);
 
     });
