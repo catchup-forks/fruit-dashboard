@@ -1,6 +1,6 @@
 <?php
 
-class WidgetRESTController extends BaseController {
+class GeneralWidgetController extends BaseController {
 
     /**
      * Save widget position.
@@ -21,17 +21,19 @@ class WidgetRESTController extends BaseController {
 
             // Escaping invalid data.
             if (!isset($widgetData['id'])) {
-                throw new BadPosition("Invalid json postion value: ".$_POST['position']."", 1);
+                return Response::json(array('error' => 'Invalid JSON string.'));
             }
 
             $widget = Widget::find($widgetData['id']);
 
             if ($widget === null) {
-                throw new BadPosition("Invalid widget: ".$_POST['position']."", 1);
-                return;
+                return Response::json(array('error' => 'Invalid JSON string.'));
             }
-
-            $widget->setPosition($widgetData);
+            try{
+                $widget->setPosition($widgetData);
+            } catch (BadPosition $e) {
+                return Response::json(array('error' => $e->getMessage()));
+            }
             return Response::make('everything okay', 200);
 
         } else {

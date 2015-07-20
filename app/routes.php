@@ -24,11 +24,6 @@ Route::get('/testing/select_personal_widgets', array(
     'uses' => 'DevController@showSelectPersonalWidgets'
 ));
 
-Route::post('/widgets/save-position/{userId}', array(
-    'uses'  => 'WidgetRESTController@saveWidgetPosition',
-));
-
-
 
 /**
  * --------------------------------------------------------------------------
@@ -56,6 +51,23 @@ Route::controller('auth', 'AuthController', array(
 ));
 
 /**
+ * --------------------------------------------------------------------------
+ * AJAX endpoints | Widget settings
+ * --------------------------------------------------------------------------
+ */
+Route::post('/widgets/save-position/{userId}', array(
+    'uses'  => 'GeneralWidgetController@saveWidgetPosition',
+));
+
+/**
+ * --------------------------------------------------------------------------
+ * /dashboard | Dashboard urls
+ * --------------------------------------------------------------------------
+ */
+Route::controller('', 'DashboardController', array(
+    'anyDashboard' => 'dashboard.dashboard'
+));
+/**
  * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
  */
 Route::get('signup', array(
@@ -79,10 +91,6 @@ Route::post('signup', array(
 /**
  * @todo: This route originally used the 'before' => 'trial_ended' filter.
  */
-Route::controller('', 'DashboardController', array(
-    'getDashboard'  => 'dashboard.dashboard',
-));
-
 /**
  * @todo: This route should be removed from here
  */
@@ -292,21 +300,18 @@ Route::post('/api/events/braintree/{webhookId}', array(
     'uses'      => 'WebhookController@braintreeEvents',
 ));
 
-/**
- * @todo: Move these to the GeneralWidgetController
- */
 // AJAX endpoints
 Route::post('/widgets/save-text/{widgetId}/{text?}', array(
-    'uses'  => 'WidgetRESTController@saveWidgetText',
+    'uses'  => 'GeneralWidgetController@saveWidgetText',
 ));
 
 Route::post('/widgets/settings/name/{widgetId}/{newName}', array(
-    'uses'  => 'WidgetRESTController@saveWidgetName',
+    'uses'  => 'GeneralWidgetController@saveWidgetName',
 ));
 
 Route::post('/widgets/settings/username/{newName}', array(
     'before'    => 'auth',
-    'uses'  => 'WidgetRESTController@saveUserName',
+    'uses'  => 'GeneralWidgetController@saveUserName',
 ));
 
 /**

@@ -24,7 +24,7 @@ class DevController extends Controller
                 $stripe->getTokens(Input::get('code'));
             } catch (StripeConnectFailed $e) {
                 array_push($messages, $e->getMessage());
-                Log::info($e->getMessage());
+                Log::error($e->getMessage());
             }
         }
         $dashboard = new Dashboard(array(
