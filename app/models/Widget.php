@@ -14,8 +14,9 @@ class Widget extends Eloquent
     );
     public $timestamps = FALSE;
 
-    // This variable will be overwritten, with late static binding.
+    // These variable will be overwritten, with late static binding.
     public static $type = null;
+    public static $settingsFields = array();
 
     // -- Relations -- //
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -23,7 +24,7 @@ class Widget extends Eloquent
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
 
-     /**
+    /**
      * Getting the type of the widget.
      *
      * @returns string widget Type
@@ -31,39 +32,37 @@ class Widget extends Eloquent
     public function getType() {
         return static::$type;
     }
+    /**
+     * Getting the settings meta.
+     *
+     * @returns array The widget settings meta.
+    */
+    public function getSettingsFields() {
+        return static::$settingsFields;
+    }
 
      /**
-     * Creating a heterogeneous collection of the filtered widgets.
+     * Getting the correct widget from a general widget.
      *
-     * @param widgets $filteredWidgets from db.
-     * @returns array with the correct widgets.
+     * @returns mixed A specific Widget object.
     */
-    public static function getWidgets($filteredWidgets) {
-        $widgetCollection = array();
-        $descriptors = WidgetDescriptor::lists('type', 'id');
-        foreach ($filteredWidgets as $widget) {
-            $type = $descriptors[$widget->descriptor_id];
+    public function getSpecific() {
+        $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
 
-            // Creating classname from underscored type.
-            $className = str_replace(
-                '_', '',
-                ucwords(str_replace('_',' ', $type))
-            ) . "Widget";
+        // Creating new widget.
+        $newWidget = new $className(array(
+            'position' => $this->position,
+            'settings' => $this->settings,
+            'state'    => $this->state
+        ));
+        $newWidget->id = $this->id;
+        $newWidget->descriptor_id = $this->descriptor_id;
+        $newWidget->dashboard_id = $this->dashboard_id;
 
-            // Creating new widget.
-            $newWidget = new $className(array(
-                'position' => $widget->position,
-                'settings' => $widget->settings,
-                'state'    => $widget->state
-            ));
-            $newWidget->id = $widget->id;
-            $newWidget->descriptor_id = $widget->descriptor_id;
-            $newWidget->dashboard_id = $widget->dashboard_id;
-            array_push($widgetCollection, $newWidget);
-        }
-        return $widgetCollection;
+        return $newWidget;
+
     }
-    // -- Positioning --//
+
      /**
      * Getting the position from DB and converting it to an object.
      *
@@ -107,7 +106,7 @@ class Widget extends Eloquent
         $this->save();
     }
 
-    // -- Overridden methods -- //
+    /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
      *
@@ -138,7 +137,7 @@ class Widget extends Eloquent
     /**
      * Overriding all method to filter clock widgets.
      *
-     * @returns all the clock widgets.
+     * @returns all the specific widgets.
     */
     public static function all($columns = array('*')) {
         // By default calling general all.
@@ -146,8 +145,33 @@ class Widget extends Eloquent
             return parent::all();
         }
         return WidgetDescriptor::where('type', static::$type)
-                               ->first()->widgets();
+                               ->first()->widgets;
    }
 
+    /** Getting the laravel validation array.
+     *
+     * @returns array a laravel validation array.
+    */
+    public function getSettingsValidationArray() {
+        return array();
+    }
+
+    /** Getting the settings from db, and transforming it to assoc.
+     *
+     * @returns string widget Type
+    */
+    public function getSettings() {
+        return json_decode($this->settings, 1);
+    }
+
+    /** Transforming settings to JSON format.
+     *
+     * @param array $settings the settings array.
+     * @returns None
+    */
+    public function setSettings($settings) {
+        $this->settings = json_encode($settings);
+        $this->save();
+    }
 }
 ?>

@@ -8,11 +8,7 @@ class Dashboard extends Eloquent
     public $timestamps = FALSE;
 
     // -- Relations -- //
-    public function widgets() {
-        // Getting the widgets and the descriptors.
-        return Widget::getWidgets(
-               Widget::where('dashboard_id', $this->id)->get());
-    }
+    public function widgets() {return $this->hasMany('Widget');}
     public function user() { return $this->belongsTo('User'); }
 
 }

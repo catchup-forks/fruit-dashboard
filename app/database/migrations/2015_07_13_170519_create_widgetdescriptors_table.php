@@ -19,7 +19,7 @@ class CreateWidgetdescriptorsTable extends Migration {
 
             $table->boolean('is_premium');
 
-            $table->enum('type', array('clock', 'quote', 'greeting', 'financial'));
+            $table->string('type', 127);
         });
      }
 
