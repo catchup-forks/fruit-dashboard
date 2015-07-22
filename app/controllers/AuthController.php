@@ -17,11 +17,7 @@ class AuthController extends BaseController
      */
     public function getSignin()
     {
-        if (Auth::check()) {
-            Auth::logout();
-        }
-        $user = User::find(1);
-        
+        /* Render the page */
         return View::make('auth.signin');
     }
 
@@ -98,28 +94,6 @@ class AuthController extends BaseController
     }
 
     /**
-     * showSignup
-     * --------------------------------------------------
-     * @return 
-     * @todo THIS FUNCTION IS OBSOLETE
-     * --------------------------------------------------
-     */
-    public function showSignup()
-    {
-        if (Auth::check()) {
-            Auth::logout();
-        } 
-        $user = User::find(1);
-        return View::make('auth.signup',
-            array(
-                // background stuff
-                'isBackgroundOn' => $user->isBackgroundOn,
-                'dailyBackgroundURL' => $user->dailyBackgroundURL(), 
-            )
-        );
-    }
-
-    /**
      * doSignup
      * --------------------------------------------------
      * @return 
@@ -149,19 +123,19 @@ class AuthController extends BaseController
         } else {
             // validator success -> signup
 
-            // create user
-            $user = new User;
+            // // create user
+            // $user = new User;
 
-            // set auth info
-            $user->email = Input::get('email');
-            $user->password = Hash::make(Input::get('password'));
-            // if name input
-            $user->name = Input::get('name');
-            $user->ready = 'notConnected';
-            $user->summaryEmailFrequency = 'daily';
-            $user->plan = 'free';
-            $user->connectedServices = 0;
-            $user->save();
+            // // set auth info
+            // $user->email = Input::get('email');
+            // $user->password = Hash::make(Input::get('password'));
+            // // if name input
+            // $user->name = Input::get('name');
+            // $user->ready = 'notConnected';
+            // $user->summaryEmailFrequency = 'daily';
+            // $user->plan = 'free';
+            // $user->connectedServices = 0;
+            // $user->save();
 
             // create first dashboard for user
             $dashboard = new Dashboard;

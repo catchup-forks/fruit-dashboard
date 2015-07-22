@@ -11,6 +11,9 @@ class Plan extends Eloquent
         'description'
     );
 
+    // -- No timestamps -- //
+    public $timestamps = false; 
+
     // -- Relations -- //
     public function subscriptions() { return $this->hasMany('Subscription'); }
 }

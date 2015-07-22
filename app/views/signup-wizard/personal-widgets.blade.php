@@ -8,6 +8,13 @@
   @stop
 
   @section('pageContent') 
+    @if(Auth::check())
+        YES
+    @else
+        NO
+    @endif
+    
+    sadfasdf
   @stop
 
   @section('pageScripts')

@@ -2,7 +2,7 @@
 
 @section('body')
 
-  <body @if(Auth::user()->settings->background_enabled) style="background: url({{Background::dailyBackgroundURL()}}) no-repeat center center fixed" @endif>
+  <body style="background: url({{ Background::dailyBackgroundURL() }}) no-repeat center center fixed">
     @section('navbar')
       @include('meta.navbar')
     @show

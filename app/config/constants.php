@@ -20,6 +20,13 @@ return array(
      * ---------------------------------------------------------- */
     'US' => 'en_US',
 
+    /* ---------------------- TRIAL PERIOD ---------------------- *
+     * ---------------------------------------------------------- */
+    'TRIAL_PERIOD_IN_DAYS' => 14,
+
+    /**
+     * @todo This should be moved to .env variables.
+     */
      /* --------------- STRIPE RELATED --------------- */
     'STRIPE_SECRET_KEY'       => 'sk_test_wizVjDXOcT6iQelpaMVpYwDD',
     'STRIPE_CONNECT_URI'      => 'https://connect.stripe.com/oauth/authorize',

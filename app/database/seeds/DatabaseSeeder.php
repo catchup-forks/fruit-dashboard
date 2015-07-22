@@ -9,23 +9,26 @@ class DatabaseSeeder extends Seeder {
      */
     public function run()
     {
-        /* CONFIG::LOCAL */
+        /* CONFIG::ALL */
+        $this->call('PlanTableSeeder');
+
+        /* CONFIG::LOCAL ONLY */
         if (App::environment('local')) {
             Eloquent::unguard();
             $this->call('UserTableSeeder');
             $this->call('InitialSeeder');
 
-        /* CONFIG::DEVELOPMENT */
+        /* CONFIG::DEVELOPMENT ONLY */
         } else if (App::environment('development')) {
             Eloquent::unguard();
             $this->call('UserTableSeeder');
             $this->call('InitialSeeder');
 
-        /* CONFIG::STAGING */
+        /* CONFIG::STAGING ONLY */
         } else if (App::environment('staging')) {
             /* Nothing here */
 
-        /* CONFIG::PRODUCTION */
+        /* CONFIG::PRODUCTION ONLY */
         } else if (App::environment('production')) {
             /* Nothing here */
         
