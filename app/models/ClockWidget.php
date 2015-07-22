@@ -7,9 +7,12 @@ class ClockWidget extends Widget
 
     /* -- Settings -- */
     public static $settingsFields = array(
-        'am_pm' => array('name' => 'AM/pm', 'type' => 'SCHOICE', 'validation'),
+        'am_pm' => array('name' => 'AM/pm', 'type' => 'SCHOICE', 'validation' => 'required'),
         'f1' => array('name' => 'Field#1', 'type' => 'TEXT'),
-        'f2' => array('name' => 'Field#3', 'type' => 'INT'),
+        'f2' => array(
+            'name'       => 'Field#2',
+            'type'       => 'INT',
+            'validation' => 'required'),
         'f3' => array('name' => 'Field#3', 'type' => 'DATE'),
         'f4' => array('name' => 'Field#4', 'type' => 'FLOAT'),
         'f5' => array('name' => 'Field#5', 'type' => 'TEXT'),

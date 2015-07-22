@@ -14,11 +14,7 @@
   @foreach ($widget->getSettingsFields() as $field=>$meta)
     {{ $meta['name'] }}:
     @if ($meta['type'] == "SCHOICE")
-      <select name="{{$field}}" id="id_{{$field}}">
-          @foreach($widget->$field() as $key=>$value)
-            <option value="{{ $key }}">{{ $value }}</option>
-          @endforeach
-      </select>
+      {{ Form::select($field, $widget->$field()) }}
     @else
       <input type="text" name="{{ $field }}" id="id_{{ $field }}">
     @endif

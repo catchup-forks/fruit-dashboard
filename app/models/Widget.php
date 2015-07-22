@@ -150,10 +150,39 @@ class Widget extends Eloquent
 
     /** Getting the laravel validation array.
      *
+     * @param array Input all the inputs.
      * @returns array a laravel validation array.
     */
     public function getSettingsValidationArray() {
-        return array();
+        $validationArray = array();
+
+        foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
+            $validationString = '';
+
+            // Looking for custom validation.
+            if (isset($fieldMeta['validation'])) {
+                $validationString .= $fieldMeta['validation']."|";
+            }
+
+            // Doing type based validation.
+            if ($fieldMeta['type'] == 'SCHOICE') {
+                $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|";
+            } else if ($fieldMeta['type'] == 'INT') {
+                $validationString .= 'integer|';
+            } else if ($fieldMeta['type'] == 'FLOAT') {
+                $validationString .= 'numeric|';
+            } else if ($fieldMeta['type'] == 'DATE') {
+                $validationString .= 'date|';
+            }
+
+            // Adding validation to the return array.
+            if (strlen($validationString) > 0) {
+                $validationArray[$fieldName] = rtrim($validationString, '|');
+            }
+        }
+
+        // Return.
+        return $validationArray;
     }
 
     /** Getting the settings from db, and transforming it to assoc.

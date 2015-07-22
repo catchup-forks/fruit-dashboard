@@ -21,22 +21,21 @@ class GeneralWidgetController extends BaseController {
     /* -- Edit settings -- */
     public function getEditWidgetSettings($widgetID) {
         Auth::loginUsingId(1);
-
         // Getting the editable widget.
         try {
             $widget = $this->widgetExists($widgetID)->getSpecific();
         } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
-                ->with('error', $e);
+                ->with('error', $e->getMessage());
         }
 
         // Rendering view.
         return View::make('widgets.widget-settings')
-            ->with('widget', $widget);
+            ->with('widget', $widget)
+            ->with('error', 'hello');
     }
 
     public function postEditWidgetSettings($widgetID) {
-        Auth::loginUsingId(1);
 
         // Getting the editable widget.
         try {
@@ -50,14 +49,19 @@ class GeneralWidgetController extends BaseController {
         $validator = forward_static_call_array(
             array('Validator', 'make'),
             array(
-                array('f1' => 'required|max:3'),
-                array('f2' => 'required|min:5')
+                Input::all(),
+                $widget->getSettingsValidationArray()
             )
         );
-        Log::info($validator->fails());
-        // Redirect.
-        return Redirect::route('widget.edit-settings', array($widgetID));
-    }
+
+        if ($validator->fails()) {
+            // Redirect.
+            return Redirect::route('widget.edit-settings', array($widgetID))
+                ->with('error', "fuck you");
+        }
+        return Redirect::route('widget.edit-settings', array($widgetID))
+            ->with('success', "Widget successfully updated.");
+   }
 
     /* -- AJAX functions -- */
 
