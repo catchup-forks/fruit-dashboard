@@ -43,11 +43,10 @@ class SignupWizardController extends BaseController
             $user = $this->createUser(Input::all());
 
             /* Log in the user*/
-            $status = Auth::attempt(Input::only('email', 'password'));
+            Auth::login($user);
 
             /* Redirect to next step */
-            return Redirect::route('signup-wizard.personal-widgets')
-                ->with('success', 'Thank you for your personal info. You have been logged in.');
+            return Redirect::route('signup-wizard.personal-widgets');
 
         /* Validator failed */
         } else {
@@ -67,6 +66,12 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getPersonalWidgets() {
+        if (Auth::check()) {
+            error_log('YES');
+        } else {
+            error_log('NO');
+        }
+
         /* Render the page */
         return View::make('signup-wizard.personal-widgets');
     }

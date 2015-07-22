@@ -13,8 +13,6 @@
     @else
         NO
     @endif
-    
-    sadfasdf
   @stop
 
   @section('pageScripts')

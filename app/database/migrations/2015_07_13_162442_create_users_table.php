@@ -20,7 +20,7 @@ class CreateUsersTable extends Migration {
             $table->string('phone_number', 16)->nullable();
             $table->date('date_of_birth')->nullable();
 
-            $table->string('remember_token',100);
+            $table->rememberToken();
             $table->timestamps();
         });
     }

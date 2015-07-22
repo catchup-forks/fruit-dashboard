@@ -30,7 +30,6 @@ return array(
 	*/
 
 	'lifetime' => 43200,
-
 	'expire_on_close' => false,
 
 	/*
@@ -122,7 +121,7 @@ return array(
 	|
 	*/
 
-	'domain' => null,
+	'domain' => $_ENV['APP_URL'],
 
 	/*
 	|--------------------------------------------------------------------------

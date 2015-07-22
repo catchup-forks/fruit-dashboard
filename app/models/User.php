@@ -5,10 +5,11 @@ use Illuminate\Auth\UserInterface;
 
 class User extends Eloquent implements UserInterface
 {
-    // -- Fields -- //
+    /* -- Fields -- */
     protected $guarded = array(
         'password',
-        'remember_token');
+        'remember_token',
+    );
 
     protected $fillable = array(
         'email',
@@ -29,9 +30,8 @@ class User extends Eloquent implements UserInterface
 
     /**
      * Testing if the user has connected a stripe account.
-
      * @return boolean
-    */
+     */
     public function isStripeConnected() {
         if ($this->connections()->where('service', 'stripe')
                                 ->first() !== null) {
