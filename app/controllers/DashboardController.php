@@ -16,7 +16,7 @@ class DashboardController extends BaseController
      * @return Renders the dashboard page
      * --------------------------------------------------
      */
-    public function getDashboard() {
+    public function anyDashboard() {
         Auth::loginUsingId(1);
 
         // Getting the different types of widgets.

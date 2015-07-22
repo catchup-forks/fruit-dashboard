@@ -22,13 +22,7 @@ class AuthController extends BaseController
         }
         $user = User::find(1);
         
-        return View::make('auth.signin',
-            array(
-                // background stuff
-                'isBackgroundOn' => $user->isBackgroundOn,
-                'dailyBackgroundURL' => $user->dailyBackgroundURL(), 
-            )
-        );
+        return View::make('auth.signin');
     }
 
     /**
