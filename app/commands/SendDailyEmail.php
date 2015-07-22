@@ -101,12 +101,12 @@ class SendDailyEmail extends Command {
 								);
 
 							
-							$email = Mailman::make('emails.notification.summary')
-								->with($data)
-								->to($user->email)
-								->subject('Daily summary')
-								//->show();
-								->send();
+							// $email = Mailman::make('emails.notification.summary')
+							// 	->with($data)
+							// 	->to($user->email)
+							// 	->subject('Daily summary')
+							// 	//->show();
+							// 	->send();
 
 							//File::put(public_path().'/emails/summary_email.html',$email);
 
@@ -169,12 +169,12 @@ class SendDailyEmail extends Command {
 
 
 							// send the email to the user
-							$email = Mailman::make('emails.notification.summary')
-								->with($data)
-								->to($user->email)
-								->subject('Weekly summary')
-								//->show();
-								->send();
+							// $email = Mailman::make('emails.notification.summary')
+							// 	->with($data)
+							// 	->to($user->email)
+							// 	->subject('Weekly summary')
+							// 	//->show();
+							// 	->send();
 
 							//File::put(public_path().'/emails/summary_email.html',$email);
 								

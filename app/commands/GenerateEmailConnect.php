@@ -37,13 +37,13 @@ class GenerateEmailConnect extends Command {
 	 */
 	public function fire()
 	{
-		$email = Mailman::make('emails.notification.connected')
-        	->to('rashan86@gmail.com')
-        	->subject('Your metrics are ready!')
-        	->show();
-//        	->send();
+// 		$email = Mailman::make('emails.notification.connected')
+//         	->to('rashan86@gmail.com')
+//         	->subject('Your metrics are ready!')
+//         	->show();
+// //        	->send();
 
-        File::put(public_path().'/emails/connected_email.html',$email);
+//         File::put(public_path().'/emails/connected_email.html',$email);
 	}
 
 }

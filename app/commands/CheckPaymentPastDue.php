@@ -74,11 +74,11 @@ class CheckPaymentPastDue extends Command {
 
 						// send email to the user about the upgrade
 						$data = array();
-						$email = Mailman::make('emails.payment.upgrade')
-							->with($data)
-							->to($user->email)
-							->subject('Upgrade')
-							->send();
+						// $email = Mailman::make('emails.payment.upgrade')
+						// 	->with($data)
+						// 	->to($user->email)
+						// 	->subject('Upgrade')
+						// 	->send();
 					}
 
 				} else {
@@ -115,11 +115,11 @@ class CheckPaymentPastDue extends Command {
 							'plan' => $foundPlan,
 							);
 
-						$email = Mailman::make('emails.payment.downgrade')
-							->with($data)
-							->to($user->email)
-							->subject('Downgrade')
-							->send();
+						// $email = Mailman::make('emails.payment.downgrade')
+						// 	->with($data)
+						// 	->to($user->email)
+						// 	->subject('Downgrade')
+						// 	->send();
 						// FIXME - should the subscription be cancelled?
 					
 					} // /if - overdue subscription found

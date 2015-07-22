@@ -64,11 +64,11 @@ class TrialEndCheck extends Command {
 				
 				// send email
 				$data = array('user' => $user);
-				Mailman::make('emails.trial.trialWillEnd')
-					->with($data)
-					->to($user->email)
-					->subject('[Fruit Analytics] Your free trial is ending.')
-					->send();
+				// Mailman::make('emails.trial.trialWillEnd')
+				// 	->with($data)
+				// 	->to($user->email)
+				// 	->subject('[Fruit Analytics] Your free trial is ending.')
+				// 	->send();
 			}
 
 			if($user->trialWillEndExactlyInDays(-1))
@@ -78,11 +78,11 @@ class TrialEndCheck extends Command {
 
 				// send email
 				$data = array('user' => $user);
-				Mailman::make('emails.trial.trialEndedFirst')
-					->with($data)
-					->to($user->email)
-					->subject('[Fruit Analytics] Your free trial is ended')
-					->send();
+				// Mailman::make('emails.trial.trialEndedFirst')
+				// 	->with($data)
+				// 	->to($user->email)
+				// 	->subject('[Fruit Analytics] Your free trial is ended')
+				// 	->send();
 			}
 			if($user->trialWillEndExactlyInDays(-7))
 			{
@@ -91,11 +91,11 @@ class TrialEndCheck extends Command {
 
 				// send email
 				$data = array('user' => $user);
-				Mailman::make('emails.trial.trialEndedSecond')
-					->with($data)
-					->to($user->email)
-					->subject('[Fruit Analytics] ')
-					->send();
+				// Mailman::make('emails.trial.trialEndedSecond')
+				// 	->with($data)
+				// 	->to($user->email)
+				// 	->subject('[Fruit Analytics] ')
+				// 	->send();
 			}
 			if($user->trialWillEndExactlyInDays(-14))
 			{
@@ -104,11 +104,11 @@ class TrialEndCheck extends Command {
 
 				// send email
 				$data = array('user' => $user);
-				Mailman::make('emails.trial.trialEndedThird')
-					->with($data)
-					->to($user->email)
-					->subject('[Fruit Analytics]')
-					->send();
+				// Mailman::make('emails.trial.trialEndedThird')
+				// 	->with($data)
+				// 	->to($user->email)
+				// 	->subject('[Fruit Analytics]')
+				// 	->send();
 			}
 		}
 	}
