@@ -9,9 +9,27 @@ class DatabaseSeeder extends Seeder {
      */
     public function run()
     {
-        Eloquent::unguard();
-        $this->call('UserTableSeeder');
-        $this->call('InitialSeeder');
+        /* CONFIG::LOCAL */
+        if (App::environment('local')) {
+            Eloquent::unguard();
+            $this->call('UserTableSeeder');
+            $this->call('InitialSeeder');
+
+        /* CONFIG::DEVELOPMENT */
+        } else if (App::environment('development')) {
+            Eloquent::unguard();
+            $this->call('UserTableSeeder');
+            $this->call('InitialSeeder');
+
+        /* CONFIG::STAGING */
+        } else if (App::environment('staging')) {
+            /* Nothing here */
+
+        /* CONFIG::PRODUCTION */
+        } else if (App::environment('production')) {
+            /* Nothing here */
+        
+        }
 
         //$this->call('UserOneSeeder');
         //$this->call('UserTrialPremiumTestSeeder');
