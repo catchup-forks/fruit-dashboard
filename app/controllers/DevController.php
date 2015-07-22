@@ -27,6 +27,7 @@ class DevController extends Controller
                 Log::error($e->getMessage());
             }
         }
+        /*
         $dashboard = new Dashboard(array(
             'name'       => 'High dashboard',
             'background' => TRUE
@@ -40,7 +41,9 @@ class DevController extends Controller
         ));
         $clockWidget->dashboard()
                 ->associate($user->dashboards()->first());
-        $clockWidget->save();
+        $clockWidget->save(); */
+        Log::info(ClockWidget::all()->count());
+        Log::info(QuoteWidget::all()->count());
 
         // Return.
         return View::make('connectstripe')

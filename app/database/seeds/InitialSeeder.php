@@ -13,15 +13,15 @@ class InitialSeeder extends Seeder
             'is_premium'  => FALSE
         ));
         WidgetDescriptor::create(array(
-            'name'        => 'Inspirational quotes',
+            'name'        => 'Quotes',
             'description' => 'Get inspired every day, by this awesome widget.',
-            'type'        => 'inspirational_quotes',
+            'type'        => 'quote',
             'is_premium'  => FALSE
         ));
         WidgetDescriptor::create(array(
             'name'        => 'Greetings',
             'description' => 'Wouldn\'t it be great to receive a greeting message from your favourite browser every time you open a new tab?.',
-            'type'        => 'greetings',
+            'type'        => 'greeting',
             'is_premium'  => FALSE
         ));
         Dashboard::create(array(

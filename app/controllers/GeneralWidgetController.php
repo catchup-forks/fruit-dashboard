@@ -1,6 +1,65 @@
 <?php
 
 class GeneralWidgetController extends BaseController {
+    /**
+     * A function to return the widget from the ID.
+     *
+     * @param  int $userId
+     * @throws WidgetDoesNotExist
+     * @returns mixed Response on fail, widget otherwise.
+     */
+    private function widgetExists($widgetID) {
+        $widget = Widget::find($widgetID);
+
+        // Widget not found.
+        if ($widget === null) {
+            throw new WidgetDoesNotExist("Widget not found", 1);
+        }
+        return $widget;
+    }
+
+    /* -- Edit settings -- */
+    public function getEditWidgetSettings($widgetID) {
+        Auth::loginUsingId(1);
+
+        // Getting the editable widget.
+        try {
+            $widget = $this->widgetExists($widgetID)->getSpecific();
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e);
+        }
+
+        // Rendering view.
+        return View::make('widgets.widget-settings')
+            ->with('widget', $widget);
+    }
+
+    public function postEditWidgetSettings($widgetID) {
+        Auth::loginUsingId(1);
+
+        // Getting the editable widget.
+        try {
+            $widget = $this->widgetExists($widgetID)->getSpecific();
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e);
+        }
+
+        // Validation.
+        $validator = forward_static_call_array(
+            array('Validator', 'make'),
+            array(
+                array('f1' => 'required|max:3'),
+                array('f2' => 'required|min:5')
+            )
+        );
+        Log::info($validator->fails());
+        // Redirect.
+        return Redirect::route('widget.edit-settings', array($widgetID));
+    }
+
+    /* -- AJAX functions -- */
 
     /**
      * Save widget position.
@@ -14,9 +73,7 @@ class GeneralWidgetController extends BaseController {
             throw new BadPosition("Missing data.", 1);
         }
 
-        $user = User::where('id','=',$userId)->first();
-
-        if ($user) {
+        if (User::find($userId)) {
             $widgetData = json_decode($_POST['position'], TRUE)[0];
 
             // Escaping invalid data.

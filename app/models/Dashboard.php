@@ -8,7 +8,7 @@ class Dashboard extends Eloquent
     public $timestamps = FALSE;
 
     // -- Relations -- //
-    public function widgets() { return $this->hasMany('Widget'); }
+    public function widgets() {return $this->hasMany('Widget');}
     public function user() { return $this->belongsTo('User'); }
 
 }
