@@ -91,10 +91,10 @@ class PaymentController extends BaseController
 
 				// send email to the user
 				try {
-					$email = Mailman::make('emails.payment.upgrade')
-						->to($user->email)
-						->subject('Upgrade')
-						->send();
+					// $email = Mailman::make('emails.payment.upgrade')
+					// 	->to($user->email)
+					// 	->subject('Upgrade')
+					// 	->send();
 				} catch (Exception $e)
 				{
 					Log::error('Upgrade email sending error');
@@ -142,10 +142,10 @@ class PaymentController extends BaseController
 			IntercomHelper::cancelled($user);
 
 			try {
-				$email = Mailman::make('emails.payment.downgrade')
-					->to($user->email)
-					->subject('Downgrade')
-					->send();
+				// $email = Mailman::make('emails.payment.downgrade')
+				// 	->to($user->email)
+				// 	->subject('Downgrade')
+				// 	->send();
 			} catch (Exception $e)
 			{
 				Log::error('Downgrade email sending error');

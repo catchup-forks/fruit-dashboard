@@ -2,53 +2,40 @@
 
 /**
  * --------------------------------------------------------------------------
- * Global app routes
+ * Root url
  * --------------------------------------------------------------------------
  */
 Route::get('/', function() {
     return Redirect::route('dashboard.dashboard');
 });
-/**
- * @todo: Remove this after redesign
- */
-Route::get('/testing', array(
-    'as' => 'dev.testing_page',
-    'uses' => 'DevController@showTesting'
-));
-Route::get('/testing/stripe_load', array(
-    'as' => 'dev.stripe_load',
-    'uses' => 'DevController@showGetStripeData'
-));
-Route::get('/testing/select_personal_widgets', array(
-    'as' => 'dev.select_personal_widgets',
-    'uses' => 'DevController@showSelectPersonalWidgets'
-));
-
 
 /**
  * --------------------------------------------------------------------------
  * /signup | Signup wizard urls
  * --------------------------------------------------------------------------
  */
-Route::controller('signup', 'SignupWizardController', array(
-    'getAuthentication'         => 'signup.authentication',
-    'postAuthentication'        => 'signup.authentication',
-    'getPersonalWidgets'        => 'signup.personal-widgets',
-    'postPersonalWidgets'       => 'signup.personal-widgets',
-    'getFinancialConnections'   => 'signup.financial-connections',
-    'postFinancialConnections'  => 'signup.financial-connections',
-));
+include 'routes/signup-wizard.php';
 
 /**
  * --------------------------------------------------------------------------
  * /auth | Authentication urls
  * --------------------------------------------------------------------------
  */
-Route::controller('auth', 'AuthController', array(
-    'getSignin'  => 'auth.signin',
-    'postSignin' => 'auth.signin',
-    'anySignout' => 'auth.signout',
-));
+include 'routes/auth.php';
+
+/**
+ * --------------------------------------------------------------------------
+ * /testing | Testing urls (except for production server)
+ * --------------------------------------------------------------------------
+ */
+include 'routes/testing.php';
+
+/**
+ * --------------------------------------------------------------------------
+ * /dashboard | Dashboard urls
+ * --------------------------------------------------------------------------
+ */
+include 'routes/dashboard.php';
 
 /**
  * --------------------------------------------------------------------------
@@ -59,14 +46,7 @@ Route::post('/widgets/save-position/{userId}', array(
     'uses'  => 'GeneralWidgetController@saveWidgetPosition',
 ));
 
-/**
- * --------------------------------------------------------------------------
- * /dashboard | Dashboard urls
- * --------------------------------------------------------------------------
- */
-Route::controller('', 'DashboardController', array(
-    'anyDashboard' => 'dashboard.dashboard'
-));
+
 /**
  * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
  */

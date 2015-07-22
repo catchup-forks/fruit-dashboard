@@ -1,4 +1,4 @@
-@extends('meta.base-user')
+@extends('meta.base-user-signout')
 
   @section('pageTitle')
     Signup | Authentication
