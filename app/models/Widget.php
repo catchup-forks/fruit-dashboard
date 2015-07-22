@@ -28,10 +28,40 @@ abstract class Widget extends Eloquent
      *
      * @returns string widget Type
     */
-    public function getTyoe() {
+    public function getType() {
         return static::$type;
     }
 
+     /**
+     * Creating a heterogeneous collection of the filtered widgets.
+     *
+     * @param widgets $filteredWidgets from db.
+     * @returns array with the correct widgets.
+    */
+    public static function getWidgets($filteredWidgets) {
+        $widgetCollection = array();
+        $descriptors = WidgetDescriptor::lists('type', 'id');
+        foreach ($filteredWidgets as $widget) {
+            $type = $descriptors[$widget->descriptor_id];
+
+            // Creating classname from underscored type.
+            $className = str_replace(
+                '_', '',
+                ucwords(str_replace('_',' ', $type))
+            ) . "Widget";
+
+            // Creating new widget.
+            $newWidget = new $className(array(
+                'position' => $widget->position,
+                'settings' => $widget->settings,
+                'state'    => $widget->state
+            ));
+            $newWidget->descriptor_id = $widget->descriptor_id;
+            $newWidget->dashboard_id = $widget->dashboard_id;
+            array_push($widgetCollection, $newWidget);
+        }
+        return $widgetCollection;
+    }
     // -- Positioning --//
      /**
      * Getting the position from DB and converting it to an object.

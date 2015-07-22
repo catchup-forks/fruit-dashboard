@@ -13,7 +13,7 @@
     <div class="gridster not-visible">
       <ul>
         @foreach ($dashboards as $dashboard)
-          @foreach ($dashboard->widgets as $widget)
+          @foreach ($dashboard->widgets() as $widget)
             @if ($widget->status != 'hidden')
               @include('dashboard.widget', ['widget' => $widget])
             @endif
