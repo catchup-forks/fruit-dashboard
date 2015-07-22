@@ -1,6 +1,6 @@
 <?php
 
-abstract class Widget extends Eloquent
+class Widget extends Eloquent
 {
 
     // -- Table specs -- //
@@ -56,6 +56,7 @@ abstract class Widget extends Eloquent
                 'settings' => $widget->settings,
                 'state'    => $widget->state
             ));
+            $newWidget->id = $widget->id;
             $newWidget->descriptor_id = $widget->descriptor_id;
             $newWidget->dashboard_id = $widget->dashboard_id;
             array_push($widgetCollection, $newWidget);

@@ -7,15 +7,6 @@ class Data extends Eloquent
 
     // -- Fields -- //
     protected $fillable = array('raw_value');
-
-    // -- Relations -- //
-    /**
-     * Returning the corresponding Widget objects.
-     *
-     * @return an array of Widget objects.
-    */
-    public function widgets() {
-    }
 }
 
 ?>
