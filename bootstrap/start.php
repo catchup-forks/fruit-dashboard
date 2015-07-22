@@ -26,7 +26,6 @@ $app = new Illuminate\Foundation\Application;
 
 $env = $app->detectEnvironment(function()
 {
-	return 'local';
 	$hostname = gethostname();
 	if ($hostname == 'server.abfinformatika.hu')
 	{
