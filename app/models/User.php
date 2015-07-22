@@ -18,7 +18,7 @@ class User extends Eloquent implements UserInterface
         'date_of_birth'
     );
 
-    // -- Relations -- //https://connect.stripe.com/oauth/token
+    // -- Relations -- //
     public function connections() { return $this->hasMany('Connection'); }
     public function subscriptions() { return $this->hasMany('Subscriptions'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }

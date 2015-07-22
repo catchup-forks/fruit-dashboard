@@ -28,8 +28,8 @@ class CreateWidgetsTable extends Migration {
             $table->foreign('data_id')
                   ->references('id')->on('data');
 
-            $table->string('position', 127);
-            $table->string('settings', 255);
+            $table->string('position', 127)->nullable();
+            $table->string('settings', 255)->nullable();
 
             $table->enum('state', array('active', 'setup_required', 'hidden'));
         });

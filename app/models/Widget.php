@@ -1,7 +1,11 @@
 <?php
 
-class Widget extends Eloquent
+abstract class Widget extends Eloquent
 {
+
+    // -- Table specs -- //
+    protected $table = "widgets";
+
     // -- Fields -- //
     protected $fillable = array(
         'state',
@@ -10,11 +14,23 @@ class Widget extends Eloquent
     );
     public $timestamps = FALSE;
 
+    // This variable will be overwritten, with late static binding.
+    public static $type = null;
+
     // -- Relations -- //
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->hasOne('Data'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
+
+     /**
+     * Getting the type of the widget.
+     *
+     * @returns string widget Type
+    */
+    public function getTyoe() {
+        return static::$type;
+    }
 
     // -- Positioning --//
      /**
@@ -59,6 +75,48 @@ class Widget extends Eloquent
         $this->position = json_encode($position);
         $this->save();
     }
+
+    // -- Overridden methods -- //
+    /**
+     * Overriding save to add descriptor automatically.
+     *
+     * @returns the saved object.
+    */
+    public function save(array $options=array()) {
+        // By default calling general save.
+        if (!static::$type) {
+            return parent::save();
+        }
+        // Associating descriptor.
+        $clockWidgetDescriptor = WidgetDescriptor::where('type', static::$type)->first();
+
+        // Checking descriptor.
+        if ($clockWidgetDescriptor === null) {
+            throw new DescriptorDoesNotExist(
+                "The '".static::$type."' widget descriptor does not exist. ", 1);
+        }
+
+        // Assigning descriptor.
+        $this->descriptor()
+             ->associate($clockWidgetDescriptor);
+
+        // Calling parent.
+        return parent::save();
+    }
+
+    /**
+     * Overriding all method to filter clock widgets.
+     *
+     * @returns all the clock widgets.
+    */
+    public static function all($columns = array('*')) {
+        // By default calling general all.
+        if (!static::$type) {
+            return parent::all();
+        }
+        return WidgetDescriptor::where('type', static::$type)
+                               ->first()->widgets();
+   }
 
 }
 ?>

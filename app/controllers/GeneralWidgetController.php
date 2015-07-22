@@ -14,9 +14,7 @@ class GeneralWidgetController extends BaseController {
             throw new BadPosition("Missing data.", 1);
         }
 
-        $user = User::where('id','=',$userId)->first();
-
-        if ($user) {
+        if (User::find($userId)) {
             $widgetData = json_decode($_POST['position'], TRUE)[0];
 
             // Escaping invalid data.

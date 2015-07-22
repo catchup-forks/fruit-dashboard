@@ -25,5 +25,8 @@ return array(
     'STRIPE_CONNECT_URI'      => 'https://connect.stripe.com/oauth/authorize',
     'STRIPE_ACCESS_TOKEN_URI' => 'https://connect.stripe.com/oauth/token',
     'STRIPE_CLIENT_ID'        => 'ca_6bePhtk1mE54xai3CJrZ5lXu2uaciboU',
+
+     /* --------------- WIDGET RELATED --------------- */
+     'WIDGET_TYPES' => array('clock', 'quote'),
 );
 

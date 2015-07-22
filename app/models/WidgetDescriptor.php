@@ -11,5 +11,8 @@ class WidgetDescriptor extends Eloquent
     );
     public $timestamps = FALSE;
 
+    // -- Relations -- //
+    public function widgets() { return $this->hasMany('Widget', 'descriptor_id'); }
+
 }
 ?>

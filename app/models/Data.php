@@ -15,7 +15,6 @@ class Data extends Eloquent
      * @return an array of Widget objects.
     */
     public function widgets() {
-        return $this->hasMany('Widget');
     }
 }
 
