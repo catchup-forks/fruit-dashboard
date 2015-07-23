@@ -31,8 +31,7 @@ class GeneralWidgetController extends BaseController {
 
         // Rendering view.
         return View::make('widgets.widget-settings')
-            ->with('widget', $widget)
-            ->with('error', 'hello');
+            ->with('widget', $widget);
     }
 
     public function postEditWidgetSettings($widgetID) {
@@ -57,7 +56,7 @@ class GeneralWidgetController extends BaseController {
         if ($validator->fails()) {
             // Redirect.
             return Redirect::route('widget.edit-settings', array($widgetID))
-                ->with('error', "fuck you");
+                ->with('error', "Please correct the form errors.");
         }
         return Redirect::route('widget.edit-settings', array($widgetID))
             ->with('success', "Widget successfully updated.");
