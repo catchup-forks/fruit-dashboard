@@ -1,6 +1,6 @@
 <?php
 
-class PlanTableSeeder extends Seeder
+class PlanSeeder extends Seeder
 {
 
     public function run()
@@ -25,6 +25,6 @@ class PlanTableSeeder extends Seeder
         ));
     }
 
-}
+} /* PlanSeeder */
 
 

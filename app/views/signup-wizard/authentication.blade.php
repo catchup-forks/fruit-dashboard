@@ -24,7 +24,7 @@
                 </h1>
 
             <!-- Form -->
-            {{ Form::open(array('route' => 'signup-wizard.authentication', 'id' => 'signup-form_id' )) }}
+            {{ Form::open(array('route' => 'signup-wizard.authentication', 'id' => 'signup-form-id' )) }}
             {{ Form::text('name', Input::old('name'), array('autofocus' => true, 'autocomplete' => 'off', 'class' => 'form-control input-lg text-white drop-shadow text-center greetings-name', 'id' => 'username_id')) }}
             </div>
 

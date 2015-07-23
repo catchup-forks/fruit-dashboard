@@ -10,7 +10,8 @@ class DatabaseSeeder extends Seeder {
     public function run()
     {
         /* CONFIG::ALL */
-        $this->call('PlanTableSeeder');
+        $this->call('PlanSeeder');
+        $this->call('WidgetDescriptorSeeder');
 
         /* CONFIG::LOCAL ONLY */
         if (App::environment('local')) {

@@ -66,7 +66,6 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getPersonalWidgets() {
-
         /* Render the page */
         return View::make('signup-wizard.personal-widgets');
     }
@@ -78,6 +77,14 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------     
      */
     public function postPersonalWidgets() {
+        /* Check for authenticated user, redirect if nobody found */
+        if (!Auth::check()) {
+            return Redirect::route('signup-wizard.authentication');
+        }
+        
+        /* Create the personal dashboard based on the inputs */
+        $dashboard = $this->makePersonalAutoDashboard(Auth::user(), Input::all());
+        
         /* Render the page */
         return View::make('signup-wizard.personal-widgets');
     }
@@ -112,7 +119,8 @@ class SignupWizardController extends BaseController
 
     /**
      * createUser
-     * creates a new User object from the POST data
+     * creates a new User object (and related models) 
+     * from the POST data
      * --------------------------------------------------
      * @return ($user) (User) The new User object
      * --------------------------------------------------
@@ -122,18 +130,18 @@ class SignupWizardController extends BaseController
         $user = new User;
 
         /* Set authentication info */
-        $user->email = $input['email'];
+        $user->email    = $input['email'];
         $user->password = Hash::make($input['password']);
-        $user->name = $input['name'];
+        $user->name     = $input['name'];
         
         /* Save the user */
         $user->save();
 
         /* Create default settings for the user */
         $settings = new Settings;
-        $settings->user_id = $user->id;
+        $settings->user_id              = $user->id;
         $settings->newsletter_frequency = 0;
-        $settings->background_enabled = true;
+        $settings->background_enabled   = true;
 
         /* Save settings */
         $settings->save();
@@ -141,17 +149,43 @@ class SignupWizardController extends BaseController
         /* Create default subscription for the user */
         $plan = Plan::where('name', 'Free')->first();
         $subscription = new Subscription;
-        $subscription->user_id = $user->id;
-        $subscription->plan_id = $plan->id;
+        $subscription->user_id              = $user->id;
+        $subscription->plan_id              = $plan->id;
         $subscription->current_period_start = Carbon::now();
-        $subscription->current_period_end = Carbon::now()->addDays(Config::get('constants.TRIAL_PERIOD_IN_DAYS'));
-        $subscription->status = 'active';
+        $subscription->current_period_end   = Carbon::now()->addDays(Config::get('constants.TRIAL_PERIOD_IN_DAYS'));
+        $subscription->status               = 'active';
 
         /* Save subscription */
         $subscription->save();
 
         /* Return */
         return $user;
+    }
+
+    /**
+     * makePersonalAutoDashboard
+     * creates a new Dashboard object and personal widgets 
+     * from the POST data
+     * --------------------------------------------------
+     * @return ($dashboard) (Dashboard) The new Dashboard object
+     * --------------------------------------------------
+     */
+    private function makePersonalAutoDashboard($user, $input) {
+        /* Create new dashboard */
+        $dashboard = new Dashboard;
+
+        $dashboard->user_id     = $user->id;
+        $dashboard->name        = 'My personal dashboard';
+        $dashboard->background  = 'On';
+
+        /* Save dashboard object */
+        $dashboard->save();
+
+        /* Create clock widget */
+        
+
+        /* Return */
+        return $dashboard;
     }
 
 } /* SignupWizardController */

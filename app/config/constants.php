@@ -24,6 +24,12 @@ return array(
      * ---------------------------------------------------------- */
     'TRIAL_PERIOD_IN_DAYS' => 14,
 
+    /* ----------------- WIDGET DESCRIPTOR IDS ------------------ *
+     * ---------------------------------------------------------- */
+    'WD_ID_CLOCK'       => 1,
+    'WD_ID_QUOTES'      => 2,
+    'WD_ID_GREETINGS'   => 3,
+
     /**
      * @todo This should be moved to .env variables.
      */

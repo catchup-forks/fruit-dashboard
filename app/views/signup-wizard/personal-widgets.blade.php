@@ -8,11 +8,22 @@
   @stop
 
   @section('pageContent') 
-    @if(Auth::check())
-        YES
-    @else
-        NO
-    @endif
+    <div class="vertical-center">
+        <div class="container">
+            <!-- Form -->
+            {{ Form::open(array('route' => 'signup-wizard.financial-connections', 'id' => 'personal-widgets-form-id' )) }}
+            
+            <div class="form-actions text-center">
+                {{ Form::submit('Next' , array(
+                    'id' => 'id_next',
+                    'class' => 'btn btn-primary btn-flat',
+                    'onClick' => '')) }}
+            </div> <!-- / .form-actions -->
+
+            {{ Form::close() }}
+
+        </div> <!-- /.container -->
+    </div> <!-- /.vertical-center -->
   @stop
 
   @section('pageScripts')
