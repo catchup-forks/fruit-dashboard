@@ -8,10 +8,16 @@
  */
 class DashboardController extends BaseController
 {
+    /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
+    
    /**
-     * Controller: getDashboard
-     * returns the user dashboard, or redirects to signup wizard
+     * anyDashboard
      * --------------------------------------------------
+     * returns the user dashboard, or redirects to signup wizard
      * @return Renders the dashboard page
      * --------------------------------------------------
      */

@@ -10,6 +10,12 @@ class AuthController extends BaseController
 {
 
     /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
+    
+    /**
      * getSignin
      * --------------------------------------------------
      * @return Renders the signin page
