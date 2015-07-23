@@ -46,10 +46,10 @@ include 'routes/widget.php';
 
 /**
  * --------------------------------------------------------------------------
- * /testing | Testing urls (except for production server)
+ * /dev | Testing urls (except for production server)
  * --------------------------------------------------------------------------
  */
-include 'routes/testing.php';
+include 'routes/development.php';
 
 
 /**
@@ -93,28 +93,28 @@ if(!App::environment('production'))
     // braintree development routes
 
     Route::get('/braintree', array(
-        'as' => 'dev.braintree',
+        'as' => 'development.braintree',
         'uses' => 'DevController@showBraintree'
     ));
 
     Route::post('/braintree', array(
-        'as' => 'dev.braintree',
+        'as' => 'development.braintree',
         'uses' => 'DevController@doBraintreePayment'
     ));
 
     Route::get('/users', array(
         'before' => 'auth|api_key',
-        'as' => 'dev.users',
+        'as' => 'development.users',
         'uses' => 'DevController@showUsers'
     ));
 
     Route::get('/test', array(
-        'as'   => 'dev.test',
+        'as'   => 'development.test',
         'uses' => 'DevController@showTest'
     ));
 
     Route::get('/email/{email}', array(
-        'as'    => 'dev.email',
+        'as'    => 'development.email',
         'uses'  => 'DevController@showEmail'
     ));
 }

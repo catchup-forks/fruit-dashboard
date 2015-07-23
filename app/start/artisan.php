@@ -10,11 +10,4 @@
 | the console gets access to each of the command object instances.
 |
 */
-Artisan::add(new GetEvents);
-Artisan::add(new CalculateMetrics);
-Artisan::add(new SendDailyEmail);
-Artisan::add(new MigrateExternalPackages);
-Artisan::add(new GenerateEmailConnect);
-Artisan::add(new GenerateEmails);
-Artisan::add(new TrialEndCheck);
-Artisan::add(new CheckPaymentPastDue);
+

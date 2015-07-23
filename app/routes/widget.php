@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Routes for widget pages
  * @see GeneralWidgetController

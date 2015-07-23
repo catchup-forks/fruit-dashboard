@@ -1,12 +1,32 @@
 <?php
 
+/**
+ * --------------------------------------------------------------------------
+ * GeneralWidgetController: Handles the widget related functions
+ * --------------------------------------------------------------------------
+ */
 class GeneralWidgetController extends BaseController {
+    
     /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
+    
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
+
+    /**
+     * getWidget
+     * --------------------------------------------------
      * A function to return the widget from the ID.
-     *
-     * @param  int $userId
+     * @param (int) ($widgetID) The ID of the widget
      * @throws WidgetDoesNotExist
-     * @returns mixed Response on fail, widget otherwise.
+     * @return mixed Response on fail, widget otherwise.
+     * --------------------------------------------------
      */
     private function getWidget($widgetID) {
         $widget = Widget::find($widgetID)->getSpecific();
@@ -252,4 +272,4 @@ class GeneralWidgetController extends BaseController {
     {
         //
     }
-}
+} /* GeneralWidgetController */
