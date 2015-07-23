@@ -65,7 +65,7 @@
          $.ajax({
              type: "POST",
              data: {'position': positioning},
-             url: "/widgets/save-position/{{Auth::user()->id}}/"
+             url: "/widget/save-position/{{Auth::user()->id}}/"
            });
          }
        },
@@ -76,7 +76,7 @@
            $.ajax({
              type: "POST",
              data: {'position': positioning},
-             url: "/widgets/save-position/{{Auth::user()->id}}/"
+             url: "/widget/save-position/{{Auth::user()->id}}/"
            });
          }
        }

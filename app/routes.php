@@ -44,15 +44,6 @@ include 'routes/dashboard.php';
  */
 include 'routes/widget.php';
 
-/**
- * --------------------------------------------------------------------------
- * AJAX endpoints | Widget settings
- * --------------------------------------------------------------------------
- */
-Route::post('/widgets/save-position/{userId}', array(
-    'uses'  => 'GeneralWidgetController@saveWidgetPosition',
-));
-
 
 /**
  * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete

@@ -22,7 +22,7 @@ Route::group([
      * AJAX endpoints | Widget settings
      * ------------------------------------------------------------------------
      */
-    Route::post('/widgets/save-position/{userId}', array(
+    Route::post('/save-position/{userId}', array(
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ));
 });
