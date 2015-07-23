@@ -6,13 +6,13 @@
  * --------------------------------------------------------------------------
  */
 class GeneralWidgetController extends BaseController {
-    
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    
+
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
@@ -90,7 +90,11 @@ class GeneralWidgetController extends BaseController {
             ->with('success', "Widget successfully updated.");
     }
 
-    /* -- AJAX functions -- */
+    /**
+     * ================================================== *
+     *                   ajax functions                   *
+     * ================================================== *
+     */
 
     /**
      * Save widget position.
@@ -100,34 +104,35 @@ class GeneralWidgetController extends BaseController {
      */
     public function saveWidgetPosition($userId) {
         // Escaping invalid data.
-        if (!isset($_POST['position'])) {
+        if (!isset($_POST['positioning'])) {
             throw new BadPosition("Missing data.", 1);
         }
 
         if (User::find($userId)) {
-            $widgetData = json_decode($_POST['position'], TRUE)[0];
+            $widgets = json_decode($_POST['positioning'], TRUE);
+            foreach ($widgets as $widgetData){
 
-            // Escaping invalid data.
-            if (!isset($widgetData['id'])) {
-                return Response::json(array('error' => 'Invalid JSON string.'));
+                // Escaping invalid data.
+                if (!isset($widgetData['id'])) {
+                    return Response::json(array('error' => 'Invalid JSON string.'));
+                }
+
+                $widget = Widget::find($widgetData['id']);
+
+                if ($widget === null) {
+                    return Response::json(array('error' => 'Invalid JSON string.'));
+                }
+                try{
+                    $widget->setPosition($widgetData);
+                } catch (BadPosition $e) {
+                    return Response::json(array('error' => $e->getMessage()));
+                }
             }
-
-            $widget = Widget::find($widgetData['id']);
-
-            if ($widget === null) {
-                return Response::json(array('error' => 'Invalid JSON string.'));
-            }
-            try{
-                $widget->setPosition($widgetData);
-            } catch (BadPosition $e) {
-                return Response::json(array('error' => $e->getMessage()));
-            }
-            return Response::make('everything okay', 200);
-
         } else {
             // no such user
             return Response::json(array('error' => 'no such user'));
         }
+        return Response::make('everything okay', 200);
     }
 
     /**

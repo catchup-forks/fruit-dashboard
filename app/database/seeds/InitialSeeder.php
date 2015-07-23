@@ -18,6 +18,13 @@ class InitialSeeder extends Seeder
             'state'         => 'active',
             'position'      => '{"col":3,"row":1,"size_x":3,"size_y":1}',
         ));
+        GreetingWidget::create(array(
+            'id'            => '2',
+            'dashboard_id'  => '1',
+            'descriptor_id' => '1',
+            'state'         => 'active',
+            'position'      => '{"col":1,"row":1,"size_x":3,"size_y":1}',
+        ));
     }
 
 }

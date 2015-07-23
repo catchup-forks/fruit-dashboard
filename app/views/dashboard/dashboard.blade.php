@@ -64,7 +64,7 @@
            positioning = JSON.stringify(positioning);
          $.ajax({
              type: "POST",
-             data: {'position': positioning},
+             data: {'positioning': positioning},
              url: "/widget/save-position/{{Auth::user()->id}}/"
            });
          }
@@ -75,7 +75,7 @@
            positioning = JSON.stringify(positioning);
            $.ajax({
              type: "POST",
-             data: {'position': positioning},
+             data: {'positioning': positioning},
              url: "/widget/save-position/{{Auth::user()->id}}/"
            });
          }

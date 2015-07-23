@@ -32,7 +32,7 @@ class DatabaseSeeder extends Seeder {
         /* CONFIG::PRODUCTION ONLY */
         } else if (App::environment('production')) {
             /* Nothing here */
-        
+
         }
     }
 

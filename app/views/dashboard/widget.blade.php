@@ -29,6 +29,13 @@
      ])
   @endif
 
+  @if ($widget->descriptor->type == 'greeting')
+    @include('dashboard.widget-greeting', [
+      'id' => $widget['widget_id'],
+      'position' => $widget['position']
+    ])
+  @endif
+
   @if ($widget['widget_type'] =='google-spreadsheet-text-cell')
     @include('dashboard.widget-text', [
       'text' => $widget['currentValue'],
@@ -69,13 +76,6 @@
     @include('dashboard.widget-note', [
       'id' => $widget['widget_id'],
       'currentValue' => $widget['currentValue'],
-      'position' => $widget['position']
-    ])
-  @endif
-
-  @if($widget['widget_type'] == 'greeting')
-    @include('dashboard.widget-greeting', [
-      'id' => $widget['widget_id'],
       'position' => $widget['position']
     ])
   @endif
