@@ -29,7 +29,7 @@ class SignupWizardController extends BaseController
      * postAuthentication
      * --------------------------------------------------
      * @return Saves the user authentication data
-     * --------------------------------------------------     
+     * --------------------------------------------------
      */
     public function postAuthentication() {
         /* Validation rules */
@@ -40,7 +40,7 @@ class SignupWizardController extends BaseController
 
         /* Run validation rules on the inputs */
         $validator = Validator::make(Input::all(), $rules);
-        
+
         /* Everything is ok */
         if (!$validator->fails()) {
 
@@ -79,17 +79,62 @@ class SignupWizardController extends BaseController
      * postPersonalWidgets
      * --------------------------------------------------
      * @return Saves the user personal widget settings
-     * --------------------------------------------------     
+     * --------------------------------------------------
      */
     public function postPersonalWidgets() {
         /* Check for authenticated user, redirect if nobody found */
         if (!Auth::check()) {
             return Redirect::route('signup-wizard.authentication');
         }
-        
+
         /* Create the personal dashboard based on the inputs */
         $this->makePersonalAutoDashboard(Auth::user(), Input::all());
-        
+
+        /* Render the page */
+        return View::make('signup-wizard.financial-connections');
+    }
+
+    /**
+     * getBraintreeConnect
+     * --------------------------------------------------
+     * @return Renders the braintree connect setup step
+     * --------------------------------------------------
+     */
+    public function getBraintreeConnect() {
+        /* Render the page */
+        return View::make('signup-wizard.braintree-connect');
+    }
+
+    /**
+     * postBraintreeConnect
+     * --------------------------------------------------
+     * @return Saves the user braintree connect settings
+     * --------------------------------------------------
+     */
+    public function postBraintreeConnect() {
+        // Validation.
+        $rules = array(
+            'publicKey'   => 'required',
+            'privateKey'  => 'required',
+            'merchantID'  => 'required',
+            'environment' => 'required'
+        );
+
+        // Run the validation rules on the inputs.
+        $validator = Validator::make(Input::all(), $rules);
+
+        if ($validator->fails()) {
+            // validation error -> sending back
+            $failedAttribute = $validator->invalid();
+            return Redirect::back()
+                ->with('error', 'Please correct the form errors')
+                ->withErrors($validator->errors())
+                ->withInput(); // sending back data
+        }
+
+        $braintreeConnector = new BraintreeConnector(Auth::user());
+        $braintreeConnector->generateAccessToken(Input::except('_token'));
+
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
     }
@@ -103,16 +148,16 @@ class SignupWizardController extends BaseController
     public function getFinancialConnections() {
         /* Connect stripe after OAuth if not connected */
         if (!Auth::user()->isStripeConnected()) {
-            
+
             /* Access code if available */
             if (Input::get('code', FALSE)) {
                 /* Create instance */
                 $stripeconnector = new StripeConnector(Auth::user());
-                
+
                 /* Get tokens */
                 try {
                     $stripeconnector->getTokens(Input::get('code'));
-                
+
                 /* Error handling */
                 } catch (StripeConnectFailed $e) {
                     $messages = array();
@@ -127,7 +172,7 @@ class SignupWizardController extends BaseController
                 $this->makeStripeAutoDashboard(Auth::user());
             }
         }
-        
+
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
     }
@@ -151,7 +196,7 @@ class SignupWizardController extends BaseController
 
         /* Redirect to the same page */
         return Redirect::route('signup-wizard.financial-connections');
-        
+
     }
 
     /**
@@ -162,7 +207,7 @@ class SignupWizardController extends BaseController
 
     /**
      * createUser
-     * creates a new User object (and related models) 
+     * creates a new User object (and related models)
      * from the POST data
      * --------------------------------------------------
      * @param (array) ($userdata) Array with the user data
@@ -177,7 +222,7 @@ class SignupWizardController extends BaseController
         $user->email    = $userdata['email'];
         $user->password = Hash::make($userdata['password']);
         $user->name     = $userdata['name'];
-        
+
         /* Save the user */
         $user->save();
 
@@ -208,7 +253,7 @@ class SignupWizardController extends BaseController
 
     /**
      * makePersonalAutoDashboard
-     * creates a new Dashboard object and personal widgets 
+     * creates a new Dashboard object and personal widgets
      * from the POST data
      * --------------------------------------------------
      * @param (User) ($user) The current user

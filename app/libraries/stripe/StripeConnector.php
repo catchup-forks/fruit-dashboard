@@ -70,7 +70,6 @@ class StripeConnector
      * connect
      * --------------------------------------------------
      * Sets up a stripe connection with the API key.
-     * @return The stripe plans for the current user.
      * @throws StripeNotConnected
      * --------------------------------------------------
      */
@@ -89,6 +88,21 @@ class StripeConnector
         \Stripe\Stripe::setApiKey($token);
     }
 
+    /**
+     * disconnect
+     * --------------------------------------------------
+     * Disconnecting the user from braintree.
+     * @throws StripeNotConnected
+     * --------------------------------------------------
+     */
+    public function disconnect() {
+        /* Check valid connection */
+        if (!$this->user->isStripeConnected()) {
+            throw new StripeNotConnected();
+        }
+
+        $this->user->connections()->where('service', 'stripe')->delete();
+    }
     /**
      * getTokens
      * --------------------------------------------------

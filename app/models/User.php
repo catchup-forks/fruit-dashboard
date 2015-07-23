@@ -34,7 +34,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      * Testing if the user has connected a stripe account.
      * @return boolean
-     * --------------------------------------------------     
+     * --------------------------------------------------
      */
     public function isStripeConnected() {
         if ($this->connections()->where('service', 'stripe')
@@ -52,12 +52,16 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function isBraintreeConnected() {
+        if ($this->connections()->where('service', 'braintree')
+                                ->first() !== null) {
+            return True;
+        }
         return False;
     }
 
 
     /**
-    * 
+    *
     * --------------------------------------------------
     * @todo clean the lines below
     * --------------------------------------------------
