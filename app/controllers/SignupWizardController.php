@@ -88,7 +88,7 @@ class SignupWizardController extends BaseController
         }
         
         /* Create the personal dashboard based on the inputs */
-        $dashboard = $this->makePersonalAutoDashboard(Auth::user(), Input::all());
+        $this->makePersonalAutoDashboard(Auth::user(), Input::all());
         
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
@@ -101,29 +101,33 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getFinancialConnections() {
-        /* Coming back from STRIPE oauth, accessing code */
-        if (Input::get('code', FALSE)) {
-            $stripeconnector = new StripeConnector(Auth::user());
-            try {
+        /* Connect stripe after OAuth if not connected */
+        if (!Auth::user()->isStripeConnected()) {
+            
+            /* Access code if available */
+            if (Input::get('code', FALSE)) {
+                /* Create instance */
+                $stripeconnector = new StripeConnector(Auth::user());
+                
                 /* Get tokens */
-                $stripeconnector->getTokens(Input::get('code'));
-            } catch (StripeConnectFailed $e) {
-                /* Error logging */
-                $messages = array();
-                array_push($messages, $e->getMessage());
-                Log::error($e->getMessage());
+                try {
+                    $stripeconnector->getTokens(Input::get('code'));
+                
+                /* Error handling */
+                } catch (StripeConnectFailed $e) {
+                    $messages = array();
+                    array_push($messages, $e->getMessage());
+                    Log::error($e->getMessage());
+                }
+
+                /* Connect to stripe */
+                $stripeconnector->connect();
+
+                /* Create auto Stripe dashboard for the user */
+                $this->makeStripeAutoDashboard(Auth::user());
             }
-            /* Connect to stripe */
-            $stripeconnector->connect();
         }
         
-        // 
-        // try {
-        //     $stripeconnector->getTokens($code);
-        // } catch (StripeConnectFailed $e) {
-        //     // error handling
-        // }
-        // $stripeconnector->connect();
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
     }
@@ -161,17 +165,18 @@ class SignupWizardController extends BaseController
      * creates a new User object (and related models) 
      * from the POST data
      * --------------------------------------------------
-     * @return ($user) (User) The new User object
+     * @param (array) ($userdata) Array with the user data
+     * @return (User) ($user) The new User object
      * --------------------------------------------------
      */
-    private function createUser($input) {
+    private function createUser($userdata) {
         /* Create new user */
         $user = new User;
 
         /* Set authentication info */
-        $user->email    = $input['email'];
-        $user->password = Hash::make($input['password']);
-        $user->name     = $input['name'];
+        $user->email    = $userdata['email'];
+        $user->password = Hash::make($userdata['password']);
+        $user->name     = $userdata['name'];
         
         /* Save the user */
         $user->save();
@@ -206,10 +211,12 @@ class SignupWizardController extends BaseController
      * creates a new Dashboard object and personal widgets 
      * from the POST data
      * --------------------------------------------------
-     * @return ($dashboard) (Dashboard) The new Dashboard object
+     * @param (User) ($user) The current user
+     * @param (array) ($widgetdata) Personal widgets data
+     * @return (Dashboard) ($dashboard) The new Dashboard object
      * --------------------------------------------------
      */
-    private function makePersonalAutoDashboard($user, $input) {
+    private function makePersonalAutoDashboard($user, $widgetdata) {
         /* Create new dashboard */
         $dashboard = new Dashboard;
 
@@ -247,6 +254,34 @@ class SignupWizardController extends BaseController
          * @todo: create if model exists
          */
 
+        /* Return */
+        return $dashboard;
+    }
+
+    /**
+     * makeStripeAutoDashboard
+     * creates a new Dashboard object and the default Stripe widgets
+     * --------------------------------------------------
+     * @param (User) ($user) The current user
+     * @return (Dashboard) ($dashboard) The new Dashboard object
+     * --------------------------------------------------
+     */
+    private function makeStripeAutoDashboard($user) {
+        /* Create new dashboard */
+        $dashboard = new Dashboard;
+
+        $dashboard->user_id     = $user->id;
+        $dashboard->name        = 'My Stripe financial dashboard';
+        $dashboard->background  = 'On';
+
+        /* Save dashboard object */
+        $dashboard->save();
+
+        /* Create MRR widget */
+
+        /* Create ARR widget */
+
+        /* Create ARPU widget */
 
         /* Return */
         return $dashboard;
