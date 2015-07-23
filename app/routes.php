@@ -53,23 +53,6 @@ Route::post('/widgets/save-position/{userId}', array(
     'uses'  => 'GeneralWidgetController@saveWidgetPosition',
 ));
 
-
-/**
- * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
- */
-Route::get('signup', array(
-    'as' => 'auth.signup',
-    'uses' => 'AuthController@showSignup'
-));
-
-/**
- * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
- */
-Route::post('signup', array(
-    'as' => 'auth.signup',
-    'uses' => 'AuthController@doSignup'
-));
-
 /**
  * --------------------------------------------------------------------------
  * /dashboard | Dashboard management sites
