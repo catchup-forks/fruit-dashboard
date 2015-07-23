@@ -17,6 +17,16 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postEditWidgetSettings'
     ]);
 
+    Route::get('{widgetID}/setup', [
+        'as'     => 'widget.setup',
+        'uses'   => 'GeneralWidgetController@getEditWidgetSettings'
+    ]);
+
+    Route::post('{widgetID}/setup', [
+        'as'     => 'widget.setup',
+        'uses'   => 'GeneralWidgetController@postEditWidgetSettings'
+    ]);
+
    /**
      * ------------------------------------------------------------------------
      * AJAX endpoints | Widget settings

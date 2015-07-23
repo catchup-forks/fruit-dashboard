@@ -16,7 +16,7 @@
     @if ($meta['type'] == "SCHOICE")
       {{ Form::select($field, $widget->$field()) }}
     @else
-      <input type="text" name="{{ $field }}" id="id_{{ $field }}">
+      {{ Form::text($field, $widget->getSettings()[$field])}}
     @endif
     <br>
   @endforeach

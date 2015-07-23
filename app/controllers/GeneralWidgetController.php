@@ -9,13 +9,13 @@ class GeneralWidgetController extends BaseController {
      * @returns mixed Response on fail, widget otherwise.
      */
     private function getWidget($widgetID) {
-        $widget = Widget::find($widgetID)->getSpecific();
+        $widget = Widget::find($widgetID);
 
         // Widget not found.
         if ($widget === null) {
             throw new WidgetDoesNotExist("Widget not found", 1);
         }
-        return $widget;
+        return $widget->getSpecific();
     }
 
     /* -- Edit settings -- */
@@ -30,7 +30,8 @@ class GeneralWidgetController extends BaseController {
 
         // Rendering view.
         return View::make('widgets.widget-settings')
-            ->with('widget', $widget);
+            ->with('widget', $widget)
+            ->withInput(array('f1' => 'test'));
     }
 
     public function postEditWidgetSettings($widgetID) {
@@ -48,7 +49,57 @@ class GeneralWidgetController extends BaseController {
             array('Validator', 'make'),
             array(
                 Input::all(),
-                $widget->getSettingsValidationArray()
+                $widget->getSettingsValidationArray(
+                    array_keys($widget->getSettingsFields())
+                )
+            )
+        );
+
+        if ($validator->fails()) {
+            // Redirect.
+            return Redirect::route('widget.edit-settings', array($widgetID))
+                ->with('error', "Please correct the form errors.")
+                ->withInput(Input::all());
+        }
+
+        // Validation successful ready to save.
+        $widget->saveSettings(Input::except('_token'));
+
+        return Redirect::route('widget.edit-settings', array($widgetID))
+            ->with('success', "Widget successfully updated.");
+    }
+
+    /* -- Setuo Widget -- */
+    public function getSetupWidget($widgetID) {
+        // Getting the editable widget.
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+
+        // Rendering view.
+        return View::make('widgets.setup-widget')
+            ->with('widget', $widget);
+    }
+
+    public function postSetupWidget($widgetID) {
+
+        // Getting the editable widget.
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e);
+        }
+
+        // Validation.
+        $validator = forward_static_call_array(
+            array('Validator', 'make'),
+            array(
+                Input::all(),
+                $widget->getSettingsValidationArray($widget->getSetupSettings)
             )
         );
 

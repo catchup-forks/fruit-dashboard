@@ -17,6 +17,7 @@ class Widget extends Eloquent
     // These variable will be overwritten, with late static binding.
     public static $type = null;
     public static $settingsFields = array();
+    public static $setupSettings = array();
 
     // -- Relations -- //
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -39,6 +40,15 @@ class Widget extends Eloquent
     */
     public function getSettingsFields() {
         return static::$settingsFields;
+    }
+
+    /**
+     * Getting the setup settings meta.
+     *
+     * @returns array The widget settings meta.
+    */
+    public function getSetupFields() {
+        return static::$setupSettings;
     }
 
      /**
@@ -138,13 +148,17 @@ class Widget extends Eloquent
 
     /** Getting the laravel validation array.
      *
-     * @param array Input all the inputs.
+     * @param array Fields the fields ti validate.
      * @returns array a laravel validation array.
     */
-    public function getSettingsValidationArray() {
+    public function getSettingsValidationArray($fields) {
         $validationArray = array();
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
+            // Not validating fields that are not present.
+            if (!in_array($fieldName, $fields)) {
+                continue;
+            }
             $validationString = '';
 
             // Looking for custom validation.
@@ -181,26 +195,37 @@ class Widget extends Eloquent
         if ($this->settings)
             return json_decode($this->settings, 1);
 
-        return array();
+        // Returning empty settings array, with valid keys.
+        $settings = array();
+        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
+            $settings[$fieldName] = "";
+        }
+        return $settings;
     }
 
     /** Transforming settings to JSON format. (validation done by view)
      *
-     * @param array $settings the settings array.
+     * @param array $inputSettings the settings array.
      * @returns None
     */
     public function saveSettings($inputSettings) {
-        $validKeys = array_keys($this->getSettingsFields());
+        $fields = array_keys($this->getSettingsFields());
         $settings = array();
+        $oldSettings = $this->getSettings();
 
         // Iterating through the positions.
-        foreach($inputSettings as $key=>$value) {
-            Log::info($key);
-            if (in_array($key, $validKeys)) {
-                // There's a match in the array, saving position.
-                $settings[$key] = $value;
+        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
+            // inputSettings. oldSettings, empty string.
+            if (isset($inputSettings[$fieldName])) {
+                $settings[$fieldName] = $inputSettings[$fieldName];
+            } else if ($oldSettings[$fieldName]) {
+                // Value not set, Getting from old settings.
+                $settings[$fieldName] = $oldSettings[$fieldName];
+            } else {
+                $settings[$fieldName] = "";
             }
         }
+
         $this->settings = json_encode($settings);
         $this->save();
     }
