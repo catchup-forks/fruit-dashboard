@@ -48,19 +48,7 @@ class Widget extends Eloquent
     */
     public function getSpecific() {
         $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-
-        // Creating new widget.
-        $newWidget = new $className(array(
-            'position' => $this->position,
-            'settings' => $this->settings,
-            'state'    => $this->state
-        ));
-        $newWidget->id = $this->id;
-        $newWidget->descriptor_id = $this->descriptor_id;
-        $newWidget->dashboard_id = $this->dashboard_id;
-
-        return $newWidget;
-
+        return $className::find($this->id);
     }
 
      /**
@@ -79,7 +67,7 @@ class Widget extends Eloquent
      * @returns string A valid stripe conenct URI.
     */
     public function setPosition(array $decoded_position) {
-        $valid_keys = array('size_x', 'size_y', 'col', 'row');
+        $validKeys = array('size_x', 'size_y', 'col', 'row');
         $position = array();
 
         // Testing json position corruption.
@@ -89,16 +77,16 @@ class Widget extends Eloquent
 
         // Iterating through the positions.
         foreach($decoded_position as $key=>$value) {
-            if (in_array($key, $valid_keys)) {
+            if (in_array($key, $validKeys)) {
                 // There's a match in the array, saving position.
                 $position[$key] = $value;
                 // Removing key to handle duplications.
-                unset($valid_keys[array_search($key, $valid_keys)]);
+                unset($validKeys[array_search($key, $validKeys)]);
             }
         }
 
         // The valid keys should be empty.
-        if (!empty($valid_keys)) {
+        if (!empty($validKeys)) {
             throw new BadPosition("Invalid json postion value: $json_position", 1);
         }
 
@@ -190,15 +178,29 @@ class Widget extends Eloquent
      * @returns string widget Type
     */
     public function getSettings() {
-        return json_decode($this->settings, 1);
+        if ($this->settings)
+            return json_decode($this->settings, 1);
+
+        return array();
     }
 
-    /** Transforming settings to JSON format.
+    /** Transforming settings to JSON format. (validation done by view)
      *
      * @param array $settings the settings array.
      * @returns None
     */
-    public function setSettings($settings) {
+    public function saveSettings($inputSettings) {
+        $validKeys = array_keys($this->getSettingsFields());
+        $settings = array();
+
+        // Iterating through the positions.
+        foreach($inputSettings as $key=>$value) {
+            Log::info($key);
+            if (in_array($key, $validKeys)) {
+                // There's a match in the array, saving position.
+                $settings[$key] = $value;
+            }
+        }
         $this->settings = json_encode($settings);
         $this->save();
     }

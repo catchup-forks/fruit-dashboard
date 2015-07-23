@@ -8,8 +8,8 @@ class GeneralWidgetController extends BaseController {
      * @throws WidgetDoesNotExist
      * @returns mixed Response on fail, widget otherwise.
      */
-    private function widgetExists($widgetID) {
-        $widget = Widget::find($widgetID);
+    private function getWidget($widgetID) {
+        $widget = Widget::find($widgetID)->getSpecific();
 
         // Widget not found.
         if ($widget === null) {
@@ -20,10 +20,9 @@ class GeneralWidgetController extends BaseController {
 
     /* -- Edit settings -- */
     public function getEditWidgetSettings($widgetID) {
-        Auth::loginUsingId(1);
         // Getting the editable widget.
         try {
-            $widget = $this->widgetExists($widgetID)->getSpecific();
+            $widget = $this->getWidget($widgetID);
         } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e->getMessage());
@@ -31,15 +30,14 @@ class GeneralWidgetController extends BaseController {
 
         // Rendering view.
         return View::make('widgets.widget-settings')
-            ->with('widget', $widget)
-            ->with('error', 'hello');
+            ->with('widget', $widget);
     }
 
     public function postEditWidgetSettings($widgetID) {
 
         // Getting the editable widget.
         try {
-            $widget = $this->widgetExists($widgetID)->getSpecific();
+            $widget = $this->getWidget($widgetID);
         } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e);
@@ -57,8 +55,12 @@ class GeneralWidgetController extends BaseController {
         if ($validator->fails()) {
             // Redirect.
             return Redirect::route('widget.edit-settings', array($widgetID))
-                ->with('error', "fuck you");
+                ->with('error', "Please correct the form errors.");
         }
+
+        // Validation successful ready to save.
+        $widget->saveSettings(Input::all());
+
         return Redirect::route('widget.edit-settings', array($widgetID))
             ->with('success', "Widget successfully updated.");
    }

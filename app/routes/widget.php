@@ -16,4 +16,13 @@ Route::group([
         'as'     => 'widget.edit-settings',
         'uses'   => 'GeneralWidgetController@postEditWidgetSettings'
     ]);
+
+   /**
+     * ------------------------------------------------------------------------
+     * AJAX endpoints | Widget settings
+     * ------------------------------------------------------------------------
+     */
+    Route::post('/widgets/save-position/{userId}', array(
+        'uses'  => 'GeneralWidgetController@saveWidgetPosition',
+    ));
 });
