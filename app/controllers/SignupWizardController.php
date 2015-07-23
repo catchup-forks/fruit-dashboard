@@ -66,11 +66,6 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getPersonalWidgets() {
-        if (Auth::check()) {
-            error_log('YES');
-        } else {
-            error_log('NO');
-        }
 
         /* Render the page */
         return View::make('signup-wizard.personal-widgets');
