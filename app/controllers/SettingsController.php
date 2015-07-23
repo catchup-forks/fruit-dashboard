@@ -52,6 +52,9 @@ class SettingsController extends BaseController
             case 'email':
                 return $this->changeUserEmail(Input::all());
                 break;
+            case 'password':
+                return $this->changeUserPassword(Input::all());
+                break;
             default:
                 return Redirect::route('settings.settings');
         }
@@ -129,6 +132,41 @@ class SettingsController extends BaseController
         } else {
             return Redirect::route('settings.settings')
                 ->with('error', 'Something went wrong with changing your email. Please try again.');
+        }
+        
+    }
+
+    /**
+     * changeUserPassword
+     * --------------------------------------------------
+     * @param (array) ($postData) The POST data
+     * @return Changes the user password
+     * --------------------------------------------------
+     */
+    private function changeUserPassword($postData)
+    {
+        /* Initialize status */
+        $status = TRUE;
+
+        /* Get the user and necessary object(s) */
+        $user = Auth::user();
+
+        /* Get the new attribute(s) */
+        $newattr = $postData['password'];
+
+        /* Change the attribute(s) */
+        $user->name = $newattr;
+
+        /* Save object(s) */
+        $user->save();
+
+        /* Return */
+        if ($status) {
+            return Redirect::route('settings.settings')
+                ->with('success', 'You successfully modified your password.');
+        } else {
+            return Redirect::route('settings.settings')
+                ->with('error', 'Something went wrong with changing your password. Please try again.');
         }
         
     }
