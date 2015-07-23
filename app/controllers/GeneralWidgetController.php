@@ -38,7 +38,6 @@ class GeneralWidgetController extends BaseController {
         return $widget->getSpecific();
     }
 
-    /* -- Edit settings -- */
     public function getEditWidgetSettings($widgetID) {
         // Getting the editable widget.
         try {
@@ -92,7 +91,7 @@ class GeneralWidgetController extends BaseController {
 
     /**
      * ================================================== *
-     *                   ajax functions                   *
+     *                   AJAX FUNCTIONS                   *
      * ================================================== *
      */
 

@@ -20,7 +20,7 @@ class WidgetDescriptor extends Eloquent
     */
     public function getClassName() {
         return str_replace(
-            '_', '',
+            ' ', '',
             ucwords(str_replace('_',' ', $this->type))
         ) . "Widget";
     }

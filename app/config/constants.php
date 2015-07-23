@@ -36,14 +36,7 @@ return array(
     'WD_ID_QUOTES'      => 2,
     'WD_ID_GREETINGS'   => 3,
 
-    /**
-     * @todo This should be moved to .env variables.
-     */
-     /* --------------- STRIPE RELATED --------------- */
-    'STRIPE_SECRET_KEY'       => 'sk_test_wizVjDXOcT6iQelpaMVpYwDD',
-    'STRIPE_CONNECT_URI'      => 'https://connect.stripe.com/oauth/authorize',
-    'STRIPE_ACCESS_TOKEN_URI' => 'https://connect.stripe.com/oauth/token',
-    'STRIPE_CLIENT_ID'        => 'ca_6bePhtk1mE54xai3CJrZ5lXu2uaciboU',
+    'WD_ID_STRIPE_MRR'   => 4,
 
 );
 

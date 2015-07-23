@@ -31,7 +31,6 @@
     // Gridster builds the interactive dashboard.
     $(function(){
 
-
       var gridster;
       var positioning = [];
       var containerWidth = $('.grid-base').width();

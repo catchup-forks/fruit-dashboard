@@ -25,13 +25,20 @@
   @if ($widget->descriptor->type == 'clock')
     @include('dashboard.widget-clock', [
       'currentTime' => $widget['currentValue'],
-      'id' => $widget['widget_id']
+      'id' => $widget['id']
      ])
   @endif
 
   @if ($widget->descriptor->type == 'greeting')
     @include('dashboard.widget-greeting', [
-      'id' => $widget['widget_id'],
+      'id' => $widget['id'],
+      'position' => $widget['position']
+    ])
+  @endif
+
+  @if ($widget->descriptor->type == 'stripe_mrr')
+    @include('dashboard.stripe-widgets.mrr', [
+      'widget' => $widget->getSpecific(),
       'position' => $widget['position']
     ])
   @endif

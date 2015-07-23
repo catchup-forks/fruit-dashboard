@@ -132,6 +132,9 @@ class StripeConnector
             $this->user->connections()->where('service', 'stripe')->delete();
         }
 
+        // Deleting all previos connections, and stripe widgets.
+        $this->user->connections->where('service', 'stripe')->delete();
+
         // Creating a Connection instance, and saving to DB.
         $connection = new Connection(array(
             'access_token'  => $response['access_token'],
@@ -140,6 +143,9 @@ class StripeConnector
         ));
         $connection->user()->associate($this->user);
         $connection->save();
+
+        // Creating stripe widgets.
+        $MRRWidget = new StripeMRRWidget();
     }
 
     /**
@@ -177,42 +183,6 @@ class StripeConnector
         /* Saving new token. */
         $stripe_connection->access_token = $response['access_token'];
         $stripe_connection->save();
-    }
-
-    /**
-     * Calculating the MRR for the user.
-     * @todo MOVE THIS TO A SEPARATED FILE
-     * @param $update, boolean Whether or not sync the db.
-     * @return float The value of the mrr.
-     * @throws StripeNotConnected
-    */
-    public function calculateMRR($update=False) {
-        $mrr = 0;
-
-        // Updating database, with the latest data.
-        if ($update) {
-            $this->updateSubscriptions();
-        }
-
-        // Iterating through the plans and subscriptions.
-        foreach ($this->user->stripePlans()->get() as $plan) {
-            foreach ($plan->subscriptions()->get() as $subscription) {
-                // Dealing only with active subscriptions.
-                if ($subscription->status == 'active') {
-                    //
-                    $value = $plan->amount * $subscription->quantity;
-                    switch ($plan->interval) {
-                        case 'day'  : $value *= 30; break;
-                        case 'week' : $value *= 4.33; break;
-                        case 'month': $value *= 1; break;
-                        case 'year' : $value *= 1/12; break;
-                        default: break;
-                    }
-                    $mrr += $value;
-                }
-            }
-        }
-        return $mrr;
     }
 
     /**

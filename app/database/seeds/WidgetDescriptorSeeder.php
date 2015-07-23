@@ -20,7 +20,7 @@ class WidgetDescriptorSeeder extends Seeder
             'type'        => 'quote',
             'is_premium'  => FALSE,
         ));
-        
+
         WidgetDescriptor::create(array(
             'id'          => Config::get('constants.WD_ID_GREETINGS'),
             'name'        => 'Greetings',
@@ -28,6 +28,16 @@ class WidgetDescriptorSeeder extends Seeder
             'type'        => 'greeting',
             'is_premium'  => FALSE,
         ));
+
+        WidgetDescriptor::create(array(
+            'id'          => Config::get('constants.WD_ID_STRIPE_MRR'),
+            'name'        => 'Stripe MRR',
+            'description' => 'Stripe Monthly recurring revenue',
+            'type'        => 'stripe_mrr',
+            'is_premium'  => FALSE,
+        ));
+
+
     }
 
 } /* WidgetDescriptorSeeder */
