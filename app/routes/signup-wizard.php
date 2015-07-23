@@ -15,7 +15,7 @@ Route::group([
 
     Route::post('authentication', [
         'as'     => 'signup-wizard.authentication',
-        'uses'   => 'SignupWizardController@postAuthentication'
+        'uses'   => 'SignupWizardController@postAuthentication',
     ]);
 
     Route::get('personal-widgets', [

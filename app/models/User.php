@@ -5,6 +5,9 @@ use Illuminate\Auth\UserInterface;
 
 class User extends Eloquent implements UserInterface
 {
+    /* UserTrait implements the functions from UserInterface */
+    use UserTrait;
+
     /* -- Fields -- */
     protected $guarded = array(
         'password',
@@ -25,8 +28,6 @@ class User extends Eloquent implements UserInterface
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
     public function stripePlans() { return $this->hasMany('StripePlan'); }
-
-    use UserTrait;
 
     /**
      * Testing if the user has connected a stripe account.
