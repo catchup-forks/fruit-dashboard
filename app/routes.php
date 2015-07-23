@@ -46,6 +46,13 @@ include 'routes/widget.php';
 
 /**
  * --------------------------------------------------------------------------
+ * /payment | Payment and subscription related sites
+ * --------------------------------------------------------------------------
+ */
+include 'routes/payment.php';
+
+/**
+ * --------------------------------------------------------------------------
  * /dev | Testing urls (except for production server)
  * --------------------------------------------------------------------------
  */
@@ -182,33 +189,6 @@ Route::get('connect.editwidget/{service}/{widget_id?}', array(
 Route::post('settingsBackground', array(
     'before' => 'auth',
     'uses' => 'ConnectController@doSettingsBackground'
-));
-
-/**
- * --------------------------------------------------------------------------
- * /payment | Payment and subscription related sites
- * --------------------------------------------------------------------------
- */
-/**
- * @todo: Transform to the new ::controller route syntax
- */
-// subscription routes
-Route::get('/plans', array(
-    'before'    => 'auth',
-    'as'        => 'payment.plan',
-    'uses'      => 'PaymentController@showPlans'
-));
-
-Route::get('/plans/trial', array(
-    'before'    => 'auth',
-    'as'        => 'payment.plan.trial',
-    'uses'      => 'PaymentController@doTrial'
-));
-
-Route::post('/plans/{planName}', array(
-    'before'    => 'auth',
-    'as'        => 'payment.plan.name',
-    'uses'      => 'PaymentController@doPayPlan'
 ));
 
 /**
