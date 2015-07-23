@@ -8,6 +8,11 @@
  */
 class SignupWizardController extends BaseController
 {
+    /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
 
     /**
      * getAuthentication
@@ -96,9 +101,31 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getFinancialConnections() {
+        /* Coming back from STRIPE oauth, accessing code */
+        if (Input::get('code', FALSE)) {
+            $stripeconnector = new StripeConnector(Auth::user());
+            try {
+                /* Get tokens */
+                $stripeconnector->getTokens(Input::get('code'));
+            } catch (StripeConnectFailed $e) {
+                /* Error logging */
+                $messages = array();
+                array_push($messages, $e->getMessage());
+                Log::error($e->getMessage());
+            }
+            /* Connect to stripe */
+            $stripeconnector->connect();
+        }
+        
+        // 
+        // try {
+        //     $stripeconnector->getTokens($code);
+        // } catch (StripeConnectFailed $e) {
+        //     // error handling
+        // }
+        // $stripeconnector->connect();
         /* Render the page */
-        return Redirect::route('dashboard.dashboard');
-        //return View::make('signup-wizard.financial-connections');
+        return View::make('signup-wizard.financial-connections');
     }
 
     /**
@@ -108,13 +135,24 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function postFinancialConnections() {
-        /* Render the page */
-        return View::make('signup-wizard.financial-connections');
+        /* Stripe connection */
+        if(Input::get('stripe-connect', FALSE)) {
+            error_log('STRIPE');
+        }
+
+        /* Braintree connection */
+        if(Input::get('braintree-connect', FALSE)) {
+            error_log('BRAINTREE');
+        }
+
+        /* Redirect to the same page */
+        return Redirect::route('signup-wizard.financial-connections');
+        
     }
 
     /**
      * ================================================== *
-     *                   HELPER FUNCTIONS                 *
+     *                   PRIVATE SECTION                  *
      * ================================================== *
      */
 
@@ -182,8 +220,6 @@ class SignupWizardController extends BaseController
         /* Save dashboard object */
         $dashboard->save();
 
-        error_log($dashboard);
-
         /* Create clock widget */
         $clockwidget = new ClockWidget;
 
@@ -195,8 +231,6 @@ class SignupWizardController extends BaseController
         /* Save clock widget object */
         $clockwidget->save();
 
-        error_log($clockwidget);
-
         /* Create quote widget */
         $quotewidget = new QuoteWidget;
 
@@ -207,8 +241,6 @@ class SignupWizardController extends BaseController
 
         /* Save quote widget object */
         $quotewidget->save();
-
-        error_log($quotewidget);
 
         /* Create greetings widget */
         /**

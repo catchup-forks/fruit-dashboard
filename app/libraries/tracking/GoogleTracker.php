@@ -16,19 +16,25 @@
 * -------------------------------------------------------------------------- 
 */
 class GoogleTracker {
-    /* Class properties */
+    /* -- Class properties -- */
     private $url;
     private $version;
     private $trackingID;
     private $clientID;
 
-    /* Constructor */
+    /* -- Constructor -- */
     public function __construct(){
         $this->url         = 'https://www.google-analytics.com/collect';
         $this->version     = '1';
         $this->trackingID  = $_ENV['GOOGLE_TRACKING_CODE'];
         $this->clientID    = '444';
     }
+
+    /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
 
     /**
      * sendEvent: 
@@ -62,6 +68,12 @@ class GoogleTracker {
             return false;
         }
     }
+
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
 
     /**
      * makeEventUrl: 

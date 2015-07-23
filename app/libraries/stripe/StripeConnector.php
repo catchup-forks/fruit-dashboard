@@ -1,94 +1,119 @@
 <?php
+
+/**
+* -------------------------------------------------------------------------- 
+* StripeConnector: 
+*       Wrapper functions for Stripe connection
+* Usage:
+*       // For the connection uri (use directly in the template)
+*       StripeHelper::getStripeConnectURI($redirect_to)
+*
+*       // For connecting the user
+*       $stripeconnector = new StripeConnector($user);
+*       try {
+*           $stripeconnector->getTokens($code);
+*       } catch (StripeConnectFailed $e) {
+*           // error handling
+*       }
+*       $stripeconnector->connect();
+* -------------------------------------------------------------------------- 
+*/
+
 use Stripe\Subscription;
 use Stripe\Plan;
 use Stripe\Customer;
 use Stripe\Error\Authentication;
 
-/* All stripe related functions are bundled in this class.
-*/
-class StripeHelper
+class StripeConnector
 {
-    // -- Attributes -- //
+    /* -- Class properties -- */
     private $user;
 
-    // -- Constructor -- //
+    /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
     }
 
-    // -- Static section -- //
     /**
-     * Returning the stripe connect url, based on config.
-     *
-     * @returns string A valid stripe conenct URI.
-    */
-    public static function getStripeConnectURI() {
-        // Building Stripe connect URI.
-        $connect_uri = Config::get('constants.STRIPE_CONNECT_URI');
+     * ================================================== *
+     *                   STATIC SECTION                   *
+     * ================================================== *
+     */
+
+    /**
+     * getStripeConnectURI
+     * --------------------------------------------------
+     * Returns the stripe connect url, based on config.
+     * @param (string) ($redirect_to) A url to redirect after the connection
+     * @return (string) ($connect_uri) A valid stripe connect URI.
+     * --------------------------------------------------
+     */
+    public static function getStripeConnectURI($redirect_to) {
+        /* Build Stripe connect URI */
+        $connect_uri = $_ENV['STRIPE_CONNECT_URI'];
         $connect_uri .= '?response_type=' . 'code';
-        $connect_uri .= '&client_id=' . Config::get('constants.STRIPE_CLIENT_ID');
+        $connect_uri .= '&client_id=' . $_ENV['STRIPE_CLIENT_ID'];
         $connect_uri .= '&scope=' . 'read_only';
+        $connect_uri .= '&redirect_uri=' . $redirect_to;
+
+        /* Return URI */
         return $connect_uri;
     }
 
-    // -- Public section -- //
     /**
-     * Setting up a stripe connection with the API key.
-     *
-     * @param $user uint The editable user.
-     * @returns The stripe plans.
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
+
+    /**
+     * connect
+     * --------------------------------------------------
+     * Sets up a stripe connection with the API key.
+     * @return The stripe plans for the current user.
      * @throws StripeNotConnected
-    */
+     * --------------------------------------------------
+     */
     public function connect() {
+        /* Check valid connection */
         if (!$this->user->isStripeConnected()) {
             throw new StripeNotConnected();
         }
 
-        // Getting access token from DB.
+        /* Get access token from DB. */
         $token = $this->user->connections()
             ->where('service', 'stripe')
             ->first()->access_token;
 
-        // Setting API key.
+        /* Set up API key */
         \Stripe\Stripe::setApiKey($token);
     }
 
     /**
+     * getTokens
+     * --------------------------------------------------
      * Retrieving the access, and refresh tokens from authentication code.
-     *
-     * @param string $code The returned code by stripe.
-     * @returns None
+     * @param (string) ($code) The returned code by stripe.
+     * @return None
      * @throws StripeConnectFailed
-    */
+     * --------------------------------------------------
+     */
     public function getTokens($code) {
-        // Building POST request.
-        $url= Config::get('constants.STRIPE_ACCESS_TOKEN_URI');
-        $post_kwargs = 'client_secret=' . Config::get('constants.STRIPE_SECRET_KEY');;
-        $post_kwargs .= '&code=' . $code;
-        $post_kwargs .= '&grant_type=' . 'authorization_code';
+        /* Build and send POST request */
+        $url = $this->buildTokenPostUriFromAuthCode($code);
+        $response = $this->postUrl($url);
 
-        // POST settings.
-        $ch = curl_init( $url );
-        curl_setopt( $ch, CURLOPT_POST, 1);
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, $post_kwargs);
-        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt( $ch, CURLOPT_HEADER, 0);
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
-
-        // Retrieving response.
-        $response = json_decode(curl_exec( $ch ), TRUE);
-
-        // Invalid/No answer from Stripe.
+        /* Invalid/No answer from Stripe. */
         if ($response === null) {
             throw new StripeConnectFailed('Stripe connection error, please try again.', 1);
         }
 
-        // Error handling.
+        /* Error handling. */
         if (isset($response['error'])) {
             throw new StripeConnectFailed('Your connection expired, please try again.', 1);
         }
 
-        // Deleting previous connnection.
+        /* Deleting previous connnection. */
         if ($this->user->isStripeConnected()) {
             $this->user->connections()->where('service', 'stripe')->delete();
         }
@@ -104,54 +129,47 @@ class StripeHelper
     }
 
     /**
+     * getNewAccessToken
+     * --------------------------------------------------
      * Retrieving the access token from a refresh token.
-     *
-     * @param string $code The returned code by stripe.
-     * @returns None
+     * @param None
+     * @return None
      * @throws StripeConnectFailed
-    */
+     * --------------------------------------------------
+     */
     public function getNewAccessToken() {
-        // Building POST request.
+        /* Check connection errors. */
         if (!$this->user->isStripeConnected()) {
             throw new StripeNotConnected();
         }
+
+        /* Build and send POST request */
         $stripe_connection = $this->user->connections()->where('service', 'stripe')->first();
-        $url= Config::get('constants.STRIPE_ACCESS_TOKEN_URI');
-        $post_kwargs = 'client_secret=' . Config::get('constants.STRIPE_SECRET_KEY');
-        $post_kwargs .= '&refresh_token=' . $stripe_connection->refresh_token;
-        $post_kwargs .= '&grant_type=' . 'refresh_token';
+        $url = $this->buildTokenPostUriFromRefreshToken($stripe_connection->refresh_token);
 
-        // POST settings.
-        $ch = curl_init( $url );
-        curl_setopt( $ch, CURLOPT_POST, 1);
-        curl_setopt( $ch, CURLOPT_POSTFIELDS, $post_kwargs);
-        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt( $ch, CURLOPT_HEADER, 0);
-        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1);
+        /* Get response */
+        $response = $this->postUrl($url);
 
-        // Retrieving response.
-        $response = json_decode(curl_exec( $ch ), TRUE);
-
-        // Invalid/No answer from Stripe.
+        /* Invalid/No answer from Stripe. */
         if ($response === null) {
             throw new StripeConnectFailed('Stripe server error, please try again.', 1);
         }
 
-        // Error handling.
+        /* Error handling. */
         if (isset($response['error'])) {
             throw new StripeConnectFailed('Your connection expired, please try again.', 1);
         }
 
-        // Saving new token.
+        /* Saving new token. */
         $stripe_connection->access_token = $response['access_token'];
         $stripe_connection->save();
-
     }
+
     /**
      * Calculating the MRR for the user.
-     *
+     * @todo MOVE THIS TO A SEPARATED FILE
      * @param $update, boolean Whether or not sync the db.
-     * @returns float The value of the mrr.
+     * @return float The value of the mrr.
      * @throws StripeNotConnected
     */
     public function calculateMRR($update=False) {
@@ -183,7 +201,85 @@ class StripeHelper
         return $mrr;
     }
 
-    // -- Private section -- //
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
+
+    /**
+     * buildTokenPostUriFromAuthCode
+     * --------------------------------------------------
+     * Creates a POST URI for the authorization and retrieving token.
+     * @param (string) ($code) The returned code by stripe.
+     * @return (array) (post_uri) The POST URI parameters
+     * --------------------------------------------------
+     */
+    private function buildTokenPostUriFromAuthCode($code) {
+        /* Build URI */
+        $post_uri = array(
+            'endpoint'  => $_ENV['STRIPE_ACCESS_TOKEN_URI'],
+            'params'    => array(
+                'client_secret' => $_ENV['STRIPE_SECRET_KEY'],
+                'client_id'     => $_ENV['STRIPE_CLIENT_ID'],
+                'code'          => $code,
+                'grant_type'    => 'authorization_code'),
+        );
+
+        /* Return URI */
+        return $post_uri;
+    }
+
+    /**
+     * buildTokenPostUriFromRefreshToken
+     * --------------------------------------------------
+     * Creates a POST URI for the authorization and retrieving token.
+     * @param (string) ($code) The returned code by stripe.
+     * @return (string) (post_uri) The POST URI
+     * --------------------------------------------------
+     */
+    private function buildTokenPostUriFromRefreshToken($refresh_token) {
+        /* Build URI */
+        $post_uri = array(
+            'endpoint'  => $_ENV['STRIPE_ACCESS_TOKEN_URI'],
+            'params'    => array(
+                'client_secret' => $_ENV['STRIPE_SECRET_KEY'],
+                'client_id'     => $_ENV['STRIPE_CLIENT_ID'],
+                'refresh_token' => $refresh_token,
+                'grant_type'    => 'refresh_token'
+            )
+        );
+
+        /* Return URI */
+        return $post_uri;
+    }
+
+    /**
+     * postUrl
+     * --------------------------------------------------
+     * Creates a POST request, and returns the response
+     * @param (array) ($url) The url endpoint and params
+     * @return (array) ($response) JSON decoded response
+     * --------------------------------------------------
+     */
+    private function postUrl($url) {
+        /* Build request */
+        $request = curl_init($url['endpoint']);
+        curl_setopt($request, CURLOPT_POST, 1);
+        curl_setopt($request, CURLOPT_POSTFIELDS, http_build_query($url['params']));
+        curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($request, CURLOPT_HEADER, 0);
+        curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
+
+        // TODO: Additional error handling
+        /* Get response */
+        $respCode = curl_getinfo($request, CURLINFO_HTTP_CODE);
+        $response = json_decode(curl_exec($request), TRUE);
+        curl_close($request);
+
+        /* Return response */
+        return $response;
+    }
 
     /**
      * Updating the current stripe Plans.
@@ -315,4 +411,4 @@ class StripeHelper
         // Return.
         return $customers;
     }
-}
+} /* StripeConnector */

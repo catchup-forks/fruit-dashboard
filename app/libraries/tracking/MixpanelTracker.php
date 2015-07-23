@@ -17,13 +17,19 @@
 * -------------------------------------------------------------------------- 
 */
 class MixpanelTracker {
-    /* Class properties */
+    /* -- Class properties -- */
     private $mixpanel;
 
-    /* Constructor */
+    /* -- Constructor -- */
     public function __construct(){
         $this->mixpanel = Mixpanel::getInstance($_ENV['MIXPANEL_TOKEN']);
     }
+
+    /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
 
     /**
      * sendEvent: 

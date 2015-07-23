@@ -23,12 +23,10 @@
     "autoload": {
         "classmap": [
             "app/libraries",
-            "app/libraries/tracking",
             "app/commands",
             "app/controllers",
             "app/models",
-            "app/database/migrations",
-            "app/database/seeds",
+            "app/database",
             "app/exceptions"
         ]
     },
