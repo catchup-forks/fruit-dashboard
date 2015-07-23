@@ -5,25 +5,6 @@ class InitialSeeder extends Seeder
 
     public function run()
     {
-        WidgetDescriptor::create(array(
-            'id'          => 1,
-            'name'        => 'Clock widget',
-            'description' => 'A simple clock',
-            'type'        => 'clock',
-            'is_premium'  => FALSE
-        ));
-        WidgetDescriptor::create(array(
-            'name'        => 'Quotes',
-            'description' => 'Get inspired every day, by this awesome widget.',
-            'type'        => 'quote',
-            'is_premium'  => FALSE
-        ));
-        WidgetDescriptor::create(array(
-            'name'        => 'Greetings',
-            'description' => 'Wouldn\'t it be great to receive a greeting message from your favourite browser every time you open a new tab?.',
-            'type'        => 'greeting',
-            'is_premium'  => FALSE
-        ));
         Dashboard::create(array(
             'id'         => '1',
             'user_id'    => '1',

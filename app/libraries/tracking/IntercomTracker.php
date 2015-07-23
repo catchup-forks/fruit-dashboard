@@ -17,16 +17,23 @@
 * -------------------------------------------------------------------------- 
 */
 class IntercomTracker {
-    /* Class properties */
+    
+    /* -- Class properties -- */
     private $intercom;
 
-    /* Constructor */
+    /* -- Constructor -- */
     public function __construct(){
         $this->intercom = IntercomClient::factory(array(
             'app_id'  => $_ENV['INTERCOM_APP_ID'],
             'api_key' => $_ENV['INTERCOM_API_KEY'],
         ));
     }
+
+    /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
 
     /**
      * sendEvent:

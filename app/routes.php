@@ -25,10 +25,10 @@ include 'routes/auth.php';
 
 /**
  * --------------------------------------------------------------------------
- * /testing | Testing urls (except for production server)
+ * /settings | Settings urls
  * --------------------------------------------------------------------------
  */
-include 'routes/testing.php';
+include 'routes/settings.php';
 
 /**
  * --------------------------------------------------------------------------
@@ -43,23 +43,6 @@ include 'routes/dashboard.php';
  * --------------------------------------------------------------------------
  */
 include 'routes/widget.php';
-
-
-/**
- * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
- */
-Route::get('signup', array(
-    'as' => 'auth.signup',
-    'uses' => 'AuthController@showSignup'
-));
-
-/**
- * @todo: This route will be OBSOLETE --> move to SignupWizardController or delete
- */
-Route::post('signup', array(
-    'as' => 'auth.signup',
-    'uses' => 'AuthController@doSignup'
-));
 
 /**
  * --------------------------------------------------------------------------
@@ -118,51 +101,6 @@ if(!App::environment('production'))
         'uses'  => 'DevController@showEmail'
     ));
 }
-
-/**
- * --------------------------------------------------------------------------
- * /settings |
- * --------------------------------------------------------------------------
- */
-/**
- * @todo: These routes should be merged into one
- */
-// settings routes
-Route::get('settings', array(
-    'before' => 'auth',
-    'as' => 'settings.settings',
-    'uses' => 'SettingsController@showSettings'
-));
-
-Route::post('settingsName', array(
-    'before' => 'auth',
-    'uses' => 'SettingsController@doSettingsName'
-));
-
-Route::post('settingsCountry', array(
-    'before' => 'auth',
-    'uses' => 'SettingsController@doSettingsCountry'
-));
-
-Route::post('settingsEmail', array(
-    'before' => 'auth',
-    'uses' => 'SettingsController@doSettingsEmail'
-));
-
-Route::post('settingsPassword', array(
-    'before' => 'auth',
-    'uses' => 'SettingsController@doSettingsPassword'
-));
-
-Route::post('settingsFrequency', array(
-    'before' => 'auth',
-    'uses' => 'SettingsController@doSettingsFrequency'
-));
-
-Route::post('cancelSubscription', array(
-    'before'    => 'auth',
-    'uses'      => 'PaymentController@doCancelSubscription'
-));
 
 /**
  * --------------------------------------------------------------------------

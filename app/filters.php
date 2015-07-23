@@ -72,13 +72,6 @@ Route::filter('api_key', function() {
     // }
 });
 
-Route::filter('trial_ended', function()
-{
-    if(Auth::check()){
-        Auth::user()->isTrialEnded();
-    }
-});
-
 Route::filter('cancelled', function()
 {
     // if (Auth::user()->plan == 'cancelled')

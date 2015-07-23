@@ -30,8 +30,11 @@ class User extends Eloquent implements UserInterface
     public function stripePlans() { return $this->hasMany('StripePlan'); }
 
     /**
+     * isStripeConnected
+     * --------------------------------------------------
      * Testing if the user has connected a stripe account.
      * @return boolean
+     * --------------------------------------------------     
      */
     public function isStripeConnected() {
         if ($this->connections()->where('service', 'stripe')
@@ -42,60 +45,23 @@ class User extends Eloquent implements UserInterface
     }
 
      /**
+     * isBraintreeConnected
+     * --------------------------------------------------
      * Testing if the user has connected a braintree account
-     *
      * @return boolean
-    */
+     * --------------------------------------------------
+     */
     public function isBraintreeConnected() {
         return False;
     }
 
-    public function isGoogleSpreadsheetConnected() {
-        return False;
-    }
 
     /**
-     * Testing if the user has connected at least one account.
-     *
-     * @return boolean
+    * 
+    * --------------------------------------------------
+    * @todo clean the lines below
+    * --------------------------------------------------
     */
-    public function isConnected()
-    {
-        if ($this->isStripeConnected()
-            || $this->isPayPalConnected()
-            || $this->isBraintreeConnected()
-            || $this->isGoogleSpreadsheetConnected()
-            ) {
-            // connected
-            return True;
-        }
-        // not connected
-        return False;
-    }
-
-    /*
-    |-------------------------------------
-    | Trial checking helpers
-    |-------------------------------------
-    */
-
-    public function isTrialEnded()
-    {
-        $trialEndDate = Carbon::parse($this->trial_started)->addDays(30);
-
-        if ($this->plan == 'trial' && $trialEndDate->isPast()){
-            $this->detachPremiumWidgets();
-            return true;
-        }
-        else if ($this->plan == 'trial_ended'){
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
     public function trialWillEndInDays($days)
     {
         $daysRemaining = $this->daysRemaining();

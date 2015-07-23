@@ -56,65 +56,19 @@ class GeneralWidgetController extends BaseController {
         );
 
         if ($validator->fails()) {
-            // Redirect.
-            return Redirect::route('widget.edit-settings', array($widgetID))
+            // validation failed.
+            return Redirect::back()
                 ->with('error', "Please correct the form errors.")
+                ->withErrors($validator)
                 ->withInput(Input::all());
         }
 
-        // Validation successful ready to save.
+        // Validation successful, ready to save.
         $widget->saveSettings(Input::except('_token'));
 
         return Redirect::route('widget.edit-settings', array($widgetID))
             ->with('success', "Widget successfully updated.");
     }
-
-    /* -- Setuo Widget -- */
-    public function getSetupWidget($widgetID) {
-        // Getting the editable widget.
-        try {
-            $widget = $this->getWidget($widgetID);
-        } catch (WidgetDoesNotExist $e) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('error', $e->getMessage());
-        }
-
-        // Rendering view.
-        return View::make('widgets.setup-widget')
-            ->with('widget', $widget);
-    }
-
-    public function postSetupWidget($widgetID) {
-
-        // Getting the editable widget.
-        try {
-            $widget = $this->getWidget($widgetID);
-        } catch (WidgetDoesNotExist $e) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('error', $e);
-        }
-
-        // Validation.
-        $validator = forward_static_call_array(
-            array('Validator', 'make'),
-            array(
-                Input::all(),
-                $widget->getSettingsValidationArray($widget->getSetupSettings)
-            )
-        );
-
-        if ($validator->fails()) {
-            // Redirect.
-            return Redirect::route('widget.edit-settings', array($widgetID))
-                ->with('error', "Please correct the form errors.");
-        }
-
-        // Validation successful ready to save.
-        $widget->saveSettings(Input::all());
-
-        return Redirect::route('widget.edit-settings', array($widgetID))
-            ->with('success', "Widget successfully updated.");
-   }
 
     /* -- AJAX functions -- */
 

@@ -24,6 +24,18 @@ return array(
      * ---------------------------------------------------------- */
     'TRIAL_PERIOD_IN_DAYS' => 14,
 
+    /* ---------------------- PLAN RELATED ---------------------- *
+     * ---------------------------------------------------------- */
+    'PLAN_ID_CONTRIBUTE' => 1,
+    'PLAN_ID_FREE'       => 2,
+    'PLAN_ID_PREMIUM'    => 3,
+
+    /* --------------- WIDGET DESCRIPTOR RELATED ---------------- *
+     * ---------------------------------------------------------- */
+    'WD_ID_CLOCK'       => 1,
+    'WD_ID_QUOTES'      => 2,
+    'WD_ID_GREETINGS'   => 3,
+
     /**
      * @todo This should be moved to .env variables.
      */
