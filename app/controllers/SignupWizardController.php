@@ -86,7 +86,7 @@ class SignupWizardController extends BaseController
         $dashboard = $this->makePersonalAutoDashboard(Auth::user(), Input::all());
         
         /* Render the page */
-        return View::make('signup-wizard.personal-widgets');
+        return View::make('signup-wizard.financial-connections');
     }
 
     /**
@@ -97,7 +97,8 @@ class SignupWizardController extends BaseController
      */
     public function getFinancialConnections() {
         /* Render the page */
-        return View::make('signup-wizard.financial-connections');
+        return Redirect::route('dashboard.dashboard');
+        //return View::make('signup-wizard.financial-connections');
     }
 
     /**
@@ -181,8 +182,39 @@ class SignupWizardController extends BaseController
         /* Save dashboard object */
         $dashboard->save();
 
+        error_log($dashboard);
+
         /* Create clock widget */
-        
+        $clockwidget = new ClockWidget;
+
+        $clockwidget->dashboard_id  = $dashboard->id;
+        $clockwidget->descriptor_id = Config::get('constants.WD_ID_CLOCK');
+        $clockwidget->state         = 'active';
+        $clockwidget->position      = '{"row":1,"col":3,"size_x":8,"size_y":3}';
+
+        /* Save clock widget object */
+        $clockwidget->save();
+
+        error_log($clockwidget);
+
+        /* Create quote widget */
+        $quotewidget = new QuoteWidget;
+
+        $quotewidget->dashboard_id  = $dashboard->id;
+        $quotewidget->descriptor_id = Config::get('constants.WD_ID_QUOTE');
+        $quotewidget->state         = 'active';
+        $quotewidget->position      = '{"row":8,"col":3,"size_x":8,"size_y":1}';
+
+        /* Save quote widget object */
+        $quotewidget->save();
+
+        error_log($quotewidget);
+
+        /* Create greetings widget */
+        /**
+         * @todo: create if model exists
+         */
+
 
         /* Return */
         return $dashboard;

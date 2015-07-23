@@ -1,6 +1,11 @@
 @extends('meta.meta')
 
 @section('body')
+@if(Auth::check())
+  YES
+@else
+  NO
+@endif
 
 @section('navbar')
 

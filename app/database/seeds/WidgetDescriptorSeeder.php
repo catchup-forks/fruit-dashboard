@@ -10,7 +10,7 @@ class WidgetDescriptorSeeder extends Seeder
             'name'        => 'Clock widget',
             'description' => 'A simple clock',
             'type'        => 'clock',
-            'is_premium'  => FALSE
+            'is_premium'  => FALSE,
         ));
 
         WidgetDescriptor::create(array(
@@ -18,7 +18,7 @@ class WidgetDescriptorSeeder extends Seeder
             'name'        => 'Quotes',
             'description' => 'Get inspired every day, by this awesome widget.',
             'type'        => 'quote',
-            'is_premium'  => FALSE
+            'is_premium'  => FALSE,
         ));
         
         WidgetDescriptor::create(array(
@@ -26,7 +26,7 @@ class WidgetDescriptorSeeder extends Seeder
             'name'        => 'Greetings',
             'description' => 'Wouldn\'t it be great to receive a greeting message from your favourite browser every time you open a new tab?',
             'type'        => 'greeting',
-            'is_premium'  => FALSE
+            'is_premium'  => FALSE,
         ));
     }
 

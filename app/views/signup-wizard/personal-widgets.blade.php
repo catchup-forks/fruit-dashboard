@@ -11,7 +11,7 @@
     <div class="vertical-center">
         <div class="container">
             <!-- Form -->
-            {{ Form::open(array('route' => 'signup-wizard.financial-connections', 'id' => 'personal-widgets-form-id' )) }}
+            {{ Form::open(array('route' => 'signup-wizard.personal-widgets', 'id' => 'personal-widgets-form-id' )) }}
             
             <div class="form-actions text-center">
                 {{ Form::submit('Next' , array(
