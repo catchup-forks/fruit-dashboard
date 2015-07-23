@@ -85,7 +85,7 @@ class GeneralWidgetController extends BaseController {
         // Validation successful, ready to save.
         $widget->saveSettings(Input::except('_token'));
 
-        return Redirect::route('widget.edit-settings', array($widgetID))
+        return Redirect::route('dashboard.dashboard')
             ->with('success', "Widget successfully updated.");
     }
 

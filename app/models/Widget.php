@@ -1,5 +1,4 @@
 <?php
-
 class Widget extends Eloquent
 {
 
@@ -18,63 +17,138 @@ class Widget extends Eloquent
     public static $type = null;
     public static $settingsFields = array();
     public static $setupSettings = array();
+    public static $dataRequired = FALSE;
 
     // -- Relations -- //
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
-    public function data() { return $this->hasOne('Data'); }
+    public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
 
     /**
+     * ================================================== *
+     *                   PUBLIC SECTION                   *
+     * ================================================== *
+     */
+
+    /**
+     * getType
+     * --------------------------------------------------
      * Getting the type of the widget.
-     *
      * @returns string widget Type
+     * --------------------------------------------------
     */
     public function getType() {
         return static::$type;
     }
+
     /**
+     * getSettingsFields
+     * --------------------------------------------------
      * Getting the settings meta.
-     *
      * @returns array The widget settings meta.
+     * --------------------------------------------------
     */
     public function getSettingsFields() {
         return static::$settingsFields;
     }
 
     /**
+     * getSetupFields
+     * --------------------------------------------------
      * Getting the setup settings meta.
-     *
      * @returns array The widget settings meta.
+     * --------------------------------------------------
     */
     public function getSetupFields() {
         return static::$setupSettings;
     }
 
-     /**
-     * Getting the correct widget from a general widget.
-     *
+    /**
+     * getSpecific
+     * --------------------------------------------------
+     * Getting the correct widget from a general widget,
      * @returns mixed A specific Widget object.
+     * --------------------------------------------------
     */
     public function getSpecific() {
         $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-        return $className::find($this->id);
+        $instance = $className::find($this->id);
+
+        // Data integrity validation.
+        if ($className::$dataRequired) {
+            // Exception variable.
+            $valid = TRUE;
+            try {
+                $instance->checkData();
+            } catch (MissingData $e) {
+                // Data object is not present but it should be.
+                $valid = FALSE;
+                $data = Data::create(array(
+                    'raw_value' => json_encode(array())
+                ));
+                $instance->data()->associate($data);
+                $data->save();
+            } catch (InvalidData $e) {
+                // Invalid data found in db, doing cleanup.
+                $valid = FALSE;
+                $instance->data->raw_value = json_encode(array());
+                $instance->data->save();
+            } catch (EmptyData $e) {
+                // Data not yet populated.
+                $valid = FALSE;
+            } finally {
+                // Updating widget state accordingly.
+                if (!$valid) {
+                    $instance->state = 'missing_data';
+                } else if($instance->state == 'missing_data') {
+                    // Valid and was missing_data -> set to active.
+                    $instance->state = 'active';
+                }
+                $instance->save();
+            }
+
+        }
+        return $instance;
     }
 
-     /**
+    /**
+     * getPosition
+     * --------------------------------------------------
      * Getting the position from DB and converting it to an object.
-     *
      * @returns Position Object.
+     * --------------------------------------------------
     */
     public function getPosition() {
         return json_decode($this->position);
     }
 
-     /**
+
+    /**
+     * getSettings
+     * --------------------------------------------------
+     * Getting the settings from db, and transforming it to assoc.
+     * @returns string widget Type
+     * --------------------------------------------------
+    */
+    public function getSettings() {
+        if ($this->settings)
+            return json_decode($this->settings, 1);
+
+        // Returning empty settings array, with valid keys.
+        $settings = array();
+        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
+            $settings[$fieldName] = "";
+        }
+        return $settings;
+    }
+    /**
+     * setPosition
+     * --------------------------------------------------
      * Setting the position of the model.
-     *
      * @param array $decoded position from json.
      * @returns string A valid stripe conenct URI.
+     * --------------------------------------------------
     */
     public function setPosition(array $decoded_position) {
         $validKeys = array('size_x', 'size_y', 'col', 'row');
@@ -101,6 +175,80 @@ class Widget extends Eloquent
         }
 
         $this->position = json_encode($position);
+        $this->save();
+    }
+
+    /**
+     * getSettingsValidationArray
+     * --------------------------------------------------
+     * Getting the laravel validation array.
+     * @param array Fields the fields ti validate.
+     * @returns array a laravel validation array.
+     * --------------------------------------------------
+    */
+    public function getSettingsValidationArray($fields) {
+        $validationArray = array();
+
+        foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
+            // Not validating fields that are not present.
+            if (!in_array($fieldName, $fields)) {
+                continue;
+            }
+            $validationString = '';
+
+            // Looking for custom validation.
+            if (isset($fieldMeta['validation'])) {
+                $validationString .= $fieldMeta['validation']."|";
+            }
+
+            // Doing type based validation.
+            if ($fieldMeta['type'] == 'SCHOICE') {
+                $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|";
+            } else if ($fieldMeta['type'] == 'INT') {
+                $validationString .= 'integer|';
+            } else if ($fieldMeta['type'] == 'FLOAT') {
+                $validationString .= 'numeric|';
+            } else if ($fieldMeta['type'] == 'DATE') {
+                $validationString .= 'date|';
+            }
+
+            // Adding validation to the return array.
+            if (strlen($validationString) > 0) {
+                $validationArray[$fieldName] = rtrim($validationString, '|');
+            }
+        }
+
+        // Return.
+        return $validationArray;
+    }
+
+    /**
+     * saveSettings
+     * --------------------------------------------------
+     * Transforming settings to JSON format. (validation done by view)
+     * @param array $inputSettings the settings array.
+     * @returns None
+     * --------------------------------------------------
+    */
+    public function saveSettings($inputSettings) {
+        $fields = array_keys($this->getSettingsFields());
+        $settings = array();
+        $oldSettings = $this->getSettings();
+
+        // Iterating through the positions.
+        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
+            // inputSettings. oldSettings, empty string.
+            if (isset($inputSettings[$fieldName])) {
+                $settings[$fieldName] = $inputSettings[$fieldName];
+            } else if ($oldSettings[$fieldName]) {
+                // Value not set, Getting from old settings.
+                $settings[$fieldName] = $oldSettings[$fieldName];
+            } else {
+                $settings[$fieldName] = "";
+            }
+        }
+
+        $this->settings = json_encode($settings);
         $this->save();
     }
 
@@ -144,90 +292,33 @@ class Widget extends Eloquent
         }
         return WidgetDescriptor::where('type', static::$type)
                                ->first()->widgets;
-   }
-
-    /** Getting the laravel validation array.
-     *
-     * @param array Fields the fields ti validate.
-     * @returns array a laravel validation array.
-    */
-    public function getSettingsValidationArray($fields) {
-        $validationArray = array();
-
-        foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
-            // Not validating fields that are not present.
-            if (!in_array($fieldName, $fields)) {
-                continue;
-            }
-            $validationString = '';
-
-            // Looking for custom validation.
-            if (isset($fieldMeta['validation'])) {
-                $validationString .= $fieldMeta['validation']."|";
-            }
-
-            // Doing type based validation.
-            if ($fieldMeta['type'] == 'SCHOICE') {
-                $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|";
-            } else if ($fieldMeta['type'] == 'INT') {
-                $validationString .= 'integer|';
-            } else if ($fieldMeta['type'] == 'FLOAT') {
-                $validationString .= 'numeric|';
-            } else if ($fieldMeta['type'] == 'DATE') {
-                $validationString .= 'date|';
-            }
-
-            // Adding validation to the return array.
-            if (strlen($validationString) > 0) {
-                $validationArray[$fieldName] = rtrim($validationString, '|');
-            }
-        }
-
-        // Return.
-        return $validationArray;
     }
 
-    /** Getting the settings from db, and transforming it to assoc.
-     *
-     * @returns string widget Type
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
     */
-    public function getSettings() {
-        if ($this->settings)
-            return json_decode($this->settings, 1);
 
-        // Returning empty settings array, with valid keys.
-        $settings = array();
-        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
-            $settings[$fieldName] = "";
+    /**
+     * checkData
+     * --------------------------------------------------
+     * Checking the data integrity of the widget.
+     * @throws InvalidData, MissingData, EmptyData
+     * --------------------------------------------------
+     */
+    private function checkData() {
+        if (!$this->data) {
+            throw new MissingData();
         }
-        return $settings;
+        $decodedData = json_decode($this->data->raw_value);
+        if (!is_array($decodedData)) {
+            throw new InvalidData();
+        }
+        if (empty($decodedData)) {
+            throw new EmptyData();
+        }
     }
 
-    /** Transforming settings to JSON format. (validation done by view)
-     *
-     * @param array $inputSettings the settings array.
-     * @returns None
-    */
-    public function saveSettings($inputSettings) {
-        $fields = array_keys($this->getSettingsFields());
-        $settings = array();
-        $oldSettings = $this->getSettings();
-
-        // Iterating through the positions.
-        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
-            // inputSettings. oldSettings, empty string.
-            if (isset($inputSettings[$fieldName])) {
-                $settings[$fieldName] = $inputSettings[$fieldName];
-            } else if ($oldSettings[$fieldName]) {
-                // Value not set, Getting from old settings.
-                $settings[$fieldName] = $oldSettings[$fieldName];
-            } else {
-                $settings[$fieldName] = "";
-            }
-        }
-
-        $this->settings = json_encode($settings);
-        $this->save();
-    }
 }
 ?>

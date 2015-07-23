@@ -31,7 +31,7 @@ class CreateWidgetsTable extends Migration {
             $table->string('position', 127)->nullable();
             $table->string('settings', 255)->nullable();
 
-            $table->enum('state', array('active', 'setup_required', 'hidden'));
+            $table->enum('state', array('active', 'setup_required', 'hidden', 'missing_data'));
         });
      }
 

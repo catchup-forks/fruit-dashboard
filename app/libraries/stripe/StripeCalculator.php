@@ -15,13 +15,12 @@ class StripeCalculator
 {
     /* -- Class properties -- */
     private $user;
-    private $connection;
+    private $dataCollector;
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
-        $this->connection = new StripeConnector($this->user);
-        $this->connection->connect();
+        $this->dataCollector = new StripeDataCollector($this->user);
     }
 
     /**
@@ -30,7 +29,8 @@ class StripeCalculator
      * ================================================== *
      */
 
-    /** getMrr
+    /**
+     * getMrr
      * --------------------------------------------------
      * Calculating the MRR for the user.
      * @param $update, boolean Whether or not sync the db.
@@ -43,7 +43,7 @@ class StripeCalculator
 
         // Updating database, with the latest data.
         if ($update) {
-            $this->connection->updateSubscriptions();
+            $this->dataCollector->updateSubscriptions();
         }
 
         // Iterating through the plans and subscriptions.
@@ -67,7 +67,8 @@ class StripeCalculator
         return $mrr;
     }
 
-    /** getArr
+    /**
+     * getArr
      * --------------------------------------------------
      * Calculating the ARR for the user.
      * @param $update, boolean Whether or not sync the db.
@@ -79,7 +80,8 @@ class StripeCalculator
         return $this->getMrr($update) * 12;
     }
 
-    /** getArpu
+    /**
+     * getArpu
      * --------------------------------------------------
      * Calculating the ARPU for the user.
      * @param $update, boolean Whether or not sync the db.

@@ -1,11 +1,16 @@
 <h2 class="text-white text-center">
   <span>
-    ${{$widget->getData()}}<br>
-    Graph:
-    @if ($widget->getSettings()['graph_on_off'])
-      ON
+    @if ($widget->state == 'missing_data')
+      Data not present yet!
     @else
-      OFF
+      @if ($widget->getSettings()['histogram'])
+        @foreach ($widget->getHistogram() as $histogramEntry)
+          ${{$histogramEntry}},
+        @endforeach
+      @else
+        ${{$widget->getLatestData()}}
+      @endif
     @endif
   </span>
 </h2>
+
