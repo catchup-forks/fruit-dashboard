@@ -240,7 +240,7 @@ class Widget extends Eloquent
             // inputSettings. oldSettings, empty string.
             if (isset($inputSettings[$fieldName])) {
                 $settings[$fieldName] = $inputSettings[$fieldName];
-            } else if ($oldSettings[$fieldName]) {
+            } else if (isset($oldSettings[$fieldName])) {
                 // Value not set, Getting from old settings.
                 $settings[$fieldName] = $oldSettings[$fieldName];
             } else {
@@ -264,10 +264,10 @@ class Widget extends Eloquent
             return parent::save();
         }
         // Associating descriptor.
-        $clockWidgetDescriptor = WidgetDescriptor::where('type', static::$type)->first();
+        $widgetDescriptor = WidgetDescriptor::where('type', static::$type)->first();
 
         // Checking descriptor.
-        if ($clockWidgetDescriptor === null) {
+        if ($widgetDescriptor === null) {
             throw new DescriptorDoesNotExist(
                 "The '".static::$type."' widget descriptor does not exist. ", 1);
         }

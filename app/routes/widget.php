@@ -9,23 +9,39 @@ Route::group([
     ], function() {
 
     Route::get('{widgetID}/edit-settings', [
+        'before' => 'auth',
         'as'     => 'widget.edit-settings',
         'uses'   => 'GeneralWidgetController@getEditWidgetSettings'
     ]);
 
     Route::post('{widgetID}/edit-settings', [
+        'before' => 'auth',
         'as'     => 'widget.edit-settings',
         'uses'   => 'GeneralWidgetController@postEditWidgetSettings'
     ]);
 
     Route::get('{widgetID}/setup', [
+        'before' => 'auth',
         'as'     => 'widget.setup',
-        'uses'   => 'GeneralWidgetController@getEditWidgetSettings'
+        'uses'   => 'GeneralWidgetController@getSetupWidget'
     ]);
 
     Route::post('{widgetID}/setup', [
+        'before' => 'auth',
         'as'     => 'widget.setup',
-        'uses'   => 'GeneralWidgetController@postEditWidgetSettings'
+        'uses'   => 'GeneralWidgetController@postSetupWidget'
+    ]);
+
+    Route::get('add', [
+        'before' => 'auth',
+        'as'     => 'widget.add',
+        'uses'   => 'GeneralWidgetController@getAddWidget'
+    ]);
+
+    Route::get('add/{descriptorID}', [
+        'before' => 'auth',
+        'as'     => 'widget.doAdd',
+        'uses'   => 'GeneralWidgetController@doAddWidget'
     ]);
 
    /**

@@ -13,7 +13,7 @@ class DashboardController extends BaseController
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    
+
    /**
      * anyDashboard
      * --------------------------------------------------
@@ -22,13 +22,8 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        /* Check for valid user and redirect if not signed in */
-        if (!Auth::check()) {
-            return Redirect::route('signup-wizard.authentication');
-        } else {
-            return View::make('dashboard.dashboard')
-                ->with('dashboards', Auth::user()->dashboards);
-        }
+        return View::make('dashboard.dashboard')
+            ->with('dashboards', Auth::user()->dashboards);
     }
 
 } /* DashboardController */

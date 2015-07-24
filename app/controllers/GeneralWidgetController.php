@@ -14,6 +14,176 @@ class GeneralWidgetController extends BaseController {
      */
 
     /**
+     * getEditWidgetSettings
+     * --------------------------------------------------
+     * @view widgets.widget-settings
+     * --------------------------------------------------
+     */
+    public function getEditWidgetSettings($widgetID) {
+        // Getting the editable widget.
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+
+        // Rendering view.
+        return View::make('widgets.widget-settings')
+            ->with('widget', $widget);
+    }
+
+    /**
+     * postEditWidgetSettings
+     * --------------------------------------------------
+     * @view saving widget settings
+     * --------------------------------------------------
+     */
+    public function postEditWidgetSettings($widgetID) {
+
+        // Getting the editable widget.
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e);
+        }
+        // Validation.
+        $validator = forward_static_call_array(
+            array('Validator', 'make'),
+            array(
+                Input::all(),
+                $widget->getSettingsValidationArray(
+                    array_keys($widget->getSetupFields())
+                )
+            )
+        );
+
+        if ($validator->fails()) {
+            // validation failed.
+            return Redirect::back()
+                ->with('error', "Please correct the form errors.")
+                ->withErrors($validator)
+                ->withInput(Input::all());
+        }
+
+        // Validation successful, ready to save.
+        $widget->saveSettings(Input::except('_token'));
+
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', "Widget successfully updated.");
+    }
+
+    /**
+     * getSetupWidget
+     * --------------------------------------------------
+     * @view widgets.setup-widget
+     * --------------------------------------------------
+     */
+    public function getSetupWidget($widgetID) {
+        // Getting the editable widget.
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+        // Rendering view.
+        return View::make('widgets.setup-widget')
+            ->with('widget', $widget)
+            ->with('settings', array_intersect_key(
+                $widget->getSettingsFields(),
+                array_flip($widget->getSetupFields())
+            ));
+    }
+
+    /**
+     * postSetupWidget
+     * --------------------------------------------------
+     * @view saving widget settings
+     * --------------------------------------------------
+     */
+    public function postSetupWidget($widgetID) {
+
+        // Getting the editable widget.
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e);
+        }
+        // Validation.
+        $validator = forward_static_call_array(
+            array('Validator', 'make'),
+            array(
+                Input::all(),
+                $widget->getSettingsValidationArray(
+                    $widget->getSetupFields()
+                )
+            )
+        );
+
+        if ($validator->fails()) {
+            // validation failed.
+            return Redirect::back()
+                ->with('error', "Please correct the form errors.")
+                ->withErrors($validator)
+                ->withInput(Input::all());
+        }
+
+        // Validation successful, ready to save.
+        $widget->saveSettings(Input::except('_token'));
+
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', "Widget successfully updated.");
+    }
+
+    /**
+     * getAddWidget
+     * --------------------------------------------------
+     * @view widgets.add-widget * --------------------------------------------------
+     */
+    public function getAddWidget() {
+        // Rendering view.
+        return View::make('widgets.add-widget')
+            ->with('widgetDescriptors', WidgetDescriptor::all());
+    }
+    /**
+     * doAddWidget
+     * --------------------------------------------------
+     * Creating instance and sending to wizard.
+     * --------------------------------------------------
+     */
+    public function doAddWidget($descriptorID) {
+        // Getting the descriptor.
+        $descriptor = WidgetDescriptor::find($descriptorID);
+        if (is_null($descriptor)) {
+            return Redirect::back()
+                ->with('error', 'Descriptor not found');
+        }
+
+        // Creating new widget instance.
+        $className = $descriptor->getClassName();
+        $widget = new $className(array(
+            'settings' => json_encode(array()),
+            'state'    => 'active',
+            'position' => '{"size_x": 2, "size_y": 2, "row": 0, "col": 0}',
+        ));
+        $widget->dashboard()->associate(Auth::user()->dashboards[0]);
+        $widget->descriptor()->associate($descriptor);
+        $widget->save();
+
+        // If not setup settings redirect to dashboard automatically..
+        if (empty($widget->getSetupFields())) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('success', 'Widget successfully created.');
+        } else {
+             return Redirect::route('widget.setup', array($widget->id))
+                ->with('success', 'Widget successfully created, please set it up.');
+        }
+    }
+
+    /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
      * ================================================== *
@@ -36,57 +206,6 @@ class GeneralWidgetController extends BaseController {
             throw new WidgetDoesNotExist("Widget not found", 1);
         }
         return $widget->getSpecific();
-    }
-
-    public function getEditWidgetSettings($widgetID) {
-        // Getting the editable widget.
-        try {
-            $widget = $this->getWidget($widgetID);
-        } catch (WidgetDoesNotExist $e) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('error', $e->getMessage());
-        }
-
-        // Rendering view.
-        return View::make('widgets.widget-settings')
-            ->with('widget', $widget)
-            ->withInput(array('f1' => 'test'));
-    }
-
-    public function postEditWidgetSettings($widgetID) {
-
-        // Getting the editable widget.
-        try {
-            $widget = $this->getWidget($widgetID);
-        } catch (WidgetDoesNotExist $e) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('error', $e);
-        }
-
-        // Validation.
-        $validator = forward_static_call_array(
-            array('Validator', 'make'),
-            array(
-                Input::all(),
-                $widget->getSettingsValidationArray(
-                    array_keys($widget->getSettingsFields())
-                )
-            )
-        );
-
-        if ($validator->fails()) {
-            // validation failed.
-            return Redirect::back()
-                ->with('error', "Please correct the form errors.")
-                ->withErrors($validator)
-                ->withInput(Input::all());
-        }
-
-        // Validation successful, ready to save.
-        $widget->saveSettings(Input::except('_token'));
-
-        return Redirect::route('dashboard.dashboard')
-            ->with('success', "Widget successfully updated.");
     }
 
     /**
