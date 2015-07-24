@@ -43,7 +43,7 @@
 		</li>
 		@if (Auth::check() && Auth::user()->id==1)
 		<li>
-			<a onClick= '_gaq.push(["_trackEvent", "Sign up", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('signup-wizard.authentication') }}">
+			<a onClick= '_gaq.push(["_trackEvent", "Sign up", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('signup') }}">
 				<span class="fa fa-cloud"></span> Sign up
 			</a>
 		</li>

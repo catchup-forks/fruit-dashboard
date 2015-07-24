@@ -5,7 +5,7 @@
  * @see AuthController
  */
 Route::group([
-        'prefix'    => 'auth',
+        'prefix'    => '',
     ], function() {
 
     Route::get('signin', [

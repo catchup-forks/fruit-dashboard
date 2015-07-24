@@ -71,7 +71,7 @@
       <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            Not a member yet? <a href="{{ URL::route('signup-wizard.authentication') }}">Sign up</a>!
+            Not a member yet? <a href="{{ URL::route('signup') }}">Sign up</a>!
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-md-6 -->

@@ -8,6 +8,11 @@ Route::group([
         'prefix'    => 'signup',
     ], function() {
 
+    Route::any('', [
+        'as'     => 'signup',
+        'uses'   => 'SignupWizardController@anySignup'
+    ]);
+
     Route::get('authentication', [
         'as'     => 'signup-wizard.authentication',
         'uses'   => 'SignupWizardController@getAuthentication'

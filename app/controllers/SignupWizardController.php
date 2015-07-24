@@ -15,6 +15,17 @@ class SignupWizardController extends BaseController
      */
 
     /**
+     * anySignup
+     * --------------------------------------------------
+     * @return Wrapper for the signup wizard entry point
+     * --------------------------------------------------
+     */
+    public function anySignup() {
+        /* Redirect to the first signup page */
+        return Redirect::route('signup-wizard.authentication');
+    }
+
+    /**
      * getAuthentication
      * --------------------------------------------------
      * @return Renders the authentication step
@@ -84,7 +95,7 @@ class SignupWizardController extends BaseController
     public function postPersonalWidgets() {
         /* Check for authenticated user, redirect if nobody found */
         if (!Auth::check()) {
-            return Redirect::route('signup-wizard.authentication');
+            return Redirect::route('signup');
         }
 
         /* Create the personal dashboard based on the inputs */
