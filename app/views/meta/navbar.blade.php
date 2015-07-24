@@ -43,18 +43,18 @@
 		</li>
 		@if (Auth::check() && Auth::user()->id==1)
 		<li>
-			<a onClick= '_gaq.push(["_trackEvent", "Sign up", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('signup') }}">
+			<a href="{{ URL::route('signup') }}">
 				<span class="fa fa-cloud"></span> Sign up
 			</a>
 		</li>
 		<li>
-			<a onClick= '_gaq.push(["_trackEvent", "Sign in", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signin') }}">
+			<a href="{{ URL::route('auth.signin') }}">
 				<span class="fa fa-sign-in"></span> Sign in
 			</a>
 		</li>
 		@else
 		<li>
-			<a onClick= '_gaq.push(["_trackEvent", "Sign out", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signout') }}">
+			<a href="{{ URL::route('auth.signout') }}">
 				<span class="fa fa-sign-out"></span> Sign out
 			</a>
 		</li>

@@ -18,7 +18,7 @@
           </a>
         </li>
         <li>
-          <a onClick= '_gaq.push(["_trackEvent", "Sign in", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signin') }}">
+          <a href="{{ URL::route('auth.signin') }}">
             <span class="fa fa-sign-in"></span> Sign in
           </a>
         </li>
