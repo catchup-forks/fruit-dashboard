@@ -81,7 +81,8 @@ body {
   list-style: none;
   cursor: default;
 }
-.gridster ul li:hover {
+.gridster ul li:hover,
+.gridster ul li.hovered {
   background: #e6e6e6;
   /* Fallback */
   background: rgba(230, 230, 230, 0.425);
@@ -99,7 +100,7 @@ body {
 .greetings-name {
   border: 0;
   height: auto;
-  background: 0 !important;
+  background: 0;
   font-size: 54px;
   border-bottom: 3px solid #fff;
   box-shadow: none;
