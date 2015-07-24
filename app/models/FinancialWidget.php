@@ -10,7 +10,7 @@ class FinancialWidget extends Widget
     public static $settingsFields = array(
         'histogram' => array('name' => 'Graph on/off', 'type' => 'SCHOICE', 'validation' => 'required'),
     );
-    // The settings to setup in the setup-wizard.
+    /* The settings to setup in the setup-wizard.*/
     public static $setupSettings = array('histogram');
 
     /* -- Choice functions -- */

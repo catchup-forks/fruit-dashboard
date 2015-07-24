@@ -16,7 +16,7 @@ class WidgetDescriptor extends Eloquent
 
     /* Returning the specific widgetClass Name
      *
-     * @returns string The widget class Name
+     * @return string The widget class Name
     */
     public function getClassName() {
         return str_replace(

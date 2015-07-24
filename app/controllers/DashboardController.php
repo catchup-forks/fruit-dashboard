@@ -14,7 +14,7 @@ class DashboardController extends BaseController
      * ================================================== *
      */
 
-   /**
+    /**
      * anyDashboard
      * --------------------------------------------------
      * returns the user dashboard, or redirects to signup wizard

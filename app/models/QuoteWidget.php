@@ -12,12 +12,13 @@ class QuoteWidget extends Widget
             'validation' => 'required'),
    );
     // The settings to setup in the setup-wizard.
-    public static $setupSettings = array();
+    public static $setupSettings = array('type');
 
     /* Choices functions */
     public function type() {
         return array(
-            'insp'  => 'Inspirational',
+            'insp'       => 'Inspirational',
+            'other'      => 'Other'
         );
     }
 }

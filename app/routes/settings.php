@@ -19,4 +19,11 @@ Route::group([
         'as' => 'settings.change',
         'uses' => 'SettingsController@postSettingsChange'
     ));
+
+    Route::post('disconnect/stripe', array(
+        'before' => 'auth',
+        'as' => 'disconnect.stripe',
+        'uses' => 'SettingsController@postDisconnectStripe'
+    ));
+
 });

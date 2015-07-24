@@ -1,8 +1,8 @@
-@if(!isset($onDashboard))  
+@if(!isset($onDashboard))
   <div class="position-tl drop-shadow z-top">
     <a href="/" alt="Dashboard" title="Dashboard">
       <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
-    </a>  
+    </a>
   </div>
 @endif
 
@@ -10,12 +10,12 @@
 <div class="position-bl drop-shadow z-top">
   <a href="{{ URL::route('widget.add') }}" alt="Add new widget" title="Add new widget">
     <span class="fa fa-plus-circle fa-2x fa-inverse color-hovered"></span>
-  </a>  
+  </a>
 </div>
 
 
 <div class="btn-group position-tr z-top cursor-pointer">
-	
+
 	<!-- dropdown menu icon -->
 	<span class="dropdown-icon fa fa-2x fa-cog fa-inverse color-hovered drop-shadow" alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></span>
 
@@ -43,7 +43,7 @@
 		</li>
 		@if (Auth::check() && Auth::user()->id==1)
 		<li>
-			<a onClick= '_gaq.push(["_trackEvent", "Sign up", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('auth.signup') }}">
+			<a onClick= '_gaq.push(["_trackEvent", "Sign up", "Button Pushed"]);mixpanel.track("Signout");' href="{{ URL::route('signup-wizard.authentication') }}">
 				<span class="fa fa-cloud"></span> Sign up
 			</a>
 		</li>

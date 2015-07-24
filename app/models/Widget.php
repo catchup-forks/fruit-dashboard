@@ -19,7 +19,7 @@ class Widget extends Eloquent
     public static $setupSettings = array();
     public static $dataRequired = FALSE;
 
-    // -- Relations -- //
+    /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
@@ -123,7 +123,6 @@ class Widget extends Eloquent
         return json_decode($this->position);
     }
 
-
     /**
      * getSettings
      * --------------------------------------------------
@@ -142,6 +141,7 @@ class Widget extends Eloquent
         }
         return $settings;
     }
+
     /**
      * setPosition
      * --------------------------------------------------

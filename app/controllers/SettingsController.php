@@ -6,7 +6,7 @@
  * SettingsController: Handles the settings related sites
  * --------------------------------------------------------------------------
  */
-class SettingsController extends BaseController 
+class SettingsController extends BaseController
 {
     /**
      * ================================================== *
@@ -23,13 +23,13 @@ class SettingsController extends BaseController
     public function anySettings() {
         /* Get the user */
         $user = Auth::user();
-        
+
         /* Get user settings */
         $settings = Settings::where('user_id', $user->id)->get();
 
         /* Get the user subscription */
         $subscription = Subscription::where('user_id', $user->id)->get();
-        
+
         return View::make('settings.settings', array(
                     'user'          => $user,
                     'settings'      => $settings,
@@ -55,6 +55,19 @@ class SettingsController extends BaseController
             default:
                 return Redirect::route('settings.settings');
         }
+    }
+
+    /**
+     * postDisconnectStripe
+     * --------------------------------------------------
+     * @return Deletes the logged in user's stripe connection.
+     * --------------------------------------------------
+     */
+    public function postDisconnectStripe() {
+        try {
+            $connector = new StripeConnector(Auth::user());
+            $connector->disconnect();
+        } catch (StripeNotConnected $e) {}
     }
 
     /**
@@ -95,7 +108,7 @@ class SettingsController extends BaseController
             return Redirect::route('settings.settings')
                 ->with('error', 'Something went wrong with changing your name. Please try again.');
         }
-        
+
     }
 
     /**
@@ -130,7 +143,7 @@ class SettingsController extends BaseController
             return Redirect::route('settings.settings')
                 ->with('error', 'Something went wrong with changing your email. Please try again.');
         }
-        
+
     }
 
     /**
@@ -162,10 +175,10 @@ class SettingsController extends BaseController
         } else {
             // validator success -> edit_profile
             // selecting logged in user
-            $user = Auth::user(); 
-            
+            $user = Auth::user();
+
             $user->name = Input::get('name');
-                
+
             $user->save();
             // setting data
             return Redirect::to('/settings')
@@ -223,12 +236,12 @@ class SettingsController extends BaseController
             // validator success -> edit_profile
             // selecting logged in user
             $user = Auth::user();
-            
+
             // we need to check the password
             if (Hash::check(Input::get('email_password'), $user->password)){
                 $user->email = Input::get('email');
             }
-                
+
             $user->save();
             // setting data
             return Redirect::to('/settings')
@@ -255,7 +268,7 @@ class SettingsController extends BaseController
             // validator success -> edit_profile
             // selecting logged in user
             $user = Auth::user();
-            
+
             // if we have data from the password change form
             // checking if old password is the old password
             if (Hash::check(Input::get('old_password'), $user->password)){
@@ -264,8 +277,8 @@ class SettingsController extends BaseController
             else {
                 return Redirect::to('/settings')
                     ->with('error', 'The old password you entered is incorrect.'); // send back errors
-            }  
-                
+            }
+
             $user->save();
             // setting data
             return Redirect::to('/settings')
