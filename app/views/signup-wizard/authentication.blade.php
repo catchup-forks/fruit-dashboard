@@ -71,11 +71,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
 
-            var hours = new Date().getHours();
-            
-            if(17 <= hours || hours < 5) { $('.greeting').html('evening'); }
-            if(5 <= hours && hours < 13) { $('.greeting').html('morning'); }
-            if(13 <= hours && hours < 17) { $('.greeting').html('afternoon'); } 
+          $('.greeting').html('{{ SiteConstants::getTimeOfTheDay() }}');
+
           
           $('#username_id').on('keydown', function (event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -108,11 +105,7 @@
             
           });
 
-          var hours = new Date().getHours();
-          
-          if(17 <= hours || hours < 5) { $('.greeting').html('evening'); }
-          if(5 <= hours && hours < 13) { $('.greeting').html('morning'); }
-          if(13 <= hours && hours < 17) { $('.greeting').html('afternoon'); } 
+          $('.greeting').html('{{ SiteConstants::getTimeOfTheDay() }}');
           
         });
     </script>
