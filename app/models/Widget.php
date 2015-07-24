@@ -1,8 +1,7 @@
 <?php
 class Widget extends Eloquent
 {
-
-    // -- Table specs -- //
+ // -- Table specs -- //
     protected $table = "widgets";
 
     // -- Fields -- //
@@ -30,12 +29,11 @@ class Widget extends Eloquent
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-
     /**
      * getType
      * --------------------------------------------------
      * Getting the type of the widget.
-     * @returns string widget Type
+     * @return string widget Type
      * --------------------------------------------------
     */
     public function getType() {
@@ -46,7 +44,7 @@ class Widget extends Eloquent
      * getSettingsFields
      * --------------------------------------------------
      * Getting the settings meta.
-     * @returns array The widget settings meta.
+     * @return array The widget settings meta.
      * --------------------------------------------------
     */
     public function getSettingsFields() {
@@ -57,7 +55,7 @@ class Widget extends Eloquent
      * getSetupFields
      * --------------------------------------------------
      * Getting the setup settings meta.
-     * @returns array The widget settings meta.
+     * @return array The widget settings meta.
      * --------------------------------------------------
     */
     public function getSetupFields() {
@@ -68,55 +66,19 @@ class Widget extends Eloquent
      * getSpecific
      * --------------------------------------------------
      * Getting the correct widget from a general widget,
-     * @returns mixed A specific Widget object.
+     * @return mixed A specific Widget object.
      * --------------------------------------------------
     */
     public function getSpecific() {
         $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-        $instance = $className::find($this->id);
-
-        // Data integrity validation.
-        if ($className::$dataRequired) {
-            // Exception variable.
-            $valid = TRUE;
-            try {
-                $instance->checkData();
-            } catch (MissingData $e) {
-                // Data object is not present but it should be.
-                $valid = FALSE;
-                $data = Data::create(array(
-                    'raw_value' => json_encode(array())
-                ));
-                $instance->data()->associate($data);
-                $data->save();
-            } catch (InvalidData $e) {
-                // Invalid data found in db, doing cleanup.
-                $valid = FALSE;
-                $instance->data->raw_value = json_encode(array());
-                $instance->data->save();
-            } catch (EmptyData $e) {
-                // Data not yet populated.
-                $valid = FALSE;
-            } finally {
-                // Updating widget state accordingly.
-                if (!$valid) {
-                    $instance->state = 'missing_data';
-                } else if($instance->state == 'missing_data') {
-                    // Valid and was missing_data -> set to active.
-                    $instance->state = 'active';
-                }
-                $instance->save();
-            }
-
-        }
-        return $instance;
+        return $className::find($this->id);
     }
 
     /**
      * getPosition
      * --------------------------------------------------
      * Getting the position from DB and converting it to an object.
-     * @returns Position Object.
+     * @return Position Object.
      * --------------------------------------------------
     */
     public function getPosition() {
@@ -127,7 +89,7 @@ class Widget extends Eloquent
      * getSettings
      * --------------------------------------------------
      * Getting the settings from db, and transforming it to assoc.
-     * @returns string widget Type
+     * @return string widget Type
      * --------------------------------------------------
     */
     public function getSettings() {
@@ -147,7 +109,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
      * Setting the position of the model.
      * @param array $decoded position from json.
-     * @returns string A valid stripe conenct URI.
+     * @return string A valid stripe conenct URI.
      * --------------------------------------------------
     */
     public function setPosition(array $decoded_position) {
@@ -183,7 +145,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
      * Getting the laravel validation array.
      * @param array Fields the fields ti validate.
-     * @returns array a laravel validation array.
+     * @return array a laravel validation array.
      * --------------------------------------------------
     */
     public function getSettingsValidationArray($fields) {
@@ -227,10 +189,10 @@ class Widget extends Eloquent
      * --------------------------------------------------
      * Transforming settings to JSON format. (validation done by view)
      * @param array $inputSettings the settings array.
-     * @returns None
+     * @return None
      * --------------------------------------------------
     */
-    public function saveSettings($inputSettings) {
+    public function saveSettings($inputSettings, $commit=TRUE) {
         $fields = array_keys($this->getSettingsFields());
         $settings = array();
         $oldSettings = $this->getSettings();
@@ -243,25 +205,31 @@ class Widget extends Eloquent
             } else if (isset($oldSettings[$fieldName])) {
                 // Value not set, Getting from old settings.
                 $settings[$fieldName] = $oldSettings[$fieldName];
+            } else if (isset($this->getSettingsFields()[$fieldName]['default'])) {
+                // Value not set, default found.
+                $settings[$fieldName] = $this->getSettingsFields()[$fieldName]['default'];
             } else {
                 $settings[$fieldName] = "";
             }
         }
 
         $this->settings = json_encode($settings);
-        $this->save();
+
+        if ($commit) {
+            $this->save();
+        }
     }
 
     /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
      *
-     * @returns the saved object.
+     * @return the saved object.
     */
     public function save(array $options=array()) {
         // By default calling general save.
         if (!static::$type) {
-            return parent::save();
+            return parent::save($options);
         }
         // Associating descriptor.
         $widgetDescriptor = WidgetDescriptor::where('type', static::$type)->first();
@@ -276,13 +244,20 @@ class Widget extends Eloquent
         $this->descriptor()->associate($widgetDescriptor);
 
         // Calling parent.
-        return parent::save();
+        parent::save($options);
+
+        // Always saving settings to keep integrity.
+        $this->saveSettings(array(), FALSE);
+        $this->checkIntegrity();
+
+        return $this;
+
     }
 
     /**
      * Overriding all method to filter clock widgets.
      *
-     * @returns all the specific widgets.
+     * @return all the specific widgets.
     */
     public static function all($columns = array('*')) {
         // By default calling general all.
@@ -295,9 +270,59 @@ class Widget extends Eloquent
 
     /**
      * ================================================== *
-     *                   PRIVATE SECTION                  *
+     *                  PROTECTED SECTION                 *
      * ================================================== *
     */
+
+    /**
+     * checkIntegrity
+     * --------------------------------------------------
+     * Checking a widget's overall integrity,
+     * setting state accordingly.
+     * --------------------------------------------------
+     */
+    protected function checkIntegrity() {
+        // Data integrity validation.
+        if (static::$dataRequired) {
+            // Exception variables.
+            $valid = TRUE;
+            $save = FALSE;
+            try {
+                $this->checkData();
+            } catch (MissingData $e) {
+                // Data object is not present but it should be.
+                $valid = FALSE;
+                $save = TRUE;
+                $data = Data::create(array(
+                    'raw_value' => json_encode(array())
+                ));
+                $this->data()->associate($data);
+                $data->save();
+            } catch (InvalidData $e) {
+                // Invalid data found in db, doing cleanup.
+                $valid = FALSE;
+                $save = TRUE;
+                $this->data->raw_value = json_encode(array());
+                $this->data->save();
+            } catch (EmptyData $e) {
+                // Data not yet populated.
+                $valid = FALSE;
+            } finally {
+                // Updating widget state accordingly.
+                if (!$valid && $this->state == 'missing_data') {
+                    $this->state = 'missing_data';
+                    $save = TRUE;
+                } else if ($valid && $this->state == 'missing_data') {
+                    // Valid and was missing_data -> set to active.
+                    $this->state = 'active';
+                    $save = TRUE;
+                }
+                if ($save) {
+                    $this->save();
+                }
+            }
+        }
+    }
 
     /**
      * checkData
@@ -306,11 +331,11 @@ class Widget extends Eloquent
      * @throws InvalidData, MissingData, EmptyData
      * --------------------------------------------------
      */
-    private function checkData() {
+    protected function checkData() {
         if (!$this->data) {
             throw new MissingData();
         }
-        $decodedData = json_decode($this->data->raw_value);
+        $decodedData = json_decode($this->data->raw_value, 1);
         if (!is_array($decodedData)) {
             throw new InvalidData();
         }
@@ -318,6 +343,7 @@ class Widget extends Eloquent
             throw new EmptyData();
         }
     }
+
 
 }
 ?>

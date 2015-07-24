@@ -7,24 +7,20 @@ class ClockWidget extends Widget
 
     /* -- Settings -- */
     public static $settingsFields = array(
-        'am_pm' => array('name' => 'AM / PM', 'type' => 'SCHOICE', 'validation' => 'required'),
-        'f1' => array('name' => 'Field#1', 'type' => 'TEXT'),
-        'f2' => array(
-            'name'       => 'Field#2',
-            'type'       => 'INT',
-            'validation' => 'required'),
-        'f3' => array('name' => 'Field#3', 'type' => 'DATE'),
-        'f4' => array('name' => 'Field#4', 'type' => 'FLOAT'),
-        'f5' => array('name' => 'Field#5', 'type' => 'TEXT'),
+        'clock_type' => array(
+            'name' => 'Type',
+            'type' => 'SCHOICE',
+            'validation' => 'required',
+        ),
    );
     // The settings to setup in the setup-wizard.
-    public static $setupSettings = array('am_pm');
+    public static $setupSettings = array();
 
     /* Choices functions */
-    public function am_pm() {
+    public function clock_type() {
         return array(
-            'am' => 'AM',
-            'pm' => 'PM'
+            'digital' => 'digital',
+            'analog'  => 'analog'
         );
     }
 }

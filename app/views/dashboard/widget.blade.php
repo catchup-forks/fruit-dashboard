@@ -15,27 +15,31 @@
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 
-  {{-- uncomment for a settings cog --}}
-  {{--
-  <a href="#">
+  @if (count($widget->getSpecific()->getSettings()) > 0)
+  <a href="{{route('widget.edit-settings', $widget->id)}}">
     <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
   </a>
-   --}}
+  @endif
 
   @if ($widget->descriptor->type == 'clock')
     @include('dashboard.widget-clock', [
       'currentTime' => $widget['currentValue'],
-      'id' => $widget['id']
      ])
   @endif
 
   @if ($widget->descriptor->type == 'greetings')
     @include('dashboard.widget-greetings', [
-      'id' => $widget['id'],
+      'widget'   => $widget->getSpecific(),
       'position' => $widget['position']
     ])
   @endif
 
+  @if ($widget->descriptor->type == 'quote')
+    @include('dashboard.widget-quote', [
+      'data' => $widget->getSpecific()->getData(),
+      'position' => $widget['position']
+    ])
+  @endif
   @if ($widget->descriptor->type == 'stripe_mrr')
     @include('dashboard.stripe-widgets.mrr', [
       'widget' => $widget->getSpecific(),
