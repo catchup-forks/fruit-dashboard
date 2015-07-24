@@ -49,11 +49,6 @@ Route::filter('auth', function()
     if (Auth::guest()) {
         return Redirect::route('auth.signin');
     }
-    # auth, but with user id 1
-    if (Auth::check() && Auth::user()->id == 1) {
-        Auth::logout();
-        return Redirect::route('auth.signin');
-    }
 });
 
 
@@ -62,7 +57,7 @@ Route::filter('auth.basic', function()
     return Auth::basic();
 });
 
-Route::filter('api_key', function() { 
+Route::filter('api_key', function() {
     // if (!Auth::user()->isConnected())
     // {
     //     // no valid key

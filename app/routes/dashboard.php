@@ -9,6 +9,7 @@ Route::group([
     ], function() {
 
     Route::any('', [
+        'before' => 'auth',
         'as'     => 'dashboard.dashboard',
         'uses'   => 'DashboardController@anyDashboard'
     ]);
