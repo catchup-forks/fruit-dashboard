@@ -12,6 +12,7 @@
        var h = today.getHours();
        var m = today.getMinutes();
        m = checkTime(m);
+       h = checkTime(h);
        $('#digitTime').html(h + ':' + m);
        var t = setTimeout(function(){startTime()},500);
      }
