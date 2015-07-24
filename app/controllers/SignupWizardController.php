@@ -276,7 +276,6 @@ class SignupWizardController extends BaseController
         $clockwidget = new ClockWidget;
 
         $clockwidget->dashboard_id  = $dashboard->id;
-        $clockwidget->descriptor_id = Config::get('constants.WD_ID_CLOCK');
         $clockwidget->state         = 'active';
         $clockwidget->position      = '{"row":1,"col":3,"size_x":8,"size_y":3}';
 
@@ -287,7 +286,6 @@ class SignupWizardController extends BaseController
         $greetingswidget = new GreetingsWidget;
 
         $greetingswidget->dashboard_id  = $dashboard->id;
-        $greetingswidget->descriptor_id = Config::get('constants.WD_ID_QUOTE');
         $greetingswidget->state         = 'active';
         $greetingswidget->position      = '{"row":4,"col":3,"size_x":8,"size_y":1}';
 
@@ -298,7 +296,6 @@ class SignupWizardController extends BaseController
         $quotewidget = new QuoteWidget;
 
         $quotewidget->dashboard_id  = $dashboard->id;
-        $quotewidget->descriptor_id = Config::get('constants.WD_ID_QUOTE');
         $quotewidget->state         = 'active';
         $quotewidget->position      = '{"row":8,"col":3,"size_x":8,"size_y":1}';
 

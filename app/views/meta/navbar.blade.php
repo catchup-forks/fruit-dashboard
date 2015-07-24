@@ -8,7 +8,7 @@
 
 <!-- add new widget button -->
 <div class="position-bl drop-shadow z-top">
-  <a href="{{ URL::route('connect.connect') }}" alt="Add new widget" title="Add new widget">
+  <a href="{{ URL::route('widget.add') }}" alt="Add new widget" title="Add new widget">
     <span class="fa fa-plus-circle fa-2x fa-inverse color-hovered"></span>
   </a>  
 </div>
@@ -22,7 +22,7 @@
 	<!-- dropdown menu elements -->
 	<ul class="dropdown-menu pull-right" role="menu">
 		<li>
-			<a href="{{ URL::route('connect.connect') }}">
+			<a href="{{ URL::route('widget.add') }}">
 				<span class="fa fa-plus-circle"></span> Add New Widget
 			</a>
 		</li>

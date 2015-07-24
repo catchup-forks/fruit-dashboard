@@ -11,7 +11,7 @@
   data-sizex="{{ $widget->getPosition()->size_x }}"
   data-sizey="{{ $widget->getPosition()->size_y }}"
 
-  <a href="{{ URL::route('connect.deletewidget', $widget['widget_id']) }}">
+  <a href="">
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 
@@ -29,8 +29,8 @@
      ])
   @endif
 
-  @if ($widget->descriptor->type == 'greeting')
-    @include('dashboard.widget-greeting', [
+  @if ($widget->descriptor->type == 'greetings')
+    @include('dashboard.widget-greetings', [
       'id' => $widget['id'],
       'position' => $widget['position']
     ])

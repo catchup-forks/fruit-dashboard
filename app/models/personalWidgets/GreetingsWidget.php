@@ -2,7 +2,7 @@
 
 class GreetingsWidget extends Widget
 {
-    public static $type = 'greeting';
+    public static $type = 'greetings';
 }
 
 ?>
