@@ -53,8 +53,7 @@
 
               {{ Form::submit('Sign in' , array(
                 'id' => 'id_submit',
-                'class' => 'btn btn-primary pull-right',
-                'onClick' => '_gaq.push(["_trackEvent", "Signup", "Button Pushed"]);mixpanel.track("Signup");' )) }}
+                'class' => 'btn btn-primary pull-right')) }}
 
               {{ Form::close() }}
 
