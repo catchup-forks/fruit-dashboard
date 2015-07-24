@@ -283,6 +283,17 @@ class SignupWizardController extends BaseController
         /* Save clock widget object */
         $clockwidget->save();
 
+        /* Create greetings widget */
+        $greetingswidget = new GreetingsWidget;
+
+        $greetingswidget->dashboard_id  = $dashboard->id;
+        $greetingswidget->descriptor_id = Config::get('constants.WD_ID_QUOTE');
+        $greetingswidget->state         = 'active';
+        $greetingswidget->position      = '{"row":4,"col":3,"size_x":8,"size_y":1}';
+
+        /* Save greetings widget object */
+        $greetingswidget->save();
+
         /* Create quote widget */
         $quotewidget = new QuoteWidget;
 
@@ -293,11 +304,6 @@ class SignupWizardController extends BaseController
 
         /* Save quote widget object */
         $quotewidget->save();
-
-        /* Create greetings widget */
-        /**
-         * @todo: create if model exists
-         */
 
         /* Return */
         return $dashboard;

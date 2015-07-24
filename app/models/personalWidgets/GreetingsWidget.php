@@ -1,6 +1,6 @@
 <?php
 
-class GreetingWidget extends Widget
+class GreetingsWidget extends Widget
 {
     public static $type = 'greeting';
 }
