@@ -7,7 +7,8 @@ class WidgetDescriptor extends Eloquent
         'name',
         'description',
         'type',
-        'is_premium'
+        'is_premium',
+        'category'
     );
     public $timestamps = FALSE;
 

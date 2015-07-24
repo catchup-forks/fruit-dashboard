@@ -15,11 +15,9 @@
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 
-  @if (count($widget->getSpecific()->getSettings()) > 0)
   <a href="{{route('widget.edit-settings', $widget->id)}}">
     <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
   </a>
-  @endif
 
   @if ($widget->descriptor->type == 'clock')
     @include('dashboard.widget-clock', [
