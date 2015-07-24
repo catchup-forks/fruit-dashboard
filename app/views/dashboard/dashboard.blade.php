@@ -36,8 +36,8 @@
       var positioning = [];
       var containerWidth = $('.grid-base').width();
       var containerHeight = $('.grid-base').height();
-      var numberOfCols = 12;
-      var numberOfRows = 12;
+      var numberOfCols = {{ SiteConstants::getGridNumberOfCols() }};
+      var numberOfRows = {{ SiteConstants::getGridNumberOfRows() }};
       var margin = 5;
       var widget_width = (containerWidth / numberOfCols) - (margin * 2);
       var widget_height = (containerHeight / numberOfRows) - (margin * 2);

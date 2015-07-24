@@ -2,13 +2,7 @@
 
 @section('body')
 
-  <body style="background: url({{ Background::dailyBackgroundURL() }}) no-repeat center center fixed">
-    @if(Auth::check())
-      YES
-    @else
-      NO
-    @endif
-    
+  <body style="background: url({{ Background::dailyBackgroundURL() }}) no-repeat center center fixed">   
     @section('navbar')
       @include('meta.navbar')
     @show
