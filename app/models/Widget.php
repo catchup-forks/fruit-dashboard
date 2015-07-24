@@ -273,8 +273,7 @@ class Widget extends Eloquent
         }
 
         // Assigning descriptor.
-        $this->descriptor()
-             ->associate($clockWidgetDescriptor);
+        $this->descriptor()->associate($widgetDescriptor);
 
         // Calling parent.
         return parent::save();
