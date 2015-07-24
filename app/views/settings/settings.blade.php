@@ -8,7 +8,6 @@
   @stop
 
   @section('pageContent')
-  <div class="vertical-center">
     <div class="container">
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -114,7 +113,6 @@
         </div> <!-- /.col-md-6 -->
       </div> <!-- /.row -->
     </div> <!-- /.container -->
-  </div> <!-- /.vertical-center -->
 
   {{-- 
     {{ $user }}
