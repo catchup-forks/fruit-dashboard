@@ -52,13 +52,9 @@ body {
 }
 .drop-shadow {
   text-shadow: 1px 1px 3px #141414;
-  -webkit-text-stroke-width: 0.5px;
-  -webkit-text-stroke-color: #333;
 }
 .color-hovered:hover {
   color: #bfbfbf;
-}
-.cursor-pointer {
   cursor: pointer;
 }
 .text-white {
@@ -81,7 +77,8 @@ body {
   list-style: none;
   cursor: default;
 }
-.gridster ul li:hover {
+.gridster ul li:hover,
+.hovered {
   background: #e6e6e6;
   /* Fallback */
   background: rgba(230, 230, 230, 0.425);

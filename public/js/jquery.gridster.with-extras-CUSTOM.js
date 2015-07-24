@@ -2756,50 +2756,52 @@
     *  returns the row number, else returns false.
     */
     fn.can_go_widget_up = function(widget_grid_data) {
-        var p_bottom_row = widget_grid_data.row + widget_grid_data.size_y - 1;
-        var result = true;
-        var upper_rows = [];
-        var min_row = 10000;
+        // MODIFIED TO DISABLE SNAP UP 
+        return false;
+        // var p_bottom_row = widget_grid_data.row + widget_grid_data.size_y - 1;
+        // var result = true;
+        // var upper_rows = [];
+        // var min_row = 10000;
 
-        /* generate an array with columns as index and array with topmost rows
-         * empty as value */
-        this.for_each_column_occupied(widget_grid_data, function(tcol) {
-            var grid_col = this.gridmap[tcol];
-            upper_rows[tcol] = [];
+        // /* generate an array with columns as index and array with topmost rows
+        //  * empty as value */
+        // this.for_each_column_occupied(widget_grid_data, function(tcol) {
+        //     var grid_col = this.gridmap[tcol];
+        //     upper_rows[tcol] = [];
 
-            var r = p_bottom_row + 1;
-            // iterate over each row
-            while (--r > 0) {
-                if (this.is_widget(tcol, r) && !this.is_player_in(tcol, r)) {
-                    if (!grid_col[r].is(widget_grid_data.el)) {
-                        break;
-                    }
-                }
+        //     var r = p_bottom_row + 1;
+        //     // iterate over each row
+        //     while (--r > 0) {
+        //         if (this.is_widget(tcol, r) && !this.is_player_in(tcol, r)) {
+        //             if (!grid_col[r].is(widget_grid_data.el)) {
+        //                 break;
+        //             }
+        //         }
 
-                if (!this.is_player(tcol, r) &&
-                    !this.is_placeholder_in(tcol, r) &&
-                    !this.is_player_in(tcol, r)) {
-                    upper_rows[tcol].push(r);
-                }
+        //         if (!this.is_player(tcol, r) &&
+        //             !this.is_placeholder_in(tcol, r) &&
+        //             !this.is_player_in(tcol, r)) {
+        //             upper_rows[tcol].push(r);
+        //         }
 
-                if (r < min_row) {
-                    min_row = r;
-                }
-            }
+        //         if (r < min_row) {
+        //             min_row = r;
+        //         }
+        //     }
 
-            if (upper_rows[tcol].length === 0) {
-                result = false;
-                return true; //break
-            }
+        //     if (upper_rows[tcol].length === 0) {
+        //         result = false;
+        //         return true; //break
+        //     }
 
-            upper_rows[tcol].sort(function(a, b) {
-                return a - b;
-            });
-        });
+        //     upper_rows[tcol].sort(function(a, b) {
+        //         return a - b;
+        //     });
+        // });
 
-        if (!result) { return false; }
+        // if (!result) { return false; }
 
-        return this.get_valid_rows(widget_grid_data, upper_rows, min_row);
+        // return this.get_valid_rows(widget_grid_data, upper_rows, min_row);
     };
 
 

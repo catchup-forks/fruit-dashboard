@@ -76,15 +76,10 @@ html, body {
 
 .drop-shadow {
   text-shadow: 1px 1px 3px #141414;
-  -webkit-text-stroke-width: 0.5px;
-  -webkit-text-stroke-color: #333;
 }
 
 .color-hovered:hover {
   color: darken(@white, @darken);
-}
-
-.cursor-pointer {
   cursor: pointer;
 }
 
@@ -115,7 +110,8 @@ html, body {
   cursor: default;
 }
 
-.gridster ul li:hover {
+.gridster ul li:hover,
+.hovered {
   background: @gridster-bg; /* Fallback */
   background: fade(@gridster-bg, @alpha/2);
 }

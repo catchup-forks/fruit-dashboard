@@ -32,6 +32,7 @@
     $(function(){
 
       var gridster;
+      var players = $('.gridster li');
       var positioning = [];
       var containerWidth = $('.grid-base').width();
       var containerHeight = $('.grid-base').height();
@@ -58,25 +59,33 @@
        },
        resize: {
          enabled: true,
+         start: function() {
+          players.toggleClass('hovered');
+         },
          stop: function(e, ui, $widget) {
-           positioning = gridster.serialize();
-           positioning = JSON.stringify(positioning);
-         $.ajax({
-             type: "POST",
-             data: {'positioning': positioning},
-             url: "/widget/save-position/{{Auth::user()->id}}/"
+          positioning = gridster.serialize();
+          positioning = JSON.stringify(positioning);
+          $.ajax({
+            type: "POST",
+            data: {'positioning': positioning},
+            url: "/widget/save-position/{{Auth::user()->id}}/"
            });
+          players.toggleClass('hovered');
          }
        },
        draggable: {
-         stop: function(e, ui, $widget) {
-           positioning = gridster.serialize();
-           positioning = JSON.stringify(positioning);
-           $.ajax({
-             type: "POST",
-             data: {'positioning': positioning},
-             url: "/widget/save-position/{{Auth::user()->id}}/"
-           });
+        start: function() {
+          players.toggleClass('hovered');
+        },
+        stop: function(e, ui, $widget) {
+          positioning = gridster.serialize();
+          positioning = JSON.stringify(positioning);
+          $.ajax({
+            type: "POST",
+            data: {'positioning': positioning},
+            url: "/widget/save-position/{{Auth::user()->id}}/"
+          });
+          players.toggleClass('hovered');
          }
        }
      }).data('gridster');
