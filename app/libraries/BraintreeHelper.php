@@ -11,7 +11,10 @@ class BraintreeHelper {
     * @return string - corresponding stripe event type
     */
     public static function generateAccessToken($credentials) {
-        $fields = array('publicKey', 'privateKey', 'merchantID');
+        $fields = array('publicKey', 'privateKey', 'merchantID', 'environment');
+        foreach ($fields as $field) {
+
+        }
     }
 
     public static function saveSecondaryEvent($notification)
@@ -92,7 +95,6 @@ class BraintreeHelper {
     *
     * @return array - formatted for stripe format
     */
-
     public static function convertObjectFormat($notification, $type, $user)
     {
         $object = array();
@@ -247,7 +249,7 @@ class BraintreeHelper {
 
 //===============================================================================
 
-    /**
+   /**
     * wrapper for getting customers from braintree
     * @param object - user
     * @param string - id of the customer (default null)

@@ -82,7 +82,7 @@ class BraintreeConnector
 
         Braintree_Configuration::environment($credentials['environment']);
         Braintree_Configuration::merchantId($credentials['merchantID']);
-        Braintree_Configuration::publicKey($credeintials['publicKey']);
+        Braintree_Configuration::publicKey($credentials['publicKey']);
         Braintree_Configuration::privateKey($credentials['privateKey']);
     }
 

@@ -22,6 +22,11 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+        $connector = new BraintreeConnector(Auth::user());
+        $connector->connect();
+        foreach (Braintree_Plan::all() as $plan) {
+            return var_dump($plan);
+        }
         return View::make('dashboard.dashboard')
             ->with('dashboards', Auth::user()->dashboards);
     }
