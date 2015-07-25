@@ -4,14 +4,16 @@
 
     // initialize url
     var url = "{{ route('widget.delete', 'widgetID') }}".replace('widgetID', $(this).attr("data-id"))
-    console.log(url);
+
+    // Remove widget visually
+    $(this).parent().remove();
 
     // Call ajax function
     $.ajax({
       type: "POST",
       dataType: 'json',
       url: url,
-           data: '{}',
+           data: null,
            success: function(data) {
               $.growl.notice({
                 title: "Success!",

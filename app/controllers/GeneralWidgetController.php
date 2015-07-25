@@ -152,8 +152,8 @@ class GeneralWidgetController extends BaseController {
         
         /* USING AJAX */
         if (Request::ajax()) {
-            /* Everything OK, return response with 200 status code */
-            return Response::make('Widget successfully deleted.', 200);
+            /* Everything OK, return empty json */
+            return Response::json(array());
 
         /* GET or POST */
         } else {
