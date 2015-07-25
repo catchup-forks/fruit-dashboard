@@ -50,12 +50,9 @@ Route::group([
         'uses'   => 'GeneralWidgetController@doAddWidget'
     ]);
 
-   /**
-     * ------------------------------------------------------------------------
-     * AJAX endpoints | Widget settings
-     * ------------------------------------------------------------------------
-     */
-    Route::post('/save-position/{userId}', array(
-        'uses'  => 'GeneralWidgetController@saveWidgetPosition',
+    Route::post('save-position/{userID}', array(
+        'as'    => 'widget.save-position',
+        'uses'  => 'GeneralWidgetController@SaveWidgetPosition',
     ));
+
 });

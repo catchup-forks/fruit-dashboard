@@ -15,7 +15,7 @@
         @foreach ($dashboards as $dashboard)
           @foreach ($dashboard->widgets as $widget)
             @if ($widget->status != 'hidden')
-              @include('dashboard.widget', ['widget' => $widget])
+              @include('widget.widget-general-layout', ['widget' => $widget])
             @endif
           @endforeach
         @endforeach
@@ -26,6 +26,8 @@
   @stop
 
   @section('pageScripts')
+
+  @include('widget.widget-general-scripts', ['widget' => $widget])
 
   <script type="text/javascript">
     // Gridster builds the interactive dashboard.
@@ -68,7 +70,7 @@
           $.ajax({
             type: "POST",
             data: {'positioning': positioning},
-            url: "/widget/save-position/{{Auth::user()->id}}/"
+            url: "{{ route('widget.save-position', Auth::user()->id) }}"
            });
           players.toggleClass('hovered');
          }
@@ -83,7 +85,7 @@
           $.ajax({
             type: "POST",
             data: {'positioning': positioning},
-            url: "/widget/save-position/{{Auth::user()->id}}/"
+            url: "{{ route('widget.save-position', Auth::user()->id) }}"
           });
           players.toggleClass('hovered');
          }
