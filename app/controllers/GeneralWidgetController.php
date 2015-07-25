@@ -16,7 +16,7 @@ class GeneralWidgetController extends BaseController {
     /**
      * getEditWidgetSettings
      * --------------------------------------------------
-     * @view widgets.widget-settings
+     * @return Renders the Edit widget page (edit existing widget)
      * --------------------------------------------------
      */
     public function getEditWidgetSettings($widgetID) {
@@ -29,14 +29,14 @@ class GeneralWidgetController extends BaseController {
         }
 
         // Rendering view.
-        return View::make('widgets.widget-settings')
+        return View::make('widget.edit-widget')
             ->with('widget', $widget);
     }
 
     /**
      * postEditWidgetSettings
      * --------------------------------------------------
-     * @view saving widget settings
+     * @return Saves the widget settings (edit existing widget)
      * --------------------------------------------------
      */
     public function postEditWidgetSettings($widgetID) {
@@ -77,7 +77,7 @@ class GeneralWidgetController extends BaseController {
     /**
      * getSetupWidget
      * --------------------------------------------------
-     * @view widgets.setup-widget
+     * @return Renders the setup widget page (add new widget)
      * --------------------------------------------------
      */
     public function getSetupWidget($widgetID) {
@@ -89,7 +89,7 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
         // Rendering view.
-        return View::make('widgets.setup-widget')
+        return View::make('widget.setup-widget')
             ->with('widget', $widget)
             ->with('settings', array_intersect_key(
                 $widget->getSettingsFields(),
@@ -100,7 +100,7 @@ class GeneralWidgetController extends BaseController {
     /**
      * postSetupWidget
      * --------------------------------------------------
-     * @view saving widget settings
+     * @return Saves the widget settings (add new widget)
      * --------------------------------------------------
      */
     public function postSetupWidget($widgetID) {
@@ -139,19 +139,46 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * anyDeleteWidget
+     * --------------------------------------------------
+     * @param (integer) ($widgetID) The ID of the deletable widget
+     * @return Deletes a widget
+     * --------------------------------------------------
+     */
+    public function anyDeleteWidget($widgetID) {
+        /* Find and remove widget */
+        $widget = Widget::find($widgetID);
+        $widget->delete();
+        
+        /* USING AJAX */
+        if (Request::ajax()) {
+            /* Everything OK, return empty json */
+            return Response::json(array());
+
+        /* GET or POST */
+        } else {
+            /* Redirect to dashboard */
+            return Redirect::route('dashboard.dashboard')
+                ->with('success', "You successfully deleted the widget");
+        }
+    }
+
+    /**
      * getAddWidget
      * --------------------------------------------------
-     * @view widgets.add-widget * --------------------------------------------------
+     * @return Renders the add widget page
+     * --------------------------------------------------
      */
     public function getAddWidget() {
         // Rendering view.
-        return View::make('widgets.add-widget')
+        return View::make('widget.add-widget')
             ->with('widgetDescriptors', WidgetDescriptor::all());
     }
+
     /**
      * doAddWidget
      * --------------------------------------------------
-     * Creating instance and sending to wizard.
+     * @return Creates a widget instance and sends to wizard.
      * --------------------------------------------------
      */
     public function doAddWidget($descriptorID) {
@@ -215,42 +242,53 @@ class GeneralWidgetController extends BaseController {
      */
 
     /**
-     * Save widget position.
-     *
-     * @param  int  $userId
-     * @return Response
+     * saveWidgetPosition
+     * --------------------------------------------------
+     * Saves the widget position.
+     * @param  (int)  ($userID) The ID of the user
+     * @return Json with status code
+     * --------------------------------------------------
      */
-    public function saveWidgetPosition($userId) {
-        // Escaping invalid data.
+    public function saveWidgetPosition($userID) {
+        /* Escaping invalid data. */
         if (!isset($_POST['positioning'])) {
-            throw new BadPosition("Missing data.", 1);
+            throw new BadPosition("Missing positioning data.", 1);
         }
 
-        if (User::find($userId)) {
+        /* Find user and save positioning if possible */
+        if (User::find($userID)) {
+            /* Get widgets data */
             $widgets = json_decode($_POST['positioning'], TRUE);
+
+            /* Iterate through all widgets */
             foreach ($widgets as $widgetData){
 
-                // Escaping invalid data.
+                /* Escaping invalid data. */
                 if (!isset($widgetData['id'])) {
-                    return Response::json(array('error' => 'Invalid JSON string.'));
+                    return Response::json(array('error' => 'Invalid JSON input.'));
                 }
 
+                /* Find widget */
                 $widget = Widget::find($widgetData['id']);
+                
+                /* Skip widget if not found */
+                if ($widget === null) { continue; }
 
-                if ($widget === null) {
-                    return Response::json(array('error' => 'Invalid JSON string.'));
-                }
+                /* Set position */
                 try{
                     $widget->setPosition($widgetData);
                 } catch (BadPosition $e) {
                     return Response::json(array('error' => $e->getMessage()));
                 }
             }
+        
+        /* No user found with the requested ID */
         } else {
-            // no such user
-            return Response::json(array('error' => 'no such user'));
+            return Response::json(array('error' => 'No user found with the requested ID'));
         }
-        return Response::make('everything okay', 200);
+
+        /* Everything OK, return response with 200 status code */
+        return Response::make('Widget positions saved.', 200);
     }
 
     /**

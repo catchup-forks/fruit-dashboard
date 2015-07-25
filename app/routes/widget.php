@@ -8,28 +8,34 @@ Route::group([
         'prefix' => 'widget',
     ], function() {
 
-    Route::get('{widgetID}/edit-settings', [
+    Route::get('edit/{widgetID}', [
         'before' => 'auth',
-        'as'     => 'widget.edit-settings',
+        'as'     => 'widget.edit',
         'uses'   => 'GeneralWidgetController@getEditWidgetSettings'
     ]);
 
-    Route::post('{widgetID}/edit-settings', [
+    Route::post('edit/{widgetID}', [
         'before' => 'auth',
-        'as'     => 'widget.edit-settings',
+        'as'     => 'widget.edit',
         'uses'   => 'GeneralWidgetController@postEditWidgetSettings'
     ]);
 
-    Route::get('{widgetID}/setup', [
+    Route::get('setup/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.setup',
         'uses'   => 'GeneralWidgetController@getSetupWidget'
     ]);
 
-    Route::post('{widgetID}/setup', [
+    Route::post('setup/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.setup',
         'uses'   => 'GeneralWidgetController@postSetupWidget'
+    ]);
+
+    Route::any('delete/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.delete',
+        'uses'   => 'GeneralWidgetController@anyDeleteWidget'
     ]);
 
     Route::get('add', [
@@ -44,12 +50,9 @@ Route::group([
         'uses'   => 'GeneralWidgetController@doAddWidget'
     ]);
 
-   /**
-     * ------------------------------------------------------------------------
-     * AJAX endpoints | Widget settings
-     * ------------------------------------------------------------------------
-     */
-    Route::post('/save-position/{userId}', array(
+    Route::post('save-position/{userID}', array(
+        'as'    => 'widget.save-position',
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ));
+
 });
