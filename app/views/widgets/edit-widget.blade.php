@@ -17,7 +17,7 @@
                 <span class="text-success"><strong>{{ $widget->getType() }} widget</strong></span>.
               </p>
               {{ Form::open(array('route' => array(
-                'widget.edit-settings', 
+                'widget.edit', 
                 $widget->id),
                 'class' => 'form-horizontal' )) }}
 

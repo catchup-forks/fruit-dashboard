@@ -16,7 +16,7 @@ class GeneralWidgetController extends BaseController {
     /**
      * getEditWidgetSettings
      * --------------------------------------------------
-     * @view widgets.widget-settings
+     * @return Renders the Edit widget page (edit existing widget)
      * --------------------------------------------------
      */
     public function getEditWidgetSettings($widgetID) {
@@ -29,14 +29,14 @@ class GeneralWidgetController extends BaseController {
         }
 
         // Rendering view.
-        return View::make('widgets.widget-settings')
+        return View::make('widgets.edit-widget')
             ->with('widget', $widget);
     }
 
     /**
      * postEditWidgetSettings
      * --------------------------------------------------
-     * @view saving widget settings
+     * @return Saves the widget settings (edit existing widget)
      * --------------------------------------------------
      */
     public function postEditWidgetSettings($widgetID) {
@@ -77,7 +77,7 @@ class GeneralWidgetController extends BaseController {
     /**
      * getSetupWidget
      * --------------------------------------------------
-     * @view widgets.setup-widget
+     * @return Renders the setup widget page (add new widget)
      * --------------------------------------------------
      */
     public function getSetupWidget($widgetID) {
@@ -100,7 +100,7 @@ class GeneralWidgetController extends BaseController {
     /**
      * postSetupWidget
      * --------------------------------------------------
-     * @view saving widget settings
+     * @return Saves the widget settings (add new widget)
      * --------------------------------------------------
      */
     public function postSetupWidget($widgetID) {
@@ -139,15 +139,34 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * anyDeleteWidget
+     * --------------------------------------------------
+     * @param (integer) ($widgetID) The ID of the deletable widget
+     * @return Deletes a widget
+     * --------------------------------------------------
+     */
+    public function anyDeleteWidget($widgetID) {
+        /* Find and remove widget */
+        $widget = Widget::find($widgetID);
+        $widget->delete();
+
+        /* Redirect to dashboard */
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', "You successfully deleted the widget");
+    }
+
+    /**
      * getAddWidget
      * --------------------------------------------------
-     * @view widgets.add-widget * --------------------------------------------------
+     * @view widgets.add-widget 
+     * --------------------------------------------------
      */
     public function getAddWidget() {
         // Rendering view.
         return View::make('widgets.add-widget')
             ->with('widgetDescriptors', WidgetDescriptor::all());
     }
+
     /**
      * doAddWidget
      * --------------------------------------------------
