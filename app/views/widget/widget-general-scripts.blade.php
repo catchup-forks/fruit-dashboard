@@ -26,7 +26,7 @@
            error: function(){
               $.growl.error({
                 title: "Error!",
-                message: "Something went wrong, we couldn't delete your widget. Please try again",
+                message: "Something went wrong, we couldn't delete your widget. Please try again.",
                 size: "large",
                 duration: 3000,
                 location: "br"

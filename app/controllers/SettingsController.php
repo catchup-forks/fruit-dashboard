@@ -104,12 +104,24 @@ class SettingsController extends BaseController
         $user->save();
 
         /* Return */
-        if ($status) {
-            return Redirect::route('settings.settings')
-                ->with('success', 'You successfully modified your name.');
+        /* AJAX CALL */
+        if (Request::ajax()) {
+            if ($status) {
+                /* Everything OK, return empty json */
+                return Response::json(array('success' => 'You successfully modified your name.'));
+            } else {
+                /* Something went wrong, send error */
+                return Response::json(array('error' => 'Something went wrong with changing your name. Please try again.'));
+            }
+        /* POST */
         } else {
-            return Redirect::route('settings.settings')
-                ->with('error', 'Something went wrong with changing your name. Please try again.');
+            if ($status) {
+                return Redirect::route('settings.settings')
+                    ->with('success', 'You successfully modified your name.');
+            } else {
+                return Redirect::route('settings.settings')
+                    ->with('error', 'Something went wrong with changing your name. Please try again.');
+            }
         }
 
     }
@@ -139,14 +151,26 @@ class SettingsController extends BaseController
         $user->save();
 
         /* Return */
-        if ($status) {
-            return Redirect::route('settings.settings')
-                ->with('success', 'You successfully modified your email.');
-        } else {
-            return Redirect::route('settings.settings')
-                ->with('error', 'Something went wrong with changing your email. Please try again.');
-        }
+        /* AJAX CALL */
+        if (Request::ajax()) {
+            if ($status) {
+                /* Everything OK, return empty json */
+                return Response::json(array('success' => 'You successfully modified your email address.'));
+            } else {
+                /* Something went wrong, send error */
+                return Response::json(array('error' => 'Something went wrong with changing your email address. Please try again.'));
+            }
 
+        /* POST */
+        } else {
+            if ($status) {
+                return Redirect::route('settings.settings')
+                    ->with('success', 'You successfully modified your email address.');
+            } else {
+                return Redirect::route('settings.settings')
+                    ->with('error', 'Something went wrong with changing your email address. Please try again.');
+            }
+        }
     }
 
     /**

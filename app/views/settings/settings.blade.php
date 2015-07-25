@@ -23,7 +23,9 @@
 
               {{-- Account settings - Username --}}
               {{-- START --}}
-              {{ Form::open(array('route' => array('settings.change', 'name'), 'class' => 'form-horizontal' )) }}
+              {{ Form::open(array(
+                  'data-setting-name' => 'name', 
+                  'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
 
@@ -51,7 +53,9 @@
 
               {{-- Account settings - E-mail --}}
               {{-- START --}}
-              {{ Form::open(array('route' => array('settings.change', 'email'), 'class' => 'form-horizontal' )) }}
+              {{ Form::open(array(
+                  'data-setting-name' => 'email', 
+                  'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
 
@@ -123,4 +127,62 @@
   @stop
 
   @section('pageScripts')
+    <script type="text/javascript">
+      $(".settings-form").submit(function(e) {
+        e.preventDefault();
+
+        // initialize url
+        var form = $(this)
+        var url = "{{ route('settings.change', 'setting-name') }}".replace('setting-name', $(this).attr("data-setting-name"))
+        var button = ""
+
+        // Switch submit button to spinner
+        form.find(':submit').hide();
+        form.find(':submit').before($('<i/>', {'class': 'fa fa-spinner fa-spin fa-2x',}));
+        
+        // Call ajax function
+        $.ajax({
+          type: "POST",
+          dataType: 'json',
+          url: url,
+               data: form.serialize(),
+               success: function(data) {
+                  if (data.success) {
+                    $.growl.notice({
+                      title: "Success!",
+                      message: data.success,
+                      size: "large",
+                      duration: 3000,
+                      location: "br"
+                    });
+                  } else if (data.error) {
+                    $.growl.error({
+                      title: "Error!",
+                      message: data.error,
+                      size: "large",
+                      duration: 3000,
+                      location: "br"
+                    });
+                  };
+
+                  // Switch spinner to button
+                  form.find('.fa-spinner').hide();
+                  form.find(':submit').show();
+               },
+               error: function(){
+                  $.growl.error({
+                    title: "Error!",
+                    message: "Something went wrong, we couldn't edit your settings. Please try again.",
+                    size: "large",
+                    duration: 3000,
+                    location: "br"
+                  });
+                  
+                  // Switch spinner to button
+                  form.find('.fa-spinner').hide();
+                  form.find(':submit').show();
+               }
+        });
+      });
+    </script>
   @stop
