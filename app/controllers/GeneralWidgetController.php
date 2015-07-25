@@ -242,14 +242,14 @@ class GeneralWidgetController extends BaseController {
      */
 
     /**
-     * ajaxSaveWidgetPosition
+     * saveWidgetPosition
      * --------------------------------------------------
      * Saves the widget position.
      * @param  (int)  ($userID) The ID of the user
      * @return Json with status code
      * --------------------------------------------------
      */
-    public function ajaxSaveWidgetPosition($userID) {
+    public function saveWidgetPosition($userID) {
         /* Escaping invalid data. */
         if (!isset($_POST['positioning'])) {
             throw new BadPosition("Missing positioning data.", 1);

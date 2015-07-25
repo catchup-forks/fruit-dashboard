@@ -10,7 +10,7 @@
     data-sizex="{{ $widget->getPosition()->size_x }}"
     data-sizey="{{ $widget->getPosition()->size_y }}">
 
-  <a href="{{ route('widget.delete', $widget->id) }}">
+  <a class='deleteWidget' data-id='{{ $widget->id }}' href="">
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 

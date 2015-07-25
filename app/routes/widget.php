@@ -52,7 +52,7 @@ Route::group([
 
     Route::post('save-position/{userID}', array(
         'as'    => 'widget.save-position',
-        'uses'  => 'GeneralWidgetController@SaveWidgetPosition',
+        'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ));
 
 });
