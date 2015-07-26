@@ -21,19 +21,8 @@ class SettingsController extends BaseController
      * --------------------------------------------------
      */
     public function anySettings() {
-        /* Get the user */
-        $user = Auth::user();
-
-        /* Get user settings */
-        $settings = Settings::where('user_id', $user->id)->get();
-
-        /* Get the user subscription */
-        $subscription = Subscription::where('user_id', $user->id)->get();
-
-        return View::make('settings.settings', array(
-                    'user'          => $user,
-                    'settings'      => $settings,
-                    'subscription'  => $subscription));
+        /* Render view */
+        return View::make('settings.settings');
     }
 
     /**
@@ -52,8 +41,8 @@ class SettingsController extends BaseController
             case 'email':
                 return $this->changeUserEmail(Input::all());
                 break;
-            case 'password':
-                return $this->changeUserPassword(Input::all());
+            case 'background':
+                return $this->changeBackgroundEnabled(Input::all());
                 break;
             default:
                 return Redirect::route('settings.settings');
@@ -61,16 +50,20 @@ class SettingsController extends BaseController
     }
 
     /**
-     * postDisconnectStripe
+     * anyDisconnectStripe
      * --------------------------------------------------
      * @return Deletes the logged in user's stripe connection.
      * --------------------------------------------------
      */
-    public function postDisconnectStripe() {
+    public function anyDisconnectStripe() {
+        /* Try to disconnect */
         try {
             $connector = new StripeConnector(Auth::user());
             $connector->disconnect();
         } catch (StripeNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
     }
 
     /**
@@ -123,7 +116,6 @@ class SettingsController extends BaseController
                     ->with('error', 'Something went wrong with changing your name. Please try again.');
             }
         }
-
     }
 
     /**
@@ -174,42 +166,54 @@ class SettingsController extends BaseController
     }
 
     /**
-     * changeUserPassword
+     * changeBackgroundEnabled
      * --------------------------------------------------
      * @param (array) ($postData) The POST data
-     * @return Changes the user password
+     * @return Changes the background enabled option
      * --------------------------------------------------
      */
-    private function changeUserPassword($postData)
+    private function changeBackgroundEnabled($postData)
     {
         /* Initialize status */
         $status = TRUE;
 
         /* Get the user and necessary object(s) */
         $user = Auth::user();
+        $settings = Settings::where('user_id', $user->id)->first();
 
         /* Get the new attribute(s) */
-        $newattr = $postData['password'];
+        $newattr = $postData['background'];
 
         /* Change the attribute(s) */
-        $user->name = $newattr;
+        $settings->background_enabled = (bool)$newattr;
 
         /* Save object(s) */
-        $user->save();
+        $settings->save();
 
         /* Return */
-        if ($status) {
-            return Redirect::route('settings.settings')
-                ->with('success', 'You successfully modified your password.');
+        /* AJAX CALL */
+        if (Request::ajax()) {
+            if ($status) {
+                /* Everything OK, return empty json */
+                return Response::json(array('success' => 'You successfully modified your background settings.'));
+            } else {
+                /* Something went wrong, send error */
+                return Response::json(array('error' => 'Something went wrong with changing your background settings. Please try again.'));
+            }
+        /* POST */
         } else {
-            return Redirect::route('settings.settings')
-                ->with('error', 'Something went wrong with changing your password. Please try again.');
+            if ($status) {
+                return Redirect::route('settings.settings')
+                    ->with('success', 'You successfully modified your background settings.');
+            } else {
+                return Redirect::route('settings.settings')
+                    ->with('error', 'Something went wrong with changing your background settings. Please try again.');
+            }
         }
-        
+
     }
 
     /**
-     * changeUserEmail
      * --------------------------------------------------
      * @todo Remove the lines below
      * --------------------------------------------------

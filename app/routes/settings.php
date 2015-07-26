@@ -20,10 +20,10 @@ Route::group([
         'uses' => 'SettingsController@postSettingsChange'
     ));
 
-    Route::post('disconnect/stripe', array(
+    Route::any('disconnect/stripe', array(
         'before' => 'auth',
         'as' => 'disconnect.stripe',
-        'uses' => 'SettingsController@postDisconnectStripe'
+        'uses' => 'SettingsController@anyDisconnectStripe'
     ));
 
 });

@@ -18,6 +18,7 @@ class SiteConstants {
     private static $afternoonStartsAt   = 13;
     private static $eveningStartsAt     = 17;
     private static $nightStartsAt       = 22;
+    private static $trialPeriodInDays   = 14;
 
     /**
      * ================================================== *
@@ -28,7 +29,7 @@ class SiteConstants {
     /**
      * getGridNumberOfCols: 
      * --------------------------------------------------
-     * Returns the number of grid X axis slots.
+     * Returns the number of grid Y axis slots.
      * @return (integer) ($gridNumberOfCols) gridNumberOfCols
      * --------------------------------------------------
      */
@@ -50,7 +51,7 @@ class SiteConstants {
     /**
      * getTimeOfTheDay: 
      * --------------------------------------------------
-     * Returns the number of grid X axis slots.
+     * Returns the time of the day string
      * @return (string) ($timeOfTheDay) morning, afternoon, evening, night
      * --------------------------------------------------
      */
@@ -73,6 +74,17 @@ class SiteConstants {
         } else {
             return 'night';
         }
+    }
+
+    /**
+     * getTrialPeriodInDays: 
+     * --------------------------------------------------
+     * Returns the trial period in days.
+     * @return (integer) ($trialPeriodInDays) trialPeriodInDays
+     * --------------------------------------------------
+     */
+    public static function getTrialPeriodInDays() {
+        return self::$trialPeriodInDays;
     }
     
 } /* SiteConstants */

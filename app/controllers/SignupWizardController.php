@@ -252,7 +252,7 @@ class SignupWizardController extends BaseController
         $subscription->user_id              = $user->id;
         $subscription->plan_id              = $plan->id;
         $subscription->current_period_start = Carbon::now();
-        $subscription->current_period_end   = Carbon::now()->addDays(Config::get('constants.TRIAL_PERIOD_IN_DAYS'));
+        $subscription->current_period_end   = Carbon::now()->addDays(SiteConstants::getTrialPeriodInDays());
         $subscription->status               = 'active';
 
         /* Save subscription */
