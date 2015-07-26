@@ -216,17 +216,13 @@ class Widget extends Eloquent
      * @return the saved object.
     */
     public function save(array $options=array()) {
-        // By default calling general save.
-        if (!static::$type) {
-            return parent::save($options);
-        }
-        // Associating descriptor.
-        $widgetDescriptor = WidgetDescriptor::where('type', static::$type)->first();
+       // Associating descriptor.
+        $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
         // Checking descriptor.
         if ($widgetDescriptor === null) {
             throw new DescriptorDoesNotExist(
-                "The '".static::$type."' widget descriptor does not exist. ", 1);
+                "The '" . $this->getType() . "' widget descriptor does not exist. ", 1);
         }
 
         // Assigning descriptor.
@@ -239,7 +235,10 @@ class Widget extends Eloquent
         $this->saveSettings(array(), FALSE);
         $this->checkIntegrity();
 
-        // Saving integrity/settings.
+        /* Saving integrity/settings.
+         * Please note, that the save won't hit the db,
+         * if no change has been made to the model.
+        */
         return parent::save();
 
     }
@@ -332,6 +331,26 @@ class Widget extends Eloquent
         if (empty($decodedData)) {
             throw new EmptyData();
         }
+    }
+
+    /**
+     * getType
+     * --------------------------------------------------
+     * Returning the underscored type of the widget.
+     * (CamelCase to underscore)
+     * @return string the widgert's type
+     * --------------------------------------------------
+    */
+    protected function getType() {
+        preg_match_all(
+            '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!',
+            get_class($this), $matches);
+        $ret = $matches[0];
+        foreach ($ret as &$match) {
+            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
+        }
+        array_pop($ret);
+        return implode('_', $ret);
     }
 }
 

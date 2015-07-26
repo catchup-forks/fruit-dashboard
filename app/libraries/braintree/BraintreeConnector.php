@@ -6,8 +6,8 @@
 *       Wrapper functions for Braintree connection
 * Usage:
 *       Connect the user by calling generateAccessToken()
-        with validated input.
-        If the user has an access_token, use the connect() method.
+*       with validated input.
+*       If the user has an access_token, use the connect() method.
 * --------------------------------------------------------------------------
 */
 
