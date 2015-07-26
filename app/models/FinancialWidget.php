@@ -2,8 +2,6 @@
 
 class FinancialWidget extends Widget
 {
-    /* -- Table specs -- */
-    public static $type = 'financial';
     public static $dataRequired = TRUE;
 
     /* -- Settings -- */

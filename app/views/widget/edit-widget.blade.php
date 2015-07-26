@@ -13,11 +13,11 @@
           <div class="panel panel-default panel-transparent">
             <div class="panel-body">
               <p class="lead text-center">
-                Edit the settings of the 
-                <span class="text-success"><strong>{{ $widget->getType() }} widget</strong></span>.
+                Edit the settings of the
+                <span class="text-success"><strong>{{ $widget->descriptor->name }} widget</strong></span>.
               </p>
               {{ Form::open(array('route' => array(
-                'widget.edit', 
+                'widget.edit',
                 $widget->id),
                 'class' => 'form-horizontal' )) }}
 
@@ -33,14 +33,14 @@
                       @else
                         {{ Form::text($field, $widget->getSettings()[$field], array(
                       'class' => 'form-control' )) }}
-                      @endif                      
+                      @endif
                     </div> <!-- /.col-sm-6 -->
-                  
+
                   </div> <!-- /.form-group -->
-                  
+
                 @endforeach
                 <p class="text-center">
-                  {{ Form::submit('Save settings', array('class' => 'btn btn-primary') ) }}    
+                  {{ Form::submit('Save settings', array('class' => 'btn btn-primary') ) }}
                 </p>
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
