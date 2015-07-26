@@ -2,8 +2,6 @@
 
 class StripeMrrWidget extends FinancialWidget
 {
-    /* -- Table specs -- */
-    public static $type = 'stripe_mrr';
 
     public function collectData() {
         $currentData = $this->getHistogram();

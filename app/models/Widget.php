@@ -12,7 +12,7 @@ class Widget extends Eloquent
     );
     public $timestamps = FALSE;
 
-    // These variable will be overwritten, with late static binding.
+    // These variables will be overwritten, with late static binding.
     public static $type = null;
     public static $settingsFields = array();
     public static $setupSettings = array();
@@ -29,16 +29,6 @@ class Widget extends Eloquent
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    /**
-     * getType
-     * --------------------------------------------------
-     * Getting the type of the widget.
-     * @return string widget Type
-     * --------------------------------------------------
-    */
-    public function getType() {
-        return static::$type;
-    }
 
     /**
      * getSettingsFields
@@ -193,7 +183,6 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function saveSettings($inputSettings, $commit=TRUE) {
-        $fields = array_keys($this->getSettingsFields());
         $settings = array();
         $oldSettings = $this->getSettings();
 
@@ -246,16 +235,17 @@ class Widget extends Eloquent
         // Calling parent.
         parent::save($options);
 
-        // Always saving settings to keep integrity.
+        // Always saving settings to keep integrity.|
         $this->saveSettings(array(), FALSE);
         $this->checkIntegrity();
 
-        return $this;
+        // Saving integrity/settings.
+        return parent::save();
 
     }
 
     /**
-     * Overriding all method to filter clock widgets.
+     * Overriding all method to filter specific widgets.
      *
      * @return all the specific widgets.
     */
@@ -343,7 +333,6 @@ class Widget extends Eloquent
             throw new EmptyData();
         }
     }
-
-
 }
+
 ?>

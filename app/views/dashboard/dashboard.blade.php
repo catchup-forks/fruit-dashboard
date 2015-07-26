@@ -27,7 +27,7 @@
 
   @section('pageScripts')
 
-  @include('widget.widget-general-scripts', ['widget' => $widget])
+  @include('widget.widget-general-scripts')
 
   <script type="text/javascript">
     // Gridster builds the interactive dashboard.

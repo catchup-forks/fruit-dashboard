@@ -41,6 +41,14 @@
     ])
   @endif
 
+  {{-- PERSONAL | IFRAME --}}
+  @if ($widget->descriptor->type == 'iframe')
+    @include('widget.personal-widgets.widget-iframe', [
+      'url' => $widget->getSpecific()->getSettings()['url'],
+      'position' => $widget['position']
+    ])
+  @endif
+
   {{-- STRIPE | MRR --}}
   @if ($widget->descriptor->type == 'stripe_mrr')
     @include('widget.stripe-widgets.mrr', [

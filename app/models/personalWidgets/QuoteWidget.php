@@ -2,8 +2,6 @@
 
 class QuoteWidget extends Widget
 {
-    public static $type = 'quote';
-
     /* -- Settings -- */
     public static $settingsFields = array(
         'type' => array(
@@ -27,17 +25,6 @@ class QuoteWidget extends Widget
             'insp' => 'Inspirational',
         );
     }
-
-    private function getSpreadsheetUri() {
-        $uri = 'http://spreadsheets.google.com/feeds/list/';
-        switch ($this->getSettings()['type']) {
-            case 'insp': $uri .= '1Xqp_INZG92NUKcL6F9BwcPrDpht0XNLdYLLugZhATbM/od6/public/values'; break;
-            default:;
-        }
-        $uri .= '?alt=json';
-
-        return $uri;
-   }
 
     /**
      * collectData
@@ -86,10 +73,27 @@ class QuoteWidget extends Widget
         return $quote;
     }
 
+    /**
+     * save
+     * --------------------------------------------------
+     * Overriding save to request a new quote.
+     * --------------------------------------------------
+     */
     public function save(array $options=array()) {
         parent::save();
         $this->collectData();
     }
+
+    private function getSpreadsheetUri() {
+        $uri = 'http://spreadsheets.google.com/feeds/list/';
+        switch ($this->getSettings()['type']) {
+            case 'insp': $uri .= '1Xqp_INZG92NUKcL6F9BwcPrDpht0XNLdYLLugZhATbM/od6/public/values'; break;
+            default:;
+        }
+        $uri .= '?alt=json';
+
+        return $uri;
+   }
 
 }
 
