@@ -8,7 +8,7 @@
 *       $tracker = new IntercomTracker();
 *       $eventData = array(
 *           'en' => 'Event name', // Required.
-*           'meta' => array(
+*           'md' => array(
 *               'metadata1' => 'value1',
 *               'metadata2' => 'value2',
 *           ),
@@ -19,11 +19,11 @@
 class IntercomTracker {
     
     /* -- Class properties -- */
-    private $intercom;
+    private static $intercom;
 
     /* -- Constructor -- */
     public function __construct(){
-        $this->intercom = IntercomClient::factory(array(
+        self::$intercom = IntercomClient::factory(array(
             'app_id'  => $_ENV['INTERCOM_APP_ID'],
             'api_key' => $_ENV['INTERCOM_API_KEY'],
         ));
@@ -41,18 +41,18 @@ class IntercomTracker {
      * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
      *     (string) (en) [Req] Event Name.
-     *     (array)  (meta) Custom metadata
+     *     (array)  (md) Custom metadata
      * @return (boolean) (status) True if production server, else false
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        if (App::environment('production')) {
+        if (App::environment('development')) {
             /* Build and send the request */
-            $this->intercom->createEvent(array(
+            self::$intercom->createEvent(array(
                 "event_name" => $eventData['en'],
                 "created_at" => Carbon::now()->timestamp,
                 "user_id" => (Auth::user() ? Auth::user()->id : 0),
-                "metadata" => $eventData['meta']
+                "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
             ));
 
             /* Return */

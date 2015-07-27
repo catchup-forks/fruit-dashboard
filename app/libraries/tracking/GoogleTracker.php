@@ -17,17 +17,17 @@
 */
 class GoogleTracker {
     /* -- Class properties -- */
-    private $url;
-    private $version;
-    private $trackingID;
-    private $clientID;
+    private static $url;
+    private static $version;
+    private static $trackingID;
+    private static $clientID;
 
     /* -- Constructor -- */
     public function __construct(){
-        $this->url         = 'https://www.google-analytics.com/collect';
-        $this->version     = '1';
-        $this->trackingID  = $_ENV['GOOGLE_TRACKING_CODE'];
-        $this->clientID    = '444';
+        self::$url         = 'https://www.google-analytics.com/collect';
+        self::$version     = '1';
+        self::$trackingID  = $_ENV['GOOGLE_TRACKING_CODE'];
+        self::$clientID    = Session::getId();
     }
 
     /**
@@ -49,17 +49,22 @@ class GoogleTracker {
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        if (App::environment('production')) {
+        if (App::environment('development')) {
             /* Make the analytics url */
             $url = $this->makeEventUrl(
                 $eventData['ec'], 
                 $eventData['ea'],
-                $eventData['el'],
-                $eventData['ev']);
+                array_key_exists('el', $eventData) ? $eventData['el'] : null,
+                array_key_exists('ev', $eventData) ? $eventData['ev'] : null
+            );
 
             /* Send the request */
-            $client = new GuzzleClient();
-            $response = $client->get($url);
+            $client = new GuzzleClient;
+            $client->post($url['endpoint'], [
+                'query' => $url['params']
+            ]);
+            
+            //$response = SiteFunctions::postUrl($url);
 
             /* Return */
             return true;
@@ -86,24 +91,25 @@ class GoogleTracker {
      * @return (string) (url) The event POST url
      * --------------------------------------------------
      */
-    private function makeEventUrl($ec, $ea, $el, $ev) {
-        /* Initialize replacer arrays to escape special chars in the url */
-        $och = array(' ',   '/',  '\\' );
-        $ech = array('%20', '%2', '%5C');
-        
+    private function makeEventUrl($ec, $ea, $el, $ev) {       
         /* Create url with data */
-        $url = $this->url.'?';
-        $url .= 'v='.$this->version;
-        $url .= '&tid='.$this->trackingID;
-        $url .= '&cid='.$this->clientID;
-        $url .= '&t=event';
-        $url .= '&ec='.str_replace($och, $ech, $ec);
-        $url .= '&ea='.str_replace($och, $ech, $ea);
+        $url = array(
+            'endpoint' => self::$url,
+            'params'   => array(
+                'v'     => self::$version,
+                'tid'   => self::$trackingID,
+                'cid'   => self::$clientID,
+                't'     => 'event',
+                'ec'    => $ec,
+                'ea'    => $ea
+            )
+        );
+       
         if (!is_null($el)) {
-            $url .= '&el='.str_replace($och, $ech, $el);
+            $url['params']['el'] = $el;
         };
         if (!is_null($ev)) {
-            $url .= '&ev='.strval($ev);
+            $url['params']['ev'] = strval($ev);
         };
 
         /* Return */

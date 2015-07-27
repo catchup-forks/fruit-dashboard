@@ -8,7 +8,7 @@
 *       $tracker = new MixpanelTracker();
 *       $eventData = array(
 *           'en' => 'Event name', // Required.
-*           'meta' => array(
+*           'md' => array(
 *               'metadata1' => 'value1',
 *               'metadata2' => 'value2',
 *           ),
@@ -18,11 +18,11 @@
 */
 class MixpanelTracker {
     /* -- Class properties -- */
-    private $mixpanel;
+    private static $mixpanel;
 
     /* -- Constructor -- */
     public function __construct(){
-        $this->mixpanel = Mixpanel::getInstance($_ENV['MIXPANEL_TOKEN']);
+        self::$mixpanel = Mixpanel::getInstance($_ENV['MIXPANEL_TOKEN']);
     }
 
     /**
@@ -37,16 +37,19 @@ class MixpanelTracker {
      * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
      *     (string) (en) [Req] Event Name.
-     *     (array)  (meta) Custom metadata
+     *     (array)  (md) Custom metadata
      * @return (boolean) (status) True if production server, else false
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        if (App::environment('production')) {
+        if (App::environment('development')) {
+            /* Attach user to the event */
+            self::$mixpanel->identify(Auth::user()->id);
+            
             /* Build and send the request */
-            $this->mixpanel->track(
-                $eventData['en'],
-                $eventData['meta']
+            self::$mixpanel->track(
+                $eventData['en']
+               // array_key_exists('md', $eventData) ? $eventData['md'] : array()
             );
 
             /* Return */
