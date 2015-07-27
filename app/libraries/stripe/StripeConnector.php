@@ -115,7 +115,7 @@ class StripeConnector
     public function getTokens($code) {
         /* Build and send POST request */
         $url = $this->buildTokenPostUriFromAuthCode($code);
-        $response = $this->postUrl($url);
+        $response = SiteFunctions::postUrl($url);
 
         /* Invalid/No answer from Stripe. */
         if ($response === null) {
@@ -166,7 +166,7 @@ class StripeConnector
         $url = $this->buildTokenPostUriFromRefreshToken($stripe_connection->refresh_token);
 
         /* Get response */
-        $response = $this->postUrl($url);
+        $response = SiteFunctions::postUrl($url);
 
         /* Invalid/No answer from Stripe. */
         if ($response === null) {
@@ -236,30 +236,4 @@ class StripeConnector
         return $post_uri;
     }
 
-    /**
-     * postUrl
-     * --------------------------------------------------
-     * Creates a POST request, and returns the response
-     * @param (array) ($url) The url endpoint and params
-     * @return (array) ($response) JSON decoded response
-     * --------------------------------------------------
-     */
-    private function postUrl($url) {
-        /* Build request */
-        $request = curl_init($url['endpoint']);
-        curl_setopt($request, CURLOPT_POST, 1);
-        curl_setopt($request, CURLOPT_POSTFIELDS, http_build_query($url['params']));
-        curl_setopt($request, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($request, CURLOPT_HEADER, 0);
-        curl_setopt($request, CURLOPT_RETURNTRANSFER, 1);
-
-        // TODO: Additional error handling
-        /* Get response */
-        $respCode = curl_getinfo($request, CURLINFO_HTTP_CODE);
-        $response = json_decode(curl_exec($request), TRUE);
-        curl_close($request);
-
-        /* Return response */
-        return $response;
-    }
 } /* StripeConnector */

@@ -46,6 +46,11 @@ class AuthController extends BaseController
 
         /* Everything is OK */
         if ((!$validator->fails()) and (Auth::attempt(Input::only('email', 'password')))) {
+            
+            /* Track event | SIGN IN */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('Sign in', Auth::user());
+
             /* Make welcome message */
             if (Auth::user()->name) {
                 $message = 'Welcome back, '.Auth::user()->name.'!';
