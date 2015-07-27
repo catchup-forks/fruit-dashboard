@@ -51,52 +51,54 @@ class GlobalTracker {
      * --------------------------------------------------
      */
     public function trackAll($eventName, $user, $eventData=null) {
-        /* Easy option */
-        if ($eventData==null) {
-            $googleEventData = array(
-                'ec' => $eventName,
-                'ea' => $eventName,
-                'el' => $user->email,
-                'ev' => $eventData['ev'],
-            );
+        if (App::environment('production')) {
+            /* Easy option */
+            if ($eventData==null) {
+                $googleEventData = array(
+                    'ec' => $eventName,
+                    'ea' => $eventName,
+                    'el' => $user->email,
+                    'ev' => $eventData['ev'],
+                );
 
-            /* Intercom IO event data */
-            $intercomEventData = array(
-                'en' => $eventName,
-            );
+                /* Intercom IO event data */
+                $intercomEventData = array(
+                    'en' => $eventName,
+                );
 
-            /* Mixpanel event data */
-            $mixpanelEventData = array(
-                'en' => $eventName,
-            );
+                /* Mixpanel event data */
+                $mixpanelEventData = array(
+                    'en' => $eventName,
+                );
 
-        /* Detailed option */
-        } else {
-            /* Google Analytics event data */
-            $googleEventData = array(
-                'ec' => $eventData['ec'],
-                'ea' => $eventData['ea'],
-                'el' => $eventData['el'],
-                'ev' => $eventData['ev'],
-            );
+            /* Detailed option */
+            } else {
+                /* Google Analytics event data */
+                $googleEventData = array(
+                    'ec' => $eventData['ec'],
+                    'ea' => $eventData['ea'],
+                    'el' => $eventData['el'],
+                    'ev' => $eventData['ev'],
+                );
 
-            /* Intercom IO event data */
-            $intercomEventData = array(
-                'en' => $eventData['en'],
-                'md' => $eventData['md'],
-            );
+                /* Intercom IO event data */
+                $intercomEventData = array(
+                    'en' => $eventData['en'],
+                    'md' => $eventData['md'],
+                );
 
-            /* Mixpanel event data */
-            $mixpanelEventData = array(
-                'en' => $eventData['en'],
-                'md' => $eventData['md'],
-            );
+                /* Mixpanel event data */
+                $mixpanelEventData = array(
+                    'en' => $eventData['en'],
+                    'md' => $eventData['md'],
+                );
+            }
+
+            /* Send events */
+            self::$google->sendEvent($googleEventData);
+            self::$intercom->sendEvent($intercomEventData);
+            self::$mixpanel->sendEvent($mixpanelEventData);
         }
-
-        /* Send events */
-        self::$google->sendEvent($googleEventData);
-        self::$intercom->sendEvent($intercomEventData);
-        //self::$mixpanel->sendEvent($mixpanelEventData);
     }
 
     /**

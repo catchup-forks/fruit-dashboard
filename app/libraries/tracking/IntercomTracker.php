@@ -42,24 +42,19 @@ class IntercomTracker {
      * @param (dict) (eventData) The event data
      *     (string) (en) [Req] Event Name.
      *     (array)  (md) Custom metadata
-     * @return (boolean) (status) True if production server, else false
+     * @return (boolean) true
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        if (App::environment('development')) {
-            /* Build and send the request */
-            self::$intercom->createEvent(array(
-                "event_name" => $eventData['en'],
-                "created_at" => Carbon::now()->timestamp,
-                "user_id" => (Auth::user() ? Auth::user()->id : 0),
-                "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
-            ));
+        /* Build and send the request */
+        self::$intercom->createEvent(array(
+            "event_name" => $eventData['en'],
+            "created_at" => Carbon::now()->timestamp,
+            "user_id" => (Auth::user() ? Auth::user()->id : 0),
+            "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
+        ));
 
-            /* Return */
-            return true;
-        } else {
-            /* Return */
-            return false;
-        }
+        /* Return */
+        return true;
     }
 } /* IntercomTracker */

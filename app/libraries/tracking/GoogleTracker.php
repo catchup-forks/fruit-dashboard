@@ -45,33 +45,28 @@ class GoogleTracker {
      *     (string) (ea) [Req] Event Action.
      *     (string) (el) Event label.
      *     (int)    (ev) Event value.
-     * @return (boolean) (status) True if production server, else false
+     * @return (boolean) true
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        if (App::environment('development')) {
-            /* Make the analytics url */
-            $url = $this->makeEventUrl(
-                $eventData['ec'], 
-                $eventData['ea'],
-                array_key_exists('el', $eventData) ? $eventData['el'] : null,
-                array_key_exists('ev', $eventData) ? $eventData['ev'] : null
-            );
+        /* Make the analytics url */
+        $url = $this->makeEventUrl(
+            $eventData['ec'], 
+            $eventData['ea'],
+            array_key_exists('el', $eventData) ? $eventData['el'] : null,
+            array_key_exists('ev', $eventData) ? $eventData['ev'] : null
+        );
 
-            /* Send the request */
-            $client = new GuzzleClient;
-            $client->post($url['endpoint'], [
-                'query' => $url['params']
-            ]);
-            
-            //$response = SiteFunctions::postUrl($url);
+        /* Send the request */
+        $client = new GuzzleClient;
+        $client->post($url['endpoint'], [
+            'query' => $url['params']
+        ]);
+        
+        //$response = SiteFunctions::postUrl($url);
 
-            /* Return */
-            return true;
-        } else {
-            /* Return */
-            return false;
-        }
+        /* Return */
+        return true;
     }
 
     /**

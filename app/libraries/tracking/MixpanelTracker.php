@@ -38,25 +38,20 @@ class MixpanelTracker {
      * @param (dict) (eventData) The event data
      *     (string) (en) [Req] Event Name.
      *     (array)  (md) Custom metadata
-     * @return (boolean) (status) True if production server, else false
+     * @return (boolean) true
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        if (App::environment('development')) {
-            /* Attach user to the event */
-            self::$mixpanel->identify(Auth::user()->id);
-            
-            /* Build and send the request */
-            self::$mixpanel->track(
-                $eventData['en']
-               // array_key_exists('md', $eventData) ? $eventData['md'] : array()
-            );
+        /* Attach user to the event */
+        self::$mixpanel->identify(Auth::user()->id);
+        
+        /* Build and send the request */
+        self::$mixpanel->track(
+            $eventData['en']
+           // array_key_exists('md', $eventData) ? $eventData['md'] : array()
+        );
 
-            /* Return */
-            return true;
-        } else {
-            /* Return */
-            return false;
-        }
+        /* Return */
+        return true;
     }
 } /* MixpanelTracker */
