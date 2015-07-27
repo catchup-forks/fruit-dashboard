@@ -17,17 +17,17 @@
 */
 class GoogleTracker {
     /* -- Class properties -- */
-    private $url;
-    private $version;
-    private $trackingID;
-    private $clientID;
+    private static $url;
+    private static $version;
+    private static $trackingID;
+    private static $clientID;
 
     /* -- Constructor -- */
     public function __construct(){
-        $this->url         = 'https://www.google-analytics.com/collect';
-        $this->version     = '1';
-        $this->trackingID  = $_ENV['GOOGLE_TRACKING_CODE'];
-        $this->clientID    = '444';
+        self::$url         = 'https://www.google-analytics.com/collect';
+        self::$version     = '1';
+        self::$trackingID  = $_ENV['GOOGLE_TRACKING_CODE'];
+        self::$clientID    = Session::getId();
     }
 
     /**
@@ -94,11 +94,11 @@ class GoogleTracker {
     private function makeEventUrl($ec, $ea, $el, $ev) {       
         /* Create url with data */
         $url = array(
-            'endpoint' => $this->url,
+            'endpoint' => self::$url,
             'params'   => array(
-                'v'     => $this->version,
-                'tid'   => $this->trackingID,
-                'cid'   => $this->clientID,
+                'v'     => self::$version,
+                'tid'   => self::$trackingID,
+                'cid'   => self::$clientID,
                 't'     => 'event',
                 'ec'    => $ec,
                 'ea'    => $ea

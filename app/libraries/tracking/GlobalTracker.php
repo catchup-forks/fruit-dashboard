@@ -14,15 +14,15 @@
 */
 class GlobalTracker {
     /* -- Class properties -- */
-    private $google;
-    private $intercom;
-    private $mixpanel;
+    private static $google;
+    private static $intercom;
+    private static $mixpanel;
     
     /* -- Constructor -- */
     public function __construct(){
-        $this->google    = new GoogleTracker();
-        $this->intercom  = new IntercomTracker();
-        $this->mixpanel  = new MixpanelTracker();
+        self::$google   = new GoogleTracker();
+        self::$intercom = new IntercomTracker();
+        self::$mixpanel = new MixpanelTracker();
     }
 
     /**
@@ -94,9 +94,9 @@ class GlobalTracker {
         }
 
         /* Send events */
-        $this->google->sendEvent($googleEventData);
-        $this->intercom->sendEvent($intercomEventData);
-        //$this->mixpanel->sendEvent($mixpanelEventData);
+        self::$google->sendEvent($googleEventData);
+        self::$intercom->sendEvent($intercomEventData);
+        //self::$mixpanel->sendEvent($mixpanelEventData);
     }
 
     /**

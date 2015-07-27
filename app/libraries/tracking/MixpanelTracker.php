@@ -18,11 +18,11 @@
 */
 class MixpanelTracker {
     /* -- Class properties -- */
-    private $mixpanel;
+    private static $mixpanel;
 
     /* -- Constructor -- */
     public function __construct(){
-        $this->mixpanel = Mixpanel::getInstance($_ENV['MIXPANEL_TOKEN']);
+        self::$mixpanel = Mixpanel::getInstance($_ENV['MIXPANEL_TOKEN']);
     }
 
     /**
@@ -44,10 +44,10 @@ class MixpanelTracker {
     public function sendEvent($eventData) {
         if (App::environment('local')) {
             /* Attach user to the event */
-            $this->mixpanel->identify(Auth::user()->id);
+            self::$mixpanel->identify(Auth::user()->id);
             
             /* Build and send the request */
-            $this->mixpanel->track(
+            self::$mixpanel->track(
                 $eventData['en']
                // array_key_exists('md', $eventData) ? $eventData['md'] : array()
             );
