@@ -149,18 +149,16 @@ class GeneralWidgetController extends BaseController {
         /* Find and remove widget */
         $widget = Widget::find($widgetID);
         $widget->delete();
-        
+
         /* USING AJAX */
         if (Request::ajax()) {
             /* Everything OK, return empty json */
             return Response::json(array());
-
         /* GET or POST */
         } else {
             /* Redirect to dashboard */
             return Redirect::route('dashboard.dashboard')
-                ->with('success', "You successfully deleted the widget");
-        }
+                ->with('success', "You successfully deleted the widget"); }
     }
 
     /**
@@ -250,6 +248,7 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function saveWidgetPosition($userID) {
+
         /* Escaping invalid data. */
         if (!isset($_POST['positioning'])) {
             throw new BadPosition("Missing positioning data.", 1);
@@ -270,18 +269,18 @@ class GeneralWidgetController extends BaseController {
 
                 /* Find widget */
                 $widget = Widget::find($widgetData['id']);
-                
+
                 /* Skip widget if not found */
                 if ($widget === null) { continue; }
 
                 /* Set position */
-                try{
+                try {
                     $widget->setPosition($widgetData);
                 } catch (BadPosition $e) {
                     return Response::json(array('error' => $e->getMessage()));
                 }
             }
-        
+
         /* No user found with the requested ID */
         } else {
             return Response::json(array('error' => 'No user found with the requested ID'));
@@ -291,151 +290,4 @@ class GeneralWidgetController extends BaseController {
         return Response::make('Widget positions saved.', 200);
     }
 
-    /**
-     * Save widget text.
-     *
-     * @param  int  $widgetId
-     * @param  string $text
-     * @return Response
-     */
-
-    public function saveWidgetText($widgetId, $text = '')
-    {
-        $widgetData = Data::where('widget_id', $widgetId)->first();
-
-        if ($widgetData)
-        {
-            $widgetData->data_object = $text;
-            $widgetData->save();
-
-            return Response::make('everything okay',200);
-        } else {
-            return Response::json(array('error' => 'bad widget id'));
-        }
-    }
-
-    /**
-     * Save widget name.
-     *
-     * @param  int  $widgetId
-     * @param  string $newName
-     * @return Response
-     */
-
-    public function saveWidgetName($widgetId, $newName)
-    {
-        $widget = Widget::find($widgetId);
-
-        if ($widget)
-        {
-            $widget->widget_name = $newName;
-            $widget->save();
-
-            return Response::make('everything okay',200);
-        } else {
-            return Response::json(array('error' => 'bad widget id'));
-        }
-    }
-
-
-    /**
-     * Save user name.
-     *
-     * @param  int  $widgetId
-     * @param  string $newName
-     * @return Response
-     */
-
-    public function saveUserName($newName)
-    {
-        // selecting logged in user
-        $user = Auth::user();
-
-        $user->name = $newName;
-
-        $user->save();
-
-        return Response::make('everything okay',200);
-    }
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index()
-    {
-        //
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return Response
-     */
-    public function store()
-    {
-        //
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function update($id)
-    {
-        $dashboard = Dashboard::where('user_id','=',$id);
-    }
-
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 } /* GeneralWidgetController */

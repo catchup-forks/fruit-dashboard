@@ -1,6 +1,6 @@
 <?php
 
-class FinancialWidget extends Widget
+abstract class FinancialWidget extends Widget
 {
     public static $dataRequired = TRUE;
 
@@ -18,11 +18,14 @@ class FinancialWidget extends Widget
             1 => 'On'
         );
     }
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
+
+    abstract public function collectData() ;
 
     /**
      * getHistogram

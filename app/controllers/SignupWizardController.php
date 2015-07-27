@@ -173,7 +173,6 @@ class SignupWizardController extends BaseController
                 } catch (StripeConnectFailed $e) {
                     $messages = array();
                     array_push($messages, $e->getMessage());
-                    Log::error($e->getMessage());
                 }
 
                 /* Connect to stripe */
@@ -197,12 +196,10 @@ class SignupWizardController extends BaseController
     public function postFinancialConnections() {
         /* Stripe connection */
         if(Input::get('stripe-connect', FALSE)) {
-            error_log('STRIPE');
         }
 
         /* Braintree connection */
         if(Input::get('braintree-connect', FALSE)) {
-            error_log('BRAINTREE');
         }
 
         /* Redirect to the same page */

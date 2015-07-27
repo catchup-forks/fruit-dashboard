@@ -98,21 +98,21 @@ class Widget extends Eloquent
      * setPosition
      * --------------------------------------------------
      * Setting the position of the model.
-     * @param array $decoded position from json.
+     * @param array $decodedPosition from json.
      * @return string A valid stripe conenct URI.
      * --------------------------------------------------
     */
-    public function setPosition(array $decoded_position) {
+    public function setPosition(array $decodedPosition) {
         $validKeys = array('size_x', 'size_y', 'col', 'row');
         $position = array();
 
         // Testing json position corruption.
-        if ($decoded_position === null) {
+        if ($decodedPosition === null) {
             throw new BadPosition("Invalid json postion value: $json_position", 1);
         }
 
         // Iterating through the positions.
-        foreach($decoded_position as $key=>$value) {
+        foreach($decodedPosition as $key=>$value) {
             if (in_array($key, $validKeys)) {
                 // There's a match in the array, saving position.
                 $position[$key] = $value;
@@ -219,10 +219,9 @@ class Widget extends Eloquent
        // Associating descriptor.
         $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
-        // Checking descriptor.
+        /* Checking descriptor. */
         if ($widgetDescriptor === null) {
-            throw new DescriptorDoesNotExist(
-                "The '" . $this->getType() . "' widget descriptor does not exist. ", 1);
+            return parent::save();
         }
 
         // Assigning descriptor.

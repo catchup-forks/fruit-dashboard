@@ -51,6 +51,7 @@ Route::group([
     ]);
 
     Route::post('save-position/{userID}', array(
+        'before' => 'auth',
         'as'    => 'widget.save-position',
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ));

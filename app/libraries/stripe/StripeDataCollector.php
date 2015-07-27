@@ -62,9 +62,8 @@ class StripeDataCollector
         // Delete old, save new.
         foreach (StripePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
             StripeSubscription::where('plan_id', $stripePlan->id)->delete();
+            $stripePlan->delete();
         }
-
-        stripeplan::where('user_id', $this->user->id)->delete();
         foreach ($plans as $plan) {
             $plan->save();
         }

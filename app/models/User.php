@@ -27,7 +27,9 @@ class User extends Eloquent implements UserInterface
     public function subscriptions() { return $this->hasMany('Subscriptions'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
+    /* Libraries */
     public function stripePlans() { return $this->hasMany('StripePlan'); }
+    public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
 
     /**
      * isStripeConnected
@@ -89,5 +91,5 @@ class User extends Eloquent implements UserInterface
         /* Return the date */
         return Carbon::instance($this->created_at)->addDays(SiteConstants::getTrialPeriodInDays());
     }
-    
+
 }

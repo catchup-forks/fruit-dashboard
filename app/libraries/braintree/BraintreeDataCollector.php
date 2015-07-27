@@ -29,31 +29,30 @@ class BraintreeDataCollector
     /**
      * updatePlans
      * --------------------------------------------------
-     * Updating the current stripe Plans.
-     * @return The stripe plans.
+     * Updating the current braintree Plans.
+     * @return The braintree plans.
      * @throws BraintreeNotConnected
      * --------------------------------------------------
     */
     public function updatePlans() {
         // Connecting to stripe, and making query.
         try {
-            $decoded_data = json_decode(
-                $this->loadJSON(\Braintree\Plan::all()), TRUE);
-        } catch (\Braintree\Error\Authentication $e) {
-            // Access token expired. Calling handler.
-            $this->getNewAccessToken();
+            $braintreePlans = Braintree_Plan::all();
+        } catch (Exception $e) {
+            // Something went wrong.
+            return;
         }
 
         // Getting the plans.
         $plans = [];
-        foreach($decoded_data['data'] as $plan) {
+        foreach($braintreePlans as $plan) {
             $new_plan = new BraintreePlan(array(
-                'plan_id'        => $plan['id'],
-                'name'           => $plan['name'],
-                'currency'       => $plan['currency'],
-                'amount'         => $plan['amount'],
-                'interval'       => $plan['interval'],
-                'interval_count' => $plan['interval_count']
+                'plan_id'           => $plan->id,
+                'name'              => $plan->name,
+                'billing_frequency' => $plan->billingFrequency,
+                'price'             => $plan->price,
+                'currency'          => $plan->currencyIsoCode,
+                'billing_day'        => $plan->billingDayOfMonth,
             ));
             $new_plan->user()->associate($this->user);
             array_push($plans, $new_plan);
@@ -62,9 +61,9 @@ class BraintreeDataCollector
         // Delete old, save new.
         foreach (BraintreePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
             BraintreeSubscription::where('plan_id', $stripePlan->id)->delete();
+            $stripePlan->delete();
         }
 
-        stripeplan::where('user_id', $this->user->id)->delete();
         foreach ($plans as $plan) {
             $plan->save();
         }
@@ -81,37 +80,38 @@ class BraintreeDataCollector
      * --------------------------------------------------
     */
     public function updateSubscriptions() {
-        // Connecting to stripe.
-
-        // Deleting all subscription to avoid constraints.
+        // Updating plans to be up to date.
         $this->updatePlans();
         $subscriptions = array();
 
-        foreach ($this->getCustomers() as $customer) {
-            $decoded_data = json_decode(
-                $this->loadJSON(\Braintree\Customer::retrieve($customer['id'])->subscriptions->all()),
-                TRUE);
-            foreach($decoded_data['data'] as $subscription) {
-                $new_subscription = new BraintreeSubscription(array(
-                    'start'       => $subscription['start'],
-                    'status'      => $subscription['status'],
-                    'customer'    => $subscription['customer'],
-                    'ended_at'    => $subscription['ended_at'],
-                    'canceled_at' => $subscription['canceled_at'],
-                    'quantity'    => $subscription['quantity'],
-                    'discount'    => $subscription['discount'],
-                    'trial_start' => $subscription['trial_start'],
-                    'trial_end'   => $subscription['trial_start'],
-                    'discount'    => $subscription['discount']
-                ));
-                $plan = BraintreePlan::where('plan_id', $subscription['plan']['id'])->first();
-                if ($plan === null) {
-                    // Braintree integrity error, link to a non-existing plan.
-                    return array();
-                }
-                $new_subscription->plan()->associate($plan);
-                array_push($subscriptions, $new_subscription);
+        // Clollecting subscriptions.
+        try {
+            $braintreeSubscriptions =  Braintree_Subscription::search(array(
+                Braintree_SubscriptionSearch::status()->in(
+                    array(Braintree_Subscription::ACTIVE)
+                    )
+                )
+            );
+        } catch (Exception $e) {
+            // Something went wrong.
+            return;
+        }
+
+        foreach ($braintreeSubscriptions as $subscription) {
+            $new_subscription = new BraintreeSubscription(array(
+                'start'       => $subscription->firstBillingDate,
+                'status'      => $subscription->status
+            ));
+            $plan = BraintreePlan::where('plan_id', $subscription->planId)
+                ->first();
+
+            if ($plan === null) {
+                // Braintree integrity error, link to a non-existing plan.
+                return array();
             }
+
+            $new_subscription->plan()->associate($plan);
+            array_push($subscriptions, $new_subscription);
         }
 
         // Save new.
@@ -120,52 +120,6 @@ class BraintreeDataCollector
         }
 
         return $subscriptions;
-    }
-
-    /**
-     * getCustomers
-     * Getting a list of customers.
-     * --------------------------------------------------
-     * @return The stripe customers.
-     * @throws BraintreeNotConnected
-     * --------------------------------------------------
-    */
-    public function getCustomers() {
-        // Connecting to stripe, and making query.
-        try {
-            $decoded_data = json_decode(
-                $this->loadJSON(\Braintree\Customer::all()), TRUE);
-        } catch (\Braintree\Error\Authentication $e) {
-            // Access token expired. Calling handler.
-            $this->getNewAccessToken();
-        }
-
-        // Getting the plans.
-        $customers = [];
-        foreach($decoded_data['data'] as $customer) {
-            array_push($customers, $customer);
-        }
-
-        // Return.
-        return $customers;
-    }
-
-    /**
-     * ================================================== *
-     *                   PRIVATE SECTION                  *
-     * ================================================== *
-     */
-
-    /**
-     * loadJSON
-     * --------------------------------------------------
-     * getting the stripe plans from an already setup stripe connection.
-     * @param stripe_json string of the received object.
-     * @return the decoded object.
-     * --------------------------------------------------
-    */
-    private function loadJSON($stripe_json) {
-        return strstr($stripe_json, '{');
     }
 
 } /* BraintreeDataCollector */

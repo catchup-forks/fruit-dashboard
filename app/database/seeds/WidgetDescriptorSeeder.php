@@ -30,6 +30,16 @@ class WidgetDescriptorSeeder extends Seeder
         ));
 
         WidgetDescriptor::create(array(
+            'name'        => 'Iframe',
+            'description' => 'Include your favourite sites into this dashboard.',
+            'type'        => 'iframe',
+            'category'    => 'personal',
+            'is_premium'  => FALSE,
+        ));
+
+        /* Financial widgets */
+
+        WidgetDescriptor::create(array(
             'name'        => 'Stripe MRR',
             'description' => 'Stripe Monthly recurring revenue',
             'type'        => 'stripe_mrr',
@@ -38,11 +48,35 @@ class WidgetDescriptorSeeder extends Seeder
         ));
 
         WidgetDescriptor::create(array(
-            'name'        => 'Iframe',
-            'description' => 'Include your favourite sites into this dashboard.',
-            'type'        => 'iframe',
-            'category'    => 'personal',
-            'is_premium'  => FALSE,
+            'name'        => 'Stripe ARR',
+            'description' => 'Stripe Annual recurring revenue',
+            'type'        => 'stripe_arr',
+            'category'    => 'financial',
+            'is_premium'  => TRUE,
+        ));
+
+        WidgetDescriptor::create(array(
+            'name'        => 'Stripe ARPU',
+            'description' => 'Stripe Average revenue per user',
+            'type'        => 'stripe_arpu',
+            'category'    => 'financial',
+            'is_premium'  => TRUE,
+        ));
+
+        WidgetDescriptor::create(array(
+            'name'        => 'Braintree MRR',
+            'description' => 'Braintree Monthly recurring revenue',
+            'type'        => 'braintre_mrr',
+            'category'    => 'financial',
+            'is_premium'  => TRUE,
+        ));
+
+        WidgetDescriptor::create(array(
+            'name'        => 'Braintree ARR',
+            'description' => 'Braintree Annual recurring revenue',
+            'type'        => 'braintree_arr',
+            'category'    => 'financial',
+            'is_premium'  => TRUE,
         ));
 
     }

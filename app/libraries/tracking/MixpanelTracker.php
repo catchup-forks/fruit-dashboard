@@ -1,9 +1,9 @@
 <?php
 
 /**
-* -------------------------------------------------------------------------- 
-* MixpanelTracker: 
-*       Wrapper functions for server-side event tracking    
+* --------------------------------------------------------------------------
+* MixpanelTracker:
+*       Wrapper functions for server-side event tracking
 * Usage:
 *       $tracker = new MixpanelTracker();
 *       $eventData = array(
@@ -14,7 +14,7 @@
 *           ),
 *       );
 *       $tracker->sendEvent($eventData);
-* -------------------------------------------------------------------------- 
+* --------------------------------------------------------------------------
 */
 class MixpanelTracker {
     /* -- Class properties -- */
@@ -32,7 +32,7 @@ class MixpanelTracker {
      */
 
     /**
-     * sendEvent: 
+     * sendEvent:
      * --------------------------------------------------
      * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
@@ -49,8 +49,6 @@ class MixpanelTracker {
                 $eventData['meta']
             );
 
-            error_log($eventData['en']);
-            
             /* Return */
             return true;
         } else {
