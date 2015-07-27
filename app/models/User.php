@@ -27,7 +27,8 @@ class User extends Eloquent implements UserInterface
     public function subscriptions() { return $this->hasMany('Subscriptions'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
-    /* Libraries */
+    
+    /* -- Libraries -- */
     public function stripePlans() { return $this->hasMany('StripePlan'); }
     public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
 

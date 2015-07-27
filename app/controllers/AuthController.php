@@ -49,7 +49,10 @@ class AuthController extends BaseController
             
             /* Track event | SIGN IN */
             $tracker = new GlobalTracker();
-            $tracker->trackAll('Sign in', Auth::user());
+            $tracker->trackAll('lazy', array(
+                'en' => 'Sign in', 
+                'el' => Auth::user()->email)
+            );
 
             /* Make welcome message */
             if (Auth::user()->name) {

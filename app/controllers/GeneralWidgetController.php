@@ -40,15 +40,15 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function postEditWidgetSettings($widgetID) {
-
-        // Getting the editable widget.
+        /* Get the editable widget */
         try {
             $widget = $this->getWidget($widgetID);
         } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e);
         }
-        // Validation.
+
+        /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
             array(
@@ -59,17 +59,25 @@ class GeneralWidgetController extends BaseController {
             )
         );
 
+        /* Validation failed, go back to the page */
         if ($validator->fails()) {
-            // validation failed.
             return Redirect::back()
                 ->with('error', "Please correct the form errors.")
                 ->withErrors($validator)
                 ->withInput(Input::all());
         }
 
-        // Validation successful, ready to save.
+        /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::except('_token'));
 
+        /* Track event | EDIT WIDGET */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Edit widget', 
+            'el' => $widget->descriptor->getClassName())
+        );
+
+        /* Return */
         return Redirect::route('dashboard.dashboard')
             ->with('success', "Widget successfully updated.");
     }
@@ -180,14 +188,15 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function doAddWidget($descriptorID) {
-        // Getting the descriptor.
+        
+        /* Get the widget descriptor */
         $descriptor = WidgetDescriptor::find($descriptorID);
         if (is_null($descriptor)) {
             return Redirect::back()
-                ->with('error', 'Descriptor not found');
+                ->with('error', 'Something went wrong, your widget cannot be found.');
         }
 
-        // Creating new widget instance.
+        /* Create new widget instance */
         $className = $descriptor->getClassName();
         $widget = new $className(array(
             'settings' => json_encode(array()),
@@ -198,7 +207,14 @@ class GeneralWidgetController extends BaseController {
         $widget->descriptor()->associate($descriptor);
         $widget->save();
 
-        // If not setup settings redirect to dashboard automatically..
+        /* Track event | ADD WIDGET */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Add widget', 
+            'el' => $className)
+        );
+
+        /* If widget has no setup fields, redirect to dashboard automatically */
         if (empty($widget->getSetupFields())) {
             return Redirect::route('dashboard.dashboard')
                 ->with('success', 'Widget successfully created.');

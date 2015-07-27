@@ -6,10 +6,13 @@
 *       Wrapper functions for server-side event tracking    
 * Usage:
 *       $tracker = new GlobalTracker();
-*       // Easy option
-*       $tracker->trackAll('Sign in', Auth::user());
-*       // Detailed option
-*       $tracker->trackAll($eventData);
+*       // Lazy mode
+*       $tracker->trackAll('lazy', array(
+*               'en' => 'Sign in', 
+*               'el' => Auth::user()->email)
+*           );
+*       // Detailed mode
+*       $tracker->trackAll('detailed', $eventData);
 * -------------------------------------------------------------------------- 
 */
 class GlobalTracker {
@@ -34,41 +37,45 @@ class GlobalTracker {
     /**
      * trackAll: 
      * --------------------------------------------------
-     * Tracks an event with all available tracking sites. If eventData 
-     * is provided, the function makes the detailed tracking strings 
-     * from the variable (detailed option). Otherwise it makes all 
-     * strings from the eventName variable (easy option)
-     * @param (string)  (eventName) The event name if we use the easy option 
-     * @param (User)    ($user)     The event data 
-     * @param (array)   (eventData) The event data if we use the detailed option
-     *     (string) (ec) [Req] Event Category (Google)
-     *     (string) (ea) [Req] Event Action   (Google)
-     *     (string) (el) Event label.         (Google)
-     *     (int)    (ev) Event value.         (Google)
-     *     (string) (en) [Req] Event name     (Intercom)(Mixpanel)
-     *     (array)  (md) Metadata             (Intercom)(Mixpanel)
+     * Tracks an event with all available tracking sites. In 'lazy mode'
+     * eventData contains only the eventName and an eventOption string.
+     * In 'detailed mode' the eventData contains all necessary options 
+     * for all the tracking sites.
+     * @param (string)  ($mode)    lazy | detailed
+     * @param (array) ($eventData) The event data
+     *    LAZY MODE
+     *      (string) ($en) The name of the event
+     *      (string) ($el) Custom label for the event
+     *    DETAILED MODE
+     *      (string) (ec) [Req] Event Category (Google)
+     *      (string) (ea) [Req] Event Action   (Google)
+     *      (string) (el) Event label.         (Google)
+     *      (int)    (ev) Event value.         (Google)
+     *      (string) (en) [Req] Event name     (Intercom)(Mixpanel)
+     *      (array)  (md) Metadata             (Intercom)(Mixpanel)
      * @return None
      * --------------------------------------------------
      */
-    public function trackAll($eventName, $user, $eventData=null) {
-        if (App::environment('production')) {
-            /* Easy option */
-            if ($eventData==null) {
+    public function trackAll($mode, $eventData) {
+        if (App::environment('local')) {
+            /* Lazy mode */
+            if ($mode=='lazy') {
                 $googleEventData = array(
-                    'ec' => $eventName,
-                    'ea' => $eventName,
-                    'el' => $user->email,
-                    'ev' => $eventData['ev'],
+                    'ec' => $eventData['en'],
+                    'ea' => $eventData['en'],
+                    'el' => $eventData['el']
                 );
 
                 /* Intercom IO event data */
                 $intercomEventData = array(
-                    'en' => $eventName,
+                    'en' => $eventData['en'],
+                    'md' => array('metadata' => $eventData['el'])
                 );
 
                 /* Mixpanel event data */
                 $mixpanelEventData = array(
-                    'en' => $eventName,
+                    'en' => $eventData['en'],
+                    'md' => array('metadata' => $eventData['el'])
                 );
 
             /* Detailed option */

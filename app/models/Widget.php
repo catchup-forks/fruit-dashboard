@@ -99,7 +99,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
      * Setting the position of the model.
      * @param array $decodedPosition from json.
-     * @return string A valid stripe conenct URI.
+     * @return None
      * --------------------------------------------------
     */
     public function setPosition(array $decodedPosition) {
