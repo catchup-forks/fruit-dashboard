@@ -83,15 +83,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getSettings() {
-        if ($this->settings)
-            return json_decode($this->settings, 1);
-
-        // Returning empty settings array, with valid keys.
-        $settings = array();
-        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
-            $settings[$fieldName] = "";
-        }
-        return $settings;
+        return json_decode($this->settings, 1);
     }
 
     /**
