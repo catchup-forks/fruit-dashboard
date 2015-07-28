@@ -13,24 +13,70 @@ class PaymentController extends BaseController
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    
+
     /**
      * getPlansAndPricing
      * --------------------------------------------------
      * @return Renders the Plans and Pricing page
      * --------------------------------------------------
      */
-    public function getPlansAndPricing()
-    {
+    public function getPlansAndPricing() {
         /* Get all plans */
         $plans = Plan::all();
-    
+
         /* Render the page */
         return View::make('payment.plans', array(
             'plans' => $plans,
         ));
     }
 
+
+    /**
+     * postSubscribe
+     * --------------------------------------------------
+     * Creates a user's subscription to a plan.
+     * --------------------------------------------------
+     */
+    public function postSubscribe($planId) {
+        /* Get all plans */
+        $plan = Plan::find($planId);
+
+        if (!Input::has('payment_method_nonce')) {
+            return Redirect::route('payment.plan')
+                ->with('error', "Something went wrong with your request, please try again.");
+        }
+
+        $subscription = new Subscription(array('status' => 'active'));
+        $dt = Carbon::now();
+        $subscription->current_period_start = $dt;
+        switch ($plan->interval) {
+            /* Braintree only supports month */
+            case 'permanent': $subscription->current_period_end = NULL; break;
+            case 'month': $subscription->current_period_end = $dt->diffinMonths($dt->copy()->addMonth()); break;
+            default: ;
+        }
+        $subscription->user()->associate(Auth::user());
+        $subscription->plan()->associate($plan);
+        $subscription->save();
+
+        /* Creating braintree subscription, if there is an associated plan */
+        if ($plan->plan_id) {
+            try {
+                $subscription->commit(Input::get('payment_method_nonce'));
+            } catch (AlreadyConnected $e)  {
+                return Redirect::route('dashboard.dashboard')
+                    ->with('error',"You are already subscribed to that plan."):
+            } catch (Exception $e) {
+                return Redirect::route('payment.plan')
+                    ->with('error',"Couldn't process your subscription, try again later.");
+
+            }
+        }
+
+        /* Render the page */
+        return Redirecet::route('dashboard.dashboard', array(
+            ));
+    }
 
     /**
      * --------------------------------------------------
@@ -44,7 +90,7 @@ class PaymentController extends BaseController
         {
 
             $user = Auth::user();
-            
+
             // lets see, if the user already has a subscripton
             if ($user->subscriptionId)
             {
@@ -57,8 +103,8 @@ class PaymentController extends BaseController
                     return Redirect::route('payment.plan')
                     ->with('error',"Couldn't process subscription, try again later.");
                 }
-            }   
-            
+            }
+
             $plans = BraintreeHelper::getPlanDictionary();
 
             // create the new subscription
@@ -66,7 +112,7 @@ class PaymentController extends BaseController
                 'planId'                => $plans[$planName]->id,
                 'paymentMethodNonce'    => Input::get('payment_method_nonce'),
             ));
-            
+
             if($result->success)
             {
                 // update user plan to subscrition

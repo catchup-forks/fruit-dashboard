@@ -24,7 +24,7 @@ class CreateSubscriptionsTable extends Migration {
                   ->references('id')->on('plans');
 
             $table->dateTime('current_period_start');
-            $table->dateTime('current_period_end');
+            $table->dateTime('current_period_end')->nullable();
             $table->dateTime('canceled_at')->nullable();
             $table->dateTime('ended_at')->nullable();
 

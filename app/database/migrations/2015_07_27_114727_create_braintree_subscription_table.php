@@ -18,7 +18,7 @@ class CreateBraintreeSubscriptionTable extends Migration {
             $table->foreign('plan_id')
                   ->references('id')->on('braintree_plans');
 
-            $table->enum('status', array('active', 'inactive', 'trialing', 'past_due', 'canceled', 'unpaid'));
+            $table->enum('status', array('active', 'pending', 'expired', 'past_due', 'canceled'));
 
             $table->dateTime('start');
 

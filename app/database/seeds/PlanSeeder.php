@@ -22,6 +22,7 @@ class PlanSeeder extends Seeder
             'interval'          => 'month',
             'interval_count'    => 12,
             'amount'            => 9,
+            'plan_id'           => 'v3h6'
         ));
     }
 
