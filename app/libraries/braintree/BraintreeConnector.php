@@ -135,11 +135,13 @@ class BraintreeConnector
         /* Associating dashboard */
         $mrrWidget->dashboard()->associate($dashboard);
         $arrWidget->dashboard()->associate($dashboard);
-        $arpuWidget->dashboard()->associate($dashboard);
 
         /* Saving widgets */
         $mrrWidget->save();
         $arrWidget->save();
-        $arpuWidget->save();
+
+        /* Populating data */
+        $mrrWidget->collectData();
+        $arrWidget->collectData();
     }
 } /* BraintreeConnector */

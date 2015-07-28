@@ -280,6 +280,11 @@ class StripeConnector
         $mrrWidget->save();
         $arrWidget->save();
         $arpuWidget->save();
+
+        /* Populating data */
+        $mrrWidget->collectData();
+        $arrWidget->collectData();
+        $arpuWidget->collectData();
     }
 
 } /* StripeConnector */
