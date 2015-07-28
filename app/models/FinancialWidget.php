@@ -6,16 +6,21 @@ abstract class FinancialWidget extends Widget
 
     /* -- Settings -- */
     public static $settingsFields = array(
-        'histogram' => array('name' => 'Graph on/off', 'type' => 'SCHOICE', 'validation' => 'required'),
+        'widget_type' => array(
+            'name'       => 'Widget type',
+            'type'       => 'SCHOICE',
+            'validation' => 'required',
+            'default'    => 'value'
+        ),
     );
     /* The settings to setup in the setup-wizard.*/
-    public static $setupSettings = array('histogram');
+    public static $setupSettings = array('widget_type');
 
     /* -- Choice functions -- */
-    public function histogram() {
+    public function widget_type() {
         return array(
-            0 => 'Off',
-            1 => 'On'
+            'chart' => 'Chart',
+            'value' => 'Current value'
         );
     }
 
@@ -25,7 +30,8 @@ abstract class FinancialWidget extends Widget
      * ================================================== *
      */
 
-    abstract public function collectData() ;
+    /* Override this function to insert values in the widget data */
+     abstract public function collectData() ;
 
     /**
      * getHistogram

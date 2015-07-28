@@ -4,7 +4,12 @@ class Dashboard extends Eloquent
 {
 
     // -- Fields -- //
-    protected $fillable = array('name', 'background');
+    protected $fillable = array(
+        'name',
+        'background',
+        'type',
+        'number'
+    );
     public $timestamps = FALSE;
 
     // -- Relations -- //

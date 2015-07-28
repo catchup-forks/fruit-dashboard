@@ -63,6 +63,9 @@ class BraintreeConnector
         ));
         $connection->user()->associate($this->user);
         $connection->save();
+
+        /* Creating custom dashboard. */
+        $this->createDashboard();
     }
 
     /**
@@ -101,4 +104,45 @@ class BraintreeConnector
 
         $this->user->connections()->where('service', 'braintree')->delete();
     }
-}
+
+    /**
+     * createDashboard
+     * --------------------------------------------------
+     * Creating a dashboard dedicated to braintree widgets.
+     * --------------------------------------------------
+     */
+    private function createDashboard() {
+        /* Creating dashboard. */
+        $dashboard = Dashboard::create(array(
+            'name'       => 'Braintree dashboard',
+            'background' => TRUE,
+            'type'       => 'financial',
+            'number'     => $this->user->dashboards->max('number') + 1
+        ));
+        $dashhboard->user()->associate($this->user);
+        $dashboard->save();
+
+        /* Adding widgets */
+        $mrrWidget = BraintreeMrrWidget::create(array(
+            'position'  => '{"col":1,"row":1,"size_x":1,"size_y":1}',
+            'state'     => 'active',
+        ));
+
+        $arrWidget = BraintreeArrWidget::create(array(
+            'position'  => '{"col":2,"row":1,"size_x":1,"size_y":1}',
+            'state'     => 'active',
+        ));
+
+        /* Associating dashboard */
+        $mrrWidget->dashboard()->associate($dashboard);
+        $arrWidget->dashboard()->associate($dashboard);
+
+        /* Saving widgets */
+        $mrrWidget->save();
+        $arrWidget->save();
+
+        /* Populating data */
+        $mrrWidget->collectData();
+        $arrWidget->collectData();
+    }
+} /* BraintreeConnector */

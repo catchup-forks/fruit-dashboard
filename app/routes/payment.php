@@ -14,5 +14,10 @@ Route::group([
         'uses'      => 'PaymentController@getPlansAndPricing'
     ));
 
+    Route::post('/subscribe', array(
+        'before'    => 'auth',
+        'as'        => 'payment.subscribe',
+        'uses'      => 'PaymentController@postSubscribe'
+    ));
 });
 
