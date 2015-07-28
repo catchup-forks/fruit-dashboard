@@ -14,8 +14,9 @@ class QuoteWidget extends Widget
             'type'    => 'INT',
             'default' => 1440
         ),
-   );
-    // The settings to setup in the setup-wizard.
+    );
+    
+    /* The settings to setup in the setup-wizard */
     public static $setupSettings = array();
     public static $dataRequired = TRUE;
 
@@ -29,21 +30,21 @@ class QuoteWidget extends Widget
     /**
      * collectData
      * --------------------------------------------------
-     * Retrieving data from a google spreadsheet,
-     * and saving to db.
+     * Retrieves data from a google spreadsheet and saves to db
+     * @return None
      * --------------------------------------------------
      */
     public function collectData() {
         /* Getting the JSON from GoogleSpreadsheet. */
-        $file = file_get_contents($this->getSpreadsheetUri());
+        $file = file_get_contents($this->getQuoteSpreadsheetUri());
         $decoded_data = json_decode($file);
+
+        /* Not updating if there was no answer. */
         if (is_null($decoded_data)) {
-            /* Not updating if there was no answer. */
             return;
         }
 
-        // Making sure we have data.
-        /* Selecting a random row. */
+        /* Select a random row. */
         $quotes = $decoded_data->{'feed'}->{'entry'};
         $key = array_rand($quotes);
         $quote = $quotes[$key];
@@ -54,13 +55,15 @@ class QuoteWidget extends Widget
             'language' => $quote->{'gsx$language'}->{'$t'}
         ));
 
+        /* Save quote */
         $this->data->save();
     }
 
     /**
      * getData
      * --------------------------------------------------
-     * Returning data in an assoc array.
+     * Returns the quote in an assoc array.
+     * @return (array) ($quote) The quote and author
      * --------------------------------------------------
      */
     public function getData() {
@@ -76,7 +79,8 @@ class QuoteWidget extends Widget
     /**
      * save
      * --------------------------------------------------
-     * Overriding save to request a new quote.
+     * Overrides save to request a new quote.
+     * @return None
      * --------------------------------------------------
      */
     public function save(array $options=array()) {
@@ -84,14 +88,28 @@ class QuoteWidget extends Widget
         $this->collectData();
     }
 
-    private function getSpreadsheetUri() {
-        $uri = 'http://spreadsheets.google.com/feeds/list/';
+    /**
+     * getQuoteSpreadsheetUri
+     * --------------------------------------------------
+     * Overrides save to request a new quote.
+     * @return None
+     * --------------------------------------------------
+     */
+    private function getQuoteSpreadsheetUri() {
+        /* Get base url */
+        $uri = $_ENV['QUOTE_FEED_CONNECT_URI'];
+        
+        /* Get spreadsheet based on type */
         switch ($this->getSettings()['type']) {
-            case 'insp': $uri .= '1Xqp_INZG92NUKcL6F9BwcPrDpht0XNLdYLLugZhATbM/od6/public/values'; break;
-            default:;
+            case 'insp': 
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI']; 
+                break;
+            default: 
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI']; 
+                break;
         }
-        $uri .= '?alt=json';
 
+        /* Return URI */
         return $uri;
    }
 

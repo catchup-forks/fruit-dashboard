@@ -236,7 +236,7 @@
                 </div> <!-- /.col-sm-6 -->
 
                 <div class="col-sm-2">
-                  @if(Auth::user()->isStripeConnected()) 
+                  @if(Auth::user()->isBraintreeConnected()) 
                     <a class="btn btn-danger" href="{{ route('disconnect.stripe') }}">Disconnect</a>
                   @else
                     <a class="btn btn-success" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>      
