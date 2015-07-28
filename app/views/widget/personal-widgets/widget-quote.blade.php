@@ -1,8 +1,8 @@
 <div class="text-white text-center">
 	<p class="lead">
-		{{ $data['quote'] }}
+		{{ $widget->getData()['quote'] }}
 	</p>
 	<span class="display-hovered">
-		{{ $data['author'] }}
+		{{ $widget->getData()['author'] }}
 	</span>
 </div>

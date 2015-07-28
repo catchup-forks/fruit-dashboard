@@ -22,6 +22,14 @@ class WidgetDescriptorSeeder extends Seeder
         ));
 
         WidgetDescriptor::create(array(
+            'name'        => 'Reminder',
+            'description' => '.',
+            'type'        => 'reminder',
+            'category'    => 'personal',
+            'is_premium'  => FALSE,
+        ));
+
+        WidgetDescriptor::create(array(
             'name'        => 'Greetings',
             'description' => 'Wouldn\'t it be great to receive a greeting message from your favourite browser every time you open a new tab?',
             'type'        => 'greetings',

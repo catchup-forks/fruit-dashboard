@@ -116,7 +116,6 @@ class BraintreeConnector
         $dashboard = new Dashboard(array(
             'name'       => 'Braintree dashboard',
             'background' => TRUE,
-            'type'       => 'financial',
             'number'     => $this->user->dashboards->max('number') + 1
         ));
         $dashboard->user()->associate($this->user);

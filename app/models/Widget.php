@@ -37,6 +37,17 @@ class Widget extends Eloquent
      * @return array The widget settings meta.
      * --------------------------------------------------
     */
+    public function getTemplateName() {
+        return 'widget.' . $this->descriptor->category . '-widget-' . $this->descriptor->type;
+    }
+
+    /**
+     * getSettingsFields
+     * --------------------------------------------------
+     * Getting the settings meta.
+     * @return array The widget settings meta.
+     * --------------------------------------------------
+    */
     public function getSettingsFields() {
         return static::$settingsFields;
     }

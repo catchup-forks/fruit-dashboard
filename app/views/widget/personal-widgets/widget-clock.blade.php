@@ -1,5 +1,5 @@
   <div id="digitClock">
-  	<h1 id="digitTime" class="no-margin text-white drop-shadow text-center">{{ $currentTime }}</h1>
+  	<h1 id="digitTime" class="no-margin text-white drop-shadow text-center">{{ $widget['currentTime'] }}</h1>
   </div> <!-- /#digitTime -->
 
 @section('widgetScripts')

@@ -250,7 +250,6 @@ class StripeConnector
         $dashboard = new Dashboard(array(
             'name'       => 'Stripe dashboard',
             'background' => TRUE,
-            'type'       => 'financial',
             'number'     => $this->user->dashboards->max('number') + 1
         ));
         $dashboard->user()->associate($this->user);

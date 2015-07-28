@@ -26,5 +26,16 @@ class WidgetDescriptor extends Eloquent
         ) . "Widget";
     }
 
+
+    /**
+     * getTemplateName
+     * --------------------------------------------------
+     * Returning the location of the blade template.
+     * @return string
+     * --------------------------------------------------
+    */
+    public function getTemplateName() {
+        return 'widget.' . $this->category . '-widgets.widget-' . $this->type;
+    }
 }
 ?>

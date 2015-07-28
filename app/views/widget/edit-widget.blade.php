@@ -29,7 +29,7 @@
                       ))}}
                     <div class="col-sm-7">
                       @if ($meta['type'] == "SCHOICE")
-                        {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control']) }}
+                        {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
                       @else
                         {{ Form::text($field, $widget->getSettings()[$field], array(
                       'class' => 'form-control' )) }}

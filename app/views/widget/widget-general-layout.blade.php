@@ -18,44 +18,9 @@
     <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
   </a>
 
-  {{-- PERSONAL | CLOCK --}}
-  @if ($widget->descriptor->type == 'clock')
-    @include('widget.personal-widgets.widget-clock', [
-      'currentTime' => $widget['currentValue'],
-     ])
-  @endif
-
-  {{-- PERSONAL | GREETINGS --}}
-  @if ($widget->descriptor->type == 'greetings')
-    @include('widget.personal-widgets.widget-greetings', [
-      'widget'   => $widget->getSpecific(),
-      'position' => $widget['position']
-    ])
-  @endif
-
-  {{-- PERSONAL | QUOTE --}}
-  @if ($widget->descriptor->type == 'quote')
-    @include('widget.personal-widgets.widget-quote', [
-      'data' => $widget->getSpecific()->getData(),
-      'position' => $widget['position']
-    ])
-  @endif
-
-  {{-- PERSONAL | IFRAME --}}
-  @if ($widget->descriptor->type == 'iframe')
-    @include('widget.personal-widgets.widget-iframe', [
-      'url' => $widget->getSpecific()->getSettings()['url'],
-      'position' => $widget['position']
-    ])
-  @endif
-
-  {{-- STRIPE | MRR --}}
-  @if ($widget->descriptor->type == 'stripe_mrr')
-    @include('widget.stripe-widgets.mrr', [
-      'widget' => $widget->getSpecific(),
-      'position' => $widget['position']
-    ])
-  @endif
+  @include($widget->descriptor->getTemplateName(), [
+    'widget' => $widget->getSpecific(),
+  ])
 
 </li>
 
