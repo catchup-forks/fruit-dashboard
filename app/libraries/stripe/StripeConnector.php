@@ -250,26 +250,27 @@ class StripeConnector
         $dashboard = Dashboard::create(array(
             'name'       => 'Stripe dashboard',
             'background' => TRUE,
-            'type'       => 'financial'
-            'number'     => $this->user->dashboards->max('number') + 1;
+            'type'       => 'financial',
+            'number'     => $this->user->dashboards->max('number') + 1
         ));
+        $dashhboard->user()->associate($this->user);
         $dashboard->save();
 
         /* Adding widgets */
-        $mrrWidget = StripeMrrWidget::create(
+        $mrrWidget = StripeMrrWidget::create(array(
             'position'  => '{"col":1,"row":1,"size_x":1,"size_y":1}',
             'state'     => 'active',
-        );
+        ));
 
-        $arrWidget = StripeArrWidget::create(
+        $arrWidget = StripeArrWidget::create(array(
             'position'  => '{"col":2,"row":1,"size_x":1,"size_y":1}',
             'state'     => 'active',
-        );
+        ));
 
-        $arpuWidget = StripeArpuWidget::create(
+        $arpuWidget = StripeArpuWidget::create(array(
             'position'  => '{"col":3,"row":1,"size_x":1,"size_y":1}',
             'state'     => 'active',
-        );
+        ));
 
         /* Associating dashboard */
         $mrrWidget->dashboard()->associate($dashboard);

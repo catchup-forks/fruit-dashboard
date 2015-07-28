@@ -1,26 +1,26 @@
 <?php
 
 /**
-* -------------------------------------------------------------------------- 
-* GlobalTracker: 
-*       Wrapper functions for server-side event tracking    
+* --------------------------------------------------------------------------
+* GlobalTracker:
+*       Wrapper functions for server-side event tracking
 * Usage:
 *       $tracker = new GlobalTracker();
 *       // Lazy mode
 *       $tracker->trackAll('lazy', array(
-*               'en' => 'Sign in', 
+*               'en' => 'Sign in',
 *               'el' => Auth::user()->email)
 *           );
 *       // Detailed mode
 *       $tracker->trackAll('detailed', $eventData);
-* -------------------------------------------------------------------------- 
+* --------------------------------------------------------------------------
 */
 class GlobalTracker {
     /* -- Class properties -- */
     private static $google;
     private static $intercom;
     private static $mixpanel;
-    
+
     /* -- Constructor -- */
     public function __construct(){
         self::$google   = new GoogleTracker();
@@ -35,11 +35,11 @@ class GlobalTracker {
      */
 
     /**
-     * trackAll: 
+     * trackAll:
      * --------------------------------------------------
      * Tracks an event with all available tracking sites. In 'lazy mode'
      * eventData contains only the eventName and an eventOption string.
-     * In 'detailed mode' the eventData contains all necessary options 
+     * In 'detailed mode' the eventData contains all necessary options
      * for all the tracking sites.
      * @param (string)  ($mode)    lazy | detailed
      * @param (array) ($eventData) The event data
@@ -57,7 +57,7 @@ class GlobalTracker {
      * --------------------------------------------------
      */
     public function trackAll($mode, $eventData) {
-        if (App::environment('local')) {
+        if (App::environment('production')) {
             /* Lazy mode */
             if ($mode=='lazy') {
                 $googleEventData = array(
