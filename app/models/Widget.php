@@ -295,10 +295,10 @@ class Widget extends Eloquent
             } catch (EmptyData $e) {
                 // Data not yet populated.
                 $valid = FALSE;
-            } 
-            
+            }
+
             // Updating widget state accordingly.
-            if (!$valid && $this->state == 'missing_data') {
+            if (!$valid && $this->state == 'active') {
                 $this->state = 'missing_data';
                 $save = TRUE;
             } elseif ($valid && $this->state == 'missing_data') {

@@ -132,10 +132,10 @@ class StripeConnector
             $this->user->connections()->where('service', 'stripe')->delete();
         }
 
-        // Deleting all previos connections, and stripe widgets.
+        /* Deleting all previos connections, and stripe widgets. */
         $this->user->connections()->where('service', 'stripe')->delete();
 
-        // Creating a Connection instance, and saving to DB.
+        /* Creating a Connection instance, and saving to DB. */
         $connection = new Connection(array(
             'access_token'  => $response['access_token'],
             'refresh_token' => $response['refresh_token'],
@@ -143,6 +143,9 @@ class StripeConnector
         ));
         $connection->user()->associate($this->user);
         $connection->save();
+
+        /* Creating custom dashboard. */
+        $this->createDashboard();
 
     }
 
@@ -234,6 +237,49 @@ class StripeConnector
 
         /* Return URI */
         return $post_uri;
+    }
+
+    /**
+     * createDashboard
+     * --------------------------------------------------
+     * Creating a dashboard dedicated to stripe widgets.
+     * --------------------------------------------------
+     */
+    private function createDashboard() {
+        /* Creating dashboard. */
+        $dashboard = Dashboard::create(array(
+            'name'       => 'Stripe dashboard',
+            'background' => TRUE,
+            'type'       => 'financial'
+            'number'     => $this->user->dashboards->max('number') + 1;
+        ));
+        $dashboard->save();
+
+        /* Adding widgets */
+        $mrrWidget = StripeMrrWidget::create(
+            'position'  => '{"col":1,"row":1,"size_x":1,"size_y":1}',
+            'state'     => 'active',
+        );
+
+        $arrWidget = StripeArrWidget::create(
+            'position'  => '{"col":2,"row":1,"size_x":1,"size_y":1}',
+            'state'     => 'active',
+        );
+
+        $arpuWidget = StripeArpuWidget::create(
+            'position'  => '{"col":3,"row":1,"size_x":1,"size_y":1}',
+            'state'     => 'active',
+        );
+
+        /* Associating dashboard */
+        $mrrWidget->dashboard()->associate($dashboard);
+        $arrWidget->dashboard()->associate($dashboard);
+        $arpuWidget->dashboard()->associate($dashboard);
+
+        /* Saving widgets */
+        $mrrWidget->save();
+        $arrWidget->save();
+        $arpuWidget->save();
     }
 
 } /* StripeConnector */
