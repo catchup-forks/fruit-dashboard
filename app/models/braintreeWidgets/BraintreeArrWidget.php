@@ -13,6 +13,7 @@ class BraintreeArrWidget extends FinancialWidget
         } catch (BraintreeNotConnected $e) {
             ;
         }
+        $this->save();
     }
 }
 ?>

@@ -13,6 +13,7 @@ class StripeMrrWidget extends FinancialWidget
         } catch (StripeNotConnected $e) {
             ;
         }
+        $this->save();
     }
 }
 ?>

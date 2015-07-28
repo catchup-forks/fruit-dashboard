@@ -3,7 +3,7 @@
     @if ($widget->state == 'missing_data')
       Data not present yet!
     @else
-      @if ($widget->getSettings()['histogram'])
+      @if ($widget->getSettings()['widget_type'] == 'chart')
         @foreach ($widget->getHistogram() as $histogramEntry)
           ${{$histogramEntry}},
         @endforeach
