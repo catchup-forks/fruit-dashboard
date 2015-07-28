@@ -113,22 +113,22 @@ class BraintreeConnector
      */
     private function createDashboard() {
         /* Creating dashboard. */
-        $dashboard = Dashboard::create(array(
+        $dashboard = new Dashboard(array(
             'name'       => 'Braintree dashboard',
             'background' => TRUE,
             'type'       => 'financial',
             'number'     => $this->user->dashboards->max('number') + 1
         ));
-        $dashhboard->user()->associate($this->user);
+        $dashboard->user()->associate($this->user);
         $dashboard->save();
 
         /* Adding widgets */
-        $mrrWidget = BraintreeMrrWidget::create(array(
+        $mrrWidget = new BraintreeMrrWidget(array(
             'position'  => '{"col":1,"row":1,"size_x":1,"size_y":1}',
             'state'     => 'active',
         ));
 
-        $arrWidget = BraintreeArrWidget::create(array(
+        $arrWidget = new BraintreeArrWidget(array(
             'position'  => '{"col":2,"row":1,"size_x":1,"size_y":1}',
             'state'     => 'active',
         ));
