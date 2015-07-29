@@ -34,13 +34,15 @@ class PaymentController extends BaseController
     /**
      * postSubscribe
      * --------------------------------------------------
-     * Creates a user's subscription to a plan.
+     * Subscribes the user to the selected plan.
+     * @return Redirects to the dashboard
      * --------------------------------------------------
      */
     public function postSubscribe($planId) {
-        /* Get all plans */
+        /* Get the Plan */
         $plan = Plan::find($planId);
 
+        /* Check for payment_method_nonce in input */
         if (!Input::has('payment_method_nonce')) {
             return Redirect::route('payment.plan')
                 ->with('error', "Something went wrong with your request, please try again.");
