@@ -122,3 +122,33 @@ input.greetings-name:focus {
   border-bottom: 3px solid #fff;
   box-shadow: none;
 }
+.quote p {
+  line-height: 1.25em;
+  transition: all 0.2s ease-out;
+}
+.quote .body {
+  transition-delay: 0.2s;
+}
+.quote:hover .body {
+  -moz-transform: translateY(-0.3em);
+  -webkit-transform: translateY(-0.3em);
+  -ms-transform: translateY(-0.3em);
+  -o-transform: translateY(-0.3em);
+  transform: translateY(-0.3em);
+  transition-delay: 0s;
+}
+.quote .source {
+  position: relative;
+  top: -19px;
+  opacity: 0;
+  transition-delay: 0s;
+}
+.quote:hover .source {
+  opacity: 1;
+  -moz-transform: translateY(0.1em);
+  -webkit-transform: translateY(0.1em);
+  -ms-transform: translateY(0.1em);
+  -o-transform: translateY(0.1em);
+  transform: translateY(0.1em);
+  transition-delay: 0.2s;
+}
