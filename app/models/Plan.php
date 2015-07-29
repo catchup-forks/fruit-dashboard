@@ -2,7 +2,11 @@
 
 class Plan extends Eloquent
 {
-    // -- Fields -- //
+    /* -- Fields -- */
+    protected $guarded = array(
+        'plan_id',
+    );
+
     protected $fillable = array(
         'interval',
         'interval_count',
@@ -11,9 +15,9 @@ class Plan extends Eloquent
         'description'
     );
 
-    // -- No timestamps -- //
+    /* -- No timestamps -- */
     public $timestamps = false; 
 
-    // -- Relations -- //
+    /* -- Relations -- */
     public function subscriptions() { return $this->hasMany('Subscription'); }
 }

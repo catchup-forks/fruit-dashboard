@@ -24,7 +24,7 @@ class User extends Eloquent implements UserInterface
 
     /* -- Relations -- */
     public function connections() { return $this->hasMany('Connection'); }
-    public function subscriptions() { return $this->hasMany('Subscriptions'); }
+    public function subscriptions() { return $this->hasMany('Subscription'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
     

@@ -65,7 +65,7 @@ class PaymentController extends BaseController
                 $subscription->commit(Input::get('payment_method_nonce'));
             } catch (AlreadyConnected $e)  {
                 return Redirect::route('dashboard.dashboard')
-                    ->with('error',"You are already subscribed to that plan."):
+                    ->with('error',"You are already subscribed to that plan.");
             } catch (Exception $e) {
                 return Redirect::route('payment.plan')
                     ->with('error',"Couldn't process your subscription, try again later.");
