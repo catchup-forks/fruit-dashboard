@@ -336,9 +336,8 @@
                     location: "br"
                   });
                   
-                  // Switch spinner to button
-                  form.find('.fa-spinner').hide();
-                  form.find(':submit').show();
+                  // Reset button
+                  form.find(':submit').button('reset');
                }
         });
       });
