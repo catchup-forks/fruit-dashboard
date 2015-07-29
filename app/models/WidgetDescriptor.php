@@ -35,7 +35,7 @@ class WidgetDescriptor extends Eloquent
      * --------------------------------------------------
     */
     public function getTemplateName() {
-        return 'widget.' . $this->category . '-widgets.widget-' . $this->type;
+        return 'widget.' . $this->category . '.widget-' . $this->type;
     }
 }
 ?>
