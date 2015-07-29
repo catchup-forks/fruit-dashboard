@@ -28,6 +28,13 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
 
+        /* If widget has no setup fields, redirect to dashboard automatically */
+        $settingsFields = $widget->getSettingsFields();
+        if (empty($settingsFields)) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', 'This widget has no settings.');
+        }
+
         // Rendering view.
         return View::make('widget.edit-widget')
             ->with('widget', $widget);
@@ -166,7 +173,8 @@ class GeneralWidgetController extends BaseController {
         } else {
             /* Redirect to dashboard */
             return Redirect::route('dashboard.dashboard')
-                ->with('success', "You successfully deleted the widget"); }
+                ->with('success', "You successfully deleted the widget");
+        }
     }
 
     /**
@@ -219,10 +227,9 @@ class GeneralWidgetController extends BaseController {
         if (empty($setupFields)) {
             return Redirect::route('dashboard.dashboard')
                 ->with('success', 'Widget successfully created.');
-        } else {
-             return Redirect::route('widget.setup', array($widget->id))
-                ->with('success', 'Widget successfully created, please set it up.');
         }
+        return Redirect::route('widget.setup', array($widget->id))
+            ->with('success', 'Widget successfully created, please set it up.');
     }
 
     /**

@@ -29,9 +29,6 @@ abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidge
      * ================================================== *
      */
 
-    /* Override this function to insert values in the widget data */
-     abstract public function collectData() ;
-
     /**
      * getHistogram
      * --------------------------------------------------

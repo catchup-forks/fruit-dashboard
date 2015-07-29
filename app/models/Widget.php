@@ -30,7 +30,6 @@ class Widget extends Eloquent
     public $timestamps = FALSE;
 
     // These variables will be overwritten, with late static binding.
-    public static $type = null;
     public static $settingsFields = array();
     public static $setupSettings = array();
 
