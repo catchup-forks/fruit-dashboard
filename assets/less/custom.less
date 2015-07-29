@@ -25,6 +25,10 @@ html, body {
   align-items: center;
 }
 
+.valign-middle {
+  vertical-align: middle;
+}
+
 .position-bl {
   position: fixed;
   bottom: @margin;
@@ -38,7 +42,7 @@ html, body {
 }
 
 .position-tr {
-  position: absolute;
+  position: fixed;
   top: @margin;
   right: @margin;
 }
@@ -50,9 +54,15 @@ html, body {
 }
 
 .position-tl {
-  position: absolute;
+  position: fixed;
   top: @margin;
   left: @margin;
+}
+
+.position-br {
+  position: fixed;
+  bottom: @margin;
+  right: @margin;
 }
 
 .no-padding {
@@ -61,6 +71,14 @@ html, body {
 
 .no-margin {
   margin: 0;
+}
+
+.margin-top {
+  margin-top: @margin;
+}
+
+.margin-top-sm {
+  margin-top: @margin/2;
 }
 
 .not-visible {
@@ -85,6 +103,10 @@ html, body {
 
 .text-white {
   color: @white;
+}
+
+.label-as-badge {
+    border-radius: 1em;
 }
 
 // PANELS
@@ -141,4 +163,42 @@ html, body {
 
 input.greetings-name:focus{
   .no-shadow-plus-border
+}
+
+// QUOTE WIDGET
+
+// .quote { width: 100%; margin: 0; padding: 13px 0 1px; text-align: center; }
+
+.quote p { 
+  line-height: 1.25em;
+  transition: all 0.2s ease-out;
+}
+
+.quote .body {
+  transition-delay: 0.2s;
+}
+    
+.quote:hover .body { 
+  -moz-transform: translateY(-0.3em);
+  -webkit-transform: translateY(-0.3em);
+  -ms-transform: translateY(-0.3em);
+  -o-transform: translateY(-0.3em);
+  transform: translateY(-0.3em);
+  transition-delay: 0s;
+}
+
+.quote .source {
+  position: relative; 
+  top: -19px; 
+  opacity: 0;
+  transition-delay: 0s; 
+}
+.quote:hover .source {
+  opacity: 1; 
+  -moz-transform: translateY(0.1em);
+  -webkit-transform: translateY(0.1em);
+  -ms-transform: translateY(0.1em);
+  -o-transform: translateY(0.1em);
+  transform: translateY(0.1em);
+  transition-delay: 0.2s;
 }

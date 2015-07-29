@@ -16,7 +16,7 @@
   ],
   "dependencies": {
     "bootstrap": "~3.3.5",
-    "fontawesome": "~4.3.0"
+    "fontawesome": "~4.4.0"
   },
   "devDependencies": {
     "gridster": "~0.5.6",

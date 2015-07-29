@@ -1,9 +1,10 @@
-@if(!isset($onDashboard))
-  <div class="position-tl drop-shadow z-top">
-    <a href="/" alt="Dashboard" title="Dashboard">
-      <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
-    </a>
-  </div>
+<!-- if not on dashboard display the home button -->
+@if (!Request::is('dashboard'))
+	<div class="position-tl drop-shadow z-top">
+	  <a href="/" alt="Dashboard" title="Dashboard">
+	    <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
+	  </a>
+	</div>
 @endif
 
 <!-- add new widget button -->
@@ -14,9 +15,9 @@
 </div>
 
 
+<!-- dropdown menu icon -->
 <div class="btn-group position-tr z-top cursor-pointer">
 
-	<!-- dropdown menu icon -->
 	<span class="dropdown-icon fa fa-2x fa-cog fa-inverse color-hovered drop-shadow" alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></span>
 
 	<!-- dropdown menu elements -->
@@ -62,3 +63,26 @@
 	</ul>
 
 </div> <!-- /.btn-group -->
+
+<!-- Display the Remaining Days counter -->
+<a href="/" class="position-br drop-shadow z-top" data-toggle="tooltip" data-placement="left" title="Your trial period will end on {{ Auth::user()->getTrialEndDate()->format('Y. m. d.') }} <br> Click to change your Plan.">
+	@if (Auth::user()->getDaysRemainingFromTrial()<7)
+		<span class="label label-danger label-as-badge valign-middle">{{ Auth::user()->getDaysRemainingFromTrial() }}</span>
+	@else
+		<span class="label label-warning label-as-badge valign-middle">{{ Auth::user()->getDaysRemainingFromTrial() }}</span>
+	@endif
+		
+</a>
+
+@section('pageScripts')
+
+{{-- Initialize the tooltip for Remaining Days counter --}}
+<script type="text/javascript">
+	$(function () {
+	  $('[data-toggle="tooltip"]').tooltip({
+	  	html: true
+	  })
+	})
+</script>
+
+@append
