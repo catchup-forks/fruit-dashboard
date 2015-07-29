@@ -1,5 +1,5 @@
 @if (isset($widget['widget_ready']) && $widget['widget_ready'] == false)
-  @include('widget.personal-widgets.widget-notready', [
+  @include('widget.general.widget-notready', [
     'id' => $widget['widget_id']
    ])
 @else

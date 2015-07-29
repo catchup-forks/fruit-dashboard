@@ -14,7 +14,7 @@ Route::group([
         'uses'      => 'PaymentController@getPlansAndPricing'
     ));
 
-    Route::post('/subscribe', array(
+    Route::post('/subscribe/{$planId}', array(
         'before'    => 'auth',
         'as'        => 'payment.subscribe',
         'uses'      => 'PaymentController@postSubscribe'

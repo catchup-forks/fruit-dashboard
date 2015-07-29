@@ -37,12 +37,10 @@ class Subscription extends Eloquent
             }
         }
 
+        /* Create the new Braintree_Subscription*/
         $newSubscription = Braintree_Subscription::create(array(
             'planId'             => $this->plan->plan_id,
             'paymentMethodNonce' => $paymentMethodNonce
         ));
-
-
-
     }
 }

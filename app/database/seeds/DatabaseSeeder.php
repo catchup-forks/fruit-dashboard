@@ -16,13 +16,13 @@ class DatabaseSeeder extends Seeder {
         /* CONFIG::LOCAL ONLY */
         if (App::environment('local')) {
             Eloquent::unguard();
-            $this->call('UserTableSeeder');
+            $this->call('UserSeeder');
             $this->call('InitialSeeder');
 
         /* CONFIG::DEVELOPMENT ONLY */
         } else if (App::environment('development')) {
             Eloquent::unguard();
-            $this->call('UserTableSeeder');
+            $this->call('UserSeeder');
             $this->call('InitialSeeder');
 
         /* CONFIG::STAGING ONLY */
