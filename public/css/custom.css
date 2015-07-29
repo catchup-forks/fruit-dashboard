@@ -22,7 +22,7 @@ body {
   left: 25px;
 }
 .position-bl-sm {
-  position: fixed;
+  position: absolute;
   bottom: 5px;
   left: 5px;
 }
@@ -32,7 +32,7 @@ body {
   right: 25px;
 }
 .position-tr-sm {
-  position: fixed;
+  position: absolute;
   top: 5px;
   right: 5px;
 }
