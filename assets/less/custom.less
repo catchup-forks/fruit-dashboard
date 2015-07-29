@@ -25,6 +25,10 @@ html, body {
   align-items: center;
 }
 
+.valign-middle {
+  vertical-align: middle;
+}
+
 .position-bl {
   position: fixed;
   bottom: @margin;
@@ -32,27 +36,33 @@ html, body {
 }
 
 .position-bl-sm {
-  position: absolute;
+  position: fixed;
   bottom: @margin/5;
   left: @margin/5;
 }
 
 .position-tr {
-  position: absolute;
+  position: fixed;
   top: @margin;
   right: @margin;
 }
 
 .position-tr-sm {
-  position: absolute;
+  position: fixed;
   top: @margin/5;
   right: @margin/5;
 }
 
 .position-tl {
-  position: absolute;
+  position: fixed;
   top: @margin;
   left: @margin;
+}
+
+.position-br {
+  position: fixed;
+  bottom: @margin;
+  right: @margin;
 }
 
 .no-padding {
@@ -93,6 +103,10 @@ html, body {
 
 .text-white {
   color: @white;
+}
+
+.label-as-badge {
+    border-radius: 1em;
 }
 
 // PANELS
