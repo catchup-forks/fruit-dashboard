@@ -1,8 +1,8 @@
-<div class="text-white text-center">
-	<p class="lead">
+<div class="text-white text-center quote">
+	<p class="lead body">
 		{{ $widget->getData()['quote'] }}
 	</p>
-	<span class="display-hovered">
-		{{ $widget->getData()['author'] }}
-	</span>
+  <p class="source">
+    {{ $widget->getData()['author'] }}
+  </p>
 </div>

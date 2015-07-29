@@ -1,7 +1,7 @@
 @extends('meta.base-user-signout')
 
   @section('pageTitle')
-    404 - url not found
+    500 - server error
   @stop
 
 @section('pageContent')
@@ -16,10 +16,10 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             <h1>
-              404
+              500
             </h1>
             <p class="lead">
-              The URL you requested does not exist.
+              Somehow the server broke. Don't worry, we have been notified.
             </p>  
             <a href="/">Take me to a safe place.</a>
           </div> <!-- /.panel-body -->

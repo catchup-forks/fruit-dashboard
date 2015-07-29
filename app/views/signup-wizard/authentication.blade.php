@@ -36,6 +36,11 @@
                 <h1 class="text-white text-center drop-shadow">
                     What is your email address?
                 </h1>
+
+                <!-- Stop Chrome from ignoring autocomplete -->
+                <input style="display:none">
+                <input type="password" style="display:none">
+                
                 <div class="form-group">
                     {{ Form::text('email', Input::old('email'), array('autocomplete' => 'off', 'autocorrect' => 'off', 'class' => 'form-control input-lg text-white drop-shadow text-center greetings-name', 'id' => 'email_id')) }}
                 </div>
@@ -54,7 +59,7 @@
             <div class="form-actions hidden-form not-visible">
                 {{ Form::submit('Next' , array(
                     'id' => 'id_next',
-                    'class' => 'btn btn-success btn-flat pull-right',
+                    'class' => 'btn btn-success pull-right',
                     'onClick' => '')) }}
             </div> <!-- / .form-actions -->
 

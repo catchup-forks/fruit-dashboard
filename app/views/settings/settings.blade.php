@@ -15,7 +15,7 @@
           <div class="panel panel-default panel-transparent margin-top">
             <div class="panel-heading">
               <h3 class="panel-title">
-                <span class="fa fa-cog"></span>
+                <span class="fa fa-book"></span>
                 Account settings
               </h3>
             </div> <!-- /.panel-heading -->
@@ -43,7 +43,8 @@
                   <div class="col-sm-2">
                     
                     {{ Form::submit('Modify' , array(
-                      'class' => 'btn btn-primary' )) }}
+                      'class' => 'btn btn-primary',
+                      'data-loading-text' => 'Saving...' )) }}
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
@@ -73,7 +74,8 @@
                   <div class="col-sm-2">
                     
                     {{ Form::submit('Modify' , array(
-                      'class' => 'btn btn-primary' )) }}
+                      'class' => 'btn btn-primary',
+                      'data-loading-text' => 'Saving...' )) }}
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
@@ -91,10 +93,10 @@
       {{-- General settings --}}
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          <div class="panel panel-default panel-transparent margin-top">
+          <div class="panel panel-default panel-transparent">
             <div class="panel-heading">
               <h3 class="panel-title">
-                <span class="fa fa-cog"></span>
+                <span class="fa fa-sliders"></span>
                 General settings
               </h3>
             </div> <!-- /.panel-heading -->
@@ -123,7 +125,8 @@
                   <div class="col-sm-2">
                     
                     {{ Form::submit('Modify' , array(
-                      'class' => 'btn btn-primary' )) }}
+                      'class' => 'btn btn-primary',
+                      'data-loading-text' => 'Saving...' )) }}
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
@@ -141,10 +144,10 @@
       {{-- Subscription settings --}}
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          <div class="panel panel-default panel-transparent margin-top">
+          <div class="panel panel-default panel-transparent">
             <div class="panel-heading">
               <h3 class="panel-title">
-                <span class="fa fa-cog"></span>
+                <span class="fa fa-credit-card"></span>
                 Subscription settings
               </h3>
             </div> <!-- /.panel-heading -->
@@ -156,13 +159,13 @@
                   <div class="panel panel-default">
                     <div class="panel-heading">
                       <h3 class="panel-title">
-                        <span class="fa fa-child"></span>
+                        <span class="fa fa-calendar-times-o"></span>
                         Your trial ends in
                       </h3>
                     </div> <!-- /.panel-heading -->
-                    <div class="panel-body">
+                    <div class="panel-body text-center">
                       <h3>{{ Auth::user()->getDaysRemainingFromTrial() }} day(s)</h3>
-                      <small>(on {{ Auth::user()->getTrialEndDate() }})</small>
+                      <small class="text-muted">on {{ Auth::user()->getTrialEndDate() }}</small>
                     </div> <!-- /.panel-body -->
                   </div> <!-- /.panel -->
                 </div> <!-- /.col-md-6 -->
@@ -170,12 +173,12 @@
                   <div class="panel panel-default">
                     <div class="panel-heading">
                       <h3 class="panel-title">
-                        <span class="fa fa-child"></span>
+                        <span class="fa fa-tags"></span>
                         Plans and pricing
                       </h3>
                     </div> <!-- /.panel-heading -->
                     <div class="panel-body">
-                      <a href="{{ route('payment.plans') }}">Change your plan</a>
+                      <a href="{{ route('payment.plans') }}" class="btn btn-block btn-success">Change your plan</a>
                     </div> <!-- /.panel-body -->
                   </div> <!-- /.panel -->
                 </div> <!-- /.col-md-6 -->
@@ -188,70 +191,84 @@
       </div> <!-- /.row -->
       {{-- /Subscription settings --}}
 
-      {{-- Service connection settings --}}
+      {{-- Manage connection settings --}}
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          <div class="panel panel-default panel-transparent margin-top">
+          <div class="panel panel-default panel-transparent">
             <div class="panel-heading">
               <h3 class="panel-title">
-                <span class="fa fa-cog"></span>
-                Service connectios
+                <span class="fa fa-wrench"></span>
+                Manage connections
               </h3>
             </div> <!-- /.panel-heading -->
             <div class="panel-body">
 
-              {{-- Service connection settings - Stripe --}}
+              {{-- Manage connection settings - Stripe --}}
               {{-- START --}}
-              <div class="form-group">
-                <div class="col-sm-8">
-                  <h3>
-                  <i class="fa fa-cc-stripe fa-2x"></i>
-                    @if(Auth::user()->isStripeConnected()) 
-                      <span class="label label-success">Connected</span>
-                    @else
-                      <span class="label label-danger">Not connected</span>
-                    @endif
-                  </h3>
-                </div> <!-- /.col-sm-6 -->
-
-                <div class="col-sm-2">
+              <div class="row">
+                <div class="col-md-3">
+                    <h4 class="no-margin">
+                      <span class="label label-default">Stripe</span>
+                    </h4>
+                </div> <!-- /.col-md-3 -->
+                <div class="col-md-5 text-center">
+                  @if(Auth::user()->isStripeConnected())
+                    <p class="text-success">
+                      <span class="fa fa-circle"></span> 
+                      Connected
+                    </p>
+                  @else
+                    <p class="text-danger">
+                      <span class="fa fa-circle"></span> 
+                      Not connected
+                    </p>
+                  @endif
+                </div> <!-- /.col-md-5 -->
+                <div class="col-md-4">
                   @if(Auth::user()->isStripeConnected()) 
-                    <a class="btn btn-danger" href="{{ route('disconnect.stripe') }}">Disconnect</a>
+                    <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
                   @else
-                    <a class="btn btn-success" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>      
+                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a> 
                   @endif
-                </div> <!-- /.col-sm-2 -->
-              </div> <!-- /.form-group -->
+                </div> <!-- /.col-md-4 -->
+              </div> <!-- /.row -->
 
-              <div class="form-group">
-                <div class="col-sm-8">
-                  <h3>
-                  <i class="fa fa-cc-visa fa-2x"></i>
-                    @if(Auth::user()->isBraintreeConnected()) 
-                      <span class="label label-success">Connected</span>
-                    @else
-                      <span class="label label-danger">Not connected</span>
-                    @endif
-                  </h3>
-                </div> <!-- /.col-sm-6 -->
-
-                <div class="col-sm-2">
+              <div class="row margin-top-sm">
+                <div class="col-md-3">
+                  <h4 class="no-margin">
+                    <span class="label label-default">Braintree</span>
+                  </h4>
+                </div> <!-- /.col-md-3 -->
+                <div class="col-md-5 text-center">
                   @if(Auth::user()->isBraintreeConnected()) 
-                    <a class="btn btn-danger" href="{{ route('disconnect.stripe') }}">Disconnect</a>
+                    <p class="text-success">
+                      <span class="fa fa-circle"></span> 
+                      Connected
+                    </p>
                   @else
-                    <a class="btn btn-success" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>      
+                    <p class="text-danger">
+                      <span class="fa fa-circle"></span> 
+                      Not connected
+                    </p>
                   @endif
-                </div> <!-- /.col-sm-2 -->
-              </div> <!-- /.form-group -->
+                </div> <!-- /.col-md-5 -->
+                <div class="col-md-4">
+                  @if(Auth::user()->isBraintreeConnected()) 
+                    <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
+                  @else
+                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a> 
+                  @endif
+                </div> <!-- /.col-md-4 -->
+              </div> <!-- /.row -->
 
               {{-- END --}}
-              {{-- Service connection settings - Background --}}
+              {{-- Manage connection settings - Background --}}
 
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
         </div> <!-- /.col-md-6 -->
       </div> <!-- /.row -->
-      {{-- /Service connection settings --}}
+      {{-- /Manage connection settings --}}
 
     </div> <!-- /.container -->
 
@@ -273,9 +290,8 @@
         var setting = $(this).attr("data-setting-name");
         var url     = "{{ route('settings.change', 'setting-name') }}".replace('setting-name', setting)
 
-        // Switch submit button to spinner
-        form.find(':submit').hide();
-        form.find(':submit').before($('<i/>', {'class': 'fa fa-spinner fa-spin fa-2x',}));
+        // Change button text while loading
+        form.find(':submit').button('loading');
         
         // Call ajax function
         $.ajax({
@@ -302,9 +318,8 @@
                     });
                   };
 
-                  // Switch spinner to button
-                  form.find('.fa-spinner').hide();
-                  form.find(':submit').show();
+                  // Reset button
+                  form.find(':submit').button('reset');
 
                   // Reload page on certain changes
                   if (setting == 'background') {
@@ -321,9 +336,8 @@
                     location: "br"
                   });
                   
-                  // Switch spinner to button
-                  form.find('.fa-spinner').hide();
-                  form.find(':submit').show();
+                  // Reset button
+                  form.find(':submit').button('reset');
                }
         });
       });

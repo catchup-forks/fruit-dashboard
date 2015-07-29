@@ -13,6 +13,9 @@ body {
   display: flex;
   align-items: center;
 }
+.valign-middle {
+  vertical-align: middle;
+}
 .position-bl {
   position: fixed;
   bottom: 25px;
@@ -24,7 +27,7 @@ body {
   left: 5px;
 }
 .position-tr {
-  position: absolute;
+  position: fixed;
   top: 25px;
   right: 25px;
 }
@@ -34,15 +37,26 @@ body {
   right: 5px;
 }
 .position-tl {
-  position: absolute;
+  position: fixed;
   top: 25px;
   left: 25px;
+}
+.position-br {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
 }
 .no-padding {
   padding: 0;
 }
 .no-margin {
   margin: 0;
+}
+.margin-top {
+  margin-top: 25px;
+}
+.margin-top-sm {
+  margin-top: 12.5px;
 }
 .not-visible {
   display: none;
@@ -59,6 +73,9 @@ body {
 }
 .text-white {
   color: #ffffff;
+}
+.label-as-badge {
+  border-radius: 1em;
 }
 .panel-transparent {
   background: none;
@@ -104,4 +121,34 @@ body {
 input.greetings-name:focus {
   border-bottom: 3px solid #fff;
   box-shadow: none;
+}
+.quote p {
+  line-height: 1.25em;
+  transition: all 0.2s ease-out;
+}
+.quote .body {
+  transition-delay: 0.2s;
+}
+.quote:hover .body {
+  -moz-transform: translateY(-0.3em);
+  -webkit-transform: translateY(-0.3em);
+  -ms-transform: translateY(-0.3em);
+  -o-transform: translateY(-0.3em);
+  transform: translateY(-0.3em);
+  transition-delay: 0s;
+}
+.quote .source {
+  position: relative;
+  top: -19px;
+  opacity: 0;
+  transition-delay: 0s;
+}
+.quote:hover .source {
+  opacity: 1;
+  -moz-transform: translateY(0.1em);
+  -webkit-transform: translateY(0.1em);
+  -ms-transform: translateY(0.1em);
+  -o-transform: translateY(0.1em);
+  transform: translateY(0.1em);
+  transition-delay: 0.2s;
 }
