@@ -9,7 +9,7 @@ class WidgetDescriptorSeeder extends Seeder
         /* WidgetDescriptor: Update or create all */
         /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Clock'], 
+            ['name' => 'Clock'],
             array(
                 'name'        => 'Clock',
                 'description' => 'A simple clock',
@@ -20,7 +20,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Quotes'], 
+            ['name' => 'Quotes'],
             array(
                 'name'        => 'Quotes',
                 'description' => 'Get inspired every day, by this awesome widget.',
@@ -31,7 +31,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Greetings'], 
+            ['name' => 'Greetings'],
             array(
                 'name'        => 'Greetings',
                 'description' => 'Wouldn\'t it be great to receive a greeting message from your favourite browser every time you open a new tab?',
@@ -42,10 +42,10 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Reminder'], 
+            ['name' => 'Reminder'],
             array(
                 'name'        => 'Reminder',
-                'description' => '.',
+                'description' => '',
                 'type'        => 'reminder',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
@@ -53,7 +53,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Iframe'], 
+            ['name' => 'Iframe'],
             array(
                 'name'        => 'Iframe',
                 'description' => 'Include your favourite sites into this dashboard.',
@@ -63,9 +63,20 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Note'],
+            array(
+                'name'        => 'Note',
+                'description' => '',
+                'type'        => 'note',
+                'category'    => 'personal',
+                'is_premium'  => FALSE,
+            )
+        );
+
         /* Financial widgets | STRIPE */
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Stripe MRR'], 
+            ['name' => 'Stripe MRR'],
             array(
                 'name'        => 'Stripe MRR',
                 'description' => 'Stripe Monthly recurring revenue',
@@ -76,7 +87,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Stripe ARR'], 
+            ['name' => 'Stripe ARR'],
             array(
                 'name'        => 'Stripe ARR',
                 'description' => 'Stripe Annual recurring revenue',
@@ -87,7 +98,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Stripe ARPU'], 
+            ['name' => 'Stripe ARPU'],
             array(
                 'name'        => 'Stripe ARPU',
                 'description' => 'Stripe Average revenue per user',
@@ -99,7 +110,7 @@ class WidgetDescriptorSeeder extends Seeder
 
         /* Financial widgets | BRAINTREE */
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Braintree MRR'], 
+            ['name' => 'Braintree MRR'],
             array(
                 'name'        => 'Braintree MRR',
                 'description' => 'Braintree Monthly recurring revenue',
@@ -110,7 +121,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['name' => 'Braintree ARR'], 
+            ['name' => 'Braintree ARR'],
             array(
                 'name'        => 'Braintree ARR',
                 'description' => 'Braintree Annual recurring revenue',

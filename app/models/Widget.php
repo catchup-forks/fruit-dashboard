@@ -1,4 +1,21 @@
 <?php
+/* If the widget is using data it should implement this interface */
+interface iDataWidget {
+    public function createDataScheme();
+}
+
+/* Widgets having ajax requests should implement this Interface. */
+interface iAjaxWidget extends iDataWidget {
+    public function handleAjax($postData);
+}
+
+/* If the widget needs to be updated automatically by a cron job.  */
+interface iCronWidget {
+    public function collectData();
+}
+
+
+/* Main widget class */
 class Widget extends Eloquent
 {
  // -- Table specs -- //
@@ -16,7 +33,6 @@ class Widget extends Eloquent
     public static $type = null;
     public static $settingsFields = array();
     public static $setupSettings = array();
-    public static $dataRequired = FALSE;
 
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -263,7 +279,7 @@ class Widget extends Eloquent
      */
     protected function checkIntegrity() {
         // Data integrity validation.
-        if (static::$dataRequired) {
+        if ($this instanceof iDataWidget) {
             // Exception variables.
             $valid = TRUE;
             $save = FALSE;
@@ -274,7 +290,7 @@ class Widget extends Eloquent
                 $valid = FALSE;
                 $save = TRUE;
                 $data = Data::create(array(
-                    'raw_value' => json_encode(array())
+                    'raw_value' => $this->createDataScheme()
                 ));
                 $this->data()->associate($data);
                 $data->save();
@@ -282,7 +298,7 @@ class Widget extends Eloquent
                 // Invalid data found in db, doing cleanup.
                 $valid = FALSE;
                 $save = TRUE;
-                $this->data->raw_value = json_encode(array());
+                $this->data->raw_value = $this->createDataScheme();
                 $this->data->save();
             } catch (EmptyData $e) {
                 // Data not yet populated.

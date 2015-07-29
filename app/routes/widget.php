@@ -56,4 +56,9 @@ Route::group([
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ));
 
+    Route::post('ajax-handler/{widgetID}', array(
+        'before' => 'auth',
+        'as'    => 'widget.ajax-handler',
+        'uses'  => 'GeneralWidgetController@ajaxHandler',
+    ));
 });

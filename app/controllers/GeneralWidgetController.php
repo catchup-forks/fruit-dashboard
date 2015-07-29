@@ -73,7 +73,7 @@ class GeneralWidgetController extends BaseController {
         /* Track event | EDIT WIDGET */
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
-            'en' => 'Edit widget', 
+            'en' => 'Edit widget',
             'el' => $widget->descriptor->getClassName())
         );
 
@@ -188,7 +188,7 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function doAddWidget($descriptorID) {
-        
+
         /* Get the widget descriptor */
         $descriptor = WidgetDescriptor::find($descriptorID);
         if (is_null($descriptor)) {
@@ -210,12 +210,13 @@ class GeneralWidgetController extends BaseController {
         /* Track event | ADD WIDGET */
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
-            'en' => 'Add widget', 
+            'en' => 'Add widget',
             'el' => $className)
         );
 
         /* If widget has no setup fields, redirect to dashboard automatically */
-        if (empty($widget->getSetupFields())) {
+        $setupFields = $widget->getSetupFields();
+        if (empty($setupFields)) {
             return Redirect::route('dashboard.dashboard')
                 ->with('success', 'Widget successfully created.');
         } else {
@@ -304,6 +305,31 @@ class GeneralWidgetController extends BaseController {
 
         /* Everything OK, return response with 200 status code */
         return Response::make('Widget positions saved.', 200);
+    }
+
+    /**
+     * ajaxHandler
+     * --------------------------------------------------
+     * Handling widget ajax functions.
+     * @param  (int)  ($widgetID) The ID of the widget
+     * @return Json with status code
+     * --------------------------------------------------
+     */
+    public function ajaxHandler($widgetID) {
+        /* Getting widget */
+        try {
+            $widget = $this->getWidget($widgetID);
+        } catch (WidgetDoesNotExist $e) {
+            return Response::json(array('error' => $e));
+        }
+
+        /* Checking if it's an ajax widget */
+        if (!$widget instanceof iAjaxWidget) {
+            return Response::json(array('error' => 'This widget does not support this function.'));
+        }
+
+        /* Calling widget specific handler */
+        return Response::json($widget->handleAjax(Input::all()), 200);
     }
 
 } /* GeneralWidgetController */

@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends Widget
+class QuoteWidget extends Widget implements iAjaxWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -15,10 +15,9 @@ class QuoteWidget extends Widget
             'default' => 1440
         ),
     );
-    
+
     /* The settings to setup in the setup-wizard */
     public static $setupSettings = array();
-    public static $dataRequired = TRUE;
 
     /* Choices functions */
     public function type() {
@@ -77,6 +76,19 @@ class QuoteWidget extends Widget
     }
 
     /**
+     * createDataScheme
+     * --------------------------------------------------
+     * Returning a deafult scheme for the data.
+     * @return string, the note text.
+     * --------------------------------------------------
+    */
+    public function createDataScheme() {
+        return json_encode(array(
+            'quote'  => '',
+            'author' => ''
+        ));
+    }
+    /**
      * save
      * --------------------------------------------------
      * Overrides save to request a new quote.
@@ -89,6 +101,19 @@ class QuoteWidget extends Widget
     }
 
     /**
+     * handleAjax
+     * --------------------------------------------------
+     * Handling ajax request, aka saving text.
+     * @param $postData the data from the request.
+     * @return string, the note text.
+     * --------------------------------------------------
+    */
+    public function handleAjax($postData) {
+        $this->collectData();
+        return $this->getData();
+    }
+
+    /**
      * getQuoteSpreadsheetUri
      * --------------------------------------------------
      * Overrides save to request a new quote.
@@ -98,14 +123,14 @@ class QuoteWidget extends Widget
     private function getQuoteSpreadsheetUri() {
         /* Get base url */
         $uri = $_ENV['QUOTE_FEED_CONNECT_URI'];
-        
+
         /* Get spreadsheet based on type */
         switch ($this->getSettings()['type']) {
-            case 'insp': 
-                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI']; 
+            case 'insp':
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI'];
                 break;
-            default: 
-                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI']; 
+            default:
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI'];
                 break;
         }
 

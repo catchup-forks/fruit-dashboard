@@ -1,8 +1,7 @@
 <?php
 
-abstract class FinancialWidget extends Widget
+abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidget
 {
-    public static $dataRequired = TRUE;
 
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -54,6 +53,17 @@ abstract class FinancialWidget extends Widget
     public function getLatestData() {
         $histogram = $this->getHistogram();
         return end($histogram);
+    }
+
+    /**
+     * createDataScheme
+     * --------------------------------------------------
+     * Returning a deafult scheme for the data.
+     * @return string, the note text.
+     * --------------------------------------------------
+    */
+    public function createDataScheme() {
+        return json_encode(array());
     }
 }
 ?>

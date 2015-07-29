@@ -1,5 +1,5 @@
 <h2 class="text-white text-center">
-  MRR:<br>
+  ARR:<br>
   <span>
     @if ($widget->state == 'missing_data')
       Data not present yet!
