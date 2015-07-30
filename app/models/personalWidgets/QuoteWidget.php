@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends Widget implements iAjaxWidget
+class QuoteWidget extends Widget implements iAjaxWidget, iCronWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -88,6 +88,7 @@ class QuoteWidget extends Widget implements iAjaxWidget
             'author' => ''
         ));
     }
+
     /**
      * save
      * --------------------------------------------------
@@ -96,8 +97,13 @@ class QuoteWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
      */
     public function save(array $options=array()) {
-        parent::save();
-        $this->collectData();
+        /* Calling collectData only if first creation. */
+        if (is_null($this->id)) {
+            parent::save();
+            $this->collectData();
+        } else {
+            parent::save();
+        }
     }
 
     /**

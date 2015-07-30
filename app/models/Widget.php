@@ -228,7 +228,8 @@ class Widget extends Eloquent
 
         /* Checking descriptor. */
         if ($widgetDescriptor === null) {
-            return parent::save();
+            throw new DescriptorDoesNotExist("The descriptor for " . get_class($this) . " does not exist", 1);
+
         }
 
         // Assigning descriptor.
@@ -239,7 +240,7 @@ class Widget extends Eloquent
 
         // Always saving settings to keep integrity.|
         $this->saveSettings(array(), FALSE);
-        $this->checkIntegrity();
+        $this->checkIntegrity(FALSE);
 
         /* Saving integrity/settings.
          * Please note, that the save won't hit the db,
@@ -247,20 +248,6 @@ class Widget extends Eloquent
         */
         return parent::save();
 
-    }
-
-    /**
-     * Overriding all method to filter specific widgets.
-     *
-     * @return all the specific widgets.
-    */
-    public static function all($columns = array('*')) {
-        // By default calling general all.
-        if (!static::$type) {
-            return parent::all();
-        }
-        return WidgetDescriptor::where('type', static::$type)
-                               ->first()->widgets;
     }
 
     /**
@@ -276,7 +263,7 @@ class Widget extends Eloquent
      * setting state accordingly.
      * --------------------------------------------------
      */
-    protected function checkIntegrity() {
+    protected function checkIntegrity($commit=TRUE) {
         // Data integrity validation.
         if ($this instanceof iDataWidget) {
             // Exception variables.
@@ -314,7 +301,7 @@ class Widget extends Eloquent
                 $save = TRUE;
             };
 
-            if ($save) {
+            if ($save && $commit) {
                 $this->save();
             };
 
@@ -345,20 +332,16 @@ class Widget extends Eloquent
      * getType
      * --------------------------------------------------
      * Returning the underscored type of the widget.
+     * Only in generalwidget, where the descriptor is
+     * still unknown.
      * (CamelCase to underscore)
      * @return string the widgert's type
      * --------------------------------------------------
     */
-    protected function getType() {
-        preg_match_all(
-            '!([A-Z][A-Z0-9]*(?=$|[A-Z][a-z0-9])|[A-Za-z][a-z0-9]+)!',
-            get_class($this), $matches);
-        $ret = $matches[0];
-        foreach ($ret as &$match) {
-            $match = $match == strtoupper($match) ? strtolower($match) : lcfirst($match);
-        }
-        array_pop($ret);
-        return implode('_', $ret);
+    private function getType() {
+        $lowercase = ltrim(strtolower(preg_replace('/[A-Z]/', '_$0', get_class($this))), '_');
+        /* Removing _widget */
+        return str_replace('_widget', '', $lowercase);
     }
 }
 

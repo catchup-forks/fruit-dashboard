@@ -65,12 +65,12 @@ class SignupWizardController extends BaseController
             $tracker = new GlobalTracker();
             /* Track event | SIGN UP */
             $tracker->trackAll('lazy', array(
-                'en' => 'Sign up', 
+                'en' => 'Sign up',
                 'el' => Auth::user()->email)
             );
             /* Track event | TRIAL STARTS */
             $tracker->trackAll('lazy', array(
-                'en' => 'Trial starts', 
+                'en' => 'Trial starts',
                 'el' => Auth::user()->email)
             );
 
