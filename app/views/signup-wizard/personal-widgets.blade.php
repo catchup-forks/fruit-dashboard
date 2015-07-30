@@ -41,7 +41,7 @@
                   </div>
                 </div> <!-- /.col-md-5 -->
                 <div class="col-md-7">
-                  {{ HTML::image('img/demonstration/widget-clock.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive')) }}
+                  {{ HTML::image('img/demonstration/widget-clock.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
                 </div> <!-- /.col-md-7 -->
               </div> <!-- /.row -->
             
@@ -72,7 +72,7 @@
         function() {
           //rewrite img src and change alternate text
           $('#img-change').attr('src', baseUrl + $(this).data('image') + ext);
-          $('#img-change').attr('alt', "The " + $(this).data('image') + " widget.");
+          $('#img-change').attr('alt', "The " + $(this).data('image') + " Widget.");
         });
     });
   </script>

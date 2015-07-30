@@ -109,6 +109,10 @@ html, body {
     border-radius: 1em;
 }
 
+.no-underline, .no-underline:hover {
+  text-decoration: none;
+}
+
 // PANELS
 
 .panel-transparent {
@@ -177,7 +181,7 @@ input.greetings-name:focus{
 .quote .body {
   transition-delay: 0.2s;
 }
-    
+
 .quote:hover .body { 
   -moz-transform: translateY(-0.3em);
   -webkit-transform: translateY(-0.3em);
@@ -202,3 +206,6 @@ input.greetings-name:focus{
   transform: translateY(0.1em);
   transition-delay: 0.2s;
 }
+
+// IMPORTS
+@import "stripe-button.less";
