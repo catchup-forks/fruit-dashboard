@@ -24,10 +24,10 @@ class User extends Eloquent implements UserInterface
 
     /* -- Relations -- */
     public function connections() { return $this->hasMany('Connection'); }
-    public function subscriptions() { return $this->hasMany('Subscription'); }
+    public function subscription() { return $this->hasOne('Subscription'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
-    
+
     /* -- Libraries -- */
     public function stripePlans() { return $this->hasMany('StripePlan'); }
     public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
