@@ -95,6 +95,11 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getPersonalWidgets() {
+        /* Redirect if the user already has a dashboard (not a new user) */
+        if (Auth::user()->dashboards()->count()) {
+            return Redirect::route('dashboard.dashboard');
+        }
+
         /* Render the page */
         return View::make('signup-wizard.personal-widgets');
     }
@@ -294,34 +299,41 @@ class SignupWizardController extends BaseController
         $dashboard->save();
 
         /* Create clock widget */
-        $clockwidget = new ClockWidget;
+        if (array_key_exists('widget-clock', $widgetdata)) {
+            $clockwidget = new ClockWidget;
 
-        $clockwidget->dashboard_id  = $dashboard->id;
-        $clockwidget->state         = 'active';
-        $clockwidget->position      = '{"row":1,"col":3,"size_x":8,"size_y":3}';
+            $clockwidget->dashboard_id  = $dashboard->id;
+            $clockwidget->state         = 'active';
+            $clockwidget->position      = '{"row":1,"col":3,"size_x":8,"size_y":3}';
 
-        /* Save clock widget object */
-        $clockwidget->save();
+            /* Save clock widget object */
+            $clockwidget->save();
+        }
 
         /* Create greetings widget */
-        $greetingswidget = new GreetingsWidget;
+        if (array_key_exists('widget-greetings', $widgetdata)) {
+            $greetingswidget = new GreetingsWidget;
 
-        $greetingswidget->dashboard_id  = $dashboard->id;
-        $greetingswidget->state         = 'active';
-        $greetingswidget->position      = '{"row":4,"col":3,"size_x":8,"size_y":1}';
+            $greetingswidget->dashboard_id  = $dashboard->id;
+            $greetingswidget->state         = 'active';
+            $greetingswidget->position      = '{"row":4,"col":3,"size_x":8,"size_y":1}';
 
-        /* Save greetings widget object */
-        $greetingswidget->save();
+            /* Save greetings widget object */
+            $greetingswidget->save();
+
+        }
 
         /* Create quote widget */
-        $quotewidget = new QuoteWidget;
+        if (array_key_exists('widget-quote', $widgetdata)) {
+            $quotewidget = new QuoteWidget;
 
-        $quotewidget->dashboard_id  = $dashboard->id;
-        $quotewidget->state         = 'active';
-        $quotewidget->position      = '{"row":8,"col":3,"size_x":8,"size_y":1}';
+            $quotewidget->dashboard_id  = $dashboard->id;
+            $quotewidget->state         = 'active';
+            $quotewidget->position      = '{"row":8,"col":3,"size_x":8,"size_y":1}';
 
-        /* Save quote widget object */
-        $quotewidget->save();
+            /* Save quote widget object */
+            $quotewidget->save();
+        }
 
         /* Return */
         return $dashboard;

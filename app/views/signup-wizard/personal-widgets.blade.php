@@ -16,33 +16,34 @@
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
-            <div class="row">
-              <div class="col-md-5">
-                <div class="checkbox changes-image" data-image="clock">
-                  <label>
-                    <input type="checkbox" value="">
-                    Clock
-                  </label>
-                </div>
-                <div class="checkbox changes-image" data-image="greeting">
-                  <label>
-                    <input type="checkbox" value="">
-                    Greetings
-                  </label>
-                </div>
-                <div class="checkbox changes-image" data-image="quote">
-                  <label>
-                    <input type="checkbox" value="">
-                    Inspirational quotes
-                  </label>
-                </div>
-              </div> <!-- /.col-md-5 -->
-              <div class="col-md-7">
-                {{ HTML::image('img/demonstration/clock.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive')) }}
-              </div> <!-- /.col-md-7 -->
-            </div> <!-- /.row -->
             <!-- Form -->
             {{ Form::open(array('route' => 'signup-wizard.personal-widgets', 'id' => 'personal-widgets-form-id' )) }}
+              
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="checkbox changes-image" data-image="widget-clock">
+                    <label>
+                      <input name="widget-clock" type="checkbox" value="" checked>
+                      Clock
+                    </label>
+                  </div>
+                  <div class="checkbox changes-image" data-image="widget-greetings">
+                    <label>
+                      <input name="widget-greetings" type="checkbox" value="" checked>
+                      Greetings
+                    </label>
+                  </div>
+                  <div class="checkbox changes-image" data-image="widget-quote">
+                    <label>
+                      <input name="widget-quote" type="checkbox" value="" checked>
+                      Inspirational quotes
+                    </label>
+                  </div>
+                </div> <!-- /.col-md-5 -->
+                <div class="col-md-7">
+                  {{ HTML::image('img/demonstration/widget-clock.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive')) }}
+                </div> <!-- /.col-md-7 -->
+              </div> <!-- /.row -->
             
             <div class="form-actions text-center">
                 {{ Form::submit('Next' , array(

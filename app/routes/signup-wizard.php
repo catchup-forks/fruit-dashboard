@@ -24,21 +24,25 @@ Route::group([
     ]);
 
     Route::get('personal-widgets', [
+        'before' => 'auth',
         'as'     => 'signup-wizard.personal-widgets',
         'uses'   => 'SignupWizardController@getPersonalWidgets'
     ]);
 
     Route::post('personal-widgets', [
+        'before' => 'auth',
         'as'     => 'signup-wizard.personal-widgets',
         'uses'   => 'SignupWizardController@postPersonalWidgets'
     ]);
 
     Route::get('financial-connections', [
+        'before' => 'auth',
         'as'     => 'signup-wizard.financial-connections',
         'uses'   => 'SignupWizardController@getFinancialConnections'
     ]);
 
     Route::post('financial-connections', [
+        'before' => 'auth',
         'as'     => 'signup-wizard.financial-connections',
         'uses'   => 'SignupWizardController@postFinancialConnections'
     ]);

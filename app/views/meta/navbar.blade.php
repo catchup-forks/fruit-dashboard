@@ -65,13 +65,8 @@
 </div> <!-- /.btn-group -->
 
 <!-- Display the Remaining Days counter -->
-<a href="/" class="position-br drop-shadow z-top" data-toggle="tooltip" data-placement="left" title="Your trial period will end on {{ Auth::user()->getTrialEndDate()->format('Y. m. d.') }} <br> Click to change your Plan.">
-	@if (Auth::user()->getDaysRemainingFromTrial()<7)
-		<span class="label label-danger label-as-badge valign-middle">{{ Auth::user()->getDaysRemainingFromTrial() }}</span>
-	@else
-		<span class="label label-warning label-as-badge valign-middle">{{ Auth::user()->getDaysRemainingFromTrial() }}</span>
-	@endif
-		
+<a href="{{ route('payment.plans') }}" class="position-br drop-shadow z-top" data-toggle="tooltip" data-placement="left" title="Your trial period will end on <br> {{ Auth::user()->getTrialEndDate()->format('Y. m. d.') }} <br> Click to change your Plan.">
+	<span class="label @if (Auth::user()->getDaysRemainingFromTrial() < 7) label-danger @else label-warning @endif label-as-badge valign-middle">{{ Auth::user()->getDaysRemainingFromTrial() }}</span>	
 </a>
 
 @section('pageScripts')
