@@ -13,7 +13,7 @@ class PlanSeeder extends Seeder
                 'interval'          => 'permanent',
                 'interval_count'    => 0,
                 'amount'            => 0,
-                'plan_id'           => null,
+                'braintree_plan_id' => null,
                 'description'       => 
                     '<ul class="list-group">
                       <li class="list-group-item">You host your software</li>
@@ -31,7 +31,7 @@ class PlanSeeder extends Seeder
                 'interval'          => 'permanent',
                 'interval_count'    => 0,
                 'amount'            => 0,
-                'plan_id'           => null,
+                'braintree_plan_id' => null,
                 'description'       => 
                     '<ul class="list-group">
                       <li class="list-group-item">We host the software</li>
@@ -49,7 +49,7 @@ class PlanSeeder extends Seeder
                 'interval'          => 'month',
                 'interval_count'    => 12,
                 'amount'            => 9,
-                'plan_id'           => $_ENV['BRAINTREE_PREMIUM_PLAN_ID'],
+                'braintree_plan_id' => $_ENV['BRAINTREE_PREMIUM_PLAN_ID'],
                 'description'       => 
                     '<ul class="list-group">
                       <li class="list-group-item">We host the software</li>

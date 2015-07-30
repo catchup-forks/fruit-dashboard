@@ -40,10 +40,10 @@ class PaymentController extends BaseController
         $plan = Plan::find($planID);
 
         /* Check if the user has the same plan */
-        if (Auth::user()->subscriptions()->first()->plan()->first()->id == $plan->id) {
-            return Redirect::route('payment.plans')
-                ->with(['success' => 'You have already been subscribed to the requested plan.']);
-        }
+        // if (Auth::user()->subscription->plan->id == $plan->id) {
+        //     return Redirect::route('payment.plans')
+        //         ->with(['success' => 'You have already been subscribed to the requested plan.']);
+        // }
 
         /* Render the view */
         return View::make('payment.subscribe', ['plan' => $plan]);
@@ -62,185 +62,69 @@ class PaymentController extends BaseController
         /* Get the Plan */
         $plan = Plan::find($planID);
 
+        /* Get the current subscription of the user */
+        $subscription = Auth::user()->subscription;
+
+        /* Check if the plan has been modified. Redirect if not */
+        // if ($subscription->plan->id == $plan->id) {
+        //     return Redirect::route('payment.plans')
+        //         ->with(['success' => 'You have already been subscribed to the requested plan.']);
+        // }
+
+        /* Check if the new plan has Braintree plan_id. Redirect if not */
+        if ($plan->braintree_plan_id == null) {
+            return Redirect::route('payment.unsubscribe');
+        }
+
+        /* Check if the old plan has Braintree plan_id. Cancel the subscription if it has */
+        if ($subscription->plan->braintree_plan_id != null) {
+            /**
+             * @todo Cancel current subscription on Braintree
+             */
+            //result = Braintree::Subscription.cancel("the_subscription_id")
+        }
+
         /* Check for payment_method_nonce in input */
         if (!Input::has('payment_method_nonce')) {
-            return Redirect::route('payment.plan')
+            return Redirect::route('payment.subscribe', $plan->id)
                 ->with('error', "Something went wrong with your request, please try again.");
         }
 
-        Log::info(Input::get('payment_method_nonce'));
+        /* Commit subscription */
+        $result = $subscription->commitSubscribe(Input::get('payment_method_nonce'), $plan);
 
-        /* Create Braintree transaction */
-        $result = Braintree_Transaction::sale([
-          'amount' => '9.00',
-          'paymentMethodNonce' => Input::get('payment_method_nonce')
-        ]);
-
-        Log::info($result);
-
-        return Redirect::route('payment.subscribe', $planID);
-
-        // $subscription = new Subscription(array('status' => 'active'));
-        // $dt = Carbon::now();
-        // $subscription->current_period_start = $dt;
-        // switch ($plan->interval) {
-        //     /* Braintree only supports month */
-        //     case 'permanent': $subscription->current_period_end = NULL; break;
-        //     case 'month': $subscription->current_period_end = $dt->diffinMonths($dt->copy()->addMonth()); break;
-        //     default: ;
-        // }
-        // $subscription->user()->associate(Auth::user());
-        // $subscription->plan()->associate($plan);
-        // $subscription->save();
-
-        /* Creating braintree subscription, if there is an associated plan */
-        // if ($plan->plan_id) {
-        //     try {
-        //         $subscription->commit(Input::get('payment_method_nonce'));
-        //     } catch (AlreadyConnected $e)  {
-        //         return Redirect::route('dashboard.dashboard')
-        //             ->with('error',"You are already subscribed to that plan.");
-        //     } catch (Exception $e) {
-        //         return Redirect::route('payment.plan')
-        //             ->with('error',"Couldn't process your subscription, try again later.");
-
-        //     }
-        // }
-
-        /* Render the page */
-        // return Redirect::route('dashboard.dashboard', array(
-        //     ));
+        /* check errors */
+        if ($result['errors'] == FALSE) {
+            /* Return with success */
+            return Redirect::route('payment.subscribe', $planID)
+                ->with('success', 'Your subscription was successfull.');
+        } else {
+            /* Return with errors */
+            return Redirect::route('payment.subscribe', $planID)
+                ->with('error', $result['messages']);
+        }
     }
 
     /**
+     * getUnsubscribe
      * --------------------------------------------------
-     * @todo Clean the code below
+     * @return Renders the Unsubscribe page and redirects on error
      * --------------------------------------------------
      */
-    // Execute the payment process
-    public function doPayPlan($planName)
-    {
-        if(Input::has('payment_method_nonce'))
-        {
-
-            $user = Auth::user();
-
-            // lets see, if the user already has a subscripton
-            if ($user->subscriptionId)
-            {
-                try
-                {
-                    $result = Braintree_Subscription::cancel($user->subscriptionId);
-                }
-                catch (Exception $e)
-                {
-                    return Redirect::route('payment.plan')
-                    ->with('error',"Couldn't process subscription, try again later.");
-                }
-            }
-
-            $plans = BraintreeHelper::getPlanDictionary();
-
-            // create the new subscription
-            $result = Braintree_Subscription::create(array(
-                'planId'                => $plans[$planName]->id,
-                'paymentMethodNonce'    => Input::get('payment_method_nonce'),
-            ));
-
-            if($result->success)
-            {
-                // update user plan to subscrition
-                $user->plan = $plans[$planName]->id;
-                $user->subscriptionId = $result->subscription->id;
-                $user->paymentStatus = 'ok';
-                $user->save();
-
-                // send event to intercom about subscription
-                IntercomHelper::subscribed($user,$plans[$planName]->name);
-
-                // send email to the user
-                try {
-                    // $email = Mailman::make('emails.payment.upgrade')
-                    //  ->to($user->email)
-                    //  ->subject('Upgrade')
-                    //  ->send();
-                } catch (Exception $e)
-                {
-                    Log::error('Upgrade email sending error');
-                    Log::info($e->getMessage());
-                    Log::info($user->email);
-                }
-
-                return Redirect::route('connect.connect')
-                    ->with('success','Subscribed to '.$plans[$planName]->name);
-            } else {
-                return Redirect::route('payment.plan')
-                    ->with('error',"Couldn't process subscription, try again later.");
-            }
-        }
-        else {
-            return Redirect::route('payment.plan')
-                ->with('error',"Notoken.");
-        }
+    public function getUnsubscribe() {
+        /* Render the view */
+        return View::make('payment.unsubscribe');
     }
 
-    // Execute the cancellation
-    public function doCancelSubscription()
-    {
-        $user = Auth::user();
-
-        if ($user->subscriptionId)
-        {
-            try
-            {
-                $result = Braintree_Subscription::cancel($user->subscriptionId);
-            }
-            catch (Exception $e)
-            {
-                Log::error("Couldn't process cancellation with subscription ID: ".$user->subscriptionId."(user email: ".$user->email);
-                return Redirect::back()
-                    ->with('error',"Couldn't process cancellation, try again later.");
-            }
-
-            $plan = BraintreeHelper::getPlanById($user->plan);
-
-            $user->subscriptionId = '';
-            $user->plan = 'free';
-            $user->save();
-
-            IntercomHelper::cancelled($user);
-
-            try {
-                // $email = Mailman::make('emails.payment.downgrade')
-                //  ->to($user->email)
-                //  ->subject('Downgrade')
-                //  ->send();
-            } catch (Exception $e)
-            {
-                Log::error('Downgrade email sending error');
-                Log::info($e->getMessage());
-                Log::info($user->email);
-            }
-
-            return Redirect::route('payment.plan')
-                ->with('success','Unsubscribed successfully');
-        } else {
-            Redirect::back()
-                ->with('error','No valid subscription');
-        }
+    /**
+     * postUnsubscribe
+     * --------------------------------------------------
+     * @return Unsubscribes the user from the paid plans.
+     * --------------------------------------------------
+     */
+    public function postUnsubscribe() {
+        /* Render the view */
+        return View::make('payment.unsubscribe');
     }
 
-    // change user plan to trial
-    public function doTrial ()
-    {
-        $user = Auth::user();
-        $user->plan = 'trial';
-        $user->trial_started = Carbon::now();
-        $user->save();
-
-        return Redirect::route('payment.plan')
-            ->with('success','Trial has started!');
-    }
-
-
-}
+} /* PaymentController */

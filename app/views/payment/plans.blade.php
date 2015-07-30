@@ -22,7 +22,7 @@
                       {{ $plan->amount }}
                     </p>
                     {{ $plan->description }}
-                    @if(Auth::user()->subscriptions()->first()->plan()->first()->id == $plan->id)
+                    @if(Auth::user()->subscription->plan->id == $plan->id)
                       <p>You're currently on this plan :)</p>
                     @else
                       <a href="{{ route('payment.subscribe', $plan->id) }}" class="btn btn-success btn-block">Subscribe</a>

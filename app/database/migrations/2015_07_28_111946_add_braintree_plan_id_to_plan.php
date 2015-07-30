@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddPlanIdToPlan extends Migration {
+class AddBraintreePlanIdToPlan extends Migration {
 
     /**
      * Run the migrations.
@@ -12,7 +12,7 @@ class AddPlanIdToPlan extends Migration {
      */
     public function up() {
         Schema::table('plans',function($table) {
-            $table->string('plan_id', 128)->nullable();
+            $table->string('braintree_plan_id', 128)->nullable();
         });
      }
 
@@ -23,7 +23,7 @@ class AddPlanIdToPlan extends Migration {
      */
     public function down() {
         Schema::table('plans',function($table) {
-            $table->dropColumn('plan_id');
+            $table->dropColumn('braintree_plan_id');
         });
     }
 }

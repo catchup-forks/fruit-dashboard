@@ -83,9 +83,6 @@ class SignupWizardController extends BaseController
             return Redirect::route('signup-wizard.authentication')
                 ->with('error', $validator->errors()->get(key($validator->invalid()))[0]);
         }
-
-        /* Render the page */
-        return View::make('signup-wizard.authentication');
     }
 
     /**
@@ -120,7 +117,7 @@ class SignupWizardController extends BaseController
         $this->makePersonalAutoDashboard(Auth::user(), Input::all());
 
         /* Render the page */
-        return View::make('signup-wizard.financial-connections');
+        return Redirect::route('signup-wizard.financial-connections');
     }
 
     /**
@@ -165,7 +162,7 @@ class SignupWizardController extends BaseController
         $braintreeConnector->generateAccessToken(Input::except('_token'));
 
         /* Render the page */
-        return View::make('signup-wizard.financial-connections');
+        return Redirect::route('signup-wizard.financial-connections');
     }
 
     /**
@@ -195,9 +192,6 @@ class SignupWizardController extends BaseController
 
                 /* Connect to stripe */
                 $stripeconnector->connect();
-
-                /* Create auto Stripe dashboard for the user */
-                $this->makeStripeAutoDashboard(Auth::user());
             }
         }
 
@@ -254,7 +248,7 @@ class SignupWizardController extends BaseController
 
         /* Create default settings for the user */
         $settings = new Settings;
-        $settings->user_id              = $user->id;
+        $settings->user()->associate($user);
         $settings->newsletter_frequency = 0;
         $settings->background_enabled   = true;
 
@@ -264,11 +258,13 @@ class SignupWizardController extends BaseController
         /* Create default subscription for the user */
         $plan = Plan::where('name', 'Free')->first();
         $subscription = new Subscription;
-        $subscription->user_id              = $user->id;
-        $subscription->plan_id              = $plan->id;
+        $subscription->user()->associate($user);
+        $subscription->plan()->associate($plan);
+        $subscription->status               = 'active';
         $subscription->current_period_start = Carbon::now();
         $subscription->current_period_end   = Carbon::now()->addDays(SiteConstants::getTrialPeriodInDays());
-        $subscription->status               = 'active';
+        $subscription->braintree_customer_id          = null;
+        $subscription->braintree_payment_method_token = null;
 
         /* Save subscription */
         $subscription->save();
@@ -302,7 +298,7 @@ class SignupWizardController extends BaseController
         if (array_key_exists('widget-clock', $widgetdata)) {
             $clockwidget = new ClockWidget;
 
-            $clockwidget->dashboard_id  = $dashboard->id;
+            $clockwidget->dashboard()->associate($dashboard);
             $clockwidget->state         = 'active';
             $clockwidget->position      = '{"row":1,"col":3,"size_x":8,"size_y":3}';
 
@@ -314,7 +310,7 @@ class SignupWizardController extends BaseController
         if (array_key_exists('widget-greetings', $widgetdata)) {
             $greetingswidget = new GreetingsWidget;
 
-            $greetingswidget->dashboard_id  = $dashboard->id;
+            $greetingswidget->dashboard()->associate($dashboard);
             $greetingswidget->state         = 'active';
             $greetingswidget->position      = '{"row":4,"col":3,"size_x":8,"size_y":1}';
 
@@ -327,42 +323,13 @@ class SignupWizardController extends BaseController
         if (array_key_exists('widget-quote', $widgetdata)) {
             $quotewidget = new QuoteWidget;
 
-            $quotewidget->dashboard_id  = $dashboard->id;
+            $quotewidget->dashboard()->associate($dashboard);
             $quotewidget->state         = 'active';
             $quotewidget->position      = '{"row":8,"col":3,"size_x":8,"size_y":1}';
 
             /* Save quote widget object */
             $quotewidget->save();
         }
-
-        /* Return */
-        return $dashboard;
-    }
-
-    /**
-     * makeStripeAutoDashboard
-     * creates a new Dashboard object and the default Stripe widgets
-     * --------------------------------------------------
-     * @param (User) ($user) The current user
-     * @return (Dashboard) ($dashboard) The new Dashboard object
-     * --------------------------------------------------
-     */
-    private function makeStripeAutoDashboard($user) {
-        /* Create new dashboard */
-        $dashboard = new Dashboard;
-
-        $dashboard->user_id     = $user->id;
-        $dashboard->name        = 'My Stripe financial dashboard';
-        $dashboard->background  = 'On';
-
-        /* Save dashboard object */
-        $dashboard->save();
-
-        /* Create MRR widget */
-
-        /* Create ARR widget */
-
-        /* Create ARPU widget */
 
         /* Return */
         return $dashboard;

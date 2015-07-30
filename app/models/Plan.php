@@ -4,7 +4,6 @@ class Plan extends Eloquent
 {
     /* -- Fields -- */
     protected $guarded = array(
-        'plan_id',
     );
 
     protected $fillable = array(
@@ -12,7 +11,8 @@ class Plan extends Eloquent
         'interval_count',
         'amount',
         'name',
-        'description'
+        'description',
+        'braintree_plan_id',
     );
 
     /* -- No timestamps -- */
