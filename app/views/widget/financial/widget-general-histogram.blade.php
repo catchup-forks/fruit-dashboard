@@ -16,7 +16,7 @@
   @if ($widget->getSettings()['widget_type'] == 'chart')
   <script type="text/javascript">
     var {{ $widget->descriptor->type }}Data = {
-      labels: [2],
+      labels: [@foreach ($widget->getHistogram() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach],
       datasets: [
         {
           label: "{{ $widget->descriptor->name }}",
@@ -26,7 +26,7 @@
           pointStrokeColor : "#fff",
           pointHighlightFill : "#fff",
           pointHighlightStroke : "rgba(151,187,205,1)",
-          data: [@foreach ($widget->getHistogram() as $histogramEntry) {{$histogramEntry}}, @endforeach]
+          data: [@foreach ($widget->getHistogram() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach]
         }
       ]
     }

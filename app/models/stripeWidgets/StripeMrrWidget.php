@@ -2,18 +2,10 @@
 
 class StripeMrrWidget extends FinancialWidget
 {
-
-    public function collectData() {
-        $currentData = $this->getHistogram();
-        try {
-            $stripeCalculator = new StripeCalculator($this->user());
-            array_push($currentData, $stripeCalculator->getMrr(TRUE));
-            $this->data->raw_value = json_encode($currentData);
-            $this->data->save();
-            $this->checkIntegrity();
-        } catch (StripeNotConnected $e) {
-            ;
-        }
+    public function getCurrentValue() {
+        $stripeCalculator = new StripeCalculator($this->user());
+        return $stripeCalculator->getMrr(TRUE);
     }
+
 }
 ?>

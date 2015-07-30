@@ -62,7 +62,6 @@
        resize: {
          enabled: true,
          start: function() {
-
           players.toggleClass('hovered');
          },
          stop: function(e, ui, $widget) {

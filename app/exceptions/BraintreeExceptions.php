@@ -2,4 +2,4 @@
 
 /* - Braintree related exceptions - */
 class BraintreeConnectFailed extends Exception {}
-class BraintreeNotConnected extends Exception {}
+class BraintreeNotConnected extends ServiceNotConnected {}

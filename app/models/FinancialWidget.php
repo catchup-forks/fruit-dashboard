@@ -29,6 +29,32 @@ abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidge
      * ================================================== *
      */
 
+    abstract public function getCurrentValue();
+
+    public function collectData() {
+
+        try {
+            /* Calculating current value */
+            $newValue = $this->getCurrentValue();
+        } catch (ServiceNotConnected $e) {
+            return;
+        }
+
+        /* Getting previous values. */
+        $currentData = $this->getHistogram();
+        $lastData = end($currentData);
+        $today = Carbon::now()->toDateString();
+
+        if ($lastData && ($lastData['date'] == $today)) {
+            array_pop($currentData);
+        }
+
+        /* Adding, saving data. */
+        array_push($currentData, array('date' => $today, 'value' => $newValue));
+        $this->data->raw_value = json_encode($currentData);
+        $this->data->save();
+        $this->checkIntegrity();
+    }
     /**
      * getHistogram
      * --------------------------------------------------
@@ -37,7 +63,7 @@ abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidge
      * --------------------------------------------------
      */
     public function getHistogram() {
-        return json_decode($this->data->raw_value);
+        return json_decode($this->data->raw_value, 1);
     }
 
     /**
@@ -49,7 +75,8 @@ abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidge
      */
     public function getLatestData() {
         $histogram = $this->getHistogram();
-        return end($histogram);
+        $lastEntry = end($histogram);
+        return $lastEntry['value'];
     }
 
     /**
