@@ -16,6 +16,7 @@ class AddBraintreeDataToSubscriptions extends Migration {
         {
             $table->string('braintree_customer_id', 255)->nullable();
             $table->string('braintree_payment_method_token', 255)->nullable();
+            $table->string('braintree_subscription_id', 255)->nullable();
         });
     }
 
@@ -30,6 +31,7 @@ class AddBraintreeDataToSubscriptions extends Migration {
         {
             $table->dropColumn('braintree_customer_id');
             $table->dropColumn('braintree_payment_method_token');
+            $table->dropColumn('braintree_subscription_id');
         });
     }
 

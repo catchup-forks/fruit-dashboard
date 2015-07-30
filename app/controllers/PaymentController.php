@@ -40,10 +40,15 @@ class PaymentController extends BaseController
         $plan = Plan::find($planID);
 
         /* Check if the user has the same plan */
-        // if (Auth::user()->subscription->plan->id == $plan->id) {
-        //     return Redirect::route('payment.plans')
-        //         ->with(['success' => 'You have already been subscribed to the requested plan.']);
-        // }
+        if (Auth::user()->subscription->plan->id == $plan->id) {
+            return Redirect::route('payment.plans')
+                ->with(['success' => 'You have already been subscribed to the requested plan.']);
+        }
+
+        /* Check if the new plan has Braintree plan_id. Redirect if not */
+        if ($plan->braintree_plan_id == null) {
+            return Redirect::route('payment.unsubscribe');
+        }
 
         /* Render the view */
         return View::make('payment.subscribe', ['plan' => $plan]);
@@ -66,10 +71,10 @@ class PaymentController extends BaseController
         $subscription = Auth::user()->subscription;
 
         /* Check if the plan has been modified. Redirect if not */
-        // if ($subscription->plan->id == $plan->id) {
-        //     return Redirect::route('payment.plans')
-        //         ->with(['success' => 'You have already been subscribed to the requested plan.']);
-        // }
+        if ($subscription->plan->id == $plan->id) {
+            return Redirect::route('payment.plans')
+                ->with(['success' => 'You have already been subscribed to the requested plan.']);
+        }
 
         /* Check if the new plan has Braintree plan_id. Redirect if not */
         if ($plan->braintree_plan_id == null) {
@@ -77,11 +82,16 @@ class PaymentController extends BaseController
         }
 
         /* Check if the old plan has Braintree plan_id. Cancel the subscription if it has */
-        if ($subscription->plan->braintree_plan_id != null) {
-            /**
-             * @todo Cancel current subscription on Braintree
-             */
-            //result = Braintree::Subscription.cancel("the_subscription_id")
+        if ($subscription->braintree_subscription_id != null) {
+            /* Cancel subscription */
+            $result = $subscription->cancelSubscription();
+
+            /* Check errors */
+            if ($result['errors'] == TRUE) {
+                /* Return with errors */
+                return Redirect::route('payment.subscribe', $planID)
+                    ->with('error', $result['messages']);
+            }
         }
 
         /* Check for payment_method_nonce in input */
@@ -91,9 +101,9 @@ class PaymentController extends BaseController
         }
 
         /* Commit subscription */
-        $result = $subscription->commitSubscribe(Input::get('payment_method_nonce'), $plan);
+        $result = $subscription->createSubscription(Input::get('payment_method_nonce'), $plan);
 
-        /* check errors */
+        /* Check errors */
         if ($result['errors'] == FALSE) {
             /* Return with success */
             return Redirect::route('payment.subscribe', $planID)
@@ -123,8 +133,24 @@ class PaymentController extends BaseController
      * --------------------------------------------------
      */
     public function postUnsubscribe() {
-        /* Render the view */
-        return View::make('payment.unsubscribe');
+        /* Get the current subscription of the user */
+        $subscription = Auth::user()->subscription;
+
+        /* Cancel subscription */
+        $result = $subscription->cancelSubscription();
+
+        Log::info($result);
+
+        /* Check errors */
+        if ($result['errors'] == FALSE) {
+            /* Return with success */
+            return Redirect::route('payment.plans')
+                ->with('success', 'You have been successfully unsubscribed.');
+        } else {
+            /* Return with errors */
+            return Redirect::route('payment.unsubscribe')
+                ->with('error', $result['messages']);
+        }
     }
 
 } /* PaymentController */

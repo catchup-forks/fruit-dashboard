@@ -5,25 +5,6 @@ class PlanSeeder extends Seeder
 
     public function run()
     {
-        /* Plans: Update or create all */
-        Plan::updateOrCreate(
-            ['name' => 'Contribute'], 
-            array(
-                'name'              => 'Contribute',
-                'interval'          => 'permanent',
-                'interval_count'    => 0,
-                'amount'            => 0,
-                'braintree_plan_id' => null,
-                'description'       => 
-                    '<ul class="list-group">
-                      <li class="list-group-item">You host your software</li>
-                      <li class="list-group-item">Access and customize each functionality</li>
-                      <li class="list-group-item">Community support</li>
-                    </ul>
-                    <p><small>Fork us on GitHub, and create your own instance.</small></p>',
-            )
-        );
-
         Plan::updateOrCreate(
             ['name' => 'Free'], 
             array(
