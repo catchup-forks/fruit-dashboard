@@ -8,16 +8,23 @@ Route::group([
         'prefix'    => 'payment',
     ], function() {
 
-    Route::get('/plans', array(
+    Route::get('plans', [
         'before'    => 'auth',
         'as'        => 'payment.plans',
-        'uses'      => 'PaymentController@getPlansAndPricing'
-    ));
+        'uses'      => 'PaymentController@getPlans'
+    ]);
 
-    Route::post('/subscribe/{$planId}', array(
+    Route::get('subscribe/{planID}', [
+        'before'    => 'auth',
+        'as'        => 'payment.subscribe',
+        'uses'      => 'PaymentController@getSubscribe'
+    ]);
+
+    Route::post('subscribe/{planID}', [
         'before'    => 'auth',
         'as'        => 'payment.subscribe',
         'uses'      => 'PaymentController@postSubscribe'
-    ));
+    ]);
+
 });
 

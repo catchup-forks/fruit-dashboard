@@ -25,7 +25,7 @@
                     @if(Auth::user()->subscriptions()->first()->plan()->first()->id == $plan->id)
                       <p>You're currently on this plan :)</p>
                     @else
-                      <a href="#" class="btn btn-success btn-block">Subscribe</a>
+                      <a href="{{ route('payment.subscribe', $plan->id) }}" class="btn btn-success btn-block">Subscribe</a>
                     @endif
                   </div> <!-- /.panel-body -->
                 </div> <!-- /.panel -->

@@ -50,15 +50,15 @@ Route::group([
         'uses'   => 'GeneralWidgetController@doAddWidget'
     ]);
 
-    Route::post('save-position/{userID}', array(
+    Route::post('save-position/{userID}', [
         'before' => 'auth',
         'as'    => 'widget.save-position',
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
-    ));
+    ]);
 
-    Route::post('ajax-handler/{widgetID}', array(
+    Route::post('ajax-handler/{widgetID}', [
         'before' => 'auth',
         'as'    => 'widget.ajax-handler',
         'uses'  => 'GeneralWidgetController@ajaxHandler',
-    ));
+    ]);
 });
