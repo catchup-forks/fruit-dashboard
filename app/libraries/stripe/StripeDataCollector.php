@@ -150,6 +150,33 @@ class StripeDataCollector
     }
 
     /**
+     * getEvents
+     * Getting events from the last 30 days.
+     * --------------------------------------------------
+     * @returns The stripe events.
+     * @throws StripeNotConnected
+     * --------------------------------------------------
+    */
+    public function getEvents() {
+        // Connecting to stripe, and making query.
+        try {
+            $decoded_data = json_decode(
+                $this->loadJSON(\Stripe\Event::all()), TRUE);
+        } catch (\Stripe\Error\Authentication $e) {
+            // Access token expired. Calling handler.
+            $this->getNewAccessToken();
+        }
+
+        // Getting the plans.
+        $events = [];
+        foreach($decoded_data['data'] as $event) {
+            array_push($events, $event);
+        }
+
+        // Return.
+        return $events;
+    }
+    /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
      * ================================================== *

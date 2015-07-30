@@ -67,9 +67,9 @@
     @show
   </head>
 
-  
+
   @section('body')
-    
+
   @show
 
   @section('scripts')
@@ -81,6 +81,7 @@
     {{ HTML::script('js/jquery.ba-resize.min.js'); }}
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
     {{ HTML::script('js/jquery.growl.js'); }}
+    {{ HTML::script('js/Chart.js'); }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->
@@ -102,5 +103,5 @@
       @include('meta.page-alerts')
     @show
   @show
-     
+
 </html>

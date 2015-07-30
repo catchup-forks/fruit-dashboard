@@ -62,9 +62,11 @@
        resize: {
          enabled: true,
          start: function() {
+
           players.toggleClass('hovered');
          },
          stop: function(e, ui, $widget) {
+          $(window).trigger('resize');
           positioning = gridster.serialize();
           positioning = JSON.stringify(positioning);
           $.ajax({

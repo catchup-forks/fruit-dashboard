@@ -108,6 +108,16 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Stripe events'],
+            array(
+                'name'        => 'Stripe events',
+                'description' => 'Your stripe events',
+                'type'        => 'stripe_events',
+                'category'    => 'financial',
+                'is_premium'  => TRUE,
+            )
+        );
         /* Financial widgets | BRAINTREE */
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Braintree MRR'],

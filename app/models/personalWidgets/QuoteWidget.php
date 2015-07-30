@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends Widget implements iAjaxWidget, iCronWidget
+class QuoteWidget extends Widget implements iAjaxWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
