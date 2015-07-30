@@ -114,7 +114,7 @@ class WidgetDescriptorSeeder extends Seeder
             array(
                 'name'        => 'Braintree MRR',
                 'description' => 'Braintree Monthly recurring revenue',
-                'type'        => 'braintre_mrr',
+                'type'        => 'braintree_mrr',
                 'category'    => 'financial',
                 'is_premium'  => TRUE,
             )
@@ -126,6 +126,17 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Braintree ARR',
                 'description' => 'Braintree Annual recurring revenue',
                 'type'        => 'braintree_arr',
+                'category'    => 'financial',
+                'is_premium'  => TRUE,
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Braintree ARPU'],
+            array(
+                'name'        => 'Braintree ARPU',
+                'description' => 'Braintree Average revenue per user',
+                'type'        => 'braintree_arpu',
                 'category'    => 'financial',
                 'is_premium'  => TRUE,
             )

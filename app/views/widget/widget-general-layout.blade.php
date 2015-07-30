@@ -1,9 +1,3 @@
-@if (isset($widget['widget_ready']) && $widget['widget_ready'] == false)
-  @include('widget.general.widget-notready', [
-    'id' => $widget['widget_id']
-   ])
-@else
-
 <li data-id='{{ $widget->id }}'
     data-row="{{ $widget->getPosition()->row }}"
     data-col="{{ $widget->getPosition()->col }}"
@@ -14,14 +8,14 @@
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 
+  @if ($widget->getSettingsFields() != false)
   <a href="{{ route('widget.edit', $widget->id) }}">
     <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
   </a>
+  @endif
 
   @include($widget->descriptor->getTemplateName(), [
-    'widget' => $widget->getSpecific(),
+    'widget' => $widget,
   ])
 
 </li>
-
-@endif

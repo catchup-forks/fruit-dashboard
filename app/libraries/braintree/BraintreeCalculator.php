@@ -46,7 +46,7 @@ class BraintreeCalculator
         }
 
         // Iterating through the plans and subscriptions.
-        foreach ($this->user->brainrteePlans as $plan) {
+        foreach ($this->user->braintreePlans as $plan) {
             foreach ($plan->subscriptions as $subscription) {
                 // Dealing only with active subscriptions.
                 if ($subscription->status == 'active') {
@@ -72,4 +72,16 @@ class BraintreeCalculator
         return $this->getMrr($update) * 12;
     }
 
+    /**
+     * getArpu
+     * --------------------------------------------------
+     * Calculating the ARPU for the user.
+     * @param $update, boolean Whether or not sync the db.
+     * @return float The value of the arpu.
+     * @throws StripeNotConnected
+     * --------------------------------------------------
+    */
+    public function getArpu($update=False) {
+        return $this->getArr($update) / count($this->dataCollector->getCustomers());
+    }
 } /* BraintreeCalculator */

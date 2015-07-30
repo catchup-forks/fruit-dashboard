@@ -67,6 +67,22 @@ class SettingsController extends BaseController
     }
 
     /**
+     * anyDisconnectBraintree
+     * --------------------------------------------------
+     * @return Deletes the logged in user's braintree connection.
+     * --------------------------------------------------
+     */
+    public function anyDisconnectBraintree() {
+        /* Try to disconnect */
+        try {
+            $connector = new BraintreeConnector(Auth::user());
+            $connector->disconnect();
+        } catch (StripeNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+    /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
      * ================================================== *

@@ -132,16 +132,24 @@ class BraintreeConnector
             'state'     => 'active',
         ));
 
+        $arpuWidget = new BraintreeArpuWidget(array(
+            'position'  => '{"col":3,"row":1,"size_x":1,"size_y":1}',
+            'state'     => 'active',
+        ));
+
         /* Associating dashboard */
         $mrrWidget->dashboard()->associate($dashboard);
         $arrWidget->dashboard()->associate($dashboard);
+        $arpuWidget->dashboard()->associate($dashboard);
 
         /* Saving widgets */
         $mrrWidget->save();
         $arrWidget->save();
+        $arpuWidget->save();
 
         /* Populating data */
         $mrrWidget->collectData();
         $arrWidget->collectData();
+        $arpuWidget->collectData();
     }
 } /* BraintreeConnector */

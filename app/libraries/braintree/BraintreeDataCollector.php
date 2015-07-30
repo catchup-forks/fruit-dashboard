@@ -122,4 +122,16 @@ class BraintreeDataCollector
         return $subscriptions;
     }
 
+    /**
+     * getCustomers
+     * --------------------------------------------------
+     * Getting a list of customers.
+     * @returns The stripe customers.
+     * @throws StripeNotConnected
+     * --------------------------------------------------
+    */
+    public function getCustomers() {
+        // Return.
+        return Braintree_Customer::all();
+    }
 } /* BraintreeDataCollector */

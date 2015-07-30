@@ -15,7 +15,7 @@
         @foreach ($dashboards as $dashboard)
           @foreach ($dashboard->widgets as $widget)
             @if ($widget->status != 'hidden')
-              @include('widget.widget-general-layout', ['widget' => $widget])
+              @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
             @endif
           @endforeach
         @endforeach

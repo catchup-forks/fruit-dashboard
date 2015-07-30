@@ -25,7 +25,7 @@
               {{-- Account settings - Username --}}
               {{-- START --}}
               {{ Form::open(array(
-                  'data-setting-name' => 'name', 
+                  'data-setting-name' => 'name',
                   'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
@@ -41,7 +41,7 @@
                   </div> <!-- /.col-sm-6 -->
 
                   <div class="col-sm-2">
-                    
+
                     {{ Form::submit('Modify' , array(
                       'class' => 'btn btn-primary',
                       'data-loading-text' => 'Saving...' )) }}
@@ -56,7 +56,7 @@
               {{-- Account settings - E-mail --}}
               {{-- START --}}
               {{ Form::open(array(
-                  'data-setting-name' => 'email', 
+                  'data-setting-name' => 'email',
                   'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
@@ -72,7 +72,7 @@
                   </div> <!-- /.col-sm-6 -->
 
                   <div class="col-sm-2">
-                    
+
                     {{ Form::submit('Modify' , array(
                       'class' => 'btn btn-primary',
                       'data-loading-text' => 'Saving...' )) }}
@@ -105,7 +105,7 @@
               {{-- General settings - Background --}}
               {{-- START --}}
               {{ Form::open(array(
-                  'data-setting-name' => 'background', 
+                  'data-setting-name' => 'background',
                   'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
@@ -114,8 +114,8 @@
                     'class' => 'col-sm-3 control-label' )) }}
 
                   <div class="col-sm-6">
-                    
-                    {{ Form::select('background', 
+
+                    {{ Form::select('background',
                        array('1' => 'Yes', '0' => 'No'),
                        Auth::user()->settings->background_enabled,
                        array('class' => 'form-control' )); }}
@@ -123,7 +123,7 @@
                   </div> <!-- /.col-sm-6 -->
 
                   <div class="col-sm-2">
-                    
+
                     {{ Form::submit('Modify' , array(
                       'class' => 'btn btn-primary',
                       'data-loading-text' => 'Saving...' )) }}
@@ -214,21 +214,21 @@
                 <div class="col-md-5 text-center">
                   @if(Auth::user()->isStripeConnected())
                     <p class="text-success">
-                      <span class="fa fa-circle"></span> 
+                      <span class="fa fa-circle"></span>
                       Connected
                     </p>
                   @else
                     <p class="text-danger">
-                      <span class="fa fa-circle"></span> 
+                      <span class="fa fa-circle"></span>
                       Not connected
                     </p>
                   @endif
                 </div> <!-- /.col-md-5 -->
                 <div class="col-md-4">
-                  @if(Auth::user()->isStripeConnected()) 
+                  @if(Auth::user()->isStripeConnected())
                     <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
                   @else
-                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a> 
+                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
                   @endif
                 </div> <!-- /.col-md-4 -->
               </div> <!-- /.row -->
@@ -240,23 +240,23 @@
                   </h4>
                 </div> <!-- /.col-md-3 -->
                 <div class="col-md-5 text-center">
-                  @if(Auth::user()->isBraintreeConnected()) 
+                  @if(Auth::user()->isBraintreeConnected())
                     <p class="text-success">
-                      <span class="fa fa-circle"></span> 
+                      <span class="fa fa-circle"></span>
                       Connected
                     </p>
                   @else
                     <p class="text-danger">
-                      <span class="fa fa-circle"></span> 
+                      <span class="fa fa-circle"></span>
                       Not connected
                     </p>
                   @endif
                 </div> <!-- /.col-md-5 -->
                 <div class="col-md-4">
-                  @if(Auth::user()->isBraintreeConnected()) 
-                    <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
+                  @if(Auth::user()->isBraintreeConnected())
+                    <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.braintree') }}">Disconnect</a>
                   @else
-                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a> 
+                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
                   @endif
                 </div> <!-- /.col-md-4 -->
               </div> <!-- /.row -->
@@ -272,7 +272,7 @@
 
     </div> <!-- /.container -->
 
-   {{-- 
+   {{--
     {{ $user }}
     {{ $settings }}
     {{ $subscription }}
@@ -292,7 +292,7 @@
 
         // Change button text while loading
         form.find(':submit').button('loading');
-        
+
         // Call ajax function
         $.ajax({
           type: "POST",
@@ -335,7 +335,7 @@
                     duration: 3000,
                     location: "br"
                   });
-                  
+
                   // Reset button
                   form.find(':submit').button('reset');
                }

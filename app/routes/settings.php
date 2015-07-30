@@ -26,4 +26,9 @@ Route::group([
         'uses' => 'SettingsController@anyDisconnectStripe'
     ));
 
+    Route::any('disconnect/braintree', array(
+        'before' => 'auth',
+        'as' => 'disconnect.braintree',
+        'uses' => 'SettingsController@anyDisconnectBraintree'
+    ));
 });
