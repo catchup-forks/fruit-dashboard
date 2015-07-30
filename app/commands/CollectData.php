@@ -14,13 +14,6 @@ class CollectData extends Command {
     protected $name = 'widgets:collect_data';
 
     /**
-     * The widgets on which data collection will be run.
-     *
-     * @var string
-     */
-    protected $widgets = array();
-
-    /**
      * The console command description.
      *
      * @var string
@@ -29,25 +22,14 @@ class CollectData extends Command {
     \'s implementing the CronWidget interface.';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-        $this->getWidgets();
-    }
-
-    /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return none
      */
     public function fire()
     {
         /* Iterating through the widgets. */
-        foreach ($this->widgets as $widget) {
+        foreach ($this->getWidgets() as $widget) {
             /* Running data collection. */
             $widget->collectData();
         }
@@ -56,10 +38,11 @@ class CollectData extends Command {
     /**
      * Getting the widgets.
      *
-     * @return none
+     * @return The filtered widgets.
      */
     public function getWidgets()
     {
+        $widgets = array();
 
         /* Iterating through the widgets. */
         foreach (Widget::all() as $generalWidget) {
@@ -69,8 +52,10 @@ class CollectData extends Command {
 
             /* Filtering to cron widgets. */
             if ($widget instanceof iCronWidget) {
-                array_push($this->widgets, $generalWidget->getSpecific());
+                array_push($widgets, $generalWidget->getSpecific());
             }
         }
+
+        return $widgets;
     }
 }
