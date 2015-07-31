@@ -76,6 +76,9 @@ body {
   color: #bfbfbf;
   cursor: pointer;
 }
+.clickable {
+  cursor: pointer;
+}
 .text-white {
   color: #ffffff;
 }
