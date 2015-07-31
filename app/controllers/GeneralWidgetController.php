@@ -315,6 +315,37 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * getWidgetDescriptor
+     * --------------------------------------------------
+     * Returns the widget descriptor's data in json.
+     * @param  (int)  ($descriptorID) The ID of the descriptor.
+     * @return Json with descriptor data.
+     * --------------------------------------------------
+     */
+    public function getWidgetDescriptor() {
+        /* Escaping invalid data. */
+        if (!Input::get('descriptorID')) {
+            return Response::json(array('error' => 'Descriptor not found'));
+        }
+
+        /* Getting descriptor from DB. */
+        $descriptor = WidgetDescriptor::find(Input::get('descriptorID'));
+
+        /* Descriptor not found */
+        if (is_null($descriptor)) {
+            return Response::json(array('error' => 'Descriptor not found'));
+        }
+
+        /* Returning widget descriptor description. */
+        return Response::json(array(
+            'description' => $descriptor->description,
+            'name'        => $descriptor->name,
+            'type'        => $descriptor->type,
+        ));
+    }
+
+
+    /**
      * ajaxHandler
      * --------------------------------------------------
      * Handling widget ajax functions.

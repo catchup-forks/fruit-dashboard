@@ -6,7 +6,7 @@ class WidgetDoesNotExist extends Exception {}
 
 class BadPosition extends Exception {}
 
-class DataExceptions extends Exception {}
-class InvalidData extends DataExceptions {}
-class MissingData extends DataExceptions {}
-class EmptyData extends DataExceptions {}
+class DataException extends Exception {}
+class InvalidData extends DataException {}
+class MissingData extends DataException {}
+class EmptyData extends DataException {}
