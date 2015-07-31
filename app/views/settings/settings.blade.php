@@ -203,27 +203,21 @@
             </div> <!-- /.panel-heading -->
             <div class="panel-body">
 
-              {{-- Manage connection settings - Stripe --}}
+              {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="row">
-                <div class="col-md-3">
-                    <h4 class="no-margin">
-                      <span class="label label-default">Stripe</span>
-                    </h4>
-                </div> <!-- /.col-md-3 -->
-                <div class="col-md-5 text-center">
-                  @if(Auth::user()->isStripeConnected())
-                    <p class="text-success">
-                      <span class="fa fa-circle"></span>
-                      Connected
-                    </p>
-                  @else
-                    <p class="text-danger">
-                      <span class="fa fa-circle"></span>
-                      Not connected
-                    </p>
-                  @endif
-                </div> <!-- /.col-md-5 -->
+                
+                <div class="col-md-8">
+                  <h3 class="no-margin">
+                    @if(Auth::user()->isStripeConnected())
+                        <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
+                    @else
+                        <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
+                    @endif
+                    <span class="label label-default">Stripe</span>
+                  </h3>
+                </div> <!-- /.col-md-8 -->
+                
                 <div class="col-md-4">
                   @if(Auth::user()->isStripeConnected())
                     <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
@@ -231,27 +225,21 @@
                     <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
                   @endif
                 </div> <!-- /.col-md-4 -->
+              
               </div> <!-- /.row -->
 
               <div class="row margin-top-sm">
-                <div class="col-md-3">
-                  <h4 class="no-margin">
+                <div class="col-md-8">
+                  <h3 class="no-margin">
+                    @if(Auth::user()->isBraintreeConnected())
+                      <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
+                    @else
+                      <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
+                    @endif
                     <span class="label label-default">Braintree</span>
-                  </h4>
-                </div> <!-- /.col-md-3 -->
-                <div class="col-md-5 text-center">
-                  @if(Auth::user()->isBraintreeConnected())
-                    <p class="text-success">
-                      <span class="fa fa-circle"></span>
-                      Connected
-                    </p>
-                  @else
-                    <p class="text-danger">
-                      <span class="fa fa-circle"></span>
-                      Not connected
-                    </p>
-                  @endif
-                </div> <!-- /.col-md-5 -->
+                  </h3>
+                </div> <!-- /.col-md-8 -->
+
                 <div class="col-md-4">
                   @if(Auth::user()->isBraintreeConnected())
                     <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.braintree') }}">Disconnect</a>
@@ -341,5 +329,14 @@
                }
         });
       });
+    </script>
+
+    {{-- Initialize tooltips --}}
+    <script type="text/javascript">
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip({
+          html: true;
+        })
+      })
     </script>
   @stop
