@@ -1,5 +1,4 @@
 <div class="text-white text-center quote">
-  <span class="fa fa-refresh" id="refresh"></span>
   <p class="lead body" id="quote">
     {{ $widget->getData()['quote'] }}
   </p>
