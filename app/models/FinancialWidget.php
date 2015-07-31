@@ -9,7 +9,7 @@ abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidge
             'name'       => 'Widget type',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'value'
+            'default'    => 'chart'
         ),
     );
     /* The settings to setup in the setup-wizard.*/

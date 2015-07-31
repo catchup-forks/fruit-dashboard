@@ -336,7 +336,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Calling widget specific handler */
-        return Response::json($widget->handleAjax(Input::all()), 200);
+        return Response::json($widget->handleAjax(Input::all()));
     }
 
 } /* GeneralWidgetController */
