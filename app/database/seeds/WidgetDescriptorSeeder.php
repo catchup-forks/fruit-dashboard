@@ -74,6 +74,17 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Timer'],
+            array(
+                'name'        => 'Timer',
+                'description' => 'A simple timer',
+                'type'        => 'timer',
+                'category'    => 'personal',
+                'is_premium'  => FALSE,
+            )
+        );
+
         /* Financial widgets | STRIPE */
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Stripe MRR'],
