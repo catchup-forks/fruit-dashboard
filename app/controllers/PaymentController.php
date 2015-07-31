@@ -39,6 +39,12 @@ class PaymentController extends BaseController
         /* Get the Plan */
         $plan = Plan::find($planID);
 
+        /* Wrong plan */
+        if ($plan === null) {
+            return Redirect::route('payment.plans')
+                ->with(['error' => 'Something went wrong with your request, please try again.']);
+        }
+
         /* Check if the user has the same plan */
         if (Auth::user()->subscription->plan->id == $plan->id) {
             return Redirect::route('payment.plans')
@@ -67,6 +73,12 @@ class PaymentController extends BaseController
         /* Get the Plan */
         $plan = Plan::find($planID);
 
+        /* Wrong plan */
+        if ($plan === null) {
+            return Redirect::route('payment.plans')
+                ->with(['error' => 'Something went wrong with your request, please try again.']);
+        }
+
         /* Get the current subscription of the user */
         $subscription = Auth::user()->subscription;
 
@@ -76,7 +88,7 @@ class PaymentController extends BaseController
                 ->with(['success' => 'You have already been subscribed to the requested plan.']);
         }
 
-        /* Check if the new plan has Braintree plan_id. Redirect if not */
+        /* Check if the new plan has Braintree plan_id. Redirect to unsubscribe if not */
         if ($plan->braintree_plan_id == null) {
             return Redirect::route('payment.unsubscribe');
         }

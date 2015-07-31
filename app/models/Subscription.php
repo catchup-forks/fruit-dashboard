@@ -67,7 +67,7 @@ class Subscription extends Eloquent
 
         if ($result['errors'] == FALSE) {
             /* Get the free plan */
-            $freePlan = Plan::where(['name', 'Free'])->first();
+            $freePlan = Plan::where('name', 'Free')->first();
 
             /* Update the DB */
             $this->plan()->associate($freePlan);
@@ -136,8 +136,8 @@ class Subscription extends Eloquent
             /* Error */
             } else {
                 /* Get and store errors */
-                $result['errors'] = TRUE;
                 foreach($customerResult->errors->deepAll() AS $error) {
+                    $result['errors'] |= TRUE;
                     $result['messages'] .= $error->code . ": " . $error->message . ' ';
                 }
             }
@@ -180,8 +180,8 @@ class Subscription extends Eloquent
         /* Error */
         } else {
             /* Get and store errors */
-            $result['errors'] = TRUE;
             foreach($subscriptionResult->errors->deepAll() AS $error) {
+                $result['errors'] |= TRUE;
                 $result['messages'] .= $error->code . ": " . $error->message . ' ';
             }
         }
@@ -197,18 +197,26 @@ class Subscription extends Eloquent
      * --------------------------------------------------
      */
     private function cancelBraintreeSubscription() {
-         /* Initialize variables */
+        /* Initialize variables */
         $result = ['errors' => FALSE, 'messages' => ''];
+
+        error_log('recece');
 
         /* Cancel braintree subscription */
         $cancellationResult = Braintree_Subscription::cancel($this->braintree_subscription_id);
 
         /* Error */
         if (!$cancellationResult->success) {
+            error_log('not success');
             /* Get and store errors */
-            $result['errors'] = TRUE;
             foreach($cancellationResult->errors->deepAll() AS $error) {
-                $result['messages'] .= $error->code . ": " . $error->message . ' ';
+                /* SKIP | Subscription has already been canceled. */
+                if ($error->code == SiteConstants::getBraintreeErrorCodes()['Subscription has already been canceled']) {
+                    continue;
+                } else {
+                    $result['errors'] |= TRUE;
+                    $result['messages'] .= $error->code . ": " . $error->message . ' ';
+                }
             }
         }
 

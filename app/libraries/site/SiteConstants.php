@@ -86,5 +86,19 @@ class SiteConstants {
     public static function getTrialPeriodInDays() {
         return self::$trialPeriodInDays;
     }
+
+    /**
+     * getBraintreeErrorCodes: 
+     * --------------------------------------------------
+     * Returns the Braintree error codes.
+     * @return (array) ($errorCodes) errorCodes
+     * --------------------------------------------------
+     */
+    public static function getBraintreeErrorCodes() {
+        return [
+            'Subscription has already been canceled' => 81905,
+        ];
+    }
+
     
 } /* SiteConstants */
