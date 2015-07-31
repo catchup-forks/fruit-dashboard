@@ -14,10 +14,10 @@ class CalculateFirstTime
 
     try {
             Log::info('Sending "ready" email for user: '.$user->email);
-            $email = Mailman::make('emails.connected')
-                    ->to($user->email)
-                    ->subject('Your metrics are ready!')
-                    ->send();
+            // $email = Mailman::make('emails.connected')
+            //         ->to($user->email)
+            //         ->subject('Your metrics are ready!')
+            //         ->send();
     } catch (Exception $e) {
             Log::info('Caught exception: '.$e->getMessage());
     }

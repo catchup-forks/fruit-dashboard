@@ -9,13 +9,31 @@ class DatabaseSeeder extends Seeder {
      */
     public function run()
     {
-        Eloquent::unguard();
-        
-        //$this->call('UserTableSeeder');
-        //$this->call('UserTableExtendSeeder');
-        //$this->call('supdashboarddbTableSeeder');
-        //$this->call('ConnectedServicesSeeder');
-        $this->call('ExtendDefaultsSeeder');
+        /* CONFIG::ALL */
+        $this->call('PlanSeeder');
+        $this->call('WidgetDescriptorSeeder');
+
+        /* CONFIG::LOCAL ONLY */
+        if (App::environment('local')) {
+            Eloquent::unguard();
+            $this->call('UserSeeder');
+            $this->call('InitialSeeder');
+
+        /* CONFIG::DEVELOPMENT ONLY */
+        } else if (App::environment('development')) {
+            Eloquent::unguard();
+            $this->call('UserSeeder');
+            $this->call('InitialSeeder');
+
+        /* CONFIG::STAGING ONLY */
+        } else if (App::environment('staging')) {
+            /* Nothing here */
+
+        /* CONFIG::PRODUCTION ONLY */
+        } else if (App::environment('production')) {
+            /* Nothing here */
+
+        }
     }
 
 }

@@ -41,16 +41,13 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-    if (Auth::guest())
-    {
-        if (Request::ajax())
-        {
-            return Response::make('Unauthorized', 401);
-        }
-        else
-        {
-            return Redirect::route('auth.signin');
-        }
+    # not auth, ajax request
+    if (Auth::guest() && Request::ajax()) {
+        return Response::make('Unauthorized', 401);
+    }
+    # not auth
+    if (Auth::guest()) {
+        return Redirect::route('auth.signin');
     }
 });
 
@@ -60,7 +57,7 @@ Route::filter('auth.basic', function()
     return Auth::basic();
 });
 
-Route::filter('api_key', function() { 
+Route::filter('api_key', function() {
     // if (!Auth::user()->isConnected())
     // {
     //     // no valid key
@@ -70,22 +67,13 @@ Route::filter('api_key', function() {
     // }
 });
 
-Route::filter('trial_ended', function()
-{
-    // if (Auth::user()->isTrialEnded())
-    // {
-    //     return Redirect::route('payment.plan')
-    //         ->with('error','Trial period ended.');
-    // }
-});
-
 Route::filter('cancelled', function()
 {
-    if (Auth::user()->plan == 'cancelled')
-    {
-        return Redirect::route('payment.plan')
-            ->with('error','Please subscribe.');
-    }
+    // if (Auth::user()->plan == 'cancelled')
+    // {
+    //     return Redirect::route('payment.plan')
+    //         ->with('error','Please subscribe.');
+    // }
 });
 
 /*

@@ -1,32 +1,43 @@
 @extends('meta.meta')
 
 @section('body')
+<body>
 
-@section('navbar')
-@include('meta.navbar')
-@show
+  @section('navbar')
 
-@section ('pageAlert')
-@include('meta.pageAlerts')
-@show
+    <div class="btn-group position-tr z-top cursor-pointer">
+      
+      <!-- dropdown menu icon -->
+      <span class="dropdown-icon fa fa-2x fa-cog fa-inverse color-hovered drop-shadow" alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></span>
 
-@section('pageContent')
-@show
+      <!-- dropdown menu elements -->
+      <ul class="dropdown-menu pull-right" role="menu">
+        <li>
+          <a target="_blank" href="https://github.com/tryfruit/fruit-dashboard/">
+            <span class="fa fa-puzzle-piece"></span> About
+          </a>
+        </li>
+        <li>
+          <a href="{{ URL::route('auth.signin') }}">
+            <span class="fa fa-sign-in"></span> Sign in
+          </a>
+        </li>
+      </ul>
 
-{{--
-<div class="row no-margin">
-  <div class="col-md-2 col-md-offset-5">
-    <a href="https://www.positivessl.com">
-      <img class='img-responsive center-block' src="https://www.positivessl.com/images-new/PositiveSSL_tl_trans2.png" alt="SSL Certificate" title="SSL Certificate"/>
-    </a>
-  </div>
-</div>
---}}
+    </div> <!-- /.btn-group -->
 
-@section('footer')
-@include('meta.footer')
-@show
+  @show
+
+  @section ('pageAlert')
+  @include('meta.page-alerts')
+  @show
+
+  @section('pageContent')
+  @show
+
+  @section('footer')
+  @include('meta.footer')
+  @show
 
 </body>
-
 @stop

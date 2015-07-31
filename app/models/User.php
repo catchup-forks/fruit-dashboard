@@ -3,260 +3,95 @@
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
 
-
 class User extends Eloquent implements UserInterface
 {
-    protected $guarded = array();
-
-    // DEFINE RELATIONSHIPS --------------------------------------------------
-    // each user has many connection
-    public function connections() {
-        return $this->hasMany('Connection');
-    }
-
-    // each user BELONGS to many dashboards
-    public function dashboards() {
-        return $this->belongsToMany('Dashboard', 'users_dashboards', 'user_id', 'dashboard_id');
-    }
-
+    /* UserTrait implements the functions from UserInterface */
     use UserTrait;
+
+    /* -- Fields -- */
+    protected $guarded = array(
+        'password',
+        'remember_token',
+    );
+
+    protected $fillable = array(
+        'email',
+        'name',
+        'gender',
+        'phone_number',
+        'date_of_birth'
+    );
+
+    /* -- Relations -- */
+    public function connections() { return $this->hasMany('Connection'); }
+    public function subscription() { return $this->hasOne('Subscription'); }
+    public function dashboards() { return $this->hasMany('Dashboard'); }
+    public function settings() { return $this->hasOne('Settings'); }
+
+    /* -- Libraries -- */
+    public function stripePlans() { return $this->hasMany('StripePlan'); }
+    public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
+
     /**
-     * Testing if the user has connected a stripe account
-     *
-     * @return boolean
-    */
-    public function isStripeConnected()
-    {
-        // at this point validation like this is all right
-        if (strlen($this->stripe_key) > 16 
-            || strlen($this->stripeUserId) > 1) {
-            // long enough key
+     * isStripeConnected
+     * --------------------------------------------------
+     * Returns true if the user has connected a stripe account
+     * @return (boolean) ($status)
+     * --------------------------------------------------
+     */
+    public function isStripeConnected() {
+        if ($this->connections()->where('service', 'stripe')
+                                ->first() !== null) {
             return True;
         }
-        // no key is given
         return False;
     }
 
      /**
-     * Testing if the user has connected a paypal account
-     *
-     * @return boolean
-    */
-    public function isPayPalConnected()
-    {
-        // at this point validation like this is all right
-        if (strlen($this->paypal_key) > 16) {
-            // refreshtoken is longer than 16
+     * isBraintreeConnected
+     * --------------------------------------------------
+     * Returns true if the user has connected a braintree account
+     * @return (boolean) ($status)
+     * --------------------------------------------------
+     */
+    public function isBraintreeConnected() {
+        if ($this->connections()->where('service', 'braintree')
+                                ->first() !== null) {
             return True;
         }
-        // no valid refreshtoken is stored
         return False;
     }
 
-    public function isGoogleSpreadsheetConnected()
-    {
-        // at this point validation like this is all right
-        if (strlen($this->googleSpreadsheetRefreshToken) > 1) {
-            // long enough key
-            return True;
-        }
-        // no key is given
-        return False;
-    }
+     /**
+     * getDaysRemainingFromTrial
+     * --------------------------------------------------
+     * Returns the remaining time from the trial period in days
+     * @return (integer) ($daysRemainingFromTrial) The number of days
+     * --------------------------------------------------
+     */
+    public function getDaysRemainingFromTrial() {
+        /* Get the difference */
+        error_log($this->created_at);
+        $diff = Carbon::now()->diffInDays($this->created_at);
 
-
-    /**
-     * Testing if the user has connected at least one financial account
-     *
-     * @return boolean
-    */
-    public function isFinancialStuffConnected()
-    {
-        if ($this->isStripeConnected() 
-            || $this->isPayPalConnected()
-            ) 
-        {
-            // connected
-            return True;
-        }
-        // not connected
-        return False;
-    }
-
-
-    /**
-     * Testing if the user has connected at least one account
-     *
-     * @return boolean
-    */
-    public function isConnected()
-    {
-        if ($this->isStripeConnected() 
-            || $this->isPayPalConnected()
-            || $this->isBraintreeConnected() 
-            || $this->isGoogleSpreadsheetConnected()
-            ) 
-        {
-            // connected
-            return True;
-        }
-        // not connected
-        return False;
-    }
-
-    public function isBraintreeConnected()
-    {
-        if ($this->isBraintreeCredentialsValid() && $this->btWebhookConnected && $this->ready=='connected')
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function isBraintreeCredentialsValid()
-    {
-        if (strlen($this->btPublicKey) > 2)
-        {
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /*
-    |-------------------------------------
-    | Trial checking helpers
-    |-------------------------------------
-    */
-
-    public function isTrialEnded()
-    {
-        $trialEndDate = Carbon::parse($this->created_at)->addDays($_ENV['TRIAL_ENDS_IN_X_DAYS']);
-
-        if ($this->plan == 'trial_ended' 
-            || ($this->plan == 'trial' && $trialEndDate->isPast()))
-        {
-            return true;
+        /* Check if trial period is still available for the user */
+        if ($diff <= SiteConstants::getTrialPeriodInDays() ) {
+            return SiteConstants::getTrialPeriodInDays()-$diff;
         } else {
-            return false;
+            return 0;
         }
     }
 
-    public function trialWillEndInDays($days)
-    {   
-        $daysRemaining = $this->daysRemaining();
-
-        if ($this->plan == 'trial' && $daysRemaining < $days)
-        {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function trialWillEndExactlyInDays($days)
-    {
-        $daysRemaining = $this->daysRemaining();
-
-        if (($this->plan == 'trial' || $this->plan == 'trial_ended') && $daysRemaining == $days)
-        {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function daysRemaining()
-    {
-        $days = 100;
-
-        $now = Carbon::now();
-        $signup = Carbon::parse($this->created_at);
-
-        $days = $now->diffInDays($signup->addDays($_ENV['TRIAL_ENDS_IN_X_DAYS']), false);
-
-        return $days;
-    }
-
-
-    /*
-    |------------------------------------------
-    | Connected services checking
-    |------------------------------------------
-    */
-
-    public function canConnectMore()
-    {
-        if($this->paymentStatus == 'overdue')
-        {
-            // user is a paying customer, but its payment is overdue
-            // don't let more connections
-            return false;
-        }
-        if($this->plan != 'free')
-        {
-            // the user is good paying customer (or trial period, whatever), 
-            // let him/her connect more
-            return true;
-        } elseif($this->connectedServices < $_ENV['MAX_FREE_CONNECTIONS'])
-        {
-            // not yet reached the maximum number of allowed connections
-            return true;
-        } else
-        {
-            // the user is not paying (or trial ended), 
-            // and reached maximum number of allowed connections
-            // don't let more connections
-            return false;
-        }
-    }
-
-
-    /*
-    |------------------------------------------
-    | App background for user
-    |------------------------------------------
-    */
-
-    public function dailyBackgroundURL() {
-
-        # get the number of day in the year
-        $numberOfDayInYear = date('z');
-
-        # if there is backgrounds-production directory, go with that, otherwise go with backgrounds 
-        # (backgrounds-production is too large to be included in the git repository)
-
-        $directory = '/img/backgrounds-production/';
-        if (!file_exists(public_path().$directory)) {
-            $directory = '/img/backgrounds/';
-        }
-
-        # get the number of background images & collect them in an array
-        $i = 0;
-        $fileListArray = array();
-        $dir = public_path().$directory;
-
-        if ($handle = opendir($dir)) {
-            while (($file = readdir($handle)) !== false){
-                if (!in_array($file, array('.', '..')) && !is_dir($dir.$file) && !(substr($file, 0, 1 ) === ".")) {
-                    $fileListArray = array_add($fileListArray, $i, $file);                    
-                    $i++;
-                }
-            }
-        }
-        $numberOfBackgroundFiles = $i;
-
-        # calculate which image will we use
-        $imageNumber = $numberOfDayInYear % $numberOfBackgroundFiles;
-
-        # create the url that will be passed to the view
-        $imageName = $fileListArray[$imageNumber];
-        $dailyBackgroundURL = $directory.$imageName;
-
-        return $dailyBackgroundURL;
-
+     /**
+     * getTrialEndDate
+     * --------------------------------------------------
+     * Returns the trial period ending date
+     * @return (date) ($trialEndDate) The ending date
+     * --------------------------------------------------
+     */
+    public function getTrialEndDate() {
+        /* Return the date */
+        return Carbon::instance($this->created_at)->addDays(SiteConstants::getTrialPeriodInDays());
     }
 
 }

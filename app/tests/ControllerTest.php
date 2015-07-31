@@ -56,7 +56,7 @@ class ControllerTest extends TestCase
             ),
             array(
                 'action' => 'showAddKey',
-                'striped_user' => array('code' => '302', 'redirect_url' => route('dev.stripe')),
+                'striped_user' => array('code' => '302', 'redirect_url' => route('development.stripe')),
                 'non_striped_user' => array('code' => '200'),
                 'nlg' => array('code' => '302', 'redirect_url' => route('auth.signin')),
             ),

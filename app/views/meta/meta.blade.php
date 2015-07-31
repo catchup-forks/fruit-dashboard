@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="chrome-webstore-item" href="https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp">
     <link rel="shortcut icon" href="{{ asset('images/favicon.png') }}">
 
     <title>
@@ -14,35 +15,41 @@
       @endif
     </title>
 
+    @section('tracking')
+      <!-- Google Analytics -->
+      @include('tracking.google-analytics')
+      <!-- /Google Analytics -->
+
+      <!-- Intercom IO -->
+      @include('tracking.intercom-io')
+      <!-- /Intercom IO -->
+
+      <!-- Mixpanel -->
+      @include('tracking.mixpanel')
+      <!-- /Mixpanel -->
+    @show
+
     @section('stylesheet')
       <!-- Fonts -->
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
       <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
-      <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,500,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
       <!-- /Fonts -->
 
-      <!-- Bootstrap core CSS -->
+      <!-- Bootstrap CSS -->
       {{ HTML::style('css/bootstrap.min.css') }}
-      <!-- /Bootstrap -->
+      <!-- /Bootstrap CSS-->
 
       <!-- Font Awesome CSS -->
       {{ HTML::style('css/font-awesome.min.css') }}
-      <!-- /FontAwesome -->
+      <!-- /FontAwesome CSS-->
 
-      <!-- PaymentFonts CSS -->
-      {{ HTML::style('css/paymentfont.min.css') }}
-      <!-- /PaymentFonts CSS -->
-
-      <!-- PixelAdmin -->
-      {{ HTML::style('css/pixel-admin.min.css') }}
-      {{ HTML::style('css/themes.min.css') }}
-      {{ HTML::style('css/widgets.min.css') }}
-      {{ HTML::style('css/pages.min.css') }}
-      <!-- /PixelAdmin -->
-
-      <!-- Gridster -->
+      <!-- Gridster CSS -->
       {{ HTML::style('css/jquery.gridster.min.css') }}
-      <!-- /Gridster -->
+      <!-- /Gridster CSS-->
+
+      <!-- Growl CSS -->
+      {{ HTML::style('css/jquery.growl.css') }}
+      <!-- /Growl CSS-->
 
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
@@ -53,23 +60,6 @@
       {{ HTML::style('css/custom.css') }}
       <!-- /Custom styles -->
 
-      <script type="text/javascript">
-        var init = [];
-      </script>
-      <!-- /Pixeladmin js init array -->
-      
-      <!-- GoogleAnalyticsEvents -->
-      {{ HTML::script('js/google_events.js'); }}
-      <!-- /GoogleAnalyticsEvents -->
-
-      <!-- Mixpanel event -->
-      {{ HTML::script('js/mixpanel_event.js') }}
-      <!-- / Mixpanel event -->
-
-      <!-- Mixpanel user tracking -->
-      {{ HTML::script('js/mixpanel_user.js') }}
-      <!-- / Mixpanel user tracking -->
-
       <!-- Page specific stylesheet -->
       @section('pageStylesheet')
       @show
@@ -77,28 +67,22 @@
     @show
   </head>
 
-  
+
   @section('body')
-    
+
   @show
 
   @section('scripts')
     <!-- Base scripts -->
-    {{ HTML::script('js/jquery.js'); }}
+    {{ HTML::script('js/jquery.min.js'); }}
     {{ HTML::script('js/bootstrap.min.js'); }}
-    {{ HTML::script('js/pixel-admin.min.js'); }}
-    {{ HTML::script('js/chart.min.js'); }}
-    {{ HTML::script('js/jquery.gridster.with-extras.min.js'); }}
+    {{ HTML::script('js/jquery.gridster.with-extras-CUSTOM.js'); }}
     {{ HTML::script('js/underscore-min.js'); }}
+    {{ HTML::script('js/jquery.ba-resize.min.js'); }}
+    {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
+    {{ HTML::script('js/jquery.growl.js'); }}
+    {{ HTML::script('js/Chart.js'); }}
     <!-- /Base scripts -->
-
-    <!-- Pagealert timeout -->
-    <script type="text/javascript">
-      $(document).ready(function(){
-
-      });
-    </script>
-    <!-- /Pagealert timeout -->
 
     <!-- Page specific modals -->
     @section('pageModals')
@@ -110,15 +94,14 @@
     @show
     <!-- /Page specific scripts -->
 
-    <!-- PixelAdmin js start -->
-    <script type="text/javascript">
-      window.PixelAdmin.start(init);
-    </script>
-    <!-- /PixelAdmin js start -->
+    <!-- Widget specific scripts -->
+    @section('widgetScripts')
+    @show
+    <!-- /Widget specific scripts -->
 
-    <!-- GoogleAnalytics -->
-    {{ HTML::script('js/google_analytics.js'); }}
-    <!-- GoogleAnalytics -->
+    @section ('pageAlert')
+      @include('meta.page-alerts')
+    @show
   @show
-     
+
 </html>

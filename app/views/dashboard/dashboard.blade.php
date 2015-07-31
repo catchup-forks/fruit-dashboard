@@ -9,179 +9,93 @@
 
   @section('pageContent')
 
-    <div id="content-wrapper">
-      {{--
-      <!-- Modals -->
-      <!-- Connect Modal-->
-      <div id='modal-new-widget' class='modal fade in' tabindex='-1' role='dialog' style="display:none;" aria-hidden='false' >
-        <div class='modal-dialog modal-lg'>
-          <div>
-            <div class='modal-header'>
-              <button type="button" class="close" data-dismiss='modal' aria-hidden='true'>x</button>
-              <h4 class='modal-title'>Add new widget</h4>
-            </div>
-            <div class='modal-content theme-asphalt'>
-              @include('connect.connect-modal')
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- /Connect Modal-->
-      <!-- /Modals -->
-      --}}
-      <!-- widget list -->
+  <div class="container grid-base fill-height">
+    <div class="gridster not-visible">
+      <ul>
+        @foreach ($dashboards as $dashboard)
+          @foreach ($dashboard->widgets as $widget)
+            @if ($widget->status != 'hidden')
+              @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
+            @endif
+          @endforeach
+        @endforeach
+      </ul>
+    </div>
+  </div> <!-- /.container -->
 
-      <div id="main-grid" class='gridster not-visible'>
-        <ul>
-        
-          @for ($i = 0; $i < count($allFunctions); $i++)
-
-            @include('dashboard.widget', ['widget_data' => $allFunctions[$i]])
-
-          @endfor
-
-        </ul>
-      </div>
-      <!-- /widget list -->
-    </div> <!-- / #content-wrapper -->
   @stop
 
   @section('pageScripts')
 
-    <!-- Grid functions -->
-    <script type="text/javascript">
-     $(document).ready(function() {
-         var gridster;
-         var positioning = [];
-         var widget_width = $(window).width()/12-15;
-         var widget_height = $(window).height()/12-20;
+  @include('widget.widget-general-scripts')
 
-         $(function(){
+  <script type="text/javascript">
+    // Gridster builds the interactive dashboard.
+    $(function(){
 
-           gridster = $(".gridster ul").gridster({
-             /* widget_base_dimenions - finer resizable steps*/
-             widget_base_dimensions: [widget_width, widget_height],
-             widget_margins: [5, 5],
-             helper: 'clone',
-             serialize_params: function ($w, wgd) {
-                 return {
-                   id: $w.data().id,
-                   col: wgd.col,
-                   row: wgd.row,
-                   size_x: wgd.size_x,
-                   size_y: wgd.size_y,
-                 };
-               },
-             resize: {
-               enabled: true,
-               max_size: [9, 9],
-               min_size: [2, 2],
-               stop: function(e, ui, $widget) {
-                positioning = gridster.serialize();
-                positioning = JSON.stringify(positioning);
-                $.ajax({
-                  type: "POST",
-                  url: "/api/widgets/save-position/{{Auth::user()->id}}/" + positioning
-                });
-               }
-             },
-             draggable: {
-               stop: function(e, ui, $widget) {
-                positioning = gridster.serialize();
-                positioning = JSON.stringify(positioning);
-                $.ajax({
-                  type: "POST",
-                  url: "/api/widgets/save-position/{{Auth::user()->id}}/" + positioning
-                });
-               }
-             }
-           }).data('gridster');
+      var gridster;
+      var players = $('.gridster li');
+      var positioning = [];
+      var containerWidth = $('.grid-base').width();
+      var containerHeight = $('.grid-base').height();
+      var numberOfCols = {{ SiteConstants::getGridNumberOfCols() }};
+      var numberOfRows = {{ SiteConstants::getGridNumberOfRows() }};
+      var margin = 5;
+      var widget_width = (containerWidth / numberOfCols) - (margin * 2);
+      var widget_height = (containerHeight / numberOfRows) - (margin * 2);
 
-         });
-     });
-    </script>
-    <!-- /Grid functions -->
-
-    {{ HTML::script('js/jquery.color.js') }}
-    {{ HTML::script('js/jquery.easing.1.3.js') }}
-
-    <!-- Saving text and settings -->
-    <script type="text/javascript">
-      $(document).ready(function(){
-                  
-        function sendText(ev) {
-          var text = $(ev.target).val() ? $(ev.target).val() : '';
-          text = text.replace(/\n\r?/g, '[%LINEBREAK%]');
-          var id = $(ev.target).attr('id');
-          
+     gridster = $('.gridster ul').gridster({
+       widget_base_dimensions: [widget_width, widget_height],
+       widget_margins: [margin, margin],
+       min_cols: numberOfCols,
+       min_rows: numberOfRows,
+       snap_up: false,
+       serialize_params: function ($w, wgd) {
+         return {
+           id: $w.data().id,
+           col: wgd.col,
+           row: wgd.row,
+           size_x: wgd.size_x,
+           size_y: wgd.size_y,
+         };
+       },
+       resize: {
+         enabled: true,
+         start: function() {
+          players.toggleClass('hovered');
+         },
+         stop: function(e, ui, $widget) {
+          positioning = gridster.serialize();
+          positioning = JSON.stringify(positioning);
           $.ajax({
-            type: 'POST',
-            url: '/api/widgets/save-text/' + id + '/' + text
+            type: "POST",
+            data: {'positioning': positioning},
+            url: "{{ route('widget.save-position', Auth::user()->id) }}"
+           });
+          players.toggleClass('hovered');
+         }
+       },
+       draggable: {
+        start: function() {
+          players.toggleClass('hovered');
+        },
+        stop: function(e, ui, $widget) {
+          positioning = gridster.serialize();
+          positioning = JSON.stringify(positioning);
+          $.ajax({
+            type: "POST",
+            data: {'positioning': positioning},
+            url: "{{ route('widget.save-position', Auth::user()->id) }}"
           });
-        }
+          players.toggleClass('hovered');
+         }
+       }
+     }).data('gridster');
 
-        function saveWidgetName(ev) {
-          
-          var input = $(ev.target).parent().parent().children('input');
-          var newName = input.val();
-          var id = input.attr('id');
+      $('.gridster.not-visible').fadeIn(500);
 
-          if (newName) {
-            $.ajax({
-              type: 'POST',
-              url: '/api/widgets/settings/name/' + id + '/' + newName,
-              success:function(message,code){
-                var current = input.css('background-color');
+    });
+  </script>
 
-                input.animate({'background-color':'LightGreen'},50,'easeInCirc');
-                input.animate({'background-color': current},100,'easeOutCirc');
-              }
-            });            
-          }
-        }
-        // user finished typing
-        $('.save-widget-name').click(saveWidgetName);
-        $('.note').keyup(_.debounce(sendText,500));
-      });
-    </script>
-    <!-- /Saving text -->
-
-    <!-- script for clock -->
-    <script type="text/javascript">
-      $(document).ready(function()
-      {
-        function startTime() {
-          var today = new Date();
-          var h = today.getHours();
-          var m = today.getMinutes();
-          m = checkTime(m);
-          $('.digitTime').html(h + ':' + m);
-          var t = setTimeout(function(){startTime()},500);
-        }
-
-        function checkTime(i) {
-          if (i<10){i = "0" + i};  // add zero in front of numbers < 10
-          return i;
-        }
-
-        startTime();
-
-        $('.not-visible').fadeIn(500);
-      });
-    </script>
-    <!-- /script for clock -->
-    
-    <!-- Deciding on proper greeting -->
-    <script type="text/javascript">
-      $(document).ready(function()
-      {
-        var hours = new Date().getHours();
-        
-        if(17 <= hours || hours < 5) { $('.greeting').html('evening'); }
-        if(5 <= hours && hours < 13) { $('.greeting').html('morning'); }
-        if(13 <= hours && hours < 17) { $('.greeting').html('afternoon'); } 
-      });
-    </script>
-    <!-- /Deciding on proper greeting -->
   @append
 

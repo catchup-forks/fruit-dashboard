@@ -27,9 +27,11 @@ $app = new Illuminate\Foundation\Application;
 $env = $app->detectEnvironment(function()
 {
 	$hostname = gethostname();
-	if ($hostname == 'server.abfinformatika.hu') 
+	if ($hostname == 'server.abfinformatika.hu')
 	{
 		if (basename(dirname(__DIR__)) == 'development-dashboard.tryfruit.com') {
+			return 'development';
+		} elseif (basename(dirname(__DIR__)) == 'fd-dev.tryfruit.com') {
 			return 'development';
 		} elseif (basename(dirname(__DIR__)) == 'staging-dashboard.tryfruit.com') {
 			return 'staging';
@@ -42,13 +44,6 @@ $env = $app->detectEnvironment(function()
 		return 'local';
 	}
 });
-
-/*
-$env = $app->detectEnvironment(array(
-   'development' => array('precise64','homestead','andy94'),
-   'production' => array('server.abfinformatika.hu',)
-));
-*/
 
 /*
 |--------------------------------------------------------------------------
