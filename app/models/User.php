@@ -29,9 +29,19 @@ class User extends Eloquent implements UserInterface
     public function settings() { return $this->hasOne('Settings'); }
 
     /* -- Libraries -- */
-    public function stripePlans() { return $this->hasMany('StripePlan'); }
+    public function stripePlans() { return $this->hasMany('StripePlan', 'user_id'); }
     public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
 
+    /* -- Custom relations. -- */
+    public function widgets() {
+        $widgets = array();
+        foreach ($this->dashboards as $dashboard) {
+            foreach ($dashboard->widgets as $widget) {
+                array_push($widgets, $widget->getSpecific());
+            }
+        }
+        return $widgets;
+    }
     /**
      * isStripeConnected
      * --------------------------------------------------

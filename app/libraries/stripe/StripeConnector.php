@@ -19,9 +19,6 @@
 * --------------------------------------------------------------------------
 */
 
-use Stripe\Subscription;
-use Stripe\Plan;
-use Stripe\Customer;
 use Stripe\Error\Authentication;
 
 class StripeConnector
@@ -100,9 +97,35 @@ class StripeConnector
         if (!$this->user->isStripeConnected()) {
             throw new StripeNotConnected();
         }
-
+        /* Deleting connection */
         $this->user->connections()->where('service', 'stripe')->delete();
+
+        /* Deleting all widgets, plans, subscribtions */
+        foreach ($this->user->widgets() as $widget) {
+            if ($widget->descriptor->category == 'stripe') {
+
+                /* Saving data while it is accessible. */
+                $dataID = 0;
+                if (!is_null($widget->data)) {
+                    $dataID = $widget->data->id;
+                }
+
+                $widget->delete();
+
+                /* Deleting data if it was present. */
+                if ($dataID > 0) {
+                    Data::find($dataID)->delete();
+                }
+            }
+        }
+
+        /* Deleting all plans. */
+        foreach ($this->user->stripePlans as $stripePlan) {
+            StripeSubscription::where('plan_id', $stripePlan->id)->delete();
+            $stripePlan->delete();
+        }
     }
+
     /**
      * getTokens
      * --------------------------------------------------
@@ -281,10 +304,27 @@ class StripeConnector
         $arrWidget->save();
         $arpuWidget->save();
 
-        /* Populating data */
-        $mrrWidget->collectData();
-        $arrWidget->collectData();
-        $arpuWidget->collectData();
+        /* Creating data for the last 30 days. */
+        $calculator = new StripeLastMonthCalculator($this->user);
+        $lastMonthData = $calculator->getLastMonthData();
+
+        $mrrWidget->data->raw_value = json_encode($lastMonthData['mrr']);
+        $arrWidget->data->raw_value = json_encode($lastMonthData['arr']);
+        $arpuWidget->data->raw_value = json_encode($lastMonthData['arpu']);
+
+        $mrrWidget->data->save();
+        $arrWidget->data->save();
+        $arpuWidget->data->save();
+
+        $mrrWidget->state = 'active';
+        $arrWidget->state = 'active';
+        $arpuWidget->state = 'active';
+
+        /* Saving widgets */
+        $mrrWidget->save();
+        $arrWidget->save();
+        $arpuWidget->save();
+
     }
 
 } /* StripeConnector */

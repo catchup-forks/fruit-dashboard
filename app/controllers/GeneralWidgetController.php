@@ -162,8 +162,17 @@ class GeneralWidgetController extends BaseController {
      */
     public function anyDeleteWidget($widgetID) {
         /* Find and remove widget */
-        $widget = Widget::find($widgetID);
-        $widget->delete();
+        $generalWidget = Widget::find($widgetID);
+        if (!is_null($generalWidget)) {
+            $widget = $generalWidget->getSpecific();
+            /* Datawidget data should be kept safe. */
+            if ($widget instanceof iDataWidget) {
+                $widget->state = 'hidden';
+                $widget->save();
+            } else {
+                $widget->delete();
+            }
+        }
 
         /* USING AJAX */
         if (Request::ajax()) {
@@ -206,6 +215,24 @@ class GeneralWidgetController extends BaseController {
 
         /* Create new widget instance */
         $className = $descriptor->getClassName();
+
+        /* Looking for existing widgets. */
+        foreach (Auth::user()->widgets() as $widget) {
+            if ($widget->descriptor->type == $descriptor->type) {
+                if ($widget->state == 'hidden') {
+                    /* The widget is hidden, restoring it. */
+                    $widget->state = 'active';
+                    $widget->save();
+                    return Redirect::route('dashboard.dashboard')
+                        ->with('success', 'Your hidden widget was restored successfully.');
+                } else {
+                    /* The widget is active. */
+                    return Redirect::route('dashboard.dashboard')
+                        ->with('error', 'You cannot add multiple instances of this widget type.');
+                }
+            }
+        }
+
         $widget = new $className(array(
             'settings' => json_encode(array()),
             'state'    => 'active',
