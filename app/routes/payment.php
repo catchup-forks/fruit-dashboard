@@ -26,5 +26,17 @@ Route::group([
         'uses'      => 'PaymentController@postSubscribe'
     ]);
 
+    Route::get('unsubscribe', [
+        'before'    => 'auth',
+        'as'        => 'payment.unsubscribe',
+        'uses'      => 'PaymentController@getUnsubscribe'
+    ]);
+
+    Route::post('unsubscribe', [
+        'before'    => 'auth',
+        'as'        => 'payment.sunubscribe',
+        'uses'      => 'PaymentController@postUnsubscribe'
+    ]);
+
 });
 

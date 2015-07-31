@@ -1,7 +1,7 @@
 @extends('meta.base-user')
 
   @section('pageTitle')
-    Braintree payment
+    Subscribe
   @stop
 
   @section('pageStylesheet')
@@ -15,9 +15,12 @@
           <div class="col-md-6 col-md-offset-3">
             <div class="panel panel-default panel-transparent">
               <div class="panel-body text-center">
-                <form id="checkout" method="post" action="{{ route('payment.subscribe', $plan->id) }}">
+                {{ Form::open(array('route' => array('payment.subscribe', $plan->id))) }}
                   <div id="payment-form"></div>
-                  <input class="btn btn-success btn-block" type="submit" value="Subscribe to {{ $plan->name }} plan for €{{ $plan->amount }}">
+                {{ Form::submit(
+                    sprintf('Subscribe to %s plan for €%u', $plan->name, $plan->amount), 
+                    array('class' => 'btn btn-success btn-block')) }}
+                {{ Form::close() }}
                 </form>
               </div> <!-- /.panel-body -->
             </div> <!-- /.panel -->
