@@ -46,7 +46,13 @@ class StripeLastMonthCalculator extends StripeCalculator{
             array_push($arpu, array('date' => $date, 'value' => $this->getArpu()));
         }
 
-        return array('mrr' => $mrr, 'arr' => $arr, 'arpu' => $arpu);
+        /* Sorting arrays accordingly. */
+
+        return array(
+            'mrr' => $this->sortByDate($mrr),
+            'arr' => $this->sortByDate($arr),
+            'arpu' => $this->sortByDate($arpu),
+        );
     }
 
     /**
@@ -54,6 +60,24 @@ class StripeLastMonthCalculator extends StripeCalculator{
      *                  PRIVATE SECTION                   *
      * ================================================== *
      */
+
+    /**
+     * sortByDate
+     * --------------------------------------------------
+     * Sorting a multidimensional dataset by date.
+     * @param dataSet The data to be sorted.
+     * @return array the sorted dataset.
+     * --------------------------------------------------
+    */
+    private function sortByDate($dataSet) {
+        $dates = array();
+        foreach($dataSet as $key=>$data) {
+            $dates[$key] = $data['date'];
+        }
+        array_multisort($dates, SORT_ASC, $dataSet);
+        return $dataSet;
+
+    }
 
     /**
      * filterEvents
