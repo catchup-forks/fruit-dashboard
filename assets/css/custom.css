@@ -51,6 +51,9 @@ body {
   bottom: 25px;
   right: 25px;
 }
+.has-margin-vertical-sm {
+  margin: 5px;
+}
 .no-padding {
   padding: 0;
 }

@@ -1,10 +1,12 @@
 <div class="text-white text-center drop-shadow quote">
-  <p class="lead body" id="quote">
-    {{ $widget->getData()['quote'] }}
-  </p>
-  <p class="source" id="author">
-    {{ $widget->getData()['author'] }}
-  </p>
+  <div class="has-margin-vertical-sm">
+    <p class="lead body" id="quote">
+      {{ $widget->getData()['quote'] }}
+    </p>
+    <p class="source" id="author">
+      {{ $widget->getData()['author'] }}
+    </p>  
+  </div> <!-- /.container -->
 </div>
 
 @section('widgetScripts')
