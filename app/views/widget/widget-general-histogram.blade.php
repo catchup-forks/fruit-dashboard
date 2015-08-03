@@ -1,3 +1,9 @@
+<div class="text-white drop-shadow">
+  {{ $widget->descriptor->name }}
+  <span class="pull-right">
+  ${{ $widget->getLatestData() }}
+  </span>
+</div>
 <div class="panel-transparent">
     @if ($widget->state == 'missing_data')
       Data not present yet!
@@ -36,7 +42,9 @@ $(document).ready(function(){
   var {{$widget->descriptor->type}}Ctx = document.getElementById("{{ $widget->descriptor->type }}-chart").getContext("2d");
   var {{ $widget->descriptor->type }}Chart = new Chart({{ $widget->descriptor->type }}Ctx).Line({{ $widget->descriptor->type }}Data,
     {
-      responsive:true
+      responsive:true,
+      pointHitDetectionRadius : 2,
+      pointDotRadius : 3,
     });
 
    $("#refresh").click(function () {
@@ -49,6 +57,9 @@ $(document).ready(function(){
         $("#author").html(data['author']);
       });
    });
+
+
+
   @endif
 });
 

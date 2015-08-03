@@ -123,6 +123,31 @@ class StripeDataCollector
     }
 
     /**
+     * getNumberOfCustomers
+     * --------------------------------------------------
+     * Getting the number of customers.
+     * @return The number of customers.
+     * @throws StripeNotConnected
+     * --------------------------------------------------
+    */
+    public function getNumberOfCustomers($update=False) {
+        if ($update) {
+            $this->updateSubscriptions();
+        }
+
+        $customerIDs = array();
+
+        foreach (StripePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
+            foreach (StripeSubscription::where('plan_id', $stripePlan->id)->get() as $subscription) {
+                if (!in_array($subscription->customer, $customerIDs)) {
+                    array_push($customerIDs, $subscription->customer);
+                }
+            }
+        }
+        return count($customerIDs);
+    }
+
+    /**
      * getCustomers
      * Getting a list of customers.
      * --------------------------------------------------
@@ -131,18 +156,37 @@ class StripeDataCollector
      * --------------------------------------------------
     */
     public function getCustomers() {
-        // Connecting to stripe, and making query.
-        try {
-            $decodedData = json_decode(
-                $this->loadJSON(\Stripe\Customer::all()), TRUE);
-        } catch (\Stripe\Error\Authentication $e) {
-            // Access token expired. Calling handler.
-            $this->getNewAccessToken();
+        $rawData = array();
+        $decodedData = array();
+        $hasMore = TRUE;
+        $startingAfter = null;
+
+        while ($hasMore) {
+            try {
+                /* Collecting events with pagination. */
+                if ($startingAfter) {
+                    $rawData = \Stripe\Customer::all(array(
+                        "limit"          => 100,
+                        "starting_after" => $startingAfter
+                    ));
+                } else {
+                    $rawData = \Stripe\Customer::all(array("limit" => 100));
+                }
+                /* Adding objects to collection. */
+                $currentData = json_decode($this->loadJSON($rawData), TRUE);
+                $decodedData = array_merge($decodedData, $currentData['data']);
+
+            } catch (\Stripe\Error\Authentication $e) {
+                // Access token expired. Calling handler.
+                $this->getNewAccessToken();
+            }
+            $hasMore = $currentData['has_more'];
+            $startingAfter = end($currentData['data'])['id'];
         }
 
         // Getting the plans.
         $customers = [];
-        foreach($decodedData['data'] as $customer) {
+        foreach($decodedData as $customer) {
             array_push($customers, $customer);
         }
 
@@ -159,11 +203,12 @@ class StripeDataCollector
      * --------------------------------------------------
     */
     public function getEvents() {
-        // Connecting to stripe, and making query.
+        /* Connecting to stripe, and making query. */
         $rawData = array();
         $decodedData = array();
         $hasMore = TRUE;
         $startingAfter = null;
+
         while ($hasMore) {
             try {
                 /* Collecting events with pagination. */
