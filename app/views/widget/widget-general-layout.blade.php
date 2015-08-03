@@ -18,8 +18,10 @@
   <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered" id="refresh"></span>
   @endif
 
-  @include($widget->descriptor->getTemplateName(), [
-    'widget' => $widget,
-  ])
+  @if ($widget->state == 'active')
+    @include($widget->descriptor->getTemplateName(), [
+      'widget' => $widget,
+    ])
+  @endif
 
 </li>

@@ -82,6 +82,7 @@
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
     {{ HTML::script('js/jquery.growl.js'); }}
     {{ HTML::script('js/Chart.js'); }}
+    {{ HTML::script('https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->
@@ -99,9 +100,18 @@
     @show
     <!-- /Widget specific scripts -->
 
-    @section ('pageAlert')
+    <!-- Page alerts -->
+    @section('pageAlert')
       @include('meta.page-alerts')
     @show
+    <!-- /Page alerts -->
+
+    <!-- TimeZone detection -->
+    @section ('timezoneDetection')
+      @include('meta.timezone-detection')
+    @show
+    <!-- TimeZone detection -->
+    
   @show
 
 </html>

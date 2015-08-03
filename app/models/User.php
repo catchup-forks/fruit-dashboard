@@ -81,7 +81,6 @@ class User extends Eloquent implements UserInterface
      */
     public function getDaysRemainingFromTrial() {
         /* Get the difference */
-        error_log($this->created_at);
         $diff = Carbon::now()->diffInDays($this->created_at);
 
         /* Check if trial period is still available for the user */

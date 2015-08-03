@@ -31,4 +31,9 @@ Route::group([
         'as' => 'disconnect.braintree',
         'uses' => 'SettingsController@anyDisconnectBraintree'
     ));
+
+    Route::post('timezone', array(
+        'as' => 'settings.timezone',
+        'uses' => 'SettingsController@postTimeZone'
+    ));
 });

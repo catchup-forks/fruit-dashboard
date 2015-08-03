@@ -28,16 +28,12 @@
 
   @show
 
-  @section ('pageAlert')
-  @include('meta.page-alerts')
-  @show
-
   @section('pageContent')
-  @show
+  @show  
 
   @section('footer')
   @include('meta.footer')
   @show
-
+ 
 </body>
 @stop

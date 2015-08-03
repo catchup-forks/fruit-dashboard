@@ -175,7 +175,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         /* Send message to console */
-        error_log('WidgetDescriptorSeeder | All WidgetDescriptors updated');
+        Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated');
     }
 
 } /* WidgetDescriptorSeeder */

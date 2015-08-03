@@ -82,6 +82,23 @@ class SettingsController extends BaseController
         /* Redirect */
         return Redirect::route('settings.settings');
     }
+
+    /**
+     * postTimeZone
+     * --------------------------------------------------
+     * @return Sets the user TimeZone and stores to the session.
+     * --------------------------------------------------
+     */
+    public function postTimeZone() {
+        /* Get timezone from the POST data */
+        if (Input::get('timeZone')) {
+            Session::put('timeZone', Input::get('timeZone'));
+        }
+
+        /* Return empty json */
+        return Response::json();
+    }
+
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *

@@ -200,14 +200,11 @@ class Subscription extends Eloquent
         /* Initialize variables */
         $result = ['errors' => FALSE, 'messages' => ''];
 
-        error_log('recece');
-
         /* Cancel braintree subscription */
         $cancellationResult = Braintree_Subscription::cancel($this->braintree_subscription_id);
 
         /* Error */
         if (!$cancellationResult->success) {
-            error_log('not success');
             /* Get and store errors */
             foreach($cancellationResult->errors->deepAll() AS $error) {
                 /* SKIP | Subscription has already been canceled. */
