@@ -90,6 +90,11 @@ class StripeCalculator
      * --------------------------------------------------
     */
     public function getArpu($update=False) {
-        return $this->getArr($update) / count($this->dataCollector->getCustomers());
+        $customerNumber = $this->dataCollector->getNumberOfCustomers($update);
+        /* Avoiding division by zero. */
+        if ($customerNumber == 0) {
+            return 0;
+        }
+        return $this->getArr($update) / $customerNumber;
     }
 } /* StripeCalculator */

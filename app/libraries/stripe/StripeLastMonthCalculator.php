@@ -1,6 +1,7 @@
 <?php
 
-class StripeLastMonthCalculator extends StripeCalculator{
+class StripeLastMonthCalculator extends StripeCalculator
+{
     /* -- Class properties -- */
     public static $allowedEventTypes = array(
         'customer.subscription.created',
@@ -109,7 +110,7 @@ class StripeLastMonthCalculator extends StripeCalculator{
      * mirrorDay
      * --------------------------------------------------
      * Trying to mirror the specific date, to our DB.
-     * @date The date on which we're mirroring.
+     * @param date The date on which we're mirroring.
      * --------------------------------------------------
     */
     private function mirrorDay($date) {
@@ -119,8 +120,7 @@ class StripeLastMonthCalculator extends StripeCalculator{
                 switch ($event['type']) {
                     case 'customer.subscription.created': $this->handleSubscriptionCreation($event); break;
                     case 'customer.subscription.updated': $this->handleSubscriptionUpdate($event); break;
-                    case 'customer.subscription.deleted': $this->handleSubscriptionDeletion($event); break;
-                    default:;
+                    case 'customer.subscription.deleted': $this->handleSubscriptionDeletion($event); break; default:;
                 }
                 /* Making sure we're done with the event. */
                 unset($this->events[$key]);
@@ -133,7 +133,7 @@ class StripeLastMonthCalculator extends StripeCalculator{
      * --------------------------------------------------
      * Handling subscription deletion.
      * On deletion we'll have to create a subscription.
-     * @event The specific stripe event.
+     * @param eventThe specific stripe event.
      * --------------------------------------------------
     */
     private function handleSubscriptionDeletion($event) {
@@ -166,11 +166,19 @@ class StripeLastMonthCalculator extends StripeCalculator{
      * handleSubscriptionUpdate
      * --------------------------------------------------
      * Handling subscription update.
-     * @event The specific stripe event.
+     * @param eventThe specific stripe event.
      * --------------------------------------------------
     */
     private function handleSubscriptionUpdate($event) {
-        Log::info("update");
+        /* Check if a plan's been changed./ */
+        if (isset($event['data']['previous_attributes']['plan'])) {
+            $subscriptionData = $event['data']['object'];
+
+            $subscription = StripeSubscription::where('subscription_id', $subscriptionData['id'])->first();
+            $newPlan = StripePlan::where('user_id', $this->user->id)->where('plan_id', $subscriptionData['plan']['id'])->first();
+            $subscription->plan()->associate($newPlan);
+            $subscription->save();
+        }
     }
 
     /**
@@ -178,7 +186,7 @@ class StripeLastMonthCalculator extends StripeCalculator{
      * --------------------------------------------------
      * Handling subscription creation.
      * On creation we'll have to delete a subscription.
-     * @event The specific stripe event.
+     * @param eventThe specific stripe event.
      * --------------------------------------------------
     */
     private function handleSubscriptionCreation($event) {

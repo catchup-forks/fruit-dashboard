@@ -280,17 +280,17 @@ class StripeConnector
 
         /* Adding widgets */
         $mrrWidget = new StripeMrrWidget(array(
-            'position'  => '{"col":1,"row":1,"size_x":1,"size_y":1}',
+            'position'  => '{"col":1,"row":7,"size_x":4,"size_y":4}',
             'state'     => 'active',
         ));
 
         $arrWidget = new StripeArrWidget(array(
-            'position'  => '{"col":2,"row":1,"size_x":1,"size_y":1}',
+            'position'  => '{"col":5,"row":7,"size_x":4,"size_y":4}',
             'state'     => 'active',
         ));
 
         $arpuWidget = new StripeArpuWidget(array(
-            'position'  => '{"col":3,"row":1,"size_x":1,"size_y":1}',
+            'position'  => '{"col":9,"row":7,"size_x":4,"size_y":4}',
             'state'     => 'active',
         ));
 

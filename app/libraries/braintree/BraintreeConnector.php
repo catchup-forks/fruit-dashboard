@@ -149,17 +149,17 @@ class BraintreeConnector
 
         /* Adding widgets */
         $mrrWidget = new BraintreeMrrWidget(array(
-            'position'  => '{"col":1,"row":1,"size_x":1,"size_y":1}',
+            'position'  => '{"col":1,"row":7,"size_x":4,"size_y":4}',
             'state'     => 'active',
         ));
 
         $arrWidget = new BraintreeArrWidget(array(
-            'position'  => '{"col":2,"row":1,"size_x":1,"size_y":1}',
+            'position'  => '{"col":5,"row":7,"size_x":4,"size_y":4}',
             'state'     => 'active',
         ));
 
         $arpuWidget = new BraintreeArpuWidget(array(
-            'position'  => '{"col":3,"row":1,"size_x":1,"size_y":1}',
+            'position'  => '{"col":9,"row":7,"size_x":4,"size_y":4}',
             'state'     => 'active',
         ));
 
