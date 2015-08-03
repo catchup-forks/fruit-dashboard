@@ -52,7 +52,8 @@ body {
   right: 25px;
 }
 .has-margin-vertical-sm {
-  margin: 5px;
+  margin-left: 25px;
+  margin-right: 25px;
 }
 .no-padding {
   padding: 0;
