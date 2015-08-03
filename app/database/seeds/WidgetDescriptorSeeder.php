@@ -85,6 +85,17 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Todo list'],
+            array(
+                'name'        => 'Todo list',
+                'description' => 'Orgainze your daily/wekkly todos in this widget',
+                'type'        => 'todo_list',
+                'category'    => 'personal',
+                'is_premium'  => FALSE,
+            )
+        );
+
         /* Financial widgets | STRIPE */
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Stripe MRR'],
