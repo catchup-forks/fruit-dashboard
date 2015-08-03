@@ -155,33 +155,44 @@
 
               {{-- Subscription settings - Trial --}}
               <div class="row">
-                <div class="col-md-6">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h3 class="panel-title">
-                        <span class="fa fa-calendar-times-o"></span>
-                        Your trial ends in
-                      </h3>
-                    </div> <!-- /.panel-heading -->
-                    <div class="panel-body text-center">
-                      <h3>{{ Auth::user()->getDaysRemainingFromTrial() }} day(s)</h3>
-                      <small class="text-muted">on {{ Auth::user()->getTrialEndDate() }}</small>
-                    </div> <!-- /.panel-body -->
-                  </div> <!-- /.panel -->
-                </div> <!-- /.col-md-6 -->
-                <div class="col-md-6">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">
-                      <h3 class="panel-title">
-                        <span class="fa fa-tags"></span>
-                        Plans and pricing
-                      </h3>
-                    </div> <!-- /.panel-heading -->
-                    <div class="panel-body">
-                      <a href="{{ route('payment.plans') }}" class="btn btn-block btn-success">Change your plan</a>
-                    </div> <!-- /.panel-body -->
-                  </div> <!-- /.panel -->
-                </div> <!-- /.col-md-6 -->
+                <div class="col-md-12">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label for="subscription" class="col-sm-3 control-label">
+                        Current plan
+                      </label>
+                      <div class="col-sm-6">
+                        <p class="form-control-static">
+                          {{ Auth::user()->subscription->plan->name }}
+                        </p>
+                      </div> <!-- /.col-sm-6 -->
+                      <div class="col-sm-2">
+                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Change your plan</a>
+                      </div> <!-- /.col-sm-2 -->
+                    </div> <!-- /.form-group -->
+                  </form>
+                </div> <!-- /.col-md-12 -->
+              </div> <!-- /.row -->
+              <div class="row">
+                <div class="col-md-12 text-center">
+                  @if ( Auth::user()->getDaysRemainingFromTrial() > 0 )
+                    
+                    <p>
+                      Your trial ends in 
+                      <strong>
+                        {{ Auth::user()->getDaysRemainingFromTrial() }} day(s)
+                      </strong>
+                      <small class="text-muted">on {{ Auth::user()->getTrialEndDate() }}.</small>
+                    </p>
+                                
+                  @else
+
+                    <p>
+                      Your trial has ended on {{ Auth::user()->getTrialEndDate() }}. Change your plan to use the premium features.
+                    </p>
+
+                  @endif
+                </div> <!-- /.col-md-12 -->
               </div> <!-- /.row -->
               {{-- Subscription settings - Trial --}}
 
@@ -220,9 +231,9 @@
                 
                 <div class="col-md-4">
                   @if(Auth::user()->isStripeConnected())
-                    <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
+                    <a class="btn btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
                   @else
-                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
+                    <a class="btn btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
                   @endif
                 </div> <!-- /.col-md-4 -->
               
@@ -242,9 +253,9 @@
 
                 <div class="col-md-4">
                   @if(Auth::user()->isBraintreeConnected())
-                    <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.braintree') }}">Disconnect</a>
+                    <a class="btn btn-danger pull-right" href="{{ route('disconnect.braintree') }}">Disconnect</a>
                   @else
-                    <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
+                    <a class="btn btn-success pull-right" href="{{ route('signup-wizard.financial-connections') }}">Connect</a>
                   @endif
                 </div> <!-- /.col-md-4 -->
               </div> <!-- /.row -->
