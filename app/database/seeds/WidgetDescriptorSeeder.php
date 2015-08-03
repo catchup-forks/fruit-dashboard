@@ -92,7 +92,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Stripe MRR',
                 'description' => 'Stripe Monthly recurring revenue',
                 'type'        => 'stripe_mrr',
-                'category'    => 'financial',
+                'category'    => 'stripe',
                 'is_premium'  => TRUE,
             )
         );
@@ -103,7 +103,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Stripe ARR',
                 'description' => 'Stripe Annual recurring revenue',
                 'type'        => 'stripe_arr',
-                'category'    => 'financial',
+                'category'    => 'stripe',
                 'is_premium'  => TRUE,
             )
         );
@@ -114,7 +114,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Stripe ARPU',
                 'description' => 'Stripe Average revenue per user',
                 'type'        => 'stripe_arpu',
-                'category'    => 'financial',
+                'category'    => 'stripe',
                 'is_premium'  => TRUE,
             )
         );
@@ -125,7 +125,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Stripe events',
                 'description' => 'Your stripe events',
                 'type'        => 'stripe_events',
-                'category'    => 'financial',
+                'category'    => 'stripe',
                 'is_premium'  => TRUE,
             )
         );
@@ -136,7 +136,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Braintree MRR',
                 'description' => 'Braintree Monthly recurring revenue',
                 'type'        => 'braintree_mrr',
-                'category'    => 'financial',
+                'category'    => 'braintree',
                 'is_premium'  => TRUE,
             )
         );
@@ -147,7 +147,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Braintree ARR',
                 'description' => 'Braintree Annual recurring revenue',
                 'type'        => 'braintree_arr',
-                'category'    => 'financial',
+                'category'    => 'braintree',
                 'is_premium'  => TRUE,
             )
         );
@@ -158,7 +158,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Braintree ARPU',
                 'description' => 'Braintree Average revenue per user',
                 'type'        => 'braintree_arpu',
-                'category'    => 'financial',
+                'category'    => 'braintree',
                 'is_premium'  => TRUE,
             )
         );

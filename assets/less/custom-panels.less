@@ -1,0 +1,15 @@
+// PANELS
+
+.panel-transparent {
+  background: none;
+}
+
+.panel-transparent .panel-heading {
+  background: darken(@panel-bg, @darken); /* Fallback */
+  background: fade(darken(@panel-bg, @darken), @alpha);
+}
+
+.panel-transparent .panel-body {
+  background: @panel-bg; /* Fallback */
+  background: fade(@panel-bg, @alpha);
+}

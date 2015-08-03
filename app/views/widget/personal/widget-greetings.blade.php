@@ -1,4 +1,4 @@
-<h2 class="text-white text-center">
+<h2 class="text-white text-center drop-shadow">
   Good <span class="greeting"></span>@if(isset(Auth::user()->name)), {{ Auth::user()->name }}@endif!
 </h2>
   

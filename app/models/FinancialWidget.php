@@ -1,6 +1,6 @@
 <?php
 
-abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidget
+abstract class FinancialWidget extends Widget implements iCronWidget, iAjaxWidget
 {
 
     /* -- Settings -- */
@@ -30,6 +30,19 @@ abstract class FinancialWidget extends Widget implements iDataWidget, iCronWidge
      */
 
     abstract public function getCurrentValue();
+
+    /**
+     * handleAjax
+     * --------------------------------------------------
+     * Handling ajax request, aka saving text.
+     * @param $postData the data from the request.
+     * @return string, the note text.
+     * --------------------------------------------------
+    */
+    public function handleAjax($postData) {
+        $this->collectData();
+        return $this->getData();
+    }
 
     public function collectData() {
 

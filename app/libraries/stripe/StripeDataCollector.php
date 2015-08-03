@@ -37,7 +37,7 @@ class StripeDataCollector
     public function updatePlans() {
         // Connecting to stripe, and making query.
         try {
-            $decoded_data = json_decode(
+            $decodedData = json_decode(
                 $this->loadJSON(\Stripe\Plan::all()), TRUE);
         } catch (\Stripe\Error\Authentication $e) {
             // Access token expired. Calling handler.
@@ -46,7 +46,7 @@ class StripeDataCollector
 
         // Getting the plans.
         $plans = [];
-        foreach($decoded_data['data'] as $plan) {
+        foreach($decodedData['data'] as $plan) {
             $new_plan = new StripePlan(array(
                 'plan_id'        => $plan['id'],
                 'name'           => $plan['name'],
@@ -87,21 +87,22 @@ class StripeDataCollector
         $subscriptions = array();
 
         foreach ($this->getCustomers() as $customer) {
-            $decoded_data = json_decode(
+            $decodedData = json_decode(
                 $this->loadJSON(\Stripe\Customer::retrieve($customer['id'])->subscriptions->all()),
                 TRUE);
-            foreach($decoded_data['data'] as $subscription) {
-                $new_subscription = new StripeSubscription(array(
-                    'start'       => $subscription['start'],
-                    'status'      => $subscription['status'],
-                    'customer'    => $subscription['customer'],
-                    'ended_at'    => $subscription['ended_at'],
-                    'canceled_at' => $subscription['canceled_at'],
-                    'quantity'    => $subscription['quantity'],
-                    'discount'    => $subscription['discount'],
-                    'trial_start' => $subscription['trial_start'],
-                    'trial_end'   => $subscription['trial_start'],
-                    'discount'    => $subscription['discount']
+            foreach($decodedData['data'] as $subscription) {
+               $new_subscription = new StripeSubscription(array(
+                    'subscription_id' => $subscription['id'],
+                    'start'           => $subscription['start'],
+                    'status'          => $subscription['status'],
+                    'customer'        => $subscription['customer'],
+                    'ended_at'        => $subscription['ended_at'],
+                    'canceled_at'     => $subscription['canceled_at'],
+                    'quantity'        => $subscription['quantity'],
+                    'discount'        => $subscription['discount'],
+                    'trial_start'     => $subscription['trial_start'],
+                    'trial_end'       => $subscription['trial_start'],
+                    'discount'        => $subscription['discount']
                 ));
                 $plan = StripePlan::where('plan_id', $subscription['plan']['id'])->first();
                 if ($plan === null) {
@@ -132,7 +133,7 @@ class StripeDataCollector
     public function getCustomers() {
         // Connecting to stripe, and making query.
         try {
-            $decoded_data = json_decode(
+            $decodedData = json_decode(
                 $this->loadJSON(\Stripe\Customer::all()), TRUE);
         } catch (\Stripe\Error\Authentication $e) {
             // Access token expired. Calling handler.
@@ -141,7 +142,7 @@ class StripeDataCollector
 
         // Getting the plans.
         $customers = [];
-        foreach($decoded_data['data'] as $customer) {
+        foreach($decodedData['data'] as $customer) {
             array_push($customers, $customer);
         }
 
@@ -159,23 +160,43 @@ class StripeDataCollector
     */
     public function getEvents() {
         // Connecting to stripe, and making query.
-        try {
-            $decoded_data = json_decode(
-                $this->loadJSON(\Stripe\Event::all()), TRUE);
-        } catch (\Stripe\Error\Authentication $e) {
-            // Access token expired. Calling handler.
-            $this->getNewAccessToken();
+        $rawData = array();
+        $decodedData = array();
+        $hasMore = TRUE;
+        $startingAfter = null;
+        while ($hasMore) {
+            try {
+                /* Collecting events with pagination. */
+                if ($startingAfter) {
+                    $rawData = \Stripe\Event::all(array(
+                        "limit"          => 100,
+                        "starting_after" => $startingAfter
+                    ));
+                } else {
+                    $rawData = \Stripe\Event::all(array("limit" => 100));
+                }
+                /* Adding objects to collection. */
+                $currentData = json_decode($this->loadJSON($rawData), TRUE);
+                $decodedData = array_merge($decodedData, $currentData['data']);
+
+            } catch (\Stripe\Error\Authentication $e) {
+                // Access token expired. Calling handler.
+                $this->getNewAccessToken();
+            }
+            $hasMore = $currentData['has_more'];
+            $startingAfter = end($currentData['data'])['id'];
         }
 
         // Getting the plans.
         $events = [];
-        foreach($decoded_data['data'] as $event) {
+        foreach($decodedData as $event) {
             array_push($events, $event);
         }
 
         // Return.
         return $events;
     }
+
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *

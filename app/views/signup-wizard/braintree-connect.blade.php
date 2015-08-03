@@ -45,7 +45,7 @@
               <div class="col-md-5">
                 <ol>
                   <li>Go to your Braintree Control Panel and from Account in the top menu, select API Keys.</li>
-                  <li>Select your Environment (either staging or production), copy and paste your Public and Private API keys and your Merchant ID into the relevant fields</li>
+                  <li>Select your Environment (either sandbox or production), copy and paste your Public and Private API keys and your Merchant ID into the relevant fields</li>
                 </ol>
 
                 <hr>

@@ -103,6 +103,32 @@ class BraintreeConnector
         }
 
         $this->user->connections()->where('service', 'braintree')->delete();
+
+        /* Deleting all widgets, plans, subscribtions */
+        foreach ($this->user->widgets() as $widget) {
+            if ($widget->descriptor->category == 'braintree') {
+
+                /* Saving data while it is accessible. */
+                $dataID = 0;
+                if (!is_null($widget->data)) {
+                    $dataID = $widget->data->id;
+                }
+
+                $widget->delete();
+
+                /* Deleting data if it was present. */
+                if ($dataID > 0) {
+                    Data::find($dataID)->delete();
+                }
+            }
+        }
+
+
+        /* Deleting all plans. */
+        foreach ($this->user->braintreePlans as $braintreePlan) {
+            BraintreeSubscription::where('plan_id', $braintreePlan->id)->delete();
+            $braintreePlan->delete();
+        }
     }
 
     /**

@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddWidgetDescriptorCategory extends Migration {
+class AddedSubscriptionIdToStripeSubscriptions extends Migration {
 
     /**
      * Run the migrations.
@@ -11,8 +11,8 @@ class AddWidgetDescriptorCategory extends Migration {
      * @return void
      */
     public function up() {
-        Schema::table('widget_descriptors',function($table) {
-            $table->string('category', 31);
+        Schema::table('stripe_subscriptions',function($table) {
+            $table->string('subscription_id', 32);
         });
      }
 
@@ -22,12 +22,9 @@ class AddWidgetDescriptorCategory extends Migration {
      * @return void
      */
     public function down() {
-        Schema::table('widget_descriptors',function($table) {
-            $table->dropColumn('category');
+        Schema::table('stripe_subscriptions',function($table) {
+            $table->dropColumn('subscription_id');
         });
     }
-
-
-
 
 }

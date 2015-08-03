@@ -5,6 +5,7 @@ class StripeSubscription extends Eloquent
     // -- Fields -- //
     protected $fillable = array(
         'start',
+        'subscription_id',
         'status',
         'customer',
         'ended_at',

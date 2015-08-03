@@ -1,4 +1,4 @@
-<div class="text-white text-center quote">
+<div class="text-white text-center drop-shadow quote">
   <p class="lead body" id="quote">
     {{ $widget->getData()['quote'] }}
   </p>

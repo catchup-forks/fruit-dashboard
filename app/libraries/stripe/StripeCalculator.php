@@ -14,8 +14,8 @@
 class StripeCalculator
 {
     /* -- Class properties -- */
-    private $user;
-    private $dataCollector;
+    protected $user;
+    protected $dataCollector;
 
     /* -- Constructor -- */
     function __construct($user) {
@@ -47,8 +47,8 @@ class StripeCalculator
         }
 
         // Iterating through the plans and subscriptions.
-        foreach ($this->user->stripePlans as $plan) {
-            foreach ($plan->subscriptions as $subscription) {
+        foreach ($this->user->stripePlans()->get() as $plan) {
+            foreach ($plan->subscriptions()->get() as $subscription) {
                 // Dealing only with active subscriptions.
                 if ($subscription->status == 'active') {
                     //

@@ -1,0 +1,20 @@
+// GRIDSTER AND WIDGETS
+
+.gridster ul li {
+  list-style: none;
+  cursor: default;
+}
+
+.gridster ul li:hover,
+.hovered {
+  background: @gridster-bg; /* Fallback */
+  background: fade(@gridster-bg, @alpha/2);
+}
+
+.gs-w span.display-hovered {
+  display: none;
+}
+
+.gs-w:hover span.display-hovered {
+  display: inline-block;
+}

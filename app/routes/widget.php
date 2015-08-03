@@ -56,6 +56,12 @@ Route::group([
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ]);
 
+    Route::post('get/descriptor/', [
+        'before' => 'auth',
+        'as'    => 'widget.get-descriptor',
+        'uses'  => 'GeneralWidgetController@getWidgetDescriptor',
+    ]);
+
     Route::post('ajax-handler/{widgetID}', [
         'before' => 'auth',
         'as'    => 'widget.ajax-handler',
