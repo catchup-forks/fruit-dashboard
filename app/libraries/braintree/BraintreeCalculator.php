@@ -82,6 +82,12 @@ class BraintreeCalculator
      * --------------------------------------------------
     */
     public function getArpu($update=False) {
-        return $this->getArr($update) / count($this->dataCollector->getCustomers());
+        $customerNumber = count($this->dataCollector->getCustomers());
+
+        /* Avoiding division by zero. */
+        if ($customerNumber == 0) {
+            return 0;
+        }
+        return $this->getArr($update) / $customerNumber;
     }
 } /* BraintreeCalculator */

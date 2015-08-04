@@ -175,22 +175,20 @@
               </div> <!-- /.row -->
               <div class="row">
                 <div class="col-md-12 text-center">
-                  @if ( Auth::user()->getDaysRemainingFromTrial() > 0 )
-                    
-                    <p>
-                      Your trial ends in 
-                      <strong>
-                        {{ Auth::user()->getDaysRemainingFromTrial() }} day(s)
-                      </strong>
-                      <small class="text-muted">on {{ Auth::user()->getTrialEndDate() }}.</small>
-                    </p>
-                                
-                  @else
-
-                    <p>
-                      Your trial has ended on {{ Auth::user()->getTrialEndDate() }}. Change your plan to use the premium features.
-                    </p>
-
+                  @if (Auth::user()->subscription->getTrialInfo()['enabled'])
+                    @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
+                      <p>
+                        Your trial ends in 
+                        <strong>
+                          {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
+                        </strong>
+                        <small class="text-muted">on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}.</small>
+                      </p>
+                    @else
+                      <p>
+                        Your trial has ended on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
+                      </p>
+                    @endif
                   @endif
                 </div> <!-- /.col-md-12 -->
               </div> <!-- /.row -->
@@ -340,14 +338,5 @@
                }
         });
       });
-    </script>
-
-    {{-- Initialize tooltips --}}
-    <script type="text/javascript">
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-          html: true;
-        })
-      })
     </script>
   @stop

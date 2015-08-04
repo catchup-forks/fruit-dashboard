@@ -188,10 +188,8 @@ class SignupWizardController extends BaseController
                 } catch (StripeConnectFailed $e) {
                     $messages = array();
                     array_push($messages, $e->getMessage());
+                    Log::info($messages);
                 }
-
-                /* Connect to stripe */
-                $stripeconnector->connect();
             }
         }
 
@@ -260,11 +258,8 @@ class SignupWizardController extends BaseController
         $subscription = new Subscription;
         $subscription->user()->associate($user);
         $subscription->plan()->associate($plan);
-        $subscription->status               = 'active';
-        $subscription->current_period_start = Carbon::now();
-        $subscription->current_period_end   = Carbon::now()->addDays(SiteConstants::getTrialPeriodInDays());
-        $subscription->braintree_customer_id          = null;
-        $subscription->braintree_payment_method_token = null;
+        $subscription->status = 'active';
+        $subscription->trial_status = 'possible';
 
         /* Save subscription */
         $subscription->save();

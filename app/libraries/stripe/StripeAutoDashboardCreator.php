@@ -1,6 +1,6 @@
 <?php
 
-class StripeLastMonthCalculator extends StripeCalculator
+class StripeAutoDashboardCreator
 {
     /* -- Class properties -- */
     public static $allowedEventTypes = array(
@@ -8,20 +8,156 @@ class StripeLastMonthCalculator extends StripeCalculator
         'customer.subscription.updated',
         'customer.subscription.deleted'
     );
-    private $events;
 
-    /* -- Constructor -- */
-    function __construct($user) {
-        parent::__construct($user);
-        $this->events = $this->dataCollector->getEvents();
-        $this->filterEvents();
+    /**
+     * The stripe events.
+     *
+     * @var array
+     */
+    private $events = null;
+
+    /**
+     * The stripe calculator object.
+     *
+     * @var StripeCalculator
+     */
+    private $calculator = null;
+
+    /**
+     * The user object.
+     *
+     * @var User
+     */
+    private $user = null;
+
+    /**
+     * All calculated widgets.
+     *
+     * @var array
+     */
+    private $widgets = array();
+
+    /**
+     * fire
+     * --------------------------------------------------
+     * Main function of the job.
+     * @param $job, the job instance.
+     * @param $data, array containing user_id.
+     * @throws StripeNotConnected
+     * --------------------------------------------------
+    */
+    public function fire($job, $data) {
+        /* Getting the user */
+        if ( ! isset($data['user_id'])) {
+            return;
+        }
+        $this->user = User::find($data['user_id']);
+
+        if (is_null($this->user)) {
+            /* User not found */
+            return;
+        }
+
+        /* Creating dashboard. */
+        $this->createDashboard();
+
+        /* Creating calculator. */
+        $this->calculator = new StripeCalculator($this->user);
+        $this->events = $this->calculator->getCollector()->getEvents();
+
+        /* Populate dashboard. */
+        $this->populateDashboard();
+
+        /* Change trial period settings */
+        $this->user->subscription->changeTrialState('active');
     }
 
     /**
      * ================================================== *
-     *                   PUBLIC SECTION                   *
+     *                  PRIVATE SECTION                   *
      * ================================================== *
+    */
+
+    /**
+     * createDashboard
+     * --------------------------------------------------
+     * Creating a dashboard dedicated to stripe widgets.
+     * --------------------------------------------------
      */
+    private function createDashboard() {
+        /* Creating dashboard. */
+        $dashboard = new Dashboard(array(
+            'name'       => 'Stripe dashboard',
+            'background' => TRUE,
+            'number'     => $this->user->dashboards->max('number') + 1
+        ));
+        $dashboard->user()->associate($this->user);
+        $dashboard->save();
+
+        /* Adding widgets */
+        $mrrWidget = new StripeMrrWidget(array(
+            'position' => '{"col":2,"row":1,"size_x":9,"size_y":6}',
+            'state'    => 'loading',
+        ));
+
+        $arrWidget = new StripeArrWidget(array(
+            'position' => '{"col":1,"row":7,"size_x":5,"size_y":5}',
+            'state'    => 'loading',
+        ));
+
+        $arpuWidget = new StripeArpuWidget(array(
+            'position' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
+            'state'    => 'loading',
+        ));
+
+        /* Associating dashboard */
+        $mrrWidget->dashboard()->associate($dashboard);
+        $arrWidget->dashboard()->associate($dashboard);
+        $arpuWidget->dashboard()->associate($dashboard);
+
+        /* Saving widgets */
+        $mrrWidget->save();
+        $arrWidget->save();
+        $arpuWidget->save();
+
+        $this->widgets = array(
+            'mrr'  => $mrrWidget,
+            'arr'  => $arrWidget,
+            'arpu' => $arpuWidget,
+        );
+    }
+
+    /**
+     * populateDashboard
+     * --------------------------------------------------
+     * Populating the widgets with data.
+     * --------------------------------------------------
+     */
+    private function populateDashboard() {
+        $mrrWidget  = $this->widgets['mrr'];
+        $arrWidget  = $this->widgets['arr'];
+        $arpuWidget = $this->widgets['arpu'];
+
+        /* Creating data for the last 30 days. */
+        $metrics = $this->getMetrics();
+
+        $mrrWidget->data->raw_value = json_encode($metrics['mrr']);
+        $arrWidget->data->raw_value = json_encode($metrics['arr']);
+        $arpuWidget->data->raw_value = json_encode($metrics['arpu']);
+
+        $mrrWidget->data->save();
+        $arrWidget->data->save();
+        $arpuWidget->data->save();
+
+        $mrrWidget->state = 'active';
+        $arrWidget->state = 'active';
+        $arpuWidget->state = 'active';
+
+        /* Saving widgets */
+        $mrrWidget->save();
+        $arrWidget->save();
+        $arpuWidget->save();
+    }
 
     /**
      * getLastMonthData
@@ -30,9 +166,9 @@ class StripeLastMonthCalculator extends StripeCalculator
      * @return All metrics in an array.
      * --------------------------------------------------
     */
-    public function getLastMonthData() {
+    private function getMetrics() {
         /* Updating subscriptions to be up to date. */
-        $this->dataCollector->updateSubscriptions();
+        $this->calculator->getCollector()->updateSubscriptions();
 
         $mrr = array();
         $arr = array();
@@ -42,13 +178,12 @@ class StripeLastMonthCalculator extends StripeCalculator
             /* Calculating the date to mirror. */
             $date = Carbon::now()->subDays($i)->toDateString();
             $this->mirrorDay($date);
-            array_push($mrr, array('date' => $date, 'value' => $this->getMrr()));
-            array_push($arr, array('date' => $date, 'value' => $this->getArr()));
-            array_push($arpu, array('date' => $date, 'value' => $this->getArpu()));
+            array_push($mrr, array('date' => $date, 'value' => $this->calculator->getMrr()));
+            array_push($arr, array('date' => $date, 'value' => $this->calculator->getArr()));
+            array_push($arpu, array('date' => $date, 'value' => $this->calculator->getArpu()));
         }
 
         /* Sorting arrays accordingly. */
-
         return array(
             'mrr' => $this->sortByDate($mrr),
             'arr' => $this->sortByDate($arr),
@@ -56,11 +191,7 @@ class StripeLastMonthCalculator extends StripeCalculator
         );
     }
 
-    /**
-     * ================================================== *
-     *                  PRIVATE SECTION                   *
-     * ================================================== *
-     */
+
 
     /**
      * sortByDate
@@ -175,7 +306,9 @@ class StripeLastMonthCalculator extends StripeCalculator
             $subscriptionData = $event['data']['object'];
 
             $subscription = StripeSubscription::where('subscription_id', $subscriptionData['id'])->first();
+
             $newPlan = StripePlan::where('user_id', $this->user->id)->where('plan_id', $subscriptionData['plan']['id'])->first();
+
             $subscription->plan()->associate($newPlan);
             $subscription->save();
         }

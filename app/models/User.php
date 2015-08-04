@@ -71,37 +71,4 @@ class User extends Eloquent implements UserInterface
         }
         return False;
     }
-
-     /**
-     * getDaysRemainingFromTrial
-     * --------------------------------------------------
-     * Returns the remaining time from the trial period in days
-     * @return (integer) ($daysRemainingFromTrial) The number of days
-     * --------------------------------------------------
-     */
-    public function getDaysRemainingFromTrial() {
-        /* Get the difference */
-        error_log($this->created_at);
-        $diff = Carbon::now()->diffInDays($this->created_at);
-
-        /* Check if trial period is still available for the user */
-        if ($diff <= SiteConstants::getTrialPeriodInDays() ) {
-            return SiteConstants::getTrialPeriodInDays()-$diff;
-        } else {
-            return 0;
-        }
-    }
-
-     /**
-     * getTrialEndDate
-     * --------------------------------------------------
-     * Returns the trial period ending date
-     * @return (date) ($trialEndDate) The ending date
-     * --------------------------------------------------
-     */
-    public function getTrialEndDate() {
-        /* Return the date */
-        return Carbon::instance($this->created_at)->addDays(SiteConstants::getTrialPeriodInDays());
-    }
-
 }

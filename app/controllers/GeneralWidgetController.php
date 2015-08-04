@@ -205,7 +205,7 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function doAddWidget($descriptorID) {
-
+        $user = Auth::user();
         /* Get the widget descriptor */
         $descriptor = WidgetDescriptor::find($descriptorID);
         if (is_null($descriptor)) {
@@ -215,6 +215,15 @@ class GeneralWidgetController extends BaseController {
 
         /* Create new widget instance */
         $className = $descriptor->getClassName();
+
+        /* Looking for a connection */
+        if ($descriptor->category != 'personal') {
+            $connected = Connection::where('user_id', $user->id)->where('service', $descriptor->category)->first();
+            if ( ! $connected) {
+                return Redirect::route('signup-wizard.financial-connections')->
+                    with('warning', 'You have to connect the service first to add the widget.');
+            }
+        }
 
         /* Looking for existing widgets. */
         foreach (Auth::user()->widgets() as $widget) {
@@ -238,7 +247,7 @@ class GeneralWidgetController extends BaseController {
             'state'    => 'active',
             'position' => '{"size_x": 2, "size_y": 2, "row": 0, "col": 0}',
         ));
-        $widget->dashboard()->associate(Auth::user()->dashboards[0]);
+        $widget->dashboard()->associate($user->dashboards[0]);
         $widget->descriptor()->associate($descriptor);
         $widget->save();
 
