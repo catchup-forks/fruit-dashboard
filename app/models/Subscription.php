@@ -102,9 +102,14 @@ class Subscription extends Eloquent
             /* Get the customer */
             $customer = Braintree_Customer::find($this->braintree_customer_id);
             
+            $paymentMethodResult = Braintree_PaymentMethod::create([
+                'customerId' => $customer->id,
+                'paymentMethodNonce' => $paymentMethodNonce
+            ]);
+
             /* Update braintree customer and payment information */
             $this->braintree_customer_id = $customer->id;
-            $this->braintree_payment_method_token = $customer->paymentMethods()[0]->token;
+            $this->braintree_payment_method_token = $paymentMethodResult->paymentMethod->token;
             $this->save();
 
             /* Return result */
