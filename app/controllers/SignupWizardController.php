@@ -259,6 +259,7 @@ class SignupWizardController extends BaseController
         $subscription->user()->associate($user);
         $subscription->plan()->associate($plan);
         $subscription->status = 'active';
+        $subscription->trial_status = 'possible';
 
         /* Save subscription */
         $subscription->save();

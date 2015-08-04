@@ -221,7 +221,7 @@ class GeneralWidgetController extends BaseController {
             $connected = Connection::where('user_id', $user->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
                 return Redirect::route('signup-wizard.financial-connections')->
-                    with('error', 'You are not connected to the service.');
+                    with('warning', 'You have to connect the service first to add the widget.');
             }
         }
 

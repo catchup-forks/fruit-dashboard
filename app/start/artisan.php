@@ -12,3 +12,4 @@
 */
 
 Artisan::add(new CollectData);
+Artisan::add(new MigrateExternal);

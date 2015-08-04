@@ -61,7 +61,6 @@ class PaymentController extends BaseController
     }
 
 
-
     /**
      * postSubscribe
      * --------------------------------------------------
@@ -112,13 +111,13 @@ class PaymentController extends BaseController
                 ->with('error', "Something went wrong with your request, please try again.");
         }
 
-        /* Commit subscription */
+        /* Create new subscription */
         $result = $subscription->createSubscription(Input::get('payment_method_nonce'), $plan);
 
         /* Check errors */
         if ($result['errors'] == FALSE) {
             /* Return with success */
-            return Redirect::route('payment.subscribe', $planID)
+            return Redirect::route('payment.plans')
                 ->with('success', 'Your subscription was successfull.');
         } else {
             /* Return with errors */
@@ -150,8 +149,6 @@ class PaymentController extends BaseController
 
         /* Cancel subscription */
         $result = $subscription->cancelSubscription();
-
-        Log::info($result);
 
         /* Check errors */
         if ($result['errors'] == FALSE) {

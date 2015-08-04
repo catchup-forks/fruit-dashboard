@@ -24,3 +24,17 @@
     });
   </script>
 @endif
+
+@if (Session::get('warning'))
+  <script type="text/javascript">
+    $(document).ready(function() {
+      $.growl.warning({
+        title: "Warning!",
+        message: "{{ Session::get('warning')}}",
+        size: "large",
+        duration: 5000,
+        location: "br"
+      });
+    });
+  </script>
+@endif

@@ -11,6 +11,7 @@ class Subscription extends Eloquent
 
     protected $fillable = array(
         'status',
+        'trial_status',
     );
 
     /* -- Relations -- */
@@ -22,6 +23,63 @@ class Subscription extends Eloquent
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
+
+    /**
+     * getTrialInfo  
+     * --------------------------------------------------
+     * @return (array) ($trialInfo) Information about the trial period
+     * --------------------------------------------------
+     */
+    public function getTrialInfo() {
+        /* Initialize variables */
+        $trialInfo = array();
+
+        /* Trial is not active */
+        if (($this->trial_status == 'possible') or 
+            ($this->trial_status == 'disabled')) {
+            /* Update trialInfo */
+            $trialInfo['enabled'] = FALSE;
+            
+            /* Return trialInfo */
+            return $trialInfo;
+
+        /* Trial is active */
+        } else {
+            /* Handle expired trial */
+            if ($this->getDaysRemainingFromTrial() <= 0) {
+                /* Update status in db */
+                $this->changeTrialState('ended');
+            }
+
+            /* Update trialInfo */
+            $trialInfo['enabled']       = TRUE;
+            $trialInfo['daysRemaining'] = $this->getDaysRemainingFromTrial();
+            $trialInfo['endDate']       = $this->getTrialEndDate();
+            
+            /* Return trialInfo */
+            return $trialInfo;
+        }
+    }
+
+    /**
+     * changeTrialState  
+     * --------------------------------------------------
+     * @param (string) ($newState)
+     * @return Changes the trial state to the provided
+     * --------------------------------------------------
+     */
+    public function changeTrialState($newState) {
+        /* The disabled and ended states cannot be changed */
+        if (($this->trial_status == 'disabled') or 
+            ($this->trial_status == 'ended')) {
+            return ;
+
+        /* Change the state */
+        } else {
+            $this->trial_status = $newState;
+            $this->save();
+        }
+    }
 
     /**
      * createSubscription  
@@ -41,6 +99,11 @@ class Subscription extends Eloquent
         /* Create new Braintree subscription and update in DB */
         if ($result['errors'] == FALSE) {
             $result = $this->createBraintreeSubscription($newPlan);
+        }
+
+        /* If everything went OK, it means that the trial period has ended */
+        if ($result['errors'] == FALSE) {
+            $this->changeTrialState('ended');
         }
 
         /* Return the updated result */
@@ -102,6 +165,7 @@ class Subscription extends Eloquent
             /* Get the customer */
             $customer = Braintree_Customer::find($this->braintree_customer_id);
             
+            /* Create new paymentmethod with the current data */
             $paymentMethodResult = Braintree_PaymentMethod::create([
                 'customerId' => $customer->id,
                 'paymentMethodNonce' => $paymentMethodNonce
@@ -153,10 +217,11 @@ class Subscription extends Eloquent
      * --------------------------------------------------
      */
     private function createBraintreeSubscription($newPlan) {
+        /* The function assumes, that everything is OK to charge the user on Braintree */
+        
         /* Initialize variables */
         $result = ['errors' => FALSE, 'messages' => ''];
 
-        /* The function assumes, that everything is OK to charge the user on Braintree */
         /* Create Braintree subscription */
         $subscriptionResult = Braintree_Subscription::create([
           'paymentMethodToken' => $this->braintree_payment_method_token,
@@ -165,8 +230,7 @@ class Subscription extends Eloquent
 
         /* Success */
         if ($subscriptionResult->success) {
-            Log::info($subscriptionResult);
-            /* Change the subscription plan and dates to the new in our DB */
+            /* Change the subscription plan */
             $this->plan()->associate($newPlan);
             $this->braintree_subscription_id  = $subscriptionResult->subscription->id;
 
@@ -216,5 +280,38 @@ class Subscription extends Eloquent
         /* Return result */
         return $result;
     }
+
+    /**
+     * getDaysRemainingFromTrial
+     * --------------------------------------------------
+     * Returns the remaining time from the trial period in days
+     * @return (integer) ($daysRemainingFromTrial) The number of days
+     * --------------------------------------------------
+     */
+    private function getDaysRemainingFromTrial() {
+        /* Get the difference */
+        $diff = Carbon::now()->diffInDays($this->user->created_at);
+
+        /* Return the diff in days or 0 if trial has ended */
+        if ($diff <= SiteConstants::getTrialPeriodInDays() ) {
+            return SiteConstants::getTrialPeriodInDays()-$diff;
+        } else {
+            return 0;
+        }
+    }
+
+     
+    /**
+     * getTrialEndDate
+     * --------------------------------------------------
+     * Returns the trial period ending date
+     * @return (date) ($trialEndDate) The ending date
+     * --------------------------------------------------
+     */
+    private function getTrialEndDate() {
+        /* Return the date */
+        return Carbon::instance($this->user->created_at)->addDays(SiteConstants::getTrialPeriodInDays());
+    }
+
 
 }
