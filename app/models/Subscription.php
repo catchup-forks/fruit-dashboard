@@ -11,11 +11,6 @@ class Subscription extends Eloquent
 
     protected $fillable = array(
         'status',
-        'ended_at',
-        'canceled_at',
-        'current_period_start',
-        'current_period_end',
-        'discount'
     );
 
     /* -- Relations -- */
@@ -72,8 +67,6 @@ class Subscription extends Eloquent
             /* Update the DB */
             $this->plan()->associate($freePlan);
             $this->braintree_subscription_id  = null;
-            $this->current_period_start       = Carbon::now();
-            $this->current_period_end         = Carbon::now();
             $this->save();
         }
 
@@ -171,8 +164,6 @@ class Subscription extends Eloquent
             /* Change the subscription plan and dates to the new in our DB */
             $this->plan()->associate($newPlan);
             $this->braintree_subscription_id  = $subscriptionResult->subscription->id;
-            $this->current_period_start       = Carbon::now();
-            $this->current_period_end         = Carbon::now()->addMonth();
 
             /* Save object */
             $this->save();
@@ -200,14 +191,11 @@ class Subscription extends Eloquent
         /* Initialize variables */
         $result = ['errors' => FALSE, 'messages' => ''];
 
-        error_log('recece');
-
         /* Cancel braintree subscription */
         $cancellationResult = Braintree_Subscription::cancel($this->braintree_subscription_id);
 
         /* Error */
         if (!$cancellationResult->success) {
-            error_log('not success');
             /* Get and store errors */
             foreach($cancellationResult->errors->deepAll() AS $error) {
                 /* SKIP | Subscription has already been canceled. */

@@ -42,7 +42,7 @@ class PlanSeeder extends Seeder
         );
 
         /* Send message to console */
-        error_log('PlanSeeder | All Plans updated');
+        Log::info('PlanSeeder | All Plans updated');
 
     }
 

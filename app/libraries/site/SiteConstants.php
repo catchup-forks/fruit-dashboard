@@ -56,7 +56,13 @@ class SiteConstants {
      * --------------------------------------------------
      */
     public static function getTimeOfTheDay() {
-        $hour = Carbon::now()->hour;
+        /* Get TimeZone aware hour */
+        if (Session::get('timeZone')) {
+            $hour = Carbon::now(Session::get('timeZone'))->hour;
+        /* Error handling (TimeZone is not present, use Server time */
+        } else {
+            $hour = Carbon::now()->hour;
+        }
 
         /* Morning */
         if ((self::$morningStartsAt <= $hour) and ($hour < self::$afternoonStartsAt)) {
