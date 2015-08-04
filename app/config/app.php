@@ -121,8 +121,12 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 
-		# Braintree payment package
+		// Braintree payment package
 		'Bradleyboy\Laravel\BraintreeServiceProvider',
+
+		// Async Message Queue
+		'Barryvdh\Queue\AsyncServiceProvider',
+
 	),
 
 	/*

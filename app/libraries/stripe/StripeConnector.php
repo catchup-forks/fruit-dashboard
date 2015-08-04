@@ -66,8 +66,7 @@ class StripeConnector
     /**
      * connect
      * --------------------------------------------------
-     * Sets up a stripe connection with the API key.
-     * @throws StripeNotConnected
+     * Sets up a stripe connection with the API key. * @throws StripeNotConnected
      * --------------------------------------------------
      */
     public function connect() {
@@ -167,8 +166,9 @@ class StripeConnector
         $connection->user()->associate($this->user);
         $connection->save();
 
-        /* Creating custom dashboard. */
-        $this->createDashboard();
+        /* Creating custom dashboard in the background. */
+
+        Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
 
     }
 
@@ -262,69 +262,5 @@ class StripeConnector
         return $post_uri;
     }
 
-    /**
-     * createDashboard
-     * --------------------------------------------------
-     * Creating a dashboard dedicated to stripe widgets.
-     * --------------------------------------------------
-     */
-    private function createDashboard() {
-        /* Creating dashboard. */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Stripe dashboard',
-            'background' => TRUE,
-            'number'     => $this->user->dashboards->max('number') + 1
-        ));
-        $dashboard->user()->associate($this->user);
-        $dashboard->save();
-
-        /* Adding widgets */
-        $mrrWidget = new StripeMrrWidget(array(
-            'position'  => '{"col":1,"row":7,"size_x":4,"size_y":4}',
-            'state'     => 'active',
-        ));
-
-        $arrWidget = new StripeArrWidget(array(
-            'position'  => '{"col":5,"row":7,"size_x":4,"size_y":4}',
-            'state'     => 'active',
-        ));
-
-        $arpuWidget = new StripeArpuWidget(array(
-            'position'  => '{"col":9,"row":7,"size_x":4,"size_y":4}',
-            'state'     => 'active',
-        ));
-
-        /* Associating dashboard */
-        $mrrWidget->dashboard()->associate($dashboard);
-        $arrWidget->dashboard()->associate($dashboard);
-        $arpuWidget->dashboard()->associate($dashboard);
-
-        /* Saving widgets */
-        $mrrWidget->save();
-        $arrWidget->save();
-        $arpuWidget->save();
-
-        /* Creating data for the last 30 days. */
-        $calculator = new StripeLastMonthCalculator($this->user);
-        $lastMonthData = $calculator->getLastMonthData();
-
-        $mrrWidget->data->raw_value = json_encode($lastMonthData['mrr']);
-        $arrWidget->data->raw_value = json_encode($lastMonthData['arr']);
-        $arpuWidget->data->raw_value = json_encode($lastMonthData['arpu']);
-
-        $mrrWidget->data->save();
-        $arrWidget->data->save();
-        $arpuWidget->data->save();
-
-        $mrrWidget->state = 'active';
-        $arrWidget->state = 'active';
-        $arpuWidget->state = 'active';
-
-        /* Saving widgets */
-        $mrrWidget->save();
-        $arrWidget->save();
-        $arpuWidget->save();
-
-    }
 
 } /* StripeConnector */

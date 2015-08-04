@@ -40,6 +40,16 @@ abstract class FinancialWidget extends Widget implements iCronWidget, iAjaxWidge
      * --------------------------------------------------
     */
     public function handleAjax($postData) {
+        if (isset($postData['state_query'])) {
+            if ($this->state == 'loading') {
+                return array('state' => 'loading');
+            } else {
+                return array(
+                    'state'   => 'active',
+                    'entries' => $this->getHistogram()
+                );
+            }
+        }
         $this->collectData();
         return $this->getData();
     }

@@ -22,6 +22,7 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+
         return View::make('dashboard.dashboard')
             ->with('dashboards', Auth::user()->dashboards);
     }

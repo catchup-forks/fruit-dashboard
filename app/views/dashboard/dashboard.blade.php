@@ -95,6 +95,31 @@
       $('.gridster.not-visible').fadeIn(500);
 
     });
+
+    function loadWidget(widgetId, callback) {
+      var done = false;
+
+      function sendAjax() {
+        $.ajax({
+          type: "POST",
+          data: {'state_query': true},
+          url: "{{ route('widget.ajax-handler', $widget->id) }}"
+        }).done(function( data ) {
+          console.log(data);
+          if (data['state'] == 'active') {
+            $("#widget-loading-" + widgetId).hide();
+            $("#widget-wrapper-" + widgetId).show();
+            done = true;
+            callback(data);
+          }
+        });
+        if (!done) {
+          setTimeout(sendAjax, 3000)
+        }
+      }
+
+      sendAjax();
+    }
   </script>
 
   @append
