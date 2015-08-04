@@ -18,11 +18,11 @@ class UserSeeder extends Seeder
             ));
             
             /* Send message to console */
-            error_log('UserSeeder | Successfully seeded');
+            Log::info('UserSeeder | Successfully seeded');
 
         } else {
             /* Send message to console */
-            error_log('UserSeeder | No modifications were made, because the DB is not empty');
+            Log::info('UserSeeder | No modifications were made, because the DB is not empty');
         }
     }
 

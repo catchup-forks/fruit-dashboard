@@ -14,7 +14,8 @@ body {
   align-items: center;
 }
 .valign-middle {
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
 }
 .position-bl {
   position: fixed;
@@ -50,6 +51,10 @@ body {
   position: fixed;
   bottom: 25px;
   right: 25px;
+}
+.has-margin-vertical-sm {
+  margin-left: 25px;
+  margin-right: 25px;
 }
 .no-padding {
   padding: 0;
@@ -163,4 +168,31 @@ body {
 input.greetings-name:focus {
   border-bottom: 3px solid #fff;
   box-shadow: none;
+}
+.ribbon {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  z-index: 1;
+  overflow: hidden;
+  width: 75px;
+  height: 75px;
+  text-align: right;
+}
+.ribbon span {
+  font-size: 10px;
+  color: #fff;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: bold;
+  line-height: 20px;
+  transform: rotate(45deg);
+  width: 100px;
+  display: block;
+  background: #79A70A;
+  background: linear-gradient(#9bc90d 0%, #79a70a 100%);
+  box-shadow: 0 3px 10px -5px #000000;
+  position: absolute;
+  top: 19px;
+  right: -21px;
 }

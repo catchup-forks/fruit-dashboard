@@ -32,11 +32,11 @@ class InitialSeeder extends Seeder
             ));
 
             /* Send message to console */
-            error_log('InitialSeeder | Successfully seeded');
+            Log::info('InitialSeeder | Successfully seeded');
 
         } else {
             /* Send message to console */
-            error_log('InitialSeeder | No modifications were made, because the DB is not empty');
+            Log::info('InitialSeeder | No modifications were made, because the DB is not empty');
         }
     }
 
