@@ -25,6 +25,19 @@ class Subscription extends Eloquent
      */
 
     /**
+     * isOnFreePlan  
+     * --------------------------------------------------
+     * @return (array) ($trialInfo) Information about the trial period
+     * --------------------------------------------------
+     */
+    public function isOnFreePlan() {
+        /* Get the free plan */
+        $freePlan = Plan::where('name', 'Free')->first();
+        /* Return */
+        return ($this->plan->id == $freePlan->id);
+    }
+
+    /**
      * getTrialInfo  
      * --------------------------------------------------
      * @return (array) ($trialInfo) Information about the trial period
@@ -33,6 +46,15 @@ class Subscription extends Eloquent
     public function getTrialInfo() {
         /* Initialize variables */
         $trialInfo = array();
+
+        /* User is on paid plan */
+        if (!$this->isOnFreePlan()) {
+           /* Update trialInfo */
+            $trialInfo['enabled'] = FALSE;
+            
+            /* Return trialInfo */
+            return $trialInfo;
+        }
 
         /* Trial is not active */
         if (($this->trial_status == 'possible') or 
@@ -69,12 +91,22 @@ class Subscription extends Eloquent
      * --------------------------------------------------
      */
     public function changeTrialState($newState) {
-        /* The disabled and ended states cannot be changed */
-        if (($this->trial_status == 'disabled') or 
-            ($this->trial_status == 'ended')) {
+        /* The disabled state cannot be changed */
+        if ($this->trial_status == 'disabled') {
             return ;
 
-        /* Change the state */
+        /* The ended state can be changed to disabled only */
+        } elseif (($this->trial_status == 'enabled') and
+                  ($newState != 'disabled')) {
+            return ;
+
+        /* The active state can be changed to ended and disabled */
+        } elseif (($this->trial_status == 'active') and
+                  (($newState != 'ended') or 
+                   ($newstate != 'disabled'))) {
+            return ;
+
+        /* Enabled state transition */
         } else {
             $this->trial_status = $newState;
             $this->save();
@@ -103,7 +135,7 @@ class Subscription extends Eloquent
 
         /* If everything went OK, it means that the trial period has ended */
         if ($result['errors'] == FALSE) {
-            $this->changeTrialState('ended');
+            $this->changeTrialState('disabled');
         }
 
         /* Return the updated result */
@@ -130,6 +162,7 @@ class Subscription extends Eloquent
             /* Update the DB */
             $this->plan()->associate($freePlan);
             $this->braintree_subscription_id  = null;
+            $this->changeTrialState('disabled');
             $this->save();
         }
 
