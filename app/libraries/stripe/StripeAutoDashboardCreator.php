@@ -48,10 +48,11 @@ class StripeAutoDashboardCreator
     */
     public function fire($job, $data) {
         /* Getting the user */
-        if (!isset($data['user_id'])) {
+        if ( ! isset($data['user_id'])) {
             return;
         }
         $this->user = User::find($data['user_id']);
+
         if (is_null($this->user)) {
             /* User not found */
             return;
@@ -93,18 +94,18 @@ class StripeAutoDashboardCreator
 
         /* Adding widgets */
         $mrrWidget = new StripeMrrWidget(array(
-            'position'  => '{"col":1,"row":7,"size_x":4,"size_y":4}',
-            'state'     => 'loading',
+            'position' => '{"col":1,"row":7,"size_x":4,"size_y":4}',
+            'state'    => 'loading',
         ));
 
         $arrWidget = new StripeArrWidget(array(
-            'position'  => '{"col":5,"row":7,"size_x":4,"size_y":4}',
-            'state'     => 'loading',
+            'position' => '{"col":5,"row":7,"size_x":4,"size_y":4}',
+            'state'    => 'loading',
         ));
 
         $arpuWidget = new StripeArpuWidget(array(
-            'position'  => '{"col":9,"row":7,"size_x":4,"size_y":4}',
-            'state'     => 'loading',
+            'position' => '{"col":9,"row":7,"size_x":4,"size_y":4}',
+            'state'    => 'loading',
         ));
 
         /* Associating dashboard */
