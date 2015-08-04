@@ -30,12 +30,12 @@ return array(
 
 	'connections' => array(
 
-		'async' => array(
-        	'driver' => 'async',
-    	),
-
 		'sync' => array(
 			'driver' => 'sync',
+		),
+
+		'async' => array(
+			'driver' => 'async',
 		),
 
 		'beanstalkd' => array(

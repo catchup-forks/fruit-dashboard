@@ -30,6 +30,17 @@ class StripeCalculator
      */
 
     /**
+     * getCollector
+     * --------------------------------------------------
+     * Returning the data collector instance.
+     * @return the data collector.
+     * --------------------------------------------------
+    */
+    public function getCollector() {
+        return $this->dataCollector;
+    }
+
+    /**
      * getMrr
      * --------------------------------------------------
      * Calculating the MRR for the user.

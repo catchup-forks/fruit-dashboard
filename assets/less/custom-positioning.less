@@ -17,7 +17,8 @@ html, body {
 }
 
 .valign-middle {
-  vertical-align: middle;
+ display: flex;
+ align-items: center;
 }
 
 .position-bl {
@@ -60,6 +61,11 @@ html, body {
   position: fixed;
   bottom: @margin;
   right: @margin;
+}
+
+.has-margin-vertical-sm {
+  margin-left: @margin;
+  margin-right: @margin;
 }
 
 .no-padding {

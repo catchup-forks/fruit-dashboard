@@ -188,10 +188,8 @@ class SignupWizardController extends BaseController
                 } catch (StripeConnectFailed $e) {
                     $messages = array();
                     array_push($messages, $e->getMessage());
+                    Log::info($messages);
                 }
-
-                /* Connect to stripe */
-                $stripeconnector->connect();
             }
         }
 
