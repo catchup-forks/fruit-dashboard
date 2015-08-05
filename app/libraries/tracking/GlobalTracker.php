@@ -57,8 +57,7 @@ class GlobalTracker {
      * --------------------------------------------------
      */
     public function trackAll($mode, $eventData) {
-        if (App::environment('local')) {
-        //if (App::environment('production')) {
+        if (App::environment('production')) {
             /* Lazy mode */
             if ($mode=='lazy') {
                 $googleEventData = array(
