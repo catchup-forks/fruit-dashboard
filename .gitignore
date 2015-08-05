@@ -5,7 +5,9 @@ composer.lock
 
 # ---- Configurations ---- #
 .env.*.php
-/scripts
+scripts/
+bootstrap/environment.php
+app/config/local
 
 # ---- DB backups ---- #
 /db-backup
