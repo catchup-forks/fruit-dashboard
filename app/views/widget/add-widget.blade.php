@@ -140,7 +140,8 @@
 
       // Show the descriptors when the list item is clicked.
       $('.changes-image').click(
-        function() {
+        function(e) {
+          e.preventDefault();
           showDescription(getID(this));
         });
 
