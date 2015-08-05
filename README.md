@@ -10,10 +10,12 @@ Fruit Dashboard is a Chrome dashboard solution for startup companies.
 ### Clone the vagrant lamp server
   - ```git clone https://github.com/tryfruit/vagrant-ubuntu-14-04-lamp```
 
-### Make the vagrant virtual environment
+### Install the vagrant virtual environment
   - ```cd vagrant-ubuntu-14-04-lamp```
   - ```vagrant up```
   - (...wait until the installer finishes)
+
+### Log in to the vagrant virtual environment
   - ```vargrant ssh```
 
 ### Install Fruit-dashboard and necessary packages
@@ -28,10 +30,10 @@ Fruit Dashboard is a Chrome dashboard solution for startup companies.
   - Open ```http://localhost:8001/```
 
 ### The installer made you some aliases that may come handy
+  - ```alias fds='cd /var/www/fruit-dashboard/'```
+  - ```alias fdc='cd /var/www/fruit-dashboard-config/'```
+  - ```alias fdd='mysql -u root -ppassword fruitdashboarddb'```
   - ```alias fdserve='cd /var/www/fruit-dashboard/;sh serve;'```
   - ```alias fdlog='cd /var/www/fruit-dashboard/app/storage/logs/; tail -f $(ls -t * | head -1);'```
-  - ```alias fds='cd /var/www/fruit-dashboard/'```
-  - ```alias fdc='cd /var/www/fruit-dashboard/'```
-  - ```alias fdd='mysql -u root -ppassword fruitdashboarddb'```
 
 **...aaaaaand you are done. :)**
