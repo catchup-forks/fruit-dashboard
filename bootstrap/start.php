@@ -24,23 +24,11 @@ $app = new Illuminate\Foundation\Application;
 |
 */
 
+include 'environment.php';
+
 $env = $app->detectEnvironment(function()
 {
-    $hostname = gethostname();
-    if ($hostname == 'server.abfinformatika.hu')
-    {
-        if (basename(dirname(__DIR__)) == 'fd-dev.tryfruit.com') {
-            return 'development';
-        } elseif (basename(dirname(__DIR__)) == 'fd-stg.tryfruit.com') {
-            return 'staging';
-        } elseif (basename(dirname(__DIR__)) == 'dashboard.tryfruit.com') {
-            return 'production';
-        } else {
-            return 'local';
-        }
-    } else {
-        return 'local';
-    }
+    return getEnvironment();
 });
 
 /*
