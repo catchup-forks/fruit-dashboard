@@ -92,7 +92,7 @@ class BraintreeCalculator
      * --------------------------------------------------
     */
     public function getArpu($update=False) {
-        $customerNumber = count($this->dataCollector->getCustomers());
+        $customerNumber = $this->dataCollector->getNumberOfCustomers();
 
         /* Avoiding division by zero. */
         if ($customerNumber == 0) {

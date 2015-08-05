@@ -82,7 +82,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
      */
     private function createDashboard() {
-        Log::info("createDashboard");
         /* Creating dashboard. */
         $dashboard = new Dashboard(array(
             'name'       => 'Braintree dashboard',
@@ -92,8 +91,7 @@ class BraintreeAutoDashboardCreator
         $dashboard->user()->associate($this->user);
         $dashboard->save();
 
-        /* Adding widgets */
-        $mrrWidget = new BraintreeMrrWidget(array(
+        /* Adding widgets */ $mrrWidget = new BraintreeMrrWidget(array(
             'position' => '{"col":2,"row":1,"size_x":10,"size_y":6}',
             'state'    => 'loading',
         ));
@@ -132,7 +130,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
      */
     private function populateDashboard() {
-        Log::info("populateDashboard");
         $mrrWidget  = $this->widgets['mrr'];
         $arrWidget  = $this->widgets['arr'];
         $arpuWidget = $this->widgets['arpu'];
@@ -261,7 +258,8 @@ class BraintreeAutoDashboardCreator
         $newSubscription = new BraintreeSubscription(array(
             'subscription_id' => $subscription->id,
             'start'           => $subscription->firstBillingDate,
-            'status'          => Braintree_Subscription::ACTIVE
+            'status'          => Braintree_Subscription::ACTIVE,
+            'customer_id'     => $subscription->transactions[0]->customer['id']
         ));
 
         // Creating the plan if necessary.
