@@ -72,7 +72,7 @@
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getTrialInfo()['enabled'])
     <a href="{{ route('payment.plans') }}" 
-       class="position-br drop-shadow z-top" 
+       class="position-br drop-shadow z-top no-underline" 
        data-toggle="tooltip" 
        data-placement="left" 
        title=
