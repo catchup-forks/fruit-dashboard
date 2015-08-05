@@ -9,7 +9,7 @@
 
 <!-- add new widget button -->
 <div class="position-bl drop-shadow z-top">
-  <a href="{{ URL::route('widget.add') }}" alt="Add new widget" title="Add new widget">
+  <a href="{{ URL::route('widget.add') }}" alt="New widget" title="New widget">
     <span class="fa fa-plus-circle fa-2x fa-inverse color-hovered"></span>
   </a>
 </div>
@@ -24,7 +24,7 @@
     <ul class="dropdown-menu pull-right" role="menu">
         <li>
             <a href="{{ URL::route('widget.add') }}">
-                <span class="fa fa-plus-circle"></span> Add New Widget
+                <span class="fa fa-plus-circle"></span> New Widget
             </a>
         </li>
         <li>
@@ -40,6 +40,11 @@
         <li>
             <a target="_blank" href="https://github.com/tryfruit/fruit-dashboard/">
                 <span class="fa fa-puzzle-piece"></span> Contribute
+            </a>
+        </li>
+        <li>
+            <a href="{{ URL::route('payment.plans') }}">
+                <span class="fa fa-tag"></span> Plans
             </a>
         </li>
         @if (Auth::check() && Auth::user()->id==1)

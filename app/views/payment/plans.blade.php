@@ -55,7 +55,7 @@
         <div class="col-md-4">
           <div class="panel panel-default panel-transparent">
             <div class="panel-body">
-              <a href="https://github.com/tryfruit/fruit-dashboard" class="btn btn-success btn-block">Click here to access the repository</a>
+              <a href="#" class="btn btn-success btn-block" onclick="trackAll('lazy', {'en': 'Clicked on contribute plan', 'el': '{{ Auth::user()->email }}', });">Click here to access the repository</a>
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
         </div> <!-- /.col-md-4 -->
