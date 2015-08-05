@@ -23,45 +23,64 @@
 
               <div class="col-md-5">
 
-                <div class="row changes-image" data-image="widget-stripe">
-                  <div class="col-md-8">
-                    <h3 class="no-margin">
-                      @if(Auth::user()->isStripeConnected())
-                          <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
-                      @else
-                          <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
-                      @endif
-                      <span class="label label-default">Stripe</span>
-                    </h3>
-                  </div> <!-- /.col-md-8 -->
-                  <div class="col-md-4">
+                <div class="list-group margin-top-sm">
+                  
+                  <a href="
                     @if(Auth::user()->isStripeConnected())
-                      <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.stripe') }}">Disconnect</a>
+                      {{ route('disconnect.stripe') }}
                     @else
-                      <a class="btn btn-sm btn-success pull-right" href="{{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}">Connect</a>
+                      {{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}
                     @endif
-                  </div> <!-- /.col-md-4 -->
-                </div> <!-- /.row -->
+                  " class="list-group-item clearfix changes-image" data-image="widget-stripe">
+                    @if(Auth::user()->isStripeConnected())
+                        <small>
+                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span>
+                        </small>
+                    @else
+                        <small>
+                          <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
+                        </small>
+                    @endif
+                    Stripe
+                    <span class="pull-right">
+                      @if(Auth::user()->isStripeConnected())
+                        <button class="btn btn-xs btn-danger">
+                          Disconnect
+                        </button>
+                      @else
+                        <button class="btn btn-xs btn-success" >
+                          Connect
+                        </button>
+                      @endif  
+                    </span>
+                  </a>
 
-                <div class="row margin-top-sm changes-image" data-image="widget-braintree">
-                  <div class="col-md-8">
-                      <h3 class="no-margin">
-                        @if(Auth::user()->isBraintreeConnected())
-                          <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
-                        @else
-                          <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
-                        @endif
-                        <span class="label label-default">Braintree</span>
-                      </h3>
-                  </div> <!-- /.col-md-8 -->
-                  <div class="col-md-4">
+                  <a href="
                     @if(Auth::user()->isBraintreeConnected())
-                      <a class="btn btn-sm btn-danger pull-right" href="{{ route('disconnect.braintree') }}">Disconnect</a>
+                      {{ route('disconnect.braintree') }}
                     @else
-                      <a class="btn btn-sm btn-success pull-right" href="{{ route('signup-wizard.braintree-connect') }}">Connect</a>
+                      {{ route('signup-wizard.braintree-connect') }}
                     @endif
-                  </div> <!-- /.col-md-4 -->
-                </div> <!-- /.row -->
+                  " class="list-group-item changes-image" data-image="widget-braintree">
+                    @if(Auth::user()->isBraintreeConnected())
+                      <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
+                    @else
+                      <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
+                    @endif
+                    Braintree
+                    <span class="pull-right">
+                      @if(Auth::user()->isBraintreeConnected())
+                        <button class="btn btn-xs btn-danger">
+                          Disconnect
+                        </button>
+                      @else
+                        <button class="btn btn-xs btn-success" >
+                          Connect
+                        </button>
+                      @endif  
+                    </span>
+                  </a>
+                </div> <!-- /.list-group -->
                 
               </div> <!-- /.col-md-5 -->
               <div class="col-md-7">
