@@ -83,7 +83,6 @@
       });
      });
 
-      @if ($widget->state == 'loading')
         loadWidget(
           {{$widget->id}},
           function (data) {
@@ -96,9 +95,9 @@
           }
           {{ $widget->descriptor->type }}Data.datasets[0].labels = labels;
           {{ $widget->descriptor->type }}Data.datasets[0].data = values;
-          location.reload();
+          var {{$widget->descriptor->type}}Ctx = document.getElementById("{{ $widget->descriptor->type }}-chart").getContext("2d");
+          var {{ $widget->descriptor->type }}Chart = new Chart({{ $widget->descriptor->type }}Ctx).Line({{ $widget->descriptor->type }}Data, options);
       });
-      @endif
       function resizeCanvas(){
         var con = $("#widget-wrapper-{{$widget->id}}"),
             canvas = $("#{{$widget->descriptor->type}}-chart")[0],
