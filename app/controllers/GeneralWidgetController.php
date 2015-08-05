@@ -193,7 +193,12 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function getAddWidget() {
-        // Rendering view.
+        /* Detect if the user has no dashboard, and redirect */
+        if (!Auth::user()->dashboards()->count()) {
+            return Redirect::route('signup-wizard.personal-widgets');
+        }
+
+        /* Rendering view */
         return View::make('widget.add-widget')
             ->with('widgetDescriptors', WidgetDescriptor::all());
     }
@@ -207,7 +212,7 @@ class GeneralWidgetController extends BaseController {
     public function doAddWidget($descriptorID) {
         $user = Auth::user();
         /* Get the widget descriptor */
-        
+
         $descriptor = WidgetDescriptor::find($descriptorID);
         if (is_null($descriptor)) {
             return Redirect::back()
@@ -246,7 +251,7 @@ class GeneralWidgetController extends BaseController {
         $widget = new $className(array(
             'settings' => json_encode(array()),
             'state'    => 'active',
-            'position' => '{"size_x": 2, "size_y": 2, "row": 0, "col": 0}',
+            'position' => '{"size_x": ' . $descriptor->default_rows . ', "size_y": ' . $descriptor->default_cols . ', "row": 0, "col": 0}',
         ));
         $widget->dashboard()->associate($user->dashboards[0]);
         $widget->descriptor()->associate($descriptor);

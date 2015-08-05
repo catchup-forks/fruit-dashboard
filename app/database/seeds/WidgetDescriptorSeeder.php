@@ -40,6 +40,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => FALSE,
             )
         );
+        /*
 
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Reminder'],
@@ -72,27 +73,20 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
             )
-        );
+        ); */
 
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Timer'],
             array(
-                'name'        => 'Timer',
-                'description' => 'A simple timer',
-                'type'        => 'timer',
-                'category'    => 'personal',
-                'is_premium'  => FALSE,
-            )
-        );
-
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Todo list'],
-            array(
-                'name'        => 'Todo list',
-                'description' => 'Orgainze your daily/wekkly todos in this widget',
-                'type'        => 'todo_list',
-                'category'    => 'personal',
-                'is_premium'  => FALSE,
+                'name'         => 'Timer',
+                'description'  => 'A simple timer',
+                'type'         => 'timer',
+                'category'     => 'personal',
+                'is_premium'   => FALSE,
+                'min_cols'     => 2,
+                'min_rows'     => 2,
+                'default_cols' => 2,
+                'default_rows' => 2
             )
         );
 
