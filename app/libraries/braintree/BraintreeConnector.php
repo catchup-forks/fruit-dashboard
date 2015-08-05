@@ -64,7 +64,6 @@ class BraintreeConnector
         $connection->user()->associate($this->user);
         $connection->save();
 
-        Log::info("connectt");
         /* Creating custom dashboard in the background. */
         Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }

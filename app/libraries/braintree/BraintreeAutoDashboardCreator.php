@@ -42,7 +42,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
     */
     public function fire($job, $data) {
-        Log::info("fire");
         /* Getting the user */
         if ( ! isset($data['user_id'])) {
             return;
@@ -167,7 +166,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
     */
     private function getMetrics() {
-        Log::info("getMetrics");
         /* Updating subscriptions to be up to date. */
         $this->calculator->getCollector()->updateSubscriptions();
 
@@ -203,7 +201,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
     */
     private function sortByDate($dataSet) {
-        Log::info("sortByDate");
         $dates = array();
         foreach($dataSet as $key=>$data) {
             $dates[$key] = $data['date'];
@@ -238,7 +235,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
     */
     private function mirrorDay($date) {
-        Log::info("mirrorDate: " . $date);
         foreach ($this->subscriptions as $key=>$subscription) {
             foreach ($subscription->statusHistory as $statusDetail) {
                 $updateDate = Carbon::createFromTimestamp($statusDetail->timestamp->getTimestamp())->toDateString();
@@ -262,7 +258,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
     */
     private function handleSubscriptionDeletion($subscription) {
-        Log::info("Creating:" . $subscription->id . "(" . $subscription->planId . ")");
         $newSubscription = new BraintreeSubscription(array(
             'subscription_id' => $subscription->id,
             'start'           => $subscription->firstBillingDate,
@@ -272,7 +267,6 @@ class BraintreeAutoDashboardCreator
         // Creating the plan if necessary.
         $plan = BraintreePlan::where('plan_id', $subscription->planId)->first();
         if (is_null($plan)) {
-            Log::info("integrity error");
             return;
         }
         $newSubscription->plan()->associate($plan);
@@ -288,12 +282,6 @@ class BraintreeAutoDashboardCreator
      * --------------------------------------------------
     */
     private function handleSubscriptionCreation($subscription) {
-        Log::info("Deleting:" . $subscription->id);
-        $ids = array();
-        foreach (BraintreeSubscription::all() as $dbg) {
-            array_push($ids, $dbg->id);
-        }
-        Log::info($ids);
         BraintreeSubscription::where('subscription_id', $subscription->id)->first()->delete();
     }
 }
