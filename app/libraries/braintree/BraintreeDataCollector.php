@@ -98,11 +98,11 @@ class BraintreeDataCollector
         }
 
         foreach ($braintreeSubscriptions as $subscription) {
-            var_dump($subscription->planId);
             $new_subscription = new BraintreeSubscription(array(
                 'start'           => $subscription->firstBillingDate,
                 'status'          => $subscription->status,
-                'subscription_id' => $subscription->id
+                'subscription_id' => $subscription->id,
+                'customer_id'     => $subscription->transactions[0]->customer['id']
             ));
             $plan = BraintreePlan::where('plan_id', $subscription->planId)
                 ->first();
@@ -141,8 +141,8 @@ class BraintreeDataCollector
      * getAllSubscriptions
      * --------------------------------------------------
      * Getting a list of all subscriptions.
-     * @return The stripe customers.
-     * @throws StripeNotConnected
+     * @return The Braintree subscriptions
+     * @throws BraintreeNotConnected
      * --------------------------------------------------
     */
     public function getAllSubscriptions() {
@@ -156,5 +156,30 @@ class BraintreeDataCollector
                 )
             )
         );
+    }
+
+    /**
+     * getNumberOfCustomers
+     * --------------------------------------------------
+     * Getting the number of customers.
+     * @return The number of customers.
+     * @throws BraintreeNotConnected
+     * --------------------------------------------------
+    */
+    public function getNumberOfCustomers($update=False) {
+        if ($update) {
+            $this->updateSubscriptions();
+        }
+
+        $customerIDs = array();
+        /* Filtering plans and subscriptions to user. */
+        foreach (BraintreePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
+            foreach (BraintreeSubscription::where('plan_id', $stripePlan->id)->get() as $subscription) {
+                if (!in_array($subscription->customer_id, $customerIDs)) {
+                    array_push($customerIDs, $subscription->customer_id);
+                }
+            }
+        }
+        return count($customerIDs);
     }
 } /* BraintreeDataCollector */
