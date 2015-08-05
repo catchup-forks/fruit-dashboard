@@ -1,5 +1,5 @@
 <div class="text-white text-center drop-shadow quote">
-  <div class="has-margin-vertical-sm">
+  <div class="margin-top-sm has-margin-vertical-sm">
     <p class="lead body" id="quote">
       {{ $widget->getData()['quote'] }}
     </p>
