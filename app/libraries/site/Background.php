@@ -1,14 +1,34 @@
 <?php
 
-/* Background settings.
+/**
+* -------------------------------------------------------------------------- 
+* Background: 
+*       Handles the background related functions
+*       All functions can be called directly from the templates   
+* Usage:
+*       PHP     | $url = Background::dailyBackgroundURL();
+*       BLADE   | {{ Background::dailyBackgroundURL() }}
+* -------------------------------------------------------------------------- 
 */
-class Background
-{
+class Background {
 
+    /**
+     * ================================================== *
+     *                PUBLIC STATIC SECTION               *
+     * ================================================== *
+     */
+
+    /**
+     * dailyBackgroundURL:
+     * -------------------------------------------------- 
+     * Returns the url of the daily background.
+     * @return (string) ($dailyBackgroundURL) The background url.
+     * --------------------------------------------------
+     */
     public static function dailyBackgroundURL() {
 
-        # get the number of day in the year
-        $numberOfDayInYear = date('z');
+        /* Get the day number in the year */
+        $numberOfDayInYear = Carbon::now()->dayOfYear;
 
         # if there is backgrounds-production directory, go with that, otherwise go with backgrounds
         # (backgrounds-production is too large to be included in the git repository)
@@ -42,4 +62,4 @@ class Background
 
         return $dailyBackgroundURL;
     }
-}
+} /* Background */
