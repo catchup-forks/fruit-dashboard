@@ -193,7 +193,12 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function getAddWidget() {
-        // Rendering view.
+        /* Detect if the user has no dashboard, and redirect */
+        if (!Auth::user()->dashboards()->count()) {
+            return Redirect::route('signup-wizard.personal-widgets');
+        }
+
+        /* Rendering view */
         return View::make('widget.add-widget')
             ->with('widgetDescriptors', WidgetDescriptor::all());
     }
