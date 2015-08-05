@@ -12,6 +12,7 @@ class Subscription extends Eloquent
     protected $fillable = array(
         'status',
         'trial_status',
+        'trial_start',
     );
 
     /* -- Relations -- */
@@ -96,17 +97,25 @@ class Subscription extends Eloquent
             return ;
 
         /* The ended state can be changed to disabled only */
-        } elseif (($this->trial_status == 'enabled') and
+        } elseif (($this->trial_status == 'ended') and
                   ($newState != 'disabled')) {
             return ;
 
-        /* The active state can be changed to ended and disabled */
+        /* The active state can be changed only to ended and disabled */
         } elseif (($this->trial_status == 'active') and
                   (($newState != 'ended') or 
                    ($newstate != 'disabled'))) {
             return ;
 
-        /* Enabled state transition */
+        /* Enabled state transitions */
+        /* Changing from possible to active*/
+        } elseif (($this->trial_status == 'possible') and
+                  ($newState == 'active')) {
+            $this->trial_status = $newState;
+            $this->trial_start  = Carbon::now();
+            $this->save();
+
+        /* Other transitions */
         } else {
             $this->trial_status = $newState;
             $this->save();
@@ -323,7 +332,7 @@ class Subscription extends Eloquent
      */
     private function getDaysRemainingFromTrial() {
         /* Get the difference */
-        $diff = Carbon::now()->diffInDays($this->user->created_at);
+        $diff = Carbon::now()->diffInDays(Carbon::parse($this->trial_start));
 
         /* Return the diff in days or 0 if trial has ended */
         if ($diff <= SiteConstants::getTrialPeriodInDays() ) {
@@ -343,7 +352,7 @@ class Subscription extends Eloquent
      */
     private function getTrialEndDate() {
         /* Return the date */
-        return Carbon::instance($this->user->created_at)->addDays(SiteConstants::getTrialPeriodInDays());
+        return Carbon::parse($this->trial_start)->addDays(SiteConstants::getTrialPeriodInDays());
     }
 
 

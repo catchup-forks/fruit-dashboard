@@ -15,6 +15,7 @@ class AddTrialStatusToSubscription extends Migration {
 		Schema::table('subscriptions', function(Blueprint $table)
 		{
 			$table->enum('trial_status', array('possible', 'active', 'ended', 'disabled'))->default('possible');
+			$table->timestamp('trial_start')->nullable();
 		});
 	}
 
@@ -28,6 +29,7 @@ class AddTrialStatusToSubscription extends Migration {
 		Schema::table('subscriptions', function(Blueprint $table)
 		{
 			$table->dropColumn('trial_status');
+			$table->dropColumn('trial_start');
 		});
 	}
 
