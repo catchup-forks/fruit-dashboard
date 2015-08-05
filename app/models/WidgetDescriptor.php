@@ -8,7 +8,9 @@ class WidgetDescriptor extends Eloquent
         'description',
         'type',
         'is_premium',
-        'category'
+        'category',
+        'min_cols', 'min_rows',
+        'default_cols', 'default_rows'
     );
     public $timestamps = FALSE;
 
