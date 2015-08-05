@@ -94,6 +94,11 @@ body {
 .no-underline:hover {
   text-decoration: none;
 }
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .panel-transparent {
   background: none;
 }
@@ -124,7 +129,7 @@ body {
   display: inline-block;
 }
 .quote p {
-  line-height: 1.25em;
+  line-height: 1em;
   transition: all 0.2s ease-out;
 }
 .quote .body {
