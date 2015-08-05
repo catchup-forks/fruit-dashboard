@@ -39,7 +39,7 @@
                 <div class="row">
                   <div class="col-md-12 text-center">
                     <h3 id="descriptor-name">Click to select a widget</h3>
-                    {{ HTML::image('img/demonstration/widget-empty.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
+                    {{ HTML::image('img/demonstration/widget-empty.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded center-block')) }}
                   </div> <!-- /.col-md-12 -->
                 </div> <!-- /.row -->
                 <div class="row">
