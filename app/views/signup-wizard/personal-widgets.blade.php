@@ -24,25 +24,25 @@
                 <div class="col-md-5">
                   <div class="list-group margin-top-sm">
                     
-                    <a href="#" class="list-group-item changes-image selected" data-image="widget-clock">
+                    <a href="#" class="list-group-item changes-image selected" data-widget="widget-clock">
                       Clock
                       <span class="fa fa-check text-success pull-right"></span>
 
-                      <input name="widget-clock" type="checkbox" value="" class="not-visible"checked>
+                      <input id="widget-clock" name="widget-clock" type="checkbox" value="" class="not-visible" checked>
                     </a>
 
-                    <a href="#" class="list-group-item changes-image selected" data-image="widget-greetings">
+                    <a href="#" class="list-group-item changes-image selected" data-widget="widget-greetings">
                       Greetings
                       <span class="fa fa-check text-success pull-right"></span>
 
-                      <input name="widget-greetings" type="checkbox" value="" class="not-visible"checked>
+                      <input id="widget-greetings" name="widget-greetings" type="checkbox" value="" class="not-visible" checked>
                     </a>
 
-                    <a href="#" class="list-group-item changes-image selected" data-image="widget-quote">
+                    <a href="#" class="list-group-item changes-image selected" data-widget="widget-quote">
                       Inspirational quotes
                       <span class="fa fa-check text-success pull-right"></span>
 
-                      <input name="widget-quote" type="checkbox" value="" class="not-visible"checked>
+                      <input id="widget-quote" name="widget-quote" type="checkbox" value="" class="not-visible" checked>
                     </a>                    
 
                   </div>
@@ -58,8 +58,7 @@
             <div class="form-actions text-center">
                 {{ Form::submit('Next' , array(
                     'id' => 'id_next',
-                    'class' => 'btn btn-primary pull-right',
-                    'onClick' => '')) }}
+                    'class' => 'btn btn-primary pull-right')) }}
             </div> <!-- / .form-actions -->
 
             {{ Form::close() }}
@@ -83,8 +82,8 @@
         //on mouse enter
         function() {
           //rewrite img src and change alternate text
-          $('#img-change').attr('src', baseUrl + $(this).data('image') + ext);
-          $('#img-change').attr('alt', "The " + $(this).data('image') + " Widget.");
+          $('#img-change').attr('src', baseUrl + $(this).data('widget') + ext);
+          $('#img-change').attr('alt', "The " + $(this).data('widget') + " Widget.");
         });
     });
   </script>
@@ -101,7 +100,11 @@
           // change the icon
           $(this).find('span').attr('class', 'fa fa-check text-success pull-right');
         };
+        // Toggle class
         $(this).toggleClass('selected');
+        // Toggle hidden checkbox
+        var checkbox = $('#' + $(this).data('widget'));
+        checkbox.prop("checked", !checkbox.prop("checked"));
       });
     });
   </script>

@@ -16,7 +16,7 @@ Fruit Dashboard is a Chrome dashboard solution for startup companies.
   - (...wait until the installer finishes)
 
 ### Log in to the vagrant virtual environment
-  - ```vargrant ssh```
+  - ```vagrant ssh```
 
 ### Install Fruit-dashboard and necessary packages
   - ```sh /var/www/_install/fruit-dashboard.sh```

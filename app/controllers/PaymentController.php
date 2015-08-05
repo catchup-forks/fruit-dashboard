@@ -116,6 +116,13 @@ class PaymentController extends BaseController
 
         /* Check errors */
         if ($result['errors'] == FALSE) {
+            /* Track event | CHANGED TO PREMIUM PLAN */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Changed to premium plan',
+                'el' => Auth::user()->email)
+            );
+
             /* Return with success */
             return Redirect::route('payment.plans')
                 ->with('success', 'Your subscription was successfull.');
@@ -152,6 +159,13 @@ class PaymentController extends BaseController
 
         /* Check errors */
         if ($result['errors'] == FALSE) {
+            /* Track event | CHANGED TO FREE PLAN */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Changed to free plan',
+                'el' => Auth::user()->email)
+            );
+
             /* Return with success */
             return Redirect::route('payment.plans')
                 ->with('success', 'You have been successfully unsubscribed.');

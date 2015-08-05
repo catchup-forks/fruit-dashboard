@@ -72,6 +72,14 @@ class Subscription extends Eloquent
             if ($this->getDaysRemainingFromTrial() <= 0) {
                 /* Update status in db */
                 $this->changeTrialState('ended');
+
+                /* Track event | TRIAL ENDED */
+                $tracker = new GlobalTracker();
+                $tracker->trackAll('lazy', array(
+                    'en' => 'Trial ended',
+                    'el' => Auth::user()->email)
+                );
+
             }
 
             /* Update trialInfo */
@@ -103,24 +111,67 @@ class Subscription extends Eloquent
 
         /* The active state can be changed only to ended and disabled */
         } elseif (($this->trial_status == 'active') and
-                  (($newState != 'ended') or
+                  (($newState != 'ended') and
                    ($newState != 'disabled'))) {
             return ;
 
         /* Enabled state transitions */
-        /* Changing from possible to active*/
+        /* Changing from possible to active --> TRIAL STARTS */
         } elseif (($this->trial_status == 'possible') and
                   ($newState == 'active')) {
+            /* Change the state */
             $this->trial_status = $newState;
             $this->trial_start  = Carbon::now();
             $this->save();
 
+            /* Track event | TRIAL STARTS */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Trial starts',
+                'el' => Auth::user()->email)
+            );
+
         /* Other transitions */
         } else {
+            /* Change the state */
             $this->trial_status = $newState;
             $this->save();
         }
     }
+
+
+    /**
+     * getDaysRemainingFromTrial
+     * --------------------------------------------------
+     * Returns the remaining time from the trial period in days
+     * @return (integer) ($daysRemainingFromTrial) The number of days
+     * --------------------------------------------------
+     */
+    public function getDaysRemainingFromTrial() {
+        /* Get the difference */
+        $diff = Carbon::now()->diffInDays(Carbon::parse($this->trial_start));
+
+        /* Return the diff in days or 0 if trial has ended */
+        if ($diff <= SiteConstants::getTrialPeriodInDays() ) {
+            return SiteConstants::getTrialPeriodInDays()-$diff;
+        } else {
+            return 0;
+        }
+    }
+
+
+    /**
+     * getTrialEndDate
+     * --------------------------------------------------
+     * Returns the trial period ending date
+     * @return (date) ($trialEndDate) The ending date
+     * --------------------------------------------------
+     */
+    public function getTrialEndDate() {
+        /* Return the date */
+        return Carbon::parse($this->trial_start)->addDays(SiteConstants::getTrialPeriodInDays());
+    }
+
 
     /**
      * createSubscription
@@ -322,38 +373,4 @@ class Subscription extends Eloquent
         /* Return result */
         return $result;
     }
-
-    /**
-     * getDaysRemainingFromTrial
-     * --------------------------------------------------
-     * Returns the remaining time from the trial period in days
-     * @return (integer) ($daysRemainingFromTrial) The number of days
-     * --------------------------------------------------
-     */
-    private function getDaysRemainingFromTrial() {
-        /* Get the difference */
-        $diff = Carbon::now()->diffInDays(Carbon::parse($this->trial_start));
-
-        /* Return the diff in days or 0 if trial has ended */
-        if ($diff <= SiteConstants::getTrialPeriodInDays() ) {
-            return SiteConstants::getTrialPeriodInDays()-$diff;
-        } else {
-            return 0;
-        }
-    }
-
-
-    /**
-     * getTrialEndDate
-     * --------------------------------------------------
-     * Returns the trial period ending date
-     * @return (date) ($trialEndDate) The ending date
-     * --------------------------------------------------
-     */
-    private function getTrialEndDate() {
-        /* Return the date */
-        return Carbon::parse($this->trial_start)->addDays(SiteConstants::getTrialPeriodInDays());
-    }
-
-
 }
