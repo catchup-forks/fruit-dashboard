@@ -10,7 +10,7 @@
       $('#greeting').hide();
       
       // fit the greeting on page load
-      $('#greeting').fitText(1, {
+      $('#greeting').fitText(2.2, {
         'minFontSize': 24
       });
 
@@ -18,7 +18,7 @@
 
       // bind fittext to a resize event
       $('#greeting').bind('resize', function(e){
-        $('#digitTime').fitText(1, {
+        $('#greeting').fitText(2.2, {
           'minFontSize': 24
         });
       });
