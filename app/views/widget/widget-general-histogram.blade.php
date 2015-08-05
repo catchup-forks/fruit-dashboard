@@ -79,7 +79,6 @@
          data: {},
          url: "{{ route('widget.ajax-handler', $widget->id) }}"
        }).done(function( data ) {
-        console.log(data);
       });
      });
 

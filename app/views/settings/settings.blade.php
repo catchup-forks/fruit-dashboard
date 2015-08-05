@@ -167,7 +167,7 @@
                         </p>
                       </div> <!-- /.col-sm-6 -->
                       <div class="col-sm-2">
-                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Change your plan</a>
+                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Change</a>
                       </div> <!-- /.col-sm-2 -->
                     </div> <!-- /.form-group -->
                   </form>

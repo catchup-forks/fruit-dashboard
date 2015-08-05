@@ -105,7 +105,6 @@
           data: {'state_query': true},
           url: "{{ route('widget.ajax-handler', 'widgetID') }}".replace("widgetID", widgetId)
         }).done(function( data ) {
-          console.log(data);
           if (data['state'] == 'active') {
             $("#widget-loading-" + widgetId).hide();
             $("#widget-wrapper-" + widgetId).show();

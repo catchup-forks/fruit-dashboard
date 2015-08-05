@@ -10,7 +10,7 @@ class QuoteWidget extends Widget implements iAjaxWidget
             'default'    => 'insp'
         ),
         'update_frequency' => array(
-            'name'    => 'Update frequency',
+            'name'    => 'Changes (in minutes)',
             'type'    => 'INT',
             'default' => 1440
         ),
