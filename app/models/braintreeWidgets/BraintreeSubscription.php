@@ -6,6 +6,7 @@ class BraintreeSubscription extends Eloquent
     protected $fillable = array(
         'start',
         'status',
+        'subscription_id'
     );
 
     // -- Options -- //

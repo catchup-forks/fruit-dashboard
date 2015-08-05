@@ -25,7 +25,7 @@ class Subscription extends Eloquent
      */
 
     /**
-     * isOnFreePlan  
+     * isOnFreePlan
      * --------------------------------------------------
      * @return (array) ($trialInfo) Information about the trial period
      * --------------------------------------------------
@@ -38,7 +38,7 @@ class Subscription extends Eloquent
     }
 
     /**
-     * getTrialInfo  
+     * getTrialInfo
      * --------------------------------------------------
      * @return (array) ($trialInfo) Information about the trial period
      * --------------------------------------------------
@@ -51,17 +51,17 @@ class Subscription extends Eloquent
         if (!$this->isOnFreePlan()) {
            /* Update trialInfo */
             $trialInfo['enabled'] = FALSE;
-            
+
             /* Return trialInfo */
             return $trialInfo;
         }
 
         /* Trial is not active */
-        if (($this->trial_status == 'possible') or 
+        if (($this->trial_status == 'possible') or
             ($this->trial_status == 'disabled')) {
             /* Update trialInfo */
             $trialInfo['enabled'] = FALSE;
-            
+
             /* Return trialInfo */
             return $trialInfo;
 
@@ -77,14 +77,14 @@ class Subscription extends Eloquent
             $trialInfo['enabled']       = TRUE;
             $trialInfo['daysRemaining'] = $this->getDaysRemainingFromTrial();
             $trialInfo['endDate']       = $this->getTrialEndDate();
-            
+
             /* Return trialInfo */
             return $trialInfo;
         }
     }
 
     /**
-     * changeTrialState  
+     * changeTrialState
      * --------------------------------------------------
      * @param (string) ($newState)
      * @return Changes the trial state to the provided
@@ -102,8 +102,8 @@ class Subscription extends Eloquent
 
         /* The active state can be changed to ended and disabled */
         } elseif (($this->trial_status == 'active') and
-                  (($newState != 'ended') or 
-                   ($newstate != 'disabled'))) {
+                  (($newState != 'ended') or
+                   ($newState != 'disabled'))) {
             return ;
 
         /* Enabled state transition */
@@ -114,7 +114,7 @@ class Subscription extends Eloquent
     }
 
     /**
-     * createSubscription  
+     * createSubscription
      * --------------------------------------------------
      * @param (string)  ($paymentMethodNonce) The authorization token for the payment
      * @param (Plan)    ($newPlan)            The new plan
@@ -143,7 +143,7 @@ class Subscription extends Eloquent
     }
 
     /**
-     * cancelSubscription  
+     * cancelSubscription
      * --------------------------------------------------
      * @return Cancels the subscription for the user
      * --------------------------------------------------
@@ -197,7 +197,7 @@ class Subscription extends Eloquent
 
             /* Get the customer */
             $customer = Braintree_Customer::find($this->braintree_customer_id);
-            
+
             /* Create new paymentmethod with the current data */
             $paymentMethodResult = Braintree_PaymentMethod::create([
                 'customerId' => $customer->id,
@@ -251,7 +251,7 @@ class Subscription extends Eloquent
      */
     private function createBraintreeSubscription($newPlan) {
         /* The function assumes, that everything is OK to charge the user on Braintree */
-        
+
         /* Initialize variables */
         $result = ['errors' => FALSE, 'messages' => ''];
 
@@ -284,7 +284,7 @@ class Subscription extends Eloquent
     }
 
     /**
-     * cancelBraintreeSubscription  
+     * cancelBraintreeSubscription
      * --------------------------------------------------
      * @return Cancels the current Braintree Subscription.
      * --------------------------------------------------
@@ -333,7 +333,7 @@ class Subscription extends Eloquent
         }
     }
 
-     
+
     /**
      * getTrialEndDate
      * --------------------------------------------------

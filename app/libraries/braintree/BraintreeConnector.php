@@ -64,8 +64,9 @@ class BraintreeConnector
         $connection->user()->associate($this->user);
         $connection->save();
 
-        /* Creating custom dashboard. */
-        $this->createDashboard();
+        Log::info("connectt");
+        /* Creating custom dashboard in the background. */
+        Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**
@@ -131,51 +132,4 @@ class BraintreeConnector
         }
     }
 
-    /**
-     * createDashboard
-     * --------------------------------------------------
-     * Creating a dashboard dedicated to braintree widgets.
-     * --------------------------------------------------
-     */
-    private function createDashboard() {
-        /* Creating dashboard. */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Braintree dashboard',
-            'background' => TRUE,
-            'number'     => $this->user->dashboards->max('number') + 1
-        ));
-        $dashboard->user()->associate($this->user);
-        $dashboard->save();
-
-        /* Adding widgets */
-        $mrrWidget = new BraintreeMrrWidget(array(
-            'position'  => '{"col":2,"row":1,"size_x":9,"size_y":6}',
-            'state'     => 'active',
-        ));
-
-        $arrWidget = new BraintreeArrWidget(array(
-            'position'  => '{"col":1,"row":7,"size_x":5,"size_y":5}',
-            'state'     => 'active',
-        ));
-
-        $arpuWidget = new BraintreeArpuWidget(array(
-            'position'  => '{"col":7,"row":7,"size_x":5,"size_y":5}',
-            'state'     => 'active',
-        ));
-
-        /* Associating dashboard */
-        $mrrWidget->dashboard()->associate($dashboard);
-        $arrWidget->dashboard()->associate($dashboard);
-        $arpuWidget->dashboard()->associate($dashboard);
-
-        /* Saving widgets */
-        $mrrWidget->save();
-        $arrWidget->save();
-        $arpuWidget->save();
-
-        /* Populating data */
-        $mrrWidget->collectData();
-        $arrWidget->collectData();
-        $arpuWidget->collectData();
-    }
 } /* BraintreeConnector */

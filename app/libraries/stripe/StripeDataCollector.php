@@ -30,7 +30,7 @@ class StripeDataCollector
      * updatePlans
      * --------------------------------------------------
      * Updating the current stripe Plans.
-     * @returns The stripe plans.
+     * @return The stripe plans.
      * @throws StripeNotConnected
      * --------------------------------------------------
     */
@@ -75,7 +75,7 @@ class StripeDataCollector
      * updateSubscriptions
      * --------------------------------------------------
      * Updating the StripeSubscriptions.
-     * @returns The stripe plans.
+     * @return The stripe plans.
      * @throws StripeNotConnected
      * --------------------------------------------------
     */
@@ -136,7 +136,7 @@ class StripeDataCollector
         }
 
         $customerIDs = array();
-
+        /* Filtering plans and subscriptions to user. */
         foreach (StripePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
             foreach (StripeSubscription::where('plan_id', $stripePlan->id)->get() as $subscription) {
                 if (!in_array($subscription->customer, $customerIDs)) {
@@ -151,7 +151,7 @@ class StripeDataCollector
      * getCustomers
      * Getting a list of customers.
      * --------------------------------------------------
-     * @returns The stripe customers.
+     * @return The stripe customers.
      * @throws StripeNotConnected
      * --------------------------------------------------
     */
@@ -198,7 +198,7 @@ class StripeDataCollector
      * getEvents
      * Getting events from the last 30 days.
      * --------------------------------------------------
-     * @returns The stripe events.
+     * @return The stripe events.
      * @throws StripeNotConnected
      * --------------------------------------------------
     */
