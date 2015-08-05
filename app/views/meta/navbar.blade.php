@@ -77,7 +77,7 @@
             Your trial period ended on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click to change your Plan.
         @endif">
 
-        <span class="label @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] < 7) label-danger @else label-warning @endif label-as-badge valign-middle">
+        <span class="label @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] < SiteConstants::getTrialPeriodInDays() / 2) label-danger @else label-warning @endif label-as-badge valign-middle">
             {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }}
         </span> 
     </a>

@@ -1,115 +1,39 @@
-# Fruit Analytics
+# Fruit Dashboard
 
-Fruit Analytics is a dashboard solution for startup companies.
+Fruit Dashboard is a Chrome dashboard solution for startup companies.
 
-## How to build your local development box?
-  - download & install [Virtualbox]
-  - download & install [Vagrant] (max 1.6.5)
-  - download & install [Github for Windows] or [Github for Mac] 
+### How to build your local development box?
+  - download & install [Virtualbox](https://www.virtualbox.org/)
+  - download & install [Vagrant](https://www.vagrantup.com/)
+  - download & install [Github for Windows](https://windows.github.com/) or [Github for Mac](https://mac.github.com/)
 
-### In the Github client
-#### Clone your lamp vagrant server
-  - clone ```tryfruit/vagrant-lamp``` → ```[YOUR_WORKING_DIRECTORY]```
+### Clone the vagrant lamp server
+  - ```git clone https://github.com/tryfruit/vagrant-ubuntu-14-04-lamp```
 
-#### Clone the dashboard source code
-  - clone ```tryfruit/fruit-dashboard``` → ```[YOUR_WORKING_DIRECTORY/vagrant-lamp/sites/fruit-dashboard]```
+### Install the vagrant virtual environment
+  - ```cd vagrant-ubuntu-14-04-lamp```
+  - ```vagrant up```
+  - (...wait until the installer finishes)
 
-### In the terminal
-Start your vagrant server and ssh into it.
-```sh
-cd vagrant-lamp
-vagrant up
-vargrant ssh
-```
+### Log in to the vagrant virtual environment
+  - ```vargrant ssh```
 
-### In the vagrant terminal
-#### Make your server up to date.
-```sh
-sudo apt-get update
-```
+### Install Fruit-dashboard and necessary packages
+  - ```sh /var/www/_install/fruit-dashboard.sh```
+  - (...wait until the installer finishes)
 
-#### Set up the local environment file
-```sh
-cd /var/www/fruit-dashboard
-mv env.local.php.example .env.local.php
-```
+### Run the laravel server
+  - ```cd /var/www/fruit-dashboard```
+  - ```sh serve```
 
-#### Install laravel and update the dependencies
-```sh
-cd /var/www/fruit-dashboard
-composer update
-```
+### Check the site in your browser
+  - Open ```http://localhost:8001/```
 
-#### Create the database
-```sh
-cd /var/www/fruit-dashboard/scripts
-sh run_sql_commands
-```
+### The installer made you some aliases that may come handy
+  - ```alias fds='cd /var/www/fruit-dashboard/'```
+  - ```alias fdc='cd /var/www/fruit-dashboard-config/'```
+  - ```alias fdd='mysql -u root -ppassword fruitdashboarddb'```
+  - ```alias fdserve='cd /var/www/fruit-dashboard/;sh serve;'```
+  - ```alias fdlog='cd /var/www/fruit-dashboard/app/storage/logs/; tail -f $(ls -t * | head -1);'```
 
-#### Do the migrations & seeding
-```sh
-cd /var/www/fruit-dashboard
-php artisan migrate
-php artisan migrate:external
-```
-
-#### Setup cron
-
-- replace ```/var/www/fruit-dashboard/``` with whatever is needed (f.e. ```/home/abfinfor/public_html/dashboard.tryfruit.com/```)
-- replace ```/usr/bin/php``` with whatever is needed (f.e. ```/usr/local/bin/php/```)
-
-```sh
-crontab -e
-```
-
-```sh
-# get events
-1-59/5 * * * * /usr/bin/php /var/www/fruit-dashboard/artisan events:get
-# calculate daily values
-2-59/5 * * * * /usr/bin/php /var/www/fruit-dashboard/artisan metrics:calc
-# daily summary email
-0 9 * * * /usr/bin/php /var/www/fruit-dashboard/artisan metrics:send
-# daily quote database refresh
-0 1 * * * /usr/bin/php /var/www/fruit-dashboard/artisan db:seed --class=QuoteTableSeeder
-```
-
-#### Some small fixes, till the vendor package is fixed
-
-```sh
-mcedit vendor/waavi/mailman/src/Waavi/Mailman/Mailman.php
-```
-
-Row 93 should be changed to this:
-```
-$this->setCss(Config::get('waavi/mailman::css.file'));
-```
-
-Row 98 should be changed to this:
-```
-$this->from(Config::get('mail.from.address'), Config::get('mail.from.name'));
-```
-
-#### Run the laravel server
-```sh
-sh serve
-```
-
-### In the browser
-Open ```http://localhost:8001/ ```
-
-**...aaaaaand you are done.**
-
-#### A few aliases that may come handy
-
-```sh
-mcedit ~/.bash_aliases
-alias fserve='cd /var/www/fruit-dashboard/;sh serve;'
-alias flog='cd /var/www/fruit-dashboard/app/storage/logs/; tail -f $(ls -t * | head -1);'
-alias fcd='cd /var/www/fruit-dashboard/'
-alias fmysql='mysql -u [USERNAME] -p[PASSWORD] [DBNAME]'
-```
-
-[Virtualbox]:https://www.virtualbox.org/
-[Vagrant]:https://www.vagrantup.com/
-[Github for Windows]:https://windows.github.com/
-[Github for Mac]:https://mac.github.com/
+**...aaaaaand you are done. :)**

@@ -61,6 +61,9 @@ class StripeAutoDashboardCreator
         /* Creating dashboard. */
         $this->createDashboard();
 
+        /* Change trial period settings */
+        $this->user->subscription->changeTrialState('active');
+
         /* Creating calculator. */
         $this->calculator = new StripeCalculator($this->user);
         $this->events = $this->calculator->getCollector()->getEvents();
@@ -68,9 +71,6 @@ class StripeAutoDashboardCreator
 
         /* Populate dashboard. */
         $this->populateDashboard();
-
-        /* Change trial period settings */
-        $this->user->subscription->changeTrialState('active');
     }
 
     /**
@@ -97,17 +97,17 @@ class StripeAutoDashboardCreator
 
         /* Adding widgets */
         $mrrWidget = new StripeMrrWidget(array(
-            'position' => '{"col":2,"row":1,"size_x":9,"size_y":6}',
+            'position' => '{"col":2,"row":1,"size_x":10,"size_y":6}',
             'state'    => 'loading',
         ));
 
         $arrWidget = new StripeArrWidget(array(
-            'position' => '{"col":1,"row":7,"size_x":5,"size_y":5}',
+            'position' => '{"col":1,"row":7,"size_x":6,"size_y":4}',
             'state'    => 'loading',
         ));
 
         $arpuWidget = new StripeArpuWidget(array(
-            'position' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
+            'position' => '{"col":7,"row":7,"size_x":6,"size_y":4}',
             'state'    => 'loading',
         ));
 

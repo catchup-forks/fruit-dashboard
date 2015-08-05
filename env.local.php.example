@@ -29,7 +29,7 @@ return array(
     'MIXPANEL_TOKEN' => 'your-mixpanel-token-here',
 
     /* Braintree payment */    
-    'BRAINTREE_ENVIRONMENT'     => 'sandbox/production',
+    'BRAINTREE_ENVIRONMENT'     => 'sandbox',
     'BRAINTREE_MERCHANT_ID'     => 'your-braintree-merchant-id',
     'BRAINTREE_PUBLIC_KEY'      => 'your-braintree-public-key',
     'BRAINTREE_PRIVATE_KEY'     => 'your-braintree-private-key',
