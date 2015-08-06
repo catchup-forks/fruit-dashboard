@@ -41,7 +41,7 @@ Route::group([
     Route::any('add', [
         'before' => 'auth',
         'as'     => 'widget.add',
-        'uses'   => 'GeneralWidgetController@getAddWidget'
+        'uses'   => 'GeneralWidgetController@anyAddWidget'
     ]);
 
     Route::post('add/{descriptorID}', [
