@@ -222,7 +222,9 @@ class StripeDataCollector
                 }
                 /* Adding objects to collection. */
                 $currentData = json_decode($this->loadJSON($rawData), TRUE);
-                $decodedData = array_merge($decodedData, $currentData['data']);
+                if ( ! is_null($currentData)) {
+                    $decodedData = array_merge($decodedData, $currentData['data']);
+                }
 
             } catch (\Stripe\Error\Authentication $e) {
                 // Access token expired. Calling handler.
