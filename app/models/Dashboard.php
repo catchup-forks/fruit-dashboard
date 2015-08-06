@@ -25,17 +25,17 @@ class Dashboard extends Eloquent
     */
     public function getNextAvailablePosition($desiredX, $desiredY) {
         /* Iterating through the grid to find a fit. */
-        for ($i = 1; $i <= SiteConstants::getGridNumberOfCols(); ++$i) {
-            for ($j = 1; $j <= SiteConstants::getGridNumberOfRows(); ++$j) {
+        for ($i = 1; $i <= SiteConstants::getGridNumberOfRows(); ++$i) {
+            for ($j = 1; $j <= SiteConstants::getGridNumberOfCols(); ++$j) {
                 /* Defining rectangle. */
                 $rectangle = array(
-                    'startX' => $i,
-                    'startY' => $j,
-                    'endX'   => $i + $desiredX,
-                    'endY'   => $j + $desiredY
+                    'startX' => $j,
+                    'startY' => $i,
+                    'endX'   => $j + $desiredX,
+                    'endY'   => $i + $desiredY
                 );
                 if ($this->fits($rectangle)) {
-                    return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": ' . $i . ', "row": ' . $j . '}';
+                    return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": ' . $j . ', "row": ' . $i . '}';
                 }
             }
         }
@@ -53,14 +53,21 @@ class Dashboard extends Eloquent
     */
     private function fits($rectangle) {
 
+        Log::info($rectangle);
+
         /* Looking for an overlap. */
         foreach ($this->widgets as $widget) {
+
+            if ($widget->state == 'hidden') {
+                continue;
+            }
+
             $pos = $widget->getPosition();
 
-            $x1Overlap = ($pos->col <= $rectangle['endX']);
-            $x2Overlap = (($pos->col + $pos->size_x) <= $rectangle['startX']);
-            $y1Overlap = ($pos->row <= $rectangle['endY']);
-            $y2Overlap = (($pos->row + $pos->size_y) <= $rectangle['startY']);
+            $x1Overlap = ($pos->col < $rectangle['endX']);
+            $x2Overlap = (($pos->col + $pos->size_x) > $rectangle['startX']);
+            $y1Overlap = ($pos->row < $rectangle['endY']);
+            $y2Overlap = (($pos->row + $pos->size_y) > $rectangle['startY']);
 
             if ($x1Overlap && $x2Overlap && $y1Overlap && $y2Overlap) {
                 return FALSE;
