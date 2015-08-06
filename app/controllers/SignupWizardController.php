@@ -248,7 +248,7 @@ class SignupWizardController extends BaseController
         $settings->save();
 
         /* Create default subscription for the user */
-        $plan = Plan::where('name', 'Free')->first();
+        $plan = Plan::getFreePlan();
         $subscription = new Subscription;
         $subscription->user()->associate($user);
         $subscription->plan()->associate($plan);

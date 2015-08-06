@@ -52,14 +52,16 @@
                 <div class="row">
                   <div class="col-md-12">
                     
-                    <form>
+                    {{ Form::open(array(
+                        'id' => 'add-widget-form',
+                        'action' => 'widget.add')) }}
                       
                       <div class="form-group">
                         <label for="addToDashboard">Add to dashboard:</label>
-                        <select class="form-control">
+                        <select name="toDashboard" class="form-control">
                           
                           @foreach( Auth::user()->dashboards->all() as $dashboard )
-                          <option>{{ $dashboard->name }}</option>
+                          <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
                           @endforeach
 
                         </select>
@@ -67,10 +69,13 @@
                       </div> <!-- .form-group -->
                       
                       <div class="form-actions text-center">
-                        <a id="descriptor-add-link" href="#" class="btn btn-primary pull-right disabled">Add</a>
+                      {{ Form::submit('Add' , array(
+                          'id' => 'add-widget-submit-button',
+                          'class' => 'btn btn-primary pull-right disabled' )) }}
+
                       </div> <!-- /.form-actions -->
 
-                    </form>
+                    {{ Form::close() }}
                     
                   </div> <!-- /.col-md-12 -->
                 </div> <!-- /.row -->
@@ -100,8 +105,8 @@
       function showDescription(descriptorID) {
 
         // Check for the disabled button and enable on the first selection.
-        if ($('#descriptor-add-link').hasClass('disabled')) {
-          $('#descriptor-add-link').removeClass('disabled');
+        if ($('#add-widget-submit-button').hasClass('disabled')) {
+          $('#add-widget-submit-button').removeClass('disabled');
         };
 
         // Gets the relevant descriptors by ID.
@@ -112,7 +117,7 @@
           }).done(function( data ) {
             $("#descriptor-name").html(data['name']);
             $("#descriptor-description").html(data['description']);
-            $("#descriptor-add-link").attr("href", "{{ URL::route('widget.doAdd', 'descriptor_id') }}".replace("descriptor_id", descriptorID));
+            $("#add-widget-form").attr("action", "{{ URL::route('widget.doAdd', 'descriptor_id') }}".replace("descriptor_id", descriptorID));
             $('#img-change').attr('src', baseUrl + 'widget-' + data['type'] + ext);
             $('#img-change').attr('alt', "The " + data['name']);
           });

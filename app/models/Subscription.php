@@ -33,7 +33,7 @@ class Subscription extends Eloquent
      */
     public function isOnFreePlan() {
         /* Get the free plan */
-        $freePlan = Plan::where('name', 'Free')->first();
+        $freePlan = Plan::getFreePlan();
         /* Return */
         return ($this->plan->id == $freePlan->id);
     }
@@ -217,7 +217,7 @@ class Subscription extends Eloquent
 
         if ($result['errors'] == FALSE) {
             /* Get the free plan */
-            $freePlan = Plan::where('name', 'Free')->first();
+            $freePlan = Plan::getFreePlan();
 
             /* Update the DB */
             $this->plan()->associate($freePlan);

@@ -7,10 +7,10 @@ class QuoteWidget extends Widget implements iAjaxWidget
         'type' => array(
             'name'       => 'Type',
             'type'       => 'SCHOICE',
-            'default'    => 'insp'
+            'default'    => 'inspirational'
         ),
         'update_frequency' => array(
-            'name'    => 'Update frequency',
+            'name'    => 'Changes (in minutes)',
             'type'    => 'INT',
             'default' => 1440
         ),
@@ -22,7 +22,9 @@ class QuoteWidget extends Widget implements iAjaxWidget
     /* Choices functions */
     public function type() {
         return array(
-            'insp' => 'Inspirational',
+            'inspirational' => 'Inspirational',
+            'funny'         => 'Funny',
+            'first-line'    => 'First lines from books',
         );
     }
 
@@ -46,33 +48,14 @@ class QuoteWidget extends Widget implements iAjaxWidget
 
         /* Select a random row. */
         $quotes = $decoded_data->{'feed'}->{'entry'};
-        $safetycounter = 20;
-        while ($safetycounter >= 0) {
-            $key = array_rand($quotes);
-            $quote = $quotes[$key];
-
-            /* Allow only english quotes - for now -*/
-            if ($quote->{'gsx$language'}->{'$t'} != 'english') {
-                continue;
-            } 
-
-            /* Select only from the same type */
-            if (($this->getSettings()['type'] == 'insp') and 
-                ($quote->{'gsx$type'}->{'$t'} != 'quote-inspirational')) {
-                continue;
-            
-            /* Everything OK, store the quote */
-            } else {
-                $this->data->raw_value = json_encode(array(
-                    'quote'    => $quote->{'gsx$quote'}->{'$t'},
-                    'author'   => $quote->{'gsx$author'}->{'$t'},
-                    'type'     => $quote->{'gsx$type'}->{'$t'},
-                    'language' => $quote->{'gsx$language'}->{'$t'}
-                ));
-                break;
-            }
-            $safetycounter -= 1;
-        }
+        $key = array_rand($quotes);
+        $quote = $quotes[$key];
+        $this->data->raw_value = json_encode(array(
+            'quote'    => $quote->{'gsx$quote'}->{'$t'},
+            'author'   => $quote->{'gsx$author'}->{'$t'},
+            'type'     => $quote->{'gsx$type'}->{'$t'},
+            'language' => $quote->{'gsx$language'}->{'$t'}
+        ));
 
         /* Save quote */
         $this->data->save();
@@ -152,11 +135,17 @@ class QuoteWidget extends Widget implements iAjaxWidget
 
         /* Get spreadsheet based on type */
         switch ($this->getSettings()['type']) {
-            case 'insp':
-                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI'];
+            case 'inspirational':
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_EN_INSPIRATIONAL_URI'];
+                break;
+            case 'funny':
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_EN_FUNNY_URI'];
+                break;
+            case 'first-line':
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_EN_FIRST_LINE_URI'];
                 break;
             default:
-                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_INSPIRATIONAL_URI'];
+                $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_EN_INSPIRATIONAL_URI'];
                 break;
         }
 

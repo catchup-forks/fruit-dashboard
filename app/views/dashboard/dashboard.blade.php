@@ -180,7 +180,7 @@
       }
 
       sendAjax();
-    }
+    };
     // Overriding chartjs defaults.
     Chart.defaults.global.animationSteps = 50;
     Chart.defaults.global.tooltipYPadding = 16;
@@ -191,6 +191,15 @@
     Chart.defaults.global.responsive = true;
     Chart.defaults.global.scaleLineColor = "black";
     Chart.defaults.global.scaleFontSize = 9;
+    function fitToContainer(canvas){
+      console.log(canvas);
+      canvas.style.width='100%';
+      canvas.style.height='100%';
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    }
+
+
   </script>
 
   @append

@@ -40,55 +40,58 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => FALSE,
             )
         );
-        /*
 
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Reminder'],
-            array(
-                'name'        => 'Reminder',
-                'description' => '',
-                'type'        => 'reminder',
-                'category'    => 'personal',
-                'is_premium'  => FALSE,
-            )
-        );
+        if (!App::environment('production', 'staging')) {
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Reminder'],
+                array(
+                    'name'        => 'Reminder',
+                    'description' => '',
+                    'type'        => 'reminder',
+                    'category'    => 'personal',
+                    'is_premium'  => FALSE,
+                )
+            );
 
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Iframe'],
-            array(
-                'name'        => 'Iframe',
-                'description' => 'Include your favourite sites into this dashboard.',
-                'type'        => 'iframe',
-                'category'    => 'personal',
-                'is_premium'  => FALSE,
-            )
-        );
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Iframe'],
+                array(
+                    'name'        => 'Iframe',
+                    'description' => 'Include your favourite sites into this dashboard.',
+                    'type'        => 'iframe',
+                    'category'    => 'personal',
+                    'is_premium'  => FALSE,
+                )
+            );
 
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Note'],
-            array(
-                'name'        => 'Note',
-                'description' => '',
-                'type'        => 'note',
-                'category'    => 'personal',
-                'is_premium'  => FALSE,
-            )
-        ); */
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Note'],
+                array(
+                    'name'        => 'Note',
+                    'description' => '',
+                    'type'        => 'note',
+                    'category'    => 'personal',
+                    'is_premium'  => FALSE,
+                )
+            );
 
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Timer'],
-            array(
-                'name'         => 'Timer',
-                'description'  => 'A simple timer',
-                'type'         => 'timer',
-                'category'     => 'personal',
-                'is_premium'   => FALSE,
-                'min_cols'     => 2,
-                'min_rows'     => 2,
-                'default_cols' => 2,
-                'default_rows' => 2
-            )
-        );
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Timer'],
+                array(
+                    'name'         => 'Timer',
+                    'description'  => 'A simple timer',
+                    'type'         => 'timer',
+                    'category'     => 'personal',
+                    'is_premium'   => FALSE,
+                    'min_cols'     => 2,
+                    'min_rows'     => 2,
+                    'default_cols' => 2,
+                    'default_rows' => 2
+                )
+            );
+
+        } /* !App::environment('production', 'staging')*/
+
 
         /* Financial widgets | STRIPE */
         WidgetDescriptor::updateOrCreate(
@@ -124,16 +127,23 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Stripe events'],
-            array(
-                'name'        => 'Stripe events',
-                'description' => 'Your stripe events',
-                'type'        => 'stripe_events',
-                'category'    => 'stripe',
-                'is_premium'  => TRUE,
-            )
-        );
+        if (!App::environment('production', 'staging')) {
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Stripe events'],
+                array(
+                    'name'        => 'Stripe events',
+                    'description' => 'Your stripe events',
+                    'type'        => 'stripe_events',
+                    'category'    => 'stripe',
+                    'is_premium'  => TRUE,
+                    'min_cols'     => 4,
+                    'min_rows'     => 2,
+                    'default_cols' => 5,
+                    'default_rows' => 2
+                )
+            );
+        } /* !App::environment('production', 'staging')*/
+
         /* Financial widgets | BRAINTREE */
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Braintree MRR'],
