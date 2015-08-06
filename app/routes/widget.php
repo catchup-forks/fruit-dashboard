@@ -38,16 +38,16 @@ Route::group([
         'uses'   => 'GeneralWidgetController@anyDeleteWidget'
     ]);
 
-    Route::get('add', [
+    Route::any('add', [
         'before' => 'auth',
         'as'     => 'widget.add',
         'uses'   => 'GeneralWidgetController@getAddWidget'
     ]);
 
-    Route::get('add/{descriptorID}', [
+    Route::post('add/{descriptorID}', [
         'before' => 'auth',
         'as'     => 'widget.doAdd',
-        'uses'   => 'GeneralWidgetController@doAddWidget'
+        'uses'   => 'GeneralWidgetController@postAddWidget'
     ]);
 
     Route::post('save-position/{userID}', [
