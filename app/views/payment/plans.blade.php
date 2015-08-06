@@ -45,6 +45,23 @@
                 @endif
               </p>
               {{ $plan->description }}
+              @if ($plan->isFree())
+                @if (Auth::user()->subscription->getTrialInfo()['enabled'])
+                  @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
+                    <p>
+                      Your trial ends in 
+                      <strong>
+                        {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
+                      </strong>
+                      <small class="text-muted">on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}.</small>
+                    </p>
+                  @else
+                    <p>
+                      Your trial has ended on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
+                    </p>
+                  @endif
+                @endif
+              @endif
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
         </div> <!-- /.col-md-4 -->

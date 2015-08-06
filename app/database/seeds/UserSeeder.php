@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
 
             Subscription::create(array(
                 'user_id'       => $user->id,
-                'plan_id'       => Plan::where('name', 'Free')->first()->id,
+                'plan_id'       => Plan::getFreePlan()->id,
                 'status'        => 'active',
                 'trial_status'  => 'possible',
                 'trial_start'   => null,
