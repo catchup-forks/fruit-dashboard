@@ -252,20 +252,21 @@ class GeneralWidgetController extends BaseController {
         $widget = new $className(array(
             'settings' => json_encode(array()),
             'state'    => 'active',
-            'position' => '{"size_x": ' . $descriptor->default_rows . ', "size_y": ' . $descriptor->default_cols . ', "row": 0, "col": 0}',
         ));
 
         /* Associate to dashboard */
         if (Input::get('toDashboard')) {
             $dashboard = Dashboard::find(Input::get('toDashboard'));
             if ($dashboard != null) {
-                $widget->dashboard()->associate($dashboard);
-            } else {
-                $widget->dashboard()->associate($user->dashboards[0]);        
+                $dashboard = $user->dashboards[0];
             }
         } else {
-            $widget->dashboard()->associate($user->dashboards[0]);
+            $dashboard = $user->dashboards[0];
         }
+        $widget->dashboard()->associate($dashboard);
+
+        /* Finding position. */
+        $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
         /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);

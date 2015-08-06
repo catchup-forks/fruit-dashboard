@@ -16,6 +16,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'clock',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'min_cols'     => 2,
+                'min_rows'     => 2,
+                'default_cols' => 3,
+                'default_rows' => 2
             )
         );
 
@@ -38,6 +42,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'greetings',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'min_cols'     => 5,
+                'min_rows'     => 1,
+                'default_cols' => 7,
+                'default_rows' => 1
             )
         );
 
@@ -136,10 +144,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'stripe_events',
                     'category'    => 'stripe',
                     'is_premium'  => TRUE,
-                    'min_cols'     => 4,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 2
+                    'min_cols'     => 2,
+                    'min_rows'     => 4,
+                    'default_cols' => 2,
+                    'default_rows' => 5
                 )
             );
         } /* !App::environment('production', 'staging')*/
