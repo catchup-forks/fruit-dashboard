@@ -89,7 +89,7 @@ class WidgetDescriptorSeeder extends Seeder
                     'default_rows' => 2
                 )
             );
-         
+
         } /* !App::environment('production', 'staging')*/
 
 
@@ -136,6 +136,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'stripe_events',
                     'category'    => 'stripe',
                     'is_premium'  => TRUE,
+                    'min_cols'     => 4,
+                    'min_rows'     => 2,
+                    'default_cols' => 5,
+                    'default_rows' => 2
                 )
             );
         } /* !App::environment('production', 'staging')*/

@@ -5,17 +5,16 @@
 ])
 @endif
 
-<div class="@if ($widget->state == 'loading') not-visible @endif" id="widget-wrapper-{{$widget->id}}">
-
-  <div class=" text-center">
-  <span class="pull-left">
-  <!-- Not yet implemented
-    <select id="histogram-{{$widget->id}}-select">
-    <option>Day</option>
-    <option>Month</option>
-    <option>Year</option>
-    </select>
--->
+<div class="@if ($widget->state == 'loading') not-visible @endif" id="widget-wrapper-{{$widget->id}}" style="width:100%; height:100%">
+  <div class="text-center">
+    <span class="pull-left">
+    <!-- Not yet implemented
+      <select id="histogram-{{$widget->id}}-select">
+      <option>Day</option>
+      <option>Month</option>
+      <option>Year</option>
+      </select>
+  -->
     </span>
     <span class="text-white drop-shadow">
        {{ $widget->descriptor->name }}
@@ -24,19 +23,10 @@
       ${{ $widget->getlatestdata() }}
     </span>
   </div>
-  <div class="panel-transparent">
-    @if ($widget->state == 'missing_data')
-    Data not present yet!
-    @else
-    @if ($widget->getSettings()['widget_type'] == 'chart')
-    <div class="panel-body">
-      <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
-    </div>
-    @else
-    ${{$widget->getLatestData()}}
-    @endif
-    @endif
-  </div>
+  <canvas id="{{$widget->descriptor->type}}-chart" style="width:100%;height:100%"></canvas>
+
+
+</div>
 
   @section('widgetScripts')
   @if ($widget->getSettings()['widget_type'] == 'chart')
@@ -65,6 +55,7 @@
          bezierCurve: false,
          scaleShowVerticalLines: false,
          tooltipTemplate: "<%if (label){%><%=label %>: <%}%>$<%= value %>",
+         animation: false
 
        };
 
@@ -97,17 +88,13 @@
           var {{$widget->descriptor->type}}Ctx = document.getElementById("{{ $widget->descriptor->type }}-chart").getContext("2d");
           var {{ $widget->descriptor->type }}Chart = new Chart({{ $widget->descriptor->type }}Ctx).Line({{ $widget->descriptor->type }}Data, options);
       });
-      function resizeCanvas(){
-        var con = $("#widget-wrapper-{{$widget->id}}"),
-            canvas = $("#{{$widget->descriptor->type}}-chart")[0],
-            aspect = canvas.height/canvas.width,
-            width = con.width(),
-            height = con.height();
 
-        canvas.width = width;
-        canvas.height = Math.round(width * aspect);
-      }
-      resizeCanvas();
+
+      // bind fittext to a resize event
+      $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
+        fitToContainer($("#{{$widget->descriptor->type}}-chart"));
+      });
+
     });
 
 </script>
