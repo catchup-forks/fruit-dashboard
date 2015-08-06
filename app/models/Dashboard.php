@@ -52,9 +52,6 @@ class Dashboard extends Eloquent
      * --------------------------------------------------
     */
     private function fits($rectangle) {
-
-        Log::info($rectangle);
-
         /* Looking for an overlap. */
         foreach ($this->widgets as $widget) {
 
