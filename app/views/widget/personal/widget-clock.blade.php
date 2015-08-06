@@ -1,9 +1,15 @@
 @if ($widget->getSettings()['clock_type'] == 'digital')
-  <div id="digitClock">
-  	<h1 id="digitTime" class="no-margin text-white drop-shadow text-center">{{ $widget['currentTime'] }}</h1>
-  </div> <!-- /#digitTime -->
+
+	<div id="digital-clock">
+    <h3 id="digitTime" class="no-margin-top has-margin-vertical-sm text-white drop-shadow text-center truncate">{{ $widget['currentTime'] }}
+    </h3>    
+  </div> <!-- /#digital-clock -->
+  
+
 @else
-<canvas id="analog-clock"></canvas>
+
+  <canvas id="analog-clock"></canvas>
+
 @endif
 
 @section('widgetScripts')
@@ -11,30 +17,42 @@
  <!-- script for clock -->
  <script type="text/javascript">
   $(document).ready(function() {
+    
     @if ($widget->getSettings()['clock_type'] == 'digital')
-    function startTime() {
-      var today = new Date();
-      var h = today.getHours();
-      var m = today.getMinutes();
-      m = checkTime(m);
-      h = checkTime(h);
-      $('#digitTime').html(h + ':' + m);
-      var t = setTimeout(function(){startTime()},500);
-    }
+      
+      function startTime() {
+        var today = new Date();
+        var h = today.getHours();
+        var m = today.getMinutes();
+        m = checkTime(m);
+        h = checkTime(h);
+        $('#digitTime').html(h + ':' + m);
+        var t = setTimeout(function(){startTime()},500);
+      }
 
-    function checkTime(i) {
-      if (i<10){i = "0" + i};  // add zero in front of numbers < 10
-      return i;
-    }
+      function checkTime(i) {
+        if (i<10){i = "0" + i};  // add zero in front of numbers < 10
+        return i;
+      }
 
-    startTime();
-    // fit the clock on page load
-    $('#digitTime').fitText(0.3);
+      startTime();
 
-    // bind fittext to a resize event
-    $('#digitClock').bind('resize', function(e){
-      $('#digitTime').fitText(0.3);
-    })
+      $('#digitTime').hide();
+      
+      // fit the clock on page load
+      $('#digitTime').fitText(0.3, {
+        'minFontSize': 35
+      });
+
+      // bind fittext to a resize event
+      $('#digitTime').bind('resize', function(e){
+        $('#digitTime').fitText(0.3, {
+          'minFontSize': 35
+        });
+      });
+
+      $('#digitTime').fadeIn(2000);  
+
   @else
     var canvas = document.getElementById("analog-clock");
     var ctx = canvas.getContext("2d");

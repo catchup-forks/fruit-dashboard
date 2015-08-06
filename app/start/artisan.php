@@ -11,5 +11,6 @@
 |
 */
 
+Artisan::add(new CheckTrialExpiry);
 Artisan::add(new CollectData);
 Artisan::add(new MigrateExternal);

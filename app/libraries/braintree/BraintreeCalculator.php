@@ -29,6 +29,17 @@ class BraintreeCalculator
      */
 
     /**
+     * getCollector
+     * --------------------------------------------------
+     * Returning the data collector instance.
+     * @return the data collector.
+     * --------------------------------------------------
+    */
+    public function getCollector() {
+        return $this->dataCollector;
+    }
+
+    /**
      * getMrr
      * --------------------------------------------------
      * Calculating the MRR for the user.
@@ -42,16 +53,15 @@ class BraintreeCalculator
 
         // Updating database, with the latest data.
         if ($update) {
-            $this->dataCollector->updateSubscriptions();
+            $this->dataCollector->updateSubscriptions($update);
         }
 
         // Iterating through the plans and subscriptions.
-        foreach ($this->user->braintreePlans as $plan) {
-            foreach ($plan->subscriptions as $subscription) {
+        foreach ($this->user->braintreePlans()->get() as $plan) {
+            foreach ($plan->subscriptions()->get() as $subscription) {
                 // Dealing only with active subscriptions.
                 if ($subscription->status == 'active') {
-                    //
-                    $value = $plan->price * (1 / $subscription->billing_frequency);
+                    $value = $plan->price;
                     $mrr += $value;
                 }
             }
@@ -82,7 +92,7 @@ class BraintreeCalculator
      * --------------------------------------------------
     */
     public function getArpu($update=False) {
-        $customerNumber = count($this->dataCollector->getCustomers());
+        $customerNumber = $this->dataCollector->getNumberOfCustomers();
 
         /* Avoiding division by zero. */
         if ($customerNumber == 0) {

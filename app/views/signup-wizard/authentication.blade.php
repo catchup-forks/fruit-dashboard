@@ -83,35 +83,77 @@
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13' || keycode == '9'){
               event.preventDefault();
-              $('.yourname-form').slideUp('fast', function (){
-                $('.youremail-form').find('span.username').html(' ' + $('#username_id').val());
-                $('.youremail-form').slideDown('fast', function() {
-                  $('#email_id').focus();
-                });
-              });
+                if ($('#username_id').val()) {
+                    $('.yourname-form').slideUp('fast', function (){
+                      $('.youremail-form').find('span.username').html(' ' + $('#username_id').val());
+                      $('.youremail-form').slideDown('fast', function() {
+                        $('#email_id').focus();
+                      });
+                    });      
+                } else {
+                    $.growl.warning({
+                      message: "Please enter your name.",
+                      size: "large",
+                      duration: 5000,
+                      location: "br"
+                    });
+                }
             }    
           });
+
+          function IsEmail(email) {
+            var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            return regex.test(email);
+          }
 
           $('#email_id').on('keydown', function (event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13' || keycode == '9'){
               event.preventDefault();
-              $('.youremail-form').slideUp('fast', function (){
-                $('.yourpassword-form').slideDown('fast', function() {
-                  $('#password_id').focus();
+              if ($('#email_id').val() && IsEmail($('#email_id').val())) {
+                
+                $('.youremail-form').slideUp('fast', function (){
+                  $('.yourpassword-form').slideDown('fast', function() {
+                    $('#password_id').focus();
+                  });
                 });
-                $('.hidden-form').slideDown('fast', function() {
+                  
+              } else {
+                $.growl.warning({
+                  message: "Please enter a valid email address.",
+                  size: "large",
+                  duration: 5000,
+                  location: "br"
                 });
-              });
+              }
+              
             }    
           });
 
           $('#password_id').on('keydown', function (event){
             
-          });
-
-          $('.greeting').html('{{ SiteConstants::getTimeOfTheDay() }}');
-          
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            
+            if(keycode == '13' || keycode == '9'){
+              event.preventDefault();
+              
+              if ($('#password_id').val().length > 3) {
+                
+                $('#signup-form-id').submit();
+                  
+              } else {
+                
+                $.growl.warning({
+                  message: "Your password should be at least 4 characters.",
+                  size: "large",
+                  duration: 5000,
+                  location: "br"
+                });
+              
+              }
+            }
+            });
+        
         });
     </script>
 

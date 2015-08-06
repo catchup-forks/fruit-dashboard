@@ -87,9 +87,9 @@ class BraintreeDataCollector
         // Clollecting subscriptions.
         try {
             $braintreeSubscriptions =  Braintree_Subscription::search(array(
-                Braintree_SubscriptionSearch::status()->in(
-                    array(Braintree_Subscription::ACTIVE)
-                    )
+                Braintree_SubscriptionSearch::status()->in(array(
+                        Braintree_Subscription::ACTIVE,
+                    ))
                 )
             );
         } catch (Exception $e) {
@@ -99,8 +99,10 @@ class BraintreeDataCollector
 
         foreach ($braintreeSubscriptions as $subscription) {
             $new_subscription = new BraintreeSubscription(array(
-                'start'       => $subscription->firstBillingDate,
-                'status'      => $subscription->status
+                'start'           => $subscription->firstBillingDate,
+                'status'          => $subscription->status,
+                'subscription_id' => $subscription->id,
+                'customer_id'     => $subscription->transactions[0]->customer['id']
             ));
             $plan = BraintreePlan::where('plan_id', $subscription->planId)
                 ->first();
@@ -126,12 +128,58 @@ class BraintreeDataCollector
      * getCustomers
      * --------------------------------------------------
      * Getting a list of customers.
-     * @returns The stripe customers.
-     * @throws StripeNotConnected
+     * @return The braintree customers.
+     * @throws BraintreeNotConnected
      * --------------------------------------------------
     */
     public function getCustomers() {
         // Return.
         return Braintree_Customer::all();
+    }
+
+    /**
+     * getAllSubscriptions
+     * --------------------------------------------------
+     * Getting a list of all subscriptions.
+     * @return The Braintree subscriptions
+     * @throws BraintreeNotConnected
+     * --------------------------------------------------
+    */
+    public function getAllSubscriptions() {
+        return  Braintree_Subscription::search(array(
+            Braintree_SubscriptionSearch::status()->in(array(
+                Braintree_Subscription::ACTIVE,
+                Braintree_Subscription::EXPIRED,
+                Braintree_Subscription::PAST_DUE,
+                Braintree_Subscription::PENDING,
+                Braintree_Subscription::CANCELED)
+                )
+            )
+        );
+    }
+
+    /**
+     * getNumberOfCustomers
+     * --------------------------------------------------
+     * Getting the number of customers.
+     * @return The number of customers.
+     * @throws BraintreeNotConnected
+     * --------------------------------------------------
+    */
+    public function getNumberOfCustomers($update=False) {
+        if ($update) {
+            $this->updateSubscriptions();
+        }
+
+        $customerIDs = array();
+        /* Filtering plans and subscriptions to user. */
+        foreach (BraintreePlan::where('user_id', $this->user->id)->get() as $stripePlan) {
+            foreach (BraintreeSubscription::where('plan_id', $stripePlan->id)->get() as $subscription) {
+                if (!in_array($subscription->customer_id, $customerIDs)) {
+                    array_push($customerIDs, $subscription->customer_id);
+                }
+            }
+        }
+        return count($customerIDs);
     }
 } /* BraintreeDataCollector */

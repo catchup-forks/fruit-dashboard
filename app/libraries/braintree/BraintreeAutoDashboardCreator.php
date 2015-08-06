@@ -1,25 +1,21 @@
 <?php
 
-class StripeAutoDashboardCreator
+class BraintreeAutoDashboardCreator
 {
     /* -- Class properties -- */
-    public static $allowedEventTypes = array(
-        'customer.subscription.created',
-        'customer.subscription.updated',
-        'customer.subscription.deleted'
-    );
+    const DAYS = 30;
 
     /**
-     * The stripe events.
+     * The braintree subscriptions.
      *
      * @var array
      */
-    private $events = null;
+    private $subscriptions = null;
 
     /**
-     * The stripe calculator object.
+     * The braintree calculator object.
      *
-     * @var StripeCalculator
+     * @var BraintreeCalculator.
      */
     private $calculator = null;
 
@@ -42,8 +38,7 @@ class StripeAutoDashboardCreator
      * --------------------------------------------------
      * Main function of the job.
      * @param $job, the job instance.
-     * @param $data, array containing user_id.
-     * @throws StripeNotConnected
+     * @param $data, array containing user_id. * @throws BraintreeNotConnected
      * --------------------------------------------------
     */
     public function fire($job, $data) {
@@ -65,12 +60,13 @@ class StripeAutoDashboardCreator
         $this->user->subscription->changeTrialState('active');
 
         /* Creating calculator. */
-        $this->calculator = new StripeCalculator($this->user);
-        $this->events = $this->calculator->getCollector()->getEvents();
-        $this->filterEvents();
+        $this->calculator = new BraintreeCalculator($this->user);
+        $this->subscriptions = $this->calculator->getCollector()->getAllSubscriptions();
+        $this->filterSubscriptions();
 
         /* Populate dashboard. */
         $this->populateDashboard();
+
     }
 
     /**
@@ -82,31 +78,30 @@ class StripeAutoDashboardCreator
     /**
      * createDashboard
      * --------------------------------------------------
-     * Creating a dashboard dedicated to stripe widgets.
+     * Creating a dashboard dedicated to braintree widgets.
      * --------------------------------------------------
      */
     private function createDashboard() {
         /* Creating dashboard. */
         $dashboard = new Dashboard(array(
-            'name'       => 'Stripe dashboard',
+            'name'       => 'Braintree dashboard',
             'background' => TRUE,
             'number'     => $this->user->dashboards->max('number') + 1
         ));
         $dashboard->user()->associate($this->user);
         $dashboard->save();
 
-        /* Adding widgets */
-        $mrrWidget = new StripeMrrWidget(array(
+        /* Adding widgets */ $mrrWidget = new BraintreeMrrWidget(array(
             'position' => '{"col":2,"row":1,"size_x":10,"size_y":6}',
             'state'    => 'loading',
         ));
 
-        $arrWidget = new StripeArrWidget(array(
+        $arrWidget = new BraintreeArrWidget(array(
             'position' => '{"col":1,"row":7,"size_x":6,"size_y":4}',
             'state'    => 'loading',
         ));
 
-        $arpuWidget = new StripeArpuWidget(array(
+        $arpuWidget = new BraintreeArpuWidget(array(
             'position' => '{"col":7,"row":7,"size_x":6,"size_y":4}',
             'state'    => 'loading',
         ));
@@ -213,29 +208,20 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * filterEvents
+     * filterSubscriptions
      * --------------------------------------------------
-     * Filtering events to relevant only.
+     * Filtering subscriptions to relevant only.
      * --------------------------------------------------
     */
-    private function filterEvents() {
-        $filteredEvents = array();
-        foreach ($this->events as $key=>$event) {
-            $save = FALSE;
-            foreach (Static::$allowedEventTypes as $type) {
-                if ($save) {
-                    /* Save already set, going on. */
-                    break;
-                }
-                if ($event['type'] == $type) {
-                    $save = TRUE;
-                }
-            }
-            if ($save) {
-                array_push($filteredEvents, $event);
+    private function filterSubscriptions() {
+        $filteredSubscriptions = array();
+        foreach ($this->subscriptions as $key=>$subscription) {
+            $updatedAt = Carbon::createFromTimestamp($subscription->updatedAt->getTimestamp());
+            if ($updatedAt->between(Carbon::now(), Carbon::now()->subDays(30))) {
+                array_push($filteredSubscriptions, $subscription);
             }
         }
-        $this->events = $filteredEvents;
+        $this->subscriptions = $filteredSubscriptions;
     }
 
     /**
@@ -246,16 +232,16 @@ class StripeAutoDashboardCreator
      * --------------------------------------------------
     */
     private function mirrorDay($date) {
-        foreach ($this->events as $key=>$event) {
-            $eventDate = Carbon::createFromTimestamp($event['created'])->toDateString();
-            if ($eventDate == $date) {
-                switch ($event['type']) {
-                    case 'customer.subscription.created': $this->handleSubscriptionCreation($event); break;
-                    case 'customer.subscription.updated': $this->handleSubscriptionUpdate($event); break;
-                    case 'customer.subscription.deleted': $this->handleSubscriptionDeletion($event); break; default:;
+        foreach ($this->subscriptions as $key=>$subscription) {
+            foreach ($subscription->statusHistory as $statusDetail) {
+                $updateDate = Carbon::createFromTimestamp($statusDetail->timestamp->getTimestamp())->toDateString();
+                if ($updateDate == $date) {
+                    switch ($statusDetail->status) {
+                        case Braintree_Subscription::CANCELED: $this->handleSubscriptionDeletion($subscription); break;
+                        case Braintree_Subscription::ACTIVE: $this->handleSubscriptionCreation($subscription); break;
+                        default:;
+                    }
                 }
-                /* Making sure we're done with the event. */
-                unset($this->events[$key]);
             }
         }
     }
@@ -265,54 +251,24 @@ class StripeAutoDashboardCreator
      * --------------------------------------------------
      * Handling subscription deletion.
      * On deletion we'll have to create a subscription.
-     * @param eventThe specific stripe event.
+     * @param subscription The braintree subscription.
      * --------------------------------------------------
     */
-    private function handleSubscriptionDeletion($event) {
-        $subscriptionData = $event['data']['object'];
-        $subscription = new StripeSubscription(array(
-            'subscription_id' => $subscriptionData['id'],
-            'start'           => $subscriptionData['start'],
-            'status'          => $subscriptionData['status'],
-            'customer'        => $subscriptionData['customer'],
-            'ended_at'        => $subscriptionData['ended_at'],
-            'canceled_at'     => $subscriptionData['canceled_at'],
-            'quantity'        => $subscriptionData['quantity'],
-            'discount'        => $subscriptionData['discount'],
-            'trial_start'     => $subscriptionData['trial_start'],
-            'trial_end'       => $subscriptionData['trial_start'],
-            'discount'        => $subscriptionData['discount']
+    private function handleSubscriptionDeletion($subscription) {
+        $newSubscription = new BraintreeSubscription(array(
+            'subscription_id' => $subscription->id,
+            'start'           => $subscription->firstBillingDate,
+            'status'          => Braintree_Subscription::ACTIVE,
+            'customer_id'     => $subscription->transactions[0]->customer['id']
         ));
 
         // Creating the plan if necessary.
-        $plan = StripePlan::where('plan_id', $subscriptionData['plan']['id'])->first();
+        $plan = BraintreePlan::where('plan_id', $subscription->planId)->first();
         if (is_null($plan)) {
             return;
         }
-
-        $subscription->plan()->associate($plan);
-        $subscription->save();
-    }
-
-    /**
-     * handleSubscriptionUpdate
-     * --------------------------------------------------
-     * Handling subscription update.
-     * @param eventThe specific stripe event.
-     * --------------------------------------------------
-    */
-    private function handleSubscriptionUpdate($event) {
-        /* Check if a plan's been changed./ */
-        if (isset($event['data']['previous_attributes']['plan'])) {
-            $subscriptionData = $event['data']['object'];
-
-            $subscription = StripeSubscription::where('subscription_id', $subscriptionData['id'])->first();
-
-            $newPlan = StripePlan::where('user_id', $this->user->id)->where('plan_id', $subscriptionData['plan']['id'])->first();
-
-            $subscription->plan()->associate($newPlan);
-            $subscription->save();
-        }
+        $newSubscription->plan()->associate($plan);
+        $newSubscription->save();
     }
 
     /**
@@ -320,11 +276,10 @@ class StripeAutoDashboardCreator
      * --------------------------------------------------
      * Handling subscription creation.
      * On creation we'll have to delete a subscription.
-     * @param eventThe specific stripe event.
+     * @param subscription The braintree subscription
      * --------------------------------------------------
     */
-    private function handleSubscriptionCreation($event) {
-        $subscriptionData = $event['data']['object'];
-        StripeSubscription::where('subscription_id', $subscriptionData['id'])->first()->delete();
+    private function handleSubscriptionCreation($subscription) {
+        BraintreeSubscription::where('subscription_id', $subscription->id)->first()->delete();
     }
 }

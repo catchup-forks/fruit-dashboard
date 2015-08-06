@@ -23,6 +23,11 @@ class AuthController extends BaseController
      */
     public function getSignin()
     {
+        /* Redirect if the user has already signed in */
+        if (Auth::check()) {
+            return Redirect::route('dashboard.dashboard');
+        }
+        
         /* Render the page */
         return View::make('auth.signin');
     }

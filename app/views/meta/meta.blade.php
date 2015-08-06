@@ -27,6 +27,10 @@
       <!-- Mixpanel -->
       @include('tracking.mixpanel')
       <!-- /Mixpanel -->
+
+      <!-- Global event tracker -->
+      @include('tracking.global-event-tracker')
+      <!-- /Global event tracker -->
     @show
 
     @section('stylesheet')
@@ -110,8 +114,7 @@
     @section ('timezoneDetection')
       @include('meta.timezone-detection')
     @show
-    <!-- TimeZone detection -->
-    
+    <!-- TimeZone detection -->    
   @show
 
 </html>

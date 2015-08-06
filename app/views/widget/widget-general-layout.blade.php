@@ -18,10 +18,8 @@
   <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered" id="refresh"></span>
   @endif
 
-  <div class="has-margin-vertical-sm">
-    @include($widget->descriptor->getTemplateName(), [
-      'widget' => $widget,
-    ])
-  </div> <!-- /.has-margin-vertical-sm -->
+  @include($widget->descriptor->getTemplateName(), [
+    'widget' => $widget,
+  ])
 
 </li>
