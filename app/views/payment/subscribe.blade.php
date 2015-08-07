@@ -17,12 +17,21 @@
               <div class="panel-body text-center">
                 {{ Form::open(array('route' => array('payment.subscribe', $plan->id))) }}
                   <div id="payment-form"></div>
-                {{ Form::submit(
+
+                <div class="form-actions text-center">
+                  {{ Form::submit(
                     sprintf('Subscribe to %s plan for €%u', $plan->name, $plan->amount), 
-                    array('class' => 'btn btn-success btn-block')) }}
+                    array('class' => 'btn btn-success')) }}
+                </div> <!-- / .form-actions -->
+                
                 {{ Form::close() }}
                 </form>
-              </div> <!-- /.panel-body -->
+              </div> <!-- /.panel-footer -->
+              <div class="panel-footer text-center">
+                We process your payment using Braintree / Paypal.<br>
+                You will be charged the same day every month. <br>
+                You can cancel any time.
+              </div> <!-- /.panel-footer -->
             </div> <!-- /.panel -->
           </div> <!-- /.col-md-6 -->
         </div> <!-- /.row -->
