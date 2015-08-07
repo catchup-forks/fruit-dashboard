@@ -120,9 +120,11 @@ body {
 }
 .gridster {
   position: absolute;
+  padding: 0;
   top: 0;
   left: 9.5%;
   right: 9.5%;
+  margin-bottom: 25px;
 }
 .gridster ul li {
   list-style: none;
@@ -229,5 +231,7 @@ input.greetings-name:focus {
   -moz-background-size: cover;
   background-size: cover;
   -o-background-size: cover;
-  z-index: -1000;
+}
+.carousel-control {
+  width: 9.5%;
 }
