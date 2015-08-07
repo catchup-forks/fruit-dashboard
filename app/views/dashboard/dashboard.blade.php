@@ -208,7 +208,7 @@
        animation: false
     };
 
-    function drawLineGraph(canvas, values, labels, name) {
+    function drawLineGraph(canvas, values, labels, name, timeOut) {
       // Building data.
       var chartData = {
       labels: labels,
@@ -226,8 +226,11 @@
       // Getting context.
       var ctx = canvas[0].getContext("2d");
 
+      // Clear the canvas.
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       // Drawing chart.
-      setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, 2500);
+      setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, timeOut);
 
   }
   </script>

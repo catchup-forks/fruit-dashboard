@@ -16,10 +16,16 @@
             <div class="panel panel-default panel-transparent">
               <div class="panel-body text-center">
                 {{ Form::open(array('route' => 'payment.unsubscribe')) }}
-                {{ Form::submit('Unsubscribe, and continue with free plan' , array(
-                    'class' => 'btn btn-success btn-block')) }}
+                <div class="form-actions text-center">
+                    {{ Form::submit('Unsubscribe, and continue with free plan' , array(
+                    'class' => 'btn btn-success')) }}
+                </div> <!-- / .form-actions -->
                 {{ Form::close() }}
               </div> <!-- /.panel-body -->
+              <div class="panel-footer text-center">
+                You are about to unsubscribe. <br>
+                Your premium widgets will be hidden, but can be reactivated any time.
+              </div> <!-- /.panel-footer -->
             </div> <!-- /.panel -->
           </div> <!-- /.col-md-6 -->
         </div> <!-- /.row -->

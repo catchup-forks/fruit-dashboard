@@ -41,7 +41,7 @@
 
       @if (($widget->getSettings()['widget_type'] == 'chart') && ($widget->state == 'active'))
         // Active widget.
-         drawLineGraph(canvas, values, labels, name);
+         drawLineGraph(canvas, values, labels, name, 3000);
       @endif
 
       @if (($widget->getSettings()['widget_type'] == 'chart') && ($widget->state == 'loading'))
@@ -56,14 +56,15 @@
             labels.push(data['entries'][i]['date']);
             values.push(data['entries'][i]['value']);
           }
-          drawLineGraph(canvas, values, labels, name);
+          drawLineGraph(canvas, values, labels, name, 3000);
       });
       @endif
 
 
       // bind fittext to a resize event
       $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
-          drawLineGraph(canvas, values, labels, name);
+          
+          drawLineGraph(canvas, values, labels, name, 0);
       });
 
 
