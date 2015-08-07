@@ -167,7 +167,9 @@ class StripeConnector
         $connection->save();
 
         /* Creating custom dashboard in the background. */
-        Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
+        //Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
+        $creator = new StripeAutoDashboardCreator();
+        $creator->fire(null, array('user_id' => Auth::user()->id));
 
     }
 

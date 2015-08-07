@@ -192,7 +192,44 @@
     Chart.defaults.global.scaleLineColor = "black";
     Chart.defaults.global.scaleFontSize = 9;
 
+    var chartOptions = {
+       responsive: true,
+       pointHitDetectionRadius : 2,
+       pointDotRadius : 3,
+       bezierCurve: false,
+       scaleShowVerticalLines: false,
+       tooltipTemplate: "<%if (label){%><%=label %>: <%}%>$<%= value %>",
+       animation: false
+    };
 
+    function drawLineGraph(canvas, values, labels, name) {
+      // Building data.
+      var chartData = {
+      labels: labels,
+      datasets: [{
+        label: "{{ $widget->descriptor->name }}",
+        fillColor : "rgba(100, 222, 100,0.2)",
+        strokeColor : "rgba(100, 222, 100,1)",
+        pointColor : "rgba(100, 222, 100,1)",
+        pointStrokeColor : "#fff",
+        pointHighlightFill : "#fff",
+        pointHighlightStroke : "rgba(100, 222, 100,1)",
+        data: values
+      }]};
+
+      console.log($(canvas.closest('li')[0]).innerWidth());
+      console.log($(canvas.closest('li')[0]).innerHeight());
+
+      // Getting context.
+      var ctx = canvas[0].getContext("2d");
+      // Recalculate canvas size.
+      canvas.width = $(canvas.closest('li')[0]).innerWidth();
+      canvas.height = $(canvas.closest('li')[0]).innerHeight();
+
+      // Drawing chart.
+      var chart = new Chart(ctx).Line(chartData, chartOptions);
+
+  }
   </script>
 
   @append

@@ -276,12 +276,13 @@ class GeneralWidgetController extends BaseController {
         /* Associate to dashboard */
         if (Input::get('toDashboard')) {
             $dashboard = Dashboard::find(Input::get('toDashboard'));
-            if ($dashboard != null) {
+            if (is_null($dashboard)) {
                 $dashboard = $user->dashboards[0];
             }
         } else {
             $dashboard = $user->dashboards[0];
         }
+
         $widget->dashboard()->associate($dashboard);
 
         /* Finding position. */
