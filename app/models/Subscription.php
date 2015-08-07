@@ -77,7 +77,7 @@ class Subscription extends Eloquent
                 $tracker = new GlobalTracker();
                 $tracker->trackAll('lazy', array(
                     'en' => 'Trial ended',
-                    'el' => Auth::user()->email)
+                    'el' => $this->user->email)
                 );
 
             }
@@ -128,7 +128,7 @@ class Subscription extends Eloquent
             $tracker = new GlobalTracker();
             $tracker->trackAll('lazy', array(
                 'en' => 'Trial starts',
-                'el' => Auth::user()->email)
+                'el' => $this->user->email)
             );
 
         /* Other transitions */

@@ -78,6 +78,7 @@ abstract class FinancialWidget extends Widget implements iCronWidget, iAjaxWidge
         $this->data->save();
         $this->checkIntegrity();
     }
+
     /**
      * getHistogram
      * --------------------------------------------------

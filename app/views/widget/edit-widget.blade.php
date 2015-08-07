@@ -39,6 +39,16 @@
                   </div> <!-- /.form-group -->
 
                 @endforeach
+                <!-- dashboard select -->
+                  <div class="form-group">
+                    {{ Form::label('dashboard', 'Dashboard', array(
+                        'class' => 'col-sm-3 control-label'
+                      ))}}
+                    <div class="col-sm-7">
+                      {{ Form::select('dashboard', $dashboards, $widget->dashboard->id, ['class' => 'form-control']) }}
+                    </div>
+                  </div>
+                <!-- /.dashboard select -->
                 <p class="text-center">
                   {{ Form::submit('Save settings', array('class' => 'btn btn-primary') ) }}
                 </p>

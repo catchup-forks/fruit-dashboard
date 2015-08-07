@@ -5,7 +5,7 @@
     </p>
     <p class="source" id="author">
       {{ $widget->getData()['author'] }}
-    </p>  
+    </p>
   </div> <!-- /.container -->
 </div>
 
@@ -28,7 +28,7 @@
         updateWidget();
      @endif
 
-     $("#refresh").click(function () {
+     $("#refresh-{{$widget->id}}").click(function () {
         updateWidget();
      });
    });

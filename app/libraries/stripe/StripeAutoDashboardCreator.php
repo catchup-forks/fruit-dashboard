@@ -97,17 +97,17 @@ class StripeAutoDashboardCreator
 
         /* Adding widgets */
         $mrrWidget = new StripeMrrWidget(array(
-            'position' => '{"col":2,"row":1,"size_x":10,"size_y":6}',
+            'position' => '{"col":4,"row":1,"size_x":6,"size_y":6}',
             'state'    => 'loading',
         ));
 
         $arrWidget = new StripeArrWidget(array(
-            'position' => '{"col":1,"row":7,"size_x":6,"size_y":4}',
+            'position' => '{"col":2,"row":7,"size_x":5,"size_y":5}',
             'state'    => 'loading',
         ));
 
         $arpuWidget = new StripeArpuWidget(array(
-            'position' => '{"col":7,"row":7,"size_x":6,"size_y":4}',
+            'position' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
             'state'    => 'loading',
         ));
 

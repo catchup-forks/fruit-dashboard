@@ -15,7 +15,7 @@
   @endif
 
   @if ($widget instanceof iAjaxWidget)
-  <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered" id="refresh"></span>
+  <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered" id="refresh-{{$widget->id}}"></span>
   @endif
 
   @include($widget->descriptor->getTemplateName(), [

@@ -35,9 +35,16 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', 'This widget has no settings.');
         }
 
+        /* Creating selectable dashboards */
+        $dashboards = array();
+        foreach (Auth::user()->dashboards as $dashboard) {
+            $dashboards[$dashboard->id] = $dashboard->name;
+        }
+
         // Rendering view.
         return View::make('widget.edit-widget')
-            ->with('widget', $widget);
+            ->with('widget', $widget)
+            ->with('dashboards', $dashboards);
     }
 
     /**
@@ -55,14 +62,25 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e);
         }
 
+        /* Creating selectable dashboards */
+        $dashboardIds = array();
+        foreach (Auth::user()->dashboards as $dashboard) {
+            array_push($dashboardIds, $dashboard->id);
+        }
+
+        /* Getting widget's validation array. */
+        $validatorArray =  $widget->getSettingsValidationArray(
+            array_keys($widget->getSetupFields())
+        );
+
+        $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
+
         /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
             array(
                 Input::all(),
-                $widget->getSettingsValidationArray(
-                    array_keys($widget->getSetupFields())
-                )
+                $validatorArray
             )
         );
 
@@ -73,6 +91,7 @@ class GeneralWidgetController extends BaseController {
                 ->withErrors($validator)
                 ->withInput(Input::all());
         }
+        $widget->dashboard()->associate(Dashboard::find(Input::get('dashboard')));
 
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::except('_token'));
@@ -187,12 +206,12 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
-     * getAddWidget
+     * anyAddWidget
      * --------------------------------------------------
      * @return Renders the add widget page
      * --------------------------------------------------
      */
-    public function getAddWidget() {
+    public function anyAddWidget() {
         /* Detect if the user has no dashboard, and redirect */
         if (!Auth::user()->dashboards()->count()) {
             return Redirect::route('signup-wizard.personal-widgets');
@@ -204,12 +223,12 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
-     * doAddWidget
+     * postAddWidget
      * --------------------------------------------------
      * @return Creates a widget instance and sends to wizard.
      * --------------------------------------------------
      */
-    public function doAddWidget($descriptorID) {
+    public function postAddWidget($descriptorID) {
         $user = Auth::user();
         /* Get the widget descriptor */
 
@@ -248,12 +267,28 @@ class GeneralWidgetController extends BaseController {
             }
         }
 
+        /* Create widget */
         $widget = new $className(array(
             'settings' => json_encode(array()),
             'state'    => 'active',
-            'position' => '{"size_x": ' . $descriptor->default_rows . ', "size_y": ' . $descriptor->default_cols . ', "row": 0, "col": 0}',
         ));
-        $widget->dashboard()->associate($user->dashboards[0]);
+
+        /* Associate to dashboard */
+        if (Input::get('toDashboard')) {
+            $dashboard = Dashboard::find(Input::get('toDashboard'));
+            if (is_null($dashboard)) {
+                $dashboard = $user->dashboards[0];
+            }
+        } else {
+            $dashboard = $user->dashboards[0];
+        }
+
+        $widget->dashboard()->associate($dashboard);
+
+        /* Finding position. */
+        $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
+
+        /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $widget->save();
 
