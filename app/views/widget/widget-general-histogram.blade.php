@@ -73,6 +73,7 @@
       });
      });
 
+      @if (($widget->getSettings()['widget_type'] == 'chart') && ($widget->state == 'loading'))
         loadWidget(
           {{$widget->id}},
           function (data) {
@@ -88,11 +89,11 @@
           var {{$widget->descriptor->type}}Ctx = document.getElementById("{{ $widget->descriptor->type }}-chart").getContext("2d");
           var {{ $widget->descriptor->type }}Chart = new Chart({{ $widget->descriptor->type }}Ctx).Line({{ $widget->descriptor->type }}Data, options);
       });
+      @endif
 
 
       // bind fittext to a resize event
       $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
-        fitToContainer($("#{{$widget->descriptor->type}}-chart"));
       });
 
     });

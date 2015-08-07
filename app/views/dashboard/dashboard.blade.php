@@ -13,7 +13,7 @@
   <div id="dashboards" class="carousel slide">
       {{-- Include navigation dots for each dashboard. --}}
       <ol class="carousel-indicators">
-        
+
         @foreach ($dashboards as $dashboard)
 
           <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->number == 0) active @endif"></li>
@@ -33,7 +33,7 @@
 
             {{-- Here comes the dashboard content --}}
             <div id="gridster-{{ $dashboard->number }}" class="gridster container grid-base fill-height">
-              
+
               <ul>
                 @foreach ($dashboard->widgets as $widget)
                   @if ($widget->state != 'hidden')
@@ -41,13 +41,13 @@
                   @endif
                 @endforeach
               </ul>
-                
+
             </div> <!-- /.gridster -->
 
           </div> <!-- /.item -->
 
         @endforeach
-        
+
       </div> <!-- /.carousel-inner -->
 
 
@@ -61,7 +61,7 @@
 
   </div> <!-- /#dashboards -->
 
-  
+
 
   @stop
 
@@ -191,13 +191,6 @@
     Chart.defaults.global.responsive = true;
     Chart.defaults.global.scaleLineColor = "black";
     Chart.defaults.global.scaleFontSize = 9;
-    function fitToContainer(canvas){
-      console.log(canvas);
-      canvas.style.width='100%';
-      canvas.style.height='100%';
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    }
 
 
   </script>

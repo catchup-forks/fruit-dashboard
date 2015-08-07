@@ -35,9 +35,16 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', 'This widget has no settings.');
         }
 
+        /* Creating selectable dashboards */
+        $dashboards = array();
+        foreach (Auth::user()->dashboards as $dashboard) {
+            $dashboards[$dashboard->id] = $dashboard->name;
+        }
+
         // Rendering view.
         return View::make('widget.edit-widget')
-            ->with('widget', $widget);
+            ->with('widget', $widget)
+            ->with('dashboards', $dashboards);
     }
 
     /**
@@ -55,14 +62,25 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e);
         }
 
+        /* Creating selectable dashboards */
+        $dashboardIds = array();
+        foreach (Auth::user()->dashboards as $dashboard) {
+            array_push($dashboardIds, $dashboard->id);
+        }
+
+        /* Getting widget's validation array. */
+        $validatorArray =  $widget->getSettingsValidationArray(
+            array_keys($widget->getSetupFields())
+        );
+
+        $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
+
         /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
             array(
                 Input::all(),
-                $widget->getSettingsValidationArray(
-                    array_keys($widget->getSetupFields())
-                )
+                $validatorArray
             )
         );
 
@@ -73,6 +91,7 @@ class GeneralWidgetController extends BaseController {
                 ->withErrors($validator)
                 ->withInput(Input::all());
         }
+        $widget->dashboard()->associate(Dashboard::find(Input::get('dashboard')));
 
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::except('_token'));
