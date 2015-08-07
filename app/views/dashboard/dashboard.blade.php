@@ -223,17 +223,11 @@
         data: values
       }]};
 
-      console.log($(canvas.closest('li')[0]).innerWidth());
-      console.log($(canvas.closest('li')[0]).innerHeight());
-
       // Getting context.
       var ctx = canvas[0].getContext("2d");
-      // Recalculate canvas size.
-      canvas.width = $(canvas.closest('li')[0]).innerWidth();
-      canvas.height = $(canvas.closest('li')[0]).innerHeight();
 
       // Drawing chart.
-      var chart = new Chart(ctx).Line(chartData, chartOptions);
+      setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, 2500);
 
   }
   </script>

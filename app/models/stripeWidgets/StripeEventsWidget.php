@@ -18,12 +18,20 @@ class StripeEventsWidget extends Widget implements iAjaxWidget, iCronWidget
      * getData
      * --------------------------------------------------
      * Returns the events.
+     * @param (string) ($selector) Which events are requested.
      * @return (array) ($events) The stripe events.
      * --------------------------------------------------
      */
-    public function getData() {
-        $quote = json_decode($this->data->raw_value, 1);
-        return $quote;
+    public function getData($selector='all') {
+        $events = json_decode($this->data->raw_value, 1);
+        Log::info($events);
+        switch ($selector) {
+            case 'all': return $events; break;
+            case 'charge': return array_filter($events, function ($e) { return strpos($e['type'], 'charge'); }); break;
+
+            default: break;
+        }
+        return $events;
     }
 
     /**
@@ -35,8 +43,10 @@ class StripeEventsWidget extends Widget implements iAjaxWidget, iCronWidget
      * --------------------------------------------------
     */
     public function handleAjax($postData) {
-        $this->collectData();
-        return $this->getData();
+        if (isset($postData['collect']) && ($postData['collect'])) {
+            $this->collectData();
+        }
+        return $this->getData($postData['type']);
     }
 
     /**

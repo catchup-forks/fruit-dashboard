@@ -45,7 +45,7 @@
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">
-                      {{ Form::select('dashboard', $dashboards, 'Dashboard', ['class' => 'form-control']) }}
+                      {{ Form::select('dashboard', $dashboards, $widget->dashboard->id, ['class' => 'form-control']) }}
                     </div>
                   </div>
                 <!-- /.dashboard select -->

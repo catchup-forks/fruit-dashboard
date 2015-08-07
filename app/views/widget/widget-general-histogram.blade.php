@@ -23,7 +23,7 @@
       ${{ $widget->getlatestdata() }}
     </span>
   </div>
-  <canvas id="{{$widget->descriptor->type}}-chart" height="100" width="300"></canvas>
+  <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
 
 
 </div>
@@ -63,6 +63,7 @@
 
       // bind fittext to a resize event
       $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
+          drawLineGraph(canvas, values, labels, name);
       });
 
 
