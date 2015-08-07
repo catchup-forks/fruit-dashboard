@@ -10,7 +10,7 @@
   @section('pageContent')
 
   <div id="dashboards" class="carousel slide">
-      
+
       {{-- Include navigation dots for each dashboard. --}}
       <ol class="carousel-indicators">
 
@@ -28,24 +28,24 @@
         @foreach ($dashboards as $dashboard)
 
           <div class="item @if($dashboard->number == 0) active @endif">
-            
+
             <div class="fill" style="background-image:url({{ Background::dailyBackgroundURL() }});">
             </div> <!-- /.fill -->
 
             {{-- Here comes the dashboard content --}}
-            <div id="gridster-{{ $dashboard->number }}" class="gridster container grid-base fill-height">
+            <div id="gridster-{{ $dashboard->number }}" class="gridster grid-base fill-height">
 
               {{-- Generate all the widgdets --}}
               <ul>
 
                 @foreach ($dashboard->widgets as $widget)
-                  
+
                   @if ($widget->state != 'hidden')
                     @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
                   @endif
 
-                @endforeach 
-                
+                @endforeach
+
               </ul>
 
             </div> <!-- /.gridster -->
