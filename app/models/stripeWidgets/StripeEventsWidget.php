@@ -24,14 +24,19 @@ class StripeEventsWidget extends Widget implements iAjaxWidget, iCronWidget
      */
     public function getData($selector='all') {
         $events = json_decode($this->data->raw_value, 1);
-        Log::info($events);
-        switch ($selector) {
-            case 'all': return $events; break;
-            case 'charge': return array_filter($events, function ($e) { return strpos($e['type'], 'charge'); }); break;
-
-            default: break;
+        if ($selector == 'all') {
+            return array_slice($events, 0 , 10);
         }
-        return $events;
+        $filteredEvents = array_filter(
+            $events,
+            function ($e) use ($selector) {
+                if (strpos($e['type'], $selector) !== FALSE) {
+                    return TRUE;
+                }
+                return FALSE;
+            }
+        );
+        return array_values($filteredEvents);
     }
 
     /**

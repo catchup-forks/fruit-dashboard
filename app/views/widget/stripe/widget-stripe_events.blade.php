@@ -1,21 +1,6 @@
 <div class="panel-transparent">
   Events:<br>
-  <div class="panel-body">
-    @if ($widget->state == 'missing_data')
-      Data not present yet!
-    @else
-      @foreach ($widget->getData() as $event)
-        @if ($event['type'] == 'charge.succeeded')
-        <span class="label label-warning label-as-badge">Charge</span>
-        <span class="label label-success label-as-badge">Charge</span>
-        <span class="label label-primary label-as-badge">Charge</span>
-        <span class="label label-info label-as-badge">Charge</span>
-        <span class="label label-danger label-as-badge">Charge</span>
-          {{ $event['data']['object']['amount'] }}
-          {{ $event['data']['object']['currency'] }}
-        @endif
-      @endforeach
-    @endif
+  <div class="panel-body" id="events-holder">
   </div>
 </div>
 
@@ -26,12 +11,32 @@
     function updateWidget() {
       $.ajax({
        type: "POST",
-       data: {'type': 'charge', 'collect': false},
+       data: {'type': 'all', 'collect': false},
        url: "{{ route('widget.ajax-handler', $widget->id) }}"
       }).done(function( events ) {
-        console.log(events);
         for (i = 0; i < events.length; i++) {
+          labelClass = '';
+          labelName = '';
+          htmlData = '';
 
+          if (events[i]['type'].indexOf('charge') > -1) {
+             // charge.
+             charge = events[i]['data']['object'];
+             labelName = 'charge';
+             htmlData = charge['amount'] + ' ' + charge['currency'];
+          } else if (events[i]['type'].indexOf('customer.subscription') > -1) {
+
+          }
+
+          // Setting class.
+          switch (events[i]['type']) {
+            case 'charge.succeeded': labelClass='success'; break;
+            case 'charge.failed': labelClass='danger'; break;
+          }
+
+          $('#events-holder').append(
+            '<div><span class="label label-' + labelClass + ' label-as-badge">' + labelName + '</span> ' + htmlData + '</div>'
+            );
           console.log(events[i]);
         }
 
