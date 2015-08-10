@@ -1,3 +1,3 @@
-<div class="text-white text-center drop-shadow quote" id="widget-loading-{{ $widget->id }}">
+<div class="text-white text-center drop-shadow quote @if ($widget->state != 'loading') not-visible @endif" id="widget-loading-{{ $widget->id }}">
   Loading....
 </div>

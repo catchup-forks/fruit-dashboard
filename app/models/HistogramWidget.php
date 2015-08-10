@@ -1,6 +1,6 @@
 <?php
 
-abstract class FinancialWidget extends Widget implements iCronWidget, iAjaxWidget
+abstract class HistogramWidget extends DataWidget implements iCronWidget
 {
 
     /* -- Settings -- */
@@ -31,31 +31,7 @@ abstract class FinancialWidget extends Widget implements iCronWidget, iAjaxWidge
 
     abstract public function getCurrentValue();
 
-    /**
-     * handleAjax
-     * --------------------------------------------------
-     * Handling ajax request, aka saving text.
-     * @param $postData the data from the request.
-     * @return string, the note text.
-     * --------------------------------------------------
-    */
-    public function handleAjax($postData) {
-        if (isset($postData['state_query'])) {
-            if ($this->state == 'loading') {
-                return array('state' => 'loading');
-            } else {
-                return array(
-                    'state'   => 'active',
-                    'entries' => $this->getHistogram()
-                );
-            }
-        }
-        $this->collectData();
-        return $this->getData();
-    }
-
     public function collectData() {
-
         try {
             /* Calculating current value */
             $newValue = $this->getCurrentValue();
@@ -80,28 +56,28 @@ abstract class FinancialWidget extends Widget implements iCronWidget, iAjaxWidge
     }
 
     /**
-     * getHistogram
+     * getData
      * --------------------------------------------------
      * Returning the histogram.
      * @return array of the histogram.
      * --------------------------------------------------
      */
-    public function getHistogram() {
+    public function getData() {
         return json_decode($this->data->raw_value, 1);
     }
 
     /**
      * getLatestData
      * --------------------------------------------------
-     * Returning the latest value in the data.
-     * @return array histogram.
+     * Returning the last data in the histogram.
+     * @return array of the histogram.
      * --------------------------------------------------
      */
-    public function getLatestData() {
-        $histogram = $this->getHistogram();
+     public function getLatestData() {
+        $histogram = $this->getData();
         $lastEntry = end($histogram);
         return $lastEntry['value'];
-    }
+     }
 
     /**
      * createDataScheme

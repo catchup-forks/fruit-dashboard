@@ -1,6 +1,6 @@
 <?php
 
-class StripeArpuWidget extends FinancialWidget
+class StripeArpuWidget extends HistogramWidget
 {
 
     public function getCurrentValue() {

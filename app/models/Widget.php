@@ -1,14 +1,4 @@
 <?php
-/* If the widget is using data it should implement this interface */
-interface iDataWidget {
-    public function createDataScheme();
-}
-
-/* Widgets having ajax requests should implement this Interface. */
-interface iAjaxWidget extends iDataWidget {
-    public function handleAjax($postData);
-}
-
 /* If the widget needs to be updated automatically by a cron job.  */
 interface iCronWidget {
     public function collectData();

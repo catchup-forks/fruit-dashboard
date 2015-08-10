@@ -444,7 +444,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Checking if it's an ajax widget */
-        if (!$widget instanceof iAjaxWidget) {
+        if (!$widget instanceof DataWidget) {
             return Response::json(array('error' => 'This widget does not support this function.'));
         }
 

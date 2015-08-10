@@ -1,11 +1,4 @@
 
-@if ($widget->state == 'loading')
-@include('widget.widget-loading', [
-'widget' => $widget,
-])
-@endif
-
-<div class="@if ($widget->state == 'loading') not-visible @endif" id="widget-wrapper-{{$widget->id}}">
   <div class="text-center">
     <span class="pull-left">
     <!-- Not yet implemented
@@ -20,7 +13,7 @@
        {{ $widget->descriptor->name }}
     </span>
     <span class="text-white drop-shadow pull-right">
-      ${{ $widget->getlatestdata() }}
+      ${{ $widget->getLatestData() }}
     </span>
   </div>
   <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
@@ -33,8 +26,8 @@
   <script type="text/javascript">
     $(document).ready(function(){
       // Collecting data.
-      var labels =  [@foreach ($widget->getHistogram() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
-      var values = [@foreach ($widget->getHistogram() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
+      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
+      var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
       var canvas = $("#{{ $widget->descriptor->type }}-chart");
       var name = "{{ $widget->descriptor->name }}";
 
@@ -63,7 +56,7 @@
 
       // bind fittext to a resize event
       $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
-          
+
           drawLineGraph(canvas, values, labels, name, 0);
       });
 

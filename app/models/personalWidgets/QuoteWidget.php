@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends Widget implements iAjaxWidget
+class QuoteWidget extends DataWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -100,26 +100,10 @@ class QuoteWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
      */
     public function save(array $options=array()) {
-        /* Calling collectData only if first creation. */
-        if (is_null($this->id)) {
-            parent::save();
+        if ($this->id == null) {
             $this->collectData();
-        } else {
-            parent::save();
         }
-    }
-
-    /**
-     * handleAjax
-     * --------------------------------------------------
-     * Handling ajax request, aka saving text.
-     * @param $postData the data from the request.
-     * @return string, the note text.
-     * --------------------------------------------------
-    */
-    public function handleAjax($postData) {
-        $this->collectData();
-        return $this->getData();
+        parent::save();
     }
 
     /**
