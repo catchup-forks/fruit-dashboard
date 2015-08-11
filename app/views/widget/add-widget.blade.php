@@ -23,7 +23,7 @@
               <div class="col-md-5">
 
                 <input id="filter" type="text" class="form-control margin-top-sm" autofocus="autofocus" placeholder="Type to filter, click to select" />
-                
+
                 <div id="widgets-list" class="list-group margin-top-sm">
 
                   @foreach($widgetDescriptors as $descriptor)
@@ -33,6 +33,7 @@
                   @endforeach
 
                 </div> <!-- /.list-group -->
+                <a href="{{ route('dashboard.dashboard') }}"><button class="btn btn-warning">Cancel</button></a>
               </div> <!-- /.col-md-5 -->
 
               <div class="col-md-7">
@@ -51,15 +52,15 @@
                 </div> <!-- /.row -->
                 <div class="row">
                   <div class="col-md-12">
-                    
+
                     {{ Form::open(array(
                         'id' => 'add-widget-form',
                         'action' => 'widget.add')) }}
-                      
+
                       <div class="form-group">
                         <label for="addToDashboard">Add to dashboard:</label>
                         <select name="toDashboard" class="form-control">
-                          
+
                           @foreach( Auth::user()->dashboards->all() as $dashboard )
                           <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
                           @endforeach
@@ -67,7 +68,7 @@
                         </select>
 
                       </div> <!-- .form-group -->
-                      
+
                       <div class="form-actions text-center">
                       {{ Form::submit('Add' , array(
                           'id' => 'add-widget-submit-button',
@@ -76,7 +77,7 @@
                       </div> <!-- /.form-actions -->
 
                     {{ Form::close() }}
-                    
+
                   </div> <!-- /.col-md-12 -->
                 </div> <!-- /.row -->
               </div> <!-- /.col-md-7 -->
@@ -142,14 +143,14 @@
         }
 
       });
-
-      // Show the descriptors when the list item is clicked.
-      $('.changes-image').click(
-        function(e) {
-          e.preventDefault();
-          showDescription(getID(this));
-        });
-
+      $('.changes-image').hover(function(e){
+          var element = this;
+          window.mytimeout = setTimeout(function(){
+            showDescription(getID(element));
+          }, 125);
+      }, function(){
+          clearTimeout(window.mytimeout);
+      });
     });
   </script>
   @append

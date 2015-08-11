@@ -28,8 +28,7 @@ class DashboardController extends BaseController
         }
 
         /* Render the page */
-        return View::make('dashboard.dashboard')
-            ->with('dashboards', Auth::user()->dashboards);
+        return View::make('dashboard.dashboard');
     }
 
 } /* DashboardController */

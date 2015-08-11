@@ -37,8 +37,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Creating selectable dashboards */
         $dashboards = array();
-        foreach (Auth::user()->dashboards as $dashboard) {
-            $dashboards[$dashboard->id] = $dashboard->name;
+        foreach (Auth::user()->dashboards as $dashboard) {$dashboards[$dashboard->id] = $dashboard->name;
         }
 
         // Rendering view.
@@ -185,7 +184,7 @@ class GeneralWidgetController extends BaseController {
         if (!is_null($generalWidget)) {
             $widget = $generalWidget->getSpecific();
             /* Datawidget data should be kept safe. */
-            if ($widget instanceof iDataWidget) {
+            if ($widget instanceof DataWidget) {
                 $widget->state = 'hidden';
                 $widget->save();
             } else {
@@ -237,7 +236,6 @@ class GeneralWidgetController extends BaseController {
             return Redirect::back()
                 ->with('error', 'Something went wrong, your widget cannot be found.');
         }
-
         /* Create new widget instance */
         $className = $descriptor->getClassName();
 
@@ -245,8 +243,12 @@ class GeneralWidgetController extends BaseController {
         if ($descriptor->category != 'personal') {
             $connected = Connection::where('user_id', $user->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
-                return Redirect::route('signup-wizard.financial-connections')->
-                    with('warning', 'You have to connect the service first to add the widget.');
+                if ($descriptor->category == 'braintree') {
+                    return Redirect::route('signup-wizard.braintree-connect');
+                } else {
+                    return Redirect::route('signup-wizard.financial-connections')
+                        ->with('warning', 'You have to connect the service first to add the widget.');
+                }
             }
         }
 
@@ -259,7 +261,7 @@ class GeneralWidgetController extends BaseController {
                     $widget->save();
                     return Redirect::route('dashboard.dashboard')
                         ->with('success', 'Your hidden widget was restored successfully.');
-                } else {
+                } else if(!$className::$multipleInstances) {
                     /* The widget is active. */
                     return Redirect::route('dashboard.dashboard')
                         ->with('error', 'You cannot add multiple instances of this widget type.');
@@ -288,7 +290,7 @@ class GeneralWidgetController extends BaseController {
         /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
-        /* Associate descriptor and save */
+         /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $widget->save();
 
@@ -308,12 +310,59 @@ class GeneralWidgetController extends BaseController {
         $setupFields = $widget->getSetupFields();
         if (empty($setupFields)) {
             return Redirect::route('dashboard.dashboard')
-                ->with('success', 'Widget successfully created.');
-        }
+                ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
             ->with('success', 'Widget successfully created. You can customize it here.');
     }
 
+    /**
+     * anyPinToDashboard
+     * --------------------------------------------------
+     * @return Pinning a widget to dashboard.
+     * --------------------------------------------------
+     */
+    public function anyPinToDashboard($widgetID, $frequency) {
+        /* Getting the editable widget. */
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof DataWidget) {
+                throw new WidgetDoesNotExist("This widget does not support histograms", 1);
+            } } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+        $settings = $widget->getSettings();
+        $settings['frequency'] = $frequency;
+        $widget->state = 'active';
+        $widget->saveSettings($settings, TRUE);
+
+        /* Rendering view. */
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', 'Widget pinned successfully.');
+    }
+
+    /**
+     * getSinglestat
+     * --------------------------------------------------
+     * @return Renders the singlestat page on histogram widgets.
+     * --------------------------------------------------
+     */
+    public function getSinglestat($widgetID) {
+        /* Getting the editable widget. */
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof DataWidget) {
+                throw new WidgetDoesNotExist("This widget does not support histograms", 1);
+            } } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+
+        /* Rendering view. */
+        return View::make('widget.histogram-singlestat')
+            ->with('widget', $widget)
+            ->with('frequencies', array('daily', 'weekly', 'monthly', 'yearly'));
+    }
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
@@ -444,7 +493,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Checking if it's an ajax widget */
-        if (!$widget instanceof iAjaxWidget) {
+        if (!$widget instanceof DataWidget) {
             return Response::json(array('error' => 'This widget does not support this function.'));
         }
 

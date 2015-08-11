@@ -49,17 +49,18 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Text'],
+            array(
+                'name'        => 'Text',
+                'description' => 'Insert any text you want in this widget',
+                'type'        => 'text',
+                'category'    => 'personal',
+                'is_premium'  => FALSE,
+            )
+        );
+
         if (!App::environment('production', 'staging')) {
-            WidgetDescriptor::updateOrCreate(
-                ['name' => 'Reminder'],
-                array(
-                    'name'        => 'Reminder',
-                    'description' => '',
-                    'type'        => 'reminder',
-                    'category'    => 'personal',
-                    'is_premium'  => FALSE,
-                )
-            );
 
             WidgetDescriptor::updateOrCreate(
                 ['name' => 'Iframe'],

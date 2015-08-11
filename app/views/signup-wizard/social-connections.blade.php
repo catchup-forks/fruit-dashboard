@@ -12,7 +12,7 @@
   <div class="container">
 
     <h1 class="text-center text-white drop-shadow">
-      Connect your financial tools
+      Connect your social accounts.
     </h1>
 
     <div class="row">
@@ -32,9 +32,10 @@
                       {{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}
                     @endif
                   " class="list-group-item clearfix changes-image" data-image="widget-stripe">
-                    @if(Auth::user()->isStripeConnected())
+                    @if(Auth::user()->isFacebookConnected())
                         <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span> </small>
+                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span>
+                        </small>
                     @else
                         <small>
                           <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
@@ -42,7 +43,7 @@
                     @endif
                     Stripe
                     <span class="pull-right">
-                      @if(Auth::user()->isStripeConnected())
+                      @if(auth::user()->isstripeconnected())
                         <button class="btn btn-xs btn-danger">
                           Disconnect
                         </button>

@@ -1,6 +1,6 @@
 <?php
 
-class NoteWidget extends Widget implements iAjaxWidget
+class NoteWidget extends DataWidget
 {
     /**
      * getData

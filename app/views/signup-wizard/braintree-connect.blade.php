@@ -12,7 +12,7 @@
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
       Insert your Braintree API keys & Merchant ID
-    </h1> 
+    </h1>
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
@@ -27,27 +27,26 @@
                 @foreach (BraintreeConnector::$authFields as $field)
 
                   <div class="form-group">
-                    
+
                     {{ Form::label($field, $field, array(
                       'class' => 'col-sm-3 control-label' )) }}
 
                     <div class="col-sm-6">
-                      
-                      {{ Form::text($field, $field, array('class' => 'form-control')) }}
-                      
+
+                      {{ Form::text($field, '', array('class' => 'form-control')) }}
+
                     </div> <!-- /.col-sm-6 -->
 
                   </div> <!-- /.form-group -->
 
                 @endforeach
-                
+
               </div> <!-- /.col-md-7 -->
               <div class="col-md-5">
                 <ol>
                   <li>Go to your Braintree Control Panel and from Account in the top menu, select API Keys.</li>
                   <li>Select your Environment (either sandbox or production), copy and paste your Public and Private API keys and your Merchant ID into the relevant fields</li>
                 </ol>
-
                 <hr>
 
                 <p class="text-danger">
@@ -93,7 +92,8 @@
             </div> <!-- /.row -->
 
             <hr>
-            
+            <a href="{{ route('dashboard.dashboard') }}"><button type="button" class="btn btn-warning">Cancel</button></a>
+
             {{ Form::submit('Connect', array('class' => 'btn btn-primary pull-right')) }}
 
             {{ Form::close() }}
@@ -111,4 +111,3 @@
   @section('pageScripts')
   @stop
 
-  

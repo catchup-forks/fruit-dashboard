@@ -1,6 +1,6 @@
 <?php
 
-class TodoListWidget extends Widget implements iDataWidget
+class TodoListWidget extends DataWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array();

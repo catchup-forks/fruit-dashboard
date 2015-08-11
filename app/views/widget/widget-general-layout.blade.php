@@ -14,12 +14,21 @@
   </a>
   @endif
 
-  @if ($widget instanceof iAjaxWidget)
+  @if ($widget instanceof DataWidget)
   <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered" id="refresh-{{$widget->id}}"></span>
   @endif
 
-  @include($widget->descriptor->getTemplateName(), [
-    'widget' => $widget,
-  ])
+  <!-- Adding loading on DataWidget -->
+  @if ($widget instanceof DataWidget)
+    @include('widget.widget-loading', ['widget' => $widget,])
+    <div class="@if ($widget->state == 'loading') not-visible @endif" id="widget-wrapper-{{$widget->id}}">
+  @endif
+
+  @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
+
+  <!-- Adding loading on DataWidget -->
+  @if ($widget instanceof DataWidget)
+    </div>
+  @endif
 
 </li>
