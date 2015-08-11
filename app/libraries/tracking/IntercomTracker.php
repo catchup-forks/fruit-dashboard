@@ -1,9 +1,9 @@
 <?php
 
 /**
-* -------------------------------------------------------------------------- 
-* IntercomTracker: 
-*       Wrapper functions for server-side event tracking    
+* --------------------------------------------------------------------------
+* IntercomTracker:
+*       Wrapper functions for server-side event tracking
 * Usage:
 *       $tracker = new IntercomTracker();
 *       $eventData = array(
@@ -14,10 +14,10 @@
 *           ),
 *       );
 *       $tracker->sendEvent($eventData);
-* -------------------------------------------------------------------------- 
+* --------------------------------------------------------------------------
 */
 class IntercomTracker {
-    
+
     /* -- Class properties -- */
     private static $intercom;
 
@@ -37,7 +37,7 @@ class IntercomTracker {
 
     /**
      * sendEvent:
-     * -------------------------------------------------- 
+     * --------------------------------------------------
      * Dispatches an event based on the arguments.
      * @param (dict) (eventData) The event data
      *     (string) (en) [Req] Event Name.
@@ -47,12 +47,22 @@ class IntercomTracker {
      */
     public function sendEvent($eventData) {
         /* Build and send the request */
-        self::$intercom->createEvent(array(
-            "event_name" => $eventData['en'],
-            "created_at" => Carbon::now()->timestamp,
-            "user_id" => (Auth::user() ? Auth::user()->id : 0),
-            "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
-        ));
+        try {
+            self::$intercom->createEvent(array(
+                "event_name" => $eventData['en'],
+                "created_at" => Carbon::now()->timestamp,
+                "user_id" => (Auth::check() ? Auth::user()->id : 0),
+                "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
+            ));
+        } catch (Intercom\Exception\ClientErrorResponseException $e) {
+            if (Auth::check()) {
+                $self::$intercom->updateUser(array(
+                    'user_id'         => Auth::user()->id,
+                    'last_request_at' => Carbon::now()->timestamp,
+                    "metadata"        => array_key_exists('md', $eventData) ? $eventData['md'] : null
+                ));
+            }
+        }
 
         /* Return */
         return true;
