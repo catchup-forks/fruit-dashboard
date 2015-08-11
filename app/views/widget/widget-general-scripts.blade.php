@@ -115,4 +115,19 @@
     // Drawing chart.
     setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, timeOut);
   }
+
+  function updateChartWidget(data, canvas, name, valueSpan) {
+    // Updating chart values.
+    var labels = [];
+    var values = [];
+    for (i = 0; i < data.length; ++i) {
+      labels.push(data[i]['date']);
+      values.push(data[i]['value']);
+    }
+    if (data.length > 0) {
+      valueSpan.html("$" + data[data.length-1]['value']);
+    }
+
+    drawLineGraph(canvas, values, labels, name, 1000);
+  }
 </script>

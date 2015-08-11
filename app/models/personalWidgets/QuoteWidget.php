@@ -5,9 +5,9 @@ class QuoteWidget extends DataWidget
     /* -- Settings -- */
     public static $settingsFields = array(
         'type' => array(
-            'name'       => 'Type',
-            'type'       => 'SCHOICE',
-            'default'    => 'inspirational'
+            'name'    => 'Type',
+            'type'    => 'SCHOICE',
+            'default' => 'inspirational'
         ),
         'update_frequency' => array(
             'name'    => 'Changes (in minutes)',
@@ -45,7 +45,6 @@ class QuoteWidget extends DataWidget
             return;
         }
 
-
         /* Select a random row. */
         $quotes = $decoded_data->{'feed'}->{'entry'};
         $key = array_rand($quotes);
@@ -68,7 +67,7 @@ class QuoteWidget extends DataWidget
      * @return (array) ($quote) The quote and author
      * --------------------------------------------------
      */
-    public function getData() {
+    public function getData($postData=null) {
         $quote = json_decode($this->data->raw_value, 1);
         if (empty($quote)) {
             return array(
@@ -100,10 +99,10 @@ class QuoteWidget extends DataWidget
      * --------------------------------------------------
      */
     public function save(array $options=array()) {
+        parent::save();
         if ($this->id == null) {
             $this->collectData();
         }
-        parent::save();
     }
 
     /**

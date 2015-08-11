@@ -1,18 +1,7 @@
 <?php
 
-class StripeEventsWidget extends Widget implements iAjaxWidget, iCronWidget
+class StripeEventsWidget extends DataWidget implements iCronWidget
 {
-
-    /**
-     * createDataScheme
-     * --------------------------------------------------
-     * Returning a deafult scheme for the data.
-     * @return string json encoded empty array.
-     * --------------------------------------------------
-    */
-    public function createDataScheme() {
-        return json_encode(array());
-    }
 
     /**
      * getData

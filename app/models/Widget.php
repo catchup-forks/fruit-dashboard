@@ -4,14 +4,13 @@ interface iCronWidget {
     public function collectData();
 }
 
-
 /* Main widget class */
 class Widget extends Eloquent
 {
- // -- Table specs -- //
+    /* -- Table specs -- */
     protected $table = "widgets";
 
-    // -- Fields -- //
+    /* -- Fields -- */
     protected $fillable = array(
         'state',
         'settings',
@@ -19,7 +18,7 @@ class Widget extends Eloquent
     );
     public $timestamps = FALSE;
 
-    // These variables will be overwritten, with late static binding.
+    /* These variables will be overwritten, with late static binding. */
     public static $settingsFields = array();
     public static $setupSettings = array();
 
@@ -39,7 +38,7 @@ class Widget extends Eloquent
      * getSettingsFields
      * --------------------------------------------------
      * Getting the settings meta.
-     * @return array The widget settings meta.
+     * @return array
      * --------------------------------------------------
     */
     public function getSettingsFields() {
@@ -50,7 +49,7 @@ class Widget extends Eloquent
      * getSetupFields
      * --------------------------------------------------
      * Getting the setup settings meta.
-     * @return array The widget settings meta.
+     * @return array
      * --------------------------------------------------
     */
     public function getSetupFields() {
@@ -61,7 +60,7 @@ class Widget extends Eloquent
      * getSpecific
      * --------------------------------------------------
      * Getting the correct widget from a general widget,
-     * @return mixed A specific Widget object.
+     * @return mixed
      * --------------------------------------------------
     */
     public function getSpecific() {
@@ -84,7 +83,7 @@ class Widget extends Eloquent
      * getSettings
      * --------------------------------------------------
      * Getting the settings from db, and transforming it to assoc.
-     * @return string widget Type
+     * @return mixed
      * --------------------------------------------------
     */
     public function getSettings() {
@@ -95,8 +94,7 @@ class Widget extends Eloquent
      * setPosition
      * --------------------------------------------------
      * Setting the position of the model.
-     * @param array $decodedPosition from json.
-     * @return None
+     * @param array $decodedPosition
      * --------------------------------------------------
     */
     public function setPosition(array $decodedPosition) {
@@ -131,8 +129,8 @@ class Widget extends Eloquent
      * getSettingsValidationArray
      * --------------------------------------------------
      * Getting the laravel validation array.
-     * @param array Fields the fields ti validate.
-     * @return array a laravel validation array.
+     * @param array $fields
+     * @return array
      * --------------------------------------------------
     */
     public function getSettingsValidationArray($fields) {
@@ -175,8 +173,8 @@ class Widget extends Eloquent
      * saveSettings
      * --------------------------------------------------
      * Transforming settings to JSON format. (validation done by view)
-     * @param array $inputSettings the settings array.
-     * @return None
+     * @param array $inputSettings
+     * @param boolean $commit
      * --------------------------------------------------
     */
     public function saveSettings($inputSettings, $commit=TRUE) {
@@ -186,8 +184,7 @@ class Widget extends Eloquent
         // Iterating through the positions.
         foreach (array_keys($this->getSettingsFields()) as $fieldName) {
             // inputSettings. oldSettings, empty string.
-            if (isset($inputSettings[$fieldName])) {
-                $settings[$fieldName] = $inputSettings[$fieldName];
+            if (isset($inputSettings[$fieldName])) {$settings[$fieldName] = $inputSettings[$fieldName];
             } else if (isset($oldSettings[$fieldName])) {
                 // Value not set, Getting from old settings.
                 $settings[$fieldName] = $oldSettings[$fieldName];
@@ -213,13 +210,12 @@ class Widget extends Eloquent
      * @return the saved object.
     */
     public function save(array $options=array()) {
-       // Associating descriptor.
+        // Associating descriptor.
         $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
         /* Checking descriptor. */
         if ($widgetDescriptor === null) {
             throw new DescriptorDoesNotExist("The descriptor for " . get_class($this) . " does not exist", 1);
-
         }
 
         // Assigning descriptor.
@@ -251,11 +247,12 @@ class Widget extends Eloquent
      * --------------------------------------------------
      * Checking a widget's overall integrity,
      * setting state accordingly.
+     * @param boolean $commit
      * --------------------------------------------------
      */
     protected function checkIntegrity($commit=TRUE) {
         // Data integrity validation.
-        if ($this instanceof iDataWidget) {
+        if ($this instanceof DataWidget) {
             // Exception variables.
             $valid = TRUE;
             $save = FALSE;
@@ -271,8 +268,7 @@ class Widget extends Eloquent
                 $this->data()->associate($data);
                 $data->save();
             } catch (InvalidData $e) {
-                // Invalid data found in db, doing cleanup.
-                $valid = FALSE;
+                // Invalid data found in db, doing cleanup. $valid = FALSE;
                 $save = TRUE;
                 $this->data->raw_value = $this->createDataScheme();
                 $this->data->save();
@@ -325,7 +321,7 @@ class Widget extends Eloquent
      * Only in generalwidget, where the descriptor is
      * still unknown.
      * (CamelCase to underscore)
-     * @return string the widgert's type
+     * @return string
      * --------------------------------------------------
     */
     private function getType() {

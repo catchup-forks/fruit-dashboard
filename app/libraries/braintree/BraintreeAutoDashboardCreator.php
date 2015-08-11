@@ -34,12 +34,11 @@ class BraintreeAutoDashboardCreator
     private $widgets = array();
 
     /**
-     * fire
-     * --------------------------------------------------
      * Main function of the job.
-     * @param $job, the job instance.
-     * @param $data, array containing user_id. * @throws BraintreeNotConnected
-     * --------------------------------------------------
+     *
+     * @param Job $job
+     * @param array $data
+     * @throws BraintreeNotConnected
     */
     public function fire($job, $data) {
         /* Getting the user */
@@ -76,10 +75,7 @@ class BraintreeAutoDashboardCreator
     */
 
     /**
-     * createDashboard
-     * --------------------------------------------------
      * Creating a dashboard dedicated to braintree widgets.
-     * --------------------------------------------------
      */
     private function createDashboard() {
         /* Creating dashboard. */
@@ -124,10 +120,7 @@ class BraintreeAutoDashboardCreator
     }
 
     /**
-     * populateDashboard
-     * --------------------------------------------------
      * Populating the widgets with data.
-     * --------------------------------------------------
      */
     private function populateDashboard() {
         $mrrWidget  = $this->widgets['mrr'];
@@ -156,11 +149,9 @@ class BraintreeAutoDashboardCreator
     }
 
     /**
-     * getLastMonthData
-     * --------------------------------------------------
      * Returning all metrics in an array.
-     * @return All metrics in an array.
-     * --------------------------------------------------
+     *
+     * @return array.
     */
     private function getMetrics() {
         /* Updating subscriptions to be up to date. */
@@ -170,7 +161,7 @@ class BraintreeAutoDashboardCreator
         $arr = array();
         $arpu = array();
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < self::DAYS; $i++) {
             /* Calculating the date to mirror. */
             $date = Carbon::now()->subDays($i)->toDateString();
             $this->mirrorDay($date);
@@ -187,15 +178,11 @@ class BraintreeAutoDashboardCreator
         );
     }
 
-
-
     /**
-     * sortByDate
-     * --------------------------------------------------
      * Sorting a multidimensional dataset by date.
-     * @param dataSet The data to be sorted.
-     * @return array the sorted dataset.
-     * --------------------------------------------------
+     *
+     * @param array $dataSet
+     * @return array
     */
     private function sortByDate($dataSet) {
         $dates = array();
@@ -208,10 +195,7 @@ class BraintreeAutoDashboardCreator
     }
 
     /**
-     * filterSubscriptions
-     * --------------------------------------------------
      * Filtering subscriptions to relevant only.
-     * --------------------------------------------------
     */
     private function filterSubscriptions() {
         $filteredSubscriptions = array();
@@ -225,11 +209,9 @@ class BraintreeAutoDashboardCreator
     }
 
     /**
-     * mirrorDay
-     * --------------------------------------------------
      * Trying to mirror the specific date, to our DB.
+     *
      * @param date The date on which we're mirroring.
-     * --------------------------------------------------
     */
     private function mirrorDay($date) {
         foreach ($this->subscriptions as $key=>$subscription) {
@@ -247,12 +229,9 @@ class BraintreeAutoDashboardCreator
     }
 
     /**
-     * handleSubscriptionDeletion
-     * --------------------------------------------------
      * Handling subscription deletion.
-     * On deletion we'll have to create a subscription.
-     * @param subscription The braintree subscription.
-     * --------------------------------------------------
+     *
+     * @param subscription $subscription
     */
     private function handleSubscriptionDeletion($subscription) {
         $newSubscription = new BraintreeSubscription(array(
@@ -272,12 +251,9 @@ class BraintreeAutoDashboardCreator
     }
 
     /**
-     * handleSubscriptionCreation
-     * --------------------------------------------------
      * Handling subscription creation.
-     * On creation we'll have to delete a subscription.
-     * @param subscription The braintree subscription
-     * --------------------------------------------------
+     *
+     * @param Subscription $subscription
     */
     private function handleSubscriptionCreation($subscription) {
         BraintreeSubscription::where('subscription_id', $subscription->id)->first()->delete();

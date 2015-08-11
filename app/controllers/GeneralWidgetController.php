@@ -185,7 +185,7 @@ class GeneralWidgetController extends BaseController {
         if (!is_null($generalWidget)) {
             $widget = $generalWidget->getSpecific();
             /* Datawidget data should be kept safe. */
-            if ($widget instanceof iDataWidget) {
+            if ($widget instanceof DataWidget) {
                 $widget->state = 'hidden';
                 $widget->save();
             } else {
