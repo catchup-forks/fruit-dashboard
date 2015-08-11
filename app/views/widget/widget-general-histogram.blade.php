@@ -1,15 +1,13 @@
-<div class="panel-transparent">
-  <div class="text-center panel-heading">
-    <span class="text-white drop-shadow">
-       {{ $widget->descriptor->name }}
-    </span>
-    <span class="text-white drop-shadow pull-right" id="{{$widget->descriptor->type}}-value">
-      ${{ $widget->getLatestData()['value'] }}
-    </span>
-  </div>
-  <div class="panel-body">
-    <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
-  </div>
+<div class="text-center">
+  <span class="text-white drop-shadow">
+     {{ $widget->descriptor->name }}
+  </span>
+  <span class="text-white drop-shadow pull-right" id="{{$widget->descriptor->type}}-value">
+    ${{ $widget->getLatestData()['value'] }}
+  </span>
+</div>
+<div class="fill bg-info">
+  <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
 </div>
 
 @section('widgetScripts')

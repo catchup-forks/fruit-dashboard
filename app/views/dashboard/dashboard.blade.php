@@ -14,7 +14,7 @@
       {{-- Include navigation dots for each dashboard. --}}
       <ol class="carousel-indicators">
 
-        @foreach ($dashboards as $dashboard)
+        @foreach (Auth::user()->dashboards as $dashboard)
 
           <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->number == 0) active @endif"></li>
 
@@ -25,7 +25,7 @@
       {{-- Make a wrapper for dashboards --}}
       <div class="carousel-inner">
 
-        @foreach ($dashboards as $dashboard)
+        @foreach (Auth::user()->dashboards as $dashboard)
 
           <div class="item @if($dashboard->number == 0) active @endif">
 
@@ -56,7 +56,7 @@
 
       </div> <!-- /.carousel-inner -->
 
-
+      @if (count(Auth::user()->dashboards) > 0)
       {{-- Set the navigational controls on sides. --}}
       <a class="left carousel-control" href="#dashboards" data-slide="prev">
           <span class="icon-prev"></span>
@@ -64,6 +64,7 @@
       <a class="right carousel-control" href="#dashboards" data-slide="next">
           <span class="icon-next"></span>
       </a>
+      @endif
 
   </div> <!-- /#dashboards -->
 
@@ -94,7 +95,7 @@
   <script type="text/javascript">
 
     // Gridster builds the interactive dashboard.
-    @foreach ($dashboards as $dashboard)
+    @foreach (Auth::user()->dashboards as $dashboard)
 
       $(function(){
 

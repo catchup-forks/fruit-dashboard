@@ -157,6 +157,8 @@ class Widget extends Eloquent
                 $validationString .= 'numeric|';
             } else if ($fieldMeta['type'] == 'DATE') {
                 $validationString .= 'date|';
+            } else if ($fieldMeta['type'] == 'BOOL') {
+                $validationString = '';
             }
 
             // Adding validation to the return array.

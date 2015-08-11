@@ -23,7 +23,7 @@
               <div class="col-md-5">
 
                 <input id="filter" type="text" class="form-control margin-top-sm" autofocus="autofocus" placeholder="Type to filter, click to select" />
-                
+
                 <div id="widgets-list" class="list-group margin-top-sm">
 
                   @foreach($widgetDescriptors as $descriptor)
@@ -51,15 +51,15 @@
                 </div> <!-- /.row -->
                 <div class="row">
                   <div class="col-md-12">
-                    
+
                     {{ Form::open(array(
                         'id' => 'add-widget-form',
                         'action' => 'widget.add')) }}
-                      
+
                       <div class="form-group">
                         <label for="addToDashboard">Add to dashboard:</label>
                         <select name="toDashboard" class="form-control">
-                          
+
                           @foreach( Auth::user()->dashboards->all() as $dashboard )
                           <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
                           @endforeach
@@ -67,7 +67,7 @@
                         </select>
 
                       </div> <!-- .form-group -->
-                      
+
                       <div class="form-actions text-center">
                       {{ Form::submit('Add' , array(
                           'id' => 'add-widget-submit-button',
@@ -76,7 +76,7 @@
                       </div> <!-- /.form-actions -->
 
                     {{ Form::close() }}
-                    
+
                   </div> <!-- /.col-md-12 -->
                 </div> <!-- /.row -->
               </div> <!-- /.col-md-7 -->

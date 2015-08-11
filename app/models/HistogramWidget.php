@@ -28,6 +28,11 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
     }
 
     /**
+     * Used in getData.
+     */
+    private $frequency = null;
+
+    /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
      * ================================================== *
@@ -105,8 +110,15 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
             $range = null;
         }
 
+        /* Looking for forced frequency. */
+        if (isset($postData['frequency'])) {
+            $this->frequency = $postData['frequency'];
+        } else {
+            $this->frequency = $this->getSettings()['frequency'];
+        }
+
         /* Calling proper method based on frequency. */
-        switch ($this->getSettings()['frequency']) {
+        switch ($this->frequency) {
             case 'daily':   return $this->getHistogram($range, 'd'); break;
             case 'weekly':  return $this->getHistogram($range, 'W'); break;
             case 'monthly': return $this->getHistogram($range, 'M'); break;
@@ -148,18 +160,17 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
                 }
             }
 
-            if ($recording)  {
-
+            if ($recording) {
                 /* Frequency conditions. */
                 $entryDate = Carbon::createFromFormat('Y-m-d', $entry['date']);
                 if ( ! $this->useEntryInHistogram($entryDate) && ! $first) {
                     continue;
                 }
+
                 /* First data is always in the histogram. */
                 if ($first) {
                     $first = FALSE;
                 }
-
                 /* Saving data with custom date format. */
                 array_push($histogram, array(
                     'value' => $entry['value'],
@@ -185,17 +196,20 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
      * --------------------------------------------------
     */
     protected function useEntryInHistogram($entryDate) {
-        if ($this->getSettings()['frequency'] == 'daily') {
+        if (is_null($this->frequency)) {
+            $this->frequency = $this->getSettings()['frequency'];
+        }
+        if ($this->frequency == 'daily') {
             return TRUE;
-        } else if ($this->getSettings()['frequency'] == 'weekly') {
+        } else if ($this->frequency == 'weekly') {
             if ($entryDate->format('D') == 'Mon') {
                 return TRUE;
             }
-        } else if ($this->getSettings()['frequency'] == 'monthly') {
+        } else if ($this->frequency == 'monthly') {
             if ($entryDate->format('d') == '31') {
                 return TRUE;
             }
-        } else if ($this->getSettings()['frequency'] == 'yearly') {
+        } else if ($this->frequency == 'yearly') {
              if ($entryDate->format('m-d') == '12-31') {
                 return TRUE;
             }

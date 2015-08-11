@@ -124,10 +124,9 @@
       labels.push(data[i]['date']);
       values.push(data[i]['value']);
     }
-    if (data.length > 0) {
+    if (data.length > 0 && valueSpan) {
       valueSpan.html("$" + data[data.length-1]['value']);
     }
-
-    drawLineGraph(canvas, values, labels, name, 1000);
+    drawLineGraph(canvas, values, labels, name, 250);
   }
 </script>

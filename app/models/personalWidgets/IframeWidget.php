@@ -13,6 +13,15 @@ class IframeWidget extends Widget
             'validation' => 'required',
             'default'    => 'http://google.com'
         ),
+        'div_id' => array(
+            'name'       => 'Specific div id',
+            'type'       => 'TEXT'
+        ),
+        'pointer_events' => array(
+            'name'       => 'Pointer events',
+            'type'       => 'BOOL',
+            'default'    => FALSE,
+        ),
    );
     // The settings to setup in the setup-wizard.
     public static $setupSettings = array('url');

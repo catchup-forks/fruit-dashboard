@@ -30,6 +30,10 @@
                     <div class="col-sm-7">
                       @if ($meta['type'] == "SCHOICE")
                         {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                      @elseif ($meta['type'] == "BOOL")
+                      <!-- An amazing hack to send checkbox even if not checked -->
+                        {{ Form::hidden($field, 0)}}
+                        {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
                         {{ Form::text($field, $widget->getSettings()[$field], array(
                       'class' => 'form-control' )) }}

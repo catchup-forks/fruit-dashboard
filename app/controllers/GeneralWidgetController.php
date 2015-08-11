@@ -37,8 +37,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Creating selectable dashboards */
         $dashboards = array();
-        foreach (Auth::user()->dashboards as $dashboard) {
-            $dashboards[$dashboard->id] = $dashboard->name;
+        foreach (Auth::user()->dashboards as $dashboard) {$dashboards[$dashboard->id] = $dashboard->name;
         }
 
         // Rendering view.
@@ -288,7 +287,7 @@ class GeneralWidgetController extends BaseController {
         /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
-        /* Associate descriptor and save */
+         /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $widget->save();
 
@@ -308,12 +307,32 @@ class GeneralWidgetController extends BaseController {
         $setupFields = $widget->getSetupFields();
         if (empty($setupFields)) {
             return Redirect::route('dashboard.dashboard')
-                ->with('success', 'Widget successfully created.');
-        }
+                ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
             ->with('success', 'Widget successfully created. You can customize it here.');
     }
 
+    /**
+     * getSinglestat
+     * --------------------------------------------------
+     * @return Renders the singlestat page on histogram widgets.
+     * --------------------------------------------------
+     */
+    public function getSinglestat($widgetID) {
+        /* Getting the editable widget. */
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof DataWidget) {
+                throw new WidgetDoesNotExist("This widget does not support histograms", 1);
+            } } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+
+        /* Rendering view. */
+        return View::make('widget.histogram-singlestat')
+            ->with('widget', $widget);
+    }
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *

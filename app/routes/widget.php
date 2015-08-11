@@ -50,6 +50,12 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postAddWidget'
     ]);
 
+    Route::get('{widgetID}/stats', [
+        'before' => 'auth',
+        'as'    => 'widget.singlestat',
+        'uses'  => 'GeneralWidgetController@getSinglestat',
+    ]);
+
     Route::post('save-position/{userID}', [
         'before' => 'auth',
         'as'    => 'widget.save-position',
@@ -67,4 +73,5 @@ Route::group([
         'as'    => 'widget.ajax-handler',
         'uses'  => 'GeneralWidgetController@ajaxHandler',
     ]);
+
 });
