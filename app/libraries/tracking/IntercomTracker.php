@@ -51,11 +51,17 @@ class IntercomTracker {
             self::$intercom->createEvent(array(
                 "event_name" => $eventData['en'],
                 "created_at" => Carbon::now()->timestamp,
-                "user_id" => (Auth::user() ? Auth::user()->id : 0),
+                "user_id" => (Auth::check() ? Auth::user()->id : 0),
                 "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
             ));
         } catch (Intercom\Exception\ClientErrorResponseException $e) {
-
+            if (Auth::check()) {
+                $self::$intercom->updateUser(array(
+                    'user_id'         => Auth::user()->id,
+                    'last_request_at' => Carbon::now()->timestamp,
+                    "metadata"        => array_key_exists('md', $eventData) ? $eventData['md'] : null
+                ));
+            }
         }
 
         /* Return */
