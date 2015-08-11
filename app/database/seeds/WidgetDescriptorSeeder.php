@@ -51,11 +51,11 @@ class WidgetDescriptorSeeder extends Seeder
 
         if (!App::environment('production', 'staging')) {
             WidgetDescriptor::updateOrCreate(
-                ['name' => 'Reminder'],
+                ['name' => 'Text'],
                 array(
-                    'name'        => 'Reminder',
-                    'description' => '',
-                    'type'        => 'reminder',
+                    'name'        => 'Text',
+                    'description' => 'Insert any text you want in this widget',
+                    'type'        => 'text',
                     'category'    => 'personal',
                     'is_premium'  => FALSE,
                 )

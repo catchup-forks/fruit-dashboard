@@ -56,7 +56,7 @@
 
       </div> <!-- /.carousel-inner -->
 
-      @if (count(Auth::user()->dashboards) > 0)
+      @if (count(Auth::user()->dashboards) > 1)
       {{-- Set the navigational controls on sides. --}}
       <a class="left carousel-control" href="#dashboards" data-slide="prev">
           <span class="icon-prev"></span>
