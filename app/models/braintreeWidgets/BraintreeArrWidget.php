@@ -1,6 +1,6 @@
 <?php
 
-class BraintreeArrWidget extends FinancialWidget
+class BraintreeArrWidget extends HistogramWidget
 {
     public function getCurrentValue() {
         $braintreeCalculator = new BraintreeCalculator($this->user());

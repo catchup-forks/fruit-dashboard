@@ -11,25 +11,19 @@
 
 @section('widgetScripts')
 
- <script type="text/javascript">
-   function updateWidget() {
-     $.ajax({
-       type: "POST",
-       data: {},
-       url: "{{ route('widget.ajax-handler', $widget->id) }}"
-      }).done(function( data ) {
-        $("#quote").html(data['quote']);
-        $("#author").html(data['author']);
-      });
-   }
+<script type="text/javascript">
+  function updateWidget(data) {
+    $("#quote").html(data['quote']);
+    $("#author").html(data['author']);
+  }
 
-   $(document).ready(function() {
-     @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) / 60 > $widget->getSettings()['update_frequency'])
-        updateWidget();
-     @endif
+  $(document).ready(function() {
+    @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) / 60 > $widget->getSettings()['update_frequency'])
+      refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
+    @endif
 
      $("#refresh-{{$widget->id}}").click(function () {
-        updateWidget();
+      refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
      });
    });
  </script>

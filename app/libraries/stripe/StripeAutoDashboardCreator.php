@@ -8,6 +8,7 @@ class StripeAutoDashboardCreator
         'customer.subscription.updated',
         'customer.subscription.deleted'
     );
+    const DAYS = 30;
 
     /**
      * The stripe events.
@@ -37,14 +38,11 @@ class StripeAutoDashboardCreator
      */
     private $widgets = array();
 
-    /**
-     * fire
-     * --------------------------------------------------
-     * Main function of the job.
-     * @param $job, the job instance.
-     * @param $data, array containing user_id.
+    /** * Main function of the job.
+     *
+     * @param $job
+     * @param array $data
      * @throws StripeNotConnected
-     * --------------------------------------------------
     */
     public function fire($job, $data) {
         /* Getting the user */
@@ -80,11 +78,7 @@ class StripeAutoDashboardCreator
     */
 
     /**
-     * createDashboard
-     * --------------------------------------------------
-     * Creating a dashboard dedicated to stripe widgets.
-     * --------------------------------------------------
-     */
+     * Creating a dashboard dedicated to stripe widgets. */
     private function createDashboard() {
         /* Creating dashboard. */
         $dashboard = new Dashboard(array(
@@ -129,17 +123,14 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * populateDashboard
-     * --------------------------------------------------
      * Populating the widgets with data.
-     * --------------------------------------------------
      */
     private function populateDashboard() {
         $mrrWidget  = $this->widgets['mrr'];
         $arrWidget  = $this->widgets['arr'];
         $arpuWidget = $this->widgets['arpu'];
 
-        /* Creating data for the last 30 days. */
+        /* Creating data for the last DAYS days. */
         $metrics = $this->getMetrics();
 
         $mrrWidget->data->raw_value = json_encode($metrics['mrr']);
@@ -161,11 +152,9 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * getLastMonthData
-     * --------------------------------------------------
      * Returning all metrics in an array.
-     * @return All metrics in an array.
-     * --------------------------------------------------
+     *
+     * @return array.
     */
     private function getMetrics() {
         /* Updating subscriptions to be up to date. */
@@ -175,7 +164,7 @@ class StripeAutoDashboardCreator
         $arr = array();
         $arpu = array();
 
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < self::DAYS; $i++) {
             /* Calculating the date to mirror. */
             $date = Carbon::now()->subDays($i)->toDateString();
             $this->mirrorDay($date);
@@ -195,12 +184,10 @@ class StripeAutoDashboardCreator
 
 
     /**
-     * sortByDate
-     * --------------------------------------------------
      * Sorting a multidimensional dataset by date.
-     * @param dataSet The data to be sorted.
-     * @return array the sorted dataset.
-     * --------------------------------------------------
+     *
+     * @param array dataSet
+     * @return array
     */
     private function sortByDate($dataSet) {
         $dates = array();
@@ -213,10 +200,7 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * filterEvents
-     * --------------------------------------------------
      * Filtering events to relevant only.
-     * --------------------------------------------------
     */
     private function filterEvents() {
         $filteredEvents = array();
@@ -239,11 +223,9 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * mirrorDay
-     * --------------------------------------------------
      * Trying to mirror the specific date, to our DB.
-     * @param date The date on which we're mirroring.
-     * --------------------------------------------------
+     *
+     * @param date
     */
     private function mirrorDay($date) {
         foreach ($this->events as $key=>$event) {
@@ -261,15 +243,13 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * handleSubscriptionDeletion
-     * --------------------------------------------------
      * Handling subscription deletion.
-     * On deletion we'll have to create a subscription.
-     * @param eventThe specific stripe event.
-     * --------------------------------------------------
+     *
+     * @param Stripe\Event $event
     */
     private function handleSubscriptionDeletion($event) {
         $subscriptionData = $event['data']['object'];
+        /* Creating a new susbcription */
         $subscription = new StripeSubscription(array(
             'subscription_id' => $subscriptionData['id'],
             'start'           => $subscriptionData['start'],
@@ -295,11 +275,9 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * handleSubscriptionUpdate
-     * --------------------------------------------------
      * Handling subscription update.
-     * @param eventThe specific stripe event.
-     * --------------------------------------------------
+     *
+     * @param Stripe\Event $event
     */
     private function handleSubscriptionUpdate($event) {
         /* Check if a plan's been changed./ */
@@ -316,15 +294,13 @@ class StripeAutoDashboardCreator
     }
 
     /**
-     * handleSubscriptionCreation
-     * --------------------------------------------------
      * Handling subscription creation.
-     * On creation we'll have to delete a subscription.
-     * @param eventThe specific stripe event.
-     * --------------------------------------------------
+     *
+     * @param Stripe\Event $event
     */
     private function handleSubscriptionCreation($event) {
         $subscriptionData = $event['data']['object'];
+        /* Deleting the subscription */
         StripeSubscription::where('subscription_id', $subscriptionData['id'])->first()->delete();
     }
 }

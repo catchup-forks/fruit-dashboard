@@ -133,8 +133,7 @@ class SignupWizardController extends BaseController
      */
     public function postBraintreeConnect() {
         // Validation.
-        $rules = array(
-            'publicKey'   => 'required',
+        $rules = array('publicKey'   => 'required',
             'privateKey'  => 'required',
             'merchantID'  => 'required',
             'environment' => 'required'
@@ -174,8 +173,7 @@ class SignupWizardController extends BaseController
                 /* Create instance */
                 $stripeconnector = new StripeConnector(Auth::user());
 
-                /* Get tokens */
-                try {
+                /* Get tokens */ try {
                     $stripeconnector->getTokens(Input::get('code'));
 
                 /* Error handling */
@@ -208,9 +206,37 @@ class SignupWizardController extends BaseController
 
         /* Redirect to the same page */
         return Redirect::route('signup-wizard.financial-connections');
-
     }
 
+    /**
+     * getSocialConnections
+     * --------------------------------------------------
+     * @return Renders the personal widget setup step
+     * --------------------------------------------------
+     */
+    public function getSocialConnections() {
+        /* Render the page */
+        return View::make('signup-wizard.social-connections');
+    }
+
+    /**
+     * postSocialConnections
+     * --------------------------------------------------
+     * @return Saves the user personal widget settings
+     * --------------------------------------------------
+     */
+    public function postSocialConnections() {
+        /* Check for authenticated user, redirect if nobody found */
+        if (!Auth::check()) {
+            return Redirect::route('signup');
+        }
+
+        /* Create the personal dashboard based on the inputs */
+        $this->makePersonalAutoDashboard(Auth::user(), Input::all());
+
+        /* Render the page */
+        return Redirect::route('signup-wizard.financial-connections');
+    }
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
@@ -280,6 +306,7 @@ class SignupWizardController extends BaseController
         $dashboard->user_id     = $user->id;
         $dashboard->name        = 'My personal dashboard';
         $dashboard->background  = 'On';
+        $dashboard->number      = 0;
 
         /* Save dashboard object */
         $dashboard->save();
@@ -315,11 +342,37 @@ class SignupWizardController extends BaseController
 
             $quotewidget->dashboard()->associate($dashboard);
             $quotewidget->state         = 'active';
-            $quotewidget->position      = '{"row":12,"col":1,"size_x":12,"size_y":1}';
+            $quotewidget->position      = '{"row":11,"col":1,"size_x":12,"size_y":1}';
 
             /* Save quote widget object */
             $quotewidget->save();
+            $quotewidget->collectData();
         }
+
+        $dashboard2 = new Dashboard(array(
+            'name'       => 'Second dashboard',
+            'background' => TRUE,
+            'number'     => 1
+        ));
+        $dashboard2->user()->associate($user);
+        $dashboard2->save();
+
+        /* Create text widgets */
+        $textWidget = new TextWidget(array(
+            'state'    => 'active',
+            'position' => '{"col":2,"row":6,"size_x":6,"size_y":1}',
+            'settings' => '{"text":"You can add a new widget by pressing the + sign at the bottom left."}'
+        ));
+        $textWidget->dashboard()->associate($dashboard2);
+        $textWidget->save();
+
+        $textWidget2 = new TextWidget(array(
+            'state'    => 'active',
+            'position' => '{"col":7,"row":3,"size_x":6,"size_y":1}',
+            'settings' => '{"text":"You can move & resize & delete widgets by hovering them."}'
+        ));
+        $textWidget2->dashboard()->associate($dashboard2);
+        $textWidget2->save();
 
         /* Return */
         return $dashboard;

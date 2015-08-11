@@ -1,6 +1,6 @@
 <?php
 
-class StripeMrrWidget extends FinancialWidget
+class StripeMrrWidget extends HistogramWidget
 {
     public function getCurrentValue() {
         $stripeCalculator = new StripeCalculator($this->user());

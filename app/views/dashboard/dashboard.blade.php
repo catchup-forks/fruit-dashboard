@@ -14,7 +14,7 @@
       {{-- Include navigation dots for each dashboard. --}}
       <ol class="carousel-indicators">
 
-        @foreach ($dashboards as $dashboard)
+        @foreach (Auth::user()->dashboards as $dashboard)
 
           <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->number == 0) active @endif"></li>
 
@@ -25,7 +25,7 @@
       {{-- Make a wrapper for dashboards --}}
       <div class="carousel-inner">
 
-        @foreach ($dashboards as $dashboard)
+        @foreach (Auth::user()->dashboards as $dashboard)
 
           <div class="item @if($dashboard->number == 0) active @endif">
 
@@ -56,7 +56,7 @@
 
       </div> <!-- /.carousel-inner -->
 
-
+      @if (count(Auth::user()->dashboards) > 1)
       {{-- Set the navigational controls on sides. --}}
       <a class="left carousel-control" href="#dashboards" data-slide="prev">
           <span class="icon-prev"></span>
@@ -64,6 +64,7 @@
       <a class="right carousel-control" href="#dashboards" data-slide="next">
           <span class="icon-next"></span>
       </a>
+      @endif
 
   </div> <!-- /#dashboards -->
 
@@ -94,7 +95,7 @@
   <script type="text/javascript">
 
     // Gridster builds the interactive dashboard.
-    @foreach ($dashboards as $dashboard)
+    @foreach (Auth::user()->dashboards as $dashboard)
 
       $(function(){
 
@@ -164,75 +165,6 @@
 
     $('.gridster.not-visible').fadeIn(500);
 
-    function loadWidget(widgetId, callback) {
-      var done = false;
-
-      function sendAjax() {
-        $.ajax({
-          type: "POST",
-          data: {'state_query': true},
-          url: "{{ route('widget.ajax-handler', 'widgetID') }}".replace("widgetID", widgetId)
-        }).done(function( data ) {
-          if (data['state'] == 'active') {
-            $("#widget-loading-" + widgetId).hide();
-            $("#widget-wrapper-" + widgetId).show();
-            done = true;
-            callback(data);
-          }
-        });
-        if (!done) {
-          setTimeout(sendAjax, 3000)
-        }
-      }
-
-      sendAjax();
-    };
-    // Overriding chartjs defaults.
-    Chart.defaults.global.animationSteps = 50;
-    Chart.defaults.global.tooltipYPadding = 16;
-    Chart.defaults.global.tooltipCornerRadius = 0;
-    Chart.defaults.global.tooltipTitleFontStyle = "normal";
-    Chart.defaults.global.tooltipFillColor = "rgba(0,160,0,0.8)";
-    Chart.defaults.global.animationEasing = "easeOutBounce";
-    Chart.defaults.global.responsive = true;
-    Chart.defaults.global.scaleLineColor = "black";
-    Chart.defaults.global.scaleFontSize = 9;
-
-    var chartOptions = {
-       responsive: true,
-       pointHitDetectionRadius : 2,
-       pointDotRadius : 3,
-       bezierCurve: false,
-       scaleShowVerticalLines: false,
-       tooltipTemplate: "<%if (label){%><%=label %>: <%}%>$<%= value %>",
-       animation: false
-    };
-
-    function drawLineGraph(canvas, values, labels, name, timeOut) {
-      // Building data.
-      var chartData = {
-      labels: labels,
-      datasets: [{
-        label: "{{ $widget->descriptor->name }}",
-        fillColor : "rgba(100, 222, 100,0.2)",
-        strokeColor : "rgba(100, 222, 100,1)",
-        pointColor : "rgba(100, 222, 100,1)",
-        pointStrokeColor : "#fff",
-        pointHighlightFill : "#fff",
-        pointHighlightStroke : "rgba(100, 222, 100,1)",
-        data: values
-      }]};
-
-      // Getting context.
-      var ctx = canvas[0].getContext("2d");
-
-      // Clear the canvas.
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      // Drawing chart.
-      setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, timeOut);
-
-  }
   </script>
 
   @append

@@ -33,7 +33,7 @@
             </a>
         </li>
         <li>
-            <a href="https://fruitdashboard.uservoice.com/">
+            <a href="https://fruitdashboard.uservoice.com/" target="blank">
                 <span class="fa fa-bullhorn"></span> Feedback
             </a>
         </li>
@@ -71,20 +71,20 @@
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getTrialInfo()['enabled'])
-    <a href="{{ route('payment.plans') }}" 
-       class="position-br drop-shadow z-top no-underline" 
-       data-toggle="tooltip" 
-       data-placement="left" 
+    <a href="{{ route('payment.plans') }}"
+       class="position-br drop-shadow z-top no-underline"
+       data-toggle="tooltip"
+       data-placement="left"
        title=
         "@if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
-            Your trial period will end on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click to change your Plan.
+            Your trial period will end on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click here to change your Plan.
         @else
-            Your trial period ended on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click to change your Plan.
+            Your trial period ended on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click here to change your Plan.
         @endif">
 
         <span class="label @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] < SiteConstants::getTrialPeriodInDays() / 2) label-danger @else label-warning @endif label-as-badge valign-middle">
             {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }}
-        </span> 
+        </span>
     </a>
 @endif
 

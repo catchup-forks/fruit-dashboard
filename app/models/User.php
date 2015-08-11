@@ -71,4 +71,49 @@ class User extends Eloquent implements UserInterface
         }
         return False;
     }
+
+    /**
+     * isFacebookConnected
+     * --------------------------------------------------
+     * Returns true if the user has connected a facebook account
+     * @return (boolean) ($status)
+     * --------------------------------------------------
+     */
+    public function isFacebookConnected() {
+        if ($this->connections()->where('service', 'facebook')
+                                ->first() !== null) {
+            return True;
+        }
+        return False;
+    }
+
+    /**
+     * isGoogleAnalitycsConnected
+     * --------------------------------------------------
+     * Returns true if the user has connected a google_analitycs account
+     * @return (boolean) ($status)
+     * --------------------------------------------------
+     */
+    public function isGoogleAnalitycsConnected() {
+        if ($this->connections()->where('service', 'google_analitycs')
+                                ->first() !== null) {
+            return True;
+        }
+        return False;
+    }
+
+    /**
+     * isTwitterConnected
+     * --------------------------------------------------
+     * Returns true if the user has connected a twitter account
+     * @return (boolean) ($status)
+     * --------------------------------------------------
+     */
+    public function isTwitterConnected() {
+        if ($this->connections()->where('service', 'twitter')
+                                ->first() !== null) {
+            return True;
+        }
+        return False;
+    }
 }

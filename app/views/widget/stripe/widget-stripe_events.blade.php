@@ -26,6 +26,10 @@
              htmlData = charge['amount'] + ' ' + charge['currency'];
           } else if (events[i]['type'].indexOf('customer.subscription') > -1) {
 
+             // subscription.
+             charge = events[i]['data']['object'];
+             labelName = 'charge';
+             htmlData = charge['amount'] + ' ' + charge['currency'];
           }
 
           // Setting class.

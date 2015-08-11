@@ -178,7 +178,7 @@
                   @if (Auth::user()->subscription->getTrialInfo()['enabled'])
                     @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
                       <p>
-                        Your trial ends in 
+                        Your trial ends in
                         <strong>
                           {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
                         </strong>
@@ -215,7 +215,7 @@
               {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="list-group margin-top-sm">
-                  
+
                   <a href="
                     @if(Auth::user()->isStripeConnected())
                       {{ route('disconnect.stripe') }}
@@ -242,7 +242,7 @@
                         <button class="btn btn-xs btn-success" >
                           Connect
                         </button>
-                      @endif  
+                      @endif
                     </span>
                   </a>
 
@@ -268,11 +268,11 @@
                         <button class="btn btn-xs btn-success" >
                           Connect
                         </button>
-                      @endif  
+                      @endif
                     </span>
                   </a>
                 </div> <!-- /.list-group -->
-                
+
               {{-- END --}}
               {{-- Manage connection settings - Background --}}
 

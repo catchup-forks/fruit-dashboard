@@ -1,13 +1,13 @@
 <?php
 
-class QuoteWidget extends Widget implements iAjaxWidget
+class QuoteWidget extends DataWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
         'type' => array(
-            'name'       => 'Type',
-            'type'       => 'SCHOICE',
-            'default'    => 'inspirational'
+            'name'    => 'Type',
+            'type'    => 'SCHOICE',
+            'default' => 'inspirational'
         ),
         'update_frequency' => array(
             'name'    => 'Changes (in minutes)',
@@ -45,7 +45,6 @@ class QuoteWidget extends Widget implements iAjaxWidget
             return;
         }
 
-
         /* Select a random row. */
         $quotes = $decoded_data->{'feed'}->{'entry'};
         $key = array_rand($quotes);
@@ -68,7 +67,7 @@ class QuoteWidget extends Widget implements iAjaxWidget
      * @return (array) ($quote) The quote and author
      * --------------------------------------------------
      */
-    public function getData() {
+    public function getData($postData=null) {
         $quote = json_decode($this->data->raw_value, 1);
         if (empty($quote)) {
             return array(
@@ -100,26 +99,10 @@ class QuoteWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
      */
     public function save(array $options=array()) {
-        /* Calling collectData only if first creation. */
-        if (is_null($this->id)) {
-            parent::save();
+        parent::save();
+        if ($this->id == null) {
             $this->collectData();
-        } else {
-            parent::save();
         }
-    }
-
-    /**
-     * handleAjax
-     * --------------------------------------------------
-     * Handling ajax request, aka saving text.
-     * @param $postData the data from the request.
-     * @return string, the note text.
-     * --------------------------------------------------
-    */
-    public function handleAjax($postData) {
-        $this->collectData();
-        return $this->getData();
     }
 
     /**
