@@ -306,7 +306,7 @@ class SignupWizardController extends BaseController
         $dashboard->user_id     = $user->id;
         $dashboard->name        = 'My personal dashboard';
         $dashboard->background  = 'On';
-        $dashboard->number      = 1;
+        $dashboard->number      = 0;
 
         /* Save dashboard object */
         $dashboard->save();
@@ -349,15 +349,30 @@ class SignupWizardController extends BaseController
             $quotewidget->collectData();
         }
 
-        $dashboard2 = new Dashboard;
-
-        $dashboard2->user_id     = $user->id;
-        $dashboard2->name        = 'Second dashboard';
-        $dashboard2->background  = 'On';
-        $dashboard2->number      = 2;
-
-        /* Save dashboard object */
+        $dashboard2 = new Dashboard(array(
+            'name'       => 'Second dashboard',
+            'background' => TRUE,
+            'number'     => 1
+        ));
+        $dashboard2->user()->associate($user);
         $dashboard2->save();
+
+        /* Create text widgets */
+        $textWidget = new TextWidget(array(
+            'state'    => 'active',
+            'position' => '{"col":2,"row":6,"size_x":6,"size_y":1}',
+            'settings' => '{"text":"You can add a new widget by pressing the + sign at the bottom left."}'
+        ));
+        $textWidget->dashboard()->associate($dashboard2);
+        $textWidget->save();
+
+        $textWidget2 = new TextWidget(array(
+            'state'    => 'active',
+            'position' => '{"col":7,"row":3,"size_x":6,"size_y":1}',
+            'settings' => '{"text":"You can move & resize & delete widgets by hovering them."}'
+        ));
+        $textWidget2->dashboard()->associate($dashboard2);
+        $textWidget2->save();
 
         /* Return */
         return $dashboard;

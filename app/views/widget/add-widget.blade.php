@@ -33,6 +33,7 @@
                   @endforeach
 
                 </div> <!-- /.list-group -->
+                <a href="{{ route('dashboard.dashboard') }}"><button class="btn btn-warning">Cancel</button></a>
               </div> <!-- /.col-md-5 -->
 
               <div class="col-md-7">

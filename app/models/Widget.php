@@ -21,6 +21,7 @@ class Widget extends Eloquent
     /* These variables will be overwritten, with late static binding. */
     public static $settingsFields = array();
     public static $setupSettings = array();
+    public static $multipleInstances = FALSE;
 
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }

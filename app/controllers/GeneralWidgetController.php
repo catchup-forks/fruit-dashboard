@@ -236,7 +236,6 @@ class GeneralWidgetController extends BaseController {
             return Redirect::back()
                 ->with('error', 'Something went wrong, your widget cannot be found.');
         }
-
         /* Create new widget instance */
         $className = $descriptor->getClassName();
 
@@ -262,7 +261,7 @@ class GeneralWidgetController extends BaseController {
                     $widget->save();
                     return Redirect::route('dashboard.dashboard')
                         ->with('success', 'Your hidden widget was restored successfully.');
-                } else {
+                } else if(!$className::$multipleInstances) {
                     /* The widget is active. */
                     return Redirect::route('dashboard.dashboard')
                         ->with('error', 'You cannot add multiple instances of this widget type.');
@@ -317,6 +316,32 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * anyPinToDashboard
+     * --------------------------------------------------
+     * @return Pinning a widget to dashboard.
+     * --------------------------------------------------
+     */
+    public function anyPinToDashboard($widgetID, $frequency) {
+        /* Getting the editable widget. */
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof DataWidget) {
+                throw new WidgetDoesNotExist("This widget does not support histograms", 1);
+            } } catch (WidgetDoesNotExist $e) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', $e->getMessage());
+        }
+        $settings = $widget->getSettings();
+        $settings['frequency'] = $frequency;
+        $widget->state = 'active';
+        $widget->saveSettings($settings, TRUE);
+
+        /* Rendering view. */
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', 'Widget pinned successfully.');
+    }
+
+    /**
      * getSinglestat
      * --------------------------------------------------
      * @return Renders the singlestat page on histogram widgets.
@@ -335,7 +360,8 @@ class GeneralWidgetController extends BaseController {
 
         /* Rendering view. */
         return View::make('widget.histogram-singlestat')
-            ->with('widget', $widget);
+            ->with('widget', $widget)
+            ->with('frequencies', array('daily', 'weekly', 'monthly', 'yearly'));
     }
     /**
      * ================================================== *

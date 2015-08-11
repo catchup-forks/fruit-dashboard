@@ -1,13 +1,17 @@
 <div class="text-center">
   <span class="text-white drop-shadow">
-     {{ $widget->descriptor->name }}
+      {{ $widget->descriptor->name }}
   </span>
   <span class="text-white drop-shadow pull-right" id="{{$widget->descriptor->type}}-value">
     ${{ $widget->getLatestData()['value'] }}
   </span>
 </div>
-<div class="fill bg-info">
+<div class="fill">
   <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
+</div>
+<div class="text-center drop-shadow text-white">
+    Click
+   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more statistics.
 </div>
 
 @section('widgetScripts')

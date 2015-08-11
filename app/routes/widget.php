@@ -56,6 +56,12 @@ Route::group([
         'uses'  => 'GeneralWidgetController@getSinglestat',
     ]);
 
+    Route::any('{widgetID}/pin-to-dashboard/{frequency}', [
+        'before' => 'auth',
+        'as'    => 'widget.pin-to-dashboard',
+        'uses'  => 'GeneralWidgetController@anyPinToDashboard',
+    ]);
+
     Route::post('save-position/{userID}', [
         'before' => 'auth',
         'as'    => 'widget.save-position',
