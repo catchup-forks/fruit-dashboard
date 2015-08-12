@@ -170,10 +170,6 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getSocialConnections() {
-        $connector = new TwitterConnector(Auth::user());
-        $connection = $connector->connect();
-        var_dump($connection->get("account/verify_credentials"));
-
         /* Render the page */
         return View::make('signup-wizard.social-connections');
     }

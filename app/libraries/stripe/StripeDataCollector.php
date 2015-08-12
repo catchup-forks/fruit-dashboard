@@ -16,7 +16,7 @@ class StripeDataCollector
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
-        $this->connection = new StripeConnector($this->user);
+        $this->connection = new StripeConnector($user);
         $this->connection->connect();
     }
 

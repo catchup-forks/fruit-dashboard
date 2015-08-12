@@ -82,7 +82,7 @@
 
                   <a href="
                     @if(Auth::user()->isTwitterConnected())
-                      {{ route('disconnect.twitter') }}
+                      {{ route('service.twitter.disconnect') }}
                     @else
                       {{ route('service.twitter.connect') }}
                     @endif

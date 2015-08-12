@@ -28,7 +28,7 @@ Route::group([
     /* -- Stripe -- */
     Route::any('stripe/disconnect', array(
         'before' => 'auth',
-        'as' => 'disconnect.stripe',
+        'as' => 'service.stripe.disconnect',
         'uses' => 'ServiceConnectionController@anyStripeDisconnect'
     ));
 
