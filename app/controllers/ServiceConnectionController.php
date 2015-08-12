@@ -55,7 +55,7 @@ class ServiceConnectionController extends BaseController
         }
 
         $braintreeConnector = new BraintreeConnector(Auth::user());
-        $braintreeConnector->generateAccessToken(Input::all());
+        $braintreeConnector->getTokens(Input::all());
 
         /* Render the page */
         return Redirect::route('signup-wizard.financial-connections');

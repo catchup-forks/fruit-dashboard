@@ -17,16 +17,8 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 * --------------------------------------------------------------------------
 */
 
-class TwitterConnector
+class TwitterConnector extends GeneralServiceConnector
 {
-    /* -- Class properties -- */
-    private $user;
-
-    /* -- Constructor -- */
-    function __construct($user) {
-        $this->user = $user;
-    }
-
     /**
      * ================================================== *
      *                   STATIC SECTION                   *

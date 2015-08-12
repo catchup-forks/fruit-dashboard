@@ -8,17 +8,16 @@
 * --------------------------------------------------------------------------
 */
 
-class GoogleConnector
+class GoogleConnector extends GeneralServiceConnector
 {
     /* -- Class properties -- */
-    private $user;
     private $client;
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
         $this->client = new Google_Client();
-        $this->client->setAuthConfigFile('app/config/local/client_secret.json');
+        $this->client->setAuthConfigFile($_ENV['GOOGLE_SECRET_JSON']);
         $this->client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
         $this->client->setRedirectUri(route('service.google.connect'));
     }

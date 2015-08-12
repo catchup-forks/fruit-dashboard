@@ -5,22 +5,17 @@
 * BraintreeConnector:
 *       Wrapper functions for Braintree connection
 * Usage:
-*       Connect the user by calling generateAccessToken()
+*       Connect the user by calling getTokens()
 *       with validated input.
 *       If the user has an access_token, use the connect() method.
 * --------------------------------------------------------------------------
 */
 
-class BraintreeConnector
+class BraintreeConnector extends GeneralServiceConnector
 {
     /* -- Class properties -- */
-    private $user;
     private static $authFields = array('publicKey', 'privateKey', 'merchantID', 'environment');
 
-    /* -- Constructor -- */
-    function __construct($user) {
-        $this->user = $user;
-    }
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -45,7 +40,7 @@ class BraintreeConnector
      * @param array $credentials
      * --------------------------------------------------
      */
-    public function generateAccessToken($input) {
+    public function getTokens($input) {
         // Populating access_token array.
         $credentials = array();
         foreach ($input as $key=>$value) {

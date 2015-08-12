@@ -21,16 +21,8 @@
 
 use Stripe\Error\Authentication;
 
-class StripeConnector
+class StripeConnector extends GeneralServiceConnector
 {
-    /* -- Class properties -- */
-    private $user;
-
-    /* -- Constructor -- */
-    function __construct($user) {
-        $this->user = $user;
-    }
-
     /**
      * ================================================== *
      *                   STATIC SECTION                   *

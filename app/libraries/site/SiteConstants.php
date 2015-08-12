@@ -12,15 +12,15 @@
 */
 class SiteConstants {
     /* -- Class properties -- */
-    private static $gridNumberOfCols    = 12;
-    private static $gridNumberOfRows    = 12;
-    private static $morningStartsAt     = 5;
-    private static $afternoonStartsAt   = 13;
-    private static $eveningStartsAt     = 17;
-    private static $nightStartsAt       = 22;
-    private static $trialPeriodInDays   = 14;
-    private static $financialServices   = array('braintree', 'stripe');
-    private static $socialServices      = array('google', 'facebook', 'twitter');
+    private static $gridNumberOfCols  = 12;
+    private static $gridNumberOfRows  = 12;
+    private static $morningStartsAt   = 5;
+    private static $afternoonStartsAt = 13;
+    private static $eveningStartsAt   = 17;
+    private static $nightStartsAt     = 22;
+    private static $trialPeriodInDays = 14;
+    private static $financialServices = array('braintree', 'stripe');
+    private static $socialServices    = array('google', 'facebook', 'twitter');
    /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *
