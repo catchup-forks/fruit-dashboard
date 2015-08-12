@@ -87,7 +87,7 @@ class StripeConnector
     /**
      * disconnect
      * --------------------------------------------------
-     * Disconnecting the user from braintree.
+     * Disconnecting the user from stripe.
      * @throws StripeNotConnected
      * --------------------------------------------------
      */

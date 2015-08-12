@@ -9,7 +9,7 @@ class ServiceConnectionController extends BaseController
 {
     /**
      * ================================================== *
-     *                   PUBLIC SECTION                   *
+     *                      BRAINTREE                     *
      * ================================================== *
      */
 
@@ -62,6 +62,29 @@ class ServiceConnectionController extends BaseController
     }
 
     /**
+     * anyDisconnectBraintree
+     * --------------------------------------------------
+     * @return Deletes the logged in user's braintree connection.
+     * --------------------------------------------------
+     */
+    public function anyBraintreeDisconnect() {
+        /* Try to disconnect */
+        try {
+            $connector = new BraintreeConnector(Auth::user());
+            $connector->disconnect();
+        } catch (BraintreeNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+
+    /**
+     * ================================================== *
+     *                       TWITTER                      *
+     * ================================================== *
+     */
+
+    /**
      * anyTwitterConnect
      * --------------------------------------------------
      * @return connects a user to twitter.
@@ -100,5 +123,50 @@ class ServiceConnectionController extends BaseController
             ->with('error', 'Something went wrong.');
      }
 
+    /**
+     * anyDisconnectTwitter
+     * --------------------------------------------------
+     * @return Deletes the logged in user's twitter connection.
+     * --------------------------------------------------
+     */
+    public function anyTwitterDisconnect() {
+        /* Try to disconnect */
+        try {
+            $connector = new TwitterConnector(Auth::user());
+            $connector->disconnect();
+        } catch (TwiterNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+
+    /**
+     * ================================================== *
+     *                       STRIPE                       *
+     * ================================================== *
+     */
+
+    /**
+     * anyDisconnectStripe
+     * --------------------------------------------------
+     * @return Deletes the logged in user's stripe connection.
+     * --------------------------------------------------
+     */
+    public function anyStripeDisconnect() {
+        /* Try to disconnect */
+        try {
+            $connector = new StripeConnector(Auth::user());
+            $connector->disconnect();
+        } catch (StripeNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+
+    /**
+     * ================================================== *
+     *                       STRIPE                       *
+     * ================================================== *
+     */
 
 } /* ServiceConnectionController */

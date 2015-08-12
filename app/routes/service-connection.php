@@ -19,10 +19,40 @@ Route::group([
         'uses'   => 'ServiceConnectionController@postBraintreeConnect'
     ]);
 
+    Route::any('braintree/disconnect', array(
+        'before' => 'auth',
+        'as' => 'service.braintree.disconnect',
+        'uses' => 'ServiceConnectionController@anyBraintreeDisconnect'
+    ));
+
+    /* -- Stripe -- */
+    Route::any('stripe/disconnect', array(
+        'before' => 'auth',
+        'as' => 'disconnect.stripe',
+        'uses' => 'ServiceConnectionController@anyStripeDisconnect'
+    ));
+
     /* -- Twitter -- */
     Route::any('twitter/connect', [
         'as'     => 'service.twitter.connect',
         'uses'   => 'ServiceConnectionController@anyTwitterConnect'
     ]);
+    Route::any('twitter/disconnect', [
+        'as'     => 'service.twitter.disconnect',
+        'uses'   => 'ServiceConnectionController@anyTwitterDisconnect'
+    ]);
+
+    /* -- Facebook -- */
+    Route::any('facebook/disconnect', array(
+        'before' => 'auth',
+        'as' => 'service.facebook.disconnect',
+        'uses' => 'SettingsController@anyDisconnectBraintree'
+    ));
+
+    Route::any('google/disconnect', array(
+        'before' => 'auth',
+        'as' => 'service`.google.disconnect',
+        'uses' => 'SettingsController@anyDisconnectBraintree'
+    ));
 
 });

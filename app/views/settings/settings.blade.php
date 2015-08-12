@@ -218,7 +218,7 @@
 
                   <a href="
                     @if(Auth::user()->isStripeConnected())
-                      {{ route('disconnect.stripe') }}
+                      {{ route('service.stripe.disconnect') }}
                     @else
                       {{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}
                     @endif
@@ -248,9 +248,9 @@
 
                   <a href="
                     @if(Auth::user()->isBraintreeConnected())
-                      {{ route('disconnect.braintree') }}
+                      {{ route('service.braintree.disconnect') }}
                     @else
-                      {{ route('signup-wizard.braintree-connect') }}
+                      {{ route('service.braintree.connect') }}
                     @endif
                   " class="list-group-item changes-image" data-image="widget-braintree">
                     @if(Auth::user()->isBraintreeConnected())
@@ -261,6 +261,32 @@
                     Braintree
                     <span class="pull-right">
                       @if(Auth::user()->isBraintreeConnected())
+                        <button class="btn btn-xs btn-danger">
+                          Disconnect
+                        </button>
+                      @else
+                        <button class="btn btn-xs btn-success" >
+                          Connect
+                        </button>
+                      @endif
+                    </span>
+                  </a>
+
+                  <a href="
+                    @if(Auth::user()->isTwitterConnected())
+                      {{ route('service.twitter.disconnect') }}
+                    @else
+                      {{ route('service.twitter.connect') }}
+                    @endif
+                  " class="list-group-item changes-image" data-image="widget-twitter">
+                    @if(Auth::user()->isTwitterConnected())
+                      <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
+                    @else
+                      <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
+                    @endif
+                    Twitter
+                    <span class="pull-right">
+                      @if(Auth::user()->isTwitterConnected())
                         <button class="btn btn-xs btn-danger">
                           Disconnect
                         </button>

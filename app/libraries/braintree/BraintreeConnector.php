@@ -43,7 +43,6 @@ class BraintreeConnector
      * --------------------------------------------------
      * Creating an 'access_token'
      * @param array $credentials
-     * @return string - corresponding stripe event type
      * --------------------------------------------------
      */
     public function generateAccessToken($input) {

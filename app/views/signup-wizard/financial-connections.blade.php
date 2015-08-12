@@ -27,7 +27,7 @@
 
                   <a href="
                     @if(Auth::user()->isStripeConnected())
-                      {{ route('disconnect.stripe') }}
+                      {{ route('service.stripe.disconnect') }}
                     @else
                       {{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}
                     @endif
@@ -56,7 +56,7 @@
 
                   <a href="
                     @if(Auth::user()->isBraintreeConnected())
-                      {{ route('disconnect.braintree') }}
+                      {{ route('service.braintree.disconnect') }}
                     @else
                       {{ route('service.braintree.connect') }}
                     @endif
