@@ -81,7 +81,7 @@ class BraintreeConnector
             throw new BraintreeNotConnected();
         }
 
-        $credentials = json_decode($this->user->connections()->where('service', 'braintree')->first()->access_token);
+        $credentials = json_decode($this->user->connections()->where('service', 'braintree')->first()->access_token, 1);
 
         Braintree_Configuration::environment($credentials['environment']);
         Braintree_Configuration::merchantId($credentials['merchantID']);
