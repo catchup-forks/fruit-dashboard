@@ -360,8 +360,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Rendering view. */
         return View::make('widget.histogram-singlestat')
-            ->with('widget', $widget)
-            ->with('frequencies', array('daily', 'weekly', 'monthly', 'yearly'));
+            ->with('widget', $widget);
     }
     /**
      * ================================================== *
