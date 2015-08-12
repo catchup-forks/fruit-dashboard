@@ -58,7 +58,7 @@
                     @if(Auth::user()->isBraintreeConnected())
                       {{ route('disconnect.braintree') }}
                     @else
-                      {{ route('signup-wizard.braintree-connect') }}
+                      {{ route('service.braintree.connect') }}
                     @endif
                   " class="list-group-item changes-image" data-image="widget-braintree">
                     @if(Auth::user()->isBraintreeConnected())
@@ -91,7 +91,7 @@
 
             <div class="row">
               <div class="col-md-12">
-                <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-primary pull-right">Finish</a>
+                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-primary pull-right">Next</a>
 
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->

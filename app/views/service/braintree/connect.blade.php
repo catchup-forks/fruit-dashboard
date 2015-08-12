@@ -21,7 +21,7 @@
               <div class="col-md-7">
 
                 {{ Form::open(array(
-                  'route' => array('signup-wizard.braintree-connect'),
+                  'route' => array('service.braintree.connect'),
                   'class' => 'form-horizontal' )) }}
 
                 @foreach ($authFields as $field)

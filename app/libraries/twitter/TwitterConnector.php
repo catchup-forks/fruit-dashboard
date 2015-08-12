@@ -1,27 +1,23 @@
 <?php
 
+use Abraham\TwitterOAuth\TwitterOAuth;
+
 /**
 * --------------------------------------------------------------------------
-* StripeConnector:
-*       Wrapper functions for Stripe connection
+* TwitterConnector:
+*       Wrapper functions for Twitter connection
 * Usage:
-*       // For the connection uri (use directly in the template)
-*       StripeHelper::getStripeConnectURI($redirect_to)
+*       // For the connection url, and tokens.
+*       TwitterHelper::getTwitterConnectURL()
 *
 *       // For connecting the user
-*       $stripeconnector = new StripeConnector($user);
-*       try {
-*           $stripeconnector->getTokens($code);
-*       } catch (StripeConnectFailed $e) {
-*           // error handling
-*       }
+*       $twitterConnector = new TwitterConnector($user);
+*       $twitterConnector->getTokens($token_ours, $token_request, $token_secret, $verifier);
 *       $stripeconnector->connect();
 * --------------------------------------------------------------------------
 */
 
-use Stripe\Error\Authentication;
-
-class StripeConnector
+class TwitterConnector
 {
     /* -- Class properties -- */
     private $user;
@@ -38,23 +34,31 @@ class StripeConnector
      */
 
     /**
-     * getStripeConnectURI
+     * getTwitterConnectURL
      * --------------------------------------------------
-     * Returns the stripe connect url, based on config.
-     * @param (string) ($redirect_to) A url to redirect after the connection
-     * @return (string) ($connect_uri) A valid stripe connect URI.
+     * Returns the twitter connect url, based on config.
+     * @return array
      * --------------------------------------------------
      */
-    public static function getStripeConnectURI($redirect_to) {
-        /* Build Stripe connect URI */
-        $connect_uri = $_ENV['STRIPE_CONNECT_URI'];
-        $connect_uri .= '?response_type=' . 'code';
-        $connect_uri .= '&client_id=' . $_ENV['STRIPE_CLIENT_ID'];
-        $connect_uri .= '&scope=' . 'read_only';
-        $connect_uri .= '&redirect_uri=' . $redirect_to;
+    public static function getTwitterConnectURL() {
+        /* Setting up connection. */
+        $connection = new TwitterOAuth(
+            $_ENV['TWITTER_CONSUMER_KEY'],
+            $_ENV['TWITTER_CONSUMER_SECRET']
+        );
+        /* Getting a request token. */
+        $requestToken = $connection->oauth('oauth/request_token', array('oauth_callback' => $_ENV['TWITTER_OAUTH_CALLBACK']));
 
         /* Return URI */
-        return $connect_uri;
+        return array(
+            'oauth_token'        => $requestToken['oauth_token'],
+            'oauth_token_secret' => $requestToken['oauth_token_secret'],
+            'connection_url'     => $connection->url(
+                'oauth/authorize',
+                array('oauth_token' => $requestToken['oauth_token'])
+            )
+
+        );
     }
 
     /**
@@ -71,37 +75,39 @@ class StripeConnector
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isStripeConnected()) {
-            throw new StripeNotConnected();
+        if (!$this->user->isTwitterConnected()) {
+            throw new TwitterNotConnected();
         }
 
-        /* Get access token from DB. */
-        $token = $this->user->connections()
-            ->where('service', 'stripe')
-            ->first()->access_token;
+        /* Get access tokens from DB. */
+        $accessToken = json_decode($this->user->connections()
+            ->where('service', 'twitter')
+            ->first()->access_token, 1);
 
-        /* Set up API key */
-        \Stripe\Stripe::setApiKey($token);
+        /* Creating connection */
+        $connection = new TwitterOAuth($_ENV['TWITTER_CONSUMER_KEY'], $_ENV['TWITTER_CONSUMER_SECRET'], $accessToken['oauth_token'], $accessToken['oauth_token_secret']);
+
+        return $connection;
     }
 
     /**
      * disconnect
      * --------------------------------------------------
-     * Disconnecting the user from braintree.
-     * @throws StripeNotConnected
+     * Disconnecting the user from twitter.
+     * @throws TwitterNotConnected
      * --------------------------------------------------
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isStripeConnected()) {
-            throw new StripeNotConnected();
+        if (!$this->user->isTwitterConnected()) {
+            throw new TwtitterNotConnected();
         }
         /* Deleting connection */
-        $this->user->connections()->where('service', 'stripe')->delete();
+        $this->user->connections()->where('service', 'twitter')->delete();
 
         /* Deleting all widgets, plans, subscribtions */
         foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == 'stripe') {
+            if ($widget->descriptor->category == 'twitter') {
 
                 /* Saving data while it is accessible. */
                 $dataID = 0;
@@ -113,56 +119,63 @@ class StripeConnector
 
                 /* Deleting data if it was present. */
                 if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
+                    Data::find($dataID)->delete(); }
             }
-        }
-
-        /* Deleting all plans. */
-        foreach ($this->user->stripePlans as $stripePlan) {
-            StripeSubscription::where('plan_id', $stripePlan->id)->delete();
-            $stripePlan->delete();
         }
     }
 
     /**
      * getTokens
      * --------------------------------------------------
-     * Retrieving the access, and refresh tokens from authentication code.
+     * Retrieving the access, and refresh tokens from OAUTH.
      * @param (string) ($code) The returned code by stripe.
      * @return None
-     * @throws StripeConnectFailed
+     * @throws TwitterConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens($code) {
-        /* Build and send POST request */
-        $url = $this->buildTokenPostUriFromAuthCode($code);
-        $response = SiteFunctions::postUrl($url);
+    public function getTokens($tokenOurs, $tokenRequest, $tokenSecret, $verifier) {
 
-        /* Invalid/No answer from Stripe. */
-        if ($response === null) {
-            throw new StripeConnectFailed('Stripe connection error, please try again.', 1);
+        /* Oauth ready. */
+        $requestToken = [];
+        $requestToken['oauth_token'] = $tokenOurs;
+        $requestToken['oauth_token_secret'] = $tokenSecret;
+
+        /* Checking validation. */
+        if ($tokenOurs !== $tokenRequest) {
+            throw new TwitterConnectFailed("Error Processing Request", 1);
         }
 
-        /* Error handling. */
-        if (isset($response['error'])) {
-            throw new StripeConnectFailed('Your connection expired, please try again.', 1);
+        /* Setting up connection. */
+        $connection = new TwitterOAuth(
+            $_ENV['TWITTER_CONSUMER_KEY'],
+            $_ENV['TWITTER_CONSUMER_SECRET'],
+            $requestToken['oauth_token'],
+            $requestToken['oauth_token_secret']
+        );
+
+        /* Retreiving access token. */
+        try {
+            $accessToken = $connection->oauth(
+               "oauth/access_token", array("oauth_verifier" => $verifier));
+        } catch (Abraham\TwitterOAuth\TwitterOAuthException $e) {
+            throw new TwitterConnectFailed($e->getMessage(), 1);
         }
 
-        /* Deleting all previos connections, and stripe widgets. */
-        $this->user->connections()->where('service', 'stripe')->delete();
+        /* Deleting all previos connections. */
+        $this->user->connections()->where('service', 'twitter')->delete();
 
         /* Creating a Connection instance, and saving to DB. */
         $connection = new Connection(array(
-            'access_token'  => $response['access_token'],
-            'refresh_token' => $response['refresh_token'],
-            'service'       => 'stripe',
+            'access_token'  => json_encode(array(
+                'oauth_token' => $accessToken['oauth_token'],
+                'oauth_token_secret' => $accessToken['oauth_token_secret']
+            )),
+            'refresh_token' => '',
+            'service'       => 'twitter',
         ));
         $connection->user()->associate($this->user);
         $connection->save();
 
-        /* Creating custom dashboard in the background. */
-        Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**

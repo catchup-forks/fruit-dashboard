@@ -53,23 +53,4 @@ Route::group([
         'uses'   => 'SignupWizardController@getSocialConnections'
     ]);
 
-    Route::post('social-connections', [
-        'before' => 'auth',
-        'as'     => 'signup-wizard.social-connections',
-        'uses'   => 'SignupWizardController@postSocialConnections'
-    ]);
-
-    /* -- Braintree -- */
-    /* For development only, probably will go to modal,
-     * and be handled by financial-connections.
-    */
-    Route::get('braintree/connect', [
-        'as'     => 'signup-wizard.braintree-connect',
-        'uses'   => 'SignupWizardController@getBraintreeConnect'
-    ]);
-
-    Route::post('braintree/connect', [
-        'as'     => 'signup-wizard.braintree-connect',
-        'uses'   => 'SignupWizardController@postBraintreeConnect'
-    ]);
 });

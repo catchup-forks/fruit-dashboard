@@ -244,7 +244,7 @@ class GeneralWidgetController extends BaseController {
             $connected = Connection::where('user_id', $user->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
                 if ($descriptor->category == 'braintree') {
-                    return Redirect::route('signup-wizard.braintree-connect');
+                    return Redirect::route('service.braintree.connect');
                 } else {
                     return Redirect::route('signup-wizard.financial-connections')
                         ->with('warning', 'You have to connect the service first to add the widget.');
