@@ -13,7 +13,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 *       // For connecting the user
 *       $twitterConnector = new TwitterConnector($user);
 *       $twitterConnector->getTokens($token_ours, $token_request, $token_secret, $verifier);
-*       $stripeconnector->connect();
+*       $connector->connect();
 * --------------------------------------------------------------------------
 */
 
@@ -70,12 +70,13 @@ class TwitterConnector
     /**
      * connect
      * --------------------------------------------------
-     * Sets up a stripe connection with the API key. * @throws StripeNotConnected
+     * Sets up a twitter connection API key.
+     * @throws TwiiterNotConnected
      * --------------------------------------------------
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isTwitterConnected()) {
+        if (!$this->user->isServiceConnected('twitter')) {
             throw new TwitterNotConnected();
         }
 
@@ -99,7 +100,7 @@ class TwitterConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isTwitterConnected()) {
+        if (!$this->user->isServiceConnected('twitter')) {
             throw new TwtitterNotConnected();
         }
         /* Deleting connection */
@@ -127,8 +128,11 @@ class TwitterConnector
     /**
      * getTokens
      * --------------------------------------------------
-     * Retrieving the access, and refresh tokens from OAUTH.
-     * @param (string) ($code) The returned code by stripe.
+     * Retrieving the access tokens, OAUTH.
+     * @param string $tokenOurs
+     * @param string $tokenRequest
+     * @param string $tokenSecret
+     * @param string $verifier
      * @return None
      * @throws TwitterConnectFailed
      * --------------------------------------------------

@@ -120,26 +120,6 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getFinancialConnections() {
-        /* Connect stripe after OAuth if not connected */
-        if (!Auth::user()->isStripeConnected()) {
-
-            /* Access code if available */
-            if (Input::get('code', FALSE)) {
-                /* Create instance */
-                $stripeconnector = new StripeConnector(Auth::user());
-
-                /* Get tokens */ try {
-                    $stripeconnector->getTokens(Input::get('code'));
-
-                /* Error handling */
-                } catch (StripeConnectFailed $e) {
-                    $messages = array();
-                    array_push($messages, $e->getMessage());
-                    Log::info($messages);
-                }
-            }
-        }
-
         /* Render the page */
         return View::make('signup-wizard.financial-connections');
     }

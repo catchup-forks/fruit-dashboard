@@ -79,7 +79,7 @@ class BraintreeConnector
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isBraintreeConnected()) {
+        if (!$this->user->isServiceConnected('braintree')) {
             throw new BraintreeNotConnected();
         }
 
@@ -100,7 +100,7 @@ class BraintreeConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isBraintreeConnected()) {
+        if (!$this->user->isServiceConnected('braintree')) {
             throw new BraintreeNotConnected();
         }
 

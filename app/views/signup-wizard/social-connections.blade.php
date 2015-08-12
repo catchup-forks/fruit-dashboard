@@ -25,14 +25,15 @@
 
                 <div class="list-group margin-top-sm">
 
+               @foreach (SiteConstants::getSocialServices() as $service)
                   <a href="
-                    @if(Auth::user()->isStripeConnected())
-                      {{ route('disconnect.stripe') }}
+                    @if(Auth::user()->isServiceConnected($service['name']))
+                      {{ route($service['disconnect_route']) }}
                     @else
-                      {{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}
+                      {{ route($service['connect_route']) }}
                     @endif
-                  " class="list-group-item clearfix changes-image" data-image="widget-stripe">
-                    @if(Auth::user()->isFacebookConnected())
+                  " class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
+                    @if(Auth::user()->isServiceConnected($service['name']))
                         <small>
                           <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span> </small>
                     @else
@@ -40,9 +41,9 @@
                           <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
                         </small>
                     @endif
-                    Stripe
+                    {{ $service['display_name']}}
                     <span class="pull-right">
-                      @if(auth::user()->isstripeconnected())
+                      @if(Auth::user()->isServiceConnected($service['name']))
                         <button class="btn btn-xs btn-danger">
                           Disconnect
                         </button>
@@ -53,58 +54,8 @@
                       @endif
                     </span>
                   </a>
+                  @endforeach
 
-                  <a href="
-                    @if(Auth::user()->isFacebookConnected())
-                      {{ route('disconnect.facebook') }}
-                    @else
-                      {{ route('service.twitter.connect') }}
-                    @endif
-                  " class="list-group-item changes-image" data-image="widget-braintree">
-                    @if(Auth::user()->isFacebookConnected())
-                      <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
-                    @else
-                      <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
-                    @endif
-                    Facebook
-                    <span class="pull-right">
-                      @if(Auth::user()->isFacebookConnected())
-                        <button class="btn btn-xs btn-danger">
-                          Disconnect
-                        </button>
-                      @else
-                        <button class="btn btn-xs btn-success" >
-                          Connect
-                        </button>
-                      @endif
-                    </span>
-                  </a>
-
-                  <a href="
-                    @if(Auth::user()->isTwitterConnected())
-                      {{ route('service.twitter.disconnect') }}
-                    @else
-                      {{ route('service.twitter.connect') }}
-                    @endif
-                  " class="list-group-item changes-image" data-image="widget-braintree">
-                    @if(Auth::user()->isTwitterConnected())
-                      <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
-                    @else
-                      <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
-                    @endif
-                    Twitter
-                    <span class="pull-right">
-                      @if(Auth::user()->isTwitterConnected())
-                        <button class="btn btn-xs btn-danger">
-                          Disconnect
-                        </button>
-                      @else
-                        <button class="btn btn-xs btn-success" >
-                          Connect
-                        </button>
-                      @endif
-                    </span>
-                  </a>
                 </div> <!-- /.list-group -->
 
               </div> <!-- /.col-md-5 -->

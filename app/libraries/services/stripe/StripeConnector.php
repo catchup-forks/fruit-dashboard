@@ -66,19 +66,19 @@ class StripeConnector
     /**
      * connect
      * --------------------------------------------------
-     * Sets up a stripe connection with the API key. * @throws StripeNotConnected
+     * Sets up a stripe connection with the API key.
+     * @throws StripeNotConnected
      * --------------------------------------------------
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isStripeConnected()) {
+        if (!$this->user->isServiceConnected('stripe')) {
             throw new StripeNotConnected();
         }
 
         /* Get access token from DB. */
         $token = $this->user->connections()
-            ->where('service', 'stripe')
-            ->first()->access_token;
+            ->where('service', 'stripe') ->first()->access_token;
 
         /* Set up API key */
         \Stripe\Stripe::setApiKey($token);
@@ -93,7 +93,7 @@ class StripeConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isStripeConnected()) {
+        if (!$this->user->isServiceConnected('stripe')) {
             throw new StripeNotConnected();
         }
         /* Deleting connection */
@@ -118,8 +118,7 @@ class StripeConnector
             }
         }
 
-        /* Deleting all plans. */
-        foreach ($this->user->stripePlans as $stripePlan) {
+        /* Deleting all plans. */ foreach ($this->user->stripePlans as $stripePlan) {
             StripeSubscription::where('plan_id', $stripePlan->id)->delete();
             $stripePlan->delete();
         }
@@ -176,7 +175,7 @@ class StripeConnector
      */
     public function getNewAccessToken() {
         /* Check connection errors. */
-        if (!$this->user->isStripeConnected()) {
+        if (!$this->user->isServiceConnected('stripe')) {
             throw new StripeNotConnected();
         }
 
@@ -192,8 +191,7 @@ class StripeConnector
             throw new StripeConnectFailed('Stripe server error, please try again.', 1);
         }
 
-        /* Error handling. */
-        if (isset($response['error'])) {
+        /* Error handling. */ if (isset($response['error'])) {
             throw new StripeConnectFailed('Your connection expired, please try again.', 1);
         }
 

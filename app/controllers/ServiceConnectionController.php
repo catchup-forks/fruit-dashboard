@@ -91,7 +91,6 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyTwitterConnect() {
-
         /* Setting up connection. */
         if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
             $connector = new TwitterConnector(Auth::user());
@@ -124,8 +123,7 @@ class ServiceConnectionController extends BaseController
      }
 
     /**
-     * anyDisconnectTwitter
-     * --------------------------------------------------
+     * anyDisconnectTwitter * --------------------------------------------------
      * @return Deletes the logged in user's twitter connection.
      * --------------------------------------------------
      */
@@ -134,7 +132,7 @@ class ServiceConnectionController extends BaseController
         try {
             $connector = new TwitterConnector(Auth::user());
             $connector->disconnect();
-        } catch (TwiterNotConnected $e) {}
+        } catch (TwitterNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
@@ -142,10 +140,98 @@ class ServiceConnectionController extends BaseController
 
     /**
      * ================================================== *
+     *                        GOOGLE                      *
+     * ================================================== *
+     */
+
+    /**
+     * anyGoogleConnect
+     * --------------------------------------------------
+     * @return connects a user to twitter.
+     * --------------------------------------------------
+     */
+    public function anyGoogleConnect() {
+        /* Creating connection credentials. */
+        $connector = new GoogleConnector(Auth::user());
+        if (Input::get('code', FALSE)) {
+           try {
+                $connector->getTokens(Input::get('code'));
+           } catch (GoogleConnectFailed $e) {
+               /* User declined */
+               return Redirect::route('signup-wizard.social-connections')
+                   ->with('error', 'something went wrong.');
+           }
+           /* Successful connect. */
+           return Redirect::route('signup-wizard.social-connections')
+               ->with('success', 'Google connection successful');
+
+        } else if (Input::get('error', FALSE)) {
+            /* User declined */
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('error', 'You\'ve declined the request.');
+
+        } else {
+            /* Redirectong to Oauth. */
+            return Redirect::to($connector->getGoogleConnectUrl());
+        }
+     }
+
+    /**
+     * anyDisconnectGoogle
+     * --------------------------------------------------
+     * @return Deletes the logged in user's twitter connection.
+     * --------------------------------------------------
+     */
+    public function anyGoogleDisconnect() {
+        /* Try to disconnect */
+        try {
+            $connector = new GoogleConnector(Auth::user());
+            $connector->disconnect();
+        } catch (TwiterNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+    /**
+     * ================================================== *
      *                       STRIPE                       *
      * ================================================== *
      */
 
+    /**
+     * anyStripeConnect
+     * --------------------------------------------------
+     * @return connects a user to twitter.
+     * --------------------------------------------------
+     */
+    public function anyStripeConnect() {
+        if (Auth::user()->isServiceConnected('stripe')) {
+            return Redirect::route('settings.settings')
+                ->with('warning', 'You are already connected the service');
+        }
+
+        if (Input::get('code', FALSE)) {
+            /* Oauth ready. */
+            $connector = new StripeConnector(Auth::user());
+            try {
+                $connector->getTokens(Input::get('code'));
+            } catch (StripeConnectFailed $e) {
+                return Redirect::route('signup-wizard.financial-connections')
+                    ->with('error', 'Something went wrong, please try again.');
+            }
+
+            /* Successful connect. */
+            return Redirect::route('signup-wizard.financial-connections')
+                ->with('success', 'Stripe connection successful');
+
+        } else if (Input::get('error', FALSE)) {
+            /* User declined */
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('error', 'You\'ve declined the request.');
+        }
+
+        return Redirect::to(StripeConnector::getStripeConnectURI(route('service.stripe.connect')));
+     }
     /**
      * anyDisconnectStripe
      * --------------------------------------------------
@@ -162,11 +248,5 @@ class ServiceConnectionController extends BaseController
         /* Redirect */
         return Redirect::route('settings.settings');
     }
-
-    /**
-     * ================================================== *
-     *                       STRIPE                       *
-     * ================================================== *
-     */
 
 } /* ServiceConnectionController */
