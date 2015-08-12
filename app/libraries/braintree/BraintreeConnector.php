@@ -15,7 +15,7 @@ class BraintreeConnector
 {
     /* -- Class properties -- */
     private $user;
-    public static $authFields = array('publicKey', 'privateKey', 'merchantID', 'environment');
+    private static $authFields = array('publicKey', 'privateKey', 'merchantID', 'environment');
 
     /* -- Constructor -- */
     function __construct($user) {
@@ -51,9 +51,12 @@ class BraintreeConnector
         $credentials = array();
         foreach ($input as $key=>$value) {
             if (in_array($key, $this->getAuthFields())) {
+                Log::info($key . " " . $value);
                 $credentials[$key] = $value;
             }
         }
+
+        Log::info(json_encode($credentials));
 
         // Creating a Connection instance, and saving to DB.
         $connection = new Connection(array(

@@ -24,7 +24,7 @@
                   'route' => array('signup-wizard.braintree-connect'),
                   'class' => 'form-horizontal' )) }}
 
-                @foreach (BraintreeConnector::$authFields as $field)
+                @foreach ($authFields as $field)
 
                   <div class="form-group">
 
