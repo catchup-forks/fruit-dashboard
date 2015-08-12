@@ -133,7 +133,8 @@ class SignupWizardController extends BaseController
      */
     public function postBraintreeConnect() {
         // Validation.
-        $rules = array('publicKey'   => 'required',
+        $rules = array(
+            'publicKey'   => 'required',
             'privateKey'  => 'required',
             'merchantID'  => 'required',
             'environment' => 'required'

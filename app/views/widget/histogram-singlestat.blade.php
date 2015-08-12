@@ -16,8 +16,8 @@ Widget stats
 
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
-    @foreach ($frequencies as $frequency)
-      <div class="col-md-6">
+    @foreach ($widget->frequency() as $frequency=>$value)
+      <div class="col-md-6 chart-container">
         <div class="panel fill panel-default panel-transparent">
           <div class="panel-heading">
             <div class="panel-title">
@@ -44,7 +44,7 @@ Widget stats
                </span>
               </a>
               @endif
-              {{ $frequency }} statistics
+              {{ $value }} statistics
             </div>
           </div>
           <div class="panel-body no-padding" id="chart-container-{{$frequency}}">
@@ -64,11 +64,11 @@ Widget stats
   @include('widget.widget-general-scripts')
   <script type="text/javascript">
     $(document).ready(function () {
-      var frequencies = ['daily', 'weekly', 'monthly', 'yearly'];
+      var frequencies = [@foreach (array_keys($widget->frequency()) as $frequency) '{{$frequency}}', @endforeach];
 
-      function loadStat(i) {
+      function loadStat(i, callback) {
         if (i >= frequencies.length) {
-          return;
+          return callback();
         }
         var postData = {
           'frequency': frequencies[i],
@@ -78,12 +78,14 @@ Widget stats
         sendAjax(postData, {{ $widget->id }}, function (data) {
           updateChartWidget(data['data'], canvas, frequencies[i]);
           // Recursive call.
-          loadStat(++i);
+          loadStat(++i, callback);
         });
       }
 
       // Chart loading initial call.
-      loadStat(0);
+      loadStat(0, function () {
+        $(".chart-container").fadeIn(250);
+      });
     });
   </script>
 

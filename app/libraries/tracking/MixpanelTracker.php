@@ -43,8 +43,10 @@ class MixpanelTracker {
      */
     public function sendEvent($eventData) {
         /* Attach user to the event */
-        self::$mixpanel->identify(Auth::user()->id);
-        
+        if (Auth::check()) {
+            self::$mixpanel->identify(Auth::user()->id);
+        }
+
         /* Build and send the request */
         self::$mixpanel->track(
             $eventData['en']
