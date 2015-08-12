@@ -121,8 +121,11 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getBraintreeConnect() {
+        $braintreeConnector = new BraintreeConnector(Auth::user());
+
         /* Render the page */
-        return View::make('signup-wizard.braintree-connect');
+        return View::make('signup-wizard.braintree-connect')
+            ->with('authFields', $braintreeConnector->getAuthFields());
     }
 
     /**
@@ -153,7 +156,7 @@ class SignupWizardController extends BaseController
         }
 
         $braintreeConnector = new BraintreeConnector(Auth::user());
-        $braintreeConnector->generateAccessToken(Input::except('_token'));
+        $braintreeConnector->generateAccessToken(Input::all());
 
         /* Render the page */
         return Redirect::route('signup-wizard.financial-connections');
