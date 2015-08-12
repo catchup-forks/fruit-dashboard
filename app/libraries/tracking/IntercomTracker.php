@@ -55,13 +55,6 @@ class IntercomTracker {
                 "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
             ));
         } catch (\Intercom\Exception\ClientErrorResponseException $e) {
-            if (Auth::check()) {
-                self::$intercom->updateUser(array(
-                    'user_id'           => Auth::user()->email,
-                    'last_request_at'   => Carbon::now()->timestamp,
-                    "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
-                ));
-            }
         }
 
         /* Return */
