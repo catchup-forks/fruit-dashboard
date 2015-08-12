@@ -11,7 +11,7 @@
 </div>
 <div class="text-center drop-shadow text-white">
     Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more statistics.
+   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more details.
 </div>
 
 @section('widgetScripts')
