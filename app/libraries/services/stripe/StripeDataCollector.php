@@ -16,7 +16,7 @@ class StripeDataCollector
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
-        $this->connection = new StripeConnector($this->user);
+        $this->connection = new StripeConnector($user);
         $this->connection->connect();
     }
 
@@ -231,7 +231,9 @@ class StripeDataCollector
                 $this->getNewAccessToken();
             }
             $hasMore = $currentData['has_more'];
-            $startingAfter = end($currentData['data'])['id'];
+            if (!is_null($currentData['data'])) {
+                $startingAfter = end($currentData['data'])['id'];
+            }
         }
 
         // Getting the plans.

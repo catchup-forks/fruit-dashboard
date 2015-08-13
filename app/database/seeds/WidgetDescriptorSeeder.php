@@ -187,6 +187,27 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Twitter followers'],
+            array(
+                'name'        => 'Twitter followers',
+                'description' => 'Twitter follower count',
+                'type'        => 'twitter_followers',
+                'category'    => 'twitter',
+                'is_premium'  => TRUE,
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['name' => 'Twitter new followers'],
+            array(
+                'name'        => 'Twitter new followers',
+                'description' => 'Twitter new follower count',
+                'type'        => 'twitter_new_followers',
+                'category'    => 'twitter',
+                'is_premium'  => TRUE,
+            )
+        );
         /* Send message to console */
         Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated');
     }

@@ -42,78 +42,21 @@ class User extends Eloquent implements UserInterface
         }
         return $widgets;
     }
+
     /**
-     * isStripeConnected
+     * isServiceConnected
      * --------------------------------------------------
-     * Returns true if the user has connected a stripe account
-     * @return (boolean) ($status)
+     * Checking if the user is connected to the specific service.
+     * @param string $service
+     * @return boolean
      * --------------------------------------------------
      */
-    public function isStripeConnected() {
-        if ($this->connections()->where('service', 'stripe')
+    public function isServiceConnected($service) {
+        if ($this->connections()->where('service', $service)
                                 ->first() !== null) {
             return True;
         }
         return False;
     }
 
-     /**
-     * isBraintreeConnected
-     * --------------------------------------------------
-     * Returns true if the user has connected a braintree account
-     * @return (boolean) ($status)
-     * --------------------------------------------------
-     */
-    public function isBraintreeConnected() {
-        if ($this->connections()->where('service', 'braintree')
-                                ->first() !== null) {
-            return True;
-        }
-        return False;
-    }
-
-    /**
-     * isFacebookConnected
-     * --------------------------------------------------
-     * Returns true if the user has connected a facebook account
-     * @return (boolean) ($status)
-     * --------------------------------------------------
-     */
-    public function isFacebookConnected() {
-        if ($this->connections()->where('service', 'facebook')
-                                ->first() !== null) {
-            return True;
-        }
-        return False;
-    }
-
-    /**
-     * isGoogleAnalitycsConnected
-     * --------------------------------------------------
-     * Returns true if the user has connected a google_analitycs account
-     * @return (boolean) ($status)
-     * --------------------------------------------------
-     */
-    public function isGoogleAnalitycsConnected() {
-        if ($this->connections()->where('service', 'google_analitycs')
-                                ->first() !== null) {
-            return True;
-        }
-        return False;
-    }
-
-    /**
-     * isTwitterConnected
-     * --------------------------------------------------
-     * Returns true if the user has connected a twitter account
-     * @return (boolean) ($status)
-     * --------------------------------------------------
-     */
-    public function isTwitterConnected() {
-        if ($this->connections()->where('service', 'twitter')
-                                ->first() !== null) {
-            return True;
-        }
-        return False;
-    }
 }

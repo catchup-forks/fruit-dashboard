@@ -5,22 +5,19 @@
 * BraintreeConnector:
 *       Wrapper functions for Braintree connection
 * Usage:
-*       Connect the user by calling generateAccessToken()
+*       Connect the user by calling getTokens()
 *       with validated input.
 *       If the user has an access_token, use the connect() method.
 * --------------------------------------------------------------------------
 */
 
-class BraintreeConnector
+class BraintreeConnector extends GeneralServiceConnector
 {
     /* -- Class properties -- */
-    private $user;
     private static $authFields = array('publicKey', 'privateKey', 'merchantID', 'environment');
 
-    /* -- Constructor -- */
-    function __construct($user) {
-        $this->user = $user;
-    }
+    protected static $service = 'braintree';
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -43,10 +40,9 @@ class BraintreeConnector
      * --------------------------------------------------
      * Creating an 'access_token'
      * @param array $credentials
-     * @return string - corresponding stripe event type
      * --------------------------------------------------
      */
-    public function generateAccessToken($input) {
+    public function getTokens($input) {
         // Populating access_token array.
         $credentials = array();
         foreach ($input as $key=>$value) {
@@ -56,23 +52,14 @@ class BraintreeConnector
             }
         }
 
-        Log::info(json_encode($credentials));
-
-        // Creating a Connection instance, and saving to DB.
-        $connection = new Connection(array(
-            'access_token'  => json_encode($credentials),
-            'refresh_token' => '',
-            'service'       => 'braintree',
-        ));
-        $connection->user()->associate($this->user);
-        $connection->save();
+        $this->createConenction(json_encode($credentials), '');
 
         /* Creating custom dashboard in the background. */
         Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**
-     * connect.
+     * connect
      * --------------------------------------------------
      * Connecting the user with our stored credentials.
      * @throws BraintreeNotConnected
@@ -80,11 +67,11 @@ class BraintreeConnector
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isBraintreeConnected()) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new BraintreeNotConnected();
         }
 
-        $credentials = json_decode($this->user->connections()->where('service', 'braintree')->first()->access_token, 1);
+        $credentials = json_decode($this->getConnection()->access_token, 1);
 
         Braintree_Configuration::environment($credentials['environment']);
         Braintree_Configuration::merchantId($credentials['merchantID']);
@@ -100,33 +87,7 @@ class BraintreeConnector
      * --------------------------------------------------
      */
     public function disconnect() {
-        /* Check valid connection */
-        if (!$this->user->isBraintreeConnected()) {
-            throw new BraintreeNotConnected();
-        }
-
-        $this->user->connections()->where('service', 'braintree')->delete();
-
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == 'braintree') {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
-                $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
-            }
-        }
-
-
+        parent::disconnect();
         /* Deleting all plans. */
         foreach ($this->user->braintreePlans as $braintreePlan) {
             BraintreeSubscription::where('plan_id', $braintreePlan->id)->delete();
