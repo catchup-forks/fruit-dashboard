@@ -16,6 +16,8 @@ class BraintreeConnector extends GeneralServiceConnector
     /* -- Class properties -- */
     private static $authFields = array('publicKey', 'privateKey', 'merchantID', 'environment');
 
+    protected static $service = 'braintree';
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -50,16 +52,7 @@ class BraintreeConnector extends GeneralServiceConnector
             }
         }
 
-        Log::info(json_encode($credentials));
-
-        // Creating a Connection instance, and saving to DB.
-        $connection = new Connection(array(
-            'access_token'  => json_encode($credentials),
-            'refresh_token' => '',
-            'service'       => 'braintree',
-        ));
-        $connection->user()->associate($this->user);
-        $connection->save();
+        $this->createConenction(json_encode($credentials), '');
 
         /* Creating custom dashboard in the background. */
         Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));
@@ -74,11 +67,11 @@ class BraintreeConnector extends GeneralServiceConnector
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected('braintree')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new BraintreeNotConnected();
         }
 
-        $credentials = json_decode($this->user->connections()->where('service', 'braintree')->first()->access_token, 1);
+        $credentials = json_decode($this->user->connections()->where('service', static::$service)->first()->access_token, 1);
 
         Braintree_Configuration::environment($credentials['environment']);
         Braintree_Configuration::merchantId($credentials['merchantID']);
@@ -95,15 +88,15 @@ class BraintreeConnector extends GeneralServiceConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected('braintree')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new BraintreeNotConnected();
         }
 
-        $this->user->connections()->where('service', 'braintree')->delete();
+        $this->user->connections()->where('service', static::$service)->delete();
 
         /* Deleting all widgets, plans, subscribtions */
         foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == 'braintree') {
+            if ($widget->descriptor->category == static::$service) {
 
                 /* Saving data while it is accessible. */
                 $dataID = 0;

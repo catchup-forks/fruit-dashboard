@@ -23,6 +23,7 @@ use Stripe\Error\Authentication;
 
 class StripeConnector extends GeneralServiceConnector
 {
+    protected static $service = 'stripe';
     /**
      * ================================================== *
      *                   STATIC SECTION                   *
@@ -64,13 +65,13 @@ class StripeConnector extends GeneralServiceConnector
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected('stripe')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new StripeNotConnected();
         }
 
         /* Get access token from DB. */
         $token = $this->user->connections()
-            ->where('service', 'stripe') ->first()->access_token;
+            ->where('service', static::$service) ->first()->access_token;
 
         /* Set up API key */
         \Stripe\Stripe::setApiKey($token);
@@ -85,15 +86,15 @@ class StripeConnector extends GeneralServiceConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected('stripe')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new StripeNotConnected();
         }
         /* Deleting connection */
-        $this->user->connections()->where('service', 'stripe')->delete();
+        $this->user->connections()->where('service', static::$service)->delete();
 
         /* Deleting all widgets, plans, subscribtions */
         foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == 'stripe') {
+            if ($widget->descriptor->category == static::$service) {
 
                 /* Saving data while it is accessible. */
                 $dataID = 0;
@@ -140,17 +141,7 @@ class StripeConnector extends GeneralServiceConnector
             throw new StripeConnectFailed('Your connection expired, please try again.', 1);
         }
 
-        /* Deleting all previos connections, and stripe widgets. */
-        $this->user->connections()->where('service', 'stripe')->delete();
-
-        /* Creating a Connection instance, and saving to DB. */
-        $connection = new Connection(array(
-            'access_token'  => $response['access_token'],
-            'refresh_token' => $response['refresh_token'],
-            'service'       => 'stripe',
-        ));
-        $connection->user()->associate($this->user);
-        $connection->save();
+        $this->createConnection($response['access_token'], $response['refresh_token']);
 
         /* Creating custom dashboard in the background. */
         Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
@@ -167,12 +158,12 @@ class StripeConnector extends GeneralServiceConnector
      */
     public function getNewAccessToken() {
         /* Check connection errors. */
-        if (!$this->user->isServiceConnected('stripe')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new StripeNotConnected();
         }
 
         /* Build and send POST request */
-        $stripe_connection = $this->user->connections()->where('service', 'stripe')->first();
+        $stripe_connection = $this->user->connections()->where('service', static::$service)->first();
         $url = $this->buildTokenPostUriFromRefreshToken($stripe_connection->refresh_token);
 
         /* Get response */

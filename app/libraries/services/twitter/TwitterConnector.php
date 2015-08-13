@@ -19,6 +19,8 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 
 class TwitterConnector extends GeneralServiceConnector
 {
+    protected static $service = 'twitter';
+
     /**
      * ================================================== *
      *                   STATIC SECTION                   *
@@ -68,13 +70,13 @@ class TwitterConnector extends GeneralServiceConnector
      */
     public function connect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected('twitter')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new TwitterNotConnected();
         }
 
         /* Get access tokens from DB. */
         $accessToken = json_decode($this->user->connections()
-            ->where('service', 'twitter')
+            ->where('service', static::$service)
             ->first()->access_token, 1);
 
         /* Creating connection */
@@ -92,15 +94,15 @@ class TwitterConnector extends GeneralServiceConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected('twitter')) {
+        if (!$this->user->isServiceConnected(static::$service)) {
             throw new TwtitterNotConnected();
         }
         /* Deleting connection */
-        $this->user->connections()->where('service', 'twitter')->delete();
+        $this->user->connections()->where('service', static::$service)->delete();
 
         /* Deleting all widgets, plans, subscribtions */
         foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == 'twitter') {
+            if ($widget->descriptor->category == static::$service) {
 
                 /* Saving data while it is accessible. */
                 $dataID = 0;
@@ -157,21 +159,13 @@ class TwitterConnector extends GeneralServiceConnector
             throw new TwitterConnectFailed($e->getMessage(), 1);
         }
 
-        /* Deleting all previos connections. */
-        $this->user->connections()->where('service', 'twitter')->delete();
-
-        /* Creating a Connection instance, and saving to DB. */
-        $connection = new Connection(array(
-            'access_token'  => json_encode(array(
-                'oauth_token' => $accessToken['oauth_token'],
-                'oauth_token_secret' => $accessToken['oauth_token_secret']
+        $this->createConnection(
+            json_encode(array(
+                'oauth_token'       => $accessToken['oauth_token'],
+                'oauth_token_secret' => $accessToken['oauth_token_secret'],
             )),
-            'refresh_token' => '',
-            'service'       => 'twitter',
-        ));
-        $connection->user()->associate($this->user);
-        $connection->save();
-
+            ''
+        );
     }
 
 

@@ -12,10 +12,11 @@ class GoogleConnector extends GeneralServiceConnector
 {
     /* -- Class properties -- */
     private $client;
+    protected static $service = 'google';
 
     /* -- Constructor -- */
     function __construct($user) {
-        $this->user = $user;
+        parent::__construct($user);
         $this->client = new Google_Client();
         $this->client->setAuthConfigFile($_ENV['GOOGLE_SECRET_JSON']);
         $this->client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
