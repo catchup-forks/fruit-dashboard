@@ -69,54 +69,14 @@ class TwitterConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function connect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
-            throw new TwitterNotConnected();
-        }
-
+        $conn = $this->getConnection();
         /* Get access tokens from DB. */
-        $accessToken = json_decode($this->user->connections()
-            ->where('service', static::$service)
-            ->first()->access_token, 1);
+        $accessToken = json_decode($conn->access_token, 1);
 
         /* Creating connection */
         $connection = new TwitterOAuth($_ENV['TWITTER_CONSUMER_KEY'], $_ENV['TWITTER_CONSUMER_SECRET'], $accessToken['oauth_token'], $accessToken['oauth_token_secret']);
 
         return $connection;
-    }
-
-    /**
-     * disconnect
-     * --------------------------------------------------
-     * Disconnecting the user from twitter.
-     * @throws TwitterNotConnected
-     * --------------------------------------------------
-     */
-    public function disconnect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
-            throw new TwtitterNotConnected();
-        }
-        /* Deleting connection */
-        $this->user->connections()->where('service', static::$service)->delete();
-
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == static::$service) {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
-                $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete(); }
-            }
-        }
     }
 
     /**

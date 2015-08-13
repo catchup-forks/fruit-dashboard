@@ -11,15 +11,15 @@
 class GoogleConnector extends GeneralServiceConnector
 {
     /* -- Class properties -- */
-    private $client;
-    protected static $service = 'google';
+    private $client = null;
+    protected static $scope   = null;
 
     /* -- Constructor -- */
     function __construct($user) {
         parent::__construct($user);
         $this->client = new Google_Client();
         $this->client->setAuthConfigFile($_ENV['GOOGLE_SECRET_JSON']);
-        $this->client->addScope(Google_Service_Drive::DRIVE_METADATA_READONLY);
+        $this->client->addScope(static::$scope);
         $this->client->setRedirectUri(route('service.google.connect'));
     }
 
@@ -32,36 +32,6 @@ class GoogleConnector extends GeneralServiceConnector
      */
     public function getClient() {
         return $this->client;
-    }
-
-    /**
-     * connect
-     * --------------------------------------------------
-     * Sets up a google connection with the AccessToken.
-     * @throws GoogleNotConnected
-     * --------------------------------------------------
-     */
-    public function connect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected('google')) {
-            throw new GoogleNotConnected();
-        }
-
-        /* Get access token from DB. */
-        $token = $this->user->connections()
-            ->where('service', 'google') ->first()->access_token;
-        $this->client->setAccessToken($token);
-
-    }
-    /**
-     * getGoogleConnectURL
-     * --------------------------------------------------
-     * Returns the google connect url, based on config.
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getGoogleConnectUrl() {
-        return $this->client->createAuthUrl();
     }
 
     /**
@@ -83,53 +53,32 @@ class GoogleConnector extends GeneralServiceConnector
         /* Build and send POST request */
         $this->client->authenticate($code);
         $accessToken = $this->client->getAccessToken();
-
-        /* Deleting all previos connections. */
-        $this->user->connections()->where('service', 'google')->delete();
-
-        /* Creating a Connection instance, and saving to DB. */
-        $connection = new Connection(array(
-            'access_token'  => $accessToken,
-            'refresh_token' => '',
-            'service'       => 'google',
-        ));
-        $connection->user()->associate($this->user);
-        $connection->save();
+        $this->createConnection($accessToken)
     }
 
     /**
-     * disconnect
+     * getGoogleConnectURL
      * --------------------------------------------------
-     * Disconnecting the user from google.
+     * Returns the google connect url, based on config.
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getGoogleConnectUrl() {
+        return $this->client->createAuthUrl();
+    }
+
+    /**
+     * connect
+     * --------------------------------------------------
+     * Sets up a google connection with the AccessToken.
      * @throws GoogleNotConnected
      * --------------------------------------------------
      */
-    public function disconnect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected('google')) {
-            throw new GoogleNotConnected();
-        }
-        /* Deleting connection */
-        $this->user->connections()->where('service', 'google')->delete();
+    public function connect() {
+        /* Get access token from DB. */
+        $connection = $this->getConnection();
+        $this->client->setAccessToken($connection->$access_token);
 
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == 'google') {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
-                $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
-            }
-        }
     }
 
 } /* GoogleConnector */

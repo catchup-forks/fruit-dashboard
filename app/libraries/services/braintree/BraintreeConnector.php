@@ -59,7 +59,7 @@ class BraintreeConnector extends GeneralServiceConnector
     }
 
     /**
-     * connect.
+     * connect
      * --------------------------------------------------
      * Connecting the user with our stored credentials.
      * @throws BraintreeNotConnected
@@ -71,7 +71,7 @@ class BraintreeConnector extends GeneralServiceConnector
             throw new BraintreeNotConnected();
         }
 
-        $credentials = json_decode($this->user->connections()->where('service', static::$service)->first()->access_token, 1);
+        $credentials = json_decode($this->getConnection()->access_token, 1);
 
         Braintree_Configuration::environment($credentials['environment']);
         Braintree_Configuration::merchantId($credentials['merchantID']);
@@ -87,33 +87,7 @@ class BraintreeConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function disconnect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
-            throw new BraintreeNotConnected();
-        }
-
-        $this->user->connections()->where('service', static::$service)->delete();
-
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == static::$service) {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
-                $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
-            }
-        }
-
-
+        parent::disconnect();
         /* Deleting all plans. */
         foreach ($this->user->braintreePlans as $braintreePlan) {
             BraintreeSubscription::where('plan_id', $braintreePlan->id)->delete();

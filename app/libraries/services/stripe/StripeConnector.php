@@ -64,17 +64,8 @@ class StripeConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function connect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
-            throw new StripeNotConnected();
-        }
-
-        /* Get access token from DB. */
-        $token = $this->user->connections()
-            ->where('service', static::$service) ->first()->access_token;
-
         /* Set up API key */
-        \Stripe\Stripe::setApiKey($token);
+        \Stripe\Stripe::setApiKey($this->getConnection()->access_token);
     }
 
     /**
@@ -85,33 +76,9 @@ class StripeConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function disconnect() {
-        /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
-            throw new StripeNotConnected();
-        }
-        /* Deleting connection */
-        $this->user->connections()->where('service', static::$service)->delete();
-
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
-            if ($widget->descriptor->category == static::$service) {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
-                $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
-            }
-        }
-
-        /* Deleting all plans. */ foreach ($this->user->stripePlans as $stripePlan) {
+        parent::disconnect();
+        /* Deleting all plans. */
+        foreach ($this->user->stripePlans as $stripePlan) {
             StripeSubscription::where('plan_id', $stripePlan->id)->delete();
             $stripePlan->delete();
         }
