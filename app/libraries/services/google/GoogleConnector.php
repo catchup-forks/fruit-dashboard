@@ -18,7 +18,7 @@ abstract class GoogleConnector extends GeneralServiceConnector
     function __construct($user) {
         parent::__construct($user);
         $this->client = new Google_Client();
-        $this->client->setAuthConfigFile($_ENV['GOOGLE_SECRET_JSON']);
+        $this->client->setAuthConfigFile(base_path($_ENV['GOOGLE_SECRET_JSON']));
         $this->client->addScope(static::$scope);
         $this->client->setRedirectUri(route('service.' . static::$service . '.connect'));
     }
