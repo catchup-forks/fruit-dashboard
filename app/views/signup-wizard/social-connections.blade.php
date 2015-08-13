@@ -60,7 +60,7 @@
 
               </div> <!-- /.col-md-5 -->
               <div class="col-md-7">
-                {{ HTML::image('img/demonstration/widget-stripe.jpg', 'The Stripe Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
+                {{ HTML::image('img/demonstration/widget-google_analytics.jpg', 'The Stripe Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
               </div> <!-- /.col-md-7 -->
             </div> <!-- /.row -->
 
@@ -68,6 +68,7 @@
 
             <div class="row">
               <div class="col-md-12">
+                <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>
                 <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-primary pull-right">Finish</a>
 
               </div> <!-- /.col-md-12 -->
