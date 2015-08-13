@@ -8,10 +8,10 @@
 * --------------------------------------------------------------------------
 */
 
-class GoogleConnector extends GeneralServiceConnector
+abstract class GoogleConnector extends GeneralServiceConnector
 {
     /* -- Class properties -- */
-    private $client = null;
+    protected $client = null;
     protected static $scope   = null;
 
     /* -- Constructor -- */
@@ -20,13 +20,13 @@ class GoogleConnector extends GeneralServiceConnector
         $this->client = new Google_Client();
         $this->client->setAuthConfigFile($_ENV['GOOGLE_SECRET_JSON']);
         $this->client->addScope(static::$scope);
-        $this->client->setRedirectUri(route('service.google.connect'));
+        $this->client->setRedirectUri(route('service.' . static::$service . '.connect'));
     }
 
     /**
      * getClient
-     * --------------------------------------------------
      * Returns the google client.
+     * --------------------------------------------------
      * @return Google_Client object.
      * --------------------------------------------------
      */
@@ -42,8 +42,8 @@ class GoogleConnector extends GeneralServiceConnector
 
     /**
      * getTokens
-     * --------------------------------------------------
      * Retrieving the access, and refresh tokens from authentication code.
+     * --------------------------------------------------
      * @param string $code The returned code by google.
      * @return None
      * @throws GoogleConnectFailed
@@ -53,13 +53,13 @@ class GoogleConnector extends GeneralServiceConnector
         /* Build and send POST request */
         $this->client->authenticate($code);
         $accessToken = $this->client->getAccessToken();
-        $this->createConnection($accessToken)
+        $this->createConnection($accessToken, '');
     }
 
     /**
      * getGoogleConnectURL
-     * --------------------------------------------------
      * Returns the google connect url, based on config.
+     * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
@@ -69,8 +69,8 @@ class GoogleConnector extends GeneralServiceConnector
 
     /**
      * connect
-     * --------------------------------------------------
      * Sets up a google connection with the AccessToken.
+     * --------------------------------------------------
      * @throws GoogleNotConnected
      * --------------------------------------------------
      */

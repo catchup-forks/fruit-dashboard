@@ -20,7 +20,7 @@ class SiteConstants {
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
     private static $financialServices = array('braintree', 'stripe');
-    private static $socialServices    = array('google', 'facebook', 'twitter');
+    private static $socialServices    = array('google_analytics', 'facebook', 'twitter');
    /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *

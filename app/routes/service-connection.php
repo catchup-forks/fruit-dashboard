@@ -49,13 +49,13 @@ Route::group([
     ]);
 
     /* -- Google -- */
-    Route::any('google/connect', [
-        'as'     => 'service.google.connect',
-        'uses'   => 'ServiceConnectionController@anyGoogleConnect'
+    Route::any('google_analytics/connect', [
+        'as'     => 'service.google_analytics.connect',
+        'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsConnect'
     ]);
-    Route::any('google/disconnect', [
-        'as'     => 'service.google.disconnect',
-        'uses'   => 'ServiceConnectionController@anyGoogleDisconnect'
+    Route::any('google_analytics/disconnect', [
+        'as'     => 'service.google_analytics.disconnect',
+        'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsDisconnect'
     ]);
 
     /* -- Facebook -- */

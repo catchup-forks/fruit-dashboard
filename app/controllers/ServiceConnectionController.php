@@ -145,14 +145,14 @@ class ServiceConnectionController extends BaseController
      */
 
     /**
-     * anyGoogleConnect
+     * anyGoogleAnalyticsConnectanyGoogleConnect
      * --------------------------------------------------
-     * @return connects a user to twitter.
+     * @return connects a user to GA.
      * --------------------------------------------------
      */
-    public function anyGoogleConnect() {
+    public function anyGoogleAnalyticsConnect() {
         /* Creating connection credentials. */
-        $connector = new GoogleConnector(Auth::user());
+        $connector = new GoogleAnalyticsConnector(Auth::user());
         if (Input::get('code', FALSE)) {
            try {
                 $connector->getTokens(Input::get('code'));
@@ -179,13 +179,13 @@ class ServiceConnectionController extends BaseController
     /**
      * anyDisconnectGoogle
      * --------------------------------------------------
-     * @return Deletes the logged in user's twitter connection.
+     * @return Deletes the logged in user's GA connection.
      * --------------------------------------------------
      */
-    public function anyGoogleDisconnect() {
+    public function anyGoogleAnalyticsDisconnect() {
         /* Try to disconnect */
         try {
-            $connector = new GoogleConnector(Auth::user());
+            $connector = new GoogleAnalyticsConnector(Auth::user());
             $connector->disconnect();
         } catch (TwiterNotConnected $e) {}
 
