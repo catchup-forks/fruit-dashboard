@@ -11,13 +11,13 @@ class StripeDataCollector
 {
     /* -- Class properties -- */
     private $user;
-    private $connection;
+    private $connector;
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
-        $this->connection = new StripeConnector($user);
-        $this->connection->connect();
+        $this->connector = new StripeConnector($user);
+        $this->connector->connect();
     }
 
     /**
@@ -255,7 +255,6 @@ class StripeDataCollector
     /**
      * loadJSON
      * --------------------------------------------------
-     * getting the stripe plans from an already setup stripe connection.
      * @param stripe_json string of the received object.
      * @return the decoded object.
      * --------------------------------------------------

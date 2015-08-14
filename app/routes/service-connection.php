@@ -58,6 +58,15 @@ Route::group([
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsDisconnect'
     ]);
 
+    Route::any('google_calendar/connect', [
+        'as'     => 'service.google_calendar.connect',
+        'uses'   => 'ServiceConnectionController@anyGoogleCalendarConnect'
+    ]);
+    Route::any('google_calendar/disconnect', [
+        'as'     => 'service.google_calendar.disconnect',
+        'uses'   => 'ServiceConnectionController@anyGoogleCalendarDisconnect'
+    ]);
+
     /* -- Facebook -- */
     Route::any('facebook/connect', array(
         'before' => 'auth',

@@ -77,7 +77,7 @@ abstract class GoogleConnector extends GeneralServiceConnector
     public function connect() {
         /* Get access token from DB. */
         $connection = $this->getConnection();
-        $this->client->setAccessToken($connection->$access_token);
+        $this->client->setAccessToken($connection->access_token);
 
     }
 
