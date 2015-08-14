@@ -34,7 +34,25 @@ Route::group([
 
     Route::any('unlock/{dashboardId}', [
         'before' => 'auth',
-        'as'     => 'dashboard.lock',
+        'as'     => 'dashboard.unlock',
         'uses'   => 'DashboardController@anyUnlockDashboard'
+    ]);
+
+    Route::post('rename/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.rename',
+        'uses'   => 'DashboardController@postRenameDashboard'
+    ]);
+
+    Route::post('create/', [
+        'before' => 'auth',
+        'as'     => 'dashboard.create',
+        'uses'   => 'DashboardController@postCreateDashboard'
+    ]);
+
+    Route::any('get-dashboards', [
+        'before' => 'auth',
+        'as'     => 'dashboard.get-dashboards',
+        'uses'   => 'DashboardController@anyGetDashboards'
     ]);
 });

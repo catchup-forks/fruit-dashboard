@@ -33,6 +33,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ URL::route('dashboard.manage') }}">
+                <span class="fa fa-list"></span> Manage Dashboards
+            </a>
+        </li>
+        <li>
             <a href="https://fruitdashboard.uservoice.com/" target="blank">
                 <span class="fa fa-bullhorn"></span> Feedback
             </a>

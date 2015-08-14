@@ -44,7 +44,7 @@ class DashboardController extends BaseController
         }
 
         /* Render the page */
-        return View::make('dashboard.manage');
+        return View::make('dashboard.manage-dashboards');
     }
 
     /**
@@ -54,14 +54,14 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDeleteDashboard($dashboardId) {
-        $dashboard = Auth::user()->dashboards()->where('id', $dashboardId)->get();
+        $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(false);
+            return Response::json(FALSE);
         }
         $dashboard->delete();
 
         /* Return. */
-        return Response::json(true);
+        return Response::json(TRUE);
     }
 
     /**
@@ -71,15 +71,16 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyLockDashboard($dashboardId) {
-        $dashboard = Auth::user()->dashboards()->where('id', $dashboardId)->get();
+        $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(false);
+            return Response::json(FALSE);
         }
+
         $dashboard->locked = TRUE;
         $dashboard->save();
 
         /* Return. */
-        return Response::json(true);
+        return Response::json(TRUE);
     }
 
     /**
@@ -89,15 +90,97 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyUnlockDashboard($dashboardId) {
-        $dashboard = Auth::user()->dashboards()->where('id', $dashboardId)->get();
+        $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(false);
+            return Response::json(FALSE);
         }
+
         $dashboard->locked = FALSE;
         $dashboard->save();
 
         /* Return. */
-        return Response::json(true);
+        return Response::json(TRUE);
     }
 
+    /**
+     * postRenameDashboard
+     *
+     */
+    public function postRenameDashboard($dashboardId) {
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+
+        $newName = Input::get('dashboard_name');
+        if (is_null($newName)) {
+            return Response::json(FALSE);
+        }
+
+        $dashboard->name = $newName;
+        $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * postCreateDashboard
+     *
+     */
+    public function postCreateDashboard() {
+        $name = Input::get('dashboard_name');
+        if (empty($name)) {
+            return Response::json(FALSE);
+        }
+
+        /* Creating dashboard. */
+        $dashboard = new Dashboard(array(
+            'name'       => $name,
+            'background' => TRUE,
+            'number'     => Auth::user()->dashboards->max('number') + 1
+        ));
+        $dashboard->user()->associate(Auth::user());
+        $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyGetDashboards
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function anyGetDashboards() {
+        $dashboards = array();
+        foreach (Auth::user()->dashboards as $dashboard) {
+            array_push($dashboards, array(
+                'id'        => $dashboard->id,
+                'name'      => $dashboard->name,
+                'locked'    => $dashboard->locked,
+            ));
+        }
+
+        /* Return. */
+        return Response::json($dashboards);
+    }
+
+    /**
+     * getDashboard
+     * --------------------------------------------------
+     * @return Dashboard
+     * --------------------------------------------------
+     */
+    private function getDashboard($dashboardId) {
+        $dashboard = Dashboard::find($dashboardId);
+        if (is_null($dashboard)) {
+            return NULL;
+        }
+        if ($dashboard->user != Auth::user()) {
+            return NULL;
+        }
+        return $dashboard;
+    }
 } /* DashboardController */
