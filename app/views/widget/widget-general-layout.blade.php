@@ -21,7 +21,7 @@
   <!-- Adding loading on DataWidget -->
   @if ($widget instanceof DataWidget)
     @include('widget.widget-loading', ['widget' => $widget,])
-    <div class="@if ($widget->state == 'loading') not-visible @endif" id="widget-wrapper-{{$widget->id}}">
+    <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
   @endif
 
   @include($widget->descriptor->getTemplateName(), ['widget' => $widget])

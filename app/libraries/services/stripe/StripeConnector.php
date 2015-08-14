@@ -130,7 +130,7 @@ class StripeConnector extends GeneralServiceConnector
         }
 
         /* Build and send POST request */
-        $stripe_connection = $this->user->connections()->where('service', static::$service)->first();
+        $stripe_connection = $this->getConnection();
         $url = $this->buildTokenPostUriFromRefreshToken($stripe_connection->refresh_token);
 
         /* Get response */

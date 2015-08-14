@@ -11,13 +11,13 @@ class TwitterDataCollector
 {
     /* -- Class properties -- */
     private $user;
-    private $connection;
+    private $connector;
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
         $connector = new TwitterConnector($user);
-        $this->connection = $connector->connect();
+        $this->connector = $connector->connect();
     }
 
     /**
@@ -42,13 +42,13 @@ class TwitterDataCollector
     /**
      * getUserData
      * --------------------------------------------------
-     * Getting the User's data from the connection.
+     * Getting the User's data from the connector.
      * @return object
      * @throws TwitterNotConnected
      * --------------------------------------------------
     */
     protected function getUserData() {
-        return $this->connection->get("account/verify_credentials");
+        return $this->connector->get("account/verify_credentials");
     }
 
 } /* TwitterDataColector */

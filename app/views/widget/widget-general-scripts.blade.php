@@ -96,7 +96,7 @@
     var chartData = {
     labels: labels,
     datasets: [{
-      label: "{{ $widget->descriptor->name }}",
+      label: name,
       fillColor : "rgba(100, 222, 100,0.2)",
       strokeColor : "rgba(100, 222, 100,1)",
       pointColor : "rgba(100, 222, 100,1)",

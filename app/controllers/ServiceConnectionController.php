@@ -151,29 +151,7 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyGoogleAnalyticsConnect() {
-        /* Creating connection credentials. */
-        $connector = new GoogleAnalyticsConnector(Auth::user());
-        if (Input::get('code', FALSE)) {
-           try {
-                $connector->getTokens(Input::get('code'));
-           } catch (GoogleConnectFailed $e) {
-               /* User declined */
-               return Redirect::route('signup-wizard.social-connections')
-                   ->with('error', 'something went wrong.');
-           }
-           /* Successful connect. */
-           return Redirect::route('signup-wizard.social-connections')
-               ->with('success', 'Google connection successful');
-
-        } else if (Input::get('error', FALSE)) {
-            /* User declined */
-            return Redirect::route('signup-wizard.social-connections')
-                ->with('error', 'You\'ve declined the request.');
-
-        } else {
-            /* Redirectong to Oauth. */
-            return Redirect::to($connector->getGoogleConnectUrl());
-        }
+        return $this->connectGoogle("GoogleAnalyticsConnector");
      }
 
     /**
@@ -183,14 +161,27 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyGoogleAnalyticsDisconnect() {
-        /* Try to disconnect */
-        try {
-            $connector = new GoogleAnalyticsConnector(Auth::user());
-            $connector->disconnect();
-        } catch (TwiterNotConnected $e) {}
+        return $this->disconnectGoogle("GoogleAnalyticsConnector");
+    }
 
-        /* Redirect */
-        return Redirect::route('settings.settings');
+    /**
+     * anyGoogleCalendarConnectanyGoogleConnect
+     * --------------------------------------------------
+     * @return connects a user to GA.
+     * --------------------------------------------------
+     */
+    public function anyGoogleCalendarConnect() {
+        return $this->connectGoogle("GoogleCalendarConnector");
+     }
+
+    /**
+     * anyDisconnectGoogle
+     * --------------------------------------------------
+     * @return Deletes the logged in user's GA connection.
+     * --------------------------------------------------
+     */
+    public function anyGoogleCalendarDisconnect() {
+        return $this->disconnectGoogle("GoogleCalendarConnector");
     }
     /**
      * ================================================== *
@@ -244,6 +235,61 @@ class ServiceConnectionController extends BaseController
             $connector = new StripeConnector(Auth::user());
             $connector->disconnect();
         } catch (StripeNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+
+    /**
+     * ================================================== *
+     *                   GOOGLE SHORTHAND                 *
+     * ================================================== *
+     */
+
+    /**
+     * connectGoogle
+     * --------------------------------------------------
+     * @return connects a user to a google service.
+     * --------------------------------------------------
+     */
+    private function connectGoogle($connectorClass) {
+        /* Creating connection credentials. */
+        $connector = new $connectorClass(Auth::user());
+        if (Input::get('code', FALSE)) {
+           try {
+                $connector->getTokens(Input::get('code'));
+           } catch (GoogleConnectFailed $e) {
+               /* User declined */
+               return Redirect::route('signup-wizard.social-connections')
+                   ->with('error', 'something went wrong.');
+           }
+           /* Successful connect. */
+           return Redirect::route('signup-wizard.social-connections')
+               ->with('success', 'Google connection successful');
+
+        } else if (Input::get('error', FALSE)) {
+            /* User declined */
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('error', 'You\'ve declined the request.');
+
+        } else {
+            /* Redirectong to Oauth. */
+            return Redirect::to($connector->getGoogleConnectUrl());
+        }
+     }
+
+    /**
+     * disconnectGoogle
+     * --------------------------------------------------
+     * @return Deletes the logged in user's specific google connection.
+     * --------------------------------------------------
+     */
+    private function disconnectGoogle($connectorClass) {
+        /* Try to disconnect */
+        try {
+            $connector = new $connectorClass(Auth::user());
+            $connector->disconnect();
+        } catch (TwiterNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
