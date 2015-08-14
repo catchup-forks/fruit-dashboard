@@ -24,6 +24,17 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['name' => 'Google spreadsheet'],
+            array(
+                'name'        => 'Google spreadsheet',
+                'description' => 'Retrieve your charts directly from google spreadsheet, it\'s a great way to visualize custom data.',
+                'type'        => 'google_spreadsheet',
+                'category'    => 'personal',
+                'is_premium'  => TRUE,
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
             ['name' => 'Quotes'],
             array(
                 'name'        => 'Quotes',
@@ -154,8 +165,7 @@ class WidgetDescriptorSeeder extends Seeder
         } /* !App::environment('production', 'staging')*/
 
         /* Financial widgets | BRAINTREE */
-        WidgetDescriptor::updateOrCreate(
-            ['name' => 'Braintree MRR'],
+        WidgetDescriptor::updateOrCreate(['name' => 'Braintree MRR'],
             array(
                 'name'        => 'Braintree MRR',
                 'description' => 'Braintree Monthly recurring revenue',
@@ -187,6 +197,7 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        /* Social widgets | TWITTER */
         WidgetDescriptor::updateOrCreate(
             ['name' => 'Twitter followers'],
             array(
