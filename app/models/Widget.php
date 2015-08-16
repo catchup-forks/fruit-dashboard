@@ -211,6 +211,7 @@ class Widget extends Eloquent
      * Overriding save to add descriptor automatically.
      *
      * @return the saved object.
+     * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
         // Associating descriptor.

@@ -6,6 +6,5 @@ class TwitterFollowersWidget extends HistogramWidget
         $collector = new TwitterDataCollector($this->user());
         return $collector->getFollowersCount();
     }
-
 }
 ?>
