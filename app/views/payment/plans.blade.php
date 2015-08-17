@@ -21,7 +21,6 @@
               <ul class="list-group">
                 <li class="list-group-item">You host your software</li>
                 <li class="list-group-item">Access and customize each functionality</li>
-                <li class="list-group-item">Community support</li>
               </ul>
               <p><small>Fork us on </small><span class="fa fa-github"></span><small> GitHub, and create your own instance.</small></p>
             </div> <!-- /.panel-body -->
