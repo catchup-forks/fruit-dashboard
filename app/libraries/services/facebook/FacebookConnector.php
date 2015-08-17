@@ -17,27 +17,53 @@ use Facebook\FacebookRedirectLoginHelper;
 * --------------------------------------------------------------------------
 */
 
+/* Overriding session handling in default facebook login helper */
+class LaravelFacebookRedirectLoginHelper extends FacebookRedirectLoginHelper {
+    protected function storeState($state)
+    {
+        Session::put('facebook.state', $state);
+    }
+
+    protected function loadState()
+    {
+        return $this->state = Session::get('facebook.state');
+    }
+}
+
 class FacebookConnector extends GeneralServiceConnector
 {
     protected static $service = 'facebook';
+
+    protected $helper;
 
     /* -- Constructor -- */
     function __construct($user) {
         parent::__construct($user);
         FacebookSession::setDefaultApplication($_ENV['FACEBOOK_APP_ID'], $_ENV['FACEBOOK_APP_SECRET']);
 
+        $this->helper = new LaravelFacebookRedirectLoginHelper(route('service.facebook.connect'));
     }
 
     /**
-     * getFacebookConnectURL
+     * getFacebookConnectUrl
      * --------------------------------------------------
      * Returns the twitter connect url, based on config.
      * @return array
      * --------------------------------------------------
      */
     public function getFacebookConnectUrl() {
-        $loginUrlGenerator = new FacebookRedirectLoginHelper(route('service.facebook.connect'));
-        return $loginUrlGenerator->getLoginUrl();
+        return $this->helper->getLoginUrl();
+    }
+
+    /**
+     * connect
+     * --------------------------------------------------
+     * @return FacebookSession
+     * --------------------------------------------------
+     */
+    public function connect() {
+        $session = new FacebookSession($this->getConnection()->access_token);
+        return $session;
     }
 
     /**
@@ -54,10 +80,8 @@ class FacebookConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function getTokens() {
-
-        $helper = new FacebookRedirectLoginHelper();
-        $session = $helper->getSessionFromRedirect();
-        Log::info($session);
+        $session = $this->helper->getSessionFromRedirect();
+        $this->createConnection($session->getAccessToken(), '');
     }
 
 
