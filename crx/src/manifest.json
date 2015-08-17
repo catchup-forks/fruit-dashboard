@@ -1,8 +1,18 @@
 {
 	"name": "Fruit Dashboard",
-	"version": "1.1",
+	"version": "1.2",
 	"description": "See your startup stats every time you open a new tab.",
 	"manifest_version": 2,
+  "browser_action": {
+    "default_icon": {                    
+      "19": "icon19x19.png",           
+      "38": "icon38x38.png"            
+      },
+    "default_title": "Fruit Dashboard"
+  },
+  "background": {
+    "scripts": ["icon.js"]
+  },
 	"icons": { "16": "icon16x16.png",
            "48": "icon48x48.png",
           "128": "icon128x128.png" },
