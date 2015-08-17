@@ -10,7 +10,7 @@
   @section('pageContent') 
   <div class="container">
     
-    <h1 class="text-center text-white drop-shadow">Select your personal widgets</h1>
+    <h1 class="text-center text-white drop-shadow">Select your default personal widgets</h1>
 
     <div class="row">
       <div class="col-md-10 col-md-offset-1">

@@ -16,7 +16,7 @@
 
         @foreach (Auth::user()->dashboards as $dashboard)
 
-          <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->number == 0) active @endif"></li>
+          <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->is_default) active @endif"></li>
 
         @endforeach
 
@@ -27,7 +27,7 @@
 
         @foreach (Auth::user()->dashboards as $dashboard)
 
-          <div class="item @if($dashboard->number == 0) active @endif">
+          <div class="item @if($dashboard->is_default) active @endif">
 
             <div class="fill" style="background-image:url({{ Background::dailyBackgroundURL() }});">
             </div> <!-- /.fill -->
@@ -56,7 +56,7 @@
 
       </div> <!-- /.carousel-inner -->
 
-      @if (count(Auth::user()->dashboards) > 1)
+      @if (Auth::user()->dashboards->count() > 1)
       {{-- Set the navigational controls on sides. --}}
       <a class="left carousel-control" href="#dashboards" data-slide="prev">
           <span class="icon-prev"></span>
@@ -158,7 +158,6 @@
            }
          }
        }).data('gridster');
-
     });
 
     @endforeach

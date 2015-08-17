@@ -52,7 +52,7 @@ class BraintreeConnector extends GeneralServiceConnector
             }
         }
 
-        $this->createConenction(json_encode($credentials), '');
+        $this->createConnection(json_encode($credentials), '');
 
         /* Creating custom dashboard in the background. */
         Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));

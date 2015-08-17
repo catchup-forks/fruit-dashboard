@@ -36,7 +36,7 @@
               @endif
               <h1>{{ $plan->name }}</h1>
               <p class="lead">
-                @if ($plan->amount == 0)
+                @if ($plan->isFree())
                 Free
                 @else
                 <span class="fa fa-eur"></span>
