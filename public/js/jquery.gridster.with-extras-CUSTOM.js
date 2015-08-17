@@ -901,7 +901,7 @@
             max_size: [Infinity, Infinity],
             min_size: [1, 1]
         },
-        // MODIFIED TO DISABLE SNAP UP 
+        // MODIFIED TO DISABLE SNAP UP
         snap_up: true
     };
 
@@ -2376,10 +2376,10 @@
             if ( this.options.snap_up === true ) {
                 if (pp !== false) {
                     to_row = pp;
-                }    
+                }
             }
-            this.set_placeholder(to_col, to_row);    
-            
+            this.set_placeholder(to_col, to_row);
+
         }
 
         return {
@@ -2756,7 +2756,7 @@
     *  returns the row number, else returns false.
     */
     fn.can_go_widget_up = function(widget_grid_data) {
-        // MODIFIED TO DISABLE SNAP UP 
+        // MODIFIED TO DISABLE SNAP UP
         return false;
         // var p_bottom_row = widget_grid_data.row + widget_grid_data.size_y - 1;
         // var result = true;
@@ -2987,7 +2987,7 @@
     * @return {Class} Returns the instance of the Gridster Class.
     */
     fn.move_widget_to = function($widget, row) {
-        // MODIFIED TO DISABLE SNAP UP         
+        // MODIFIED TO DISABLE SNAP UP
         return false;
         // var self = this;
         // var widget_grid_data = $widget.coords().grid;
@@ -3030,7 +3030,7 @@
     * @return {Class} Returns the instance of the Gridster Class.
     */
     fn.move_widget_up = function($widget, y_units) {
-        // MODIFIED TO DISABLE SNAP UP 
+        // MODIFIED TO DISABLE SNAP UP
         return false;
         // var el_grid_data = $widget.coords().grid;
         // var actual_row = el_grid_data.row;

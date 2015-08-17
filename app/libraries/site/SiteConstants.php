@@ -1,33 +1,34 @@
 <?php
 
 /**
-* -------------------------------------------------------------------------- 
-* SiteConstants: 
+* --------------------------------------------------------------------------
+* SiteConstants:
 *       Wrapper functions for the constants.
-*       All functions can be called directly from the templates   
+*       All functions can be called directly from the templates
 * Usage:
 *       PHP     | $constant = SiteConstants::functionName();
 *       BLADE   | {{ SiteConstants::functionName() }}
-* -------------------------------------------------------------------------- 
+* --------------------------------------------------------------------------
 */
 class SiteConstants {
     /* -- Class properties -- */
-    private static $gridNumberOfCols    = 12;
-    private static $gridNumberOfRows    = 12;
-    private static $morningStartsAt     = 5;
-    private static $afternoonStartsAt   = 13;
-    private static $eveningStartsAt     = 17;
-    private static $nightStartsAt       = 22;
-    private static $trialPeriodInDays   = 14;
-
-    /**
+    private static $gridNumberOfCols  = 12;
+    private static $gridNumberOfRows  = 12;
+    private static $morningStartsAt   = 5;
+    private static $afternoonStartsAt = 13;
+    private static $eveningStartsAt   = 17;
+    private static $nightStartsAt     = 22;
+    private static $trialPeriodInDays = 14;
+    private static $financialServices = array('braintree', 'stripe');
+    private static $socialServices    = array('google_analytics', 'google_calendar', 'facebook', 'twitter');
+   /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *
      * ================================================== *
      */
 
     /**
-     * getGridNumberOfCols: 
+     * getGridNumberOfCols:
      * --------------------------------------------------
      * Returns the number of grid Y axis slots.
      * @return (integer) ($gridNumberOfCols) gridNumberOfCols
@@ -38,7 +39,7 @@ class SiteConstants {
     }
 
     /**
-     * getGridNumberOfRows: 
+     * getGridNumberOfRows:
      * --------------------------------------------------
      * Returns the number of grid X axis slots.
      * @return (integer) ($gridNumberOfRows) gridNumberOfRows
@@ -49,7 +50,7 @@ class SiteConstants {
     }
 
     /**
-     * getTimeOfTheDay: 
+     * getTimeOfTheDay:
      * --------------------------------------------------
      * Returns the time of the day string
      * @return (string) ($timeOfTheDay) morning, afternoon, evening, night
@@ -67,7 +68,7 @@ class SiteConstants {
         /* Morning */
         if ((self::$morningStartsAt <= $hour) and ($hour < self::$afternoonStartsAt)) {
             return 'morning';
-        
+
         /* Afternoon */
         } elseif ((self::$afternoonStartsAt <= $hour) and ($hour < self::$eveningStartsAt)) {
             return 'afternoon';
@@ -83,7 +84,7 @@ class SiteConstants {
     }
 
     /**
-     * getTrialPeriodInDays: 
+     * getTrialPeriodInDays:
      * --------------------------------------------------
      * Returns the trial period in days.
      * @return (integer) ($trialPeriodInDays) trialPeriodInDays
@@ -94,7 +95,7 @@ class SiteConstants {
     }
 
     /**
-     * getBraintreeErrorCodes: 
+     * getBraintreeErrorCodes:
      * --------------------------------------------------
      * Returns the Braintree error codes.
      * @return (array) ($errorCodes) errorCodes
@@ -106,5 +107,52 @@ class SiteConstants {
         ];
     }
 
-    
+    /**
+     * getFinancialServices:
+     * --------------------------------------------------
+     * Returns the financial services.
+     * @return (array) ($financialServices)
+     * --------------------------------------------------
+     */
+    public static function getFinancialServices() {
+        $services = array();
+        foreach (self::$financialServices as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+        return $services;
+    }
+
+    /**
+     * getSocialServices:
+     * --------------------------------------------------
+     * Returns the social services.
+     * @return (array) ($socialServices)
+     * --------------------------------------------------
+     */
+    public static function getSocialServices() {
+        $services = array();
+        foreach (self::$socialServices as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+        return $services;
+    }
+
+    /**
+     * getServiceMeta:
+     * --------------------------------------------------
+     * Returns the specific service meta.
+     * @param string $service
+     * @return (array) ($serviceMeta)
+     * --------------------------------------------------
+     */
+    private static function getServiceMeta($service) {
+        return array(
+            'name'             => $service,
+            'display_name'     => ucfirst(str_replace('_', ' ', $service)),
+            'disconnect_route' => 'service.' . $service . '.disconnect',
+            'connect_route'    => 'service.' . $service . '.connect',
+        );
+    }
+
+
 } /* SiteConstants */

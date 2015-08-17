@@ -20,18 +20,6 @@ Route::group([
         'uses' => 'SettingsController@postSettingsChange'
     ));
 
-    Route::any('disconnect/stripe', array(
-        'before' => 'auth',
-        'as' => 'disconnect.stripe',
-        'uses' => 'SettingsController@anyDisconnectStripe'
-    ));
-
-    Route::any('disconnect/braintree', array(
-        'before' => 'auth',
-        'as' => 'disconnect.braintree',
-        'uses' => 'SettingsController@anyDisconnectBraintree'
-    ));
-
     Route::post('timezone', array(
         'as' => 'settings.timezone',
         'uses' => 'SettingsController@postTimeZone'

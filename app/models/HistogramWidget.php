@@ -2,7 +2,7 @@
 
 abstract class HistogramWidget extends DataWidget implements iCronWidget
 {
-    const ENTRIES = 10;
+    const ENTRIES = 15;
 
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -26,11 +26,6 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
             'yearly'  => 'Yearly'
         );
     }
-
-    /**
-     * Used in getData.
-     */
-    private $frequency = null;
 
     /**
      * ================================================== *
@@ -112,17 +107,17 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
 
         /* Looking for forced frequency. */
         if (isset($postData['frequency'])) {
-            $this->frequency = $postData['frequency'];
+            $frequency = $postData['frequency'];
         } else {
-            $this->frequency = $this->getSettings()['frequency'];
+            $frequency = $this->getSettings()['frequency'];
         }
 
         /* Calling proper method based on frequency. */
-        switch ($this->frequency) {
-            case 'daily':   return $this->getHistogram($range, 'd'); break;
-            case 'weekly':  return $this->getHistogram($range, 'W'); break;
-            case 'monthly': return $this->getHistogram($range, 'M'); break;
-            case 'yearly':  return $this->getHistogram($range, 'Y'); break;
+        switch ($frequency) {
+            case 'daily':   return $this->getHistogram($range, $frequency, 'd'); break;
+            case 'weekly':  return $this->getHistogram($range, $frequency, 'W'); break;
+            case 'monthly': return $this->getHistogram($range, $frequency, 'M'); break;
+            case 'yearly':  return $this->getHistogram($range, $frequency, 'Y'); break;
             default: break;
         }
 
@@ -132,14 +127,15 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
 
     /**
      * getHistogram
+     * Returning the Histogram in the range,
      * --------------------------------------------------
-     * Returning the daily histogram data reversed.
      * @param array $range
+     * @param string $frequency
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
     */
-    protected function getHistogram($range, $dateFormat='Y-m-d') {
+    protected function getHistogram($range, $frequency, $dateFormat='Y-m-d') {
         /* Getting recorded histogram reversed. */
         $reversedHistogram = array_reverse(json_decode($this->data->raw_value, 1));
 
@@ -163,7 +159,7 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
             if ($recording) {
                 /* Frequency conditions. */
                 $entryDate = Carbon::createFromFormat('Y-m-d', $entry['date']);
-                if ( ! $this->useEntryInHistogram($entryDate) && ! $first) {
+                if ( ! $this->useEntryInHistogram($entryDate, $frequency) && ! $first) {
                     continue;
                 }
 
@@ -189,27 +185,29 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
 
     /**
      * useEntryInHistogram
+     * Whether or not use the specific entry in the
+     * histomgram.
      * --------------------------------------------------
-     * Returning the daily histogram data reversed.
      * @param Carbon $entryDate
+     * @param string $frequency
      * @return bool
      * --------------------------------------------------
     */
-    protected function useEntryInHistogram($entryDate) {
-        if (is_null($this->frequency)) {
-            $this->frequency = $this->getSettings()['frequency'];
+    protected function useEntryInHistogram($entryDate, $frequency) {
+        if (is_null($frequency)) {
+            $frequency = $this->getSettings()['frequency'];
         }
-        if ($this->frequency == 'daily') {
+        if ($frequency == 'daily') {
             return TRUE;
-        } else if ($this->frequency == 'weekly') {
+        } else if ($frequency == 'weekly') {
             if ($entryDate->format('D') == 'Mon') {
                 return TRUE;
             }
-        } else if ($this->frequency == 'monthly') {
+        } else if ($frequency == 'monthly') {
             if ($entryDate->format('d') == '31') {
                 return TRUE;
             }
-        } else if ($this->frequency == 'yearly') {
+        } else if ($frequency == 'yearly') {
              if ($entryDate->format('m-d') == '12-31') {
                 return TRUE;
             }

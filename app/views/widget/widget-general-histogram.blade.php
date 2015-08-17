@@ -6,7 +6,7 @@
     ${{ $widget->getLatestData()['value'] }}
   </span>
 </div>
-<div class="fill">
+<div id="{{ $widget->descriptor->type }}-chart-container">
   <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
 </div>
 <div class="text-center drop-shadow text-white">

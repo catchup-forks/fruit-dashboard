@@ -215,15 +215,15 @@
               {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="list-group margin-top-sm">
-
+               @foreach (array_merge(SiteConstants::getFinancialServices(), SiteConstants::getSocialServices()) as $service)
                   <a href="
-                    @if(Auth::user()->isStripeConnected())
-                      {{ route('disconnect.stripe') }}
+                    @if(Auth::user()->isServiceConnected($service['name']))
+                      {{ route($service['disconnect_route']) }}
                     @else
-                      {{ StripeConnector::getStripeConnectURI(URL::route('signup-wizard.financial-connections')); }}
+                      {{ route($service['connect_route']) }}
                     @endif
-                  " class="list-group-item clearfix changes-image" data-image="widget-stripe">
-                    @if(Auth::user()->isStripeConnected())
+                  " class="list-group-item clearfix changes-image" data-image="widget-{{$service['name']}}">
+                    @if(Auth::user()->isServiceConnected($service['name']))
                         <small>
                           <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span>
                         </small>
@@ -232,9 +232,9 @@
                           <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
                         </small>
                     @endif
-                    Stripe
+                    {{ $service['display_name'] }}
                     <span class="pull-right">
-                      @if(Auth::user()->isStripeConnected())
+                    @if(Auth::user()->isServiceConnected($service['name']))
                         <button class="btn btn-xs btn-danger">
                           Disconnect
                         </button>
@@ -245,32 +245,7 @@
                       @endif
                     </span>
                   </a>
-
-                  <a href="
-                    @if(Auth::user()->isBraintreeConnected())
-                      {{ route('disconnect.braintree') }}
-                    @else
-                      {{ route('signup-wizard.braintree-connect') }}
-                    @endif
-                  " class="list-group-item changes-image" data-image="widget-braintree">
-                    @if(Auth::user()->isBraintreeConnected())
-                      <small><span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span></small>
-                    @else
-                      <small><span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span></small>
-                    @endif
-                    Braintree
-                    <span class="pull-right">
-                      @if(Auth::user()->isBraintreeConnected())
-                        <button class="btn btn-xs btn-danger">
-                          Disconnect
-                        </button>
-                      @else
-                        <button class="btn btn-xs btn-success" >
-                          Connect
-                        </button>
-                      @endif
-                    </span>
-                  </a>
+                @endforeach
                 </div> <!-- /.list-group -->
 
               {{-- END --}}

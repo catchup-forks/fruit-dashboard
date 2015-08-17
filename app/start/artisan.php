@@ -13,4 +13,5 @@
 
 Artisan::add(new CheckTrialExpiry);
 Artisan::add(new CollectData);
+Artisan::add(new SaveWidgets);
 Artisan::add(new MigrateExternal);

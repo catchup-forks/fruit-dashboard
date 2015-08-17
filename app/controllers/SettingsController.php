@@ -50,40 +50,6 @@ class SettingsController extends BaseController
     }
 
     /**
-     * anyDisconnectStripe
-     * --------------------------------------------------
-     * @return Deletes the logged in user's stripe connection.
-     * --------------------------------------------------
-     */
-    public function anyDisconnectStripe() {
-        /* Try to disconnect */
-        try {
-            $connector = new StripeConnector(Auth::user());
-            $connector->disconnect();
-        } catch (StripeNotConnected $e) {}
-
-        /* Redirect */
-        return Redirect::route('settings.settings');
-    }
-
-    /**
-     * anyDisconnectBraintree
-     * --------------------------------------------------
-     * @return Deletes the logged in user's braintree connection.
-     * --------------------------------------------------
-     */
-    public function anyDisconnectBraintree() {
-        /* Try to disconnect */
-        try {
-            $connector = new BraintreeConnector(Auth::user());
-            $connector->disconnect();
-        } catch (StripeNotConnected $e) {}
-
-        /* Redirect */
-        return Redirect::route('settings.settings');
-    }
-
-    /**
      * postTimeZone
      * --------------------------------------------------
      * @return Sets the user TimeZone and stores to the session.

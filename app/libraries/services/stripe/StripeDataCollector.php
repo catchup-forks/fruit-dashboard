@@ -11,13 +11,13 @@ class StripeDataCollector
 {
     /* -- Class properties -- */
     private $user;
-    private $connection;
+    private $connector;
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
-        $this->connection = new StripeConnector($this->user);
-        $this->connection->connect();
+        $this->connector = new StripeConnector($user);
+        $this->connector->connect();
     }
 
     /**
@@ -231,7 +231,9 @@ class StripeDataCollector
                 $this->getNewAccessToken();
             }
             $hasMore = $currentData['has_more'];
-            $startingAfter = end($currentData['data'])['id'];
+            if (!is_null($currentData['data'])) {
+                $startingAfter = end($currentData['data'])['id'];
+            }
         }
 
         // Getting the plans.
@@ -253,7 +255,6 @@ class StripeDataCollector
     /**
      * loadJSON
      * --------------------------------------------------
-     * getting the stripe plans from an already setup stripe connection.
      * @param stripe_json string of the received object.
      * @return the decoded object.
      * --------------------------------------------------

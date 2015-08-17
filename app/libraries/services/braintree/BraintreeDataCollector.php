@@ -11,13 +11,13 @@ class BraintreeDataCollector
 {
     /* -- Class properties -- */
     private $user;
-    private $connection;
+    private $connector;
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
-        $this->connection = new BraintreeConnector($this->user);
-        $this->connection->connect();
+        $this->connector = new BraintreeConnector($this->user);
+        $this->connector->connect();
     }
 
     /**
