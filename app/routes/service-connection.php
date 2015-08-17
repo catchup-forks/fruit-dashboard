@@ -70,14 +70,14 @@ Route::group([
     /* -- Facebook -- */
     Route::any('facebook/connect', array(
         'before' => 'auth',
-        'as' => 'service.facebook.connect',
-        'uses' => 'SettingsController@anyDisconnectBraintree'
+        'as'     => 'service.facebook.connect',
+        'uses'   => 'ServiceConnectionController@anyFacebookConnect'
     ));
 
     Route::any('facebook/disconnect', array(
         'before' => 'auth',
-        'as' => 'service.facebook.disconnect',
-        'uses' => 'SettingsController@anyDisconnectBraintree'
+        'as'     => 'service.facebook.disconnect',
+        'uses'   => 'ServiceConnectionController@anyFacebookDisconnect'
     ));
 
 });
