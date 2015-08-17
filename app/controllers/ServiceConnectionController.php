@@ -140,6 +140,45 @@ class ServiceConnectionController extends BaseController
 
     /**
      * ================================================== *
+     *                      FACEBOOK                      *
+     * ================================================== *
+     */
+
+    /**
+     * anyFacebookConnect
+     * --------------------------------------------------
+     * @return connects a user to facebook.
+     * --------------------------------------------------
+     */
+    public function anyFacebookConnect() {
+        $connector = new FacebookConnector(Auth::user());
+        try {
+            $connector->getTokens();
+        } catch (Exception $e) {
+            Log::info($connector->getFacebookConnectUrl());
+            Redirect::to($connector->getFacebookConnectUrl());
+
+        }
+    }
+
+    /**
+     * anyFacebookDisconnect
+     * --------------------------------------------------
+     * @return disconnects a user from facebook.
+     * --------------------------------------------------
+     */
+    public function anyFacebookDisonnect() {
+        /* Try to disconnect */
+        $connector = new FacebookConnector(Auth::user());
+        try {
+            $connector->disconnect();
+        } catch (FacebookNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::route('settings.settings');
+    }
+    /**
+     * ================================================== *
      *                        GOOGLE                      *
      * ================================================== *
      */
@@ -183,6 +222,7 @@ class ServiceConnectionController extends BaseController
     public function anyGoogleCalendarDisconnect() {
         return $this->disconnectGoogle("GoogleCalendarConnector");
     }
+
     /**
      * ================================================== *
      *                       STRIPE                       *

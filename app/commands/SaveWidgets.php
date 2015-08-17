@@ -45,6 +45,5 @@ class SaveWidgets extends Command {
                 $widget->delete();
             }
         }
-        }
     }
 }
