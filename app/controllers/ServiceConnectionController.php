@@ -57,6 +57,21 @@ class ServiceConnectionController extends BaseController
         $braintreeConnector = new BraintreeConnector(Auth::user());
         $braintreeConnector->getTokens(Input::all());
 
+        /* Track event | SERVICE CONNECTED */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('detailed', array(
+            'ec' => 'Service connected',
+            'ea' => 'Braintree',
+            'el' => Auth::user()->email,
+            'ev' => 0,
+            'en' => 'Service connected',
+            'md' => array(
+                'service' => 'Braintree',
+                'email'   => Auth::user()->email
+                )
+            )
+        );
+
         /* Render the page */
         return Redirect::route('signup-wizard.financial-connections');
     }
@@ -72,6 +87,22 @@ class ServiceConnectionController extends BaseController
         try {
             $connector = new BraintreeConnector(Auth::user());
             $connector->disconnect();
+
+            /* Track event | SERVICE DISCONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service disconnected',
+                'ea' => 'Braintree',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service disconnected',
+                'md' => array(
+                    'service' => 'Braintree',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
         } catch (BraintreeNotConnected $e) {}
 
         /* Redirect */
@@ -115,6 +146,22 @@ class ServiceConnectionController extends BaseController
             $connectData = TwitterConnector::getTwitterConnectURL();
             Session::put('oauth_token', $connectData['oauth_token']);
             Session::put('oauth_token_secret', $connectData['oauth_token_secret']);
+
+            /* Track event | SERVICE CONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service connected',
+                'ea' => 'Twitter',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service connected',
+                'md' => array(
+                    'service' => 'Twitter',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
             return Redirect::to($connectData['connection_url']);
         }
 
@@ -132,6 +179,22 @@ class ServiceConnectionController extends BaseController
         try {
             $connector = new TwitterConnector(Auth::user());
             $connector->disconnect();
+
+            /* Track event | SERVICE DISCONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service disconnected',
+                'ea' => 'Twitter',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service disconnected',
+                'md' => array(
+                    'service' => 'Twitter',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
         } catch (TwitterNotConnected $e) {}
 
         /* Redirect */
@@ -154,6 +217,22 @@ class ServiceConnectionController extends BaseController
         $connector = new FacebookConnector(Auth::user());
         try {
             $connector->getTokens();
+
+            /* Track event | SERVICE CONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service connected',
+                'ea' => 'Facebook',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service connected',
+                'md' => array(
+                    'service' => 'Facebook',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
         } catch (Exception $e) {
             Log::info($connector->getFacebookConnectUrl());
             Redirect::to($connector->getFacebookConnectUrl());
@@ -172,6 +251,22 @@ class ServiceConnectionController extends BaseController
         $connector = new FacebookConnector(Auth::user());
         try {
             $connector->disconnect();
+
+            /* Track event | SERVICE DISCONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service disconnected',
+                'ea' => 'Facebook',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service disconnected',
+                'md' => array(
+                    'service' => 'Facebook',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
         } catch (FacebookNotConnected $e) {}
 
         /* Redirect */
@@ -251,6 +346,21 @@ class ServiceConnectionController extends BaseController
                     ->with('error', 'Something went wrong, please try again.');
             }
 
+            /* Track event | SERVICE CONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service connected',
+                'ea' => 'Stripe',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service connected',
+                'md' => array(
+                    'service' => 'Stripe',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
             /* Successful connect. */
             return Redirect::route('signup-wizard.financial-connections')
                 ->with('success', 'Stripe connection successful');
@@ -274,6 +384,22 @@ class ServiceConnectionController extends BaseController
         try {
             $connector = new StripeConnector(Auth::user());
             $connector->disconnect();
+
+            /* Track event | SERVICE DISCONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service disconnected',
+                'ea' => 'Stripe',
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service disconnected',
+                'md' => array(
+                    'service' => 'Stripe',
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
         } catch (StripeNotConnected $e) {}
 
         /* Redirect */
@@ -296,16 +422,32 @@ class ServiceConnectionController extends BaseController
         /* Creating connection credentials. */
         $connector = new $connectorClass(Auth::user());
         if (Input::get('code', FALSE)) {
-           try {
+            try {
                 $connector->getTokens(Input::get('code'));
-           } catch (GoogleConnectFailed $e) {
-               /* User declined */
-               return Redirect::route('signup-wizard.social-connections')
-                   ->with('error', 'something went wrong.');
-           }
-           /* Successful connect. */
-           return Redirect::route('signup-wizard.social-connections')
-               ->with('success', 'Google connection successful');
+            } catch (GoogleConnectFailed $e) {
+                /* User declined */
+                return Redirect::route('signup-wizard.social-connections')
+                    ->with('error', 'something went wrong.');
+            }
+
+            /* Track event | SERVICE CONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service connected',
+                'ea' => str_replace('Connector', '', $connectorClass),
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service connected',
+                'md' => array(
+                    'service' => str_replace('Connector', '', $connectorClass),
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
+            /* Successful connect. */
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('success', 'Google connection successful');
 
         } else if (Input::get('error', FALSE)) {
             /* User declined */
@@ -329,7 +471,23 @@ class ServiceConnectionController extends BaseController
         try {
             $connector = new $connectorClass(Auth::user());
             $connector->disconnect();
-        } catch (TwiterNotConnected $e) {}
+
+            /* Track event | SERVICE DISCONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('detailed', array(
+                'ec' => 'Service disconnected',
+                'ea' => str_replace('Connector', '', $connectorClass),
+                'el' => Auth::user()->email,
+                'ev' => 0,
+                'en' => 'Service disconnected',
+                'md' => array(
+                    'service' => str_replace('Connector', '', $connectorClass),
+                    'email'   => Auth::user()->email
+                    )
+                )
+            );
+
+        } catch (GoogleNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
