@@ -214,10 +214,20 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyFacebookConnect() {
+        if (Auth::user()->isServiceConnected('facebook')) {
+            return Redirect::route('settings.settings')
+                ->with('warning', 'You are already connected the service');
+        }
         $connector = new FacebookConnector(Auth::user());
-        try {
-            $connector->getTokens();
-
+        if (Input::get('code', FALSE)) {
+            /* Oauth ready. */
+            try {
+                $connector->getTokens();
+            } catch (TwitterNotConnected $e) {
+                Log::info($e->getMessage());
+                return Redirect::route('signup-wizard.social-connections')
+                    ->with('error', 'Something went wrong with the connection.');
+            }
             /* Track event | SERVICE CONNECTED */
             $tracker = new GlobalTracker();
             $tracker->trackAll('detailed', array(
@@ -232,12 +242,17 @@ class ServiceConnectionController extends BaseController
                     )
                 )
             );
+            /* Successful connect. */
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('success', 'Facebook connection successful');
 
-        } catch (Exception $e) {
-            Log::info($connector->getFacebookConnectUrl());
-            Redirect::to($connector->getFacebookConnectUrl());
-
+        } else if (Input::get('error', FALSE)) {
+            /* User declined */
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('error', 'You\'ve declined the request.');
         }
+
+        return Redirect::to($connector->getFacebookConnectUrl());
     }
 
     /**
@@ -246,7 +261,7 @@ class ServiceConnectionController extends BaseController
      * @return disconnects a user from facebook.
      * --------------------------------------------------
      */
-    public function anyFacebookDisonnect() {
+    public function anyFacebookDisconnect() {
         /* Try to disconnect */
         $connector = new FacebookConnector(Auth::user());
         try {
