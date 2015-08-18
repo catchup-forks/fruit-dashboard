@@ -21,17 +21,14 @@ class LaravelFacebookSessionPersistendDataHandler implements PersistentDataInter
     /**
      * @inheritdoc
      */
-    public function get($key)
-    {
+    public function get($key) {
         return Session::get($this->sessionPrefix . $key);
     }
 
     /**
      * @inheritdoc
      */
-    public function set($key, $value)
-    {
-
+    public function set($key, $value) {
         Session::put($this->sessionPrefix . $key, $value);
     }
 }
@@ -51,7 +48,7 @@ class FacebookConnector extends GeneralServiceConnector
         $this->fb = new Facebook(array(
             'app_id'                  => $_ENV['FACEBOOK_APP_ID'],
             'app_secret'              => $_ENV['FACEBOOK_APP_SECRET'],
-            'default_graph_version'   => 'v2.2',
+            'default_graph_version'   => 'v2.4',
             'persistent_data_handler' => $persistentDataHandler
         ));
     }
@@ -65,7 +62,12 @@ class FacebookConnector extends GeneralServiceConnector
      */
     public function getFacebookConnectUrl() {
         $helper = $this->fb->getRedirectLoginHelper();
-        return $helper->getLoginUrl(route('service.facebook.connect', static::$permissions));
+        if (App::environment('local')) {
+            // we must use this in development
+            return $helper->getLoginUrl('http://localhost:8001/service/facebook/connect', static::$permissions);
+        }
+
+        return $helper->getLoginUrl(route('service.facebook.connect'), static::$permissions);
     }
 
     /**
@@ -94,7 +96,13 @@ class FacebookConnector extends GeneralServiceConnector
      */
     public function getTokens() {
         $helper = $this->fb->getRedirectLoginHelper();
-        $this->createConnection($helper->getAccessToken(), '');
+
+        if (App::environment('local')) {
+            $this->createConnection($helper->getAccessToken(str_replace(8000, 8001, URL::full())), '');
+        } else {
+            $this->createConnection($helper->getAccessToken(), '');
+        }
+
     }
 
 

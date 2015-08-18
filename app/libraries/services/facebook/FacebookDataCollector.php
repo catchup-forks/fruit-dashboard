@@ -50,7 +50,6 @@ class FacebookDataCollector
         );
         $response = $request->execute();
         $graphObject = $response->getGraphObject();
-        var_dump($graphObject);
 
         //return $userData->followers_count;
     }

@@ -27,9 +27,6 @@ class DashboardController extends BaseController
             return Redirect::route('signup-wizard.personal-widgets');
         }
 
-        $collector = new FacebookDataCollector(Auth::user());
-        $collector->getTotalLikes();
-
         /* Render the page */
         return View::make('dashboard.dashboard');
     }
