@@ -41,7 +41,7 @@ class TwitterConnector extends GeneralServiceConnector
             $_ENV['TWITTER_CONSUMER_SECRET']
         );
         /* Getting a request token. */
-        $requestToken = $connection->oauth('oauth/request_token', array('oauth_callback' => $_ENV['TWITTER_OAUTH_CALLBACK']));
+        $requestToken = $connection->oauth('oauth/request_token', array('oauth_callback' => route('service.twitter.connect')));
 
         /* Return URI */
         return array(

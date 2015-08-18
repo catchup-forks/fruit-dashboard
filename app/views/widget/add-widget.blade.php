@@ -143,13 +143,10 @@
         }
 
       });
-      $('.changes-image').hover(function(e){
-          var element = this;
-          window.mytimeout = setTimeout(function(){
-            showDescription(getID(element));
-          }, 125);
-      }, function(){
-          clearTimeout(window.mytimeout);
+	  
+	  $('.changes-image').click(function(e) {
+        e.preventDefault();
+        showDescription(getID(this));
       });
     });
   </script>
