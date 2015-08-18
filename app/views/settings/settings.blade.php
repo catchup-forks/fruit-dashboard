@@ -117,7 +117,7 @@
 
                     {{ Form::select('background',
                        array('1' => 'Yes', '0' => 'No'),
-                       Auth::user()->settings->background_enabled,
+                       Auth::user()->background->is_enabled,
                        array('class' => 'form-control' )); }}
 
                   </div> <!-- /.col-sm-6 -->

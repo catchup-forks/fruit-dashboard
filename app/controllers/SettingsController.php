@@ -178,16 +178,16 @@ class SettingsController extends BaseController
 
         /* Get the user and necessary object(s) */
         $user = Auth::user();
-        $settings = Settings::where('user_id', $user->id)->first();
+        $background = Background::where('user_id', $user->id)->first();
 
         /* Get the new attribute(s) */
         $newattr = $postData['background'];
 
         /* Change the attribute(s) */
-        $settings->background_enabled = (bool)$newattr;
+        $background->is_enabled = (bool)$newattr;
 
         /* Save object(s) */
-        $settings->save();
+        $background->save();
 
         /* Return */
         /* AJAX CALL */
