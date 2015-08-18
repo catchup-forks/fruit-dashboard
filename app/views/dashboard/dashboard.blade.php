@@ -29,7 +29,7 @@
 
           <div class="item @if($dashboard->is_default) active @endif">
 
-            <div class="fill" style="background-image:url({{ Auth::user()->background->url }});">
+            <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
             </div> <!-- /.fill -->
 
             {{-- Here comes the dashboard content --}}

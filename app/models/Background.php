@@ -97,13 +97,13 @@ class Background extends Eloquent
      * @return Changes the URL of the user
      * --------------------------------------------------
      */
-    public function changeUrl() {      
+    public function changeUrl() {     
         /* URL already exists, get the next */
         if ($this->url != null) {
             /* Check for overflow */
             if ($this->number + 1 > self::$numOfBackgroundFiles) {
                 /* Get the first picture */
-                $this->number = 0;
+                $this->number = ($this->number + 1 - self::$numOfBackgroundFiles) % self::$numOfBackgroundFiles;
             } else {
                 /* get the next picture */
                 $this->number += 1;

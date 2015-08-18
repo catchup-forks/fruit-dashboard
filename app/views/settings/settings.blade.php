@@ -105,7 +105,7 @@
               {{-- General settings - Background --}}
               {{-- START --}}
               {{ Form::open(array(
-                  'data-setting-name' => 'background',
+                  'data-setting-name' => 'background-enabled',
                   'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
@@ -115,7 +115,7 @@
 
                   <div class="col-sm-6">
 
-                    {{ Form::select('background',
+                    {{ Form::select('background-enabled',
                        array('1' => 'Yes', '0' => 'No'),
                        Auth::user()->background->is_enabled,
                        array('class' => 'form-control' )); }}
@@ -130,10 +130,37 @@
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
+              
+              {{ Form::close() }}
+              {{-- END --}}
+              {{-- General settings - Background enabled --}}
+
+              {{-- General settings - Background change --}}
+              {{-- START --}}
+              {{ Form::open(array(
+                  'data-setting-name' => 'background-change',
+                  'class' => 'form-horizontal settings-form' )) }}
+
+                <div class="form-group">
+                  <label for="changeBackground" class="col-sm-3 control-label">
+                    Background picture
+                  </label>
+                  <div class="col-sm-6">
+                    <p class="form-control-static">
+                      Change the current background picture
+                      {{ Form::hidden('background-change'); }}
+                    </p>
+                  </div> <!-- /.col-sm-6 -->
+                  <div class="col-sm-2">
+                    {{ Form::submit('Modify' , array(
+                      'class' => 'btn btn-primary',
+                      'data-loading-text' => 'Saving...' )) }}
+                  </div> <!-- /.col-sm-2 -->
+                </div> <!-- /.form-group -->
 
               {{ Form::close() }}
               {{-- END --}}
-              {{-- General settings - Background --}}
+              {{-- General settings - Background change --}}
 
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
@@ -167,7 +194,7 @@
                         </p>
                       </div> <!-- /.col-sm-6 -->
                       <div class="col-sm-2">
-                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Change</a>
+                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Modify</a>
                       </div> <!-- /.col-sm-2 -->
                     </div> <!-- /.form-group -->
                   </form>
@@ -309,7 +336,7 @@
                   form.find(':submit').button('reset');
 
                   // Reload page on certain changes
-                  if (setting == 'background') {
+                  if (setting.indexOf('background') > -1) {
                     location.reload();
                   };
 

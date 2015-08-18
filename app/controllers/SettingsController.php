@@ -41,8 +41,11 @@ class SettingsController extends BaseController
             case 'email':
                 return $this->changeUserEmail(Input::all());
                 break;
-            case 'background':
+            case 'background-enabled':
                 return $this->changeBackgroundEnabled(Input::all());
+                break;
+            case 'background-change':
+                return $this->changeBackground(Input::all());
                 break;
             default:
                 return Redirect::route('settings.settings');
@@ -177,11 +180,10 @@ class SettingsController extends BaseController
         $status = TRUE;
 
         /* Get the user and necessary object(s) */
-        $user = Auth::user();
-        $background = Background::where('user_id', $user->id)->first();
+        $background = Auth::user()->background;
 
         /* Get the new attribute(s) */
-        $newattr = $postData['background'];
+        $newattr = $postData['background-enabled'];
 
         /* Change the attribute(s) */
         $background->is_enabled = (bool)$newattr;
@@ -207,6 +209,50 @@ class SettingsController extends BaseController
             } else {
                 return Redirect::route('settings.settings')
                     ->with('error', 'Something went wrong with changing your background settings. Please try again.');
+            }
+        }
+
+    }
+
+    /**
+     * changeBackground
+     * --------------------------------------------------
+     * @param (array) ($postData) The POST data
+     * @return Changes the background
+     * --------------------------------------------------
+     */
+    private function changeBackground($postData)
+    {
+        /* Initialize status */
+        $status = TRUE;
+
+        /* Get the user and necessary object(s) */
+        $background = Auth::user()->background;
+
+        /* Change the url(s) */
+        $background->changeUrl();
+
+        /* Save object(s) */
+        $background->save();
+
+        /* Return */
+        /* AJAX CALL */
+        if (Request::ajax()) {
+            if ($status) {
+                /* Everything OK, return empty json */
+                return Response::json(array('success' => 'You successfully changed your background.'));
+            } else {
+                /* Something went wrong, send error */
+                return Response::json(array('error' => 'Something went wrong with changing your background. Please try again.'));
+            }
+        /* POST */
+        } else {
+            if ($status) {
+                return Redirect::route('settings.settings')
+                    ->with('success', 'You successfully changed your background.');
+            } else {
+                return Redirect::route('settings.settings')
+                    ->with('error', 'Something went wrong with changing your background. Please try again.');
             }
         }
 
