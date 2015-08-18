@@ -69,7 +69,7 @@
             <div class="row">
               <div class="col-md-12">
                 <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-primary pull-right">Next</a>
-
+                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-link pull-right">Skip this step</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 

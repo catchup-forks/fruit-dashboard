@@ -16,21 +16,23 @@
     </title>
 
     @section('tracking')
-      <!-- Google Analytics -->
-      @include('tracking.google-analytics')
-      <!-- /Google Analytics -->
+      @if(App::environment('production'))
+        <!-- Google Analytics -->
+        @include('tracking.google-analytics')
+        <!-- /Google Analytics -->
 
-      <!-- Intercom IO -->
-      @include('tracking.intercom-io')
-      <!-- /Intercom IO -->
+        <!-- Intercom IO -->
+        @include('tracking.intercom-io')
+        <!-- /Intercom IO -->
 
-      <!-- Mixpanel -->
-      @include('tracking.mixpanel')
-      <!-- /Mixpanel -->
+        <!-- Mixpanel -->
+        @include('tracking.mixpanel')
+        <!-- /Mixpanel -->
 
-      <!-- Global event tracker -->
-      @include('tracking.global-event-tracker')
-      <!-- /Global event tracker -->
+        <!-- Global event tracker -->
+        @include('tracking.global-event-tracker')
+        <!-- /Global event tracker -->
+      @endif
     @show
 
     @section('stylesheet')

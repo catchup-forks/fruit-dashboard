@@ -6,7 +6,9 @@ class Dashboard extends Eloquent
     protected $fillable = array(
         'name',
         'background',
-        'number'
+        'number',
+        'is_locked',
+        'is_default'
     );
     public $timestamps = FALSE;
 

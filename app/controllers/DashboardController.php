@@ -79,7 +79,7 @@ class DashboardController extends BaseController
             return Response::json(FALSE);
         }
 
-        $dashboard->locked = TRUE;
+        $dashboard->is_locked = TRUE;
         $dashboard->save();
 
         /* Return. */
@@ -98,7 +98,7 @@ class DashboardController extends BaseController
             return Response::json(FALSE);
         }
 
-        $dashboard->locked = FALSE;
+        $dashboard->is_locked = FALSE;
         $dashboard->save();
 
         /* Return. */
@@ -162,7 +162,7 @@ class DashboardController extends BaseController
             array_push($dashboards, array(
                 'id'        => $dashboard->id,
                 'name'      => $dashboard->name,
-                'locked'    => $dashboard->locked,
+                'is_locked' => $dashboard->is_locked,
             ));
         }
 
