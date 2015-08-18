@@ -16,8 +16,12 @@ class UserSeeder extends Seeder
             
             Settings::create(array(
                 'user_id'            => $user->id,
-                'background_enabled' => TRUE,
             ));
+
+            $bg = Background::create(array(
+                'user_id'    => $user->id,
+            ));
+            $bg->changeUrl();
 
             Subscription::create(array(
                 'user_id'       => $user->id,

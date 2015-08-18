@@ -156,10 +156,17 @@ class SignupWizardController extends BaseController
         $settings = new Settings;
         $settings->user()->associate($user);
         $settings->newsletter_frequency = 0;
-        $settings->background_enabled   = true;
 
         /* Save settings */
         $settings->save();
+
+        /* Create default background for the user */
+        $background = new Background;
+        $background->user()->associate($user);
+        $background->changeUrl();
+
+        /* Save background */
+        $background->save();
 
         /* Create default subscription for the user */
         $plan = Plan::getFreePlan();

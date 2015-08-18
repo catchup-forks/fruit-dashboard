@@ -6,7 +6,7 @@
 
 @section('pageContent')
 
-<body style="background: url({{ Background::dailyBackgroundURL() }}) no-repeat center center fixed">
+<body style="background: url({{ Background::getBaseUrl() }}) no-repeat center center fixed">
 
 <div class="vertical-center">
   <div class="container">
