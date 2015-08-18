@@ -48,7 +48,7 @@ class FacebookConnector extends GeneralServiceConnector
         $this->fb = new Facebook(array(
             'app_id'                  => $_ENV['FACEBOOK_APP_ID'],
             'app_secret'              => $_ENV['FACEBOOK_APP_SECRET'],
-            'default_graph_version'   => 'v2.4',
+            'default_graph_version'   => $_ENV['FACEBOOK_DEFAULT_GRAPH_VERSION'],
             'persistent_data_handler' => $persistentDataHandler
         ));
     }
