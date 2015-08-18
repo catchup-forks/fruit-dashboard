@@ -8,7 +8,6 @@ class Settings extends Eloquent
     // -- Fields -- //
     protected $fillable = array(
         'newsletter_frequency',
-        'background_enabled'
     );
     public $timestamps = FALSE;
 
