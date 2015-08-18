@@ -1,47 +1,59 @@
 <?php
-use Facebook\FacebookSession;
-use Facebook\FacebookRedirectLoginHelper;
+
+use Facebook\Facebook;
+use Facebook\PersistentData\PersistentDataInterface;
 
 /**
 * --------------------------------------------------------------------------
 * FacebookConnector:
 *       Wrapper functions for Facebook connection
 * Usage:
-*       // For the connection url, and tokens.
-*       TwitterHelper::getTwitterConnectURL()
-*
-*       // For connecting the user
-*       $twitterConnector = new FacebookConnector($user);
-*       $twitterConnector->getTokens($token_ours, $token_request, $token_secret, $verifier);
 *       $connector->connect();
 * --------------------------------------------------------------------------
 */
 
-/* Overriding session handling in default facebook login helper */
-class LaravelFacebookRedirectLoginHelper extends FacebookRedirectLoginHelper {
-    protected function storeState($state)
+class LaravelFacebookSessionPersistendDataHandler implements PersistentDataInterface {
+    /**
+     * @var string Prefix to use for session variables.
+     */
+    protected $sessionPrefix = 'FBRLH_';
+
+    /**
+     * @inheritdoc
+     */
+    public function get($key)
     {
-        Session::put('facebook.state', $state);
+        return Session::get($this->sessionPrefix . $key);
     }
 
-    protected function loadState()
+    /**
+     * @inheritdoc
+     */
+    public function set($key, $value)
     {
-        return $this->state = Session::get('facebook.state');
+
+        Session::put($this->sessionPrefix . $key, $value);
     }
 }
 
 class FacebookConnector extends GeneralServiceConnector
 {
-    protected static $service = 'facebook';
+    protected static $service     = 'facebook';
+    protected static $permissions = array('email', 'user_likes');
 
-    protected $helper;
+    protected $fb;
 
     /* -- Constructor -- */
     function __construct($user) {
         parent::__construct($user);
-        FacebookSession::setDefaultApplication($_ENV['FACEBOOK_APP_ID'], $_ENV['FACEBOOK_APP_SECRET']);
-
-        $this->helper = new LaravelFacebookRedirectLoginHelper(route('service.facebook.connect'));
+        $persistentDataHandler = new LaravelFacebookSessionPersistendDataHandler();
+        // FIXME graph version -> ENV
+        $this->fb = new Facebook(array(
+            'app_id'                  => $_ENV['FACEBOOK_APP_ID'],
+            'app_secret'              => $_ENV['FACEBOOK_APP_SECRET'],
+            'default_graph_version'   => 'v2.2',
+            'persistent_data_handler' => $persistentDataHandler
+        ));
     }
 
     /**
@@ -52,7 +64,8 @@ class FacebookConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function getFacebookConnectUrl() {
-        return $this->helper->getLoginUrl();
+        $helper = $this->fb->getRedirectLoginHelper();
+        return $helper->getLoginUrl(route('service.facebook.connect', static::$permissions));
     }
 
     /**
@@ -80,8 +93,8 @@ class FacebookConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function getTokens() {
-        $session = $this->helper->getSessionFromRedirect();
-        $this->createConnection($session->getAccessToken(), '');
+        $helper = $this->fb->getRedirectLoginHelper();
+        $this->createConnection($helper->getAccessToken(), '');
     }
 
 

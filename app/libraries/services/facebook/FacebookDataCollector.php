@@ -43,7 +43,10 @@ class FacebookDataCollector
 
         $request = new FacebookRequest(
             $this->session, 'GET',
-            '/' . $_ENV['FACEBOOK_APP_ID'] . '/insights/' . 'page_engaged_users'
+            '/' . 927404167302370 . '/insights/' . 'page_impressions',
+            array (
+                'period' => 'month'
+            )
         );
         $response = $request->execute();
         $graphObject = $response->getGraphObject();

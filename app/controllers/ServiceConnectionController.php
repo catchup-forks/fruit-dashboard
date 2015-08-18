@@ -223,13 +223,11 @@ class ServiceConnectionController extends BaseController
             /* Oauth ready. */
             try {
                 $connector->getTokens();
-            } catch (Exception $e) {
+            } catch (TwitterNotConnected $e) {
                 Log::info($e->getMessage());
                 return Redirect::route('signup-wizard.social-connections')
                     ->with('error', 'Something went wrong with the connection.');
             }
-            $connector->getTokens();
-
             /* Track event | SERVICE CONNECTED */
             $tracker = new GlobalTracker();
             $tracker->trackAll('detailed', array(
