@@ -28,7 +28,7 @@ class DashboardController extends BaseController
         }
 
         $collector = new FacebookDataCollector(Auth::user());
-        $collector->getTotalLikes();
+        $collector->savePages();
 
         /* Render the page */
         return View::make('dashboard.dashboard');

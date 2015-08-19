@@ -36,7 +36,7 @@ class LaravelFacebookSessionPersistendDataHandler implements PersistentDataInter
 class FacebookConnector extends GeneralServiceConnector
 {
     protected static $service     = 'facebook';
-    protected static $permissions = array('email', 'user_likes');
+    protected static $permissions = array('manage_pages', 'read_insights');
 
     protected $fb;
 
@@ -115,5 +115,19 @@ class FacebookConnector extends GeneralServiceConnector
 
     }
 
+    /**
+     * disconnect
+     * --------------------------------------------------
+     * disconnecting the user from facebook.
+     * @throws ServiceNotConnected
+     * --------------------------------------------------
+     */
+    public function disconnect() {
+        parent::disconnect();
+        /* deleting all plans. */
+        foreach ($this->user->facebookPages as $facebookPage) {
+            $facebookPage->delete();
+        }
+    }
 
 } /* FacebookConnector */

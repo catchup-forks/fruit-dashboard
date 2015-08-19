@@ -71,16 +71,16 @@ class StripeConnector extends GeneralServiceConnector
     /**
      * disconnect
      * --------------------------------------------------
-     * Disconnecting the user from stripe.
-     * @throws StripeNotConnected
+     * disconnecting the user from stripe.
+     * @throws stripenotconnected
      * --------------------------------------------------
      */
     public function disconnect() {
         parent::disconnect();
-        /* Deleting all plans. */
-        foreach ($this->user->stripePlans as $stripePlan) {
-            StripeSubscription::where('plan_id', $stripePlan->id)->delete();
-            $stripePlan->delete();
+        /* deleting all plans. */
+        foreach ($this->user->stripePlans as $stripeplan) {
+            stripesubscription::where('plan_id', $stripeplan->id)->delete();
+            $stripeplan->delete();
         }
     }
 

@@ -242,6 +242,10 @@ class ServiceConnectionController extends BaseController
                     )
                 )
             );
+            /* Getting facebook pages  (will be moved to autodashboard) */
+            $collector = new FacebookDataCollector(Auth::user());
+            $collector->savePages();
+
             /* Successful connect. */
             return Redirect::route('signup-wizard.social-connections')
                 ->with('success', 'Facebook connection successful');
