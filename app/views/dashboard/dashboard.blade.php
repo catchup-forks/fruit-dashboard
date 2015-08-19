@@ -155,6 +155,34 @@
 
     $('.gridster.not-visible').fadeIn(1300);
 
+    // Define the Hopscotch tour.
+       var tour = {
+         id: "introduction",
+         steps: [
+           {
+             title: "Clock widget",
+             content: "This is the Clock widget. When hovered, it can be resized and dragged.",
+             target: document.querySelector("#digital-clock"),
+             placement: "bottom"
+           },
+           {
+            title: "Dashboard indicators",
+            content: "Clicking these dots take you to one of your dashboards.",
+            target: document.querySelector("ol > li"),
+            placement: "top"
+           },
+           {
+            title: "Add new widget",
+            content: "Just click here to add a new widget.",
+            target: document.querySelector(".fa-plus-circle"),
+            placement: "top"
+           }
+         ]
+       };
+
+   // Start the Hopscotch tour.
+   // hopscotch.startTour(tour);
+
   </script>
 
   @append

@@ -17,7 +17,8 @@
   "dependencies": {
     "bootstrap": "~3.3.5",
     "fontawesome": "~4.4.0",
-    "jstz-detect": "~1.0.5"
+    "jstz-detect": "~1.0.5",
+    "hopscotch": "~0.2.5"
   },
   "devDependencies": {
     "gridster": "~0.5.6",

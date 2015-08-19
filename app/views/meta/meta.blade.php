@@ -57,6 +57,10 @@
       {{ HTML::style('css/jquery.growl.css') }}
       <!-- /Growl CSS-->
 
+      <!-- Hopscotch CSS -->
+      {{ HTML::style('css/hopscotch.min.css') }}
+      <!-- /Hopscotch CSS-->
+
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -89,6 +93,7 @@
     {{ HTML::script('js/jquery.growl.js'); }}
     {{ HTML::script('js/Chart.js'); }}
     {{ HTML::script('js/jstz.min.js') }}
+    {{ HTML::script('js/hopscotch.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->
