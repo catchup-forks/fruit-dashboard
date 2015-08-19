@@ -88,7 +88,7 @@
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
     {{ HTML::script('js/jquery.growl.js'); }}
     {{ HTML::script('js/Chart.js'); }}
-    {{ HTML::script('https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
+    {{ HTML::script('js/jstz.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->
