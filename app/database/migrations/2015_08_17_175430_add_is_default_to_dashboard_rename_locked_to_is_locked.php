@@ -25,8 +25,10 @@ class AddIsDefaultToDashboardRenameLockedToIsLocked extends Migration {
 		// Make default dashboard for existing users
 		foreach (User::all() as $user) {
 			$dashboard = $user->dashboards->first();
+			Log::info($dashboard);
 			if ($dashboard != null) {
 				$dashboard->is_default = TRUE;
+				$dashboard->save();
 			} else {
 				/* Create new dashboard */
 				$dashboard = new Dashboard(array(

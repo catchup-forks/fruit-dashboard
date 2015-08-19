@@ -14,8 +14,7 @@ body {
   align-items: center;
 }
 .valign-middle {
-  display: flex;
-  align-items: center;
+  vertical-align: middle;
 }
 .position-bl {
   position: fixed;
@@ -117,6 +116,13 @@ body {
   background: #ffffff;
   /* Fallback */
   background: rgba(255, 255, 255, 0.85);
+}
+.add-new {
+  font-size: 120%;
+  line-height: 200px;
+  border: dashed 2px grey;
+  border-radius: 4px;
+  color: grey;
 }
 .gridster {
   position: absolute;

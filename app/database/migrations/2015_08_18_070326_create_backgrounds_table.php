@@ -37,6 +37,7 @@ class CreateBackgroundsTable extends Migration {
 		foreach (User::all() as $user) {
 			$bg = new Background;
 			$bg->user()->associate($user);
+			$bg->changeUrl();
 			$bg->save();
 		}
 
