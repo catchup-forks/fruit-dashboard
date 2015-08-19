@@ -22,7 +22,8 @@
       refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
     @endif
 
-     $("#refresh-{{$widget->id}}").click(function () {
+     $("#refresh-{{$widget->id}}").click(function (e) {
+      e.preventDefault();
       refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
      });
    });
