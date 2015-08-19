@@ -54,10 +54,21 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
     /**
+     * getFB
+     * --------------------------------------------------
+     * Returns the facebook entity.
+     * @return Facebook
+     * --------------------------------------------------
+     */
+    public function getFB() {
+        return $this->fb;
+    }
+
+    /**
      * getFacebookConnectUrl
      * --------------------------------------------------
-     * Returns the twitter connect url, based on config.
-     * @return array
+     * Returns the facebook connect url, based on config.
+     * @return string
      * --------------------------------------------------
      */
     public function getFacebookConnectUrl() {
@@ -77,8 +88,7 @@ class FacebookConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function connect() {
-        $session = new FacebookSession($this->getConnection()->access_token);
-        return $session;
+        return $this->getConnection()->access_token;
     }
 
     /**
@@ -106,4 +116,4 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
 
-} /* TwitterConnector */
+} /* FacebookConnector */

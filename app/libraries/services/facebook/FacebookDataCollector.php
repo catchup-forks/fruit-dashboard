@@ -13,14 +13,38 @@ use Facebook\GraphUser;
 class FacebookDataCollector
 {
     /* -- Class properties -- */
+    /**
+     * @var User The user entity for this collector.
+     *
+     */
     private $user;
-    private $session;
+
+    /**
+     * @var string access token
+     *
+     */
+    private $accessToken;
+
+    /**
+     * @var Facebook The Facebook entity.
+     *
+     */
+    private $fb;
+
+    /**
+     * @var FacebookApp The Facebook app entity.
+     *
+     */
+    private $app;
+
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
         $connector = new FacebookConnector($user);
-        $this->session = $connector->connect();
+        $this->accessToken = $connector->connect();
+        $this->fb = $connector->getFB();
+        $this->app = $this->fb->getApp();
     }
 
     /**
@@ -32,44 +56,19 @@ class FacebookDataCollector
      * --------------------------------------------------
     */
     public function getTotalLikes() {
-        try {
-            $profile = (new FacebookRequest(
-                $this->session, 'GET', '/me'
-            ))->execute()->getGraphObject(GraphUser::className());
-            Log::info($profile->getName());
-        } catch (FacebookRequestException $e) {
-            Log::info($e->getMessage());
-        }
 
         $request = new FacebookRequest(
-            $this->session, 'GET',
+            $this->app, $this->accessToken, 'GET',
             '/' . 927404167302370 . '/insights/' . 'page_impressions',
             array (
                 'period' => 'month'
             )
         );
-        $response = $request->execute();
-        $graphObject = $response->getGraphObject();
+        $response = $this->fb->get($request->getUrl());
+        var_dump($response);
 
         //return $userData->followers_count;
     }
 
-    /**
-     * ================================================== *
-     *                  PROTECTED SECTION                 *
-     * ================================================== *
-    */
 
-    /**
-     * getUserData
-     * --------------------------------------------------
-     * Getting the User's data from the connector.
-     * @return object
-     * @throws TwitterNotConnected
-     * --------------------------------------------------
-    */
-    protected function getUserData() {
-        return $this->connector->get("account/verify_credentials");
-    }
-
-} /* TwitterDataColector */
+} /* FacebookDataCollector */
