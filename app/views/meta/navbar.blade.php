@@ -37,6 +37,13 @@
                 <span class="fa fa-list"></span> Manage Dashboards
             </a>
         </li>
+        @if (Request::is('dashboard'))
+            <li>
+                <a href="#" onclick="hopscotch.startTour(tour);">
+                    <span class="fa fa-question"></span> Take tour
+                </a>
+            </li>
+        @endif
         <li>
             <a href="https://fruitdashboard.uservoice.com/" target="blank">
                 <span class="fa fa-bullhorn"></span> Feedback
