@@ -13,14 +13,89 @@ use Facebook\GraphUser;
 class FacebookDataCollector
 {
     /* -- Class properties -- */
+    /**
+     * @var User The user entity for this collector.
+     *
+     */
     private $user;
-    private $session;
+
+    /**
+     * @var string access token
+     *
+     */
+    private $accessToken;
+
+    /**
+     * @var Facebook The Facebook entity.
+     *
+     */
+    private $fb;
+
+    /**
+     * @var FacebookApp The Facebook app entity.
+     *
+     */
+    private $app;
+
 
     /* -- Constructor -- */
     function __construct($user) {
         $this->user = $user;
         $connector = new FacebookConnector($user);
-        $this->session = $connector->connect();
+        $this->accessToken = $connector->connect();
+        $this->fb = $connector->getFB();
+        $this->app = $this->fb->getApp();
+    }
+
+    /**
+     * getUserID
+     * --------------------------------------------------
+     * Returns the user's id.
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getUserID() {
+        try {
+            $response = $this->fb->get('/me/?fields=id', $this->accessToken);
+        } catch (FacebookResponseException $e) {
+            return null;
+        } catch (FacebookSDKException $e) {
+            return null;
+        }
+        return $response->getGraphUser()['id'];
+    }
+
+    /**
+     * savePages
+     * --------------------------------------------------
+     * saves The user's pages
+     * @return array
+     * --------------------------------------------------
+     */
+    public function savePages() {
+        $userId = $this->getUserID();
+        if (is_null($userId)) {
+            return;
+        }
+        try {
+            $response = $this->fb->get('/' . $userId . '/accounts', $this->accessToken);
+        } catch (FacebookResponseException $e) {
+            return;
+        } catch (FacebookSDKException $e) {
+            return;
+        }
+
+        $pages = array();
+        foreach ($response->getGraphEdge() as $graphNode) {
+            $page = new FacebookPage(array(
+                'page_id' => $graphNode['id'],
+                'name'    => $graphNode['name']
+            ));
+            $page->user()->associate($this->user);
+            $page->save();
+            array_push($pages, $page);
+        }
+        return $pages;
     }
 
     /**
@@ -32,44 +107,20 @@ class FacebookDataCollector
      * --------------------------------------------------
     */
     public function getTotalLikes() {
-        try {
-            $profile = (new FacebookRequest(
-                $this->session, 'GET', '/me'
-            ))->execute()->getGraphObject(GraphUser::className());
-            Log::info($profile->getName());
-        } catch (FacebookRequestException $e) {
-            Log::info($e->getMessage());
-        }
-
+        /*
         $request = new FacebookRequest(
-            $this->session, 'GET',
+            $this->app, $this->accessToken, 'GET',
             '/' . 927404167302370 . '/insights/' . 'page_impressions',
             array (
                 'period' => 'month'
             )
-        );
-        $response = $request->execute();
-        $graphObject = $response->getGraphObject();
+        );*/
+
+        $response = $this->fb->get('/927404167302370/insights/page_engaged_users?period=days_28', $this->accessToken);
+        var_dump($response);
 
         //return $userData->followers_count;
     }
 
-    /**
-     * ================================================== *
-     *                  PROTECTED SECTION                 *
-     * ================================================== *
-    */
 
-    /**
-     * getUserData
-     * --------------------------------------------------
-     * Getting the User's data from the connector.
-     * @return object
-     * @throws TwitterNotConnected
-     * --------------------------------------------------
-    */
-    protected function getUserData() {
-        return $this->connector->get("account/verify_credentials");
-    }
-
-} /* TwitterDataColector */
+} /* FacebookDataCollector */

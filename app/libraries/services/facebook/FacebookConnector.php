@@ -36,7 +36,7 @@ class LaravelFacebookSessionPersistendDataHandler implements PersistentDataInter
 class FacebookConnector extends GeneralServiceConnector
 {
     protected static $service     = 'facebook';
-    protected static $permissions = array('email', 'user_likes');
+    protected static $permissions = array('manage_pages', 'read_insights');
 
     protected $fb;
 
@@ -54,10 +54,21 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
     /**
+     * getFB
+     * --------------------------------------------------
+     * Returns the facebook entity.
+     * @return Facebook
+     * --------------------------------------------------
+     */
+    public function getFB() {
+        return $this->fb;
+    }
+
+    /**
      * getFacebookConnectUrl
      * --------------------------------------------------
-     * Returns the twitter connect url, based on config.
-     * @return array
+     * Returns the facebook connect url, based on config.
+     * @return string
      * --------------------------------------------------
      */
     public function getFacebookConnectUrl() {
@@ -77,8 +88,7 @@ class FacebookConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     public function connect() {
-        $session = new FacebookSession($this->getConnection()->access_token);
-        return $session;
+        return $this->getConnection()->access_token;
     }
 
     /**
@@ -105,5 +115,19 @@ class FacebookConnector extends GeneralServiceConnector
 
     }
 
+    /**
+     * disconnect
+     * --------------------------------------------------
+     * disconnecting the user from facebook.
+     * @throws ServiceNotConnected
+     * --------------------------------------------------
+     */
+    public function disconnect() {
+        parent::disconnect();
+        /* deleting all plans. */
+        foreach ($this->user->facebookPages as $facebookPage) {
+            $facebookPage->delete();
+        }
+    }
 
-} /* TwitterConnector */
+} /* FacebookConnector */

@@ -32,6 +32,7 @@ class User extends Eloquent implements UserInterface
     /* -- Libraries -- */
     public function stripePlans() { return $this->hasMany('StripePlan', 'user_id'); }
     public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
+    public function facebookPages() { return $this->hasMany('FacebookPage'); }
 
     /* -- Custom relations. -- */
     public function widgets() {
