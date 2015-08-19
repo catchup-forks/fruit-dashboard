@@ -160,23 +160,29 @@
          id: "introduction",
          steps: [
            {
-             title: "Clock widget",
-             content: "This is the Clock widget. When hovered, it can be resized and dragged.",
-             target: document.querySelector("#digital-clock"),
-             placement: "bottom"
+             title: "new widget",
+             content: "Add a new widget by clicking the + sign.",
+             target: document.querySelector(".fa-plus-circle"),
+             placement: "top"
            },
            {
-            title: "Dashboard indicators",
+            title: "hover widget",
+            content: "You can move, setup & delete a widget by hovering it.",
+            target: document.querySelector(".fa-plus-circle"),
+            placement: "top"
+           },
+           {
+            title: "dashboard indicators",
             content: "Clicking these dots take you to one of your dashboards.",
             target: document.querySelector("ol > li"),
             placement: "top"
            },
            {
-            title: "Add new widget",
-            content: "Just click here to add a new widget.",
-            target: document.querySelector(".fa-plus-circle"),
-            placement: "top"
-           }
+            title: "settings",
+            content: "More stuff here.",
+            target: document.querySelector(".fa-cog"),
+            placement: "left"
+           }           
          ]
        };
 
