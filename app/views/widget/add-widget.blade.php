@@ -29,6 +29,14 @@
                   @foreach($widgetDescriptors as $descriptor)
                     <a href="#" id="descriptor-{{ $descriptor->id }}" class="list-group-item changes-image" data-widget="widget-{{ $descriptor->type }}">
                       {{ $descriptor->name }}
+                      {{-- If user is on free plan display labels --}}
+                      @if (Auth::user()->subscription->isOnFreePlan())
+                        @if ($descriptor->is_premium == 0)
+                          <span class="label label-success pull-right">Free</span>
+                        @else
+                          <span class="label label-default pull-right">Premium</span>
+                        @endif
+                      @endif
                     </a>
                   @endforeach
 

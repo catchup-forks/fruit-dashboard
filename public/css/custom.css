@@ -133,7 +133,6 @@ body {
   margin-bottom: 25px;
 }
 .gridster ul li {
-  list-style: none;
   cursor: default;
 }
 .gridster ul li:hover,

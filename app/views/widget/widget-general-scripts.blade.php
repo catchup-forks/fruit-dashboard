@@ -22,13 +22,20 @@
   };
 
   $(".deleteWidget").click(function(e) {
+    
     e.preventDefault();
 
     // initialize url
     var url = "{{ route('widget.delete', 'widgetID') }}".replace('widgetID', $(this).attr("data-id"))
 
-    // Remove widget visually
-    $(this).parent().remove();
+    // Look for the actual gridster dashboard instance.
+    var gridsterID = $(this).closest('.gridster').attr('id');
+    var regridster
+
+    // Reinitialize gridster and remove widget.
+    regridster = $('#' + gridsterID + ' ul').gridster().data('gridster');
+    regridster.remove_widget($(this).closest('li'));
+
 
     // Call ajax function
     $.ajax({

@@ -36,7 +36,7 @@
             <div id="gridster-{{ $dashboard->number }}" class="gridster grid-base fill-height not-visible">
 
               {{-- Generate all the widgdets --}}
-              <ul>
+              <ul class="list-unstyled">
 
                 @foreach ($dashboard->widgets as $widget)
 

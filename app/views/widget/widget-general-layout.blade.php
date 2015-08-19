@@ -15,7 +15,9 @@
   @endif
 
   @if ($widget instanceof DataWidget)
-  <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered" id="refresh-{{$widget->id}}"></span>
+  <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">  
+    <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered"> </span>
+  </a>
   @endif
 
   <!-- Adding loading on DataWidget -->
