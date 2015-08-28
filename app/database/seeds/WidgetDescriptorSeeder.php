@@ -31,6 +31,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'quote',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'min_cols'     => 5,
+                'min_rows'     => 1,
+                'default_cols' => 10,
+                'default_rows' => 2
             )
         );
 
@@ -57,6 +61,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'text',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'min_cols'     => 1,
+                'min_rows'     => 1,
+                'default_cols' => 2,
+                'default_rows' => 1
             )
         );
 
@@ -122,6 +130,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'stripe_mrr',
                 'category'    => 'stripe',
                 'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
             )
         );
 
@@ -133,6 +145,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'stripe_arr',
                 'category'    => 'stripe',
                 'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
             )
         );
 
@@ -144,6 +160,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'stripe_arpu',
                 'category'    => 'stripe',
                 'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
             )
         );
 
@@ -173,6 +193,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'braintree_mrr',
                 'category'    => 'braintree',
                 'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
             )
         );
 
@@ -184,6 +208,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'braintree_arr',
                 'category'    => 'braintree',
                 'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
             )
         );
 
@@ -195,6 +223,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'braintree_arpu',
                 'category'    => 'braintree',
                 'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
             )
         );
 

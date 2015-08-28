@@ -103,7 +103,7 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-        } catch (BraintreeNotConnected $e) {}
+        } catch (SericeNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
@@ -123,7 +123,11 @@ class ServiceConnectionController extends BaseController
      */
     public function anyTwitterConnect() {
         /* Setting up connection. */
-        if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
+        if (Input::get('denied')) {
+            return Redirect::route('signup-wizard.social-connections')
+                ->with('error', 'You\'ve declined the request.');
+        }
+        else if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
             $connector = new TwitterConnector(Auth::user());
             try {
                 $connector->getTokens(
@@ -195,7 +199,7 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-        } catch (TwitterNotConnected $e) {}
+        } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
@@ -286,7 +290,7 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-        } catch (FacebookNotConnected $e) {}
+        } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
@@ -419,7 +423,7 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-        } catch (StripeNotConnected $e) {}
+        } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');
@@ -475,7 +479,7 @@ class ServiceConnectionController extends BaseController
 
         } else {
             /* Redirectong to Oauth. */
-            return Redirect::to($connector->getGoogleConnectUrl());
+            return Redirect::to($connectorClass::getConnectUrl());
         }
      }
 
@@ -506,7 +510,7 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-        } catch (GoogleNotConnected $e) {}
+        } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
         return Redirect::route('settings.settings');

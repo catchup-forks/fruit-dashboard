@@ -79,7 +79,7 @@ class StripeConnector extends GeneralServiceConnector
         parent::disconnect();
         /* deleting all plans. */
         foreach ($this->user->stripePlans as $stripeplan) {
-            stripesubscription::where('plan_id', $stripeplan->id)->delete();
+            StripeSubscription::where('plan_id', $stripeplan->id)->delete();
             $stripeplan->delete();
         }
     }

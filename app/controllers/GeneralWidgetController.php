@@ -243,12 +243,8 @@ class GeneralWidgetController extends BaseController {
         if ($descriptor->category != 'personal') {
             $connected = Connection::where('user_id', $user->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
-                if ($descriptor->category == 'braintree') {
-                    return Redirect::route('service.braintree.connect');
-                } else {
-                    return Redirect::route('signup-wizard.financial-connections')
-                        ->with('warning', 'You have to connect the service first to add the widget.');
-                }
+                $redirectRoute = 'service.' . $descriptor->category . '.connect';
+                return Redirect::route($redirectRoute);
             }
         }
 
@@ -261,10 +257,6 @@ class GeneralWidgetController extends BaseController {
                     $widget->save();
                     return Redirect::route('dashboard.dashboard')
                         ->with('success', 'Your hidden widget was restored successfully.');
-                } else if(!$className::$multipleInstances) {
-                    /* The widget is active. */
-                    return Redirect::route('dashboard.dashboard')
-                        ->with('error', 'You cannot add multiple instances of this widget type.');
                 }
             }
         }
