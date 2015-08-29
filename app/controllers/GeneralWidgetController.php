@@ -37,7 +37,8 @@ class GeneralWidgetController extends BaseController {
 
         /* Creating selectable dashboards */
         $dashboards = array();
-        foreach (Auth::user()->dashboards as $dashboard) {$dashboards[$dashboard->id] = $dashboard->name;
+        foreach (Auth::user()->dashboards as $dashboard) {
+            $dashboards[$dashboard->id] = $dashboard->name;
         }
 
         // Rendering view.
@@ -71,7 +72,6 @@ class GeneralWidgetController extends BaseController {
         $validatorArray =  $widget->getSettingsValidationArray(
             array_keys($widget->getSetupFields())
         );
-
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
         /* Validate inputs */
@@ -90,7 +90,14 @@ class GeneralWidgetController extends BaseController {
                 ->withErrors($validator)
                 ->withInput(Input::all());
         }
-        $widget->dashboard()->associate(Dashboard::find(Input::get('dashboard')));
+
+        /* Checking for dashboard change. */
+        $newDashboard = Dashboard::find(Input::get('dashboard'));
+        if ($widget->dashboard->id != $newDashboard->id) {
+            $pos = $widget->getPosition();
+            $widget->position = $newDashboard->getNextAvailablePosition($pos->size_x, $pos->size_y);
+            $widget->dashboard()->associate($newDashboard);
+        }
 
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::except('_token'));
