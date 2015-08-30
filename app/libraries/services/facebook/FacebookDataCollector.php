@@ -68,7 +68,7 @@ class FacebookDataCollector
     /**
      * savePages
      * --------------------------------------------------
-     * saves The user's pages
+     * Saves The user's pages
      * @return array
      * --------------------------------------------------
      */
@@ -84,6 +84,9 @@ class FacebookDataCollector
         } catch (FacebookSDKException $e) {
             return;
         }
+
+        /* Deleting previous pages. */
+        $this->user->facebookPages()->delete();
 
         $pages = array();
         foreach ($response->getGraphEdge() as $graphNode) {
@@ -102,25 +105,34 @@ class FacebookDataCollector
      * getTotalLikes
      * --------------------------------------------------
      * Getting the total likes count from twitter.
+     * @param page
      * @return int
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getTotalLikes() {
-        /*
-        $request = new FacebookRequest(
-            $this->app, $this->accessToken, 'GET',
-            '/' . 927404167302370 . '/insights/' . 'page_impressions',
-            array (
-                'period' => 'month'
-            )
-        );*/
-
-        $response = $this->fb->get('/927404167302370/insights/page_engaged_users?period=days_28', $this->accessToken);
-        var_dump($response);
-
-        //return $userData->followers_count;
+    public function getTotalLikes($page) {
+        $insightData = $this->getInsight('page_fans', $page)[0];
+        return $insightData['values'][0]['value'];
     }
 
+    /**
+     * getInsight
+     * --------------------------------------------------
+     * Getting the specific insight.
+     * @param FacebookPage $page
+     * @param string $insight
+     * @param array $params
+     * @return array
+     * @throws FacebookNotConnected
+     * --------------------------------------------------
+    */
+    private function getInsight($insight, $page, $params=array()) {
+        $paramstr = '?';
+        foreach ($params as $key=>$value) {
+            $paramstr .= $key . '='. $value;
+        }
+        $response =  $this->fb->get('/' . $page->page_id . '/insights/' . $insight . $paramstr , $this->accessToken);
+        return $response->getDecodedBody()['data'];
+    }
 
 } /* FacebookDataCollector */

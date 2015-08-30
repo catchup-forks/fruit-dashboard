@@ -253,6 +253,19 @@ class WidgetDescriptorSeeder extends Seeder
                     'is_premium'  => TRUE,
                 )
             );
+
+            /* Social widgets | FACEBOOK */
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Facebook likes'],
+                array(
+                    'name'        => 'Facebook likes',
+                    'description' => 'The total number of people who have liked your Page.',
+                    'type'        => 'facebook_likes',
+                    'category'    => 'facebook',
+                    'is_premium'  => TRUE,
+                )
+            );
+
         } /* !App::environment('production', 'staging')*/
 
         /* Send message to console */
@@ -260,5 +273,3 @@ class WidgetDescriptorSeeder extends Seeder
     }
 
 } /* WidgetDescriptorSeeder */
-
-

@@ -41,7 +41,6 @@ class Dashboard extends Eloquent
                 if ( ! $this->inGrid($rectangle)) {
                     continue;
                 }
-                Log::info($rectangle);
                 if ($this->fits($rectangle, $widget)) {
                     return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": ' . $j . ', "row": ' . $i . '}';
                 }
