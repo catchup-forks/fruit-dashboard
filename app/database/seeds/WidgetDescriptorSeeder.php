@@ -266,6 +266,29 @@ class WidgetDescriptorSeeder extends Seeder
                 )
             );
 
+            /* Social widgets | FACEBOOK */
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Facebook engaged users'],
+                array(
+                    'name'        => 'Facebook engaged usesrs',
+                    'description' => 'The number of people who engaged with your Page. Engagement includes any click',
+                    'type'        => 'facebook_engaged_users',
+                    'category'    => 'facebook',
+                    'is_premium'  => TRUE,
+                )
+            );
+
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Facebook new likes'],
+                array(
+                    'name'        => 'Facebook new likes',
+                    'description' => 'The total number of people who have liked your Page daily.',
+                    'type'        => 'facebook_new_likes',
+                    'category'    => 'facebook',
+                    'is_premium'  => TRUE,
+                )
+            );
+
         } /* !App::environment('production', 'staging')*/
 
         /* Send message to console */

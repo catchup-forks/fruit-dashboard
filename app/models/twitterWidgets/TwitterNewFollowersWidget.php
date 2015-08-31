@@ -7,10 +7,10 @@ class TwitterNewFollowersWidget extends HistogramWidget
         /* Getting previous last data. */
         $lastData = $this->getLatestData();
         if (is_null($lastData)) {
-            return $collector->getfollowerscount();
+            return $collector->getFollowersCount();
         }
         else {
-            return $collector->getfollowerscount() - $lastData;
+            return $collector->getFollowersCount() - $lastData;
         }
     }
 

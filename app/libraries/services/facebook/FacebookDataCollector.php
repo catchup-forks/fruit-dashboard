@@ -116,6 +116,20 @@ class FacebookDataCollector
     }
 
     /**
+     * getEngagedUsers
+     * --------------------------------------------------
+     * Getting the number of engaged users.
+     * @param page
+     * @return int
+     * @throws FacebookNotConnected
+     * --------------------------------------------------
+    */
+    public function getEngagedUsers($page) {
+        $insightData = $this->getInsight('page_engaged_users', $page)[0];
+        return $insightData['values'][0]['value'];
+    }
+
+    /**
      * getInsight
      * --------------------------------------------------
      * Getting the specific insight.
