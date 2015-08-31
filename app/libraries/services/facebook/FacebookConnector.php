@@ -113,6 +113,11 @@ class FacebookConnector extends GeneralServiceConnector
             $this->createConnection($helper->getAccessToken(), '');
         }
 
+        /* Getting facebook pages  (will be moved to autodashboard) */
+        $collector = new FacebookDataCollector(Auth::user());
+        $collector->savePages();
+
+        Queue::push('FacebookAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**

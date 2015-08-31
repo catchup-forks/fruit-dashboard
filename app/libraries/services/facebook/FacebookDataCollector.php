@@ -112,7 +112,7 @@ class FacebookDataCollector
     */
     public function getTotalLikes($page) {
         $insightData = $this->getInsight('page_fans', $page)[0];
-        return $insightData['values'][0]['value'];
+        return end($insightData['values'])['value'];
     }
 
     /**
@@ -126,7 +126,7 @@ class FacebookDataCollector
     */
     public function getEngagedUsers($page) {
         $insightData = $this->getInsight('page_engaged_users', $page)[0];
-        return $insightData['values'][0]['value'];
+        return end($insightdata['values'])['value'];
     }
 
     /**
@@ -140,7 +140,7 @@ class FacebookDataCollector
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    private function getInsight($insight, $page, $params=array()) {
+    public function getInsight($insight, $page, $params=array()) {
         $paramstr = '?';
         foreach ($params as $key=>$value) {
             $paramstr .= $key . '='. $value;
