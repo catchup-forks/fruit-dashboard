@@ -15,7 +15,7 @@ abstract class DataWidget extends Widget
     */
     public function handleAjax($postData) {
         if (isset($postData['state_query']) && $postData['state_query']) {
-            /* Get state signal */
+            /* Get state query signal */
             if ($this->state == 'loading') {
                 return array('ready' => FALSE);
             } else if($this->state == 'active') {
@@ -39,6 +39,7 @@ abstract class DataWidget extends Widget
             $this->state = 'active';
             $this->save();
         }
+
         /* Something else, should be handled by specific widget. */
         return $this->handleCustomAjax($postData);
     }
@@ -46,7 +47,7 @@ abstract class DataWidget extends Widget
     /**
      * createDataScheme
      * --------------------------------------------------
-     * Returning a deafult scheme for the data.
+     * Returning a default scheme for the data.
      * @return string, the note text.
      * --------------------------------------------------
     */

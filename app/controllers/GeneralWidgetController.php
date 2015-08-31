@@ -235,7 +235,6 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function postAddWidget($descriptorID) {
-        $user = Auth::user();
         /* Get the widget descriptor */
 
         $descriptor = WidgetDescriptor::find($descriptorID);
@@ -248,7 +247,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Looking for a connection */
         if ($descriptor->category != 'personal') {
-            $connected = Connection::where('user_id', $user->id)->where('service', $descriptor->category)->first();
+            $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
                 $redirectRoute = 'service.' . $descriptor->category . '.connect';
                 return Redirect::route($redirectRoute);
@@ -258,6 +257,10 @@ class GeneralWidgetController extends BaseController {
         /* Looking for existing widgets. */
         foreach (Auth::user()->widgets() as $widget) {
             if ($widget->descriptor->type == $descriptor->type) {
+                /* There's a match. */
+                if ($widget->getSpecific() instanceof HistogramWidget) {
+                    $existingData = $widget->data;
+                }
                 if ($widget->state == 'hidden') {
                     /* The widget is hidden, restoring it. */
                     $widget->state = 'active';
@@ -274,14 +277,19 @@ class GeneralWidgetController extends BaseController {
             'state'    => 'active',
         ));
 
+        /* Assigning existing data. */
+        if (isset($existingData)) {
+            $widget->data()->associate($existingData);
+        }
+
         /* Associate to dashboard */
         if (Input::get('toDashboard')) {
             $dashboard = Dashboard::find(Input::get('toDashboard'));
             if (is_null($dashboard)) {
-                $dashboard = $user->dashboards[0];
+                $dashboard = Auth::user()->dashboards[0];
             }
         } else {
-            $dashboard = $user->dashboards[0];
+            $dashboard = Auth::user()->dashboards[0];
         }
 
         $widget->dashboard()->associate($dashboard);

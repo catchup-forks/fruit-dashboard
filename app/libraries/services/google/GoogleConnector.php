@@ -20,7 +20,6 @@ abstract class GoogleConnector extends GeneralServiceConnector
         $this->client = static::createClient();
         $this->client->setAccessType("offline");
         $this->client->setApprovalPrompt('force');
-
     }
 
     /**

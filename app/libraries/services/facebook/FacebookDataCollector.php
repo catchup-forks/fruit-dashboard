@@ -130,6 +130,19 @@ class FacebookDataCollector
     }
 
     /**
+     * getPageImpressions
+     * --------------------------------------------------
+     * Getting the number of page impressions.
+     * @param page
+     * @return int
+     * @throws FacebookNotConnected
+     * --------------------------------------------------
+    */
+    public function getPageImpressions($page) {
+        $insightData = $this->getInsight('page_impressions_unique', $page)[0];
+        return end($insightdata['values'])['value'];
+    }
+    /**
      * getInsight
      * --------------------------------------------------
      * Getting the specific insight.

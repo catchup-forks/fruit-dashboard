@@ -12,7 +12,6 @@ class TextWidget extends Widget
    );
     /* The settings to setup in the setup-wizard. */
     public static $setupSettings = array('text');
-    public static $multipleInstances = TRUE;
 
 }
 
