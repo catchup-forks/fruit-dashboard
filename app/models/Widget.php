@@ -249,7 +249,7 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        // Associating descriptor.
+        /* Associating descriptor. */
         $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
         /* Checking descriptor. */
@@ -272,7 +272,6 @@ class Widget extends Eloquent
          * if no change has been made to the model.
         */
         return parent::save();
-
     }
 
     /**

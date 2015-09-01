@@ -35,15 +35,7 @@ class User extends Eloquent implements UserInterface
     public function facebookPages() { return $this->hasMany('FacebookPage'); }
 
     /* -- Custom relations. -- */
-    public function widgets() {
-        $widgets = array();
-        foreach ($this->dashboards as $dashboard) {
-            foreach ($dashboard->widgets as $widget) {
-                array_push($widgets, $widget->getSpecific());
-            }
-        }
-        return $widgets;
-    }
+    public function widgets() { return $this->hasManyThrough('Widget', 'Dashboard'); }
 
     /**
      * isServiceConnected

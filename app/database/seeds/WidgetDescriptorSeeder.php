@@ -299,6 +299,16 @@ class WidgetDescriptorSeeder extends Seeder
                 )
             );
 
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Facebook page impressions'],
+                array(
+                    'name'        => 'Facebook page impressions',
+                    'description' => 'The number of people who have seen any content associated with your Page',
+                    'type'        => 'facebook_page_impressions',
+                    'category'    => 'facebook',
+                    'is_premium'  => TRUE,
+                )
+            );
         } /* !App::environment('production', 'staging')*/
 
         /* Send message to console */

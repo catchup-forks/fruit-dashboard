@@ -253,33 +253,34 @@ class GeneralWidgetController extends BaseController {
                 return Redirect::route($redirectRoute);
             }
         }
-
+        $new = TRUE;
         /* Looking for existing widgets. */
-        foreach (Auth::user()->widgets() as $widget) {
-            if ($widget->descriptor->type == $descriptor->type) {
+        foreach (Auth::user()->widgets as $iWidget) {
+            if ($iWidget->descriptor->type == $descriptor->type) {
                 /* There's a match. */
-                if ($widget->getSpecific() instanceof HistogramWidget) {
-                    $existingData = $widget->data;
-                }
-                if ($widget->state == 'hidden') {
+                if ($iWidget->state == 'hidden') {
                     /* The widget is hidden, restoring it. */
+                    $new = FALSE;
+                    $widget = $iWidget->getSpecific();
                     $widget->state = 'active';
-                    $widget->save();
-                    return Redirect::route('dashboard.dashboard')
-                        ->with('success', 'Your hidden widget was restored successfully.');
+                    break;
+                }
+                if ($iWidget->getSpecific() instanceof HistogramWidget) {
+                    $existingData = $widget->data;
                 }
             }
         }
+        if ($new) {
+            /* Create widget */
+            $widget = new $className(array(
+                'settings' => json_encode(array()),
+                'state'    => 'active',
+            ));
 
-        /* Create widget */
-        $widget = new $className(array(
-            'settings' => json_encode(array()),
-            'state'    => 'active',
-        ));
-
-        /* Assigning existing data. */
-        if (isset($existingData)) {
-            $widget->data()->associate($existingData);
+            /* Assigning existing data. */
+            if (isset($existingData)) {
+                $widget->data()->associate($existingData);
+            }
         }
 
         /* Associate to dashboard */
