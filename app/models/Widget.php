@@ -225,6 +225,22 @@ class Widget extends Eloquent
         }
     }
 
+    /**
+     * setSetting
+     * Setting the value of a specific widget settings.
+     * --------------------------------------------------
+     * @param string $setting
+     * @param mixed $value
+     * --------------------------------------------------
+    */
+    public function setSetting($setting, $value, $commit=TRUE) {
+        $settings = $this->getSettings();
+        $settings[$setting] = $value;
+        if ($commit) {
+            $this->save();
+        }
+    }
+
     /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.

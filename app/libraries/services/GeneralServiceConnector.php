@@ -48,6 +48,8 @@ abstract class GeneralServiceConnector
 
                 /* Deleting data if it was present. */
                 if ($dataID > 0) {
+                    /* Deleting all widgets assigned to it. */
+                    Widget::where('data_id', $dataID)->delete();
                     Data::find($dataID)->delete();
                 }
             }

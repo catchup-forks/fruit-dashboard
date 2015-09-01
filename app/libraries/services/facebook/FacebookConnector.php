@@ -116,8 +116,6 @@ class FacebookConnector extends GeneralServiceConnector
         /* Getting facebook pages  (will be moved to autodashboard) */
         $collector = new FacebookDataCollector(Auth::user());
         $collector->savePages();
-
-        Queue::push('FacebookAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**
@@ -130,9 +128,7 @@ class FacebookConnector extends GeneralServiceConnector
     public function disconnect() {
         parent::disconnect();
         /* deleting all plans. */
-        foreach ($this->user->facebookPages as $facebookPage) {
-            $facebookPage->delete();
-        }
+        FacebookPage::where('user_id', $this->user->id)->delete();
     }
 
 } /* FacebookConnector */

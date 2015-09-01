@@ -248,7 +248,7 @@ class ServiceConnectionController extends BaseController
             );
 
             /* Successful connect. */
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::route('service.facebook.select-pages')
                 ->with('success', 'Facebook connection successful');
 
         } else if (Input::get('error', FALSE)) {
@@ -292,6 +292,58 @@ class ServiceConnectionController extends BaseController
         /* Redirect */
         return Redirect::route('settings.settings');
     }
+
+    /**
+     * getSelectFacebookPages
+     * --------------------------------------------------
+     * @return Renders the select facebook page view.
+     * --------------------------------------------------
+     */
+    public function getSelectFacebookPages() {
+        /* Getting a user's facebook pages for multiple select. */
+        $pages = array();
+        foreach (Auth::user()->facebookPages as $page) {
+            $pages[$page->id] = $page->name;
+        }
+
+        /* If only one auto create and redirect. */
+        if (count($pages) == 0) {
+            return Redirect::route('settings.settings')
+                ->with('error', 'You don\'t have any facebook pages associated with this account');
+        } else if (count($pages) == 1) {
+            Queue::push('FacebookAutoDashboardCreator', array(
+                'user_id' => Auth::user()->id,
+                'page_id' => array_keys($pages)[0]
+            ));
+            return Redirect::route('settings.settings');
+        }
+
+        return View::make('service.facebook.select-pages')
+            ->with('pages', $pages);
+    }
+
+    /**
+     * postSelectFacebookPages
+     * --------------------------------------------------
+     * @return Creates auto dashboard for the selected pages.
+     * --------------------------------------------------
+     */
+    public function postSelectFacebookPages() {
+        /* Getting a user's facebook pages for multiple select. */
+        if (count(Input::get('pages'))) {
+            return Redirect::back()
+                ->with('error', 'Please select at least one of the pages.');
+        }
+        foreach (Input::get('pages') as $page) {
+            Queue::push('FacebookAutoDashboardCreator', array(
+                'user_id' => Auth::user()->id,
+                'page_id' => $page->id
+            ));
+        }
+        return Redirect::rotue('social-connections')
+            ->with('success', 'Your dashboards are being created at the moment.');
+    }
+
     /**
      * ================================================== *
      *                        GOOGLE                      *

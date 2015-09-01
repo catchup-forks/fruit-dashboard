@@ -36,9 +36,10 @@ class FacebookAutoDashboardCreator
             return;
         }
         $this->user = User::find($data['user_id']);
+        $this->page = FacebookPage::find($data['page_id']);
 
-        if (is_null($this->user)) {
-            /* User not found */
+        if (is_null($this->user) || is_null($this->page)) {
+            /* User or page not found */
             return;
         }
 
@@ -107,7 +108,7 @@ class FacebookAutoDashboardCreator
         $newLikesWidget  = $this->widgets['new_likes'];
 
         /* Creating data for the last DAYS days. */
-        $dailyLikes = $this->collector->getInsight('page_fans', $this->user->facebookPages()->first());
+        $dailyLikes = $this->collector->getInsight('page_fans', $this->page);
 
         $likesData    = array();
         $newLikesData = array();
@@ -134,6 +135,9 @@ class FacebookAutoDashboardCreator
 
         $likesWidget->data->raw_value    = json_encode($likesData);
         $newLikesWidget->data->raw_value = json_encode($newLikesData);
+
+        $likesWidget->setSetting('page', $this->page->id, FALSE);
+        $newLikesWidget->setSetting('page', $this->page->id, FALSE);
 
         $likesWidget->data->save();
         $newLikesWidget->data->save();
