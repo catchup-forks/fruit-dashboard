@@ -9,6 +9,16 @@ class WidgetDescriptorSeeder extends Seeder
         /* WidgetDescriptor: Update or create all */
         /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
+            ['name' => 'Webhook histogram'],
+            array(
+                'name'        => 'Webhook histogram',
+                'description' => 'Building a simple line histogram from your data.',
+                'type'        => 'webhook_histogram',
+                'category'    => 'personal',
+                'is_premium'  => TRUE,
+            )
+        );
+        WidgetDescriptor::updateOrCreate(
             ['name' => 'Clock'],
             array(
                 'name'        => 'Clock',
