@@ -56,8 +56,8 @@ class Widget extends Eloquent
 
     /**
      * getSettingsFields
-     * --------------------------------------------------
      * Getting the settings meta.
+     * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
@@ -67,8 +67,8 @@ class Widget extends Eloquent
 
     /**
      * getSetupFields
-     * --------------------------------------------------
      * Getting the setup settings meta.
+     * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
@@ -78,8 +78,8 @@ class Widget extends Eloquent
 
     /**
      * getSpecific
-     * --------------------------------------------------
      * Getting the correct widget from a general widget,
+     * --------------------------------------------------
      * @return mixed
      * --------------------------------------------------
     */
@@ -90,8 +90,8 @@ class Widget extends Eloquent
 
     /**
      * getPosition
-     * --------------------------------------------------
      * Getting the position from DB and converting it to an object.
+     * --------------------------------------------------
      * @return Position Object.
      * --------------------------------------------------
     */
@@ -101,8 +101,8 @@ class Widget extends Eloquent
 
     /**
      * getSettings
-     * --------------------------------------------------
      * Getting the settings from db, and transforming it to assoc.
+     * --------------------------------------------------
      * @return mixed
      * --------------------------------------------------
     */
@@ -112,8 +112,8 @@ class Widget extends Eloquent
 
     /**
      * setPosition
-     * --------------------------------------------------
      * Setting the position of the model.
+     * --------------------------------------------------
      * @param array $decodedPosition
      * --------------------------------------------------
     */
@@ -147,8 +147,8 @@ class Widget extends Eloquent
 
     /**
      * getSettingsValidationArray
-     * --------------------------------------------------
      * Getting the laravel validation array.
+     * --------------------------------------------------
      * @param array $fields
      * @return array
      * --------------------------------------------------
@@ -193,8 +193,8 @@ class Widget extends Eloquent
 
     /**
      * saveSettings
-     * --------------------------------------------------
      * Transforming settings to JSON format. (validation done by view)
+     * --------------------------------------------------
      * @param array $inputSettings
      * @param boolean $commit
      * --------------------------------------------------
@@ -236,9 +236,7 @@ class Widget extends Eloquent
     public function setSetting($setting, $value, $commit=TRUE) {
         $settings = $this->getSettings();
         $settings[$setting] = $value;
-        if ($commit) {
-            $this->save();
-        }
+        $this->saveSettings($settings, $commit);
     }
 
     /* -- Eloquent overridden methods -- */
@@ -282,9 +280,9 @@ class Widget extends Eloquent
 
     /**
      * checkIntegrity
-     * --------------------------------------------------
      * Checking a widget's overall integrity,
      * setting state accordingly.
+     * --------------------------------------------------
      * @param boolean $commit
      * --------------------------------------------------
      */
@@ -334,8 +332,8 @@ class Widget extends Eloquent
 
     /**
      * checkData
-     * --------------------------------------------------
      * Checking the data integrity of the widget.
+     * --------------------------------------------------
      * @throws InvalidData, MissingData, EmptyData
      * --------------------------------------------------
      */
@@ -354,10 +352,10 @@ class Widget extends Eloquent
 
     /**
      * getType
-     * --------------------------------------------------
      * Returning the underscored type of the widget.
      * Only in generalwidget, where the descriptor is
      * still unknown.
+     * --------------------------------------------------
      * (CamelCase to underscore)
      * @return string
      * --------------------------------------------------

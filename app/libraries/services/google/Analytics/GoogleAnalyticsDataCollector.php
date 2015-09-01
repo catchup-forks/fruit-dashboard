@@ -58,7 +58,7 @@ class GoogleAnalyticsDataCollector
 
         /* Getting profiles */
         $firstPropertyId = $items[0]->getId();
-        $profiles = $this->analytics->management_profiles->listManagemetProfiles($firstAccountId, $firstPropertyId);
+        $profiles = $this->analytics->management_profiles->listManagementProfiles($firstAccountId, $firstPropertyId);
 
         $items = $profiles->getItems();
         if (count($items) <= 0) {

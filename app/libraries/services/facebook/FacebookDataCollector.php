@@ -49,8 +49,8 @@ class FacebookDataCollector
 
     /**
      * getUserID
-     * --------------------------------------------------
      * Returns the user's id.
+     * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
@@ -67,8 +67,8 @@ class FacebookDataCollector
 
     /**
      * savePages
-     * --------------------------------------------------
      * Saves The user's pages
+     * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
@@ -103,8 +103,8 @@ class FacebookDataCollector
 
     /**
      * getTotalLikes
-     * --------------------------------------------------
      * Getting the total likes count from twitter.
+     * --------------------------------------------------
      * @param page
      * @return int
      * @throws FacebookNotConnected
@@ -117,8 +117,8 @@ class FacebookDataCollector
 
     /**
      * getPageImpressions
-     * --------------------------------------------------
      * Getting the number of page impressions.
+     * --------------------------------------------------
      * @param page
      * @return int
      * @throws FacebookNotConnected
@@ -131,8 +131,8 @@ class FacebookDataCollector
 
     /**
      * getInsight
-     * --------------------------------------------------
      * Getting the specific insight.
+     * --------------------------------------------------
      * @param FacebookPage $page
      * @param string $insight
      * @param array $params

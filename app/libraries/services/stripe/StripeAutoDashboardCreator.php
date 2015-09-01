@@ -1,14 +1,24 @@
 <?php
 
-class StripeAutoDashboardCreator
+class StripeAutoDashboardCreator extends GeneralAutoDashboardCreator
 {
+    const DAYS = 30;
+
     /* -- Class properties -- */
-    public static $allowedEventTypes = array(
+    /* LATE STATIC BINDING. */
+    protected static $positioning = array(
+        'stripe_mrr'  => '{"col":4,"row":1,"size_x":6,"size_y":6}',
+        'stripe_arr'  => '{"col":2,"row":7,"size_x":5,"size_y":5}',
+        'stripe_arpu' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
+    );
+    protected static $service = 'stripe';
+    /* /LATE STATIC BINDING. */
+
+    private static $allowedEventTypes = array(
         'customer.subscription.created',
         'customer.subscription.updated',
         'customer.subscription.deleted'
     );
-    const DAYS = 30;
 
     /**
      * The stripe events.
@@ -25,110 +35,21 @@ class StripeAutoDashboardCreator
     private $calculator = null;
 
     /**
-     * The user object.
-     *
-     * @var User
+     * Setting up the calculator.
      */
-    private $user = null;
-
-    /**
-     * All calculated widgets.
-     *
-     * @var array
-     */
-    private $widgets = array();
-
-    /** * Main function of the job.
-     *
-     * @param $job
-     * @param array $data
-     * @throws StripeNotConnected
-    */
-    public function fire($job, $data) {
-        /* Getting the user */
-        if ( ! isset($data['user_id'])) {
-            return;
-        }
-        $this->user = User::find($data['user_id']);
-
-        if (is_null($this->user)) {
-            /* User not found */
-            return;
-        }
-
-        /* Creating dashboard. */
-        $this->createDashboard();
-
-        /* Change trial period settings */
-        $this->user->subscription->changeTrialState('active');
-
-        /* Creating calculator. */
+    protected function setup($args) {
         $this->calculator = new StripeCalculator($this->user);
         $this->events = $this->calculator->getCollector()->getEvents();
         $this->filterEvents();
-
-        /* Populate dashboard. */
-        $this->populateDashboard();
-    }
-
-    /**
-     * ================================================== *
-     *                  PRIVATE SECTION                   *
-     * ================================================== *
-    */
-
-    /**
-     * Creating a dashboard dedicated to stripe widgets. */
-    private function createDashboard() {
-        /* Creating dashboard. */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Stripe dashboard',
-            'background' => TRUE,
-            'number'     => $this->user->dashboards->max('number') + 1
-        ));
-        $dashboard->user()->associate($this->user);
-        $dashboard->save();
-
-        /* Adding widgets */
-        $mrrWidget = new StripeMrrWidget(array(
-            'position' => '{"col":4,"row":1,"size_x":6,"size_y":6}',
-            'state'    => 'loading',
-        ));
-
-        $arrWidget = new StripeArrWidget(array(
-            'position' => '{"col":2,"row":7,"size_x":5,"size_y":5}',
-            'state'    => 'loading',
-        ));
-
-        $arpuWidget = new StripeArpuWidget(array(
-            'position' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
-            'state'    => 'loading',
-        ));
-
-        /* Associating dashboard */
-        $mrrWidget->dashboard()->associate($dashboard);
-        $arrWidget->dashboard()->associate($dashboard);
-        $arpuWidget->dashboard()->associate($dashboard);
-
-        /* Saving widgets */
-        $mrrWidget->save();
-        $arrWidget->save();
-        $arpuWidget->save();
-
-        $this->widgets = array(
-            'mrr'  => $mrrWidget,
-            'arr'  => $arrWidget,
-            'arpu' => $arpuWidget,
-        );
     }
 
     /**
      * Populating the widgets with data.
      */
-    private function populateDashboard() {
-        $mrrWidget  = $this->widgets['mrr'];
-        $arrWidget  = $this->widgets['arr'];
-        $arpuWidget = $this->widgets['arpu'];
+    protected function populateDashboard() {
+        $mrrWidget  = $this->widgets['stripe_mrr'];
+        $arrWidget  = $this->widgets['stripe_arr'];
+        $arpuWidget = $this->widgets['stripe_arpu'];
 
         /* Creating data for the last DAYS days. */
         $metrics = $this->getMetrics();
@@ -180,8 +101,6 @@ class StripeAutoDashboardCreator
             'arpu' => $this->sortByDate($arpu),
         );
     }
-
-
 
     /**
      * Sorting a multidimensional dataset by date.

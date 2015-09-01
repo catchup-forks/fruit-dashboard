@@ -35,7 +35,7 @@ abstract class GeneralServiceConnector
         $this->user->connections()->where('service', static::$service)->delete();
 
         /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
+        foreach ($this->user->widgets as $widget) {
             if ($widget->descriptor->category == static::$service) {
 
                 /* Saving data while it is accessible. */

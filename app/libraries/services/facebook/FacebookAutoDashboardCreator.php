@@ -1,8 +1,17 @@
 <?php
 
-class FacebookAutoDashboardCreator
+class FacebookAutoDashboardCreator extends GeneralAutoDashboardCreator
 {
     /* -- Class properties -- */
+
+    /* LATE STATIC BINDING. */
+    protected static $positioning = array(
+        'facebook_likes'     => '{"col":2,"row":7,"size_x":5,"size_y":5}',
+        'facebook_new_likes' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
+    );
+    protected static $service = 'facebook';
+    /* /LATE STATIC BINDING. */
+
     /**
      * The facebook collector object.
      *
@@ -11,101 +20,34 @@ class FacebookAutoDashboardCreator
     private $collector = null;
 
     /**
-     * The user object.
+     * The facebook page.
      *
-     * @var User
+     * @var FacebookPage
      */
-    private $user = null;
+    private $page = null;
 
     /**
-     * All calculated widgets.
-     *
-     * @var array
+     * Setting up the collector.
      */
-    private $widgets = array();
-
-    /** * Main function of the job.
-     *
-     * @param $job
-     * @param array $data
-     * @throws FacebookNotConnected
-    */
-    public function fire($job, $data) {
-        /* Getting the user */
-        if ( ! isset($data['user_id'])) {
-            return;
-        }
-        $this->user = User::find($data['user_id']);
-        $this->page = FacebookPage::find($data['page_id']);
-
-        if (is_null($this->user) || is_null($this->page)) {
-            /* User or page not found */
-            return;
-        }
-
-        /* Creating dashboard. */
-        $this->createDashboard();
-
-        /* Change trial period settings */
-        $this->user->subscription->changeTrialState('active');
-
-        /* Creating calculator. */
+    protected function setup($args) {
         $this->collector = new FacebookDataCollector($this->user);
-
-        /* Populate dashboard. */
-        $this->populateDashboard();
-
+        $this->page = FacebookPage::find($args['page_id']);
     }
 
-    /**
-     * ================================================== *
-     *                  PRIVATE SECTION                   *
-     * ================================================== *
-    */
-
-    /**
-     * Creating a dashboard dedicated to facebook widgets. */
-    private function createDashboard() {
-        /* Creating dashboard. */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Facebook dashboard',
-            'background' => TRUE,
-            'number'     => $this->user->dashboards->max('number') + 1
-        ));
-        $dashboard->user()->associate($this->user);
-        $dashboard->save();
-
-        /* Adding widgets */
-        $likesWidget = new FacebookLikesWidget(array(
-            'position' => '{"col":2,"row":7,"size_x":5,"size_y":5}',
-            'state'    => 'loading',
-        ));
-
-        $newLikesWidget = new FacebookNewLikesWidget(array(
-            'position' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
-            'state'    => 'loading',
-        ));
-
-        /* Associating dashboard */
-        $likesWidget->dashboard()->associate($dashboard);
-        $newLikesWidget->dashboard()->associate($dashboard);
-
-        /* Saving widgets */
-        $likesWidget->save();
-        $newLikesWidget->save();
-
-        $this->widgets = array(
-            'likes'    => $likesWidget,
-            'new_likes' => $newLikesWidget,
-        );
+    protected function createWidgets() {
+        parent::createWidgets();
+        foreach ($this->widgets as $widget) {
+            $widget->setSetting('page', $this->page->id);
+        }
     }
+
 
     /**
      * Populating the widgets with data.
      */
-    private function populateDashboard() {
-        $likesWidget     = $this->widgets['likes'];
-        $newLikesWidget  = $this->widgets['new_likes'];
+    protected function populateDashboard() {
+        $likesWidget     = $this->widgets['facebook_likes'];
+        $newLikesWidget  = $this->widgets['facebook_new_likes'];
 
         /* Creating data for the last DAYS days. */
         $dailyLikes = $this->collector->getInsight('page_fans', $this->page);
@@ -136,18 +78,8 @@ class FacebookAutoDashboardCreator
         $likesWidget->data->raw_value    = json_encode($likesData);
         $newLikesWidget->data->raw_value = json_encode($newLikesData);
 
-        $likesWidget->setSetting('page', $this->page->id, FALSE);
-        $newLikesWidget->setSetting('page', $this->page->id, FALSE);
-
         $likesWidget->data->save();
         $newLikesWidget->data->save();
-
-        $likesWidget->state    = 'active';
-        $newLikesWidget->state = 'active';
-
-        /* Saving widgets */
-        $likesWidget->save();
-        $newLikesWidget->save();
     }
 
 }

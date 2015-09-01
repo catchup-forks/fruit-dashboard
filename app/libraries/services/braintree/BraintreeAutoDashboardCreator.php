@@ -1,9 +1,18 @@
 <?php
 
-class BraintreeAutoDashboardCreator
+class BraintreeAutoDashboardCreator extends GeneralAutoDashboardCreator
 {
-    /* -- Class properties -- */
     const DAYS = 30;
+
+    /* -- Class properties -- */
+    /* LATE STATIC BINDING. */
+    protected static $positioning = array(
+        'braintree_mrr'  => '{"col":4,"row":1,"size_x":6,"size_y":6}',
+        'braintree_arr'  => '{"col":2,"row":7,"size_x":5,"size_y":5}',
+        'braintree_arpu' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
+    );
+    protected static $service = 'braintree';
+    /* /LATE STATIC BINDING. */
 
     /**
      * The braintree subscriptions.
@@ -20,112 +29,21 @@ class BraintreeAutoDashboardCreator
     private $calculator = null;
 
     /**
-     * The user object.
-     *
-     * @var User
+     * Setting up the calculator.
      */
-    private $user = null;
-
-    /**
-     * All calculated widgets.
-     *
-     * @var array
-     */
-    private $widgets = array();
-
-    /**
-     * Main function of the job.
-     *
-     * @param Job $job
-     * @param array $data
-     * @throws BraintreeNotConnected
-    */
-    public function fire($job, $data) {
-        /* Getting the user */
-        if ( ! isset($data['user_id'])) {
-            return;
-        }
-        $this->user = User::find($data['user_id']);
-
-        if (is_null($this->user)) {
-            /* User not found */
-            return;
-        }
-
-        /* Creating dashboard. */
-        $this->createDashboard();
-
-        /* Change trial period settings */
-        $this->user->subscription->changeTrialState('active');
-
-        /* Creating calculator. */
+    protected function setup($args) {
         $this->calculator = new BraintreeCalculator($this->user);
         $this->subscriptions = $this->calculator->getCollector()->getAllSubscriptions();
         $this->filterSubscriptions();
-
-        /* Populate dashboard. */
-        $this->populateDashboard();
-
-    }
-
-    /**
-     * ================================================== *
-     *                  PRIVATE SECTION                   *
-     * ================================================== *
-    */
-
-    /**
-     * Creating a dashboard dedicated to braintree widgets.
-     */
-    private function createDashboard() {
-        /* Creating dashboard. */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Braintree dashboard',
-            'background' => TRUE,
-            'number'     => $this->user->dashboards->max('number') + 1
-        ));
-        $dashboard->user()->associate($this->user);
-        $dashboard->save();
-
-        /* Adding widgets */ $mrrWidget = new BraintreeMrrWidget(array(
-            'position' => '{"col":4,"row":1,"size_x":6,"size_y":6}',
-            'state'    => 'loading',
-        ));
-
-        $arrWidget = new BraintreeArrWidget(array(
-            'position' => '{"col":2,"row":7,"size_x":5,"size_y":5}',
-            'state'    => 'loading',
-        ));
-
-        $arpuWidget = new BraintreeArpuWidget(array(
-            'position' => '{"col":7,"row":7,"size_x":5,"size_y":5}',
-            'state'    => 'loading',
-        ));
-
-        /* Associating dashboard */
-        $mrrWidget->dashboard()->associate($dashboard);
-        $arrWidget->dashboard()->associate($dashboard);
-        $arpuWidget->dashboard()->associate($dashboard);
-
-        /* Saving widgets */
-        $mrrWidget->save();
-        $arrWidget->save();
-        $arpuWidget->save();
-
-        $this->widgets = array(
-            'mrr'  => $mrrWidget,
-            'arr'  => $arrWidget,
-            'arpu' => $arpuWidget,
-        );
     }
 
     /**
      * Populating the widgets with data.
      */
-    private function populateDashboard() {
-        $mrrWidget  = $this->widgets['mrr'];
-        $arrWidget  = $this->widgets['arr'];
-        $arpuWidget = $this->widgets['arpu'];
+    protected function populateDashboard() {
+        $mrrWidget  = $this->widgets['braintree_mrr'];
+        $arrWidget  = $this->widgets['braintree_arr'];
+        $arpuWidget = $this->widgets['braintree_arpu'];
 
         /* Creating data for the last 30 days. */
         $metrics = $this->getMetrics();
