@@ -32,6 +32,12 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postSetupWidget'
     ]);
 
+    Route::any('reset/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.reset',
+        'uses'   => 'GeneralWidgetController@anyResetWidget'
+    ]);
+
     Route::any('delete/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.delete',

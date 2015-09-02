@@ -19,16 +19,20 @@
   @endif
 
   <!-- Adding loading on DataWidget -->
-  @if ($widget instanceof DataWidget)
-    @include('widget.widget-loading', ['widget' => $widget,])
-    <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
-  @endif
+  @if ($widget->state == 'setup_required')
+      @include('widget.widget-setup_required', ['widget' => $widget,])
+  @else
+    @if ($widget instanceof DataWidget)
+      @include('widget.widget-loading', ['widget' => $widget,])
+      <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
+    @endif
 
-  @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
+    @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
 
-  <!-- Adding loading on DataWidget -->
-  @if ($widget instanceof DataWidget)
-    </div>
+    <!-- Adding loading on DataWidget -->
+    @if ($widget instanceof DataWidget)
+      </div>
+    @endif
   @endif
 
 </li>

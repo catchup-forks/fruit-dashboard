@@ -239,7 +239,7 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        if (!App::environment('production', 'staging')) {
+        if (!App::environment('production')) {
             /* Social widgets | TWITTER */
             WidgetDescriptor::updateOrCreate(
                 ['name' => 'Twitter followers'],
