@@ -31,8 +31,6 @@ class DataManager extends Eloquent
     /**
      * collectData
      * Getting the new value based on getCurrentValue()
-     * --------------------------------------------------
-     * --------------------------------------------------
      */
     public function collectData() {
         $newValue = $this->getCurrentValue();

@@ -262,6 +262,10 @@ class Widget extends Eloquent
 
         // Always saving settings to keep integrity.|
         $this->saveSettings(array(), FALSE);
+        $dataManager = $this->descriptor->getDataManager($this);
+        if ( ! is_null($dataManager)) {
+            $this->data()->associate($dataManager->getSpecific()->data);
+        }
 
         /* Saving settings.
          * Please note, that the save won't hit the db,

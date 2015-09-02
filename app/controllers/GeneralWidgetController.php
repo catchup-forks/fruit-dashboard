@@ -109,13 +109,6 @@ class GeneralWidgetController extends BaseController {
             'el' => $widget->descriptor->getClassName())
         );
 
-        /* Trying to find data that suits the widget. */
-        $dataManager = $widget->descriptor->getDataManager($widget);
-        if ( ! is_null($dataManager)) {
-            $widget->data()->associate($dataManager->getSpecific()->data);
-            $widget->save();
-        }
-
         /* Return */
         return Redirect::route('dashboard.dashboard')
             ->with('success', "Widget successfully updated.");
@@ -180,13 +173,6 @@ class GeneralWidgetController extends BaseController {
         /* Validation successful, ready to save. */
         $widget->saveSettings(Input::all());
 
-        /* Trying to find data that suits the widget. */
-        $dataManager = $widget->descriptor->getDataManager($widget);
-        if ( ! is_null($dataManager)) {
-            $widget->data()->associate($dataManager->getSpecific()->data);
-            $widget->save();
-        }
-
         return Redirect::route('dashboard.dashboard')
             ->with('success', "Widget successfully updated.");
     }
@@ -244,8 +230,7 @@ class GeneralWidgetController extends BaseController {
         /* Get the widget descriptor */
 
         $descriptor = WidgetDescriptor::find($descriptorID);
-        if (is_null($descriptor)) {
-            return Redirect::back()
+        if (is_null($descriptor)) {return Redirect::back()
                 ->with('error', 'Something went wrong, your widget cannot be found.');
         }
         /* Create new widget instance */
@@ -295,13 +280,6 @@ class GeneralWidgetController extends BaseController {
             'en' => 'Add widget',
             'el' => $className)
         );
-
-        /* Trying to find data that suits the widget. */
-        $dataManager = $descriptor->getDataManager($widget);
-        if ( ! is_null($dataManager)) {
-            $widget->data()->associate($dataManager->getSpecific()->data);
-            $widget->save();
-        }
 
         /* If widget has no setup fields, redirect to dashboard automatically */
         $setupFields = $widget->getSetupFields();

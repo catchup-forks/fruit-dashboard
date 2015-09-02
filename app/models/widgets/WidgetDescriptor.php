@@ -60,7 +60,7 @@ class WidgetDescriptor extends Eloquent
                         return $manager;
                     }
                 }
-            } else {
+            } else if (count($managers) == 1) {
                 /* Only one manager using it automatically. */
                 return $managers[0];
             }

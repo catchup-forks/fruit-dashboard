@@ -47,7 +47,6 @@ class BraintreeConnector extends GeneralServiceConnector
         $credentials = array();
         foreach ($input as $key=>$value) {
             if (in_array($key, $this->getAuthFields())) {
-                Log::info($key . " " . $value);
                 $credentials[$key] = $value;
             }
         }
