@@ -2,7 +2,6 @@
 
 class WidgetDescriptorSeeder extends Seeder
 {
-
     public function run()
     {
 

@@ -28,13 +28,6 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
 
-        /* If widget has no setup fields, redirect to dashboard automatically */
-        $settingsFields = $widget->getSettingsFields();
-        if (empty($settingsFields)) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('error', 'This widget has no settings.');
-        }
-
         /* Creating selectable dashboards */
         $dashboards = array();
         foreach (Auth::user()->dashboards as $dashboard) {
