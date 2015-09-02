@@ -54,7 +54,8 @@
                   </div>
                 <!-- /.dashboard select -->
                 <p class="text-center">
-                  {{ Form::submit('Save settings', array('class' => 'btn btn-primary') ) }}
+                  <a href="/" class="btn btn-warning">Cancel</a>
+                  {{ Form::submit('Save', array('class' => 'btn btn-primary') ) }}
                 </p>
               {{ Form::close() }}
             </div> <!-- /.panel-body -->

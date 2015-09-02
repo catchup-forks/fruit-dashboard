@@ -80,4 +80,16 @@ Route::group([
         'uses'   => 'ServiceConnectionController@anyFacebookDisconnect'
     ));
 
+    Route::get('facebook/select-pages', array(
+        'before' => 'auth',
+        'as'     => 'service.facebook.select-pages',
+        'uses'   => 'ServiceConnectionController@getSelectFacebookPages'
+    ));
+
+    Route::post('facebook/select-pages', array(
+        'before' => 'auth',
+        'as'     => 'service.facebook.select-pages',
+        'uses'   => 'ServiceConnectionController@postSelectFacebookPages'
+    ));
+
 });

@@ -1,6 +1,7 @@
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 .fill-height {
   height: 100%;
@@ -14,8 +15,7 @@ body {
   align-items: center;
 }
 .valign-middle {
-  display: flex;
-  align-items: center;
+  vertical-align: middle;
 }
 .position-bl {
   position: fixed;
@@ -52,7 +52,11 @@ body {
   bottom: 25px;
   right: 25px;
 }
-.has-margin-vertical-sm {
+.has-margin-horizontal {
+  margin-left: 25px;
+  margin-right: 25px;
+}
+.has-margin-horizontal-sm {
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -118,6 +122,13 @@ body {
   /* Fallback */
   background: rgba(255, 255, 255, 0.85);
 }
+.add-new {
+  font-size: 120%;
+  line-height: 200px;
+  border: dashed 2px grey;
+  border-radius: 4px;
+  color: grey;
+}
 .gridster {
   position: absolute;
   padding: 0;
@@ -127,7 +138,6 @@ body {
   margin-bottom: 25px;
 }
 .gridster ul li {
-  list-style: none;
   cursor: default;
 }
 .gridster ul li:hover,

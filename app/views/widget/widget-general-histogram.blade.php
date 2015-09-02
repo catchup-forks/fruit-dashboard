@@ -2,12 +2,12 @@
   <span class="text-white drop-shadow">
       {{ $widget->descriptor->name }}
   </span>
-  <span class="text-white drop-shadow pull-right" id="{{$widget->descriptor->type}}-value">
-    ${{ $widget->getLatestData()['value'] }}
+  <span class="text-white drop-shadow pull-right" id="{{$widget->id}}-value">
+  {{ $widget->getLatestData()['value'] }}
   </span>
 </div>
-<div id="{{ $widget->descriptor->type }}-chart-container">
-  <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
+<div id="{{ $widget->id }}-chart-container">
+  <canvas id="{{$widget->id}}-chart"></canvas>
 </div>
 <div class="text-center drop-shadow text-white">
     Click
@@ -18,8 +18,8 @@
 <script type="text/javascript">
   $(document).ready(function(){
     // Default values.
-    var canvas = $("#{{ $widget->descriptor->type }}-chart");
-    var valueSpan = $("#{{ $widget->descriptor->type }}-value");
+    var canvas = $("#{{ $widget->id }}-chart");
+    var valueSpan = $("#{{ $widget->id }}-value");
     var name = "{{ $widget->descriptor->name }}";
 
     @if ($widget->state == 'active')

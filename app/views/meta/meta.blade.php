@@ -16,21 +16,23 @@
     </title>
 
     @section('tracking')
-      <!-- Google Analytics -->
-      @include('tracking.google-analytics')
-      <!-- /Google Analytics -->
+      @if(App::environment('production'))
+        <!-- Google Analytics -->
+        @include('tracking.google-analytics')
+        <!-- /Google Analytics -->
 
-      <!-- Intercom IO -->
-      @include('tracking.intercom-io')
-      <!-- /Intercom IO -->
+        <!-- Intercom IO -->
+        @include('tracking.intercom-io')
+        <!-- /Intercom IO -->
 
-      <!-- Mixpanel -->
-      @include('tracking.mixpanel')
-      <!-- /Mixpanel -->
+        <!-- Mixpanel -->
+        @include('tracking.mixpanel')
+        <!-- /Mixpanel -->
 
-      <!-- Global event tracker -->
-      @include('tracking.global-event-tracker')
-      <!-- /Global event tracker -->
+        <!-- Global event tracker -->
+        @include('tracking.global-event-tracker')
+        <!-- /Global event tracker -->
+      @endif
     @show
 
     @section('stylesheet')
@@ -54,6 +56,10 @@
       <!-- Growl CSS -->
       {{ HTML::style('css/jquery.growl.css') }}
       <!-- /Growl CSS-->
+
+      <!-- Hopscotch CSS -->
+      {{ HTML::style('css/hopscotch.min.css') }}
+      <!-- /Hopscotch CSS-->
 
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
@@ -86,7 +92,8 @@
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
     {{ HTML::script('js/jquery.growl.js'); }}
     {{ HTML::script('js/Chart.js'); }}
-    {{ HTML::script('https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
+    {{ HTML::script('js/jstz.min.js') }}
+    {{ HTML::script('js/hopscotch.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->

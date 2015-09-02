@@ -39,7 +39,7 @@ class SaveWidgets extends Command {
     {
         foreach (Widget::all() as $widget) {
             try {
-                $widget->save();
+                $widget->getSpecific()->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */
                 $widget->delete();

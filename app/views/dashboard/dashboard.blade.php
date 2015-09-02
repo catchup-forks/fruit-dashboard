@@ -14,9 +14,9 @@
       {{-- Include navigation dots for each dashboard. --}}
       <ol class="carousel-indicators">
 
-        @foreach (Auth::user()->dashboards as $dashboard)
+        @foreach (Auth::user()->dashboards as $index => $dashboard)
 
-          <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->number == 0) active @endif"></li>
+          <li data-target="#dashboards" data-slide-to="{{ $index}}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->is_default) active @endif"></li>
 
         @endforeach
 
@@ -27,16 +27,16 @@
 
         @foreach (Auth::user()->dashboards as $dashboard)
 
-          <div class="item @if($dashboard->number == 0) active @endif">
+          <div class="item @if($dashboard->is_default) active @endif">
 
-            <div class="fill" style="background-image:url({{ Background::dailyBackgroundURL() }});">
+            <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
             </div> <!-- /.fill -->
 
             {{-- Here comes the dashboard content --}}
-            <div id="gridster-{{ $dashboard->number }}" class="gridster grid-base fill-height">
+            <div id="gridster-{{ $dashboard->number }}" class="gridster grid-base fill-height not-visible">
 
               {{-- Generate all the widgdets --}}
-              <ul>
+              <ul class="list-unstyled">
 
                 @foreach ($dashboard->widgets as $widget)
 
@@ -56,7 +56,7 @@
 
       </div> <!-- /.carousel-inner -->
 
-      @if (count(Auth::user()->dashboards) > 1)
+      @if (Auth::user()->dashboards->count() > 1)
       {{-- Set the navigational controls on sides. --}}
       <a class="left carousel-control" href="#dashboards" data-slide="prev">
           <span class="icon-prev"></span>
@@ -74,36 +74,22 @@
 
   @section('pageScripts')
 
-  {{-- Initialize the tooltip for the Navigational Dots --}}
-  <script type="text/javascript">
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-          html: true
-        })
-      })
-  </script>
-
-  <script>
-  $('.carousel').carousel({
-      interval: false //stops the auto-cycle
-  })
-  </script>
-
-
   @include('widget.widget-general-scripts')
 
   <script type="text/javascript">
 
-    // Gridster builds the interactive dashboard.
-    @foreach (Auth::user()->dashboards as $dashboard)
+    $(function(){
 
-      $(function(){
+      var containerWidth = $('.active > .grid-base').width();
+      var containerHeight = $('.active > .grid-base').height();
+    
+      // Gridster builds the interactive dashboard.
+      @foreach (Auth::user()->dashboards as $dashboard)
+
 
         var gridster{{ $dashboard->number }};
         var players = $('#gridster-{{ $dashboard->number }} li');
         var positioning = [];
-        var containerWidth = $('.grid-base').width();
-        var containerHeight = $('.grid-base').height();
         var numberOfCols = {{ SiteConstants::getGridNumberOfCols() }};
         var numberOfRows = {{ SiteConstants::getGridNumberOfRows() }};
         var margin = 5;
@@ -159,11 +145,49 @@
          }
        }).data('gridster');
 
-    });
-
     @endforeach
 
-    $('.gridster.not-visible').fadeIn(500);
+    });
+
+    $('.carousel').carousel({
+      interval: false //stops the auto-cycle
+    })
+
+    $('.gridster.not-visible').fadeIn(1300);
+
+    // Define the Hopscotch tour.
+       var tour = {
+         id: "introduction",
+         steps: [
+           {
+             title: "new widget",
+             content: "Add a new widget by clicking the + sign.",
+             target: document.querySelector(".fa-plus-circle"),
+             placement: "top"
+           },
+           {
+            title: "hover widget",
+            content: "You can move, setup & delete a widget by hovering it.",
+            target: document.querySelector(".fa-plus-circle"),
+            placement: "top"
+           },
+           {
+            title: "dashboard indicators",
+            content: "Clicking these dots take you to one of your dashboards.",
+            target: document.querySelector("ol > li"),
+            placement: "top"
+           },
+           {
+            title: "settings",
+            content: "More stuff here.",
+            target: document.querySelector(".fa-cog"),
+            placement: "left"
+           }           
+         ]
+       };
+
+   // Start the Hopscotch tour.
+   // hopscotch.startTour(tour);
 
   </script>
 

@@ -34,6 +34,18 @@ class TwitterDataCollector
     }
 
     /**
+     * getMentionsCount
+     * --------------------------------------------------
+     * Getting the mentions count from twitter.
+     * @return int
+     * @throws TwitterNotConnected
+     * --------------------------------------------------
+    */
+    public function getMentionsCount() {
+        return $this->connector->get('statuses/mentions');
+    }
+
+    /**
      * ================================================== *
      *                  PROTECTED SECTION                 *
      * ================================================== *

@@ -68,9 +68,9 @@
 
             <div class="row">
               <div class="col-md-12">
-                <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>
-                <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-primary pull-right">Finish</a>
-
+                <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>               
+                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-primary pull-right">Next</a>
+                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-link pull-right">Skip this step</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 

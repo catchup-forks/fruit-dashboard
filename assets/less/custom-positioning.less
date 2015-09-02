@@ -3,6 +3,7 @@
 html,
 body {
     height: 100%;
+    overflow: hidden;
 }
 
 .fill-height {
@@ -18,8 +19,7 @@ body {
 }
 
 .valign-middle {
- display: flex;
- align-items: center;
+ vertical-align: middle;
 }
 
 .position-bl {
@@ -64,7 +64,12 @@ body {
   right: @margin;
 }
 
-.has-margin-vertical-sm {
+.has-margin-horizontal {
+  margin-left: @margin;
+  margin-right: @margin;
+}
+
+.has-margin-horizontal-sm {
   margin-left: @margin/5;
   margin-right: @margin/5;
 }

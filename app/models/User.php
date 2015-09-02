@@ -19,7 +19,10 @@ class User extends Eloquent implements UserInterface
         'name',
         'gender',
         'phone_number',
-        'date_of_birth'
+        'date_of_birth',
+        'created_at',
+        'updated_at',
+        'last_activity'
     );
 
     /* -- Relations -- */
@@ -27,21 +30,16 @@ class User extends Eloquent implements UserInterface
     public function subscription() { return $this->hasOne('Subscription'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
+    public function background() { return $this->hasOne('Background'); }
+    public function dataManagers() { return $this->hasmany('DataManager'); }
 
     /* -- Libraries -- */
     public function stripePlans() { return $this->hasMany('StripePlan', 'user_id'); }
     public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
+    public function facebookPages() { return $this->hasMany('FacebookPage'); }
 
     /* -- Custom relations. -- */
-    public function widgets() {
-        $widgets = array();
-        foreach ($this->dashboards as $dashboard) {
-            foreach ($dashboard->widgets as $widget) {
-                array_push($widgets, $widget->getSpecific());
-            }
-        }
-        return $widgets;
-    }
+    public function widgets() { return $this->hasManyThrough('Widget', 'Dashboard'); }
 
     /**
      * isServiceConnected

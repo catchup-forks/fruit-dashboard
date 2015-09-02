@@ -38,10 +38,10 @@ Route::group([
         'uses'   => 'GeneralWidgetController@anyDeleteWidget'
     ]);
 
-    Route::any('add', [
+    Route::get('add', [
         'before' => 'auth',
         'as'     => 'widget.add',
-        'uses'   => 'GeneralWidgetController@anyAddWidget'
+        'uses'   => 'GeneralWidgetController@getAddWidget'
     ]);
 
     Route::post('add/{descriptorID}', [
