@@ -143,6 +143,9 @@ class ServiceConnectionController extends BaseController
                     ->with('error', 'Something went wrong, please try again.');
             }
 
+            Queue::push('TwitterAutoDashboardCreator', array(
+                'user_id' => Auth::user()->id,
+            ));
             /* Successful connect. */
             return Redirect::to($this->getReferer())
                 ->with('success', 'Twitter connection successful');
@@ -576,7 +579,6 @@ class ServiceConnectionController extends BaseController
      * Saving the Referer to session.
      */
     private function saveReferer() {
-        Log::info(URL::previous());
         Session::put('referer', URL::previous());
     }
 

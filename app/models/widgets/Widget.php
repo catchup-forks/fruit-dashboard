@@ -73,6 +73,9 @@ class Widget extends Eloquent
                     $widget->save();
                 }
             }
+            if ($widget->state == 'loading') {
+                $widget->refreshWidget();
+            }
         }
     }
 

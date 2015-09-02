@@ -3,9 +3,9 @@
 class TwitterNewFollowersDataManager extends HistogramDataManager
 {
     public function getCurrentValue() {
-        $collector = new TwitterDataManager($this->user);
+        $collector = new TwitterDataCollector($this->user);
         /* Getting previous last data. */
-        $lastData = $this->getFollowersWidget()->getLatestData();
+        $lastData = $this->getFollowersManager()->getLatestData();
         if (is_null($lastData)) {
             return $collector->getFollowersCount();
         }
@@ -15,14 +15,16 @@ class TwitterNewFollowersDataManager extends HistogramDataManager
     }
 
     /**
-     * getFollowersWidget
+     * getFollowersManager
      * --------------------------------------------------
      * @return One of the user's twitter followers widget.
      * --------------------------------------------------
      */
-    private function getFollowersWidget() {
-        $descriptor = WidgetDescriptor::where('type', 'twitter_followers')->first();
-        return $this->user()->widgets()->where('descriptor_id', $descriptor->id)->get()[0]->getSpecific();
+    private function getFollowersManager() {
+        $descriptor_id = WidgetDescriptor::where('type', 'twitter_followers')->first()->id;
+
+        return $this->user->dataManagers()->where('descriptor_id', $descriptor_id)->first()->getSpecific();
+
     }
 }
 ?>
