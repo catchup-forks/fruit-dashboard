@@ -8,17 +8,17 @@ Route::group([
         'prefix'    => 'metrics',
     ], function() {
 
-    Route::get('count/users/registered', [
+    Route::get('users/registered', [
         'as'     => 'metrics.registeredUsers',
         'uses'   => 'MetricsController@getRegisteredUserCount'
     ]);
 
-    Route::get('count/users/active', [
+    Route::get('users/active', [
         'as'     => 'metrics.activeUsers',
         'uses'   => 'MetricsController@getActiveUserCount'
     ]);
 
-    Route::get('count/users/has-widget/{service}', [
+    Route::get('users/has-widget/{service}', [
         'as'     => 'metrics.hasWidget',
         'uses'   => 'MetricsController@getServiceWidgetUsersCount'
     ]);
