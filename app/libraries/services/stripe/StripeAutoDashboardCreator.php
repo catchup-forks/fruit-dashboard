@@ -61,15 +61,6 @@ class StripeAutoDashboardCreator extends GeneralAutoDashboardCreator
         $mrrWidget->data->save();
         $arrWidget->data->save();
         $arpuWidget->data->save();
-
-        $mrrWidget->state = 'active';
-        $arrWidget->state = 'active';
-        $arpuWidget->state = 'active';
-
-        /* Saving widgets */
-        $mrrWidget->save();
-        $arrWidget->save();
-        $arpuWidget->save();
     }
 
     /**

@@ -30,9 +30,6 @@ class DashboardController extends BaseController
         //$collector = new GoogleAnalyticsDataCollector(Auth::user());
         //Log::info($collector->getFirstProfileId());
 
-        //$collector = new TwitterDataCollector(Auth::user());
-        //$collector->getMentionsCount();
-
         /* Render the page */
         return View::make('dashboard.dashboard');
     }

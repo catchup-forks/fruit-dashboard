@@ -143,9 +143,10 @@ class FacebookDataCollector
     public function getInsight($insight, $page, $params=array()) {
         $paramstr = '?';
         foreach ($params as $key=>$value) {
-            $paramstr .= $key . '='. $value;
+            $paramstr .= '&' . $key . '='. $value;
         }
         $response =  $this->fb->get('/' . $page->page_id . '/insights/' . $insight . $paramstr , $this->accessToken);
+        var_dump($response->getDecodedBody());
         return $response->getDecodedBody()['data'];
     }
 

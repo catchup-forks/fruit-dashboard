@@ -2,6 +2,7 @@
 
 class FacebookAutoDashboardCreator extends GeneralAutoDashboardCreator
 {
+    const DAYS = 30;
     /* -- Class properties -- */
 
     /* LATE STATIC BINDING. */
@@ -50,7 +51,13 @@ class FacebookAutoDashboardCreator extends GeneralAutoDashboardCreator
         $newLikesWidget  = $this->widgets['facebook_new_likes'];
 
         /* Creating data for the last DAYS days. */
-        $dailyLikes = $this->collector->getInsight('page_fans', $this->page);
+        $dailyLikes = $this->collector->getInsight(
+            'page_fans', $this->page,
+            array(
+                'since' => Carbon::now()->subDays(self::DAYS)->getTimestamp(),
+                'until' => Carbon::now()->getTimestamp()
+            )
+        );
 
         $likesData    = array();
         $newLikesData = array();

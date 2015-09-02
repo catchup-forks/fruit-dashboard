@@ -23,7 +23,12 @@ class FacebookNewLikesWidget extends GeneralFacebookWidget
      */
     private function getLikesWidget() {
         $descriptor = WidgetDescriptor::where('type', 'facebook_likes')->first();
-        return $this->user()->widgets()->where('descriptor_id', $descriptor->id)->get()[0]->getSpecific();
+        foreach ($this->user()->widgets()->where('descriptor_id', $descriptor->id)->get() as $widget) {
+            if ($widget->getSettings()['page'] == $this->getSettings()['page']) {
+                return $widget->getSpecific();
+            }
+        }
+        return null;
     }
 
 }
