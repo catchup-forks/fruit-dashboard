@@ -1,7 +1,7 @@
   <div class="text-center">
-  	<h1 id="timerTime" class="no-margin text-white drop-shadow text-center">{{ $widget->getSettings()['countdown']}}</h1>
-    <button id="start" class="btn btn-primary">START!</button>
-    <button id="reset" class="btn btn-primary" style="display:none">RESET!</button>
+  	<h1 id="timer-time-{{ $widget->id }}" class="no-margin text-white drop-shadow text-center">{{ $widget->getSettings()['countdown']}}</h1>
+    <button id="start-{{ $widget->id }}" class="btn btn-primary">START!</button>
+    <button id="reset-{{ $widget->id }}" class="btn btn-primary" style="display:none">RESET!</button>
   </div> <!-- /#digitTime -->
 
 @section('widgetScripts')
@@ -12,32 +12,32 @@
     var running = false;
     function reset() {
       running = false;
-      $("#timerTime").html({{ $widget->getSettings()['countdown'] }});
-      $("#start").show();
-      $("#reset").hide();
+      $("#timer-time-{{ $widget->id }}").html({{ $widget->getSettings()['countdown'] }});
+      $("#start-{{ $widget->id }}").show();
+      $("#reset-{{ $widget->id }}").hide();
     }
     function countdown() {
       if (!running) {
         return;
       }
-      seconds = $("#timerTime").html();
+      seconds = $("#timer-time-{{ $widget->id }}").html();
       seconds = parseInt(seconds, 10);
       if (seconds == 1) {
         return;
       }
       seconds --;
-      $("#timerTime").html(seconds);
+      $("#timer-time-{{ $widget->id }}").html(seconds);
       setTimeout(countdown, 1000);
     }
 
-    $("#start").click(function () {
+    $("#start-{{ $widget->id }}").click(function () {
       running = true;
-      $("#start").hide();
-      $("#reset").show();
+      $("#start-{{ $widget->id }}").hide();
+      $("#reset-{{ $widget->id }}").show();
       countdown();
     });
 
-    $("#reset").click(function () {
+    $("#reset-{{ $widget->id }}").click(function () {
       reset();
     });
 
