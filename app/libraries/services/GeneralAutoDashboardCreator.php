@@ -142,7 +142,7 @@ abstract class GeneralAutoDashboardCreator
             $data->save();
 
             /* Creating DataManager instance */
-            $dataManager = new DataManager;
+            $dataManager = new $className;
             $dataManager->descriptor()->associate($descriptor);
             $dataManager->user()->associate($this->user);
 

@@ -3,7 +3,7 @@
 class TwitterFollowersDataManager extends HistogramDataManager
 {
     public function getCurrentValue() {
-        $collector = new TwitterDataManager($this->user);
+        $collector = new TwitterDataCollector($this->user);
         return $collector->getFollowersCount();
     }
 }

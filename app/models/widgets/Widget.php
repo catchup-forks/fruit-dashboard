@@ -54,6 +54,32 @@ class Widget extends Eloquent
      */
 
     /**
+     * checkIntegrity
+     * Checking the dataintegrity of widgets.
+    */
+    public static function checkDataIntegrity($user) {
+        foreach ($user->widgets as $generalWidget) {
+            $widget = $generalWidget->getSpecific();
+            /* Dealing only with datawidgets */
+            if ( ! $widget instanceof Datawidget) {
+                continue;
+            }
+            if (is_null($widget->data)) {
+                /* No data is assigned, let's hope a save will fix it. */
+                $widget->save();
+                if (is_null($widget->data)) {
+                    /* Still not working */
+                    $widget->state = 'setup_required';
+                    $widget->save();
+                }
+            }
+            if ($widget->state == 'loading') {
+                $widget->refreshWidget();
+            }
+        }
+    }
+
+    /**
      * getSettingsFields
      * Getting the settings meta.
      * --------------------------------------------------

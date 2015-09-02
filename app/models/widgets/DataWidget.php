@@ -31,19 +31,29 @@ abstract class DataWidget extends Widget
         }
         if (isset($postData['refresh_data']) && $postData['refresh_data']) {
             /* Refresh signal */
-            $this->state = 'loading';
-            $this->save();
-
-            /* Refreshing widget data. */
-            $this->collectData();
-
-            /* Faling back to active. */
-            $this->state = 'active';
-            $this->save();
+            $this->refreshWidget();
         }
 
         /* Something else, should be handled by specific widget. */
         return $this->handleCustomAjax($postData);
+    }
+
+    /**
+     * Refreshing the widget data.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+    */
+    public function refreshWidget() {
+        $this->state = 'loading';
+        $this->save();
+
+        /* Refreshing widget data. */
+        $this->collectData();
+
+        /* Faling back to active. */
+        $this->state = 'active';
+        $this->save();
     }
 
     /**

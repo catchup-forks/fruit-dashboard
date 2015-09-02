@@ -197,6 +197,38 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * anyResetWidget
+     * --------------------------------------------------
+     * @param (integer) ($widgetID) The ID of the deletable widget
+     * @return Resets a widget
+     * --------------------------------------------------
+     */
+    public function anyResetWidget($widgetID) {
+        /* Find and remove widget */
+        $widget = Widget::find($widgetID);
+        if (!is_null($widget)) {
+            /* Saving old widget data */
+            $position = $widget->position;
+            $dashboard = $widget->dashboard;
+            $className = $widget->descriptor->getClassName();
+
+            /* Deleting old widget. */
+            $widget->delete();
+
+            /* Saving new Widget */
+            $newWidget = new $className(array(
+                'position' => $position,
+                'state'    => 'active'
+            ));
+            $newWidget->dashboard()->associate($dashboard);
+            $newWidget->save();
+        }
+
+        /* Redirect to dashboard */
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', "You successfully restored the widget");
+    }
+    /**
      * getAddWidget
      * --------------------------------------------------
      * @return Renders the add widget page
