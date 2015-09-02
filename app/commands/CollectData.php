@@ -29,33 +29,8 @@ class CollectData extends Command {
     public function fire()
     {
         /* Iterating through the widgets. */
-        foreach ($this->getWidgets() as $widget) {
-            /* Running data collection. */
-            $widget->collectData();
+        foreach (DataCollector::all() as $collector) {
+            $collector->getSpecficic()->collectData();
         }
-    }
-
-    /**
-     * Getting the widgets.
-     *
-     * @return The filtered widgets.
-     */
-    public function getWidgets()
-    {
-        $widgets = array();
-
-        /* Iterating through the widgets. */
-        foreach (Widget::all() as $generalWidget) {
-
-            /* Getting the specific instance. */
-            $widget = $generalWidget->getSpecific();
-
-            /* Filtering to cron widgets. */
-            if ($widget instanceof iCronWidget) {
-                array_push($widgets, $generalWidget->getSpecific());
-            }
-        }
-
-        return $widgets;
     }
 }

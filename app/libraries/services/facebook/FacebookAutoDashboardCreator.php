@@ -41,52 +41,108 @@ class FacebookAutoDashboardCreator extends GeneralAutoDashboardCreator
             $widget->setSetting('page', $this->page->id);
         }
     }
+    protected function createManagers() {
+        parent::createManagers();
+        foreach ($this->dataManagers as $dataManager) {
+            $dataManager->settings_criteria = json_encode(array(
+                'page' => $this->page->id
+            ));
+            $dataManager->save();
+        }
+    }
 
 
     /**
      * Populating the widgets with data.
      */
-    protected function populateDashboard() {
-        $likesWidget     = $this->widgets['facebook_likes'];
-        $newLikesWidget  = $this->widgets['facebook_new_likes'];
+    protected function populateData() {
+        $likesDataManager       = $this->dataManagers['facebook_likes'];
+        $newLikesDataManager    = $this->dataManagers['facebook_new_likes'];
+        $impressionsDataManager = $this->dataManagers['facebook_page_impressions'];
 
-        /* Creating data for the last DAYS days. */
-        $dailyLikes = $this->collector->getInsight(
-            'page_fans', $this->page,
+        /* Getting metrics. */
+        $likesData       = $this->getLikes();
+        $impressionsData = $this->getPageImpressions();
+
+        /* Saving values. */
+        $likesDataManager->data->raw_value       = json_encode($likesData);
+        $newLikesDataManager->data->raw_value    = json_encode($this->getDiff($likesData));
+        $impressionsDataManager->data->raw_value = json_encode($impressionsData);
+    }
+
+    /**
+     * Getting the last DAYS entries for a specific insight
+     *
+     * @param string $insight
+     * @return array
+     */
+    private function getHistogram($insight) {
+        return $this->collector->getInsight(
+            $insight, $this->page,
             array(
                 'since' => Carbon::now()->subDays(self::DAYS)->getTimestamp(),
                 'until' => Carbon::now()->getTimestamp()
             )
         );
+    }
 
-        $likesData    = array();
-        $newLikesData = array();
+    /**
+     * Getting the data for the likes widget.
+     *
+     * @return array
+     */
+    private function getLikes() {
+        $dailyLikes = $this->getHistogram('page_fans');
+        $likesData = array();
         foreach ($dailyLikes[0]['values'] as $likes) {
             $date = Carbon::createFromTimestamp(strtotime($likes['end_time']))->toDateString();
-
             array_push($likesData, array(
                 'date'  => $date,
                 'value' => $likes['value']
             ));
-            if ( ! isset($lastValue)) {
-                $newLikes = 0;
-            } else {
-                $newLikes = $likes['value'] - $lastValue;
-            }
-
-            array_push($newLikesData, array(
-                'date'  => $date,
-                'value' => $newLikes
-            ));
-
-            $lastValue = $likes['value'];
         }
 
-        $likesWidget->data->raw_value    = json_encode($likesData);
-        $newLikesWidget->data->raw_value = json_encode($newLikesData);
+        return $likesData;
+    }
 
-        $likesWidget->data->save();
-        $newLikesWidget->data->save();
+    /**
+     * Getting the page_impressions for the page_impressions widget.
+     *
+     * @return array
+     */
+    private function getPageImpressions() {
+        $dailyImpressions = $this->getHistogram('page_impressions_unique');
+        $pageImpressionsData = array();
+        foreach ($dailyImpressions[0]['values'] as $impressions) {
+            $date = Carbon::createFromTimestamp(strtotime($impressions['end_time']))->toDateString();
+            array_push($pageImpressionsData, array(
+                'date'  => $date,
+                'value' => $impressions['value']
+            ));
+        }
+
+        return $pageImpressionsData;
+    }
+    /**
+     * Returning the differentiated values.
+     *
+     * @param array $data
+     * @return array
+     */
+    private function getDiff($data) {
+        $differentiatedArray = array();
+        foreach ($data as $entry) {
+            /* Copying entry. */
+            $diffEntry = $entry;
+            $diffValue = 0;
+            if (isset($lastValue)) {
+                $diffValue = $entry['value'] - $lastValue;
+            }
+            $diffEntry['value'] = $diffValue;
+            array_push($differentiatedArray, $diffEntry);
+            $lastValue = $entry['value'];
+        }
+        return $differentiatedArray;
     }
 
 }

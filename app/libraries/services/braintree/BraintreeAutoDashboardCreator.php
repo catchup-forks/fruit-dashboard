@@ -40,21 +40,17 @@ class BraintreeAutoDashboardCreator extends GeneralAutoDashboardCreator
     /**
      * Populating the widgets with data.
      */
-    protected function populateDashboard() {
-        $mrrWidget  = $this->widgets['braintree_mrr'];
-        $arrWidget  = $this->widgets['braintree_arr'];
-        $arpuWidget = $this->widgets['braintree_arpu'];
+    protected function populateData() {
+        $mrrDataManager  = $this->dataManagers['braintree_mrr'];
+        $arrDataManager  = $this->dataManagers['braintree_arr'];
+        $arpuDataManager = $this->dataManagers['braintree_arpu'];
 
         /* Creating data for the last 30 days. */
         $metrics = $this->getMetrics();
 
-        $mrrWidget->data->raw_value = json_encode($metrics['mrr']);
-        $arrWidget->data->raw_value = json_encode($metrics['arr']);
-        $arpuWidget->data->raw_value = json_encode($metrics['arpu']);
-
-        $mrrWidget->data->save();
-        $arrWidget->data->save();
-        $arpuWidget->data->save();
+        $mrrDataManager->data->raw_value = json_encode($metrics['mrr']);
+        $arrDataManager->data->raw_value = json_encode($metrics['arr']);
+        $arpuDataManager->data->raw_value = json_encode($metrics['arpu']);
     }
 
     /**
