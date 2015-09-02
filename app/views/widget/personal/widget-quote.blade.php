@@ -1,9 +1,9 @@
 <div class="text-white text-center drop-shadow quote">
   <div class="margin-top-sm has-margin-vertical-sm">
-    <p class="lead body" id="quote">
+    <p class="lead body" id="quote-{{ $widget->id }}">
       {{ $widget->getData()['quote'] }}
     </p>
-    <p class="source" id="author">
+    <p class="source" id="author-{{ $widget->id }}">
       {{ $widget->getData()['author'] }}
     </p>
   </div> <!-- /.container -->
@@ -13,8 +13,8 @@
 
 <script type="text/javascript">
   function updateWidget(data) {
-    $("#quote").html(data['quote']);
-    $("#author").html(data['author']);
+    $("#quote-{{ $widget->id }}").html(data['quote']);
+    $("#author-{{ $widget->id }}").html(data['author']);
   }
 
   $(document).ready(function() {
