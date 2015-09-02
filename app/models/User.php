@@ -19,7 +19,10 @@ class User extends Eloquent implements UserInterface
         'name',
         'gender',
         'phone_number',
-        'date_of_birth'
+        'date_of_birth',
+        'created_at',
+        'updated_at',
+        'last_activity'
     );
 
     /* -- Relations -- */
