@@ -1,4 +1,4 @@
-<h3 id="greeting" class="text-white text-center drop-shadow no-margin-top has-margin-vertical-sm truncate reset-line-height">
+<h3 id="greeting-{{ $widget->id }}" class="text-white text-center drop-shadow no-margin-top has-margin-vertical-sm truncate reset-line-height">
   Good <span class="greeting"></span>@if(isset(Auth::user()->name)), {{ Auth::user()->name }}@endif!
 </h3>
   
@@ -7,23 +7,23 @@
    <script type="text/javascript">
      $(document).ready(function() {
 
-      $('#greeting').hide();
+      $('#greeting-{{ $widget->id }}').hide();
       
       // fit the greeting on page load
-      $('#greeting').fitText(2.2, {
+      $('#greeting-{{ $widget->id }}').fitText(2.2, {
         'minFontSize': 24
       });
 
       $('.greeting').html('{{ SiteConstants::getTimeOfTheDay() }}');
 
       // bind fittext to a resize event
-      $('#greeting').bind('resize', function(e){
-        $('#greeting').fitText(2.2, {
+      $('#greeting-{{ $widget->id }}').bind('resize', function(e){
+        $('#greeting-{{ $widget->id }}').fitText(2.2, {
           'minFontSize': 24
         });
       });
 
-        $('#greeting').fadeIn(2000);  
+        $('#greeting-{{ $widget->id }}').fadeIn(2000);  
 
     });
    </script>
