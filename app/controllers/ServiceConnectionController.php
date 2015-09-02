@@ -20,6 +20,7 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function getBraintreeConnect() {
+        $this->saveReferer();
         $braintreeConnector = new BraintreeConnector(Auth::user());
 
         /* Render the page */
@@ -73,7 +74,7 @@ class ServiceConnectionController extends BaseController
         );
 
         /* Render the page */
-        return Redirect::route('signup-wizard.financial-connections');
+        return Redirect::to($this->getReferer());
     }
 
     /**
@@ -106,7 +107,7 @@ class ServiceConnectionController extends BaseController
         } catch (SericeNotConnected $e) {}
 
         /* Redirect */
-        return Redirect::route('settings.settings');
+        return Redirect::back();
     }
 
     /**
@@ -122,9 +123,10 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyTwitterConnect() {
+
         /* Setting up connection. */
         if (Input::get('denied')) {
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
         }
         else if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
@@ -142,7 +144,7 @@ class ServiceConnectionController extends BaseController
             }
 
             /* Successful connect. */
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::to($this->getReferer())
                 ->with('success', 'Twitter connection successful');
 
         } else {
@@ -166,10 +168,11 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
+            $this->saveReferer();
             return Redirect::to($connectData['connection_url']);
         }
 
-        return Redirect::route('signup-wizard.social-connections')
+        return Redirect::to($this->getReferer())
             ->with('error', 'Something went wrong.');
      }
 
@@ -202,7 +205,7 @@ class ServiceConnectionController extends BaseController
         } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
-        return Redirect::route('settings.settings');
+        return Redirect::back();
     }
 
     /**
@@ -219,7 +222,7 @@ class ServiceConnectionController extends BaseController
      */
     public function anyFacebookConnect() {
         if (Auth::user()->isServiceConnected('facebook')) {
-            return Redirect::route('settings.settings')
+            return Redirect::to($this->getReferer())
                 ->with('warning', 'You are already connected the service');
         }
         $connector = new FacebookConnector(Auth::user());
@@ -253,10 +256,11 @@ class ServiceConnectionController extends BaseController
 
         } else if (Input::get('error', FALSE)) {
             /* User declined */
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
         }
 
+        $this->saveReferer();
         return Redirect::to($connector->getFacebookConnectUrl());
     }
 
@@ -290,7 +294,7 @@ class ServiceConnectionController extends BaseController
         } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
-        return Redirect::route('settings.settings');
+        return Redirect::back();
     }
 
     /**
@@ -308,14 +312,14 @@ class ServiceConnectionController extends BaseController
 
         /* If only one auto create and redirect. */
         if (count($pages) == 0) {
-            return Redirect::route('settings.settings')
+            return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
         } else if (count($pages) == 1) {
             Queue::push('FacebookAutoDashboardCreator', array(
                 'user_id' => Auth::user()->id,
                 'page_id' => array_keys($pages)[0]
             ));
-            return Redirect::route('settings.settings');
+            return Redirect::to($this->getReferer());
         }
 
         return View::make('service.facebook.select-pages')
@@ -340,7 +344,7 @@ class ServiceConnectionController extends BaseController
                 'page_id' => $page->id
             ));
         }
-        return Redirect::rotue('social-connections')
+        return Redirect::to($this->getReferer())
             ->with('success', 'Your dashboards are being created at the moment.');
     }
 
@@ -404,7 +408,7 @@ class ServiceConnectionController extends BaseController
      */
     public function anyStripeConnect() {
         if (Auth::user()->isServiceConnected('stripe')) {
-            return Redirect::route('settings.settings')
+            return Redirect::back()
                 ->with('warning', 'You are already connected the service');
         }
 
@@ -414,7 +418,7 @@ class ServiceConnectionController extends BaseController
             try {
                 $connector->getTokens(Input::get('code'));
             } catch (StripeConnectFailed $e) {
-                return Redirect::route('signup-wizard.financial-connections')
+                return Redirect::to($this->getReferer())
                     ->with('error', 'Something went wrong, please try again.');
             }
 
@@ -434,15 +438,16 @@ class ServiceConnectionController extends BaseController
             );
 
             /* Successful connect. */
-            return Redirect::route('signup-wizard.financial-connections')
+            return Redirect::to($this->getReferer())
                 ->with('success', 'Stripe connection successful');
 
         } else if (Input::get('error', FALSE)) {
             /* User declined */
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
         }
 
+        $this->saveReferer();
         return Redirect::to(StripeConnector::getStripeConnectURI(route('service.stripe.connect')));
      }
     /**
@@ -475,7 +480,7 @@ class ServiceConnectionController extends BaseController
         } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
-        return Redirect::route('settings.settings');
+        return Redirect::back();
     }
 
     /**
@@ -518,16 +523,17 @@ class ServiceConnectionController extends BaseController
             );
 
             /* Successful connect. */
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::to($this->getReferer())
                 ->with('success', 'Google connection successful');
 
         } else if (Input::get('error', FALSE)) {
             /* User declined */
-            return Redirect::route('signup-wizard.social-connections')
+            return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
 
         } else {
             /* Redirectong to Oauth. */
+            $this->saveReferer();
             return Redirect::to($connectorClass::getConnectUrl());
         }
      }
@@ -562,7 +568,30 @@ class ServiceConnectionController extends BaseController
         } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
-        return Redirect::route('settings.settings');
+        return Redirect::back();
+    }
+
+    /**
+     * saveReferer
+     * Saving the Referer to session.
+     */
+    private function saveReferer() {
+        Log::info(URL::previous());
+        Session::put('referer', URL::previous());
+    }
+
+    /**
+     * getReferer
+     * --------------------------------------------------
+     * @return Returns the saved route from session.
+     * --------------------------------------------------
+     */
+    private function getReferer() {
+        if (Session::has('referer')) {
+            return Session::pull('referer');
+        } else {
+            return route('settings.settings');
+        }
     }
 
 } /* ServiceConnectionController */
