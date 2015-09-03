@@ -50,17 +50,6 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
      }
 
     /**
-     * getFirstData
-     * Returning the first data in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
-     */
-     public function getFirstData() {
-        return $this->data->manager->getSpecific()->getFirstData();
-     }
-
-    /**
      * getData
      * Returning the histogram.
      * --------------------------------------------------

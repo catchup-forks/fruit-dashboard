@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralGoogleAnalyitcsWidget extends HistogramWidget
+abstract class GeneralGoogleAnalyticsWidget extends HistogramWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -22,7 +22,7 @@ abstract class GeneralGoogleAnalyitcsWidget extends HistogramWidget
     /* Choices functions */
     public function property() {
         $properties = array();
-        foreach (Auth::user()->facebookPages as $property) {
+        foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;
         }
         return $properties;

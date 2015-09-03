@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralFacebookDataManager extends HistogramDataManager
+abstract class GeneralGoogleAnalyticsDataManager extends MultipleHistogramDataManager
 {
     /**
      * getProperty

@@ -11,11 +11,6 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     protected static $service = 'google_analytics';
     protected static $scope = Google_Service_Analytics::ANALYTICS_READONLY;
 
-    /**
-     * The analytics object.
-     *
-     * @var Google_Service_Analytics
-     */
     private $analytics = null;
 
     /**
@@ -29,10 +24,15 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     }
 
     /**
-     * Overloading connect to create the analytics object.
+     * disconnect
+     * --------------------------------------------------
+     * disconnecting the user from google-analytics.
+     * @throws ServiceNotConnected
+     * --------------------------------------------------
      */
-    public function connect() {
-        parent::connect();
-        $this->analytics = new Google_Service_Analytics($this->client);
+    public function disconnect() {
+        parent::disconnect();
+        /* deleting all plans. */
+        GoogleAnalyticsProperty::where('user_id', $this->user->id)->delete();
     }
 }

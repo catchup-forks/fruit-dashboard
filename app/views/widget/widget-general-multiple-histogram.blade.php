@@ -3,15 +3,11 @@
       {{ $widget->descriptor->name }}
   </span>
   <span class="text-white drop-shadow pull-right" id="{{$widget->id}}-value">
-  {{ $widget->getLatestData()['value'] }}
+  {{ $widget->getLatestData()['data_0'] }}
   </span>
 </div>
 <div id="{{ $widget->id }}-chart-container">
   <canvas id="{{$widget->id}}-chart"></canvas>
-</div>
-<div class="text-center drop-shadow text-white">
-    Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more details.
 </div>
 
 @section('widgetScripts')
@@ -25,7 +21,7 @@
     @if ($widget->state == 'active')
       // Active widget.
       var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
-      var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
+      var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['data_0']}}, @endforeach];
 
       // Calling drawer.
        drawLineGraph(canvas, values, labels, name, 3000);

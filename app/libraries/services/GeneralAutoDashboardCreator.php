@@ -1,5 +1,4 @@
 <?php
-
 abstract class GeneralAutoDashboardCreator
 {
     /* -- Class properties -- */
@@ -178,5 +177,27 @@ abstract class GeneralAutoDashboardCreator
         foreach ($this->dataManagers as $manager) {
             $manager->data->save();
         }
+    }
+
+    /**
+     * Returning the differentiated values.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function getDiff($data) {
+        $differentiatedArray = array();
+        foreach ($data as $entry) {
+            /* Copying entry. */
+            $diffEntry = $entry;
+            $diffValue = 0;
+            if (isset($lastValue)) {
+                $diffValue = $entry['value'] - $lastValue;
+            }
+            $diffEntry['value'] = $diffValue;
+            array_push($differentiatedArray, $diffEntry);
+            $lastValue = $entry['value'];
+        }
+        return $differentiatedArray;
     }
 }

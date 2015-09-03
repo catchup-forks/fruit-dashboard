@@ -67,6 +67,19 @@ Route::group([
         'uses'   => 'ServiceConnectionController@anyGoogleCalendarDisconnect'
     ]);
 
+    Route::get('google-analytics/select-properties', array(
+        'before' => 'auth',
+        'as'     => 'service.google-analytics.select-properties',
+        'uses'   => 'ServiceConnectionController@getSelectGoogleAnalyticsProperties'
+    ));
+
+    Route::post('google-analytics/select-properties', array(
+        'before' => 'auth',
+        'as'     => 'service.google-analytics.select-properties',
+        'uses'   => 'ServiceConnectionController@postSelectGoogleAnalyticsProperties'
+    ));
+
+
     /* -- Facebook -- */
     Route::any('facebook/connect', array(
         'before' => 'auth',

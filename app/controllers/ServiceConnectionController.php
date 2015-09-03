@@ -337,14 +337,14 @@ class ServiceConnectionController extends BaseController
      */
     public function postSelectFacebookPages() {
         /* Getting a user's facebook pages for multiple select. */
-        if (count(Input::get('pages'))) {
+        if (count(Input::get('pages')) == 0) {
             return Redirect::back()
                 ->with('error', 'Please select at least one of the pages.');
         }
         foreach (Input::get('pages') as $page) {
             Queue::push('FacebookAutoDashboardCreator', array(
                 'user_id' => Auth::user()->id,
-                'id'      => $page->id
+                'page_id' => $page
             ));
         }
         return Redirect::to($this->getReferer())
@@ -364,7 +364,7 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyGoogleAnalyticsConnect() {
-        return $this->connectGoogle("GoogleAnalyticsConnector");
+        return $this->connectGoogle("GoogleAnalyticsConnector", 'service.google-analytics.select-properties');
      }
 
     /**
@@ -397,6 +397,55 @@ class ServiceConnectionController extends BaseController
         return $this->disconnectGoogle("GoogleCalendarConnector");
     }
 
+    /**
+     * getSelectGoogleAnalyticsProperties
+     * --------------------------------------------------
+     * @return Renders the select google analytics properties view.
+     * --------------------------------------------------
+     */
+    public function getSelectGoogleAnalyticsProperties() {
+        /* Getting a user's google analytics properties for multiple select. */
+        $properties = array();
+        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+            $properties[$property->id] = $property->name;
+        }
+
+        /* If only one auto create and redirect. */
+        if (count($properties) == 0) {
+            return Redirect::to($this->getReferer())
+                ->with('error', 'You don\'t have any google analytics properties associated with this account');
+        } else if (count($properties) == 1) {
+            Queue::push('GoogleAnalyticsAutoDashboardCreator', array(
+                'user_id' => Auth::user()->id,
+                'id'      => array_keys($properties)[0]
+            ));
+            return Redirect::to($this->getReferer());
+        }
+
+        return View::make('service.google-analytics.select-properties')
+            ->with('properties', $properties);
+    }
+
+    /**
+     * postSelectGoogleAnalyticsProperties
+     * --------------------------------------------------
+     * @return Creates auto dashboard for the selected properties.
+     * --------------------------------------------------
+     */
+    public function postSelectGoogleAnalyticsProperties() {
+        if (count(Input::get('properties')) == 0) {
+            return Redirect::back()
+                ->with('error', 'Please select at least one of the properties.');
+        }
+        foreach (Input::get('properties') as $property) {
+            Queue::push('GoogleAnalyticsAutoDashboardCreator', array(
+                'user_id'     => Auth::user()->id,
+                'property_id' => $property
+            ));
+        }
+        return Redirect::to($this->getReferer())
+            ->with('success', 'Your dashboards are being created at the moment.');
+    }
     /**
      * ================================================== *
      *                       STRIPE                       *
@@ -495,10 +544,12 @@ class ServiceConnectionController extends BaseController
     /**
      * connectGoogle
      * --------------------------------------------------
+     * @param string $connectorClass
+     * @param string return route.
      * @return connects a user to a google service.
      * --------------------------------------------------
      */
-    private function connectGoogle($connectorClass) {
+    private function connectGoogle($connectorClass, $returnRoute=null) {
         /* Creating connection credentials. */
         $connector = new $connectorClass(Auth::user());
         if (Input::get('code', FALSE)) {
@@ -526,8 +577,13 @@ class ServiceConnectionController extends BaseController
             );
 
             /* Successful connect. */
-            return Redirect::to($this->getReferer())
-                ->with('success', 'Google connection successful');
+            if (is_null($returnRoute)) {
+                return Redirect::to($this->getReferer())
+                    ->with('success', 'Google connection successful');
+            } else {
+                return Redirect::route($returnRoute)
+                    ->with('success', 'Google connection successful');
+            }
 
         } else if (Input::get('error', FALSE)) {
             /* User declined */

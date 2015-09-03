@@ -71,4 +71,17 @@ class DataManager extends Eloquent
     public function getData() {
         return json_decode($this->data->raw_value, 1);
     }
+
+    /**
+     * saveData
+     * Saving the data to DB
+     * --------------------------------------------------
+     * @param data $data
+     * --------------------------------------------------
+     */
+     protected function saveData($data) {
+        $this->data->raw_value = json_encode($data);
+        $this->data->save();
+     }
+
 }

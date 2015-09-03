@@ -80,29 +80,45 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
+     * getMetrics
+     * Retrieving specific metrics for all profiles.
+     */
+    public function getMetrics($propertyId, $start, $end, $metrics) {
+        /* Creating metrics array. */
+        $metricsData = array();
+        foreach ($metrics as $metric) {
+            $metricsData[$metric] = array();
+        }
+
+        /* Iterating through the profiles. */
+        foreach ($this->getProfiles($propertyId) as $profile) {
+            /* Retrieving results from API */
+            $results = $this->analytics->data_ga->get(
+               'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics));
+            $rows = $results->getRows();
+
+            if (count($rows) > 0) {
+                $profileName = $results->getProfileInfo()->getProfileName();
+
+                /* Populating metricsData. */
+                $i = 0;
+                foreach ($metrics as $metric) {
+                    if (!isset($metricsData[$metric][$profileName])) {
+                        $metricsData[$metric][$profileName] = array();
+                    }
+                    array_push($metricsData[$metric][$profileName], $rows[0][$i++]);
+                }
+            }
+        }
+        return $metricsData;
+    }
+
+    /**
      * getSessions
      * Returning the number of sessions.
      */
     public function getSessions($propertyId) {
-        foreach ($this->getProfiles($propertyId) as $profile) {
-            $results = $this->analytics->data_ga->get(
-               'ga:' . $profile->getId(),
-               'yesterday',
-               'today',
-               'ga:avgSessionDuration');
-
-            if (count($results->getRows()) > 0) {
-                // Get the profile name.
-                $profileName = $results->getProfileInfo()->getProfileName();
-                Log::info($profileName);
-
-                // Get the entry for the first entry in the first row.
-                $rows = $results->getRows();
-                Log::info($rows);
-                $sessions = $rows[0][0];
-            }
-        }
-        return null;
+        Log::info($this->getMetrics($propertyId, 'yesterday', 'today', array('sessions', 'avgSessionDuration')));
    }
 
     /**

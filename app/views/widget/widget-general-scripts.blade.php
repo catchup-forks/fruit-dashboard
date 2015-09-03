@@ -22,7 +22,7 @@
   };
 
   $(".deleteWidget").click(function(e) {
-    
+
     e.preventDefault();
 
     // initialize url
@@ -123,7 +123,7 @@
     setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, timeOut);
   }
 
-  function updateChartWidget(data, canvas, name, valueSpan) {
+  function updateHistogramWidget(data, canvas, name, valueSpan) {
     // Updating chart values.
     var labels = [];
     var values = [];
