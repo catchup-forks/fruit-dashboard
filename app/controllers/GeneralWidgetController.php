@@ -294,7 +294,8 @@ class GeneralWidgetController extends BaseController {
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $widget->save();
- /* Start trial period if the widget is premium */
+        
+        /* Start trial period if the widget is premium */
         if ($widget->descriptor->is_premium) {
             Auth::user()->subscription->changeTrialState('active');
         }

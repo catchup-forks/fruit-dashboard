@@ -19,7 +19,9 @@
   @endif
 
   <!-- Adding loading on DataWidget -->
-  @if ($widget->state == 'setup_required')
+  @if (($widget->descriptor->is_premium) and (!Auth::user()->subscription->getSubscriptionInfo()['PE']))
+      @include('widget.widget-trial-ended')
+  @elseif ($widget->state == 'setup-required')
       @include('widget.widget-setup_required', ['widget' => $widget,])
   @else
     @if ($widget instanceof DataWidget)
