@@ -33,7 +33,7 @@ class FacebookAutoDashboardCreator extends GeneralAutoDashboardCreator
      */
     protected function setup($args) {
         $this->collector = new FacebookDataCollector($this->user);
-        $this->page = FacebookPage::find($args['page_id']);
+        $this->page = FacebookPage::find($args['id']);
     }
 
     protected function createWidgets() {

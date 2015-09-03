@@ -73,6 +73,7 @@ class FacebookDataCollector
      * --------------------------------------------------
      */
     public function savePages() {
+        $this->user->facebookPages()->delete();
         $userId = $this->getUserID();
         if (is_null($userId)) {
             return;
@@ -91,8 +92,8 @@ class FacebookDataCollector
         $pages = array();
         foreach ($response->getGraphEdge() as $graphNode) {
             $page = new FacebookPage(array(
-                'page_id' => $graphNode['id'],
-                'name'    => $graphNode['name']
+                'id'   => $graphNode['id'],
+                'name' => $graphNode['name']
             ));
             $page->user()->associate($this->user);
             $page->save();
@@ -145,8 +146,7 @@ class FacebookDataCollector
         foreach ($params as $key=>$value) {
             $paramstr .= '&' . $key . '='. $value;
         }
-        $response =  $this->fb->get('/' . $page->page_id . '/insights/' . $insight . $paramstr , $this->accessToken);
-        var_dump($response->getDecodedBody());
+        $response =  $this->fb->get('/' . $page->id . '/insights/' . $insight . $paramstr , $this->accessToken);
         return $response->getDecodedBody()['data'];
     }
 

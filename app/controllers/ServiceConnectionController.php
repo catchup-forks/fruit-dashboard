@@ -320,7 +320,7 @@ class ServiceConnectionController extends BaseController
         } else if (count($pages) == 1) {
             Queue::push('FacebookAutoDashboardCreator', array(
                 'user_id' => Auth::user()->id,
-                'page_id' => array_keys($pages)[0]
+                'id'      => array_keys($pages)[0]
             ));
             return Redirect::to($this->getReferer());
         }
@@ -344,7 +344,7 @@ class ServiceConnectionController extends BaseController
         foreach (Input::get('pages') as $page) {
             Queue::push('FacebookAutoDashboardCreator', array(
                 'user_id' => Auth::user()->id,
-                'page_id' => $page->id
+                'id'      => $page->id
             ));
         }
         return Redirect::to($this->getReferer())

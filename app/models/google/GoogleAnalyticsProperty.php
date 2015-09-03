@@ -1,6 +1,6 @@
 <?php
 
-class FacebookPage extends Eloquent
+class GoogleAnalyticsProperty extends Eloquent
 {
     // -- Fields -- //
     protected $fillable = array(

@@ -28,11 +28,13 @@ class DashboardController extends BaseController
             return Redirect::route('signup-wizard.personal-widgets');
         }
 
+        //$time = microtime(TRUE);
         /* Checking the user's widget data integrity */
         Widget::checkIntegrity(Auth::user());
+        //Log::info(microtime(TRUE)-$time);
 
-        //$collector = new GoogleAnalyticsDataCollector(Auth::user());
-        //Log::info($collector->getFirstProfileId());
+        $collector = new GoogleAnalyticsDataCollector(Auth::user());
+        Log::info($collector->getSessions(Auth::user()->googleAnalyticsProperties()->first()->id));
 
         // Log::info(microtime(true) - $time);
         /* Render the page */
