@@ -101,7 +101,7 @@ class Background extends Eloquent
         /* URL already exists, get the next */
         if ($this->url != null) {
             /* Check for overflow */
-            if ($this->number + 1 > self::$numOfBackgroundFiles) {
+            if ($this->number + 1 >= self::$numOfBackgroundFiles) {
                 /* Get the first picture */
                 $this->number = ($this->number + 1 - self::$numOfBackgroundFiles) % self::$numOfBackgroundFiles;
             } else {
