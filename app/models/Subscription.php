@@ -69,7 +69,8 @@ class Subscription extends Eloquent
         /* Trial is active */
         } else {
             /* Handle expired trial */
-            if ($this->getDaysRemainingFromTrial() <= 0) {
+            if (($this->trial_status == 'active') and
+                ($this->getDaysRemainingFromTrial() <= 0)) {
                 /* Update status in db */
                 $this->changeTrialState('ended');
 
