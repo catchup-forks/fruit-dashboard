@@ -224,9 +224,12 @@ class GeneralWidgetController extends BaseController {
             $newWidget->save();
         }
 
-        /* Redirect to dashboard */
-        return Redirect::route('dashboard.dashboard')
-            ->with('success', "You successfully restored the widget");
+        $setupFields = $newWidget->getSetupFields();
+        if (empty($setupFields)) {
+            return Redirect::route('dashboard.dashboard')
+                ->with('success', 'You successfully restored the widget.'); }
+        return Redirect::route('widget.setup', array($newWidget->id))
+            ->with('success', 'You successfully restored the widget.');
     }
     /**
      * getAddWidget
@@ -294,7 +297,7 @@ class GeneralWidgetController extends BaseController {
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $widget->save();
-        
+
         /* Start trial period if the widget is premium */
         if ($widget->descriptor->is_premium) {
             Auth::user()->subscription->changeTrialState('active');

@@ -55,27 +55,19 @@ class Widget extends Eloquent
 
     /**
      * checkIntegrity
-     * Checking the dataintegrity of widgets.
+     * Checking the overall integrity of a user's widgets.
+     * --------------------------------------------------
+     * @param User $user
+     * --------------------------------------------------
     */
-    public static function checkDataIntegrity($user) {
+    public static function checkIntegrity($user) {
         foreach ($user->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
             /* Dealing only with datawidgets */
-            if ( ! $widget instanceof Datawidget) {
-                continue;
+            if ($widget instanceof Datawidget) {
+                $widget->checkDataIntegrity();
             }
-            if (is_null($widget->data)) {
-                /* No data is assigned, let's hope a save will fix it. */
-                $widget->save();
-                if (is_null($widget->data)) {
-                    /* Still not working */
-                    $widget->state = 'setup_required';
-                    $widget->save();
-                }
-            }
-            if ($widget->state == 'loading') {
-                $widget->refreshWidget();
-            }
+            $widget->checkSettingsIntegrity();
         }
     }
 
@@ -298,6 +290,24 @@ class Widget extends Eloquent
          * if no change has been made to the model.
         */
         return parent::save();
+    }
+
+    /**
+     * checkSettingsIntegrity
+     * Checking the Settings integrity of widgets.
+    */
+    protected function checkSettingsIntegrity() {
+        if (is_null($this->getSettings())) {
+            $this->state = 'setup_required';
+            $this->save();
+            return ;
+        }
+        foreach ($this->getSettingsFields() as $key=>$value) {
+            if ( ! array_key_exists($key, $this->getSettings())) {
+                $this->state = 'setup_required';
+                $this->save();
+            }
+        }
     }
 
     /**

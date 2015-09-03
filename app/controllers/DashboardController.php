@@ -29,7 +29,7 @@ class DashboardController extends BaseController
         }
 
         /* Checking the user's widget data integrity */
-        Widget::checkDataIntegrity(Auth::user());
+        Widget::checkIntegrity(Auth::user());
 
         //$collector = new GoogleAnalyticsDataCollector(Auth::user());
         //Log::info($collector->getFirstProfileId());

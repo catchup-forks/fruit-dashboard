@@ -95,6 +95,25 @@ abstract class DataWidget extends Widget
     protected function handleCustomAjax($postData) {
         return null;
     }
+
+    /**
+     * checkDataIntegrity
+     * Checking the DataIntegrity of widgets.
+    */
+    protected function checkDataIntegrity() {
+        if (is_null($this->data)) {
+            /* No data is assigned, let's hope a save will fix it. */
+            $this->save();
+            if (is_null($this->data)) {
+                /* Still not working */
+                $this->state = 'setup_required';
+                $this->save();
+            }
+        }
+        if ($this->state == 'loading') {
+            $this->refreshWidget();
+        }
+    }
 }
 
 ?>
