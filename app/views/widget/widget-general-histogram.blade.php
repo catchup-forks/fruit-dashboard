@@ -3,7 +3,7 @@
       {{ $widget->descriptor->name }}
   </span>
   <span class="text-white drop-shadow pull-right" id="{{$widget->id}}-value">
-    ${{ $widget->getLatestData()['value'] }}
+  {{ $widget->getLatestData()['value'] }}
   </span>
 </div>
 <div id="{{ $widget->id }}-chart-container">

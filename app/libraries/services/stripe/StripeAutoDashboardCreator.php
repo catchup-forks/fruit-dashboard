@@ -46,21 +46,17 @@ class StripeAutoDashboardCreator extends GeneralAutoDashboardCreator
     /**
      * Populating the widgets with data.
      */
-    protected function populateDashboard() {
-        $mrrWidget  = $this->widgets['stripe_mrr'];
-        $arrWidget  = $this->widgets['stripe_arr'];
-        $arpuWidget = $this->widgets['stripe_arpu'];
+    protected function populateData() {
+        $mrrManager  = $this->dataManagers['stripe_mrr'];
+        $arrManager  = $this->dataManagers['stripe_arr'];
+        $arpuManager = $this->dataManagers['stripe_arpu'];
 
         /* Creating data for the last DAYS days. */
         $metrics = $this->getMetrics();
 
-        $mrrWidget->data->raw_value = json_encode($metrics['mrr']);
-        $arrWidget->data->raw_value = json_encode($metrics['arr']);
-        $arpuWidget->data->raw_value = json_encode($metrics['arpu']);
-
-        $mrrWidget->data->save();
-        $arrWidget->data->save();
-        $arpuWidget->data->save();
+        $mrrManager->data->raw_value = json_encode($metrics['mrr']);
+        $arrManager->data->raw_value = json_encode($metrics['arr']);
+        $arpuManager->data->raw_value = json_encode($metrics['arpu']);
     }
 
     /**

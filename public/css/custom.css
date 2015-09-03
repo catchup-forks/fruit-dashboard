@@ -1,6 +1,7 @@
 html,
 body {
   height: 100%;
+  overflow: hidden;
 }
 .fill-height {
   height: 100%;
@@ -51,7 +52,11 @@ body {
   bottom: 25px;
   right: 25px;
 }
-.has-margin-vertical-sm {
+.has-margin-horizontal {
+  margin-left: 25px;
+  margin-right: 25px;
+}
+.has-margin-horizontal-sm {
   margin-left: 5px;
   margin-right: 5px;
 }

@@ -32,16 +32,22 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postSetupWidget'
     ]);
 
+    Route::any('reset/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.reset',
+        'uses'   => 'GeneralWidgetController@anyResetWidget'
+    ]);
+
     Route::any('delete/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.delete',
         'uses'   => 'GeneralWidgetController@anyDeleteWidget'
     ]);
 
-    Route::any('add', [
+    Route::get('add', [
         'before' => 'auth',
         'as'     => 'widget.add',
-        'uses'   => 'GeneralWidgetController@anyAddWidget'
+        'uses'   => 'GeneralWidgetController@getAddWidget'
     ]);
 
     Route::post('add/{descriptorID}', [

@@ -22,14 +22,19 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+        // $time = microtime(true);
         /* Detect if the user has no dashboard, and redirect */
         if (!Auth::user()->dashboards()->count()) {
             return Redirect::route('signup-wizard.personal-widgets');
         }
 
+        /* Checking the user's widget data integrity */
+        Widget::checkDataIntegrity(Auth::user());
+
         //$collector = new GoogleAnalyticsDataCollector(Auth::user());
         //Log::info($collector->getFirstProfileId());
 
+        // Log::info(microtime(true) - $time);
         /* Render the page */
         return View::make('dashboard.dashboard');
     }
@@ -60,33 +65,6 @@ class DashboardController extends BaseController
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
             return Response::json(FALSE);
-        }
-
-        /* Getting user's dashboards. */
-        $dashboards = Auth::user()->dashboards;
-
-        /* User can't delete last dashboard. */
-        if (count($dashboards) <= 1) {
-            return Response::json(FALSE);
-        }
-
-        /* Finding the dashboard where the widgets will be stored after deletion */
-        $toDashboard = null;
-        foreach ($dashboards as $iDashboard) {
-            if ($iDashboard->id != $dashboard->id) {
-                $toDashboard = $iDashboard;
-                break;
-            }
-        }
-
-        /* Saving the integrity of DataWidgets. */
-        foreach ($dashboard->widgets as $iWidget) {
-            $widget = $iWidget->getSpecific();
-            if ($widget instanceof DataWidget) {
-                $widget->dashboard()->associate($toDashboard);
-                $widget->state = 'hidden';
-                $widget->save();
-            }
         }
         $dashboard->delete();
 

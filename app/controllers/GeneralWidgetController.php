@@ -28,13 +28,6 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
 
-        /* If widget has no setup fields, redirect to dashboard automatically */
-        $settingsFields = $widget->getSettingsFields();
-        if (empty($settingsFields)) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('error', 'This widget has no settings.');
-        }
-
         /* Creating selectable dashboards */
         $dashboards = array();
         foreach (Auth::user()->dashboards as $dashboard) {
@@ -144,7 +137,6 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function postSetupWidget($widgetID) {
-
         // Getting the editable widget.
         try {
             $widget = $this->getWidget($widgetID);
@@ -171,8 +163,8 @@ class GeneralWidgetController extends BaseController {
                 ->withInput(Input::all());
         }
 
-        // Validation successful, ready to save.
-        $widget->saveSettings(Input::except('_token'));
+        /* Validation successful, ready to save. */
+        $widget->saveSettings(Input::all());
 
         return Redirect::route('dashboard.dashboard')
             ->with('success', "Widget successfully updated.");
@@ -187,16 +179,9 @@ class GeneralWidgetController extends BaseController {
      */
     public function anyDeleteWidget($widgetID) {
         /* Find and remove widget */
-        $generalWidget = Widget::find($widgetID);
-        if (!is_null($generalWidget)) {
-            $widget = $generalWidget->getSpecific();
-            /* Datawidget data should be kept safe. */
-            if ($widget instanceof DataWidget) {
-                $widget->state = 'hidden';
-                $widget->save();
-            } else {
-                $widget->delete();
-            }
+        $widget = Widget::find($widgetID);
+        if (!is_null($widget)) {
+            $widget->delete();
         }
 
         /* USING AJAX */
@@ -212,12 +197,44 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
-     * anyAddWidget
+     * anyResetWidget
+     * --------------------------------------------------
+     * @param (integer) ($widgetID) The ID of the deletable widget
+     * @return Resets a widget
+     * --------------------------------------------------
+     */
+    public function anyResetWidget($widgetID) {
+        /* Find and remove widget */
+        $widget = Widget::find($widgetID);
+        if (!is_null($widget)) {
+            /* Saving old widget data */
+            $position = $widget->position;
+            $dashboard = $widget->dashboard;
+            $className = $widget->descriptor->getClassName();
+
+            /* Deleting old widget. */
+            $widget->delete();
+
+            /* Saving new Widget */
+            $newWidget = new $className(array(
+                'position' => $position,
+                'state'    => 'active'
+            ));
+            $newWidget->dashboard()->associate($dashboard);
+            $newWidget->save();
+        }
+
+        /* Redirect to dashboard */
+        return Redirect::route('dashboard.dashboard')
+            ->with('success', "You successfully restored the widget");
+    }
+    /**
+     * getAddWidget
      * --------------------------------------------------
      * @return Renders the add widget page
      * --------------------------------------------------
      */
-    public function anyAddWidget() {
+    public function getAddWidget() {
         /* Detect if the user has no dashboard, and redirect */
         if (!Auth::user()->dashboards()->count()) {
             return Redirect::route('signup-wizard.personal-widgets');
@@ -238,8 +255,7 @@ class GeneralWidgetController extends BaseController {
         /* Get the widget descriptor */
 
         $descriptor = WidgetDescriptor::find($descriptorID);
-        if (is_null($descriptor)) {
-            return Redirect::back()
+        if (is_null($descriptor)) {return Redirect::back()
                 ->with('error', 'Something went wrong, your widget cannot be found.');
         }
         /* Create new widget instance */
@@ -253,35 +269,12 @@ class GeneralWidgetController extends BaseController {
                 return Redirect::route($redirectRoute);
             }
         }
-        $new = TRUE;
-        /* Looking for existing widgets. */
-        foreach (Auth::user()->widgets as $iWidget) {
-            if ($iWidget->descriptor->type == $descriptor->type) {
-                /* There's a match. */
-                if ($iWidget->state == 'hidden') {
-                    /* The widget is hidden, restoring it. */
-                    $new = FALSE;
-                    $widget = $iWidget->getSpecific();
-                    $widget->state = 'active';
-                    break;
-                }
-                if ($iWidget->getSpecific() instanceof HistogramWidget) {
-                    $existingData = $widget->data;
-                }
-            }
-        }
-        if ($new) {
-            /* Create widget */
-            $widget = new $className(array(
-                'settings' => json_encode(array()),
-                'state'    => 'active',
-            ));
 
-            /* Assigning existing data. */
-            if (isset($existingData)) {
-                $widget->data()->associate($existingData);
-            }
-        }
+        /* Create widget */
+        $widget = new $className(array(
+            'settings' => json_encode(array()),
+            'state'    => 'active',
+        ));
 
         /* Associate to dashboard */
         if (Input::get('toDashboard')) {
@@ -301,8 +294,7 @@ class GeneralWidgetController extends BaseController {
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $widget->save();
-
-        /* Start trial period if the widget is premium */
+ /* Start trial period if the widget is premium */
         if ($widget->descriptor->is_premium) {
             Auth::user()->subscription->changeTrialState('active');
         }

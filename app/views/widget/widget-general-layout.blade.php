@@ -8,29 +8,31 @@
     <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
   </a>
 
-  @if ($widget->getSettingsFields() != false)
   <a href="{{ route('widget.edit', $widget->id) }}">
     <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
   </a>
-  @endif
 
   @if ($widget instanceof DataWidget)
-  <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">  
+  <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">
     <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered"> </span>
   </a>
   @endif
 
   <!-- Adding loading on DataWidget -->
-  @if ($widget instanceof DataWidget)
-    @include('widget.widget-loading', ['widget' => $widget,])
-    <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
-  @endif
+  @if ($widget->state == 'setup_required')
+      @include('widget.widget-setup_required', ['widget' => $widget,])
+  @else
+    @if ($widget instanceof DataWidget)
+      @include('widget.widget-loading', ['widget' => $widget,])
+      <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
+    @endif
 
-  @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
+    @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
 
-  <!-- Adding loading on DataWidget -->
-  @if ($widget instanceof DataWidget)
-    </div>
+    <!-- Adding loading on DataWidget -->
+    @if ($widget instanceof DataWidget)
+      </div>
+    @endif
   @endif
 
 </li>
