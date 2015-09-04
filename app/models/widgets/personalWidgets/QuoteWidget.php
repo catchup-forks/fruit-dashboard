@@ -7,7 +7,6 @@ class QuoteWidget extends DataWidget
         'type' => array(
             'name'    => 'Type',
             'type'    => 'SCHOICE',
-            'default' => 'inspirational'
         ),
         'update_frequency' => array(
             'name'    => 'Changes (in minutes)',
@@ -17,7 +16,7 @@ class QuoteWidget extends DataWidget
     );
 
     /* The settings to setup in the setup-wizard */
-    public static $setupSettings = array();
+    public static $setupSettings = array('type');
     public static $criteriaSettings = array('type');
 
     /* Choices functions */

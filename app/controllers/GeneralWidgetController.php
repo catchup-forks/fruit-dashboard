@@ -297,7 +297,11 @@ class GeneralWidgetController extends BaseController {
 
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
-        $widget->save();
+        $options = array();
+        if ($widget instanceof DataWidget && $className::$criteriaSettings !== FALSE) {
+            $options['skipManager'] = TRUE;
+        }
+        $widget->save($options);
 
         /* Start trial period if the widget is premium */
         if ($widget->descriptor->is_premium) {

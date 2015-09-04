@@ -82,8 +82,8 @@ abstract class GeneralAutoDashboardCreator
     */
     protected function run() {
         $this->createDashboard();
-        $this->createWidgets();
         $this->createManagers();
+        $this->createWidgets();
         $this->populateData();
         $this->saveData();
         $this->activateWidgets();
@@ -116,7 +116,7 @@ abstract class GeneralAutoDashboardCreator
                     'state'    => 'loading'
                 ));
                 $widget->dashboard()->associate($this->dashboard);
-                $widget->save();
+                $widget->save(array('skipManager' => TRUE));
 
                 $this->widgets[$descriptor->type] = $widget;
             }

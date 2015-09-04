@@ -245,6 +245,7 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
+        Log::info($options);
         /* Associating descriptor. */
         $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
@@ -259,14 +260,14 @@ class Widget extends Eloquent
         // Calling parent.
         parent::save($options);
 
-        // Always saving settings to keep integrity.
+        // Saving settings by option.
         $commit = FALSE;
-        if (is_null($this->settings)) {
+        if (isset($options['saveSettings']) && $options['saveSettings'] == TRUE&& is_null($this->settings)) {
             $commit = TRUE;
         }
         $this->saveSettings(array(), $commit);
 
-        if ($this instanceof DataWidget) {
+        if (($this instanceof DataWidget) && ( ! isset($options['skipManager']) || $options['skipManager'] == FALSE)) {
             $dataManager = $this->descriptor->getDataManager($this);
             if ( ! is_null($dataManager)) {
                 $this->data()->associate($dataManager->getSpecific()->data);
