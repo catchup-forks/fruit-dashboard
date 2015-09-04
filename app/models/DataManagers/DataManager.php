@@ -17,6 +17,8 @@ class DataManager extends Eloquent
     );
     public $timestamps = FALSE;
 
+    public function collectData() {}
+
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
@@ -26,27 +28,6 @@ class DataManager extends Eloquent
     public function getSpecific() {
         $className = str_replace('Widget', 'DataManager', WidgetDescriptor::find($this->descriptor_id)->getClassName());
         return $className::find($this->id);
-    }
-
-    /**
-     * collectData
-     * Getting the new value based on getCurrentValue()
-     */
-    public function collectData() {
-        $newValue = $this->getCurrentValue();
-
-        /* Getting previous values. */
-        $currentData = json_decode($this->data->raw_value, 1);
-        $lastData = end($currentData);
-        $today = Carbon::now()->toDateString();
-        /* If today, popping the old value. */
-        if ($lastData && ($lastData['date'] == $today)) {
-            array_pop($currentData);
-        }
-        /* Adding, saving data. */
-        array_push($currentData, array('date' => $today, 'value' => $newValue));
-        $this->data->raw_value = json_encode($currentData);
-        $this->data->save();
     }
 
     /**

@@ -28,9 +28,9 @@ class CollectData extends Command {
      */
     public function fire()
     {
-        /* Iterating through the widgets. */
-        foreach (DataCollector::all() as $collector) {
-            $collector->getSpecficic()->collectData();
+        /* Iterating through the managers. */
+        foreach (DataManager::all() as $manager) {
+            $manager->getSpecficic()->collectData();
         }
     }
 }
