@@ -102,6 +102,10 @@
          widget_margins: [margin, margin],
          min_cols: numberOfCols,
          min_rows: numberOfRows,
+         //to be introduced
+         //max_rows: numberOfRows,
+         //to be introduced
+         //shift_larger_widgets_down: false,
          snap_up: false,
          serialize_params: function ($w, wgd) {
            return {
