@@ -29,6 +29,9 @@
                   @foreach($widgetDescriptors as $descriptor)
                     <a href="#" id="descriptor-{{ $descriptor->id }}" class="list-group-item changes-image" data-widget="widget-{{ $descriptor->type }}">
                       {{ $descriptor->name }}
+                      {{-- This is the span for the selection icon --}}
+                      <span class="selection-icon"> </span> 
+
                       {{-- If user is on free plan display labels --}}
                       @if (Auth::user()->subscription->isOnFreePlan())
                         @if ($descriptor->is_premium == 0)
@@ -156,6 +159,15 @@
         e.preventDefault();
         showDescription(getID(this));
       });
+
+    // Select or deselect items by clicking
+    $('.list-group-item').click(function(){
+      // remove previously added checkmarks
+      $('.selection-icon').attr('class', 'selection-icon');
+      // add checkmark to the actual one
+      $(this).find('span').first().toggleClass('fa fa-check text-success pull-right');
+    });
+
     });
   </script>
   @append

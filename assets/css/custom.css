@@ -1,7 +1,6 @@
 html,
 body {
   height: 100%;
-  overflow: hidden;
 }
 .fill-height {
   height: 100%;
@@ -136,6 +135,7 @@ body {
   left: 9.5%;
   right: 9.5%;
   margin-bottom: 25px;
+  overflow-x: hidden;
 }
 .gridster ul li {
   cursor: default;
