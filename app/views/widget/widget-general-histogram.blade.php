@@ -56,7 +56,7 @@
 
     @if ($widget->state == 'loading')
       // Loading widget.
-      loadWidget({{$widget->id}}, function (data) {updateChartWidget(data, canvas, name, valueSpan); });
+      loadWidget({{$widget->id}}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan); });
     @endif
 
     // Calling drawer every time carousel is changed.
@@ -76,11 +76,10 @@
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) { updateChartWidget(data, canvas, name, valueSpan);});
+      refreshWidget({{ $widget->id }}, function (data) { updateHistogramWidget(data, canvas, name, valueSpan);});
      });
 
   });
-
 </script>
 
 @append

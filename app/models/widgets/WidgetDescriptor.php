@@ -56,7 +56,7 @@ class WidgetDescriptor extends Eloquent
             if (count($managers) > 1) {
                 /* More managers, checking criteria. */
                 foreach ($managers as $manager) {
-                    if ($manger->getCriteria() == $widget->getCriteria()) {
+                    if ($manager->getCriteria() == $widget->getCriteria()) {
                         return $manager;
                     }
                 }

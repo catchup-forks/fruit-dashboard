@@ -18,8 +18,6 @@ abstract class GoogleConnector extends GeneralServiceConnector
     function __construct($user) {
         parent::__construct($user);
         $this->client = static::createClient();
-        $this->client->setAccessType("offline");
-        $this->client->setApprovalPrompt('force');
     }
 
     /**
@@ -93,7 +91,6 @@ abstract class GoogleConnector extends GeneralServiceConnector
         /* Get access token from DB. */
         $connection = $this->getConnection();
         $this->client->setAccessToken($connection->access_token);
-
     }
 
     /**

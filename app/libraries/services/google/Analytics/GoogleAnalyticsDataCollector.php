@@ -9,9 +9,25 @@
 
 class GoogleAnalyticsDataCollector
 {
-    /* -- Class properties -- */
+    /**
+     * The user object.
+     *
+     * @var User
+     */
     private $user;
+
+    /**
+     * The client object.
+     *
+     * @var Google_Client
+     */
     private $client;
+
+    /**
+     * The analytics object.
+     *
+     * @var Google_Service_Analytics
+     */
     private $analytics;
 
     /* -- Constructor -- */
@@ -24,22 +40,10 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-     * saveProfiles
-     * Saves a user's google analytics profiles.
-     * --------------------------------------------------
-     * --------------------------------------------------
+     * getFirstAccountId
+     * Returning the first account id.
      */
-    public function saveProfiles() {
-        /* TODO */
-    }
-
-    /**
-     * getFirstProfileId
-     * Returns the first GA profile.
-     * --------------------------------------------------
-     * --------------------------------------------------
-     */
-    public function getFirstProfileId() {
+    private function getFirstAccountId() {
         /* Getting accounts */
         $accounts = $this->analytics->management_accounts->listManagementAccounts();
         $items = $accounts->getItems();
@@ -48,25 +52,79 @@ class GoogleAnalyticsDataCollector
         }
 
         /* Getting properties */
-        $firstAccountId = $items[0]->getId();
-        $properties = $this->analytics->management_webproperties->listManagementWebproperties($firstAccountId);
-
-        $items = $properties->getItems();
-        if (count($items) <= 0) {
-            return null;
-        }
-
-        /* Getting profiles */
-        $firstPropertyId = $items[0]->getId();
-        $profiles = $this->analytics->management_profiles->listManagementProfiles($firstAccountId, $firstPropertyId);
-
-        $items = $profiles->getItems();
-        if (count($items) <= 0) {
-            return null;
-        }
-
         return $items[0]->getId();
     }
 
+    /**
+     * saveProperties
+     * Saves a user's google analytics properties.
+     */
+    public function saveProperties() {
+        $this->user->googleAnalyticsProperties()->delete();
+        $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($this->getFirstAccountId());
+        $items = $ga_properties->getItems();
+        if (count($items) <= 0) {
+            return null;
+        }
+        $properties = array();
+        foreach ($items as $item) {
+            $property = new GoogleAnalyticsProperty(array(
+                'id'   => $item->getId(),
+                'name' => $item->getName()
+            ));
+            $property->user()->associate($this->user);
+            $property->save();
+            array_push($properties, $property);
+        }
+        return $properties;
+    }
 
+    /**
+     * getMetrics
+     * Retrieving specific metrics for all profiles.
+     */
+    public function getMetrics($propertyId, $start, $end, $metrics) {
+        /* Creating metrics array. */
+        $metricsData = array();
+        foreach ($metrics as $metric) {
+            $metricsData[$metric] = array();
+        }
+
+        /* Iterating through the profiles. */
+        foreach ($this->getProfiles($propertyId) as $profile) {
+            /* Retrieving results from API */
+            $results = $this->analytics->data_ga->get(
+               'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics));
+            $rows = $results->getRows();
+
+            if (count($rows) > 0) {
+                $profileName = $results->getProfileInfo()->getProfileName();
+
+                /* Populating metricsData. */
+                $i = 0;
+                foreach ($metrics as $metric) {
+                    if (!isset($metricsData[$metric][$profileName])) {
+                        $metricsData[$metric][$profileName] = array();
+                    }
+                    array_push($metricsData[$metric][$profileName], $rows[0][$i++]);
+                }
+            }
+        }
+        return $metricsData;
+    }
+
+    /**
+     * getSessions
+     * Returning the number of sessions.
+     */
+    public function getSessions($propertyId) {
+        Log::info($this->getMetrics($propertyId, 'yesterday', 'today', array('sessions', 'avgSessionDuration')));
+   }
+
+    /**
+     * getProfiles
+     */
+    private function getProfiles($propertyId) {
+        return $this->analytics->management_profiles->listManagementProfiles($this->getFirstAccountId(), $propertyId)->getItems();
+   }
 } /* GoogleAnalyticsDataCollector */

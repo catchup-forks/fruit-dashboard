@@ -296,6 +296,40 @@ class WidgetDescriptorSeeder extends Seeder
                     'is_premium'  => TRUE,
                 )
             );
+
+            /* Social widgets | GOOGLE ANALYTICS */
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Bounce rate'],
+                array(
+                    'name'        => 'Bounce rate',
+                    'description' => 'The percentage of single-page session (i.e., session in which the person left your property from the first page).',
+                    'type'        => 'google_analytics_bounce_rate',
+                    'category'    => 'google_analytics',
+                    'is_premium'  => TRUE,
+                )
+            );
+
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Sessions'],
+                array(
+                    'name'        => 'Sessions',
+                    'description' => 'The total number of sessions',
+                    'type'        => 'google_analytics_sessions',
+                    'category'    => 'google_analytics',
+                    'is_premium'  => TRUE,
+                )
+            );
+
+            WidgetDescriptor::updateOrCreate(
+                ['name' => 'Average session duration'],
+                array(
+                    'name'        => 'Average session duration',
+                    'description' => 'The average duration of user sessions represented in total seconds.',
+                    'type'        => 'google_analytics_avg_session_duration',
+                    'category'    => 'google_analytics',
+                    'is_premium'  => TRUE,
+                )
+            );
         } /* !App::environment('production', 'staging')*/
 
         /* Send message to console */

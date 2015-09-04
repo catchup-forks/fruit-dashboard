@@ -22,7 +22,6 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        // $time = microtime(true);
         /* Detect if the user has no dashboard, and redirect */
         if (!Auth::user()->dashboards()->count()) {
             return Redirect::route('signup-wizard.personal-widgets');
@@ -30,11 +29,6 @@ class DashboardController extends BaseController
 
         /* Checking the user's widget data integrity */
         Widget::checkIntegrity(Auth::user());
-
-        //$collector = new GoogleAnalyticsDataCollector(Auth::user());
-        //Log::info($collector->getFirstProfileId());
-
-        // Log::info(microtime(true) - $time);
         /* Render the page */
         return View::make('dashboard.dashboard');
     }
