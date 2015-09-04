@@ -320,7 +320,7 @@ class ServiceConnectionController extends BaseController
         } else if (count($pages) == 1) {
             Queue::push('FacebookAutoDashboardCreator', array(
                 'user_id' => Auth::user()->id,
-                'id'      => array_keys($pages)[0]
+                'page_id' => array_keys($pages)[0]
             ));
             return Redirect::to($this->getReferer());
         }
@@ -416,8 +416,8 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
             Queue::push('GoogleAnalyticsAutoDashboardCreator', array(
-                'user_id' => Auth::user()->id,
-                'id'      => array_keys($properties)[0]
+                'user_id'     => Auth::user()->id,
+                'property_id' => array_keys($properties)[0]
             ));
             return Redirect::to($this->getReferer());
         }

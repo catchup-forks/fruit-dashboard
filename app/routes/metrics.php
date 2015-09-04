@@ -5,7 +5,7 @@
  * @see MetricsController
  */
 Route::group([
-        'prefix'    => 'metrics',
+        'prefix' => 'metrics',
     ], function() {
 
     Route::get('users/registered', [

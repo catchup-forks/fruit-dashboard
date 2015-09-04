@@ -17,7 +17,13 @@ abstract class HistogramDataManager extends DataManager
 
         /* Getting previous values. */
         $currentData = $this->getData();
-        $lastData = end($currentData);
+        if ( ! empty($currentData)) {
+            $lastData = end($currentData);
+        } else {
+            $currentData = array();
+            $lastData = null;
+        }
+
         $today = Carbon::now()->toDateString();
 
         /* If today, popping the old value. */
@@ -26,7 +32,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Adding, saving data. */
-        array_push($currentData, $this->formatData($date, $data));
+        array_push($currentData, $this->formatData($today, $newValue));
         $this->saveData($currentData);
     }
 
@@ -35,12 +41,12 @@ abstract class HistogramDataManager extends DataManager
      * Returning the last data in the histogram.
      * --------------------------------------------------
      * @param Carbon $date
-     * @param mixed $data
+     * @param mixed $value
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
-        return array('date' => $date, 'value' => $newValue);
+     protected function formatData($date, $value) {
+        return array('date' => $date, 'value' => $value);
      }
 
     /**

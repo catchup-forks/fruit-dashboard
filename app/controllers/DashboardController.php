@@ -29,6 +29,7 @@ class DashboardController extends BaseController
 
         /* Checking the user's widget data integrity */
         Widget::checkIntegrity(Auth::user());
+
         /* Render the page */
         return View::make('dashboard.dashboard');
     }
@@ -99,6 +100,48 @@ class DashboardController extends BaseController
 
         $dashboard->is_locked = FALSE;
         $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyLockAllDashboards
+     * --------------------------------------------------
+     * @return Locks all dashboards.
+     * --------------------------------------------------
+     */
+    public function anyLockAllDashboards($userId) {
+        $user = User::find($userId);
+        if (is_null($user)) {
+            return Response::json(FALSE);
+        }
+
+        foreach ($user->dashboards as $dashboard) {
+            $dashboard->is_locked = TRUE;
+            $dashboard->save();
+        }
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyUnlockAllDashboards
+     * --------------------------------------------------
+     * @return Unlocks all dashboards.
+     * --------------------------------------------------
+     */
+    public function anyUnlockAllDashboards($userId) {
+        $user = User::find($userId);
+        if (is_null($user)) {
+            return Response::json(FALSE);
+        }
+
+        foreach ($user->dashboards as $dashboard) {
+            $dashboard->is_locked = FALES;
+            $dashboard->save();
+        }
 
         /* Return. */
         return Response::json(TRUE);

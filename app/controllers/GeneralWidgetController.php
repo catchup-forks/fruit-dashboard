@@ -222,13 +222,14 @@ class GeneralWidgetController extends BaseController {
             ));
             $newWidget->dashboard()->associate($dashboard);
             $newWidget->save();
-        }
 
-        $setupFields = $newWidget->getSetupFields();
-        if (empty($setupFields)) {
-            return Redirect::route('dashboard.dashboard')
-                ->with('success', 'You successfully restored the widget.'); }
-        return Redirect::route('widget.setup', array($newWidget->id))
+            $setupFields = $newWidget->getSetupFields();
+            if ( ! empty($setupFields)) {
+                return Redirect::route('widget.setup', array($newWidget->id))
+                    ->with('success', 'You successfully restored the widget.');
+            }
+        }
+        return Redirect::route('dashboard.dashboard')
             ->with('success', 'You successfully restored the widget.');
     }
     /**
@@ -291,7 +292,7 @@ class GeneralWidgetController extends BaseController {
 
         $widget->dashboard()->associate($dashboard);
 
-        /* Finding position. */
+    /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
          /* Associate descriptor and save */

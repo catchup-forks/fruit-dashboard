@@ -26,19 +26,6 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
     }
 
     /**
-     * ================================================== *
-     *                   PUBLIC SECTION                   *
-     * ================================================== *
-    */
-    /**
-     * collectData
-     * Passing the job to the DataCollector
-     */
-    public function collectData() {
-        $this->data->manager->getSpecific()->collectData();
-    }
-
-    /**
      * getLatestData
      * Returning the last data in the histogram.
      * --------------------------------------------------

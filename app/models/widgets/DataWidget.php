@@ -2,9 +2,6 @@
 
 abstract class DataWidget extends Widget
 {
-    abstract public function collectData(); // This function recalculates current widget data.
-    abstract public function getData($postData=null); // Returning widget data.
-
     protected static $criteriaSettings = array();
 
     /**
@@ -85,6 +82,22 @@ abstract class DataWidget extends Widget
     }
 
     /**
+     * collectData
+     * Passing the job to the DataManager
+     */
+    public function collectData() {
+        return $this->data->manager->getSpecific()->collectData();
+    }
+
+    /**
+     * getData
+     * Passing the job to the DataManager
+     */
+    public function getData($postData=null) {
+        return $this->data->manager->getSpecific()->getData();
+    }
+
+    /**
      * handleCustomAjax
      * Dummy custom ajax handler.
      * --------------------------------------------------
@@ -101,7 +114,7 @@ abstract class DataWidget extends Widget
      * Checking the DataIntegrity of widgets.
     */
     protected function checkDataIntegrity() {
-        if (is_null($this->data)) {
+        if (is_null($this->data) || is_null($this->data->manager)) {
             /* No data is assigned, let's hope a save will fix it. */
             $this->save();
             if (is_null($this->data)) {

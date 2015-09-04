@@ -8,12 +8,12 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * Returning the last data in the histogram.
      * --------------------------------------------------
      * @param Carbon $date
-     * @param mixed $data
+     * @param mixed $value
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
-        return array('date' => $date, 'value' => $newValue);
+     protected function formatData($date, $value) {
+        return array('date' => $date, 'data_0' => $value);
      }
 
     /**
@@ -48,7 +48,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      protected function saveData($data) {
         /* Getting dataSets */
         $this->data->raw_value = json_encode(array(
-            'datasets' => $this->getDataSets,
+            'datasets' => $this->getDataSets(),
             'data'     => $data
         ));
         $this->data->save();

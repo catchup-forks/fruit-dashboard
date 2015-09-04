@@ -1,5 +1,24 @@
 <?php
 
+/* When a manager is using a webhook. */
+trait WebhookDataManager {
+    /**
+     * getJson
+     * Returning the json from the url.
+     * --------------------------------------------------
+     * @return array/null
+     * --------------------------------------------------
+     */
+    private function getJson() {
+        try {
+            $json = file_get_contents($this->getCriteria()['url']);
+        } catch (Exception $e) {
+            return null;
+        }
+        return json_decode($json, TRUE);
+    }
+}
+
 /* This class is responsible for data collection. */
 class DataManager extends Eloquent
 {
@@ -18,6 +37,41 @@ class DataManager extends Eloquent
     public $timestamps = FALSE;
 
     public function collectData() {}
+
+    /**
+     * createManagerFromWidget
+     * Creating and returning a manager from a widget
+     * --------------------------------------------------
+     * @param Widget $widget
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function createManagerFromWidget($widget) {
+        /* Only datawidgets are relevant */
+        if ( ! $widget instanceof DataWidget) {
+            return null;
+        }
+
+        /* Creating manager. */
+        $manager = new DataManager;
+        $manager->user()->associate($widget->user());
+        $manager->descriptor()->associate($widget->descriptor);
+        $manager->settings_criteria = json_encode($widget->getCriteria());
+
+        /* Creating/assigning data. */
+        if (isset($widget->data)) {
+            $manager->data()->associate($widget->data);
+        } else {
+            $data = Data::create(array('raw_value' => ''));
+           $manager->data()->associate($data);
+        }
+
+        /* Saving changes. */
+        $manager->save();
+        $manager->getSpecific()->collectData();
+        return $manager;
+
+    }
 
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -40,7 +94,6 @@ class DataManager extends Eloquent
     public function getCriteria() {
         return json_decode($this->settings_criteria, 1);
     }
-
 
     /**
      * getData

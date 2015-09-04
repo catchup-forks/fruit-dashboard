@@ -4,25 +4,6 @@ interface iCronWidget {
     public function collectData();
 }
 
-/* When a widget is using a webhook. */
-trait WebhookWidget {
-    /**
-     * getJson
-     * Returning the json from the url.
-     * --------------------------------------------------
-     * @return array/null
-     * --------------------------------------------------
-     */
-    private function getJson() {
-        try {
-            $json = file_get_contents($this->getSettings()['url']);
-        } catch (Exception $e) {
-            return null;
-        }
-        return json_decode($json, TRUE);
-    }
-}
-
 /* Main widget class */
 class Widget extends Eloquent
 {
@@ -278,11 +259,18 @@ class Widget extends Eloquent
         // Calling parent.
         parent::save($options);
 
-        // Always saving settings to keep integrity.|
-        $this->saveSettings(array(), FALSE);
-        $dataManager = $this->descriptor->getDataManager($this);
-        if ( ! is_null($dataManager)) {
-            $this->data()->associate($dataManager->getSpecific()->data);
+        // Always saving settings to keep integrity.
+        $commit = FALSE;
+        if (is_null($this->settings)) {
+            $commit = TRUE;
+        }
+        $this->saveSettings(array(), $commit);
+
+        if ($this instanceof DataWidget) {
+            $dataManager = $this->descriptor->getDataManager($this);
+            if ( ! is_null($dataManager)) {
+                $this->data()->associate($dataManager->getSpecific()->data);
+            }
         }
 
         /* Saving settings.
