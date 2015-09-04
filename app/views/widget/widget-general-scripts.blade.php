@@ -98,7 +98,7 @@
     loadWidget(widgetId, callback);
   };
 
-  function drawLineGraph(canvas, values, labels, name, timeOut) {
+  function drawLineGraph(canvas, values, labels, name) {
     // Building data.
     var chartData = {
     labels: labels,
@@ -116,11 +116,8 @@
     // Getting context.
     var ctx = canvas[0].getContext("2d");
 
-    // Clear the canvas.
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     // Drawing chart.
-    setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, timeOut);
+    var chart = new Chart(ctx).Line(chartData, chartOptions);
   }
 
   function updateChartWidget(data, canvas, name, valueSpan) {
@@ -134,6 +131,6 @@
     if (data.length > 0 && valueSpan) {
       valueSpan.html("$" + data[data.length-1]['value']);
     }
-    drawLineGraph(canvas, values, labels, name, 250);
+    drawLineGraph(canvas, values, labels, name);
   }
 </script>
