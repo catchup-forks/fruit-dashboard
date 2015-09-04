@@ -5,7 +5,7 @@ class FacebookNewLikesDataManager extends GeneralFacebookDataManager
     public function getCurrentValue() {
         $collector = new FacebookDataCollector($this->user);
         /* Getting previous last data. */
-        $lastData = $this->getLikesCollector()->getLatestData();
+        $lastData = $this->getLikesManager()->getLatestData();
         if (is_null($lastData)) {
             return $collector->getTotalLikes($this->getPage());
         }
@@ -15,12 +15,12 @@ class FacebookNewLikesDataManager extends GeneralFacebookDataManager
     }
 
     /**
-     * getLikesCollector
+     * getLikesManager
      * --------------------------------------------------
      * @return One of the user's facebook likes widget.
      * --------------------------------------------------
      */
-    private function getLikesCollector() {
+    private function getLikesManager() {
         foreach ($this->user->dataManagers as $dataManager) {
             if (($dataManager->descriptor->type == 'facebook_likes') && ($this->getCriteria() == $dataManager->getCriteria())) {
                 return $dataManager->getSpecific();
