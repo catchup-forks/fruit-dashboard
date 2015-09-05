@@ -1,8 +1,23 @@
+<!-- Google Analytics -->
+@include('tracking.google-analytics')
+<!-- /Google Analytics -->
+
+<!-- Intercom IO -->
+@include('tracking.intercom-io')
+<!-- /Intercom IO -->
+
+<!-- Customer IO -->
+@include('tracking.customer-io')
+<!-- /Customer IO -->
+
+<!-- Mixpanel -->
+@include('tracking.mixpanel')
+<!-- /Mixpanel -->
+
+<!-- Global tracking function -->
 <script type="text/javascript">
 
-function trackAll(mode, eventData){
-    @if (App::environment('production'))
-    
+function trackAll(mode, eventData){   
     // Lazy mode
     if (mode == 'lazy') {
         // Google analytics data
@@ -13,8 +28,14 @@ function trackAll(mode, eventData){
             'ev': null,
         };
 
-        // Intercom data
-        var intercomEventData = {
+        // Intercom IO data
+        var intercomIOEventData = {
+            'en': eventData['en'],
+            'md': {'metadata': eventData['el']},
+        };
+
+        // Customer IO data
+        var customerIOData = {
             'en': eventData['en'],
             'md': {'metadata': eventData['el']},
         };
@@ -35,8 +56,13 @@ function trackAll(mode, eventData){
             'ev': eventData['ev'],
         };
 
-        // Intercom data
-        var intercomEventData = {
+        // Intercom IO data
+        var intercomIOEventData = {
+            'en': eventData['en'],
+            'md': eventData['md'],
+        };
+
+        var customerIOData = {
             'en': eventData['en'],
             'md': eventData['md'],
         };
@@ -49,6 +75,7 @@ function trackAll(mode, eventData){
     };
 
     // Send events
+    // Google Analytics
     ga('send', 'event', 
         googleEventData['ec'],
         googleEventData['ea'],
@@ -56,20 +83,27 @@ function trackAll(mode, eventData){
         googleEventData['ev']
     );
 
+    // Intercom IO
     Intercom('trackEvent', 
-        intercomEventData['en'],
-        intercomEventData['md']
+        intercomIOEventData['en'],
+        intercomIOEventData['md']
     );
 
+    // Customer IO
+    _cio.track(
+        customerIOData['en'], 
+        customerIOData['md']
+    );
+
+    // Mixpanel
     mixpanel.track(
         mixpanelEventData['en'],
         mixpanelEventData['md']
     );
-
-    @endif
 
     // Return
     return true;
 }
 
 </script>
+<!-- /Global tracking function -->

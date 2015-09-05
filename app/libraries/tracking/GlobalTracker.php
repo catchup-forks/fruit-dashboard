@@ -28,6 +28,32 @@ class GlobalTracker {
         self::$mixpanel = new MixpanelTracker();
     }
 
+
+    /**
+     * ================================================== *
+     *                PUBLIC STATIC SECTION               *
+     * ================================================== *
+     */
+    /**
+     * isTrackingEnabled:
+     * --------------------------------------------------
+     * Returns true if the tracking is enabled, false if it isn't.
+     * @return (boolean) ($isTrackingEnabled) is the tracking enabled
+     * --------------------------------------------------
+     */
+    public static function isTrackingEnabled() {
+        /* ---- FORCE TRACKING (DEBUG MODE) ---- */
+        return TRUE;
+
+        /* Tracking is enabled only on production server */
+        if (App::environment('production')) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+    }
+
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -57,7 +83,7 @@ class GlobalTracker {
      * --------------------------------------------------
      */
     public function trackAll($mode, $eventData) {
-        if (App::environment('production')) {
+        if (self::isTrackingEnabled()) {
             /* Lazy mode */
             if ($mode=='lazy') {
                 $googleEventData = array(
