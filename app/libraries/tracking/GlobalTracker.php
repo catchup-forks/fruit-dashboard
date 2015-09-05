@@ -18,13 +18,15 @@
 class GlobalTracker {
     /* -- Class properties -- */
     private static $google;
-    private static $intercom;
+    private static $intercomIO;
+    private static $customerIO;
     private static $mixpanel;
 
     /* -- Constructor -- */
     public function __construct(){
         self::$google   = new GoogleTracker();
-        self::$intercom = new IntercomTracker();
+        self::$intercomIO = new IntercomIOTracker();
+        self::$customerIO = new CustomerIOTracker();
         self::$mixpanel = new MixpanelTracker();
     }
 
@@ -43,7 +45,7 @@ class GlobalTracker {
      */
     public static function isTrackingEnabled() {
         /* ---- FORCE TRACKING (DEBUG MODE) ---- */
-        return TRUE;
+        //return TRUE;
 
         /* Tracking is enabled only on production server */
         if (App::environment('production')) {
@@ -52,7 +54,6 @@ class GlobalTracker {
             return FALSE;
         }
     }
-
 
     /**
      * ================================================== *
@@ -73,12 +74,12 @@ class GlobalTracker {
      *      (string) ($en) The name of the event
      *      (string) ($el) Custom label for the event
      *    DETAILED MODE
-     *      (string) (ec) [Req] Event Category (Google)
-     *      (string) (ea) [Req] Event Action   (Google)
-     *      (string) (el) Event label.         (Google)
-     *      (int)    (ev) Event value.         (Google)
-     *      (string) (en) [Req] Event name     (Intercom)(Mixpanel)
-     *      (array)  (md) Metadata             (Intercom)(Mixpanel)
+     *      (string) (ec) [Req] Event Category (GoogleAnalytics)
+     *      (string) (ea) [Req] Event Action   (GoogleAnalytics)
+     *      (string) (el) Event label.         (GoogleAnalytics)
+     *      (int)    (ev) Event value.         (GoogleAnalytics)
+     *      (string) (en) [Req] Event name     (IntercomIO)(CustomerIO)(Mixpanel)
+     *      (array)  (md) Metadata             (IntercomIO)(CustomerIO)(Mixpanel)
      * @return None
      * --------------------------------------------------
      */
@@ -93,7 +94,13 @@ class GlobalTracker {
                 );
 
                 /* Intercom IO event data */
-                $intercomEventData = array(
+                $intercomIOEventData = array(
+                    'en' => $eventData['en'],
+                    'md' => array('metadata' => $eventData['el'])
+                );
+
+                /* Customer IO event data */
+                $customerIOEventData = array(
                     'en' => $eventData['en'],
                     'md' => array('metadata' => $eventData['el'])
                 );
@@ -115,7 +122,13 @@ class GlobalTracker {
                 );
 
                 /* Intercom IO event data */
-                $intercomEventData = array(
+                $intercomIOEventData = array(
+                    'en' => $eventData['en'],
+                    'md' => $eventData['md'],
+                );
+
+                /* Customer IO event data */
+                $intercomIOEventData = array(
                     'en' => $eventData['en'],
                     'md' => $eventData['md'],
                 );
@@ -129,7 +142,8 @@ class GlobalTracker {
 
             /* Send events */
             self::$google->sendEvent($googleEventData);
-            self::$intercom->sendEvent($intercomEventData);
+            self::$intercomIO->sendEvent($intercomIOEventData);
+            self::$customerIO->sendEvent($customerIOEventData);
             self::$mixpanel->sendEvent($mixpanelEventData);
         }
     }

@@ -2,10 +2,10 @@
 
 /**
 * --------------------------------------------------------------------------
-* IntercomTracker:
+* IntercomIOTracker:
 *       Wrapper functions for server-side event tracking
 * Usage:
-*       $tracker = new IntercomTracker();
+*       $tracker = new IntercomIOTracker();
 *       $eventData = array(
 *           'en' => 'Event name', // Required.
 *           'md' => array(
@@ -16,14 +16,14 @@
 *       $tracker->sendEvent($eventData);
 * --------------------------------------------------------------------------
 */
-class IntercomTracker {
+class IntercomIOTracker {
 
     /* -- Class properties -- */
-    private static $intercom;
+    private static $intercomIO;
 
     /* -- Constructor -- */
     public function __construct(){
-        self::$intercom = IntercomClient::factory(array(
+        self::$intercomIO = IntercomClient::factory(array(
             'app_id'  => $_ENV['INTERCOM_APP_ID'],
             'api_key' => $_ENV['INTERCOM_API_KEY'],
         ));
@@ -48,7 +48,7 @@ class IntercomTracker {
     public function sendEvent($eventData) {
         /* Build and send the request */
         try {
-            self::$intercom->createEvent(array(
+            self::$intercomIO->createEvent(array(
                 "event_name" => $eventData['en'],
                 "created_at" => Carbon::now()->timestamp,
                 "user_id" => (Auth::check() ? Auth::user()->id : 0),
@@ -60,4 +60,4 @@ class IntercomTracker {
         /* Return */
         return true;
     }
-} /* IntercomTracker */
+} /* IntercomIOTracker */

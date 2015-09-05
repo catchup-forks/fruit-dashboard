@@ -18,7 +18,7 @@
 <script type="text/javascript">
   @if (Auth::user())
     _cio.identify({
-      id:         'fduser-{{ Auth::user()->id }}',
+      id:         '{{ Auth::user()->id }}',
       email:      '{{ Auth::user()->email }}',
       created_at: {{ strtotime(Auth::user()->created_at) }},
       name:       '{{ Auth::user()->name }}',
