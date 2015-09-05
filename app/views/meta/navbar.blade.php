@@ -1,7 +1,7 @@
 <!-- if not on dashboard display the home button -->
 @if (!Request::is('dashboard'))
     <div class="position-tl drop-shadow z-top">
-      <a href="/" alt="Dashboard" title="Dashboard">
+      <a href="{{ route('dashboard.dashboard') }}" alt="Dashboard" title="Dashboard">
         <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
       </a>
     </div>

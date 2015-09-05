@@ -29,6 +29,20 @@
 
           <div class="item @if($dashboard->is_default) active @endif">
 
+            @if($dashboard->is_locked)
+              <div class="position-bl drop-shadow z-top" style="left:90px">
+                <a href="#" alt="Unlock dashboard" title="Unlock dashboard">
+                  <span id="dashboard-lock-{{ $dashboard->id }}" class="fa fa-lock fa-2x fa-inverse color-hovered" onclick="toggleDashboardLock({{ $dashboard->id }}, {{ $dashboard->number }});"></span>
+                </a>
+              </div>
+            @else
+              <div class="position-bl drop-shadow z-top" style="left:90px">
+                <a href="#" alt="Lock dashboard" title="Lock dashboard">
+                  <span id="dashboard-lock-{{ $dashboard->id }}" class="fa fa-unlock-alt fa-2x fa-inverse color-hovered" onclick="toggleDashboardLock({{ $dashboard->id }}, {{ $dashboard->number }});"></span>
+                </a>
+              </div>
+            @endif
+
             <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
             </div> <!-- /.fill -->
 
@@ -74,6 +88,7 @@
 
   @section('pageScripts')
 
+  @include('dashboard.lock-dashboard-scripts')
   @include('widget.widget-general-scripts')
 
   <script type="text/javascript">
@@ -85,7 +100,6 @@
     
       // Gridster builds the interactive dashboard.
       @foreach (Auth::user()->dashboards as $dashboard)
-
 
         var gridster{{ $dashboard->number }};
         var players = $('#gridster-{{ $dashboard->number }} li');
@@ -116,6 +130,8 @@
              size_y: wgd.size_y,
            };
          },
+
+         @if (!$dashboard->is_locked)
          resize: {
            enabled: true,
            start: function() {
@@ -132,22 +148,23 @@
             players.toggleClass('hovered');
            }
          },
-         draggable: {
-          start: function() {
-            players.toggleClass('hovered');
-          },
-          stop: function(e, ui, $widget) {
-            positioning = gridster{{ $dashboard->number }}.serialize();
-            positioning = JSON.stringify(positioning);
-            $.ajax({
-              type: "POST",
-              data: {'positioning': positioning},
-              url: "{{ route('widget.save-position', Auth::user()->id) }}"
-            });
-            players.toggleClass('hovered');
+           draggable: {
+            start: function() {
+              players.toggleClass('hovered');
+            },
+            stop: function(e, ui, $widget) {
+              positioning = gridster{{ $dashboard->number }}.serialize();
+              positioning = JSON.stringify(positioning);
+              $.ajax({
+                type: "POST",
+                data: {'positioning': positioning},
+                url: "{{ route('widget.save-position', Auth::user()->id) }}"
+              });
+              players.toggleClass('hovered');
+             }
            }
-         }
-       }).data('gridster');
+         @endif
+       }).data('gridster')@if ($dashboard->is_locked).disable()@endif;
 
     @endforeach
 
