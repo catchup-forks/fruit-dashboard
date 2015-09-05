@@ -54,4 +54,42 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         $this->data->save();
      }
 
+    /**
+     * transformData
+     * Creating the final DB-ready json
+     * --------------------------------------------------
+     * @param array $histogramData
+     * @return string (json)
+     * --------------------------------------------------
+     */
+    public static final function transformData($histogramData) {
+        $dbData = array(
+            'datasets' => array(),
+            'data'     => array()
+        );
+
+        $i = 0;
+        foreach ($histogramData as $entry) {
+            /* Creating the new entry */
+            $newEntry = array();
+            foreach ($entry as $key=>$value) {
+                if ($key == 'date') {
+                    /* In date */
+                    $newEntry['date'] = $value;
+                } else {
+                    /* In dataset */
+                    if ( ! array_key_exists($key, $dbData['datasets'])) {
+                        $dbData['datasets'][$key] = 'data_' . $i++;
+                    }
+                    $dataSetKey = $dbData['datasets'][$key];
+                    $newEntry[$dataSetKey] = $value;
+                }
+            }
+            array_push($dbData['data'], $newEntry);
+        }
+
+        return json_encode($dbData);
+    }
+
+
 }

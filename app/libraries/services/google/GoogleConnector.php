@@ -68,12 +68,13 @@ abstract class GoogleConnector extends GeneralServiceConnector
      * getTokens
      * Retrieving the access, and refresh tokens from authentication code.
      * --------------------------------------------------
-     * @param string $code The returned code by google.
+     * @param array $parameters
      * @return None
      * @throws GoogleConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens($code) {
+    public function getTokens(array $parameters=array()) {
+        $code = $parameters['auth_code'];
         /* Build and send POST request */
         $this->client->authenticate($code);
         $accessToken = $this->client->getAccessToken();

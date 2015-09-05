@@ -53,22 +53,30 @@ class DataManager extends Eloquent
         }
 
         /* Creating manager. */
-        $manager = new DataManager;
-        $manager->user()->associate($widget->user());
-        $manager->descriptor()->associate($widget->descriptor);
-        $manager->settings_criteria = json_encode($widget->getCriteria());
+        $generalManager = new DataManager;
+        $generalManager->user()->associate($widget->user());
+        $generalManager->descriptor()->associate($widget->descriptor);
+        $generalManager->settings_criteria = json_encode($widget->getCriteria());
 
         /* Creating/assigning data. */
         if (isset($widget->data)) {
-            $manager->data()->associate($widget->data);
+            $generalManager->data()->associate($widget->data);
         } else {
             $data = Data::create(array('raw_value' => ''));
-           $manager->data()->associate($data);
+           $generalManager->data()->associate($data);
         }
 
         /* Saving changes. */
-        $manager->save();
-        $manager->getSpecific()->collectData();
+        $generalManager->save();
+
+        $manager = $generalManager->getSpecific();
+        if ($manager instanceof HistogramDataManager) {
+            /* HistogramWidgets are collecting special data */
+            $manager->initialCollectData();
+        } else {
+            $manager->collectData();
+        }
+
         return $manager;
 
     }
@@ -77,7 +85,9 @@ class DataManager extends Eloquent
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function user() { return $this->belongsTo('User'); }
-    public function widgets() { return $this->hasManyThrough('Widget', 'Data'); }
+    public function widgets() {
+        return $this->data->widgets();
+    }
 
     public function getSpecific() {
         $className = str_replace('Widget', 'DataManager', WidgetDescriptor::find($this->descriptor_id)->getClassName());
@@ -118,4 +128,18 @@ class DataManager extends Eloquent
         $this->data->save();
      }
 
+    /**
+     * setWidgetsState
+     * Setting the corresponding widgets state.
+     * --------------------------------------------------
+     * @param string $state
+     * --------------------------------------------------
+     */
+     public function setWidgetsState($state) {
+        foreach ($this->widgets as $generalWidget) {
+            $widget = $generalWidget->getSpecific();
+            $widget->state = $state;
+            $widget->save(array('skipManager' => TRUE));
+        }
+     }
 }

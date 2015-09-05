@@ -2,7 +2,7 @@
 
 abstract class DataWidget extends Widget
 {
-    protected static $criteriaSettings = array();
+    public static $criteriaSettings = array();
 
     /**
      * handleAjax
@@ -122,9 +122,6 @@ abstract class DataWidget extends Widget
                 $this->state = 'setup_required';
                 $this->save();
             }
-        }
-        if ($this->state == 'loading') {
-            $this->refreshWidget();
         }
     }
 }

@@ -10,11 +10,13 @@ Route::group([
 
     /* -- Braintree -- */
     Route::get('braintree/connect', [
+        'before' => 'auth',
         'as'     => 'service.braintree.connect',
         'uses'   => 'ServiceConnectionController@getBraintreeConnect'
     ]);
 
     Route::post('braintree/connect', [
+        'before' => 'auth',
         'as'     => 'service.braintree.connect',
         'uses'   => 'ServiceConnectionController@postBraintreeConnect'
     ]);
@@ -27,6 +29,7 @@ Route::group([
 
     /* -- Stripe -- */
     Route::any('stripe/connect', [
+        'before' => 'auth',
         'as'     => 'service.stripe.connect',
         'uses'   => 'ServiceConnectionController@anyStripeConnect'
     ]);
@@ -39,30 +42,36 @@ Route::group([
 
     /* -- Twitter -- */
     Route::any('twitter/connect', [
+        'before' => 'auth',
         'as'     => 'service.twitter.connect',
         'uses'   => 'ServiceConnectionController@anyTwitterConnect'
     ]);
 
     Route::any('twitter/disconnect', [
+        'before' => 'auth',
         'as'     => 'service.twitter.disconnect',
         'uses'   => 'ServiceConnectionController@anyTwitterDisconnect'
     ]);
 
     /* -- Google -- */
     Route::any('google_analytics/connect', [
+        'before' => 'auth',
         'as'     => 'service.google_analytics.connect',
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsConnect'
     ]);
     Route::any('google_analytics/disconnect', [
+        'before' => 'auth',
         'as'     => 'service.google_analytics.disconnect',
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsDisconnect'
     ]);
 
     Route::any('google_calendar/connect', [
+        'before' => 'auth',
         'as'     => 'service.google_calendar.connect',
         'uses'   => 'ServiceConnectionController@anyGoogleCalendarConnect'
     ]);
     Route::any('google_calendar/disconnect', [
+        'before' => 'auth',
         'as'     => 'service.google_calendar.disconnect',
         'uses'   => 'ServiceConnectionController@anyGoogleCalendarDisconnect'
     ]);

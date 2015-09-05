@@ -7,6 +7,8 @@
  */
 class ServiceConnectionController extends BaseController
 {
+    private $createDashboard = TRUE;
+
     /**
      * ================================================== *
      *                      BRAINTREE                     *
@@ -56,7 +58,7 @@ class ServiceConnectionController extends BaseController
         }
 
         $braintreeConnector = new BraintreeConnector(Auth::user());
-        $braintreeConnector->getTokens(Input::all());
+        $braintreeConnector->saveConnection(Input::all());
 
         /* Track event | SERVICE CONNECTED */
         $tracker = new GlobalTracker();
@@ -72,6 +74,12 @@ class ServiceConnectionController extends BaseController
                 )
             )
         );
+
+        /* Creating custom dashboard in the background. */
+        Queue::push('BraintreeAutoDashboardCreator', array(
+            'user_id'         => Auth::user()->id,
+            'createDashboard' => Session::pull('createDashboard')
+        ));
 
         /* Render the page */
         return Redirect::to($this->getReferer());
@@ -132,20 +140,23 @@ class ServiceConnectionController extends BaseController
         else if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
             $connector = new TwitterConnector(Auth::user());
             try {
-                $connector->getTokens(
-                    Session::get('oauth_token'),
-                    Input::get('oauth_token'),
-                    Session::get('oauth_token_secret'),
-                    Input::get('oauth_verifier')
-                );
+                $connector->saveConnection(array(
+                    'token_ours'    => Session::get('oauth_token'),
+                    'token_request' => Input::get('oauth_token'),
+                    'token_secret'  => Session::get('oauth_token_secret'),
+                    'verifier'      => Input::get('oauth_verifier')
+                ));
             } catch (TwitterConnectFailed $e) {
                 return Redirect::route('signup-wizard.social-connections')
                     ->with('error', 'Something went wrong, please try again.');
             }
 
+            /*
             Queue::push('TwitterAutoDashboardCreator', array(
-                'user_id' => Auth::user()->id,
-            ));
+                'user_id'         => Auth::user()->id,
+                'createDashboard' => Session::pull('createDashboard')
+            ));*/
+
             /* Successful connect. */
             return Redirect::to($this->getReferer())
                 ->with('success', 'Twitter connection successful');
@@ -163,6 +174,7 @@ class ServiceConnectionController extends BaseController
                 'ea' => 'Twitter',
                 'el' => Auth::user()->email,
                 'ev' => 0,
+
                 'en' => 'Service connected',
                 'md' => array(
                     'service' => 'Twitter',
@@ -232,8 +244,8 @@ class ServiceConnectionController extends BaseController
         if (Input::get('code', FALSE)) {
             /* Oauth ready. */
             try {
-                $connector->getTokens();
-            } catch (TwitterNotConnected $e) {
+                $connector->saveConnection();
+            } catch (FacebookNotConnected $e) {
                 Log::info($e->getMessage());
                 return Redirect::route('signup-wizard.social-connections')
                     ->with('error', 'Something went wrong with the connection.');
@@ -318,10 +330,13 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
         } else if (count($pages) == 1) {
-            Queue::push('FacebookAutoDashboardCreator', array(
-                'user_id' => Auth::user()->id,
-                'page_id' => array_keys($pages)[0]
-            ));
+
+            /* Creating dashboard automatically. */
+            $dashboardCreator = new FacebookAutoDashboardCreator(
+                Auth::user(), array('page' => array_keys($pages)[0])
+            );
+            $dashboardCreator->create();
+
             return Redirect::to($this->getReferer());
         }
 
@@ -343,8 +358,9 @@ class ServiceConnectionController extends BaseController
         }
         foreach (Input::get('pages') as $page) {
             Queue::push('FacebookAutoDashboardCreator', array(
-                'user_id' => Auth::user()->id,
-                'page_id' => $page
+                'user_id'         => Auth::user()->id,
+                'createDashboard' => Session::pull('createDashboard'),
+                'page_id'         => $page
             ));
         }
         return Redirect::to($this->getReferer())
@@ -416,8 +432,9 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
             Queue::push('GoogleAnalyticsAutoDashboardCreator', array(
-                'user_id'     => Auth::user()->id,
-                'property_id' => array_keys($properties)[0]
+                'user_id'         => Auth::user()->id,
+                'createDashboard' => Session::pull('createDashboard'),
+                'property_id'     => array_keys($properties)[0]
             ));
             return Redirect::to($this->getReferer());
         }
@@ -440,6 +457,7 @@ class ServiceConnectionController extends BaseController
         foreach (Input::get('properties') as $property) {
             Queue::push('GoogleAnalyticsAutoDashboardCreator', array(
                 'user_id'     => Auth::user()->id,
+                'createDashboard' => Session::pull('createDashboard'),
                 'property_id' => $property
             ));
         }
@@ -468,7 +486,7 @@ class ServiceConnectionController extends BaseController
             /* Oauth ready. */
             $connector = new StripeConnector(Auth::user());
             try {
-                $connector->getTokens(Input::get('code'));
+                $connector->saveConnection(array('auth_code' => Input::get('code')));
             } catch (StripeConnectFailed $e) {
                 return Redirect::to($this->getReferer())
                     ->with('error', 'Something went wrong, please try again.');
@@ -478,8 +496,7 @@ class ServiceConnectionController extends BaseController
             $tracker = new GlobalTracker();
             $tracker->trackAll('detailed', array(
                 'ec' => 'Service connected',
-                'ea' => 'Stripe',
-                'el' => Auth::user()->email,
+                'ea' => 'Stripe', 'el' => Auth::user()->email,
                 'ev' => 0,
                 'en' => 'Service connected',
                 'md' => array(
@@ -488,6 +505,12 @@ class ServiceConnectionController extends BaseController
                     )
                 )
             );
+
+            /* Creating custom dashboard in the background. */
+            Queue::push('StripeAutoDashboardCreator', array(
+                'user_id' => Auth::user()->id,
+                'createDashboard' => Session::pull('createDashboard')
+            ));
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())
@@ -554,7 +577,7 @@ class ServiceConnectionController extends BaseController
         $connector = new $connectorClass(Auth::user());
         if (Input::get('code', FALSE)) {
             try {
-                $connector->getTokens(Input::get('code'));
+                $connector->saveConnection(array('auth_code' => Input::get('code')));
             } catch (GoogleConnectFailed $e) {
                 /* User declined */
                 return Redirect::route('signup-wizard.social-connections')
@@ -635,7 +658,11 @@ class ServiceConnectionController extends BaseController
      * Saving the Referer to session.
      */
     private function saveReferer() {
-        Session::put('referer', URL::previous());
+        $previous = URL::previous();
+        if (Input::get('createDashboard')) {
+            Session::put('createDashboard', true);
+        }
+        Session::put('referer', $previous);
     }
 
     /**

@@ -68,43 +68,9 @@ class GoogleAnalyticsAutoDashboardCreator extends GeneralAutoDashboardCreator
         $avgSessionDurationData = $data['avgSessionDuration'];
 
         /* Saving values. */
-        $sessionsDataManager->data->raw_value  = $this->createDbData($sessionsData);
-        $bounceRateDataManager->data->raw_value = $this->createDbData($bounceRateData);
-        $avgSessionDurationDataManager->data->raw_value = $this->createDbData($avgSessionDurationData);
-    }
-
-    /**
-     * Creting the final DB-ready json
-     *
-     * @return string
-     */
-    private function createDbData($histogramData) {
-        $dbData = array(
-            'datasets' => array(),
-            'data'     => array()
-        );
-
-        $i = 0;
-        foreach ($histogramData as $entry) {
-            /* Creating the new entry */
-            $newEntry = array();
-            foreach ($entry as $key=>$value) {
-                if ($key == 'date') {
-                    /* In date */
-                    $newEntry['date'] = $value;
-                } else {
-                    /* In dataset */
-                    if ( ! array_key_exists($key, $dbData['datasets'])) {
-                        $dbData['datasets'][$key] = 'data_' . $i++;
-                    }
-                    $dataSetKey = $dbData['datasets'][$key];
-                    $newEntry[$dataSetKey] = $value;
-                }
-            }
-            array_push($dbData['data'], $newEntry);
-        }
-
-        return json_encode($dbData);
+        $sessionsDataManager->data->raw_value  = MultipleHistogramDataManager::transformData($sessionsData);
+        $bounceRateDataManager->data->raw_value = MultipleHistogramDataManager::transformData($bounceRateData);
+        $avgSessionDurationDataManager->data->raw_value = MultipleHistogramDataManager::transformData($avgSessionDurationData);
     }
 
     /**

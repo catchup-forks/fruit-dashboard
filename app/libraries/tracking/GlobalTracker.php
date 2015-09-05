@@ -24,9 +24,9 @@ class GlobalTracker {
 
     /* -- Constructor -- */
     public function __construct(){
-        self::$google   = new GoogleTracker();
+       self::$google   = new GoogleTracker();
         self::$intercomIO = new IntercomIOTracker();
-        self::$customerIO = new CustomerIOTracker();
+        //self::$customerIO = new CustomerIOTracker();
         self::$mixpanel = new MixpanelTracker();
     }
 

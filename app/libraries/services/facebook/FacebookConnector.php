@@ -104,7 +104,7 @@ class FacebookConnector extends GeneralServiceConnector
      * @return None
      * --------------------------------------------------
      */
-    public function getTokens() {
+    public function getTokens(array $parameters=array()) {
         $helper = $this->fb->getRedirectLoginHelper();
 
         if (App::environment('local')) {
@@ -129,6 +129,38 @@ class FacebookConnector extends GeneralServiceConnector
         parent::disconnect();
         /* deleting all plans. */
         FacebookPage::where('user_id', $this->user->id)->delete();
+    }
+
+    /**
+     * createDataManagers
+     * --------------------------------------------------
+     * Creating the dataManagers for each page.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function createDataManagers() {
+        $dataManagers = array();
+        foreach ($this->user->facebookPages()->get() as $facebookPage) {
+            foreach (parent::createDataManagers() as $dataManager) {
+                $dataManager->settings_criteria = json_encode(array(
+                    'page' => $facebookPage->id
+                ));
+                array_push($dataManagers, $dataManager->save());
+            }
+        }
+        return $dataManagers;
+    }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('FacebookInitialDataCollector', array(
+            'user_id' => $this->user->id
+        ));
     }
 
 } /* FacebookConnector */

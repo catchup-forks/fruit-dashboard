@@ -142,8 +142,6 @@ abstract class HistogramDataManager extends DataManager
         return array_reverse($histogram);
     }
 
-
-
     /**
      * useEntryInHistogram
      * Whether or not use the specific entry in the
@@ -171,6 +169,28 @@ abstract class HistogramDataManager extends DataManager
             }
         }
         return FALSE;
+    }
+
+    /**
+     * Returning the differentiated values of an array.
+     *
+     * @param array $data
+     * @return array
+     */
+    public static final function getDiff($data, $dataName='value') {
+        $differentiatedArray = array();
+        foreach ($data as $entry) {
+            /* Copying entry. */
+            $diffEntry = $entry;
+            $diffValue = 0;
+            if (isset($lastValue)) {
+                $diffValue = $entry[$dataName] - $lastValue;
+            }
+            $diffEntry[$dataName] = $diffValue;
+            array_push($differentiatedArray, $diffEntry);
+            $lastValue = $entry[$dataName];
+        }
+        return $differentiatedArray;
     }
 
 }

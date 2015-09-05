@@ -245,7 +245,6 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        Log::info($options);
         /* Associating descriptor. */
         $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 

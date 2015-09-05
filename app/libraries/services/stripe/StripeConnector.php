@@ -88,12 +88,13 @@ class StripeConnector extends GeneralServiceConnector
      * getTokens
      * --------------------------------------------------
      * Retrieving the access, and refresh tokens from authentication code.
-     * @param (string) ($code) The returned code by stripe.
+     * @param array $parameters
      * @return None
      * @throws StripeConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens($code) {
+    public function getTokens(array $parameters=array()) {
+        $code = $parameters['auth_code'];
         /* Build and send POST request */
         $url = $this->buildTokenPostUriFromAuthCode($code);
         $response = SiteFunctions::postUrl($url);
@@ -109,9 +110,6 @@ class StripeConnector extends GeneralServiceConnector
         }
 
         $this->createConnection($response['access_token'], $response['refresh_token']);
-
-        /* Creating custom dashboard in the background. */
-        Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**

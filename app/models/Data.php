@@ -10,6 +10,7 @@ class Data extends Eloquent
 
     /* -- Relations -- */
     public function manager() { return $this->hasOne('DataManager', 'data_id'); }
+    public function widgets() { return $this->hasMany('Widget', 'data_id'); }
 }
 
 ?>
