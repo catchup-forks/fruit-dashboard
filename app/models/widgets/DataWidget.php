@@ -122,6 +122,9 @@ abstract class DataWidget extends Widget
                 $this->state = 'setup_required';
                 $this->save();
             }
+        } else if (json_decode($this->data->raw_value) == FALSE) {
+            $this->state = 'loading';
+            $this->save();
         }
     }
 }

@@ -30,7 +30,7 @@
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
                     @else
-                      {{ route($service['connect_route']) }}
+                      {{ route($service['connect_route']) }}?createDashboard=true
                     @endif
                   " class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
                     @if(Auth::user()->isServiceConnected($service['name']))
