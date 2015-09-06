@@ -246,7 +246,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Rendering view */
         return View::make('widget.add-widget')
-            ->with('widgetDescriptors', WidgetDescriptor::all());
+            ->with('widgetDescriptorGroups', WidgetDescriptor::all()->groupBy('category'));
     }
 
     /**
