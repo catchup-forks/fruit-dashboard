@@ -14,6 +14,7 @@ class SiteConstants {
     /* -- Class properties -- */
     private static $gridNumberOfCols  = 12;
     private static $gridNumberOfRows  = 12;
+    private static $widgetMargin      = 5;
     private static $morningStartsAt   = 5;
     private static $afternoonStartsAt = 13;
     private static $eveningStartsAt   = 17;
@@ -47,6 +48,17 @@ class SiteConstants {
      */
     public static function getGridNumberOfRows() {
         return self::$gridNumberOfRows;
+    }
+
+    /**
+     * getWidgetMargin:
+     * --------------------------------------------------
+     * Returns the general widget margin.
+     * @return (integer) ($widgetMargin) widgetMargin
+     * --------------------------------------------------
+     */
+    public static function getWidgetMargin() {
+        return self::$widgetMargin;
     }
 
     /**

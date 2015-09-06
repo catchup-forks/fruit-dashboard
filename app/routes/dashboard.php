@@ -32,6 +32,18 @@ Route::group([
         'uses'   => 'DashboardController@anyToggleDashboardLock'
     ]);
 
+    Route::any('lock/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.lock',
+        'uses'   => 'DashboardController@anyLockDashboard'
+    ]);
+
+    Route::any('unlock/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.unlock',
+        'uses'   => 'DashboardController@anyUnlockDashboard'
+    ]);
+
     Route::post('rename/{dashboardId}', [
         'before' => 'auth',
         'as'     => 'dashboard.rename',

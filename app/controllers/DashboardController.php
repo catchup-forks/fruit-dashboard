@@ -91,6 +91,41 @@ class DashboardController extends BaseController
     }
 
     /**
+     * anyLockDashboard
+     * --------------------------------------------------
+     * @return Locks a dashboard.
+     * --------------------------------------------------
+     */
+    public function anyLockDashboard($dashboardId) {
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+        $dashboard->is_locked = TRUE;
+        $dashboard->save();
+        
+        /* Return. */
+        return Response::json(TRUE);
+    }
+    /**
+     * anyUnlockDashboard
+     * --------------------------------------------------
+     * @return Unlocks a dashboard.
+     * --------------------------------------------------
+     */
+    public function anyUnlockDashboard($dashboardId) {
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+        $dashboard->is_locked = FALSE;
+        $dashboard->save();
+        
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
      * anyLockAllDashboards
      * --------------------------------------------------
      * @return Locks all dashboards.
