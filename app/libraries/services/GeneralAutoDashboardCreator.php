@@ -1,6 +1,5 @@
 <?php
 abstract class GeneralAutoDashboardCreator {
-    /* -- Class properties -- */
 
     /**
      * The positioning of the widgets visible on the dashboard.

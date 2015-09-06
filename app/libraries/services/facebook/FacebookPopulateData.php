@@ -1,6 +1,6 @@
 <?php
 
-class FacebookInitialDataCollector
+class FacebookPopulateData
 {
     /* -- Class properties -- */
     const DAYS = 30;
@@ -56,12 +56,11 @@ class FacebookInitialDataCollector
         $impressionsData = $this->getPageImpressions();
 
         /* Saving values. */
-        $this->dataManagers['facebook_likes']->data->raw_value = json_encode($likesData);
-        $this->dataManagers['facebook_new_likes']->data->raw_value = json_encode(HistogramDataManager::getDiff($likesData));
-        $this->dataManagers['facebook_page_impressions']->data->raw_value = json_encode($impressionsData);
+        $this->dataManagers['facebook_likes']->saveData($likesData);
+        $this->dataManagers['facebook_new_likes']->saveData(HistogramDataManager::getDiff($likesData));
+        $this->dataManagers['facebook_page_impressions']->saveData($impressionsData);
 
         foreach ($this->dataManagers as $manager) {
-            $manager->data->save();
             $manager->setWidgetsState('active');
         }
     }

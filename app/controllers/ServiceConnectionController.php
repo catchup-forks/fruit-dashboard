@@ -506,11 +506,11 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-            /* Creating custom dashboard in the background. */
+            /* Creating custom dashboard in the background.
             Queue::push('StripeAutoDashboardCreator', array(
                 'user_id' => Auth::user()->id,
                 'createDashboard' => Session::pull('createDashboard')
-            ));
+            ));*/
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())

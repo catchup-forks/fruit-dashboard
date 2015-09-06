@@ -123,7 +123,7 @@ class DataManager extends Eloquent
      * @param data $data
      * --------------------------------------------------
      */
-     protected function saveData($data) {
+     public function saveData($data) {
         $this->data->raw_value = json_encode($data);
         $this->data->save();
      }

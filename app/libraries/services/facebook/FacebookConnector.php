@@ -158,7 +158,7 @@ class FacebookConnector extends GeneralServiceConnector
      * --------------------------------------------------
      */
     protected function populateData() {
-        Queue::push('FacebookInitialDataCollector', array(
+        Queue::push('FacebookPopulateData', array(
             'user_id' => $this->user->id
         ));
     }

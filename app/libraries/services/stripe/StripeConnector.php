@@ -201,5 +201,16 @@ class StripeConnector extends GeneralServiceConnector
         return $post_uri;
     }
 
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('StripePopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
 
 } /* StripeConnector */
