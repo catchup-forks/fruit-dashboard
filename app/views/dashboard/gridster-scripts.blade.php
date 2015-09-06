@@ -29,6 +29,10 @@ function Gridster(dashboardID, isLocked) {
   // Public variables
   this.gridster = initialize(isLocked);
 
+  // Public functions
+  this.lockGrid = lockGrid;
+  this.unlockGrid = unlockGrid;
+
   /**
    * @function initialize
    * --------------------------------------------------------------------------
@@ -60,6 +64,36 @@ function Gridster(dashboardID, isLocked) {
 
     // Return
     return gridster;
+  }
+
+  /**
+   * @function lockGrid
+   * --------------------------------------------------------------------------
+   * Locks the actual gridster object
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function lockGrid() {
+      // Disable resize
+      this.gridster.disable_resize();
+           
+      // Disable gridster movement
+      this.gridster.disable();
+  }
+
+  /**
+   * @function unlockGrid
+   * --------------------------------------------------------------------------
+   * Unlocks the actual gridster object
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function unlockGrid() {
+      // Enable resize
+      this.gridster.enable_resize();
+
+      // Enable gridster movement
+      this.gridster.enable();
   }
 
   /**
@@ -163,22 +197,17 @@ function Gridster(dashboardID, isLocked) {
 
 
 /**
- * @function 
+ * @global 
  * --------------------------------------------------------------------------
  * Create Gridster instances
  * --------------------------------------------------------------------------
  */
-$(function(){
-  // Iterate through the dashboards, create gridster objects
-  @foreach (Auth::user()->dashboards as $dashboard)
+// Iterate through the dashboards, create gridster objects
+@foreach (Auth::user()->dashboards as $dashboard)
+  var Gridster{{ $dashboard->id }} = new Gridster({{ $dashboard->id }}, {{ $dashboard->is_locked }});
+@endforeach
 
-    var Gridster{{ $dashboard->id }} = new Gridster({{ $dashboard->id }}, {{ $dashboard->is_locked }});
-    console.log(Gridster{{ $dashboard->id }}.gridster);
-    
-  @endforeach
-
-  // Fade in the current gridster
-  $('.gridster.not-visible').fadeIn(1300);
-});
+// Fade in the current gridster
+$('.gridster.not-visible').fadeIn(1300);
 
 </script>

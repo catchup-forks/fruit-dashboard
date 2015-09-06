@@ -74,9 +74,13 @@ function changeLockIcon(id, direction) {
  */
 function changeGridster(id, direction) {
   // Initialize variables
-  var gridster = $('#gridster-' + id + ' ul');
+  var gridster = window['Gridster' + id];
 
-  console.log(gridster);
+  if (direction) { 
+    gridster.lockGrid();
+  } else {
+    gridster.unlockGrid();
+  };
 }
 
 /**
