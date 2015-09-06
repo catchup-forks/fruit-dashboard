@@ -2,8 +2,6 @@
 
 class GoogleAnalyticsAutoDashboardCreator extends GeneralAutoDashboardCreator
 {
-    const DAYS = 30;
-
     /* -- Class properties -- */
     /* LATE STATIC BINDING. */
     protected static $positioning = array(
@@ -12,99 +10,4 @@ class GoogleAnalyticsAutoDashboardCreator extends GeneralAutoDashboardCreator
     );
     protected static $service = 'google_analytics';
     /* /LATE STATIC BINDING. */
-
-    /**
-     * The google analytics collector object.
-     *
-     * @var GoogleAnalyticsDataCollector
-     */
-    private $collector = null;
-
-    /**
-     * The google analytics property.
-     *
-     * @var GoogleAnalyticsProperty
-     */
-    private $property = null;
-
-    /**
-     * Setting up the collector.
-     */
-    protected function setup($args) {
-        $this->collector = new GoogleAnalyticsDataCollector($this->user);
-        $this->property = GoogleAnalyticsProperty::find($args['property_id']);
-    }
-
-    protected function createWidgets() {
-        parent::createWidgets();
-        foreach ($this->widgets as $widget) {
-            $widget->setSetting('property', $this->property->id);
-        }
-    }
-
-    protected function createManagers() {
-        parent::createManagers();
-        foreach ($this->dataManagers as $dataManager) {
-            $dataManager->settings_criteria = json_encode(array(
-                'property' => $this->property->id
-            ));
-            $dataManager->save();
-        }
-    }
-
-    /**
-     * Populating the widgets with data.
-     */
-    protected function populateData() {
-        $sessionsDataManager   = $this->dataManagers['google_analytics_sessions'];
-        $bounceRateDataManager = $this->dataManagers['google_analytics_bounce_rate'];
-        $avgSessionDurationDataManager = $this->dataManagers['google_analytics_avg_session_duration'];
-
-        $data = $this->collectAllData();
-
-        /* Getting metrics. */
-        $sessionsData           = $data['sessions'];
-        $bounceRateData         = $data['bounceRate'];
-        $avgSessionDurationData = $data['avgSessionDuration'];
-
-        /* Saving values. */
-        $sessionsDataManager->data->raw_value  = MultipleHistogramDataManager::transformData($sessionsData);
-        $bounceRateDataManager->data->raw_value = MultipleHistogramDataManager::transformData($bounceRateData);
-        $avgSessionDurationDataManager->data->raw_value = MultipleHistogramDataManager::transformData($avgSessionDurationData);
-    }
-
-    /**
-     * Retrieving the full histogram from Google Analytics API
-     *
-     * @return array
-     */
-    private function collectAllData() {
-        /* Initializing arrays. */
-        $data = array(
-            'sessions'           => array(),
-            'bounceRate'         => array(),
-            'avgSessionDuration' => array()
-        );
-
-        for ($i = self::DAYS; $i > 0; --$i) {
-            /* Creating start, end days. */
-            $start = Carbon::now()->subDays($i+1)->toDateString();
-            $end = Carbon::now()->subDays($i)->toDateString();
-            $metrics = $this->collector->getMetrics($this->property->id, $start, $end, array_keys($data));
-
-            foreach ($metrics as $metric=>$dailyData) {
-                /* Getting daily data. */
-                $currentDateMetric = array();
-                $currentDateMetric['date'] = $end;
-                foreach ($dailyData as $profile=>$value) {
-                    $currentDateMetric[$profile] = $value[0];
-                }
-
-                /* Adding value. */
-                array_push($data[$metric], $currentDateMetric);
-            }
-        }
-        return $data;
-    }
-
 }

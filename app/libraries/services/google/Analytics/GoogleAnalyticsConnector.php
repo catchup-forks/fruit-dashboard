@@ -49,9 +49,23 @@ class GoogleAnalyticsConnector extends GoogleConnector {
                 $dataManager->settings_criteria = json_encode(array(
                     'property' => $property->id
                 ));
-                array_push($dataManager->save());
+
+                array_push($dataManagers, $dataManager->save());
             }
         }
         return $dataManagers;
     }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('GoogleAnalyticsPopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
+
 }

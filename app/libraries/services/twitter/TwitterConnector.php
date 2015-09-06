@@ -126,5 +126,16 @@ class TwitterConnector extends GeneralServiceConnector
         );
     }
 
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('TwitterPopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
 
 } /* TwitterConnector */

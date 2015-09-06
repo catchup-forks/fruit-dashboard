@@ -42,15 +42,20 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * saveData
      * Saving the data to DB
      * --------------------------------------------------
-     * @param data $data
+     * @param data $inputData
+     * @param boolean $transform
      * --------------------------------------------------
      */
-     protected function saveData($data) {
-        /* Getting dataSets */
-        $this->data->raw_value = json_encode(array(
-            'datasets' => $this->getDataSets(),
-            'data'     => $data
-        ));
+     public function saveData($inputData, $transform=FALSE) {
+        if ($transform) {
+            $this->data->raw_value = self::transformData($inputData);
+        } else {
+            /* Getting dataSets */
+            $this->data->raw_value = json_encode(array(
+                'datasets' => $this->getDataSets(),
+                'data'     => $data
+            ));
+        }
         $this->data->save();
      }
 
