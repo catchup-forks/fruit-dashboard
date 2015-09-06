@@ -23,13 +23,19 @@
           placement: "top"
         },
         {
+          title: "lock dashboard",
+          content: "You can lock or unlock the grid on your dashboard.",
+          target: document.querySelector(".item.active > .lock-icon span"),
+          placement: "top"
+        },               
+        {
           title: "settings",
           content: "More stuff here.",
           target: document.querySelector(".fa-cog"),
           placement: "left"
-        }           
+        }
       ]
-    };
+  };
 
   // Start the Hopscotch tour.
   // hopscotch.startTour(tour);
