@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralGoogleAnalyticsWidget extends HistogramWidget
+abstract class GeneralGoogleAnalyticsWidget extends MultipleHistogramWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(

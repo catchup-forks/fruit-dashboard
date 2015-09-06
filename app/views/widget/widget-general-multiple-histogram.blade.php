@@ -2,16 +2,9 @@
   <span class="text-white drop-shadow">
       {{ $widget->descriptor->name }}
   </span>
-  <span class="text-white drop-shadow pull-right has-margin-horizontal" id="{{$widget->id}}-value">
-  {{ $widget->getLatestData()['data_0'] }}
-  </span>
 </div>
 <div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
   <canvas id="{{$widget->id}}-chart"></canvas>
-</div>
-<div class="text-center drop-shadow text-white">
-    Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more details.
 </div>
 
 @section('widgetScripts')
@@ -44,13 +37,21 @@
     @if ($widget->state == 'active')
       // Active widget.
       var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
-      var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['data_0']}}, @endforeach];
+      var datasets = [
+        @foreach ($widget->groupDataSets() as $dataset)
+          {
+            'values' : [{{ implode(',', $dataset['data']) }}],
+            'name' : '{{ $dataset['name'] }}',
+            'color': '{{ $dataset['color'] }}'
+          },
+        @endforeach
+      ];
 
       // Removing the canvas and redrawing for proper sizing.
       reinsertCanvas(false);
 
       // Calling drawer for the first time.
-      drawLineGraph(canvas, values, labels, name);
+      drawLineGraph(canvas, datasets, labels, name);
 
     @endif
 
@@ -63,7 +64,7 @@
     $('.carousel').on('slid.bs.carousel', function () {
       reinsertCanvas(false);
 
-      drawLineGraph(canvas, values, labels, name);
+      drawLineGraph(canvas, datasets, labels, name);
     })
 
     // Bind redraw to resize event.
@@ -71,7 +72,7 @@
 
       reinsertCanvas(true);
 
-      drawLineGraph(canvas, values, labels, name);
+      drawLineGraph(canvas, datasets, labels, name);
     });
 
     // Adding refresh handler.

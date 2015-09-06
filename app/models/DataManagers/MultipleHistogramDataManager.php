@@ -39,6 +39,34 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     }
 
     /**
+     * groupDataSets
+     * Returning template ready grouped dataset.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function groupDataSets() {
+        $groupedData = array();
+        $i = 0;
+        foreach ($this->getDataSets() as $name=>$dataId) {
+            $groupedData[$dataId] = array(
+                'name'  => $name,
+                'color' => SiteConstants::getChartJsColors()[$i++],
+                'data'  => array()
+            );
+        }
+        foreach ($this->getData() as $oneValues) {
+            foreach ($oneValues as $dataId => $value) {
+                if ($dataId != 'date') {
+                    array_push($groupedData[$dataId]['data'], $value);
+                }
+            }
+        }
+
+        return $groupedData;
+    }
+
+    /**
      * saveData
      * Saving the data to DB
      * --------------------------------------------------

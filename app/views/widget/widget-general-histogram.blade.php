@@ -50,7 +50,7 @@
       reinsertCanvas(false);
 
       // Calling drawer for the first time.
-      drawLineGraph(canvas, values, labels, name);
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
 
     @endif
 
@@ -63,7 +63,7 @@
     $('.carousel').on('slid.bs.carousel', function () {
       reinsertCanvas(false);
 
-      drawLineGraph(canvas, values, labels, name);
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
     })
 
     // Bind redraw to resize event.
@@ -71,7 +71,7 @@
 
       reinsertCanvas(true);
 
-      drawLineGraph(canvas, values, labels, name);
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
     });
 
     // Adding refresh handler.

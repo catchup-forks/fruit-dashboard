@@ -21,6 +21,11 @@ class SiteConstants {
     private static $trialPeriodInDays = 14;
     private static $financialServices = array('braintree', 'stripe');
     private static $socialServices    = array('google_analytics', 'facebook', 'twitter');
+
+    private static $chartJsColors = array(
+        '100, 222, 100',
+        '255, 110, 54',
+    );
    /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *
@@ -36,6 +41,17 @@ class SiteConstants {
      */
     public static function getGridNumberOfCols() {
         return self::$gridNumberOfCols;
+    }
+
+    /**
+     * getChartJsColors:
+     * --------------------------------------------------
+     * Returning colors for chartJS
+     * @return (array) ($chartJsColors) chartJsColors
+     * --------------------------------------------------
+     */
+    public static function getChartJsColors() {
+        return self::$chartJsColors;
     }
 
     /**
