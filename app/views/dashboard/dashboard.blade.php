@@ -1,199 +1,106 @@
 @extends('meta.base-user')
 
-  @section('pageTitle')
-    Dashboard
-  @stop
+@section('pageTitle')
+  Dashboard
+@stop
 
-  @section('pageStylesheet')
-  @stop
+@section('pageStylesheet')
+@stop
 
-  @section('pageContent')
+@section('pageContent')
 
-  <div id="dashboards" class="carousel slide">
+<div id="dashboards" class="carousel slide">
 
-      {{-- Include navigation dots for each dashboard. --}}
-      <ol class="carousel-indicators">
+    {{-- Include navigation dots for each dashboard. --}}
+    <ol class="carousel-indicators">
 
-        @foreach (Auth::user()->dashboards as $index => $dashboard)
+      @foreach (Auth::user()->dashboards as $index => $dashboard)
 
-          <li data-target="#dashboards" data-slide-to="{{ $index}}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->is_default) active @endif"></li>
+        <li data-target="#dashboards" data-slide-to="{{ $index}}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->is_default) active @endif"></li>
 
-        @endforeach
+      @endforeach
 
-      </ol>
+    </ol>
 
-      {{-- Make a wrapper for dashboards --}}
-      <div class="carousel-inner">
+    {{-- Make a wrapper for dashboards --}}
+    <div class="carousel-inner">
 
-        @foreach (Auth::user()->dashboards as $dashboard)
-
-          <div class="item @if($dashboard->is_default) active @endif">
-
-            <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
-            </div> <!-- /.fill -->
-
-            {{-- Here comes the dashboard content --}}
-            <div id="gridster-{{ $dashboard->number }}" class="gridster grid-base fill-height not-visible">
-
-              {{-- Generate all the widgdets --}}
-              <ul class="list-unstyled">
-
-                @foreach ($dashboard->widgets as $widget)
-
-                  @if ($widget->state != 'hidden')
-                    @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
-                  @endif
-
-                @endforeach
-
-              </ul>
-
-            </div> <!-- /.gridster -->
-
-          </div> <!-- /.item -->
-
-        @endforeach
-
-      </div> <!-- /.carousel-inner -->
-
-      @if (Auth::user()->dashboards->count() > 1)
-      {{-- Set the navigational controls on sides. --}}
-      <a class="left carousel-control" href="#dashboards" data-slide="prev">
-          <span class="icon-prev"></span>
-      </a>
-      <a class="right carousel-control" href="#dashboards" data-slide="next">
-          <span class="icon-next"></span>
-      </a>
-      @endif
-
-  </div> <!-- /#dashboards -->
-
-
-
-  @stop
-
-  @section('pageScripts')
-
-  @include('widget.widget-general-scripts')
-
-  <script type="text/javascript">
-
-    $(function(){
-
-      var containerWidth = $('.active > .grid-base').width();
-      var containerHeight = $('.active > .grid-base').height();
-    
-      // Gridster builds the interactive dashboard.
       @foreach (Auth::user()->dashboards as $dashboard)
 
+        <div class="item @if($dashboard->is_default) active @endif">
 
-        var gridster{{ $dashboard->number }};
-        var players = $('#gridster-{{ $dashboard->number }} li');
-        var positioning = [];
-        var numberOfCols = {{ SiteConstants::getGridNumberOfCols() }};
-        var numberOfRows = {{ SiteConstants::getGridNumberOfRows() }};
-        var margin = 5;
-        var widget_width = (containerWidth / numberOfCols) - (margin * 2);
-        var widget_height = (containerHeight / numberOfRows) - (margin * 2);
+          <div class="lock-icon" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction=@if($dashboard->is_locked) "unlock" @else "lock" @endif>
+            @if($dashboard->is_locked)
+              @include('dashboard.locking-unlock-icon')
+            @else
+              @include('dashboard.locking-lock-icon')
+            @endif
+          </div>
+          
+          <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
+          </div> <!-- /.fill -->
 
-       gridster{{ $dashboard->number }} = $('#gridster-{{ $dashboard->number }} ul').gridster({
-         namespace: '#gridster-{{ $dashboard->number }}',
-         widget_base_dimensions: [widget_width, widget_height],
-         widget_margins: [margin, margin],
-         min_cols: numberOfCols,
-         min_rows: numberOfRows,
-         //to be introduced
-         //max_rows: numberOfRows,
-         //to be introduced
-         //shift_larger_widgets_down: false,
-         snap_up: false,
-         serialize_params: function ($w, wgd) {
-           return {
-             id: $w.data().id,
-             col: wgd.col,
-             row: wgd.row,
-             size_x: wgd.size_x,
-             size_y: wgd.size_y,
-           };
-         },
-         resize: {
-           enabled: true,
-           start: function() {
-            players.toggleClass('hovered');
-           },
-           stop: function(e, ui, $widget) {
-            positioning = gridster{{ $dashboard->number }}.serialize();
-            positioning = JSON.stringify(positioning);
-            $.ajax({
-              type: "POST",
-              data: {'positioning': positioning},
-              url: "{{ route('widget.save-position', Auth::user()->id) }}"
-             });
-            players.toggleClass('hovered');
-           }
-         },
-         draggable: {
-          start: function() {
-            players.toggleClass('hovered');
-          },
-          stop: function(e, ui, $widget) {
-            positioning = gridster{{ $dashboard->number }}.serialize();
-            positioning = JSON.stringify(positioning);
-            $.ajax({
-              type: "POST",
-              data: {'positioning': positioning},
-              url: "{{ route('widget.save-position', Auth::user()->id) }}"
-            });
-            players.toggleClass('hovered');
-           }
-         }
-       }).data('gridster');
+          {{-- Here comes the dashboard content --}}
+          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible">
 
-    @endforeach
+            {{-- Generate all the widgdets --}}
+            <ul class="list-unstyled">
 
-    });
+              @foreach ($dashboard->widgets as $widget)
 
+                @if ($widget->state != 'hidden')
+                  @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
+                @endif
+
+              @endforeach
+
+            </ul>
+
+          </div> <!-- /.gridster -->
+
+        </div> <!-- /.item -->
+
+      @endforeach
+
+    </div> <!-- /.carousel-inner -->
+
+    @if (Auth::user()->dashboards->count() > 1)
+    {{-- Set the navigational controls on sides. --}}
+    <a class="left carousel-control" href="#dashboards" data-slide="prev">
+        <span class="icon-prev"></span>
+    </a>
+    <a class="right carousel-control" href="#dashboards" data-slide="next">
+        <span class="icon-next"></span>
+    </a>
+    @endif
+
+</div> <!-- /#dashboards -->
+@stop
+
+@section('pageScripts')
+  <!-- Gridster scripts -->
+  @include('dashboard.gridster-scripts')
+  <!-- /Gridster scripts -->
+
+  <!-- Dashboard locking scripts -->
+  @include('dashboard.locking-scripts')
+  <!-- /Dashboard locking scripts -->
+
+  <!-- Hopscotch scripts -->
+  @include('dashboard.hopscotch-scripts')
+  <!-- /Hopscotch scripts -->
+  
+  <!-- Widget general scripts -->
+  @include('widget.widget-general-scripts')
+  <!-- /Widget general scripts -->
+
+  <!-- Dashboard etc scripts -->
+  <script type="text/javascript">
+    // Initialize Carousel
     $('.carousel').carousel({
-      interval: false //stops the auto-cycle
+      interval: false // stops the auto-cycle
     })
-
-    $('.gridster.not-visible').fadeIn(1300);
-
-    // Define the Hopscotch tour.
-       var tour = {
-         id: "introduction",
-         steps: [
-           {
-             title: "new widget",
-             content: "Add a new widget by clicking the + sign.",
-             target: document.querySelector(".fa-plus-circle"),
-             placement: "top"
-           },
-           {
-            title: "hover widget",
-            content: "You can move, setup & delete a widget by hovering it.",
-            target: document.querySelector(".fa-plus-circle"),
-            placement: "top"
-           },
-           {
-            title: "dashboard indicators",
-            content: "Clicking these dots take you to one of your dashboards.",
-            target: document.querySelector("ol > li"),
-            placement: "top"
-           },
-           {
-            title: "settings",
-            content: "More stuff here.",
-            target: document.querySelector(".fa-cog"),
-            placement: "left"
-           }           
-         ]
-       };
-
-   // Start the Hopscotch tour.
-   // hopscotch.startTour(tour);
-
   </script>
-
-  @append
+  <!-- /Dashboard etc scripts -->
+@append
 

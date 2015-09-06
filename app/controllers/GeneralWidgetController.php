@@ -246,7 +246,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Rendering view */
         return View::make('widget.add-widget')
-            ->with('widgetDescriptors', WidgetDescriptor::all());
+            ->with('widgetDescriptorGroups', WidgetDescriptor::all()->groupBy('category'));
     }
 
     /**
@@ -406,47 +406,39 @@ class GeneralWidgetController extends BaseController {
      * saveWidgetPosition
      * --------------------------------------------------
      * Saves the widget position.
-     * @param  (int)  ($userID) The ID of the user
      * @return Json with status code
      * --------------------------------------------------
      */
-    public function saveWidgetPosition($userID) {
+    public function saveWidgetPosition() {
 
         /* Escaping invalid data. */
         if (!isset($_POST['positioning'])) {
             throw new BadPosition("Missing positioning data.", 1);
         }
 
-        /* Find user and save positioning if possible */
-        if (User::find($userID)) {
-            /* Get widgets data */
-            $widgets = json_decode($_POST['positioning'], TRUE);
+        /* Get widgets data */
+        $widgets = json_decode($_POST['positioning'], TRUE);
 
-            /* Iterate through all widgets */
-            foreach ($widgets as $widgetData){
+        /* Iterate through all widgets */
+        foreach ($widgets as $widgetData){
 
-                /* Escaping invalid data. */
-                if (!isset($widgetData['id'])) {
-                    return Response::json(array('error' => 'Invalid JSON input.'));
-                }
-
-                /* Find widget */
-                $widget = Widget::find($widgetData['id'])->getSpecific();
-
-                /* Skip widget if not found */
-                if ($widget === null) { continue; }
-
-                /* Set position */
-                try {
-                    $widget->setPosition($widgetData);
-                } catch (BadPosition $e) {
-                    return Response::json(array('error' => $e->getMessage()));
-                }
+            /* Escaping invalid data. */
+            if (!isset($widgetData['id'])) {
+                return Response::json(array('error' => 'Invalid JSON input.'));
             }
 
-        /* No user found with the requested ID */
-        } else {
-            return Response::json(array('error' => 'No user found with the requested ID'));
+            /* Find widget */
+            $widget = Widget::find($widgetData['id'])->getSpecific();
+
+            /* Skip widget if not found */
+            if ($widget === null) { continue; }
+
+            /* Set position */
+            try {
+                $widget->setPosition($widgetData);
+            } catch (BadPosition $e) {
+                return Response::json(array('error' => $e->getMessage()));
+            }
         }
 
         /* Everything OK, return response with 200 status code */

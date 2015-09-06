@@ -68,6 +68,29 @@ class DashboardController extends BaseController
     }
 
     /**
+     * anyToggleDashboardLock
+     * --------------------------------------------------
+     * @return Toggles the locking for a dashboard.
+     * --------------------------------------------------
+     */
+    public function anyToggleDashboardLock($dashboardId) {
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+
+        if($dashboard->is_locked) {
+          $dashboard->is_locked = FALSE;
+        } else {
+          $dashboard->is_locked = TRUE;
+        }
+        $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
      * anyLockDashboard
      * --------------------------------------------------
      * @return Locks a dashboard.
@@ -78,14 +101,12 @@ class DashboardController extends BaseController
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
-
         $dashboard->is_locked = TRUE;
         $dashboard->save();
-
+        
         /* Return. */
         return Response::json(TRUE);
     }
-
     /**
      * anyUnlockDashboard
      * --------------------------------------------------
@@ -97,10 +118,9 @@ class DashboardController extends BaseController
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
-
         $dashboard->is_locked = FALSE;
         $dashboard->save();
-
+        
         /* Return. */
         return Response::json(TRUE);
     }
