@@ -38,8 +38,7 @@ class ServiceConnectionController extends BaseController
      */
     public function postBraintreeConnect() {
         // Validation.
-        $rules = array(
-            'publicKey'   => 'required',
+        $rules = array('publicKey'   => 'required',
             'privateKey'  => 'required',
             'merchantID'  => 'required',
             'environment' => 'required'
@@ -76,10 +75,10 @@ class ServiceConnectionController extends BaseController
         );
 
         /* Creating custom dashboard in the background. */
-        Queue::push('BraintreeAutoDashboardCreator', array(
-            'user_id'         => Auth::user()->id,
-            'createDashboard' => Session::pull('createDashboard')
-        ));
+        $dashboardCreator = new BraintreeAutoDashboardCreator(
+            Auth::user()
+        );
+        $dashboardCreator->create();
 
         /* Render the page */
         return Redirect::to($this->getReferer());
@@ -506,11 +505,10 @@ class ServiceConnectionController extends BaseController
                 )
             );
 
-            /* Creating custom dashboard in the background.
-            Queue::push('StripeAutoDashboardCreator', array(
-                'user_id' => Auth::user()->id,
-                'createDashboard' => Session::pull('createDashboard')
-            ));*/
+            $dashboardCreator = new StripeAutoDashboardCreator(
+                Auth::user()
+            );
+            $dashboardCreator->create();
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())

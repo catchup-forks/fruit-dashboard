@@ -91,4 +91,16 @@ class BraintreeConnector extends GeneralServiceConnector
         }
     }
 
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('BraintreePopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
+
 } /* BraintreeConnector */
