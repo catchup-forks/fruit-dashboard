@@ -70,12 +70,7 @@ class DataManager extends Eloquent
         $generalManager->save();
 
         $manager = $generalManager->getSpecific();
-        if ($manager instanceof HistogramDataManager) {
-            /* HistogramWidgets are collecting special data */
-            $manager->initialCollectData();
-        } else {
-            $manager->collectData();
-        }
+        $manager->collectData();
 
         return $manager;
 

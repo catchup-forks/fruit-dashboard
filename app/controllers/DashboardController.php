@@ -101,9 +101,10 @@ class DashboardController extends BaseController
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
+
         $dashboard->is_locked = TRUE;
         $dashboard->save();
-        
+
         /* Return. */
         return Response::json(TRUE);
     }
@@ -118,9 +119,10 @@ class DashboardController extends BaseController
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
+
         $dashboard->is_locked = FALSE;
         $dashboard->save();
-        
+
         /* Return. */
         return Response::json(TRUE);
     }
@@ -159,7 +161,7 @@ class DashboardController extends BaseController
         }
 
         foreach ($user->dashboards as $dashboard) {
-            $dashboard->is_locked = FALES;
+            $dashboard->is_locked = FALSE;
             $dashboard->save();
         }
 

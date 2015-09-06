@@ -678,7 +678,6 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     private function getReferer() {
-        Log::info(Session::has('createDashboard'));
         if (Session::has('referer')) {
             return Session::pull('referer');
         } else {
