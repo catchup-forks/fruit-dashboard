@@ -1,9 +1,8 @@
 <?php
-/* If the widget needs to be updated automatically by a cron job.  */
-interface iCronWidget {
-    public function collectData();
+interface iAjaxWidget
+{
+    public function handleAjax($postData);
 }
-
 /* Main widget class */
 class Widget extends Eloquent
 {
@@ -21,7 +20,7 @@ class Widget extends Eloquent
     /* These variables will be overwritten, with late static binding. */
     public static $settingsFields = array();
     public static $setupSettings = array();
-    public static $multipleInstances = FALSE;
+
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
@@ -45,7 +44,7 @@ class Widget extends Eloquent
         foreach ($user->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
             /* Dealing only with datawidgets */
-            if ($widget instanceof Datawidget) {
+            if ($widget instanceof DataWidget) {
                 $widget->checkDataIntegrity();
             }
             $widget->checkSettingsIntegrity();
@@ -167,16 +166,13 @@ class Widget extends Eloquent
             }
 
             // Doing type based validation.
-            if ($fieldMeta['type'] == 'SCHOICE') {
-                $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|";
-            } else if ($fieldMeta['type'] == 'INT') {
-                $validationString .= 'integer|';
-            } else if ($fieldMeta['type'] == 'FLOAT') {
-                $validationString .= 'numeric|';
-            } else if ($fieldMeta['type'] == 'DATE') {
-                $validationString .= 'date|';
-            } else if ($fieldMeta['type'] == 'BOOL') {
-                $validationString = '';
+            switch ($fieldMeta['type']) {
+                case 'SCHOICE':  $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|"; break;
+                case 'INT': $validationString .= 'integer|'; break;
+                case 'FLOAT':  $validationString .= 'numeric|'; break;
+                case 'DATE':  $validationString .= 'date|'; break;
+                case 'BOOL':  $validationString .= ''; break;
+                default:;
             }
 
             // Adding validation to the return array.
@@ -223,20 +219,6 @@ class Widget extends Eloquent
         }
     }
 
-    /**
-     * setSetting
-     * Setting the value of a specific widget settings.
-     * --------------------------------------------------
-     * @param string $setting
-     * @param mixed $value
-     * --------------------------------------------------
-    */
-    public function setSetting($setting, $value, $commit=TRUE) {
-        $settings = $this->getSettings();
-        $settings[$setting] = $value;
-        $this->saveSettings($settings, $commit);
-    }
-
    /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
@@ -245,33 +227,25 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        /* Associating descriptor. */
-        $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
+        if (is_null($this->descriptor)) {
+            /* Associating descriptor. */
+            $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
-        /* Checking descriptor. */
-        if ($widgetDescriptor === null) {
-            throw new DescriptorDoesNotExist("The descriptor for " . get_class($this) . " does not exist", 1);
+            /* Checking descriptor. */
+            if ($widgetDescriptor === null) {
+                throw new DescriptorDoesNotExist("The descriptor for " . get_class($this) . " does not exist", 1);
+            }
+
+            // Assigning descriptor.
+            $this->descriptor()->associate($widgetDescriptor);
         }
-
-        // Assigning descriptor.
-        $this->descriptor()->associate($widgetDescriptor);
-
-        // Calling parent.
-        parent::save($options);
 
         // Saving settings by option.
         $commit = FALSE;
-        if (isset($options['saveSettings']) && $options['saveSettings'] == TRUE&& is_null($this->settings)) {
+        if (is_null($this->settings)) {
             $commit = TRUE;
         }
         $this->saveSettings(array(), $commit);
-
-        if (($this instanceof DataWidget) && ( ! isset($options['skipManager']) || $options['skipManager'] == FALSE)) {
-            $dataManager = $this->descriptor->getDataManager($this);
-            if ( ! is_null($dataManager)) {
-                $this->data()->associate($dataManager->getSpecific()->data);
-            }
-        }
 
         /* Saving settings.
          * Please note, that the save won't hit the db,

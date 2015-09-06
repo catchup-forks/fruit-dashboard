@@ -48,7 +48,7 @@ class DataManager extends Eloquent
      */
     public static function createManagerFromWidget($widget) {
         /* Only datawidgets are relevant */
-        if ( ! $widget instanceof DataWidget) {
+        if ( ! $widget instanceof CronWidget) {
             return null;
         }
 

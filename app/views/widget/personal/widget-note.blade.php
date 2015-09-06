@@ -1,5 +1,5 @@
 <div id="note-wrapper-{{ $widget->id }}">
-    <textarea id="note-data-{{ $widget->id }}" style="width:100%;height:100%;box-sizing:border-box">{{ $widget->getData()}}</textarea>
+    <textarea id="note-data-{{ $widget->id }}" style="width:100%;height:100%;box-sizing:border-box">{{ $widget->getData()['text']}}</textarea>
 </div>
 
 @section('widgetScripts')

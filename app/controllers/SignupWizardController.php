@@ -240,7 +240,7 @@ class SignupWizardController extends BaseController
             $quotewidget->dashboard()->associate($dashboard);
 
             /* Save quote widget object */
-            $quotewidget->setSetting('type', 'inspirational');
+            $quotewidget->saveSettings(array('type' => 'inspirational'));
             $quotewidget->collectData();
         }
 

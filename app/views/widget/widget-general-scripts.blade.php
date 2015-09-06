@@ -120,7 +120,7 @@
       if (datasets[i]['color']) {
         color = datasets[i]['color'];
       } else {
-        color = '100, 222, 100';
+        color = '{{ SiteConstants::getChartJsColors()[0] }}';
       }
       chartData.datasets.push(createDataSet(datasets[i]['values'], datasets[i]['name'], color));
     }

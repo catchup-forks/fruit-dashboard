@@ -298,7 +298,7 @@ class GeneralWidgetController extends BaseController {
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $options = array();
-        if ($widget instanceof DataWidget && $className::$criteriaSettings !== FALSE) {
+        if ($widget instanceof CronWidget && $className::$criteriaSettings !== FALSE) {
             $options['skipManager'] = TRUE;
         }
         $widget->save($options);
@@ -334,16 +334,15 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof DataWidget) {
+            if ( ! $widget instanceof CronWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
-            } } catch (WidgetDoesNotExist $e) {
+            }
+        } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e->getMessage());
         }
-        $settings = $widget->getSettings();
-        $settings['frequency'] = $frequency;
         $widget->state = 'active';
-        $widget->saveSettings($settings, TRUE);
+        $widget->saveSettings(array('frequency' => $frequency), TRUE);
 
         /* Rendering view. */
         return Redirect::route('dashboard.dashboard')
@@ -360,9 +359,10 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof DataWidget) {
+            if ( ! $widget instanceof CronWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
-            } } catch (WidgetDoesNotExist $e) {
+            }
+        } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e->getMessage());
         }
@@ -493,7 +493,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Checking if it's an ajax widget */
-        if (!$widget instanceof DataWidget) {
+        if ( ! $widget instanceof iAjaxWidget) {
             return Response::json(array('error' => 'This widget does not support this function.'));
         }
 
