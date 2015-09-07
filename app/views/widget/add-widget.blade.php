@@ -27,8 +27,8 @@
                 <!-- Category tabs -->
                 <div class="row">
                   <ul id="categoryTabs" class="nav nav-tabs" role="tablist">
-                    @foreach($widgetDescriptorGroups as $groupname => $widgetDescriptors)
-                      <li role="presentation" class=""><a href="#{{ $groupname }}" aria-controls="home" role="tab" data-toggle="tab">{{ ucwords(str_replace('_', ' ', $groupname)) }}</a></li>
+                    @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
+                      <li role="presentation" class=""><a href="#{{ $group['name'] }}" aria-controls="home" role="tab" data-toggle="tab">{{ $group['display_name'] }}</a></li>
                     @endforeach
                   </ul>
                 </div>
@@ -38,17 +38,17 @@
 
                   <!-- Category widgets -->
                   <div class="tab-content">
-                    @foreach($widgetDescriptorGroups as $groupname => $widgetDescriptors)
-                      
+                    @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
+
                       <!-- Category panel -->
-                      <div role="tabpanel" class="tab-pane fade in active" id="{{ $groupname }}">
-                        
+                      <div role="tabpanel" class="tab-pane fade in active" id="{{ $group['name'] }}">
+
                         <!-- Widgets -->
-                        @foreach($widgetDescriptors as $descriptor)
+                        @foreach($group['descriptors'] as $descriptor)
                           <a href="#" id="descriptor-{{ $descriptor->id }}" class="list-group-item changes-image" data-widget="widget-{{ $descriptor->type }}">
                             {{ $descriptor->name }}
                             {{-- This is the span for the selection icon --}}
-                            <span class="selection-icon"> </span> 
+                            <span class="selection-icon"> </span>
 
                             {{-- If user is on free plan display labels --}}
                             @if (Auth::user()->subscription->isOnFreePlan())
@@ -184,7 +184,7 @@
         }
 
       });
-	  
+
 	  $('.changes-image').click(function(e) {
         e.preventDefault();
         showDescription(getID(this));

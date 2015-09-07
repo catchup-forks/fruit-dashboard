@@ -22,7 +22,7 @@ abstract class GeneralGoogleAnalyticsWidget extends MultipleHistogramWidget
     /* Choices functions */
     public function property() {
         $properties = array();
-        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+        foreach ($this->user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;
         }
         return $properties;
@@ -37,10 +37,10 @@ abstract class GeneralGoogleAnalyticsWidget extends MultipleHistogramWidget
      */
     protected function getProperty() {
         $propertyId = $this->getSettings()['property'];
-        $property = GoogleAnalyticsProperty::find($propertyId);
+        $property = $this->user()->googleAnalyticsProperties->where('id', $propertyId);
         /* Invalid property in DB. */
         if (is_null($property)) {
-            return Auth::user()->googleAnalyticsProperties()->first();
+            return $this->user()->googleAnalyticsProperties()->first();
         }
         return $property;
     }

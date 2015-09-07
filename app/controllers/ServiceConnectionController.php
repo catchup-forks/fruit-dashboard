@@ -264,7 +264,7 @@ class ServiceConnectionController extends BaseController
                 return Redirect::route('service.facebook.select-pages')
                     ->with('success', $message);
             } else {
-                return Redirect::URL($this->getReferer())
+                return Redirect::to($this->getReferer())
                     ->with('success', $message);
             }
 

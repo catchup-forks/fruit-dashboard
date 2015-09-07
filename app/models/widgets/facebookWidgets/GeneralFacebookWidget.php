@@ -22,7 +22,7 @@ abstract class GeneralFacebookWidget extends HistogramWidget
     /* Choices functions */
     public function page() {
         $pages = array();
-        foreach (Auth::user()->facebookPages as $page) {
+        foreach ($this->user()->facebookPages as $page) {
             $pages[$page->id] = $page->name;
         }
         return $pages;
@@ -38,10 +38,10 @@ abstract class GeneralFacebookWidget extends HistogramWidget
      */
     protected function getPage() {
         $pageId = $this->getSettings()['page'];
-        $page = FacebookPage::find($pageId);
+        $page = $this->user()->googleAnalyticsProperties()->where('id', $pageId);
         /* Invalid page in DB. */
         if (is_null($page)) {
-            return Auth::user()->facebookPages()->first();
+            return $this->user()->facebookPages()->first();
         }
         return $page;
     }

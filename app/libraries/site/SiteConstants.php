@@ -166,6 +166,32 @@ class SiteConstants {
     }
 
     /**
+     * getWidgetDescriptorGroups:
+     * --------------------------------------------------
+     * Returns all widgetDescriptor groups.
+     * @return (array) ($DescriptorGroups)
+     * --------------------------------------------------
+     */
+    public static function getWidgetDescriptorGroups() {
+        $customGroups = array(
+            array(
+                'name'         => 'personal',
+                'display_name' => 'Personal'
+            ),
+        );
+        $groups = array();
+
+        foreach (array_merge($customGroups, self::getSocialServices(), self::getFinancialServices()) as $group ) {
+            array_push($groups, array(
+                'name'         => $group['name'],
+                'display_name' => $group['display_name'],
+                'descriptors'  => WidgetDescriptor::where('category', $group['name'])->orderBy('name', 'asc')->get()
+            ));
+        }
+        return $groups;
+    }
+
+    /**
      * getServiceMeta:
      * --------------------------------------------------
      * Returns the specific service meta.
