@@ -2,6 +2,11 @@
 
 class NoteWidget extends DataWidget implements iAjaxWidget
 {
+
+    protected function createDataScheme() {
+        return array('text' => '');
+    }
+
     /**
      * handleAjax
      * --------------------------------------------------

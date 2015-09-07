@@ -1,7 +1,7 @@
 <?php
 
 /* All classes that have interaction with data. */
-abstract class CronWidget extends DataWidget implements iAjaxWidget
+abstract class CronWidget extends Widget implements iAjaxWidget
 {
     public static $criteriaSettings = array();
 

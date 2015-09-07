@@ -21,7 +21,7 @@ class SiteConstants {
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
     private static $financialServices = array('braintree', 'stripe');
-    private static $socialServices    = array('google_analytics', 'facebook');
+    private static $socialServices    = array('google_analytics', 'facebook', 'twitter');
 
     private static $chartJsColors = array(
         '100, 222, 100',

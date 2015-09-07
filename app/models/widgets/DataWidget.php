@@ -3,6 +3,8 @@
 /* All classes that have interaction with data. */
 abstract class DataWidget extends Widget
 {
+    abstract protected function createDataScheme();
+
     /**
      * getData
      */
@@ -15,13 +17,15 @@ abstract class DataWidget extends Widget
      * Checking the DataIntegrity of widgets.
     */
     protected function checkDataIntegrity() {
+        $emptyData = $this->createDataScheme();
+        /* Data not set */
         if (is_null($this->data)) {
-            $this->initData();
-            $data = Data::create(array('raw_value' => ''));
+            $data = Data::create(array('raw_value' => json_encode($emptyData)));
             $this->data()->associate($data);
-        } else if ($this->data->raw_value == '') {
-            $this->state = 'setup_required';
             $this->save();
+        } else if ($this->data->raw_value == '' || array_keys($emptyData) != array_keys(json_decode($this->data->raw_value, 1))) {
+            $this->data->raw_value = json_encode($emptyData);
+            $this->data->save();
         }
     }
 }

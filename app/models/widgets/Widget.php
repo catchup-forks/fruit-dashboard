@@ -44,7 +44,7 @@ class Widget extends Eloquent
         foreach ($user->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
             /* Dealing only with datawidgets */
-            if ($widget instanceof DataWidget) {
+            if ($widget instanceof DataWidget || $widget instanceof CronWidget) {
                 $widget->checkDataIntegrity();
             }
             $widget->checkSettingsIntegrity();
