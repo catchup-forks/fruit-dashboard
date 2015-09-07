@@ -68,7 +68,7 @@ Route::group([
         'uses'  => 'GeneralWidgetController@anyPinToDashboard',
     ]);
 
-    Route::post('save-position/{userID}', [
+    Route::post('save-position', [
         'before' => 'auth',
         'as'    => 'widget.save-position',
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',

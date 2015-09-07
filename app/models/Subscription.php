@@ -38,57 +38,95 @@ class Subscription extends Eloquent
         return ($this->plan->id == $freePlan->id);
     }
 
+
     /**
-     * getTrialInfo
+     * getSubscriptionInfo
      * --------------------------------------------------
-     * @return (array) ($trialInfo) Information about the trial period
+     * @return (array) ($subscriptionInfo) Information about the subscription
      * --------------------------------------------------
+     * State Matrix legend:
+     *     TS: Trial period state       (possible | active | ended | disabled)
+     *     TD: Trial badge displayed    (true | false)
+     *     PE: Premium widgets enabled  (true | false)
+     * --------------------------------------------------------------------
+     * Case                              |     TS     |   TD    |   PE    |
+     * --------------------------------------------------------------------
+     * 1) No premium widget added:       |  possible  |  false  |  false  |
+     * 2) Premium widget added,         
+     *    Remaining days > 0             |   active   |  true   |  true   |
+     * 3) Premium widget added,  
+     *    Remaining days <= 0            |   ended    |  true   |  false  |
+     * 4) Unsubscribed from Premium plan |  disabled  |  false  |  false  |
+     * 5) Subscribed to Premium plan     |  disabled  |  false  |  true   |
+     * --------------------------------------------------------------------
      */
-    public function getTrialInfo() {
-        /* Initialize variables */
-        $trialInfo = array();
+    public function getSubscriptionInfo() {
+        /* Handle just expired trial */
+        if (($this->trial_status == 'active') and
+            ($this->getDaysRemainingFromTrial() <= 0)) {
 
-        /* User is on paid plan */
-        if (!$this->isOnFreePlan()) {
-           /* Update trialInfo */
-            $trialInfo['enabled'] = FALSE;
+            /* Update status in db */
+            $this->changeTrialState('ended');
 
-            /* Return trialInfo */
-            return $trialInfo;
-        }
+            /* Track event | TRIAL ENDED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Trial ended',
+                'el' => $this->user->email)
+            );
+        } 
 
-        /* Trial is not active */
-        if (($this->trial_status == 'possible') or
-            ($this->trial_status == 'disabled')) {
-            /* Update trialInfo */
-            $trialInfo['enabled'] = FALSE;
+        /* Return subscriptionInfo based on the cases */
+        if ($this->isOnFreePlan()) {
+            /* ==== CASE 1 === */
+            if ($this->trial_status == 'possible') {
+                /* Build and return subscriptionInfo */
+                return [
+                    'TS' => 'possible',
+                    'TD' => false,
+                    'PE' => false,
+                ];
+            
+            /* ==== CASE 2 === */
+            } elseif ($this->trial_status == 'active') {
+                /* Build and return subscriptionInfo */
+                return [
+                    'TS' => 'active',
+                    'TD' => true,
+                    'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
+                    'trialEndDate'       => $this->getTrialEndDate(),
+                    'PE' => true,
+                ];
 
-            /* Return trialInfo */
-            return $trialInfo;
+            /* ==== CASE 3 === */
+            } elseif ($this->trial_status == 'ended') {
+                /* Build and return subscriptionInfo */
+                return [
+                    'TS' => 'ended',
+                    'TD' => true,
+                    'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
+                    'trialEndDate' => $this->getTrialEndDate(),
+                    'PE' => false,
+                ];
 
-        /* Trial is active */
-        } else {
-            /* Handle expired trial */
-            if ($this->getDaysRemainingFromTrial() <= 0) {
-                /* Update status in db */
-                $this->changeTrialState('ended');
-
-                /* Track event | TRIAL ENDED */
-                $tracker = new GlobalTracker();
-                $tracker->trackAll('lazy', array(
-                    'en' => 'Trial ended',
-                    'el' => $this->user->email)
-                );
-
+            /* ==== CASE 4 === */
+            } elseif ($this->trial_status == 'disabled') {
+                /* Build and return subscriptionInfo */
+                return [
+                    'TS' => 'disabled',
+                    'TD' => false,
+                    'PE' => false,
+                ];
             }
-
-            /* Update trialInfo */
-            $trialInfo['enabled']       = TRUE;
-            $trialInfo['daysRemaining'] = $this->getDaysRemainingFromTrial();
-            $trialInfo['endDate']       = $this->getTrialEndDate();
-
-            /* Return trialInfo */
-            return $trialInfo;
+        
+        /* ==== CASE 5 === */
+        } else {
+            /* Build and return subscriptionInfo */
+            return [
+                'TS' => 'disabled',
+                'TD' => false,
+                'PE' => true,
+            ];
         }
     }
 

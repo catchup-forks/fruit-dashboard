@@ -2,7 +2,6 @@
 
 class WebhookHistogramWidget extends HistogramWidget
 {
-    use WebhookWidget;
     /* -- Settings -- */
     public static $settingsFields = array(
         'frequency' => array(
@@ -25,14 +24,7 @@ class WebhookHistogramWidget extends HistogramWidget
 
     /* The settings to setup in the setup-wizard. */
     public static $setupSettings = array('name', 'url');
-
-    public function getCurrentValue() {
-        $data = $this->getJson();
-        if (isset($data['value'])) {
-            return $data['value'];
-        }
-        return 0;
-    }
+    public static $criteriaSettings = array('url');
 
 }
 ?>

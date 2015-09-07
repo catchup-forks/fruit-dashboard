@@ -16,8 +16,14 @@ abstract class HistogramDataManager extends DataManager
         $newValue = $this->getCurrentValue();
 
         /* Getting previous values. */
-        $currentData = json_decode($this->data->raw_value, 1);
-        $lastData = end($currentData);
+        $currentData = $this->getData();
+        if ( ! empty($currentData)) {
+            $lastData = end($currentData);
+        } else {
+            $currentData = array();
+            $lastData = null;
+        }
+
         $today = Carbon::now()->toDateString();
 
         /* If today, popping the old value. */
@@ -26,34 +32,34 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Adding, saving data. */
-        array_push($currentData, array('date' => $today, 'value' => $newValue));
-        $this->data->raw_value = json_encode($currentData);
-        $this->data->save();
+        array_push($currentData, $this->formatData($today, $newValue));
+        $this->saveData($currentData);
     }
+
+    /**
+     * formatData
+     * Returning the last data in the histogram.
+     * --------------------------------------------------
+     * @param Carbon $date
+     * @param mixed $value
+     * @return array
+     * --------------------------------------------------
+     */
+     protected function formatData($date, $value) {
+        return array('date' => $date, 'value' => $value);
+     }
 
     /**
      * getLatestData
      * Returning the last data in the histogram.
      * --------------------------------------------------
-     * @return float
+     * @return array
      * --------------------------------------------------
      */
      public function getLatestData() {
         $histogram = $this->getData();
         $lastEntry = end($histogram);
         return $lastEntry;
-     }
-
-    /**
-     * getFirstData
-     * Returning the first data in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
-     */
-     public function getFirstData() {
-        $histogram = $this->getData();
-        return $histogram['value'];
      }
 
     /**
@@ -76,7 +82,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Default return. */
-        return json_decode($this->data->raw_value, 1);
+        return $this->getData();
     }
 
     /**
@@ -91,7 +97,7 @@ abstract class HistogramDataManager extends DataManager
     */
     protected function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
         /* Getting recorded histogram reversed. */
-        $reversedHistogram = array_reverse(json_decode($this->data->raw_value, 1));
+        $reversedHistogram = array_reverse($this->getData(), 1);
 
         /* If there's range, using reader. */
         $recording = TRUE;
@@ -122,10 +128,9 @@ abstract class HistogramDataManager extends DataManager
                     $first = FALSE;
                 }
                 /* Saving data with custom date format. */
-                array_push($histogram, array(
-                    'value' => $entry['value'],
-                    'date'  => $entryDate->format($dateFormat)
-                ));
+                $newEntry = $entry;
+                $newEntry['date'] = $entryDate->format($dateFormat);
+                array_push($histogram, $newEntry);
             }
 
             if (count($histogram) >= self::ENTRIES) {
@@ -140,7 +145,7 @@ abstract class HistogramDataManager extends DataManager
     /**
      * useEntryInHistogram
      * Whether or not use the specific entry in the
-     * histomgram.
+     * histogram.
      * --------------------------------------------------
      * @param Carbon $entryDate
      * @param string $frequency
@@ -164,6 +169,28 @@ abstract class HistogramDataManager extends DataManager
             }
         }
         return FALSE;
+    }
+
+    /**
+     * Returning the differentiated values of an array.
+     *
+     * @param array $data
+     * @return array
+     */
+    public static final function getDiff($data, $dataName='value') {
+        $differentiatedArray = array();
+        foreach ($data as $entry) {
+            /* Copying entry. */
+            $diffEntry = $entry;
+            $diffValue = 0;
+            if (isset($lastValue)) {
+                $diffValue = $entry[$dataName] - $lastValue;
+            }
+            $diffEntry[$dataName] = $diffValue;
+            array_push($differentiatedArray, $diffEntry);
+            $lastValue = $entry[$dataName];
+        }
+        return $differentiatedArray;
     }
 
 }

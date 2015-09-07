@@ -1,7 +1,7 @@
 <!-- if not on dashboard display the home button -->
 @if (!Request::is('dashboard'))
     <div class="position-tl drop-shadow z-top">
-      <a href="/" alt="Dashboard" title="Dashboard">
+      <a href="{{ route('dashboard.dashboard') }}" alt="Dashboard" title="Dashboard">
         <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
       </a>
     </div>
@@ -82,20 +82,20 @@
 </div> <!-- /.btn-group -->
 
 <!-- Display the Remaining Days counter -->
-@if (Auth::user()->subscription->getTrialInfo()['enabled'])
+@if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
     <a href="{{ route('payment.plans') }}"
        class="position-br drop-shadow z-top no-underline"
        data-toggle="tooltip"
        data-placement="left"
        title=
-        "@if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
-            Your trial period will end on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click here to change your Plan.
+        "@if (Auth::user()->subscription->getSubscriptionInfo()['TS'] == 'active')
+            Your trial period will end on <br> {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d') }} <br> Click here to change your Plan.
         @else
-            Your trial period ended on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click here to change your Plan.
+            Your trial period ended on <br> {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d') }} <br> Click here to change your Plan.
         @endif">
 
-        <span class="label @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] < SiteConstants::getTrialPeriodInDays() / 2) label-danger @else label-warning @endif label-as-badge valign-middle">
-            {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }}
+        <span class="label @if (Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] < SiteConstants::getTrialPeriodInDays() / 2) label-danger @else label-warning @endif label-as-badge valign-middle">
+            {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }}
         </span>
     </a>
 @endif

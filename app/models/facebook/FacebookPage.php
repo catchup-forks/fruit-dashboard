@@ -4,7 +4,7 @@ class FacebookPage extends Eloquent
 {
     // -- Fields -- //
     protected $fillable = array(
-        'page_id',
+        'id',
         'name',
     );
 

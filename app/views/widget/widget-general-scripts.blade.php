@@ -5,7 +5,7 @@
   Chart.defaults.global.tooltipYPadding = 16;
   Chart.defaults.global.tooltipCornerRadius = 0;
   Chart.defaults.global.tooltipTitleFontStyle = "normal";
-  Chart.defaults.global.tooltipFillColor = "rgba(0,160,0,0.8)";
+  Chart.defaults.global.tooltipFillColor = "rgba(160,160,160,0.8)";
   Chart.defaults.global.animationEasing = "easeOutBounce";
   Chart.defaults.global.responsive = true;
   Chart.defaults.global.scaleLineColor = "black";
@@ -22,7 +22,7 @@
   };
 
   $(".deleteWidget").click(function(e) {
-    
+
     e.preventDefault();
 
     // initialize url
@@ -98,32 +98,41 @@
     loadWidget(widgetId, callback);
   };
 
-  function drawLineGraph(canvas, values, labels, name, timeOut) {
-    // Building data.
-    var chartData = {
-    labels: labels,
-    datasets: [{
+  function createDataSet(values, name, color) {
+    return {
       label: name,
-      fillColor : "rgba(100, 222, 100,0.2)",
-      strokeColor : "rgba(100, 222, 100,1)",
-      pointColor : "rgba(100, 222, 100,1)",
+      fillColor : "rgba(" + color + ",0.2)",
+      strokeColor : "rgba(" + color + ",1)",
+      pointColor : "rgba(" + color + ",1)",
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
-      pointHighlightStroke : "rgba(100, 222, 100,1)",
+      pointHighlightStroke : "rgba(" + color + ",1)",
       data: values
-    }]};
+    }
+  }
+  function drawLineGraph(canvas, datasets, labels, name) {
+    // Building data.
+    var chartData = {
+      labels: labels,
+      datasets: []
+    };
+    for (i = 0; i < datasets.length; ++i) {
+      if (datasets[i]['color']) {
+        color = datasets[i]['color'];
+      } else {
+        color = '{{ SiteConstants::getChartJsColors()[0] }}';
+      }
+      chartData.datasets.push(createDataSet(datasets[i]['values'], datasets[i]['name'], color));
+    }
 
     // Getting context.
     var ctx = canvas[0].getContext("2d");
 
-    // Clear the canvas.
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
     // Drawing chart.
-    setTimeout(function () {var chart = new Chart(ctx).Line(chartData, chartOptions)}, timeOut);
+    var chart = new Chart(ctx).Line(chartData, chartOptions);
   }
 
-  function updateChartWidget(data, canvas, name, valueSpan) {
+  function updateHistogramWidget(data, canvas, name, valueSpan) {
     // Updating chart values.
     var labels = [];
     var values = [];
@@ -134,6 +143,6 @@
     if (data.length > 0 && valueSpan) {
       valueSpan.html("$" + data[data.length-1]['value']);
     }
-    drawLineGraph(canvas, values, labels, name, 250);
+    drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
   }
 </script>

@@ -49,20 +49,26 @@ class WidgetDescriptor extends Eloquent
      * --------------------------------------------------
     */
     public function getDataManager($widget) {
-        if (class_exists(str_replace('Widget', 'DataManager', $this->getClassName()))) {
+        $className = str_replace('Widget', 'DataManager', $this->getClassName());
+        if (class_exists($className)) {
             /* Manager class exists. */
             $managers = $widget->user()->dataManagers()->where('descriptor_id', $this->id)->get();
 
-            if (count($managers) > 1) {
+            if ($widget->getCriteria()) {
                 /* More managers, checking criteria. */
                 foreach ($managers as $manager) {
-                    if ($manger->getCriteria() == $widget->getCriteria()) {
+                    if ($manager->getCriteria() == $widget->getCriteria()) {
                         return $manager;
                     }
                 }
             } else if (count($managers) == 1) {
                 /* Only one manager using it automatically. */
                 return $managers[0];
+            }
+
+            /* No manager found, creating one. */
+            if (empty($widget::$criteriaSettings) || ($widget->getCriteria())) {
+                return DataManager::createManagerFromWidget($widget);
             }
         }
         return null;

@@ -26,6 +26,12 @@ Route::group([
         'uses'   => 'DashboardController@anyDeleteDashboard'
     ]);
 
+    Route::any('toggle-lock/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.toggle-lock',
+        'uses'   => 'DashboardController@anyToggleDashboardLock'
+    ]);
+
     Route::any('lock/{dashboardId}', [
         'before' => 'auth',
         'as'     => 'dashboard.lock',

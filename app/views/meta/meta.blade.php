@@ -16,22 +16,8 @@
     </title>
 
     @section('tracking')
-      @if(App::environment('production'))
-        <!-- Google Analytics -->
-        @include('tracking.google-analytics')
-        <!-- /Google Analytics -->
-
-        <!-- Intercom IO -->
-        @include('tracking.intercom-io')
-        <!-- /Intercom IO -->
-
-        <!-- Mixpanel -->
-        @include('tracking.mixpanel')
-        <!-- /Mixpanel -->
-
-        <!-- Global event tracker -->
+      @if(GlobalTracker::isTrackingEnabled())
         @include('tracking.global-event-tracker')
-        <!-- /Global event tracker -->
       @endif
     @show
 

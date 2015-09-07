@@ -1,28 +1,8 @@
 <?php
-/* If the widget needs to be updated automatically by a cron job.  */
-interface iCronWidget {
-    public function collectData();
+interface iAjaxWidget
+{
+    public function handleAjax($postData);
 }
-
-/* When a widget is using a webhook. */
-trait WebhookWidget {
-    /**
-     * getJson
-     * Returning the json from the url.
-     * --------------------------------------------------
-     * @return array/null
-     * --------------------------------------------------
-     */
-    private function getJson() {
-        try {
-            $json = file_get_contents($this->getSettings()['url']);
-        } catch (Exception $e) {
-            return null;
-        }
-        return json_decode($json, TRUE);
-    }
-}
-
 /* Main widget class */
 class Widget extends Eloquent
 {
@@ -40,7 +20,7 @@ class Widget extends Eloquent
     /* These variables will be overwritten, with late static binding. */
     public static $settingsFields = array();
     public static $setupSettings = array();
-    public static $multipleInstances = FALSE;
+
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
@@ -55,27 +35,19 @@ class Widget extends Eloquent
 
     /**
      * checkIntegrity
-     * Checking the dataintegrity of widgets.
+     * Checking the overall integrity of a user's widgets.
+     * --------------------------------------------------
+     * @param User $user
+     * --------------------------------------------------
     */
-    public static function checkDataIntegrity($user) {
+    public static function checkIntegrity($user) {
         foreach ($user->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
             /* Dealing only with datawidgets */
-            if ( ! $widget instanceof Datawidget) {
-                continue;
+            if ($widget instanceof DataWidget || $widget instanceof CronWidget) {
+                $widget->checkDataIntegrity();
             }
-            if (is_null($widget->data)) {
-                /* No data is assigned, let's hope a save will fix it. */
-                $widget->save();
-                if (is_null($widget->data)) {
-                    /* Still not working */
-                    $widget->state = 'setup_required';
-                    $widget->save();
-                }
-            }
-            if ($widget->state == 'loading') {
-                $widget->refreshWidget();
-            }
+            $widget->checkSettingsIntegrity();
         }
     }
 
@@ -194,16 +166,13 @@ class Widget extends Eloquent
             }
 
             // Doing type based validation.
-            if ($fieldMeta['type'] == 'SCHOICE') {
-                $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|";
-            } else if ($fieldMeta['type'] == 'INT') {
-                $validationString .= 'integer|';
-            } else if ($fieldMeta['type'] == 'FLOAT') {
-                $validationString .= 'numeric|';
-            } else if ($fieldMeta['type'] == 'DATE') {
-                $validationString .= 'date|';
-            } else if ($fieldMeta['type'] == 'BOOL') {
-                $validationString = '';
+            switch ($fieldMeta['type']) {
+                case 'SCHOICE':  $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|"; break;
+                case 'INT': $validationString .= 'integer|'; break;
+                case 'FLOAT':  $validationString .= 'numeric|'; break;
+                case 'DATE':  $validationString .= 'date|'; break;
+                case 'BOOL':  $validationString .= ''; break;
+                default:;
             }
 
             // Adding validation to the return array.
@@ -250,20 +219,6 @@ class Widget extends Eloquent
         }
     }
 
-    /**
-     * setSetting
-     * Setting the value of a specific widget settings.
-     * --------------------------------------------------
-     * @param string $setting
-     * @param mixed $value
-     * --------------------------------------------------
-    */
-    public function setSetting($setting, $value, $commit=TRUE) {
-        $settings = $this->getSettings();
-        $settings[$setting] = $value;
-        $this->saveSettings($settings, $commit);
-    }
-
    /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
@@ -272,32 +227,49 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        /* Associating descriptor. */
-        $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
+        if (is_null($this->descriptor)) {
+            /* Associating descriptor. */
+            $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
-        /* Checking descriptor. */
-        if ($widgetDescriptor === null) {
-            throw new DescriptorDoesNotExist("The descriptor for " . get_class($this) . " does not exist", 1);
+            /* Checking descriptor. */
+            if ($widgetDescriptor === null) {
+                throw new DescriptorDoesNotExist("The descriptor for " . get_class($this) . " does not exist", 1);
+            }
+
+            // Assigning descriptor.
+            $this->descriptor()->associate($widgetDescriptor);
         }
 
-        // Assigning descriptor.
-        $this->descriptor()->associate($widgetDescriptor);
-
-        // Calling parent.
-        parent::save($options);
-
-        // Always saving settings to keep integrity.|
-        $this->saveSettings(array(), FALSE);
-        $dataManager = $this->descriptor->getDataManager($this);
-        if ( ! is_null($dataManager)) {
-            $this->data()->associate($dataManager->getSpecific()->data);
+        // Saving settings by option.
+        $commit = FALSE;
+        if (is_null($this->settings)) {
+            $commit = TRUE;
         }
+        $this->saveSettings(array(), $commit);
 
         /* Saving settings.
          * Please note, that the save won't hit the db,
          * if no change has been made to the model.
         */
         return parent::save();
+    }
+
+    /**
+     * checkSettingsIntegrity
+     * Checking the Settings integrity of widgets.
+    */
+    protected function checkSettingsIntegrity() {
+        if (is_null($this->getSettings())) {
+            $this->state = 'setup_required';
+            $this->save();
+            return ;
+        }
+        foreach ($this->getSettingsFields() as $key=>$value) {
+            if ( ! array_key_exists($key, $this->getSettings())) {
+                $this->state = 'setup_required';
+                $this->save();
+            }
+        }
     }
 
     /**

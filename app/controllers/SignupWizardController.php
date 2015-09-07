@@ -214,7 +214,7 @@ class SignupWizardController extends BaseController
                 'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
             ));
             $clockwidget->dashboard()->associate($dashboard);
-        
+
             /* Save clock widget object */
             $clockwidget->save();
         }
@@ -226,7 +226,7 @@ class SignupWizardController extends BaseController
                 'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
             ));
             $greetingswidget->dashboard()->associate($dashboard);
-            
+
             /* Save greetings widget object */
             $greetingswidget->save();
         }
@@ -240,7 +240,7 @@ class SignupWizardController extends BaseController
             $quotewidget->dashboard()->associate($dashboard);
 
             /* Save quote widget object */
-            $quotewidget->save();
+            $quotewidget->saveSettings(array('type' => 'inspirational'));
             $quotewidget->collectData();
         }
 

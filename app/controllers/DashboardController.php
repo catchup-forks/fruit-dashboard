@@ -22,19 +22,14 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        // $time = microtime(true);
         /* Detect if the user has no dashboard, and redirect */
         if (!Auth::user()->dashboards()->count()) {
             return Redirect::route('signup-wizard.personal-widgets');
         }
 
         /* Checking the user's widget data integrity */
-        Widget::checkDataIntegrity(Auth::user());
+        Widget::checkIntegrity(Auth::user());
 
-        //$collector = new GoogleAnalyticsDataCollector(Auth::user());
-        //Log::info($collector->getFirstProfileId());
-
-        // Log::info(microtime(true) - $time);
         /* Render the page */
         return View::make('dashboard.dashboard');
     }
@@ -73,6 +68,29 @@ class DashboardController extends BaseController
     }
 
     /**
+     * anyToggleDashboardLock
+     * --------------------------------------------------
+     * @return Toggles the locking for a dashboard.
+     * --------------------------------------------------
+     */
+    public function anyToggleDashboardLock($dashboardId) {
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+
+        if($dashboard->is_locked) {
+          $dashboard->is_locked = FALSE;
+        } else {
+          $dashboard->is_locked = TRUE;
+        }
+        $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
      * anyLockDashboard
      * --------------------------------------------------
      * @return Locks a dashboard.
@@ -90,7 +108,6 @@ class DashboardController extends BaseController
         /* Return. */
         return Response::json(TRUE);
     }
-
     /**
      * anyUnlockDashboard
      * --------------------------------------------------
@@ -105,6 +122,48 @@ class DashboardController extends BaseController
 
         $dashboard->is_locked = FALSE;
         $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyLockAllDashboards
+     * --------------------------------------------------
+     * @return Locks all dashboards.
+     * --------------------------------------------------
+     */
+    public function anyLockAllDashboards($userId) {
+        $user = User::find($userId);
+        if (is_null($user)) {
+            return Response::json(FALSE);
+        }
+
+        foreach ($user->dashboards as $dashboard) {
+            $dashboard->is_locked = TRUE;
+            $dashboard->save();
+        }
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyUnlockAllDashboards
+     * --------------------------------------------------
+     * @return Unlocks all dashboards.
+     * --------------------------------------------------
+     */
+    public function anyUnlockAllDashboards($userId) {
+        $user = User::find($userId);
+        if (is_null($user)) {
+            return Response::json(FALSE);
+        }
+
+        foreach ($user->dashboards as $dashboard) {
+            $dashboard->is_locked = FALSE;
+            $dashboard->save();
+        }
 
         /* Return. */
         return Response::json(TRUE);

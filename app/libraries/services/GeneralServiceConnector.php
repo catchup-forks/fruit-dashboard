@@ -19,6 +19,7 @@ abstract class GeneralServiceConnector
     }
 
     abstract public function connect();
+    abstract protected function populateData();
 
     /**
      * disconnect
@@ -91,5 +92,60 @@ abstract class GeneralServiceConnector
         $connection->save();
         return $connection;
     }
+
+    /**
+     * saveConnection
+     * Saving the tokens, creating data managers.
+     */
+    public function saveConnection(array $parameters=array()) {
+
+        /* Change trial period settings */
+        $this->user->subscription->changeTrialState('active');
+
+        /* Saving tokens */
+        $this->getTokens($parameters);
+
+        /* Creating dataManagers */
+        $this->createDataManagers();
+
+        /* Getting data */
+        $this->populateData();
+    }
+
+    /**
+     * Creating the dataManagers.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function createDataManagers() {
+        $dataManagers = array();
+        foreach(WidgetDescriptor::where('category', static::$service)->get() as $descriptor) {
+            /* Creating widget instance. */
+            $className = str_replace('Widget', 'DataManager', $descriptor->getClassName());
+
+            /* No manager found */
+            if ( ! class_exists($className)) {
+                continue;
+            }
+
+            /* Creating data */
+            $data = new Data(array('raw_value' => json_encode(array())));
+            $data->save();
+
+            /* Creating DataManager instance */
+            $dataManager = new $className;
+            $dataManager->descriptor()->associate($descriptor);
+            $dataManager->user()->associate($this->user);
+
+            /* Assigning data */
+            $dataManager->data()->associate($data);
+            $dataManager->save();
+
+            array_push($dataManagers, $dataManager);
+        }
+        return $dataManagers;
+    }
+
 
 } /* GeneralServiceConnector */

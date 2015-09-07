@@ -202,18 +202,18 @@
               </div> <!-- /.row -->
               <div class="row">
                 <div class="col-md-12 text-center">
-                  @if (Auth::user()->subscription->getTrialInfo()['enabled'])
-                    @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
+                  @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
+                    @if (Auth::user()->subscription->getSubscriptionInfo()['TS'] == 'active')
                       <p>
                         Your trial ends in
                         <strong>
-                          {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
+                          {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }} day(s)
                         </strong>
-                        <small class="text-muted">on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}.</small>
+                        <small class="text-muted">on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}.</small>
                       </p>
                     @else
                       <p>
-                        Your trial has ended on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
+                        Your trial has ended on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
                       </p>
                     @endif
                   @endif

@@ -222,11 +222,15 @@ class GeneralWidgetController extends BaseController {
             ));
             $newWidget->dashboard()->associate($dashboard);
             $newWidget->save();
-        }
 
-        /* Redirect to dashboard */
+            $setupFields = $newWidget->getSetupFields();
+            if ( ! empty($setupFields)) {
+                return Redirect::route('widget.setup', array($newWidget->id))
+                    ->with('success', 'You successfully restored the widget.');
+            }
+        }
         return Redirect::route('dashboard.dashboard')
-            ->with('success', "You successfully restored the widget");
+            ->with('success', 'You successfully restored the widget.');
     }
     /**
      * getAddWidget
@@ -241,8 +245,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Rendering view */
-        return View::make('widget.add-widget')
-            ->with('widgetDescriptors', WidgetDescriptor::all());
+        return View::make('widget.add-widget');
     }
 
     /**
@@ -288,13 +291,18 @@ class GeneralWidgetController extends BaseController {
 
         $widget->dashboard()->associate($dashboard);
 
-        /* Finding position. */
+    /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
-        $widget->save();
- /* Start trial period if the widget is premium */
+        $options = array();
+        if ($widget instanceof CronWidget && $className::$criteriaSettings !== FALSE) {
+            $options['skipManager'] = TRUE;
+        }
+        $widget->save($options);
+
+        /* Start trial period if the widget is premium */
         if ($widget->descriptor->is_premium) {
             Auth::user()->subscription->changeTrialState('active');
         }
@@ -325,16 +333,15 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof DataWidget) {
+            if ( ! $widget instanceof CronWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
-            } } catch (WidgetDoesNotExist $e) {
+            }
+        } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e->getMessage());
         }
-        $settings = $widget->getSettings();
-        $settings['frequency'] = $frequency;
         $widget->state = 'active';
-        $widget->saveSettings($settings, TRUE);
+        $widget->saveSettings(array('frequency' => $frequency), TRUE);
 
         /* Rendering view. */
         return Redirect::route('dashboard.dashboard')
@@ -351,9 +358,10 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof DataWidget) {
+            if ( ! $widget instanceof CronWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
-            } } catch (WidgetDoesNotExist $e) {
+            }
+        } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
                 ->with('error', $e->getMessage());
         }
@@ -397,47 +405,39 @@ class GeneralWidgetController extends BaseController {
      * saveWidgetPosition
      * --------------------------------------------------
      * Saves the widget position.
-     * @param  (int)  ($userID) The ID of the user
      * @return Json with status code
      * --------------------------------------------------
      */
-    public function saveWidgetPosition($userID) {
+    public function saveWidgetPosition() {
 
         /* Escaping invalid data. */
         if (!isset($_POST['positioning'])) {
             throw new BadPosition("Missing positioning data.", 1);
         }
 
-        /* Find user and save positioning if possible */
-        if (User::find($userID)) {
-            /* Get widgets data */
-            $widgets = json_decode($_POST['positioning'], TRUE);
+        /* Get widgets data */
+        $widgets = json_decode($_POST['positioning'], TRUE);
 
-            /* Iterate through all widgets */
-            foreach ($widgets as $widgetData){
+        /* Iterate through all widgets */
+        foreach ($widgets as $widgetData){
 
-                /* Escaping invalid data. */
-                if (!isset($widgetData['id'])) {
-                    return Response::json(array('error' => 'Invalid JSON input.'));
-                }
-
-                /* Find widget */
-                $widget = Widget::find($widgetData['id'])->getSpecific();
-
-                /* Skip widget if not found */
-                if ($widget === null) { continue; }
-
-                /* Set position */
-                try {
-                    $widget->setPosition($widgetData);
-                } catch (BadPosition $e) {
-                    return Response::json(array('error' => $e->getMessage()));
-                }
+            /* Escaping invalid data. */
+            if (!isset($widgetData['id'])) {
+                return Response::json(array('error' => 'Invalid JSON input.'));
             }
 
-        /* No user found with the requested ID */
-        } else {
-            return Response::json(array('error' => 'No user found with the requested ID'));
+            /* Find widget */
+            $widget = Widget::find($widgetData['id'])->getSpecific();
+
+            /* Skip widget if not found */
+            if ($widget === null) { continue; }
+
+            /* Set position */
+            try {
+                $widget->setPosition($widgetData);
+            } catch (BadPosition $e) {
+                return Response::json(array('error' => $e->getMessage()));
+            }
         }
 
         /* Everything OK, return response with 200 status code */
@@ -492,7 +492,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Checking if it's an ajax widget */
-        if (!$widget instanceof DataWidget) {
+        if ( ! $widget instanceof iAjaxWidget) {
             return Response::json(array('error' => 'This widget does not support this function.'));
         }
 

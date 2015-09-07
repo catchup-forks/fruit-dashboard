@@ -14,12 +14,12 @@ class CreateFacebookPages extends Migration {
         Schema::create('facebook_pages',function($table) {
             $table->increments('id');
 
+            $table->string('page_id', 127);
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
                   ->references('id')->on('users')
                   ->onDelete('cascade');
 
-            $table->string('page_id', 127);
             $table->string('name', 127);
          });
     }

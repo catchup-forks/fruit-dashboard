@@ -24,21 +24,51 @@
 
                 <input id="filter" type="text" class="form-control margin-top-sm" autofocus="autofocus" placeholder="Type to filter, click to select" />
 
+                <!-- Category tabs -->
+                <div class="row">
+                  <ul id="categoryTabs" class="nav nav-tabs" role="tablist">
+                    @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
+                      <li role="presentation" class=""><a href="#{{ $group['name'] }}" aria-controls="home" role="tab" data-toggle="tab">{{ $group['display_name'] }}</a></li>
+                    @endforeach
+                  </ul>
+                </div>
+                <!-- Category tabs -->
+
                 <div id="widgets-list" class="list-group margin-top-sm">
 
-                  @foreach($widgetDescriptors as $descriptor)
-                    <a href="#" id="descriptor-{{ $descriptor->id }}" class="list-group-item changes-image" data-widget="widget-{{ $descriptor->type }}">
-                      {{ $descriptor->name }}
-                      {{-- If user is on free plan display labels --}}
-                      @if (Auth::user()->subscription->isOnFreePlan())
-                        @if ($descriptor->is_premium == 0)
-                          <span class="label label-success pull-right">Free</span>
-                        @else
-                          <span class="label label-default pull-right">Premium</span>
-                        @endif
-                      @endif
-                    </a>
-                  @endforeach
+                  <!-- Category widgets -->
+                  <div class="tab-content">
+                    @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
+
+                      <!-- Category panel -->
+                      <div role="tabpanel" class="tab-pane fade in active" id="{{ $group['name'] }}">
+
+                        <!-- Widgets -->
+                        @foreach($group['descriptors'] as $descriptor)
+                          <a href="#" id="descriptor-{{ $descriptor->id }}" class="list-group-item changes-image" data-widget="widget-{{ $descriptor->type }}">
+                            {{ $descriptor->name }}
+                            {{-- This is the span for the selection icon --}}
+                            <span class="selection-icon"> </span>
+
+                            {{-- If user is on free plan display labels --}}
+                            @if (Auth::user()->subscription->isOnFreePlan())
+                              @if ($descriptor->is_premium == 0)
+                                <span class="label label-success pull-right">Free</span>
+                              @else
+                                <span class="label label-default pull-right">Premium</span>
+                              @endif
+                            @endif
+                          </a>
+                        @endforeach
+                        <!-- /Widgets -->
+
+                      </div>
+                      <!-- /Category panel -->
+
+                    @endforeach
+                  </div>
+                  <!-- Category widgets -->
+
 
                 </div> <!-- /.list-group -->
                 <a href="{{ route('dashboard.dashboard') }}"><button class="btn btn-warning">Cancel</button></a>
@@ -103,6 +133,9 @@
   <script type="text/javascript">
     $(document).ready(function () {
 
+      // Select first tab by default
+      $('#categoryTabs a:first').tab('show')
+
       var baseUrl = "/img/demonstration/";
       var ext = ".png";
 
@@ -151,11 +184,20 @@
         }
 
       });
-	  
+
 	  $('.changes-image').click(function(e) {
         e.preventDefault();
         showDescription(getID(this));
       });
+
+    // Select or deselect items by clicking
+    $('.list-group-item').click(function(){
+      // remove previously added checkmarks
+      $('.selection-icon').attr('class', 'selection-icon');
+      // add checkmark to the actual one
+      $(this).find('span').first().toggleClass('fa fa-check text-success pull-right');
+    });
+
     });
   </script>
   @append

@@ -18,8 +18,6 @@ abstract class GoogleConnector extends GeneralServiceConnector
     function __construct($user) {
         parent::__construct($user);
         $this->client = static::createClient();
-        $this->client->setAccessType("offline");
-        $this->client->setApprovalPrompt('force');
     }
 
     /**
@@ -70,12 +68,13 @@ abstract class GoogleConnector extends GeneralServiceConnector
      * getTokens
      * Retrieving the access, and refresh tokens from authentication code.
      * --------------------------------------------------
-     * @param string $code The returned code by google.
+     * @param array $parameters
      * @return None
      * @throws GoogleConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens($code) {
+    public function getTokens(array $parameters=array()) {
+        $code = $parameters['auth_code'];
         /* Build and send POST request */
         $this->client->authenticate($code);
         $accessToken = $this->client->getAccessToken();
@@ -93,7 +92,6 @@ abstract class GoogleConnector extends GeneralServiceConnector
         /* Get access token from DB. */
         $connection = $this->getConnection();
         $this->client->setAccessToken($connection->access_token);
-
     }
 
     /**

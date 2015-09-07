@@ -1,6 +1,6 @@
 <?php
 
-abstract class HistogramWidget extends DataWidget implements iCronWidget
+abstract class HistogramWidget extends CronWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -26,19 +26,6 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
     }
 
     /**
-     * ================================================== *
-     *                   PUBLIC SECTION                   *
-     * ================================================== *
-    */
-    /**
-     * collectData
-     * Passing the job to the DataCollector
-     */
-    public function collectData() {
-        $this->data->manager->getSpecific()->collectData();
-    }
-
-    /**
      * getLatestData
      * Returning the last data in the histogram.
      * --------------------------------------------------
@@ -50,15 +37,12 @@ abstract class HistogramWidget extends DataWidget implements iCronWidget
      }
 
     /**
-     * getFirstData
-     * Returning the first data in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
+     * collectData
+     * Passing the job to the DataManager
      */
-     public function getFirstData() {
-        return $this->data->manager->getSpecific()->getFirstData();
-     }
+    public function collectData() {
+        return $this->data->manager->getSpecific()->collectData();
+    }
 
     /**
      * getData
