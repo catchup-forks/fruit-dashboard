@@ -12,7 +12,9 @@ class CreateFacebookPages extends Migration {
      */
     public function up() {
         Schema::create('facebook_pages',function($table) {
-            $table->string('id', 127)->unique();
+            $table->increments('id');
+
+            $table->string('page_id', 127);
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')
                   ->references('id')->on('users')

@@ -13,10 +13,18 @@ class RemovedUniqueFromServiceIds extends Migration {
     public function up()
     {
         Schema::table('facebook_pages',function($table) {
-            $table->dropUnique('facebook_pages_id_unique');
+            $table->dropColumn('id');
+            $table->dropColumn('page_id');
+        });
+        Schema::table('facebook_pages',function($table) {
+            $table->string('id', 127);
         });
         Schema::table('google_analytics_properties',function($table) {
-            $table->dropUnique('google_analytics_properties_id_unique');
+            $table->dropColumn('id');
+            $table->dropColumn('property_id');
+        });
+        Schema::table('google_analytics_properties',function($table) {
+            $table->string('id', 127);
         });
      }
 
@@ -28,10 +36,18 @@ class RemovedUniqueFromServiceIds extends Migration {
     public function down()
     {
         Schema::table('facebook_pages',function($table) {
-            $table->string('id', 127)->unique();
+            $table->dropColumn('id');
+        });
+        Schema::table('facebook_pages',function($table) {
+            $table->increments('id');
+            $table->string('property_id', 127);
         });
         Schema::table('google_analytics_properties',function($table) {
-            $table->string('id', 127)->unique();
+            $table->dropColumn('id');
+        });
+        Schema::table('google_analytics_properties',function($table) {
+            $table->increments('id');
+            $table->string('property_id', 127);
         });
     }
 
