@@ -108,6 +108,18 @@ class Widget extends Eloquent
     }
 
     /**
+     * setState
+     * Setting a widget's state.
+     * --------------------------------------------------
+     * @param string $state
+     * --------------------------------------------------
+    */
+    public function setState($state) {
+        $this->state = $state;
+        $this->save();
+    }
+
+    /**
      * setPosition
      * Setting the position of the model.
      * --------------------------------------------------

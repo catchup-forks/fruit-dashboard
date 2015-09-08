@@ -36,7 +36,28 @@ class DataManager extends Eloquent
     );
     public $timestamps = FALSE;
 
+    /* -- Relations -- */
+    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
+    public function data() { return $this->belongsTo('Data', 'data_id'); }
+    public function user() { return $this->belongsTo('User'); }
+    public function widgets() {
+        return $this->data->widgets();
+    }
+
+
     public function collectData() {}
+    public function populateData() {}
+
+    /**
+     * getDataScheme
+     * same as above non-static
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array();
+    }
 
     /**
      * createManagerFromWidget
@@ -62,7 +83,7 @@ class DataManager extends Eloquent
         if (isset($widget->data)) {
             $generalManager->data()->associate($widget->data);
         } else {
-            $data = Data::create(array('raw_value' => ''));
+           $data = Data::create(array('raw_value' => '[]'));
            $generalManager->data()->associate($data);
         }
 
@@ -70,18 +91,10 @@ class DataManager extends Eloquent
         $generalManager->save();
 
         $manager = $generalManager->getSpecific();
-        $manager->collectData();
+        $manager->populateData();
 
         return $manager;
 
-    }
-
-    /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
-    public function data() { return $this->belongsTo('Data', 'data_id'); }
-    public function user() { return $this->belongsTo('User'); }
-    public function widgets() {
-        return $this->data->widgets();
     }
 
     public function getSpecific() {

@@ -7,6 +7,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     protected static $staticFields = array('date', 'timestamp');
 
     /**
+     * populateData
+     * --------------------------------------------------
+     * First time population of the data.
+     * --------------------------------------------------
+     */
+    public function populateData() {
+        $this->saveData(array($this->getCurrentValue()), TRUE);
+    }
+
+    /**
      * formatData
      * Returning the last data in the histogram.
      * --------------------------------------------------
@@ -22,7 +32,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             'timestamp' => time()
         );
         foreach ($data as $key=>$value) {
-            if ( is_null($dataSets) || ! array_key_exists($key, $dataSets)) {
+            if (array_key_exists($key, $dataSets)) {
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }
@@ -31,6 +41,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
 
         return $decodedData;
      }
+
+    /**
+     * getDataScheme
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array('datasets', 'data');
+    }
 
     /**
      * getData
@@ -97,7 +117,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         }
         foreach ($this->getData() as $oneValues) {
             foreach ($oneValues as $dataId => $value) {
-                if ( ! in_array($dataId, static::$staticFields)) {
+            if ( ! in_array($dataId, static::$staticFields)) {
                     array_push($groupedData[$dataId]['data'], $value);
                 }
             }
@@ -145,9 +165,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         foreach ($histogramData as $entry) {
             /* Creating the new entry */
             $newEntry = array();
+
+            /* Iterating through the entry. */
             foreach ($entry as $key=>$value) {
                 if (in_array($key, static::$staticFields)) {
-                    /* In date */
+                    /* In static fields */
                     $newEntry[$key] = $value;
                 } else {
                     /* In dataset */
@@ -155,9 +177,17 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                         $dbData['datasets'][$key] = 'data_' . $i++;
                     }
                     $dataSetKey = $dbData['datasets'][$key];
-                    $newEntry[$dataSetKey] = $value;
+                    $newEntry[$dataSetKey] = is_numeric($value) ? $value : 0;
                 }
             }
+            /* Final integrity check. */
+            if ( ! array_key_exists('date', $newEntry)) {
+                $newEntry['date'] = Carbon::now()->toDateString();
+            }
+            if ( ! array_key_exists('timestamp', $newEntry)) {
+                $newEntry['timestamp'] = time();
+            }
+
             array_push($dbData['data'], $newEntry);
         }
 
