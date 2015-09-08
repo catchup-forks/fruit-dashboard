@@ -22,6 +22,10 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             'timestamp' => time()
         );
         foreach ($data as $key=>$value) {
+            if ( is_null($dataSets) || ! array_key_exists($key, $dataSets)) {
+                $this->addToDataSets($key);
+                $dataSets = $this->getDataSets();
+            }
             $decodedData[$dataSets[$key]] = $value;
         }
 
@@ -48,6 +52,30 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     public function getDataSets() {
         return json_decode($this->data->raw_value, 1)['datasets'];
+    }
+
+    /**
+     * addToDataSets
+     * Adding a new key to the datasets.
+     * --------------------------------------------------
+     * @param string $key
+     * --------------------------------------------------
+     */
+    public function addToDataSets($key) {
+        $dataSets = $this->getDataSets();
+        if (is_null($dataSets)) {
+           $this->data->raw_value = json_encode(array(
+                'datasets' => array($key => 'data_0'),
+                'data'     => array()
+           ));
+       } else {
+           $dataSets[$key] = 'data_' . count($dataSets);
+           $this->data->raw_value = json_encode(array(
+                'datasets' => $dataSets,
+                'data'     => $this->getData()
+           ));
+        }
+       $this->data->save();
     }
 
     /**

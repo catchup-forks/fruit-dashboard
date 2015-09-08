@@ -1,6 +1,6 @@
 <?php
 
-class WebhookHistogramWidget extends HistogramWidget
+class WebhookHistogramWidget extends MultipleHistogramWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
