@@ -130,8 +130,7 @@ abstract class GeneralServiceConnector
             }
 
             /* Creating data */
-            $data = new Data(array('raw_value' => json_encode(array())));
-            $data->save();
+            $data = Data::create(array('raw_value' => 'loading'));
 
             /* Creating DataManager instance */
             $dataManager = new $className;
