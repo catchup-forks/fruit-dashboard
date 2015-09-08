@@ -10,9 +10,22 @@ abstract class GeneralGoogleAnalyticsDataManager extends MultipleHistogramDataMa
      * --------------------------------------------------
     */
     protected function getProperty() {
-        $propertyId = $this->getCriteria()['property'];
-        $property = GoogleAnalyticsProperty::find($propertyId);
-        return $property;
+        return $this->getCriteria()['property'];
+    }
+
+    /**
+     * flatData
+     * --------------------------------------------------
+     * Returning a flattened data.
+     * @param $insightData
+     * --------------------------------------------------
+    */
+    protected function flatData($insightData) {
+        $newData = array();
+        foreach ($insightData as $name=>$dataAsArray) {
+            $newData[$name] = $dataAsArray[0];
+        }
+        return $newData;
     }
 }
 ?>

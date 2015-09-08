@@ -13,7 +13,7 @@ abstract class HistogramDataManager extends DataManager
      */
     public function collectData() {
         /* Calculating current value */
-        $newValue = $this->getCurrentValue();
+        $newData = $this->getCurrentValue();
 
         /* Getting previous values. */
         $currentData = $this->getData();
@@ -32,7 +32,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Adding, saving data. */
-        array_push($currentData, $this->formatData($today, $newValue));
+        array_push($currentData, $this->formatData($today, $newData));
         $this->saveData($currentData);
     }
 
@@ -41,12 +41,12 @@ abstract class HistogramDataManager extends DataManager
      * Returning the last data in the histogram.
      * --------------------------------------------------
      * @param Carbon $date
-     * @param mixed $value
+     * @param mixed $data
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $value) {
-        return array('date' => $date, 'value' => $value);
+     protected function formatData($date, $data) {
+        return array('date' => $date,'value' => $data, 'timestamp' => time());
      }
 
     /**
@@ -63,7 +63,7 @@ abstract class HistogramDataManager extends DataManager
      }
 
     /**
-     * getData
+     * getHistogram
      * Returning the histogram.
      * --------------------------------------------------
      * @param array $range

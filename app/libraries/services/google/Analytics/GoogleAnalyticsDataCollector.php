@@ -114,11 +114,28 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
+     * getAvgSessionDuration
+     * Returning the number of sessions.
+     */
+    public function getAvgSessionDuration($propertyId) {
+        return $this->getMetrics($propertyId, 'yesterday', 'today', array('avgSessionDuration'))['avgSessionDuration'];
+   }
+
+
+    /**
      * getSessions
      * Returning the number of sessions.
      */
     public function getSessions($propertyId) {
-        Log::info($this->getMetrics($propertyId, 'yesterday', 'today', array('sessions', 'avgSessionDuration')));
+        return $this->getMetrics($propertyId, 'yesterday', 'today', array('sessions'))['sessions'];
+   }
+
+    /**
+     * getBounceRate
+     * Returning the percentage of boucne rate.
+     */
+    public function getBounceRate($propertyId) {
+        return $this->getMetrics($propertyId, 'yesterday', 'today', array('bounceRate'))['bounceRate'];
    }
 
     /**

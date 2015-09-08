@@ -62,7 +62,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         return $this->data->manager->getSpecific()->collectData();
     }
 
-
     /**
      * getCriteria
      * Returning the settings that makes a difference among widgets.
@@ -75,6 +74,8 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         foreach (static::$criteriaSettings as $key) {
             if (array_key_exists($key, $this->getSettings())) {
                 $settings[$key] = $this->getSettings()[$key];
+            } else {
+                return array();
             }
         }
         return $settings;

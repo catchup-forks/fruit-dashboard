@@ -3,17 +3,29 @@
 /* This class is responsible for histogram data collection. */
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
+
+    protected static $staticFields = array('date', 'timestamp');
+
     /**
      * formatData
      * Returning the last data in the histogram.
      * --------------------------------------------------
      * @param Carbon $date
-     * @param mixed $value
+     * @param mixed $data
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $value) {
-        return array('date' => $date, 'data_0' => $value);
+     protected function formatData($date, $data) {
+        $dataSets = $this->getDataSets();
+        $decodedData = array(
+            'date'      => $date,
+            'timestamp' => time()
+        );
+        foreach ($data as $key=>$value) {
+            $decodedData[$dataSets[$key]] = $value;
+        }
+
+        return $decodedData;
      }
 
     /**
@@ -57,7 +69,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         }
         foreach ($this->getData() as $oneValues) {
             foreach ($oneValues as $dataId => $value) {
-                if ($dataId != 'date') {
+                if ( ! in_array($dataId, static::$staticFields)) {
                     array_push($groupedData[$dataId]['data'], $value);
                 }
             }
@@ -81,7 +93,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             /* Getting dataSets */
             $this->data->raw_value = json_encode(array(
                 'datasets' => $this->getDataSets(),
-                'data'     => $data
+                'data'     => $inputData
             ));
         }
         $this->data->save();
@@ -106,9 +118,9 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             /* Creating the new entry */
             $newEntry = array();
             foreach ($entry as $key=>$value) {
-                if ($key == 'date') {
+                if (in_array($key, static::$staticFields)) {
                     /* In date */
-                    $newEntry['date'] = $value;
+                    $newEntry[$key] = $value;
                 } else {
                     /* In dataset */
                     if ( ! array_key_exists($key, $dbData['datasets'])) {
@@ -123,6 +135,4 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
 
         return json_encode($dbData);
     }
-
-
 }

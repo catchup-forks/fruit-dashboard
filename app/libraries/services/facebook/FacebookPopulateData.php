@@ -112,8 +112,9 @@ class FacebookPopulateData
         foreach ($dailyLikes[0]['values'] as $likes) {
             $date = Carbon::createFromTimestamp(strtotime($likes['end_time']))->toDateString();
             array_push($likesData, array(
-                'date'  => $date,
-                'value' => $likes['value']
+                'date'      => $date,
+                'value'     => $likes['value'],
+                'timestamp' => time()
             ));
         }
 
@@ -131,8 +132,9 @@ class FacebookPopulateData
         foreach ($dailyImpressions[0]['values'] as $impressions) {
             $date = Carbon::createFromTimestamp(strtotime($impressions['end_time']))->toDateString();
             array_push($pageImpressionsData, array(
-                'date'  => $date,
-                'value' => $impressions['value']
+                'date'      => $date,
+                'value'     => $impressions['value'],
+                'timestamp' => time()
             ));
         }
 

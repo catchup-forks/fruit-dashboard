@@ -103,9 +103,21 @@ class StripePopulateData
             /* Calculating the date to mirror. */
             $date = Carbon::now()->subDays($i)->toDateString();
             $this->mirrorDay($date);
-            array_push($mrr, array('date' => $date, 'value' => $this->calculator->getMrr()));
-            array_push($arr, array('date' => $date, 'value' => $this->calculator->getArr()));
-            array_push($arpu, array('date' => $date, 'value' => $this->calculator->getArpu()));
+            array_push($mrr, array(
+                'date'      => $date,
+                'value'     => $this->calculator->getMrr(),
+                'timestamp' => time()
+            ));
+            array_push($arr, array(
+                'date'      => $date,
+                'value'     => $this->calculator->getArr(),
+                'timestamp' => time()
+            ));
+            array_push($arpu, array(
+                'date'      => $date,
+                'value'     => $this->calculator->getArpu(),
+                'timestamp' => time()
+            ));
         }
 
         /* Sorting arrays accordingly. */
