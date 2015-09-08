@@ -95,8 +95,10 @@ class User extends Eloquent implements UserInterface
                 /* Create a new dashboard objec*/
                 $dashboard = new Dashboard(array(
                     'name'       => 'Default dashboard',
+                    'number'     => 1,
                     'background' => TRUE,
-                    'number'     => 1
+                    'is_default' => TRUE,
+                    'is_locked'  => FALSE
                 ));
                 $dashboard->user()->associate($this);
                 $dashboard->save();

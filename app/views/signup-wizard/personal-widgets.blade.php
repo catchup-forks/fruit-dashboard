@@ -61,7 +61,7 @@
                 {{ Form::submit('Finish' , array(
                     'id' => 'id_next',
                     'class' => 'btn btn-primary pull-right')) }}
-                <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-link pull-right">Skip, and finish</a>
+                <a href="{{ route('dashboard.dashboard', array('tour' => TRUE)) }}" class="btn btn-link pull-right">Skip, and finish</a>
               </div> <!-- / .col-md-12 -->
             </div> <!-- / .row -->
 
