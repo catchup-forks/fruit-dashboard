@@ -140,7 +140,7 @@ body {
 .gridster ul li {
   cursor: default;
 }
-.gridster ul li:hover,
+li.can-hover:hover,
 .hovered {
   background: #e6e6e6;
   /* Fallback */
