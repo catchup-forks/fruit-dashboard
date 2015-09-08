@@ -93,7 +93,7 @@ class FacebookPopulateData
      */
     private function getHistogram($insight) {
         return $this->collector->getInsight(
-            $insight, $this->page,
+            $insight, $this->page->id,
             array(
                 'since' => Carbon::now()->subDays(self::DAYS)->getTimestamp(),
                 'until' => Carbon::now()->getTimestamp()
