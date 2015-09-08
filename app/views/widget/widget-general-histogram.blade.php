@@ -74,6 +74,25 @@
       drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
     });
 
+    function updateHistogramWidget(data, canvas, name, valueSpan) {
+      // Updating chart values.
+      var labels = [];
+      var values = [];
+      for (i = 0; i < data.length; ++i) {
+        labels.push(data[i]['date']);
+        values.push(data[i]['value']);
+      }
+      if (data.length > 0 && valueSpan) {
+        valueSpan.html(data[data.length-1]['value']);
+      }
+
+      reinsertCanvas(false);
+
+      canvas = $("#{{ $widget->id }}-chart");
+
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+    }
+
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) { updateHistogramWidget(data, canvas, name, valueSpan);});
