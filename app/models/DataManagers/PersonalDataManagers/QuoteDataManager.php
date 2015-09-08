@@ -35,6 +35,17 @@ class QuoteDataManager extends DataManager
     }
 
     /**
+     * getDataScheme
+     * same as above non-static
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array('quote', 'author');
+    }
+
+    /**
      * getData
      * --------------------------------------------------
      * Returns the quote in an assoc array.
