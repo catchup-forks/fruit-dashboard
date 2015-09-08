@@ -20,7 +20,7 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function getEditWidgetSettings($widgetID) {
-        // Getting the editable widget.
+        /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
         } catch (WidgetDoesNotExist $e) {
@@ -34,7 +34,7 @@ class GeneralWidgetController extends BaseController {
             $dashboards[$dashboard->id] = $dashboard->name;
         }
 
-        // Rendering view.
+        /* Rendering view. */
         return View::make('widget.edit-widget')
             ->with('widget', $widget)
             ->with('dashboards', $dashboards);
@@ -239,10 +239,8 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function getAddWidget() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Rendering view */
         return View::make('widget.add-widget');
