@@ -20,17 +20,16 @@ var widget_height   = (containerHeight / numberOfRows) - (widgetMargin * 2);
  * Class function for the gridster elements
  * --------------------------------------------------------------------------
  */
-function Gridster(dashboardID, isLocked) {
+function Gridster(dashboardID) {
   // Private variables
   var namespace   = '#gridster-' + dashboardID
   var selector    = $('#gridster-' + dashboardID + ' ul');
   var players     = $('#gridster-' + dashboardID + ' li');
-
-  // Public variables
-  this.gridster = initialize(isLocked);
+  var gridster    = null; 
 
   // Public functions
-  this.lockGrid = lockGrid;
+  this.initialize = initialize;
+  this.lockGrid   = lockGrid;
   this.unlockGrid = unlockGrid;
 
   /**
@@ -49,19 +48,14 @@ function Gridster(dashboardID, isLocked) {
                   {draggable: getDraggingOptions()}
               );
     
+    // Create gridster.js object and lock / unlock
     if (isLocked) {
-      // Create gridster.js object
       gridster = selector.gridster(options).data('gridster').disable();
+      lockGrid();
     } else {
-      // Create gridster.js object
       gridster = selector.gridster(options).data('gridster');
+      unlockGrid();
     };
-
-    // Handle hover elements.
-    handleHover(isLocked);
-
-    // Return
-    return gridster;
   }
 
   /**
@@ -98,10 +92,10 @@ function Gridster(dashboardID, isLocked) {
    */
   function lockGrid() {
       // Disable resize
-      this.gridster.disable_resize();
+      gridster.disable_resize();
            
       // Disable gridster movement
-      this.gridster.disable();
+      gridster.disable();
 
       // Hide hoverable elements.
       handleHover(true);
@@ -116,10 +110,10 @@ function Gridster(dashboardID, isLocked) {
    */
   function unlockGrid() {
       // Enable resize
-      this.gridster.enable_resize();
+      gridster.enable_resize();
 
       // Enable gridster movement
-      this.gridster.enable();
+      gridster.enable();
 
       // Show hoverable elements.
       handleHover(false);
@@ -219,7 +213,7 @@ function Gridster(dashboardID, isLocked) {
    * --------------------------------------------------------------------------
    */
   function serializePositioning() {
-    return JSON.stringify(this.gridster.serialize());
+    return JSON.stringify(gridster.serialize());
   }
 
 } // Gridster
@@ -231,10 +225,17 @@ function Gridster(dashboardID, isLocked) {
  * Create Gridster instances
  * --------------------------------------------------------------------------
  */
-// Iterate through the dashboards, create gridster objects
+// Create Gridster objects
 @foreach (Auth::user()->dashboards as $dashboard)
-  var Gridster{{ $dashboard->id }} = new Gridster({{ $dashboard->id }}, {{ $dashboard->is_locked }});
+  var Gridster{{ $dashboard->id }} = new Gridster({{ $dashboard->id }});
 @endforeach
+
+// Initialize Gridster objects on DOM load
+$(document).ready(function() {
+  @foreach (Auth::user()->dashboards as $dashboard)
+    Gridster{{ $dashboard->id }}.initialize({{ $dashboard->is_locked }});
+  @endforeach
+});
 
 // Fade in the current gridster
 $('.gridster.not-visible').fadeIn(1300);
