@@ -39,7 +39,7 @@
         </li>
         @if (Request::is('dashboard'))
             <li>
-                <a href="#" onclick="hopscotch.startTour(tour);">
+                <a href="#" onclick="startTour();">
                     <span class="fa fa-question"></span> Take tour
                 </a>
             </li>
