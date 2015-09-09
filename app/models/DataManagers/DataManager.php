@@ -46,7 +46,7 @@ class DataManager extends Eloquent
 
 
     public function collectData() {}
-    public function populateData() {}
+    public function initializeData() {}
 
     /**
      * getDataScheme
@@ -91,7 +91,7 @@ class DataManager extends Eloquent
         $generalManager->save();
 
         $manager = $generalManager->getSpecific();
-        $manager->populateData();
+        $manager->initializeData();
 
         return $manager;
 

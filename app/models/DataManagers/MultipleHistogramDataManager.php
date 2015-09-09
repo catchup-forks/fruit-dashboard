@@ -7,12 +7,12 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     protected static $staticFields = array('date', 'timestamp');
 
     /**
-     * populateData
+     * initializeData
      * --------------------------------------------------
      * First time population of the data.
      * --------------------------------------------------
      */
-    public function populateData() {
+    public function initializeData() {
         $this->saveData(array($this->getCurrentValue()), TRUE);
     }
 
@@ -72,30 +72,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     public function getDataSets() {
         return json_decode($this->data->raw_value, 1)['datasets'];
-    }
-
-    /**
-     * addToDataSets
-     * Adding a new key to the datasets.
-     * --------------------------------------------------
-     * @param string $key
-     * --------------------------------------------------
-     */
-    public function addToDataSets($key) {
-        $dataSets = $this->getDataSets();
-        if (is_null($dataSets)) {
-           $this->data->raw_value = json_encode(array(
-                'datasets' => array($key => 'data_0'),
-                'data'     => array()
-           ));
-       } else {
-           $dataSets[$key] = 'data_' . count($dataSets);
-           $this->data->raw_value = json_encode(array(
-                'datasets' => $dataSets,
-                'data'     => $this->getData()
-           ));
-        }
-       $this->data->save();
     }
 
     /**
@@ -193,4 +169,29 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
 
         return json_encode($dbData);
     }
+
+    /**
+     * addToDataSets
+     * Adding a new key to the datasets.
+     * --------------------------------------------------
+     * @param string $key
+     * --------------------------------------------------
+     */
+    private function addToDataSets($key) {
+        $dataSets = $this->getDataSets();
+        if (is_null($dataSets)) {
+           $this->data->raw_value = json_encode(array(
+                'datasets' => array($key => 'data_0'),
+                'data'     => array()
+           ));
+       } else {
+           $dataSets[$key] = 'data_' . count($dataSets);
+           $this->data->raw_value = json_encode(array(
+                'datasets' => $dataSets,
+                'data'     => $this->getData()
+           ));
+        }
+       $this->data->save();
+    }
+
 }

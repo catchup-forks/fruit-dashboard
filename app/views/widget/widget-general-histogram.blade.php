@@ -11,7 +11,7 @@
 </div>
 <div class="text-center drop-shadow text-white">
     Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more details.
+   <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
 </div>
 
 @section('widgetScripts')
