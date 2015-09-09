@@ -4,17 +4,50 @@
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
     /**
+     * initializeData
+     * --------------------------------------------------
+     * First time population of the data.
+     * --------------------------------------------------
+     */
+    public function initializeData() {
+        $this->saveData(array($this->getCurrentValue()), TRUE);
+    }
+
+    /**
      * formatData
      * Returning the last data in the histogram.
      * --------------------------------------------------
      * @param Carbon $date
-     * @param mixed $value
+     * @param mixed $data
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $value) {
-        return array('date' => $date, 'data_0' => $value);
+     protected function formatData($date, $data) {
+        $dataSets = $this->getDataSets();
+        $decodedData = array(
+            'date'      => $date->toDateString(),
+            'timestamp' => $date->getTimestamp()
+        );
+        foreach ($data as $key=>$value) {
+            if (!array_key_exists($key, $dataSets)) {
+                $this->addToDataSets($key);
+                $dataSets = $this->getDataSets();
+            }
+            $decodedData[$dataSets[$key]] = $value;
+        }
+
+        return $decodedData;
      }
+
+    /**
+     * getDataScheme
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array('datasets', 'data');
+    }
 
     /**
      * getData
@@ -39,14 +72,18 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     }
 
     /**
-     * groupDataSets
+     * buildHistogram
      * Returning template ready grouped dataset.
      * --------------------------------------------------
+     * @param array $range
+     * @param string $frequency
+     * @param string $dateFormat
      * @return array
      * --------------------------------------------------
      */
-    public function groupDataSets() {
+    public function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
         $groupedData = array();
+        $dates = array();
         $i = 0;
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
@@ -55,15 +92,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 'data'  => array()
             );
         }
-        foreach ($this->getData() as $oneValues) {
+        foreach (parent::buildHistogram($range, $frequency, $dateFormat) as $oneValues) {
+            array_push($dates, $oneValues['date']);
             foreach ($oneValues as $dataId => $value) {
-                if ($dataId != 'date') {
+                if ( ! in_array($dataId, static::$staticFields)) {
                     array_push($groupedData[$dataId]['data'], $value);
                 }
             }
         }
 
-        return $groupedData;
+        return array('datasets' => $groupedData, 'date' => $dates);
     }
 
     /**
@@ -81,7 +119,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             /* Getting dataSets */
             $this->data->raw_value = json_encode(array(
                 'datasets' => $this->getDataSets(),
-                'data'     => $data
+                'data'     => $inputData
             ));
         }
         $this->data->save();
@@ -105,24 +143,57 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         foreach ($histogramData as $entry) {
             /* Creating the new entry */
             $newEntry = array();
+
+            /* Iterating through the entry. */
             foreach ($entry as $key=>$value) {
-                if ($key == 'date') {
-                    /* In date */
-                    $newEntry['date'] = $value;
+                if (in_array($key, static::$staticFields)) {
+                    /* In static fields */
+                    $newEntry[$key] = $value;
                 } else {
                     /* In dataset */
                     if ( ! array_key_exists($key, $dbData['datasets'])) {
                         $dbData['datasets'][$key] = 'data_' . $i++;
                     }
                     $dataSetKey = $dbData['datasets'][$key];
-                    $newEntry[$dataSetKey] = $value;
+                    $newEntry[$dataSetKey] = is_numeric($value) ? $value : 0;
                 }
             }
+            /* Final integrity check. */
+            if ( ! array_key_exists('date', $newEntry)) {
+                $newEntry['date'] = Carbon::now()->toDateString();
+            }
+            if ( ! array_key_exists('timestamp', $newEntry)) {
+                $newEntry['timestamp'] = time();
+            }
+
             array_push($dbData['data'], $newEntry);
         }
 
         return json_encode($dbData);
     }
 
+    /**
+     * addToDataSets
+     * Adding a new key to the datasets.
+     * --------------------------------------------------
+     * @param string $key
+     * --------------------------------------------------
+     */
+    private function addToDataSets($key) {
+        $dataSets = $this->getDataSets();
+        if (is_null($dataSets)) {
+           $this->data->raw_value = json_encode(array(
+                'datasets' => array($key => 'data_0'),
+                'data'     => array()
+           ));
+       } else {
+           $dataSets[$key] = 'data_' . count($dataSets);
+           $this->data->raw_value = json_encode(array(
+                'datasets' => $dataSets,
+                'data'     => $this->getData()
+           ));
+        }
+       $this->data->save();
+    }
 
 }

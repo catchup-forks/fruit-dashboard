@@ -22,8 +22,6 @@ trait WebhookDataManager {
 /* This class is responsible for data collection. */
 class DataManager extends Eloquent
 {
-    const ENTRIES = 15;
-
     /* -- Table specs -- */
     protected $table = "data_managers";
 
@@ -32,11 +30,50 @@ class DataManager extends Eloquent
         'data_id',
         'user_id',
         'descriptor_id',
-        'settings_criteria'
+        'settings_criteria',
+        'update_period',
+        'last_updated'
     );
+
+    protected $dates = array('last_updated');
+
     public $timestamps = FALSE;
 
+    /* -- Relations -- */
+    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
+    public function data() { return $this->belongsTo('Data', 'data_id'); }
+    public function user() { return $this->belongsTo('User'); }
+    public function widgets() {
+        return $this->data->widgets();
+    }
+
+
     public function collectData() {}
+    public function initializeData() {}
+
+    /**
+     * getDataScheme
+     * Returning default dataScheme
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array();
+    }
+
+    /**
+     * setUpdatePeriod
+     * Setting the instace's update period.
+     * --------------------------------------------------
+     * @param int $updatePeriod
+     * @return array
+     * --------------------------------------------------
+     */
+    public function setUpdatePeriod($updatePeriod) {
+        $this->update_period = $updatePeriod;
+        $this->save();
+    }
 
     /**
      * createManagerFromWidget
@@ -62,7 +99,7 @@ class DataManager extends Eloquent
         if (isset($widget->data)) {
             $generalManager->data()->associate($widget->data);
         } else {
-            $data = Data::create(array('raw_value' => ''));
+           $data = Data::create(array('raw_value' => '[]'));
            $generalManager->data()->associate($data);
         }
 
@@ -70,18 +107,10 @@ class DataManager extends Eloquent
         $generalManager->save();
 
         $manager = $generalManager->getSpecific();
-        $manager->collectData();
+        $manager->initializeData();
 
         return $manager;
 
-    }
-
-    /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
-    public function data() { return $this->belongsTo('Data', 'data_id'); }
-    public function user() { return $this->belongsTo('User'); }
-    public function widgets() {
-        return $this->data->widgets();
     }
 
     public function getSpecific() {

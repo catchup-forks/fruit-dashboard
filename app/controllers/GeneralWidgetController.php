@@ -20,7 +20,7 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function getEditWidgetSettings($widgetID) {
-        // Getting the editable widget.
+        /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
         } catch (WidgetDoesNotExist $e) {
@@ -34,7 +34,7 @@ class GeneralWidgetController extends BaseController {
             $dashboards[$dashboard->id] = $dashboard->name;
         }
 
-        // Rendering view.
+        /* Rendering view. */
         return View::make('widget.edit-widget')
             ->with('widget', $widget)
             ->with('dashboards', $dashboards);
@@ -67,6 +67,11 @@ class GeneralWidgetController extends BaseController {
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
+        /* Adding update_period on CronWidget */
+        if ($widget instanceof CronWidget) {
+            $validatorArray['update_period'] = 'required|integer';
+        }
+
         /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
@@ -74,7 +79,7 @@ class GeneralWidgetController extends BaseController {
                 Input::all(),
                 $validatorArray
             )
-        );
+        );;
 
         /* Validation failed, go back to the page */
         if ($validator->fails()) {
@@ -93,7 +98,12 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Validation succeeded, ready to save */
-        $widget->saveSettings(Input::except('_token'));
+        $widget->saveSettings(Input::all());
+
+        /* Adding update_period on CronWidget */
+        if ($widget instanceof CronWidget) {
+            $widget->dataManager()->setUpdatePeriod(Input::get('update_period'));
+        }
 
         /* Track event | EDIT WIDGET */
         $tracker = new GlobalTracker();
@@ -239,10 +249,8 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function getAddWidget() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Rendering view */
         return View::make('widget.add-widget');

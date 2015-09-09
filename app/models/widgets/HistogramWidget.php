@@ -18,6 +18,8 @@ abstract class HistogramWidget extends CronWidget
     /* -- Choice functions -- */
     public function frequency() {
         return array(
+            //'minutely'  => 'Hourly',
+            'hourly'  => 'Hourly',
             'daily'   => 'Daily',
             'weekly'  => 'Weekly',
             'monthly' => 'Monthly',
@@ -68,7 +70,7 @@ abstract class HistogramWidget extends CronWidget
             $frequency = $this->getSettings()['frequency'];
         }
 
-        return $this->data->manager->getSpecific()->getHistogram($range, $frequency);
+        return $this->dataManager()->getHistogram($range, $frequency);
     }
 
 }

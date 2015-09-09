@@ -134,19 +134,19 @@ class FacebookDataCollector
      * getInsight
      * Getting the specific insight.
      * --------------------------------------------------
-     * @param FacebookPage $page
+     * @param int $pageId
      * @param string $insight
      * @param array $params
      * @return array
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getInsight($insight, $page, $params=array()) {
+    public function getInsight($insight, $pageId, $params=array()) {
         $paramstr = '?';
         foreach ($params as $key=>$value) {
             $paramstr .= '&' . $key . '='. $value;
         }
-        $response =  $this->fb->get('/' . $page->id . '/insights/' . $insight . $paramstr , $this->accessToken);
+        $response =  $this->fb->get('/' . $pageId . '/insights/' . $insight . $paramstr , $this->accessToken);
         return $response->getDecodedBody()['data'];
     }
 

@@ -3,6 +3,16 @@
 class QuoteDataManager extends DataManager
 {
     /**
+     * initializeData
+     * --------------------------------------------------
+     * First time population of the data.
+     * --------------------------------------------------
+     */
+    public function initializeData() {
+        $this->collectData();
+    }
+
+    /**
      * collectData
      * --------------------------------------------------
      * Retrieves data from a google spreadsheet and saves to db
@@ -32,6 +42,16 @@ class QuoteDataManager extends DataManager
 
         /* Save quote */
         $this->data->save();
+    }
+
+    /**
+     * getDataScheme
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array('quote', 'author');
     }
 
     /**

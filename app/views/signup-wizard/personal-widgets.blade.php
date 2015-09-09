@@ -55,11 +55,15 @@
 
               <hr>
             
-            <div class="form-actions text-center">
-                {{ Form::submit('Next' , array(
+            <div class="row">
+              <div class="col-md-12">
+                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-warning">Back</a>
+                {{ Form::submit('Finish' , array(
                     'id' => 'id_next',
                     'class' => 'btn btn-primary pull-right')) }}
-            </div> <!-- / .form-actions -->
+                <a href="{{ route('dashboard.dashboard', array('tour' => TRUE)) }}" class="btn btn-link pull-right">Skip, and finish</a>
+              </div> <!-- / .col-md-12 -->
+            </div> <!-- / .row -->
 
             {{ Form::close() }}
           </div> <!-- /.panel-body -->

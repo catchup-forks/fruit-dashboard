@@ -122,7 +122,7 @@ class SignupWizardController extends BaseController
         $this->makePersonalAutoDashboard(Auth::user(), Input::all());
 
         /* Render the page */
-        return Redirect::route('dashboard.dashboard');
+        return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
     }
 
     /**
@@ -241,7 +241,6 @@ class SignupWizardController extends BaseController
 
             /* Save quote widget object */
             $quotewidget->saveSettings(array('type' => 'inspirational'));
-            $quotewidget->collectData();
         }
 
         /* Create second dashboard */

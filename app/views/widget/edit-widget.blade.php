@@ -53,6 +53,18 @@
                     </div>
                   </div>
                 <!-- /.dashboard select -->
+                @if ($widget instanceof CronWidget)
+                  <!-- Update interval select -->
+                  <div class="form-group">
+                    {{ Form::label('update_period', 'Update Period (Hrs)', array(
+                        'class' => 'col-sm-3 control-label'
+                      ))}}
+                    <div class="col-sm-7">
+                      {{ Form::text('update_period', $widget->dataManager()->update_period, ['class' => 'form-control']) }}
+                    </div>
+                  </div>
+                @endif
+                <!-- /.Update interval select -->
                 <p class="text-center">
                   <a href="/" class="btn btn-warning">Cancel</a>
                   {{ Form::submit('Save', array('class' => 'btn btn-primary') ) }}

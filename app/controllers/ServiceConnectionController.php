@@ -662,7 +662,8 @@ class ServiceConnectionController extends BaseController
      * Saving the Referer to session.
      */
     private function saveReferer() {
-        $previous = URL::previous();
+       $previous = URL::previous();
+       Session::forget('createDashboard');
         if (Input::get('createDashboard')) {
             Session::put('createDashboard', true);
         }

@@ -3,7 +3,19 @@
 /* This class is responsible for histogram data collection. */
 abstract class HistogramDataManager extends DataManager
 {
+    protected static $entries = 15;
+    protected static $staticFields = array('date', 'timestamp');
     abstract public function getCurrentValue();
+
+    /**
+     * initializeData
+     * --------------------------------------------------
+     * First time population of the data.
+     * --------------------------------------------------
+     */
+    public function initializeData() {
+        $this->collectData();
+    }
 
     /**
      * collectData
@@ -13,7 +25,8 @@ abstract class HistogramDataManager extends DataManager
      */
     public function collectData() {
         /* Calculating current value */
-        $newValue = $this->getCurrentValue();
+        $newData = $this->getCurrentValue();
+        $today = Carbon::now();
 
         /* Getting previous values. */
         $currentData = $this->getData();
@@ -24,15 +37,17 @@ abstract class HistogramDataManager extends DataManager
             $lastData = null;
         }
 
-        $today = Carbon::now()->toDateString();
-
-        /* If today, popping the old value. */
-        if ($lastData && ($lastData['date'] == $today)) {
+        /* If popping the old value. */
+        if ($today->diffInHours($this->last_updated) >= $this->update_period) {
+            /* Updating last updated. */
+            $this->last_updated = $today;
+            $this->save();
+        } else if ($lastData) {
             array_pop($currentData);
         }
 
         /* Adding, saving data. */
-        array_push($currentData, $this->formatData($today, $newValue));
+        array_push($currentData, $this->formatData($today, $newData));
         $this->saveData($currentData);
     }
 
@@ -41,12 +56,12 @@ abstract class HistogramDataManager extends DataManager
      * Returning the last data in the histogram.
      * --------------------------------------------------
      * @param Carbon $date
-     * @param mixed $value
+     * @param mixed $data
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $value) {
-        return array('date' => $date, 'value' => $value);
+     protected function formatData($date, $data) {
+        return array('date' => $date->toDateString(),'value' => $data, 'timestamp' => $date->getTimestamp());
      }
 
     /**
@@ -63,7 +78,7 @@ abstract class HistogramDataManager extends DataManager
      }
 
     /**
-     * getData
+     * getHistogram
      * Returning the histogram.
      * --------------------------------------------------
      * @param array $range
@@ -74,11 +89,13 @@ abstract class HistogramDataManager extends DataManager
     public function getHistogram($range, $frequency) {
         /* Calling proper method based on frequency. */
         switch ($frequency) {
-            case 'daily':   return $this->buildHistogram($range, $frequency, 'd'); break;
+            case 'minutely':  return $this->buildHistogram($range, $frequency, 'h:i'); break;
+            case 'hourly':  return $this->buildHistogram($range, $frequency, 'm'); break;
+            case 'daily':   return $this->buildHistogram($range, $frequency, 'M-d'); break;
             case 'weekly':  return $this->buildHistogram($range, $frequency, 'W'); break;
-            case 'monthly': return $this->buildHistogram($range, $frequency, 'M'); break;
+            case 'monthly': return $this->buildHistogram($range, $frequency, 'Y-M'); break;
             case 'yearly':  return $this->buildHistogram($range, $frequency, 'Y'); break;
-            default: break;
+            default: return $this->buildHistogram($range, $frequency, 'd'); break;
         }
 
         /* Default return. */
@@ -96,44 +113,54 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
     */
     protected function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
-        /* Getting recorded histogram reversed. */
-        $reversedHistogram = array_reverse($this->getData(), 1);
+        /* Getting recorded histogram sorted by timestamp. */
+        $fullHistogram = $this->getData();
+        usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
 
         /* If there's range, using reader. */
         $recording = TRUE;
         $histogram = array();
         $first = TRUE;
+        $sampleEntries = array();
+        $last = end($fullHistogram);
 
-        foreach ($reversedHistogram as $entry) {
+        foreach ($fullHistogram as $entry) {
+            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
             /* Range conditions */
             if ( ! is_null($range)) {
-                if (($entry['date'] < $range['stop']) && !$recording) {
+                if (($entryTime < $range['stop']) && !$recording) {
                     /* Reached the end of the period -> start recording. */
                     $recording = TRUE;
-                } else if (($entry['date'] < $range['start']) && $recording) {
+                } else if (($entryTime < $range['start']) && $recording) {
                     /* Reached the start of the period -> stop recording. */
                     return array_reverse($histogram);
                 }
             }
-
             if ($recording) {
                 /* Frequency conditions. */
-                $entryDate = Carbon::createFromFormat('Y-m-d', $entry['date']);
-                if ( ! $this->useEntryInHistogram($entryDate, $frequency) && ! $first) {
-                    continue;
+                if (( ! $first && $this->isBreakPoint($entryTime, $previousEntryTime, $frequency)) || ($entry == $last)) {
+                    if ($entry == $last) {
+                        array_push($sampleEntries, $entry);
+                    }
+                    /* Passing new element to the array. */
+                    $newEntry = static::getAverageValues($sampleEntries);
+                    $newEntry['date'] = $entryTime->format($dateFormat);
+                    array_push($histogram, $newEntry);
+                    $sampleEntries = array();
                 }
 
-                /* First data is always in the histogram. */
+                /* Adding to samples. */
+                array_push($sampleEntries, $entry);
+
+                /* Saving previous time. */
+                $previousEntryTime = $entryTime;
+
                 if ($first) {
                     $first = FALSE;
                 }
-                /* Saving data with custom date format. */
-                $newEntry = $entry;
-                $newEntry['date'] = $entryDate->format($dateFormat);
-                array_push($histogram, $newEntry);
             }
 
-            if (count($histogram) >= self::ENTRIES) {
+            if (count($histogram) >= static::$entries) {
                 /* Enough data. */
                 return array_reverse($histogram);
             }
@@ -143,39 +170,39 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * useEntryInHistogram
-     * Whether or not use the specific entry in the
-     * histogram.
+     * isBreakPoint
+     * Checks if the entry is a breakpoint in the histogram.
      * --------------------------------------------------
-     * @param Carbon $entryDate
+     * @param Carbon $entryTime
+     * @param Carbon $previousEntryTime
      * @param string $frequency
-     * @return bool
+     * @return boolean
      * --------------------------------------------------
     */
-    protected function useEntryInHistogram($entryDate, $frequency) {
-        if ($frequency == 'daily') {
-            return TRUE;
+    protected function isBreakPoint($entryTime, $previousEntryTime, $frequency) {
+        if ($frequency == 'minutely') {
+            return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
+        } else if ($frequency == 'hourly') {
+            return $entryTime->format('Y-m-d h') !== $previousEntryTime->format('Y-m-d h');
+        } else if ($frequency == 'daily') {
+            return ! $entryTime->isSameDay($previousEntryTime);
         } else if ($frequency == 'weekly') {
-            if ($entryDate->format('D') == 'Mon') {
-                return TRUE;
-            }
+            return $entryTime->format('Y-W') !== $previousEntryTime->format('Y-W');
         } else if ($frequency == 'monthly') {
-            if ($entryDate->format('d') == '31') {
-                return TRUE;
-            }
+            return $entryTime->format('Y-m') !== $previousEntryTime->format('Y-m');
         } else if ($frequency == 'yearly') {
-             if ($entryDate->format('m-d') == '12-31') {
-                return TRUE;
-            }
+            return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
         return FALSE;
     }
 
     /**
+     * getDiff
      * Returning the differentiated values of an array.
-     *
+     * --------------------------------------------------
      * @param array $data
      * @return array
+     * --------------------------------------------------
      */
     public static final function getDiff($data, $dataName='value') {
         $differentiatedArray = array();
@@ -191,6 +218,50 @@ abstract class HistogramDataManager extends DataManager
             $lastValue = $entry[$dataName];
         }
         return $differentiatedArray;
+    }
+
+    /**
+     * getAverageValues
+     * Merging multiple entries into one, by avereging the values.
+     * --------------------------------------------------
+     * @param array $entries
+     * @return array ($entry)
+     * --------------------------------------------------
+     */
+    private static final function getAverageValues($entries) {
+        $finalEntry = array();
+        /* Summarizing all data into one array. */
+        foreach ($entries as $entry) {
+            foreach ($entry as $key=>$value) {
+                if ( ! in_array($key, static::$staticFields)) {
+                    if ( ! array_key_exists($key, $finalEntry)) {
+                        $finalEntry[$key] = $value;
+                    } else {
+                        $finalEntry[$key] += $value;
+                    }
+                }
+            }
+        }
+
+        /* Averaging the values */
+        if (count($entries) > 0) {
+            foreach (array_keys($finalEntry) as $key) {
+               $finalEntry[$key] /= count($entries);
+            }
+        }
+        return $finalEntry;
+    }
+
+    /**
+     * Comparing two timestamps.
+     * --------------------------------------------------
+     * @param array $CseZso1
+     * @param array $CseZso2
+     * @return boolean
+     * --------------------------------------------------
+     */
+    private static final function timestampSort($CseZso1, $CseZso2) {
+        return $CseZso1['timestamp'] < $CseZso2['timestamp'];
     }
 
 }

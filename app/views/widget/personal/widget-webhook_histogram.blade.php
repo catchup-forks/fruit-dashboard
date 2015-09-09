@@ -1,1 +1,1 @@
- @include('widget.widget-general-histogram', ['widget' => $widget])
+ @include('widget.widget-general-multiple-histogram', ['widget' => $widget])

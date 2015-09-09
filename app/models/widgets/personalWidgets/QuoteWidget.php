@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends CronWidget
+class QuoteWidget extends CronWidget implements iAjaxWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -9,9 +9,9 @@ class QuoteWidget extends CronWidget
             'type'    => 'SCHOICE',
         ),
         'update_frequency' => array(
-            'name'    => 'Changes (in minutes)',
+            'name'    => 'Changes (in hours)',
             'type'    => 'INT',
-            'default' => 1440
+            'default' => 6
         ),
     );
 

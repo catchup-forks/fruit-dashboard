@@ -5,6 +5,9 @@ abstract class CronWidget extends Widget implements iAjaxWidget
 {
     public static $criteriaSettings = array();
 
+    /* Custom relation. */
+    public function dataManager() { return $this->data->manager->getSpecific(); }
+
     /**
      * handleAjax
      * Handling general ajax request.
@@ -31,9 +34,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             /* Refresh signal */
             $this->refreshWidget();
         }
-
-        /* Something else, should be handled by specific widget. */
-        return $this->handleCustomAjax($postData);
     }
 
     /**
@@ -47,21 +47,12 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         $this->save();
 
         /* Refreshing widget data. */
-        $this->collectData();
+        $this->dataManager()->collectData();
 
         /* Faling back to active. */
         $this->state = 'active';
         $this->save();
     }
-
-    /**
-     * collectData
-     * Passing the job to the DataManager
-     */
-    public function collectData() {
-        return $this->data->manager->getSpecific()->collectData();
-    }
-
 
     /**
      * getCriteria
@@ -75,6 +66,8 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         foreach (static::$criteriaSettings as $key) {
             if (array_key_exists($key, $this->getSettings())) {
                 $settings[$key] = $this->getSettings()[$key];
+            } else {
+                return array();
             }
         }
         return $settings;
@@ -85,41 +78,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * Passing the job to the DataManager
      */
     public function getData($postData=null) {
-        return $this->data->manager->getSpecific()->getData();
-    }
-
-    /**
-     * checkDataIntegrity
-     * Checking the DataIntegrity of widgets.
-    */
-    protected function checkDataIntegrity() {
-        if (is_null($this->data) || is_null($this->data->manager)) {
-            /* No data is assigned, let's hope a save will fix it. */
-            $this->save();
-            if (is_null($this->data)) {
-                /* Still not working */
-                $this->state = 'setup_required';
-                $this->save();
-            }
-        } else if ($this->data->raw_value == '') {
-            $this->state = 'setup_required';
-            $this->save();
-        } else if (json_decode($this->data->raw_value) == FALSE) {
-            $this->state = 'loading';
-            $this->save();
-        }
-    }
-
-    /**
-     * handleCustomAjax
-     * Dummy custom ajax handler.
-     * --------------------------------------------------
-     * @param array $postData
-     * @return null
-     * --------------------------------------------------
-    */
-    protected function handleCustomAjax($postData) {
-        return null;
+        return $this->dataManager()->getData();
     }
 
     /**
@@ -131,16 +90,71 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
     */
     public function save(array $options=array()) {
-        parent::save($options);
+        $widget = parent::save($options);
 
         if ( ! isset($options['skipManager']) || $options['skipManager'] == FALSE) {
             $dataManager = $this->descriptor->getDataManager($this);
             if ( ! is_null($dataManager)) {
-                $this->data()->associate($dataManager->getSpecific()->data);
+                $this->data()->associate($dataManager->data);
             }
+            $widget = parent::save($options);
         }
 
-        return parent::save($options);
+        return $widget;
+    }
+
+    /**
+     * checkDataIntegrity
+     * Checking the DataIntegrity of widgets.
+    */
+    protected function checkDataIntegrity() {
+        if ( ! $this->dataExists()) {
+            /* No data/datamanager is assigned */
+            $this->save();
+            if ( ! $this->dataExists()) {
+                /* Still not working */
+                $this->setState('setup_required');
+            }
+        } else if ($this->data->raw_value == 'loading') {
+            /* Populating is underway */
+            $this->setState('loading');
+        } else if (is_null(json_decode($this->data->raw_value)) || ! $this->hasValidScheme()) {
+            /* No json in data, this is a problem. */
+            $this->dataManager()->initializeData();
+        }
+    }
+
+    /**
+     * dataExists
+     * Checking if data/manager exists
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    private function dataExists() {
+        return  ! (is_null($this->data) || is_null($this->dataManager()));
+    }
+
+    /**
+     * hasValidScheme
+     * Checking if the scheme is valid in the data.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    private function hasValidScheme() {
+        $scheme = $this->dataManager()->getDataScheme();
+        $dataScheme = json_decode($this->data->raw_value, 1);
+        if ( ! is_array($dataScheme)) {
+            return FALSE;
+        }
+        /* Iterating through the keys */
+        foreach ($scheme as $key) {
+            if ( ! array_key_exists($key, $dataScheme)) {
+                return FALSE;
+            }
+        }
+        return TRUE;
     }
 
 }

@@ -1,6 +1,6 @@
 <?php
 
-class WebhookHistogramDataManager extends HistogramDataManager
+class WebhookHistogramDataManager extends MultipleHistogramDataManager
 {
     use WebhookDataManager;
     /**
@@ -16,10 +16,14 @@ class WebhookHistogramDataManager extends HistogramDataManager
 
     public function getCurrentValue() {
         $data = $this->getJson();
-        if (isset($data['value'])) {
-            return $data['value'];
+
+        $decodedData = array();
+        foreach ($data as $name => $value) {
+            if ( ! in_array($name, static::$staticFields)) {
+                $decodedData[$name] = $value;
+            }
         }
-        return 0;
+        return $decodedData;
     }
 
 }
