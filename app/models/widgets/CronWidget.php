@@ -6,7 +6,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     public static $criteriaSettings = array();
 
     /* Custom relation. */
-    public function dataManager() { return $this->data->manager; }
+    public function dataManager() { return $this->data->manager->getSpecific(); }
 
     /**
      * handleAjax
@@ -78,7 +78,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * Passing the job to the DataManager
      */
     public function getData($postData=null) {
-        return $this->dataManager()->getSpecific()->getData();
+        return $this->dataManager()->getData();
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         if ( ! isset($options['skipManager']) || $options['skipManager'] == FALSE) {
             $dataManager = $this->descriptor->getDataManager($this);
             if ( ! is_null($dataManager)) {
-                $this->data()->associate($dataManager->getSpecific()->data);
+                $this->data()->associate($dataManager->data);
             }
             $widget = parent::save($options);
         }
@@ -120,7 +120,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             $this->setState('loading');
         } else if (is_null(json_decode($this->data->raw_value)) || ! $this->hasValidScheme()) {
             /* No json in data, this is a problem. */
-            $this->dataManager()->getSpecific()->populateData();
+            $this->dataManager()->initializeData();
         }
     }
 
@@ -143,7 +143,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
     */
     private function hasValidScheme() {
-        $scheme = $this->dataManager()->getSpecific()->getDataScheme();
+        $scheme = $this->dataManager()->getDataScheme();
         $dataScheme = json_decode($this->data->raw_value, 1);
         if ( ! is_array($dataScheme)) {
             return FALSE;

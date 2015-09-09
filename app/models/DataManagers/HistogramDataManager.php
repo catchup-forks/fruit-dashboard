@@ -6,12 +6,12 @@ abstract class HistogramDataManager extends DataManager
     abstract public function getCurrentValue();
 
     /**
-     * populateData
+     * initializeData
      * --------------------------------------------------
      * First time population of the data.
      * --------------------------------------------------
      */
-    public function populateData() {
+    public function initializeData() {
         $this->collectData();
     }
 

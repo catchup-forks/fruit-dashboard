@@ -68,6 +68,7 @@ class WidgetDescriptor extends Eloquent
 
             /* No manager found, creating one. */
             if (empty($widget::$criteriaSettings) || ($widget->getCriteria())) {
+                Log::info("creating manager");
                 return DataManager::createManagerFromWidget($widget);
             }
         }
