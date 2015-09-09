@@ -68,8 +68,12 @@ abstract class HistogramDataManager extends DataManager
      */
      public function getLatestData() {
         $histogram = $this->getData();
-        $lastEntry = end($histogram);
-        return $lastEntry;
+        /* Handle empty data */
+        if ($histogram == null) {
+            return 0;
+        } else {
+            return end($histogram);
+        }
      }
 
     /**

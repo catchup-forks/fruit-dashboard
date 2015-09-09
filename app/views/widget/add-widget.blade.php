@@ -49,15 +49,6 @@
                             {{ $descriptor->name }}
                             {{-- This is the span for the selection icon --}}
                             <span class="selection-icon"> </span>
-
-                            {{-- If user is on free plan display labels --}}
-                            @if (Auth::user()->subscription->isOnFreePlan())
-                              @if ($descriptor->is_premium == 0)
-                                <span class="label label-success pull-right">Free</span>
-                              @else
-                                <span class="label label-default pull-right">Premium</span>
-                              @endif
-                            @endif
                           </a>
                         @endforeach
                         <!-- /Widgets -->
