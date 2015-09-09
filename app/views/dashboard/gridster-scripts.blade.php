@@ -42,25 +42,19 @@ function Gridster(dashboardID, isLocked) {
    * --------------------------------------------------------------------------
    */
   function initialize(isLocked) {
+    // Build options
+    options = $.extend({}, 
+                  getDefaultOptions(),
+                  {resize:    getResizeOptions()}, 
+                  {draggable: getDraggingOptions()}
+              );
+    
     if (isLocked) {
-      // Build options
-      options = $.extend({}, 
-                    getDefaultOptions()
-                );
-
       // Create gridster.js object
       gridster = selector.gridster(options).data('gridster').disable();
-
     } else {
-      // Build options
-      options = $.extend({}, 
-                    getDefaultOptions(), 
-                    {resize:    getResizeOptions()}, 
-                    {draggable: getDraggingOptions()}
-                );
       // Create gridster.js object
       gridster = selector.gridster(options).data('gridster');
-
     };
 
     // Handle hover elements.
