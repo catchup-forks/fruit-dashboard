@@ -60,11 +60,40 @@ function Gridster(dashboardID, isLocked) {
                 );
       // Create gridster.js object
       gridster = selector.gridster(options).data('gridster');
+
     };
+
+    // Handle hover elements.
+    handleHover(isLocked);
 
     // Return
     return gridster;
   }
+
+  /**
+   * @function handleHover
+   * --------------------------------------------------------------------------
+   * Handles the hover display based on locking.
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function handleHover(isLocked) {
+    var hoverableElements = $(namespace + " *[data-hover='hover-unlocked']");
+
+    if (isLocked) {
+      $.each(hoverableElements, function(){
+        $(this).children(":first").css('display', 'none');
+      });
+      players.removeClass('can-hover');
+    } else {
+      $.each(hoverableElements, function(){
+        $(this).children(":first").css('display', '');
+      });
+      players.addClass('can-hover');
+    };
+    
+  }
+
 
   /**
    * @function lockGrid
@@ -79,6 +108,9 @@ function Gridster(dashboardID, isLocked) {
            
       // Disable gridster movement
       this.gridster.disable();
+
+      // Hide hoverable elements.
+      handleHover(true);
   }
 
   /**
@@ -94,6 +126,9 @@ function Gridster(dashboardID, isLocked) {
 
       // Enable gridster movement
       this.gridster.enable();
+
+      // Show hoverable elements.
+      handleHover(false);
   }
 
   /**

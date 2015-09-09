@@ -131,18 +131,4 @@
     // Drawing chart.
     var chart = new Chart(ctx).Line(chartData, chartOptions);
   }
-
-  function updateHistogramWidget(data, canvas, name, valueSpan) {
-    // Updating chart values.
-    var labels = [];
-    var values = [];
-    for (i = 0; i < data.length; ++i) {
-      labels.push(data[i]['date']);
-      values.push(data[i]['value']);
-    }
-    if (data.length > 0 && valueSpan) {
-      valueSpan.html("$" + data[data.length-1]['value']);
-    }
-    drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
-  }
 </script>

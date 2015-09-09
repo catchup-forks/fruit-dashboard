@@ -122,7 +122,7 @@ class SignupWizardController extends BaseController
         $this->makePersonalAutoDashboard(Auth::user(), Input::all());
 
         /* Render the page */
-        return Redirect::route('dashboard.dashboard');
+        return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
     }
 
     /**

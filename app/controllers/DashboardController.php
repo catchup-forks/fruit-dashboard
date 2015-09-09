@@ -22,10 +22,8 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Checking the user's widget data integrity */
         Widget::checkIntegrity(Auth::user());
@@ -41,10 +39,8 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function getManageDashboards() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Render the page */
         return View::make('dashboard.manage-dashboards');
@@ -235,6 +231,12 @@ class DashboardController extends BaseController
     }
 
     /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
+
+    /**
      * getDashboard
      * --------------------------------------------------
      * @return Dashboard
@@ -250,4 +252,5 @@ class DashboardController extends BaseController
         }
         return $dashboard;
     }
+
 } /* DashboardController */

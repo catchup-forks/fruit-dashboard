@@ -10,21 +10,53 @@
   @section('pageContent')
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Select your facebook pages.
+      Select facebook pages to analyze.
     </h1>
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
-        <div class="panel panel-default panel-transparent">
+        <div class="panel panel-default panel-transparent margin-top">
           <div class="panel-body">
-            <div class="row">
 
               {{ Form::open(array(
                 'route' => array('service.facebook.select-pages'))) }}
 
-              {{ Form::label('pages', 'Facebook pages')}}
-              {{ Form::select('pages[]', $pages, null, array('multiple'))}}
+              <div class="form-group">
 
-            {{ Form::submit('I choose you') }}
+                <div class="row">
+
+                  {{ Form::label('pages', 'Facebook pages', array(
+                    'class' => 'col-sm-3 control-label'
+                  ))}}
+
+                  <div class="col-sm-6">
+                    
+                    {{ Form::select('pages[]', $pages, null, array(
+                      'multiple',
+                      'class' => 'form-control',
+                      'size' => count($pages)
+                    ))}}
+
+                    <span class="help-block">Click to select. Hold down CMD or CTRL and click to select more.</span>             
+                  </div> <!-- /.col-sm-6 -->
+
+                </div> <!-- /.row -->
+
+                <div class="row">
+                  
+                  <div class="col-md-12">
+
+                    {{ Form::submit('Choose', array(
+                      'class' => 'btn btn-primary pull-right'
+                    )) }}
+ 
+                  </div> <!-- /.col-md-12 -->
+                  
+                  
+                </div> <!-- /.row -->
+                
+              </div> <!-- /.form-group -->
+
+            
             {{ Form::close() }}
             </div>
           </div>
