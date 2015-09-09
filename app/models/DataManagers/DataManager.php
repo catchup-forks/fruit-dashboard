@@ -22,8 +22,6 @@ trait WebhookDataManager {
 /* This class is responsible for data collection. */
 class DataManager extends Eloquent
 {
-    const ENTRIES = 15;
-
     /* -- Table specs -- */
     protected $table = "data_managers";
 
@@ -32,8 +30,13 @@ class DataManager extends Eloquent
         'data_id',
         'user_id',
         'descriptor_id',
-        'settings_criteria'
+        'settings_criteria',
+        'update_period',
+        'last_updated'
     );
+
+    protected $dates = array('last_updated');
+
     public $timestamps = FALSE;
 
     /* -- Relations -- */
@@ -50,13 +53,26 @@ class DataManager extends Eloquent
 
     /**
      * getDataScheme
-     * same as above non-static
+     * Returning default dataScheme
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
     public static function getDataScheme() {
         return array();
+    }
+
+    /**
+     * setUpdatePeriod
+     * Setting the instace's update period.
+     * --------------------------------------------------
+     * @param int $updatePeriod
+     * @return array
+     * --------------------------------------------------
+     */
+    public function setUpdatePeriod($updatePeriod) {
+        $this->update_period = $updatePeriod;
+        $this->save();
     }
 
     /**

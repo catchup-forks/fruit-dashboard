@@ -95,22 +95,22 @@ class BraintreePopulateData
 
         for ($i = 0; $i < self::DAYS; $i++) {
             /* Calculating the date to mirror. */
-            $date = Carbon::now()->subDays($i)->toDateString();
-            $this->mirrorDay($date);
+            $date = Carbon::now()->subDays($i);
+            $this->mirrorDay($date->toDateString());
             array_push($mrr, array(
-                'date'      => $date,
+                'date'      => $date->toDateString(),
                 'value'     => $this->calculator->getMrr(),
-                'timestamp' => time()
+                'timestamp' => $date->getTimestamp()
             ));
             array_push($arr, array(
-                'date'      => $date,
+                'date'      => $date->toDateString(),
                 'value'     => $this->calculator->getArr(),
-                'timestamp' => time()
+                'timestamp' => $date->getTimestamp()
             ));
             array_push($arpu, array(
-                'date'      => $date,
+                'date'      => $date->toDateString(),
                 'value'     => $this->calculator->getArpu(),
-                'timestamp' => time()
+                'timestamp' => $date->getTimestamp()
             ));
         }
 

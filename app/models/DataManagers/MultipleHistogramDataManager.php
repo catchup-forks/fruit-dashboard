@@ -3,9 +3,6 @@
 /* This class is responsible for histogram data collection. */
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
-
-    protected static $staticFields = array('date', 'timestamp');
-
     /**
      * initializeData
      * --------------------------------------------------
@@ -28,11 +25,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      protected function formatData($date, $data) {
         $dataSets = $this->getDataSets();
         $decodedData = array(
-            'date'      => $date,
-            'timestamp' => time()
+            'date'      => $date->toDateString(),
+            'timestamp' => $date->getTimestamp()
         );
         foreach ($data as $key=>$value) {
-            if (array_key_exists($key, $dataSets)) {
+            if (!array_key_exists($key, $dataSets)) {
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }
@@ -75,14 +72,18 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     }
 
     /**
-     * groupDataSets
+     * buildHistogram
      * Returning template ready grouped dataset.
      * --------------------------------------------------
+     * @param array $range
+     * @param string $frequency
+     * @param string $dateFormat
      * @return array
      * --------------------------------------------------
      */
-    public function groupDataSets() {
+    public function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
         $groupedData = array();
+        $dates = array();
         $i = 0;
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
@@ -91,15 +92,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 'data'  => array()
             );
         }
-        foreach ($this->getData() as $oneValues) {
+        foreach (parent::buildHistogram($range, $frequency, $dateFormat) as $oneValues) {
+            array_push($dates, $oneValues['date']);
             foreach ($oneValues as $dataId => $value) {
-            if ( ! in_array($dataId, static::$staticFields)) {
+                if ( ! in_array($dataId, static::$staticFields)) {
                     array_push($groupedData[$dataId]['data'], $value);
                 }
             }
         }
 
-        return $groupedData;
+        return array('datasets' => $groupedData, 'date' => $dates);
     }
 
     /**

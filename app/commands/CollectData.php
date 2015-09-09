@@ -30,7 +30,9 @@ class CollectData extends Command {
     {
         /* Iterating through the managers. */
         foreach (DataManager::all() as $manager) {
-            $manager->getSpecficic()->collectData();
+            if (Carbon::now()->diffInHours($manager->last_updated) >= $manager->update_period) {
+                $manager->getSpecficic()->collectData();
+            }
         }
     }
 }

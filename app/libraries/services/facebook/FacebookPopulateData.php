@@ -110,11 +110,11 @@ class FacebookPopulateData
         $dailyLikes = $this->getHistogram('page_fans');
         $likesData = array();
         foreach ($dailyLikes[0]['values'] as $likes) {
-            $date = Carbon::createFromTimestamp(strtotime($likes['end_time']))->toDateString();
+            $date = Carbon::createFromTimestamp(strtotime($likes['end_time']));
             array_push($likesData, array(
-                'date'      => $date,
+                'date'      => $date->toDateString(),
                 'value'     => $likes['value'],
-                'timestamp' => time()
+                'timestamp' => $date->getTimestamp()
             ));
         }
 
@@ -130,11 +130,11 @@ class FacebookPopulateData
         $dailyImpressions = $this->getHistogram('page_impressions_unique');
         $pageImpressionsData = array();
         foreach ($dailyImpressions[0]['values'] as $impressions) {
-            $date = Carbon::createFromTimestamp(strtotime($impressions['end_time']))->toDateString();
+            $date = Carbon::createFromTimestamp(strtotime($impressions['end_time']));
             array_push($pageImpressionsData, array(
-                'date'      => $date,
+                'date'      => $date->toDateString(),
                 'value'     => $impressions['value'],
-                'timestamp' => time()
+                'timestamp' => $date->getTimestamp()
             ));
         }
 
