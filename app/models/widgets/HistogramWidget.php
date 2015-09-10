@@ -18,8 +18,6 @@ abstract class HistogramWidget extends CronWidget
     /* -- Choice functions -- */
     public function frequency() {
         return array(
-            //'minutely'  => 'Hourly',
-            'hourly'  => 'Hourly',
             'daily'   => 'Daily',
             'weekly'  => 'Weekly',
             'monthly' => 'Monthly',

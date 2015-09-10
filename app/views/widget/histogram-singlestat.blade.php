@@ -41,8 +41,8 @@ Widget stats
   @stop
 
   @section('pageScripts')
-
   @include('widget.widget-general-scripts')
+
   <script type="text/javascript">
     $(document).ready(function () {
       var frequencies = [@foreach (array_keys($widget->frequency()) as $frequency) '{{$frequency}}', @endforeach];
@@ -57,7 +57,7 @@ Widget stats
         };
         var canvas = $("#chart-" + frequencies[i]);
         sendAjax(postData, {{ $widget->id }}, function (data) {
-          updateChartWidget(data['data'], canvas, frequencies[i]);
+          updateHistogramWidget(data['data'], canvas, frequencies[i]);
           // Recursive call.
           loadStat(++i, callback);
         });

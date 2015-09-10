@@ -26,5 +26,15 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
     public static $setupSettings = array('name', 'url');
     public static $criteriaSettings = array('url');
 
+    /* -- Choice functions -- */
+    public function frequency() {
+        return array(
+            'hourly'  => 'Hourly',
+            'daily'   => 'Daily',
+            'weekly'  => 'Weekly',
+            'monthly' => 'Monthly',
+            'yearly'  => 'Yearly'
+        );
+    }
 }
 ?>
