@@ -32,6 +32,26 @@
                         <button class="btn btn-sm btn-danger delete-dashboard" onclick="deleteDashboard({{ $dashboard->id }});">Delete</button>
                       </p>
                     </div> <!-- /.caption -->
+                    <div class="caption text-center">
+                        @if ($dashboard->is_default)
+                          <span class="make-default-icon default" data-toggle="tooltip" data-placement="bottom" title="This is your default dashboard" data-dashboard-id="{{ $dashboard->id }}">
+                            <span class="label label-danger"><i class="fa fa-star"></i></span>
+                          </span>
+                        @else
+                          <span class="make-default-icon" data-toggle="tooltip" data-placement="bottom" title="Make this the default dashboard" data-dashboard-id="{{ $dashboard->id }}">
+                            <span class="label label-primary"><i class="fa fa-star"></i></span>
+                          </span>
+                        @endif
+                        @if ($dashboard->is_locked)
+                          <span class="lock-icon" data-toggle="tooltip" data-placement="bottom" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
+                            <span class="label label-danger"><i class="fa fa-lock"></i></span>
+                          </span>
+                        @else
+                          <span class="lock-icon" data-toggle="tooltip" data-placement="bottom" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+                            <span class="label label-primary"><i class="fa fa-unlock-alt"></i></span>
+                          </span>
+                        @endif
+                    </div> <!-- /.caption -->
                   </div> <!-- /.thumbnail -->
                 </div> <!-- /.col-sm-6 -->
               @endforeach
@@ -106,6 +126,8 @@
   @stop
 
   @section('pageScripts')
+    @include('dashboard.manage-dashboards-makedefault-scripts')
+    @include('dashboard.manage-dashboards-locking-scripts')
   
   <script type="text/javascript">
 
