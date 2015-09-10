@@ -3,6 +3,8 @@
     data-col="{{ $widget->getPosition()->col }}"
     data-sizex="{{ $widget->getPosition()->size_x }}"
     data-sizey="{{ $widget->getPosition()->size_y }}"
+    data-min-sizex=""
+    data-min-sizey=""
     class="can-hover">
 
   <a class='deleteWidget' data-id='{{ $widget->id }}' data-hover="hover-unlocked" href="">
