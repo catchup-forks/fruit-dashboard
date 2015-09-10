@@ -34,11 +34,11 @@
                     </div> <!-- /.caption -->
                     <div class="caption text-center">
                         @if ($dashboard->is_default)
-                          <span class="make-default-icon default" data-toggle="tooltip" data-placement="bottom" title="This is your default dashboard" data-dashboard-id="{{ $dashboard->id }}">
+                          <span class="make-default-icon default" data-toggle="tooltip" data-placement="bottom" title="This is your default dashboard." data-dashboard-id="{{ $dashboard->id }}">
                             <span class="label label-danger"><i class="fa fa-star"></i></span>
                           </span>
                         @else
-                          <span class="make-default-icon" data-toggle="tooltip" data-placement="bottom" title="Make this the default dashboard" data-dashboard-id="{{ $dashboard->id }}">
+                          <span class="make-default-icon" data-toggle="tooltip" data-placement="bottom" title="Make this the default dashboard." data-dashboard-id="{{ $dashboard->id }}">
                             <span class="label label-primary"><i class="fa fa-star"></i></span>
                           </span>
                         @endif
@@ -183,12 +183,8 @@
     // If Rename Dashboard modal is shown, focus into input field and change value.
     $('#rename-dashboard-modal').on('show.bs.modal', function (event) {
       var button = $(event.relatedTarget);
-      console.log(button);
       var name = button.data('dashboard-name');
       var id = button.data('dashboard-id');
-
-      console.log(name);
-      console.log(id);
 
       $('#rename-input').val(name);
       $('#rename-input').focus();
