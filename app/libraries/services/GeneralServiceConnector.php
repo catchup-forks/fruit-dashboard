@@ -99,9 +99,6 @@ abstract class GeneralServiceConnector
      */
     public function saveConnection(array $parameters=array()) {
 
-        /* Change trial period settings */
-        $this->user->subscription->changeTrialState('active');
-
         /* Saving tokens */
         $this->getTokens($parameters);
 

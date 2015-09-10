@@ -310,11 +310,6 @@ class GeneralWidgetController extends BaseController {
         }
         $widget->save($options);
 
-        /* Start trial period if the widget is premium */
-        if ($widget->descriptor->is_premium) {
-            Auth::user()->subscription->changeTrialState('active');
-        }
-
         /* Track event | ADD WIDGET */
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(

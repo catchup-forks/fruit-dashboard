@@ -101,7 +101,7 @@ class StripeDataCollector
                     'quantity'        => $subscription['quantity'],
                     'discount'        => $subscription['discount'],
                     'trial_start'     => $subscription['trial_start'],
-                    'trial_end'       => $subscription['trial_start'],
+                    'trial_end'       => $subscription['trial_end'],
                     'discount'        => $subscription['discount']
                 ));
                 $plan = StripePlan::where('plan_id', $subscription['plan']['id'])->first();
