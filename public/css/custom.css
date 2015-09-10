@@ -46,10 +46,10 @@ body {
   top: 5px;
   left: 5px;
 }
-.position-br {
+.position-br-lg {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  bottom: 12.5px;
+  right: 75px;
 }
 .has-margin-horizontal {
   margin-left: 25px;
@@ -78,7 +78,7 @@ body {
   display: none;
 }
 .z-top {
-  z-index: 9999;
+  z-index: 99999;
 }
 .drop-shadow {
   text-shadow: 1px 1px 3px #141414;
@@ -132,8 +132,8 @@ body {
   position: absolute;
   padding: 0;
   top: 0;
-  left: 9.5%;
-  right: 9.5%;
+  left: 5%;
+  right: 5%;
   margin-bottom: 25px;
   overflow-x: hidden;
 }
@@ -243,5 +243,9 @@ input.greetings-name:focus {
   -o-background-size: cover;
 }
 .carousel-control {
-  width: 9.5%;
+  width: 5%;
+}
+.modification-icons {
+  position: relative;
+  top: -40px;
 }

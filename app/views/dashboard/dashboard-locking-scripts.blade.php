@@ -55,11 +55,13 @@ function changeLockIcon(id, direction) {
   // Change the icon
   if (direction) {
     selector.attr('data-lock-direction', 'unlock');
-    //oldselector.tooltip("option", "content", 'This dashboard is locked. Click to unlock.');
+    selector.attr('title', 'This dashboard is locked. Click to unlock.');
+    selector.tooltip('fixTitle').tooltip('show');
     selector.find('span').removeClass('fa-unlock-alt').addClass('fa-lock');
   } else {
     selector.attr('data-lock-direction', 'lock');
-    //oldselector.tooltip("option", "content", 'This dashboard is unlocked. Click to lock.');
+    selector.attr('title', 'This dashboard is unlocked. Click to lock.');
+    selector.tooltip('fixTitle').tooltip('show');
     selector.find('span').removeClass('fa-lock').addClass('fa-unlock-alt');
   };
 }
