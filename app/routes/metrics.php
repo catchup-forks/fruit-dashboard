@@ -22,4 +22,19 @@ Route::group([
         'as'     => 'metrics.hasWidget',
         'uses'   => 'MetricsController@getServiceWidgetUsersCount'
     ]);
+
+    Route::get('dashboards', [
+        'as'     => 'metrics.numberOfDashboards',
+        'uses'   => 'MetricsController@getNumberOfDashboards'
+    ]);
+
+    Route::get('widgets', [
+        'as'     => 'metrics.numberOfWidgets',
+        'uses'   => 'MetricsController@getNumberOfWidgets'
+    ]);
+
+    Route::get('datapoints', [
+        'as'     => 'metrics.numberOfDataPoints',
+        'uses'   => 'MetricsController@getNumberOfDataPoints'
+    ]);
 });

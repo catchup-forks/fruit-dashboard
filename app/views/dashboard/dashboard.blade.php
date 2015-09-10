@@ -29,13 +29,19 @@
 
         <div class="item @if($dashboard->is_default) active @endif">
 
-          <div class="lock-icon" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction=@if($dashboard->is_locked) "unlock" @else "lock" @endif>
-            @if($dashboard->is_locked)
-              @include('dashboard.locking-unlock-icon')
-            @else
-              @include('dashboard.locking-lock-icon')
-            @endif
-          </div>
+          @if($dashboard->is_locked)
+            <div class="lock-icon" data-toggle="tooltip" data-placement="top" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
+              <div class="position-bl drop-shadow z-top" style="left:200px">
+                <span class="fa fa-lock fa-2x fa-inverse color-hovered"></span>
+              </div>
+            </div>
+          @else
+            <div class="lock-icon" data-toggle="tooltip" data-placement="top" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+              <div class="position-bl drop-shadow z-top" style="left:200px">
+                <span class="fa fa-unlock-alt fa-2x fa-inverse color-hovered"></span>
+              </div>
+            </div>
+          @endif
           
           <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
           </div> <!-- /.fill -->
@@ -79,15 +85,15 @@
 
 @section('pageScripts')
   <!-- Gridster scripts -->
-  @include('dashboard.gridster-scripts')
+  @include('dashboard.dashboard-gridster-scripts')
   <!-- /Gridster scripts -->
 
   <!-- Dashboard locking scripts -->
-  @include('dashboard.locking-scripts')
+  @include('dashboard.dashboard-locking-scripts')
   <!-- /Dashboard locking scripts -->
 
   <!-- Hopscotch scripts -->
-  @include('dashboard.hopscotch-scripts')
+  @include('dashboard.dashboard-hopscotch-scripts')
   <!-- /Hopscotch scripts -->
   
   <!-- Widget general scripts -->

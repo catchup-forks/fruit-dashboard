@@ -64,29 +64,6 @@ class DashboardController extends BaseController
     }
 
     /**
-     * anyToggleDashboardLock
-     * --------------------------------------------------
-     * @return Toggles the locking for a dashboard.
-     * --------------------------------------------------
-     */
-    public function anyToggleDashboardLock($dashboardId) {
-        $dashboard = $this->getDashboard($dashboardId);
-        if (is_null($dashboard)) {
-            return Response::json(FALSE);
-        }
-
-        if($dashboard->is_locked) {
-          $dashboard->is_locked = FALSE;
-        } else {
-          $dashboard->is_locked = TRUE;
-        }
-        $dashboard->save();
-
-        /* Return. */
-        return Response::json(TRUE);
-    }
-
-    /**
      * anyLockDashboard
      * --------------------------------------------------
      * @return Locks a dashboard.
@@ -104,6 +81,7 @@ class DashboardController extends BaseController
         /* Return. */
         return Response::json(TRUE);
     }
+
     /**
      * anyUnlockDashboard
      * --------------------------------------------------
@@ -124,42 +102,26 @@ class DashboardController extends BaseController
     }
 
     /**
-     * anyLockAllDashboards
+     * anyMakeDefault
      * --------------------------------------------------
-     * @return Locks all dashboards.
+     * @return Makes a dashboard the default one.
      * --------------------------------------------------
      */
-    public function anyLockAllDashboards($userId) {
-        $user = User::find($userId);
-        if (is_null($user)) {
+    public function anyMakeDefault($dashboardId) {
+        // Make is_default false for all dashboards
+        foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
+            Log::info($oldDashboard->id);
+            $oldDashboard->is_default = FALSE;
+            $oldDashboard->save();
+        }
+
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
 
-        foreach ($user->dashboards as $dashboard) {
-            $dashboard->is_locked = TRUE;
-            $dashboard->save();
-        }
-
-        /* Return. */
-        return Response::json(TRUE);
-    }
-
-    /**
-     * anyUnlockAllDashboards
-     * --------------------------------------------------
-     * @return Unlocks all dashboards.
-     * --------------------------------------------------
-     */
-    public function anyUnlockAllDashboards($userId) {
-        $user = User::find($userId);
-        if (is_null($user)) {
-            return Response::json(FALSE);
-        }
-
-        foreach ($user->dashboards as $dashboard) {
-            $dashboard->is_locked = FALSE;
-            $dashboard->save();
-        }
+        $dashboard->is_default = TRUE;
+        $dashboard->save();
 
         /* Return. */
         return Response::json(TRUE);

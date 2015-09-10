@@ -24,7 +24,7 @@
               </div> <!-- /.panel-body -->
               <div class="panel-footer text-center">
                 You are about to unsubscribe. <br>
-                Your premium widgets will be hidden, but can be reactivated any time.
+                The premium funcionalities can be reactivated any time if you subscribe again.
               </div> <!-- /.panel-footer -->
             </div> <!-- /.panel -->
           </div> <!-- /.col-md-6 -->

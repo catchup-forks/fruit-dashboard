@@ -47,87 +47,116 @@ class Subscription extends Eloquent
      * State Matrix legend:
      *     TS: Trial period state       (possible | active | ended | disabled)
      *     TD: Trial badge displayed    (true | false)
-     *     PE: Premium widgets enabled  (true | false)
+     *     PE: Premium feature enabled  (true | false)
      * --------------------------------------------------------------------
-     * Case                              |     TS     |   TD    |   PE    |
+     * Cases @param TRIAL_ENABLED        |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
-     * 1) No premium widget added:       |  possible  |  false  |  false  |
-     * 2) Premium widget added,         
+     * 1) No premium functionality added |  possible  |  false  |  false  |
+     * 2) Premium functionality added,         
      *    Remaining days > 0             |   active   |  true   |  true   |
-     * 3) Premium widget added,  
+     * 3) Premium functionality added,  
      *    Remaining days <= 0            |   ended    |  true   |  false  |
      * 4) Unsubscribed from Premium plan |  disabled  |  false  |  false  |
      * 5) Subscribed to Premium plan     |  disabled  |  false  |  true   |
      * --------------------------------------------------------------------
+     * Cases @param TRIAL_DISABLED       |     TS     |   TD    |   PE    |
+     * --------------------------------------------------------------------
+     * 1) Is on free plan                |  disabled  |  false  |  false  |
+     * 2) Subscribed to Premium plan     |  disabled  |  false  |  true   |
+     * --------------------------------------------------------------------
      */
     public function getSubscriptionInfo() {
-        /* Handle just expired trial */
-        if (($this->trial_status == 'active') and
-            ($this->getDaysRemainingFromTrial() <= 0)) {
+        /* TRIAL_ENABLED */
+        if ($_ENV['TRIAL_ENABLED']) {
+            /* Handle just expired trial */
+            if (($this->trial_status == 'active') and
+                ($this->getDaysRemainingFromTrial() <= 0)) {
 
-            /* Update status in db */
-            $this->changeTrialState('ended');
+                /* Update status in db */
+                $this->changeTrialState('ended');
 
-            /* Track event | TRIAL ENDED */
-            $tracker = new GlobalTracker();
-            $tracker->trackAll('lazy', array(
-                'en' => 'Trial ended',
-                'el' => $this->user->email)
-            );
-        } 
+                /* Track event | TRIAL ENDED */
+                $tracker = new GlobalTracker();
+                $tracker->trackAll('lazy', array(
+                    'en' => 'Trial ended',
+                    'el' => $this->user->email)
+                );
+            } 
 
-        /* Return subscriptionInfo based on the cases */
-        if ($this->isOnFreePlan()) {
-            /* ==== CASE 1 === */
-            if ($this->trial_status == 'possible') {
-                /* Build and return subscriptionInfo */
-                return [
-                    'TS' => 'possible',
-                    'TD' => false,
-                    'PE' => false,
-                ];
+            /* Return subscriptionInfo based on the cases */
+            if ($this->isOnFreePlan()) {
+                /* ==== CASE 1 === */
+                if ($this->trial_status == 'possible') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'possible',
+                        'TD' => false,
+                        'PE' => false,
+                    ];
+                
+                /* ==== CASE 2 === */
+                } elseif ($this->trial_status == 'active') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'active',
+                        'TD' => true,
+                        'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
+                        'trialEndDate'       => $this->getTrialEndDate(),
+                        'PE' => true,
+                    ];
+
+                /* ==== CASE 3 === */
+                } elseif ($this->trial_status == 'ended') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'ended',
+                        'TD' => true,
+                        'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
+                        'trialEndDate' => $this->getTrialEndDate(),
+                        'PE' => false,
+                    ];
+
+                /* ==== CASE 4 === */
+                } elseif ($this->trial_status == 'disabled') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'disabled',
+                        'TD' => false,
+                        'PE' => false,
+                    ];
+                }
             
-            /* ==== CASE 2 === */
-            } elseif ($this->trial_status == 'active') {
+            /* ==== CASE 5 === */
+            } else {
                 /* Build and return subscriptionInfo */
                 return [
-                    'TS' => 'active',
-                    'TD' => true,
-                    'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
-                    'trialEndDate'       => $this->getTrialEndDate(),
+                    'TS' => 'disabled',
+                    'TD' => false,
                     'PE' => true,
                 ];
-
-            /* ==== CASE 3 === */
-            } elseif ($this->trial_status == 'ended') {
-                /* Build and return subscriptionInfo */
-                return [
-                    'TS' => 'ended',
-                    'TD' => true,
-                    'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
-                    'trialEndDate' => $this->getTrialEndDate(),
-                    'PE' => false,
-                ];
-
-            /* ==== CASE 4 === */
-            } elseif ($this->trial_status == 'disabled') {
+            }
+        /* TRIAL_DISABLED */
+        } else {
+            /* Return subscriptionInfo based on the cases */
+            /* ==== CASE 1 === */
+            if ($this->isOnFreePlan()) {
                 /* Build and return subscriptionInfo */
                 return [
                     'TS' => 'disabled',
                     'TD' => false,
                     'PE' => false,
                 ];
+            
+            /* ==== CASE 2 === */
+            } else {
+                /* Build and return subscriptionInfo */
+                return [
+                    'TS' => 'disabled',
+                    'TD' => false,
+                    'PE' => true,
+                ];
             }
-        
-        /* ==== CASE 5 === */
-        } else {
-            /* Build and return subscriptionInfo */
-            return [
-                'TS' => 'disabled',
-                'TD' => false,
-                'PE' => true,
-            ];
-        }
+        } /* Trial enabled / disabled  */
     }
 
     /**

@@ -70,17 +70,12 @@ class User extends Eloquent implements UserInterface
         /* Get the dashboard and return if exists */
         if ($this->dashboards()->where('is_default', TRUE)->count()) {
             /* Return */
-            Log::info('1');
-            Log::info($this->dashboards()->where('is_default', TRUE)->count());
             return $this->dashboards()->where('is_default', TRUE)->first();
 
         /* Default dashboard doesn't exist */
         } else {
             /* Dashboard exists, but none of them is default */
             if ($this->dashboards()->count()) {
-                Log::info('2');
-                Log::info($this->dashboards()->count());
-
                 /* Make the first default */
                 $dashboard = $this->dashboards()->first();
                 $dashboard->is_default = TRUE;
@@ -91,7 +86,6 @@ class User extends Eloquent implements UserInterface
             
             /* No dashboard object exists */
             } else {
-                Log::info('3');
                 /* Create a new dashboard objec*/
                 $dashboard = new Dashboard(array(
                     'name'       => 'Default dashboard',
