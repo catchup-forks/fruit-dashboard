@@ -42,9 +42,9 @@
                     </div> <!-- /.form-group -->
 
                   @endforeach
-                  <p class="text-center">
-                    {{ Form::submit('Setup widget', array('class' => 'btn btn-primary') ) }}
-                  </p>
+                  <hr>
+                    <a href="/" class="btn btn-warning">Cancel</a>
+                    {{ Form::submit('Setup widget', array('class' => 'btn btn-primary pull-right') ) }}
                 {{ Form::close() }}
               </div> <!-- /.panel-body -->
             </div> <!-- /.panel -->
