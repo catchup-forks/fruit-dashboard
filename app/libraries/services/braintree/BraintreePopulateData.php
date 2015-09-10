@@ -98,17 +98,14 @@ class BraintreePopulateData
             $date = Carbon::now()->subDays($i);
             $this->mirrorDay($date->toDateString());
             array_push($mrr, array(
-                'date'      => $date->toDateString(),
                 'value'     => $this->calculator->getMrr(),
                 'timestamp' => $date->getTimestamp()
             ));
             array_push($arr, array(
-                'date'      => $date->toDateString(),
                 'value'     => $this->calculator->getArr(),
                 'timestamp' => $date->getTimestamp()
             ));
             array_push($arpu, array(
-                'date'      => $date->toDateString(),
                 'value'     => $this->calculator->getArpu(),
                 'timestamp' => $date->getTimestamp()
             ));
@@ -129,11 +126,11 @@ class BraintreePopulateData
      * @return array
     */
     private function sortByDate($dataSet) {
-        $dates = array();
+        $timestamps = array();
         foreach($dataSet as $key=>$data) {
-            $dates[$key] = $data['date'];
+            $timestamps[$key] = $data['timestamp'];
         }
-        array_multisort($dates, SORT_ASC, $dataSet);
+        array_multisort($timestamps, SORT_ASC, $dataSet);
         return $dataSet;
 
     }

@@ -36,7 +36,7 @@
 
     @if ($widget->state == 'active')
       // Active widget.
-      var labels =  [@foreach ($widget->getData()['date'] as $histogramEntry) "{{$histogramEntry}}", @endforeach];
+      var labels =  [@foreach ($widget->getData()['datetimes'] as $histogramEntry) "{{$histogramEntry}}", @endforeach];
       var datasets = [
         @foreach ($widget->getData()['datasets'] as $dataset)
           {

@@ -25,7 +25,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      protected function formatData($date, $data) {
         $dataSets = $this->getDataSets();
         $decodedData = array(
-            'date'      => $date->toDateString(),
             'timestamp' => $date->getTimestamp()
         );
         foreach ($data as $key=>$value) {
@@ -83,7 +82,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     public function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
         $groupedData = array();
-        $dates = array();
+        $datetimes = array();
         $i = 0;
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
@@ -93,15 +92,17 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             );
         }
         foreach (parent::buildHistogram($range, $frequency, $dateFormat) as $oneValues) {
-            array_push($dates, $oneValues['date']);
+            array_push($datetimes, $oneValues['datetime']);
             foreach ($oneValues as $dataId => $value) {
                 if ( ! in_array($dataId, static::$staticFields)) {
-                    array_push($groupedData[$dataId]['data'], $value);
+                    if (array_key_exists($dataId, $groupedData)) {
+                        array_push($groupedData[$dataId]['data'], $value);
+                    }
                 }
             }
         }
 
-        return array('datasets' => $groupedData, 'date' => $dates);
+        return array('datasets' => $groupedData, 'datetimes' => $datetimes);
     }
 
     /**
@@ -159,9 +160,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
             /* Final integrity check. */
-            if ( ! array_key_exists('date', $newEntry)) {
-                $newEntry['date'] = Carbon::now()->toDateString();
-            }
             if ( ! array_key_exists('timestamp', $newEntry)) {
                 $newEntry['timestamp'] = time();
             }

@@ -43,7 +43,7 @@
 
     @if ($widget->state == 'active')
       // Active widget.
-      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
+      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach];
       var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
 
       // Removing the canvas and redrawing for proper sizing.
