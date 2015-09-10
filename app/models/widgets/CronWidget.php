@@ -6,7 +6,25 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     public static $criteriaSettings = array();
 
     /* Custom relation. */
-    public function dataManager() { return $this->data->manager->getSpecific(); }
+    public function dataManager() {
+        if (is_null($this->data->manager)) {
+            return null;
+        }
+        return $this->data->manager->getSpecific();
+    }
+
+    /**
+     * checkIntegrity
+     * adding data integrity check.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function checkIntegrity() {
+        parent::checkIntegrity();
+        /* Dealing only with datawidgets */
+        $this->checkDataIntegrity();
+    }
 
     /**
      * handleAjax
@@ -107,7 +125,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * checkDataIntegrity
      * Checking the DataIntegrity of widgets.
     */
-    protected function checkDataIntegrity() {
+    public function checkDataIntegrity() {
         if ( ! $this->hasValidCriteria()) {
                 $this->setState('setup_required');
         } else if ( ! $this->dataExists()) {

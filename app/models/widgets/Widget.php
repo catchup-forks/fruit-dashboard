@@ -34,21 +34,24 @@ class Widget extends Eloquent
      */
 
     /**
-     * checkIntegrity
+     * checkUserWidgetsIntegrity
      * Checking the overall integrity of a user's widgets.
      * --------------------------------------------------
      * @param User $user
      * --------------------------------------------------
     */
-    public static function checkIntegrity($user) {
+    public static function checkUserWidgetsIntegrity($user) {
         foreach ($user->widgets as $generalWidget) {
-            $widget = $generalWidget->getSpecific();
-            /* Dealing only with datawidgets */
-            if ($widget instanceof DataWidget || $widget instanceof CronWidget) {
-                $widget->checkDataIntegrity();
-            }
-            $widget->checkSettingsIntegrity();
+            $generalWidget->getSpecific()->checkIntegrity();
         }
+    }
+
+    /**
+     * checkIntegrity
+     * Checking the widgets settings integrity.
+    */
+    public function checkIntegrity() {
+        $this->checkSettingsIntegrity();
     }
 
     /**
@@ -80,9 +83,13 @@ class Widget extends Eloquent
      * @return mixed
      * --------------------------------------------------
     */
-    public function getSpecific() {
+    public function getSpecific($checkIntegrity=FALSE) {
         $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-        return $className::find($this->id);
+        $widget = $className::find($this->id);
+        if ($checkIntegrity) {
+            $widget->checkIntegrity();
+        }
+        return $widget;
     }
 
     /**

@@ -4,7 +4,7 @@
 abstract class HistogramDataManager extends DataManager
 {
     protected static $entries = 15;
-    protected static $staticFields = array('timestamp');
+    protected static $staticFields = array('date', 'timestamp');
     abstract public function getCurrentValue();
 
     /**

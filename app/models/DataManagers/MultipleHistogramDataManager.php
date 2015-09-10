@@ -86,9 +86,9 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         $i = 0;
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
-                'name'  => $name,
-                'color' => SiteConstants::getChartJsColors()[$i++],
-                'data'  => array()
+                'name'   => $name,
+                'color'  => SiteConstants::getChartJsColors()[$i++],
+                'values' => array()
             );
         }
         foreach (parent::buildHistogram($range, $frequency, $dateFormat) as $oneValues) {
@@ -96,13 +96,13 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             foreach ($oneValues as $dataId => $value) {
                 if ( ! in_array($dataId, static::$staticFields)) {
                     if (array_key_exists($dataId, $groupedData)) {
-                        array_push($groupedData[$dataId]['data'], $value);
+                        array_push($groupedData[$dataId]['values'], $value);
                     }
                 }
             }
         }
 
-        return array('datasets' => $groupedData, 'datetimes' => $datetimes);
+        return array('datasets' => array_values($groupedData), 'datetimes' => $datetimes);
     }
 
     /**

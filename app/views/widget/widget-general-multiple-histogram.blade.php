@@ -12,27 +12,9 @@
   $(document).ready(function(){
     // Default values.
     var canvas = $("#{{ $widget->id }}-chart");
-
-    var canvasHeight = canvas.closest('li').height()*0.75;
-    var canvasWidth = canvas.closest('li').width()*0.95;
-
     var container = $('#{{ $widget->id }}-chart-container');
-
     var valueSpan = $("#{{ $widget->id }}-value");
     var name = "{{ $widget->descriptor->name }}";
-
-    // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
-    function reinsertCanvas(measure) {
-      if (measure) {
-        canvasHeight = canvas.closest('li').height()*0.75;
-        canvasWidth = canvas.closest('li').width()*0.95;
-      };
-
-      container.empty();
-      container.append('<canvas id=\"{{$widget->id}}-chart\" height=\"' + canvasHeight +'\" width=\"' + canvasWidth + '\"></canvas>');
-
-      canvas = $("#{{ $widget->id }}-chart");
-    }
 
     @if ($widget->state == 'active')
       // Active widget.
@@ -40,7 +22,7 @@
       var datasets = [
         @foreach ($widget->getData()['datasets'] as $dataset)
           {
-            'values' : [{{ implode(',', $dataset['data']) }}],
+            'values' : [{{ implode(',', $dataset['values']) }}],
             'name' : '{{ $dataset['name'] }}',
             'color': '{{ $dataset['color'] }}'
           },
@@ -48,36 +30,32 @@
       ];
 
       // Removing the canvas and redrawing for proper sizing.
-      reinsertCanvas(false);
+      canvas = reinsertCanvas(canvas);
 
       // Calling drawer for the first time.
       drawLineGraph(canvas, datasets, labels, name);
 
-    @endif
-
-    @if ($widget->state == 'loading')
+    @elseif ($widget->state == 'loading')
       // Loading widget.
       loadWidget({{$widget->id}}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan); });
     @endif
 
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
-      reinsertCanvas(false);
+      canvas = reinsertCanvas(canvas);
 
       drawLineGraph(canvas, datasets, labels, name);
     })
 
     // Bind redraw to resize event.
     $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
-
-      reinsertCanvas(true);
-
+      canvas = reinsertCanvas(canvas);
       drawLineGraph(canvas, datasets, labels, name);
     });
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) { updateHistogramWidget(data, canvas, name, valueSpan);});
+      refreshWidget({{ $widget->id }}, function (data) { updateMultipleHistogramWidget(data, canvas, name, valueSpan);});
      });
 
   });
