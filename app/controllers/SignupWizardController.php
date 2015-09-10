@@ -243,38 +243,6 @@ class SignupWizardController extends BaseController
             $quotewidget->saveSettings(array('type' => 'inspirational'));
         }
 
-        /* Create second dashboard */
-        $dashboard2 = new Dashboard(array(
-            'name'       => 'Second dashboard',
-            'background' => 'On',
-            'number'     => Dashboard::where('user_id', $user->id)->max('number') + 1
-        ));
-        $dashboard2->user()->associate($user);
-
-        /* Save dashboard object */
-        $dashboard2->save();
-
-        /* Create text widgets */
-        $textWidget = new TextWidget(array(
-            'state'    => 'active',
-            'position' => '{"col":2,"row":6,"size_x":6,"size_y":1}',
-            'settings' => '{"text":"You can add a new widget by pressing the + sign at the bottom left."}'
-        ));
-        $textWidget->dashboard()->associate($dashboard2);
-
-        /* Save text widget object */
-        $textWidget->save();
-
-        $textWidget2 = new TextWidget(array(
-            'state'    => 'active',
-            'position' => '{"col":7,"row":3,"size_x":6,"size_y":1}',
-            'settings' => '{"text":"You can move & resize & delete widgets by hovering them."}'
-        ));
-        $textWidget2->dashboard()->associate($dashboard2);
-
-        /* Save text widget object */
-        $textWidget2->save();
-
         /* Return */
         return $dashboard;
     }
