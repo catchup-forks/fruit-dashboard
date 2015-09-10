@@ -25,32 +25,38 @@
                 <div class="col-sm-6 col-md-4">
                   <div class="thumbnail">
                     <img src="{{ Auth::user()->background->url }}" alt="{{ $dashboard->name }}" />
+                    
+                    <div class="modification-icons text-center drop-shadow">
+                      <!-- lock dashboard icons -->
+                      @if ($dashboard->is_locked)
+                        <span class="lock-icon" data-toggle="tooltip" data-placement="bottom" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
+                          <span class="label label-danger"><i class="fa fa-lock"></i></span>
+                        </span>
+                      @else
+                        <span class="lock-icon" data-toggle="tooltip" data-placement="bottom" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+                          <span class="label label-primary"><i class="fa fa-unlock-alt"></i></span>
+                        </span>
+                      @endif
+                      <!-- /lock dashboard icons -->
+                      <!-- make default icons -->
+                      @if ($dashboard->is_default)
+                        <span class="make-default-icon default" data-toggle="tooltip" data-placement="bottom" title="This is your default dashboard." data-dashboard-id="{{ $dashboard->id }}">
+                          <span class="label label-danger"><i class="fa fa-star"></i></span>
+                        </span>
+                      @else
+                        <span class="make-default-icon" data-toggle="tooltip" data-placement="bottom" title="Make this the default dashboard." data-dashboard-id="{{ $dashboard->id }}">
+                          <span class="label label-primary"><i class="fa fa-star"></i></span>
+                        </span>
+                      @endif
+                      <!-- /make default icons -->  
+                    </div> <!-- /.modification-icons -->
+                    
                     <div class="caption text-center">
                       <h5>{{ $dashboard->name }}</h5>
                       <p>
                         <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#rename-dashboard-modal" data-dashboard-name="{{ $dashboard->name }}" data-dashboard-id="{{ $dashboard->id }}" >Edit name</button>
                         <button class="btn btn-sm btn-danger delete-dashboard" onclick="deleteDashboard({{ $dashboard->id }});">Delete</button>
                       </p>
-                    </div> <!-- /.caption -->
-                    <div class="caption text-center">
-                        @if ($dashboard->is_default)
-                          <span class="make-default-icon default" data-toggle="tooltip" data-placement="bottom" title="This is your default dashboard." data-dashboard-id="{{ $dashboard->id }}">
-                            <span class="label label-danger"><i class="fa fa-star"></i></span>
-                          </span>
-                        @else
-                          <span class="make-default-icon" data-toggle="tooltip" data-placement="bottom" title="Make this the default dashboard." data-dashboard-id="{{ $dashboard->id }}">
-                            <span class="label label-primary"><i class="fa fa-star"></i></span>
-                          </span>
-                        @endif
-                        @if ($dashboard->is_locked)
-                          <span class="lock-icon" data-toggle="tooltip" data-placement="bottom" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
-                            <span class="label label-danger"><i class="fa fa-lock"></i></span>
-                          </span>
-                        @else
-                          <span class="lock-icon" data-toggle="tooltip" data-placement="bottom" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
-                            <span class="label label-primary"><i class="fa fa-unlock-alt"></i></span>
-                          </span>
-                        @endif
                     </div> <!-- /.caption -->
                   </div> <!-- /.thumbnail -->
                 </div> <!-- /.col-sm-6 -->

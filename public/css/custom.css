@@ -245,3 +245,7 @@ input.greetings-name:focus {
 .carousel-control {
   width: 9.5%;
 }
+.modification-icons {
+  position: relative;
+  top: -40px;
+}
