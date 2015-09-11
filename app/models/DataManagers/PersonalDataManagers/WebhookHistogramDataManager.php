@@ -17,6 +17,10 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
     public function getCurrentValue() {
         $data = $this->getJson();
 
+        if (is_null($data)) {
+            return null;
+        }
+
         $decodedData = array();
         foreach ($data as $name => $value) {
             if ( ! in_array($name, static::$staticFields)) {
