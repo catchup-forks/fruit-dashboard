@@ -17,7 +17,7 @@
      pointDotRadius : 3,
      bezierCurve: false,
      scaleShowVerticalLines: false,
-     tooltipTemplate: "<%if (label){%><%=label %>: <%}%>$<%= value %>",
+     tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
      animation: false
   };
 
@@ -164,7 +164,7 @@
   }
 
   function updateMultipleHistogramWidget(data, canvas, name) {
-    if (data['datetimes'] == null) {
+    if (data && data['datetimes'] == null) {
       return;
     }
     canvas = reinsertCanvas(canvas);

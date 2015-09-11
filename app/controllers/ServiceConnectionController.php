@@ -80,7 +80,8 @@ class ServiceConnectionController extends BaseController
         }
 
         /* Render the page */
-        return Redirect::to($this->getReferer());
+        return Redirect::to($this->getReferer())
+            ->with('success', 'Your dashboard is being created in the background.');
     }
 
     /**
@@ -148,6 +149,10 @@ class ServiceConnectionController extends BaseController
                 return Redirect::route('signup-wizard.social-connections')
                     ->with('error', 'Something went wrong, please try again.');
             }
+
+            /* Creating dashboard automatically. */
+            $dashboardCreator = new TwitterAutoDashboardCreator(Auth::user());
+            $dashboardCreator->create();
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())
