@@ -253,7 +253,7 @@ class GeneralWidgetController extends BaseController {
         Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Rendering view */
-        return View::make('widget.add-widget');
+        return View::make('widget.add-widget', array('widgetDescriptors' => WidgetDescriptor::all()));
     }
 
     /**
