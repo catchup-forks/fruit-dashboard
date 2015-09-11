@@ -99,7 +99,7 @@ class GoogleAnalyticsPopulateData
             /* Creating start, end days. */
             $start = Carbon::now()->subDays($i+1);
             $end = Carbon::now()->subDays($i);
-            $metrics = $this->collector->getMetrics($this->property->id, $start->toDateString(), $end->toDateString(), array_keys($data));
+            $metrics = $this->collector->getMetrics($this->property, $start->toDateString(), $end->toDateString(), array_keys($data));
 
             foreach ($metrics as $metric=>$dailyData) {
                 /* Getting daily data. */

@@ -6,6 +6,7 @@ class GoogleAnalyticsProperty extends Eloquent
     protected $fillable = array(
         'id',
         'name',
+        'account_id'
     );
 
     // -- Options -- //

@@ -434,7 +434,7 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
             $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
-                Auth::user(), array('property' => array_keys($properties[0]))
+                Auth::user(), array('property' => array_keys($properties)[0])
             );
             $dashboardCreator->create();
             return Redirect::to($this->getReferer());
