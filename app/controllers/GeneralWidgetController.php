@@ -69,7 +69,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Adding update_period on CronWidget */
         if ($widget instanceof CronWidget) {
-            $validatorArray['update_period'] = 'required|integer';
+            $validatorArray['update_period'] = 'required|integer|min:23';
         }
 
         /* Validate inputs */
