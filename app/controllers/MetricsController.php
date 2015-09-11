@@ -116,6 +116,7 @@ class MetricsController extends BaseController
         $services = array();
 
         foreach (array_merge(SiteConstants::getSocialServices(), SiteConstants::getFinancialServices()) as $serviceMeta) {
+            $data[$serviceMeta['display_name']] = 0;
             $services[$serviceMeta['name']] = $serviceMeta['display_name'];
         }
 
@@ -126,9 +127,6 @@ class MetricsController extends BaseController
             if (array_key_exists($key, $services)) {
                 /* Data key exists. */
                 $display_name = $services[$key];
-                if ( ! array_key_exists($display_name, $data)) {
-                    $data[$display_name] = 0;
-                }
                 $data[$display_name]++;
             }
         }

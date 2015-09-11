@@ -20,7 +20,9 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
         $decodedData = array();
         foreach ($data as $name => $value) {
             if ( ! in_array($name, static::$staticFields)) {
-                $decodedData[$name] = $value;
+                if (is_numeric($value)) {
+                    $decodedData[$name] = $value;
+                }
             }
         }
         return $decodedData;
