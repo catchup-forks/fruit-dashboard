@@ -22,7 +22,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        /* Dealing only with datawidgets */
         $this->checkDataIntegrity();
     }
 
