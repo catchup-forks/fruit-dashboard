@@ -28,19 +28,19 @@
       @foreach (Auth::user()->dashboards as $dashboard)
 
         <div class="item @if($dashboard->is_default) active @endif">
-
+          
           @if($dashboard->is_locked)
-            <div class="lock-icon" data-toggle="tooltip" data-placement="top" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
-              <div class="position-bl drop-shadow z-top" style="left:200px">
-                <span class="fa fa-lock fa-2x fa-inverse color-hovered"></span>
-              </div>
+          <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
+            <div class="drop-shadow">
+              <span class="fa fa-lock"></span>
             </div>
+          </div>
           @else
-            <div class="lock-icon" data-toggle="tooltip" data-placement="top" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
-              <div class="position-bl drop-shadow z-top" style="left:200px">
-                <span class="fa fa-unlock-alt fa-2x fa-inverse color-hovered"></span>
-              </div>
+          <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+            <div class="drop-shadow">
+              <span class="fa fa-unlock-alt"></span>
             </div>
+          </div>
           @endif
           
           <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>

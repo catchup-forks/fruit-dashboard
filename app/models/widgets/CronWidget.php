@@ -6,7 +6,25 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     public static $criteriaSettings = array();
 
     /* Custom relation. */
-    public function dataManager() { return $this->data->manager->getSpecific(); }
+    public function dataManager() {
+        if (is_null($this->data->manager)) {
+            return null;
+        }
+        return $this->data->manager->getSpecific();
+    }
+
+    /**
+     * checkIntegrity
+     * adding data integrity check.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function checkIntegrity() {
+        parent::checkIntegrity();
+        /* Dealing only with datawidgets */
+        $this->checkDataIntegrity();
+    }
 
     /**
      * handleAjax
@@ -96,8 +114,8 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             $dataManager = $this->descriptor->getDataManager($this);
             if ( ! is_null($dataManager)) {
                 $this->data()->associate($dataManager->data);
+                $widget = parent::save($options);
             }
-            $widget = parent::save($options);
         }
 
         return $widget;
@@ -107,8 +125,10 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * checkDataIntegrity
      * Checking the DataIntegrity of widgets.
     */
-    protected function checkDataIntegrity() {
-        if ( ! $this->dataExists()) {
+    public function checkDataIntegrity() {
+        if ( ! $this->hasValidCriteria()) {
+                $this->setState('setup_required');
+        } else if ( ! $this->dataExists()) {
             /* No data/datamanager is assigned */
             $this->save();
             if ( ! $this->dataExists()) {
@@ -124,7 +144,23 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         }
     }
 
-    /**
+    /*
+     * hasValidCriteria
+     * Checking if the widget has valid criteria
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    public function hasValidCriteria() {
+        $criteria = $this->getCriteria();
+        foreach (static::$criteriaSettings as $setting) {
+            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
+                return FALSE;
+        }
+        return TRUE;
+    }
+
+    /*
      * dataExists
      * Checking if data/manager exists
      * --------------------------------------------------

@@ -16,7 +16,7 @@ class AddIsDefaultToDashboardRenameLockedToIsLocked extends Migration {
 		{
 			// Add is_default
 			$table->boolean('is_default')->default(FALSE);
-			
+
 			// Rename locked to is_locked
 			$table->dropColumn('locked');
 			$table->boolean('is_locked')->default(FALSE);
@@ -25,7 +25,6 @@ class AddIsDefaultToDashboardRenameLockedToIsLocked extends Migration {
 		// Make default dashboard for existing users
 		foreach (User::all() as $user) {
 			$dashboard = $user->dashboards->first();
-			Log::info($dashboard);
 			if ($dashboard != null) {
 				$dashboard->is_default = TRUE;
 				$dashboard->save();

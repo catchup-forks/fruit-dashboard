@@ -13,6 +13,19 @@ abstract class DataWidget extends Widget
     }
 
     /**
+     * checkIntegrity
+     * adding data integrity check.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function checkIntegrity() {
+        parent::checkIntegrity();
+        /* Dealing only with datawidgets */
+        $this->checkDataIntegrity();
+    }
+
+    /**
      * checkDataIntegrity
      * Checking the DataIntegrity of widgets.
     */

@@ -61,7 +61,7 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
      protected function formatData($date, $data) {
-        return array('date' => $date->toDateString(),'value' => $data, 'timestamp' => $date->getTimestamp());
+        return array('value' => $data, 'timestamp' => $date->getTimestamp());
      }
 
     /**
@@ -148,7 +148,7 @@ abstract class HistogramDataManager extends DataManager
                     }
                     /* Passing new element to the array. */
                     $newEntry = static::getAverageValues($sampleEntries);
-                    $newEntry['date'] = $entryTime->format($dateFormat);
+                    $newEntry['datetime'] = $entryTime->format($dateFormat);
                     array_push($histogram, $newEntry);
                     $sampleEntries = array();
                 }

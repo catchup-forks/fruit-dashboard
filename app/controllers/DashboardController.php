@@ -26,7 +26,9 @@ class DashboardController extends BaseController
         Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Checking the user's widget data integrity */
-        Widget::checkIntegrity(Auth::user());
+        //$time = microtime(true);
+        Widget::checkUserWidgetsIntegrity(Auth::user());
+        //Log::info(microtime(true) - $time);
 
         /* Render the page */
         return View::make('dashboard.dashboard');

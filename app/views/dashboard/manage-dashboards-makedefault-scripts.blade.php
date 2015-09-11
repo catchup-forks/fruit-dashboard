@@ -52,12 +52,16 @@ function changeDefaultIcon(oldID, newID) {
 
   // Change the old icon
   oldselector.removeClass('default');
-  //oldselector.tooltip("option", "content", 'Make this the default dashboard');
+  oldselector.tooltip('hide');
+  oldselector.attr('data-original-title', 'Make this the default dashboard.');
+  oldselector.tooltip('fixTitle');
   oldselector.find('span').removeClass('label-danger').addClass('label-primary');
 
   // Change the new icon
   newselector.addClass('default');
-  //newselector.tooltip("option", "content", 'This is your default dashboard');
+  newselector.tooltip('hide');
+  newselector.attr('data-original-title', 'This is your default dashboard.');
+  newselector.tooltip('fixTitle');
   newselector.find('span').removeClass('label-primary').addClass('label-danger');
 }
 

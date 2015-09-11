@@ -110,6 +110,21 @@
       data: values
     }
   }
+
+  // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
+  function reinsertCanvas(canvas) {
+    canvasHeight = canvas.closest('li').height()*0.75;
+    canvasWidth = canvas.closest('li').width()*0.95;
+
+    canvasId = canvas[0].id;
+    container = $("#" + canvasId + "-container");
+
+    container.empty();
+    container.append('<canvas id=\"' + canvasId + '\" height=\"' + canvasHeight +'\" width=\"' + canvasWidth + '\"></canvas>');
+
+    return $("#" + canvasId);
+  }
+
   function drawLineGraph(canvas, datasets, labels, name) {
     // Building data.
     var chartData = {
@@ -131,4 +146,29 @@
     // Drawing chart.
     var chart = new Chart(ctx).Line(chartData, chartOptions);
   }
+
+  function updateHistogramWidget(data, canvas, name, valueSpan) {
+    // Updating chart values.
+    var labels = [];
+    var values = [];
+    for (i = 0; i < data.length; ++i) {
+      labels.push(data[i]['datetime']);
+      values.push(data[i]['value']);
+    }
+    if (data.length > 0 && valueSpan) {
+      valueSpan.html(data[data.length-1]['value']);
+      canvas = reinsertcanvas(canvas);
+    }
+
+    drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+  }
+
+  function updateMultipleHistogramWidget(data, canvas, name) {
+    if (data['datetimes'] == null) {
+      return;
+    }
+    canvas = reinsertCanvas(canvas);
+    drawLineGraph(canvas, data['datasets'], data['datetimes'], name);
+  }
+
 </script>

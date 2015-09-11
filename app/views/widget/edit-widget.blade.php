@@ -65,10 +65,9 @@
                   </div>
                 @endif
                 <!-- /.Update interval select -->
-                <p class="text-center">
+                <hr>
                   <a href="/" class="btn btn-warning">Cancel</a>
-                  {{ Form::submit('Save', array('class' => 'btn btn-primary') ) }}
-                </p>
+                  {{ Form::submit('Save', array('class' => 'btn btn-primary pull-right') ) }}
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
