@@ -119,14 +119,16 @@ abstract class HistogramDataManager extends DataManager
     protected function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
         /* Getting recorded histogram sorted by timestamp. */
         $fullHistogram = $this->getData();
-        usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+        if ($fullHistogram != null) {
+            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+            $last = end($fullHistogram);
+        }
 
         /* If there's range, using reader. */
         $recording = TRUE;
         $histogram = array();
         $first = TRUE;
         $sampleEntries = array();
-        $last = end($fullHistogram);
 
         foreach ($fullHistogram as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
