@@ -59,6 +59,7 @@
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) { updateMultipleHistogramWidget(data, canvas, name, valueSpan);});
+      canvas = $("#{{ $widget->id }}-chart");
      });
 
   });
