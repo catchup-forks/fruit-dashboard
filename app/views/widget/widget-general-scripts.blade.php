@@ -82,13 +82,14 @@
           $("#widget-loading-" + widgetId).hide();
           $("#widget-wrapper-" + widgetId).show();
           done = true;
+          callback(data['data']);
         }
-        callback(data['data']);
+        if ( ! done ) {
+          setTimeout(pollState, 1000);
+        }
       });
     }
-    if ( ! done ) {
-      setTimeout(pollState, 2000);
-    }
+    pollState();
   };
 
   function refreshWidget(widgetId, callback) {
@@ -161,6 +162,7 @@
     }
 
     drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+    return {'values': values, 'labels': labels};
   }
 
   function updateMultipleHistogramWidget(data, canvas, name) {

@@ -41,9 +41,13 @@
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
-      var labels = [];
-      var datasets = [];
-      loadWidget({{$widget->id}}, function (data) {updateMultipleHistogramWidget(data, canvas, name, valueSpan); });
+      datasets = [];
+      labels = [];
+      loadWidget({{$widget->id}}, function (data) {
+        updateMultipleHistogramWidget(data, canvas, name, valueSpan);
+        datasets = data['datasets'];
+        labels = data['datetimes'];
+      });
     @endif
 
     // Calling drawer every time carousel is changed.
@@ -61,6 +65,7 @@
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) { updateMultipleHistogramWidget(data, canvas, name, valueSpan);});
+      canvas = $("#{{ $widget->id }}-chart");
      });
 
   });

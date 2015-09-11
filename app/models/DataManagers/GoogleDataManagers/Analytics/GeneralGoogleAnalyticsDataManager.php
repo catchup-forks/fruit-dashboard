@@ -10,7 +10,7 @@ abstract class GeneralGoogleAnalyticsDataManager extends MultipleHistogramDataMa
      * --------------------------------------------------
     */
     protected function getProperty() {
-        return $this->getCriteria()['property'];
+        return GoogleAnalyticsProperty::find($this->getCriteria()['property']);
     }
 
     /**
