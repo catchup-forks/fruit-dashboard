@@ -56,7 +56,7 @@
                 @if ($widget instanceof CronWidget)
                   <!-- Update interval select -->
                   <div class="form-group">
-                    {{ Form::label('update_period', 'Update Period (Hrs)', array(
+                    {{ Form::label('update_period', 'Update (Minutes)', array(
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">

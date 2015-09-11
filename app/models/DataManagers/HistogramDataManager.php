@@ -38,7 +38,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* If popping the old value. */
-        if ($today->diffInHours($this->last_updated) >= $this->update_period) {
+        if ($today->diffInMinutes($this->last_updated) >= $this->update_period) {
             /* Updating last updated. */
             $this->last_updated = $today;
             $this->save();

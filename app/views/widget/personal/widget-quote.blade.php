@@ -18,7 +18,7 @@
   }
 
   $(document).ready(function() {
-    @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) /3660 > $widget->getSettings()['update_frequency'])
+    @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) /3660 > $widget->dataManager()->update_frequency)
       refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
     @endif
 

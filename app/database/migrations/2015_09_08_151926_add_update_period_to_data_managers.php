@@ -12,7 +12,7 @@ class AddUpdatePeriodToDataManagers extends Migration {
      */
     public function up() {
         Schema::table('data_managers',function($table) {
-            $table->integer('update_period')->default(6);
+            $table->integer('update_period')->default(360);
             $table->dateTime('last_updated');
         });
      }
