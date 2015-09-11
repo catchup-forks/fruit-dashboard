@@ -19,7 +19,10 @@ class User extends Eloquent implements UserInterface
         'name',
         'gender',
         'phone_number',
-        'date_of_birth'
+        'date_of_birth',
+        'created_at',
+        'updated_at',
+        'last_activity'
     );
 
     /* -- Relations -- */
@@ -27,21 +30,17 @@ class User extends Eloquent implements UserInterface
     public function subscription() { return $this->hasOne('Subscription'); }
     public function dashboards() { return $this->hasMany('Dashboard'); }
     public function settings() { return $this->hasOne('Settings'); }
+    public function background() { return $this->hasOne('Background'); }
+    public function dataManagers() { return $this->hasmany('DataManager'); }
 
     /* -- Libraries -- */
     public function stripePlans() { return $this->hasMany('StripePlan', 'user_id'); }
     public function braintreePlans() { return $this->hasMany('BraintreePlan'); }
+    public function facebookPages() { return $this->hasMany('FacebookPage'); }
+    public function googleAnalyticsProperties() { return $this->hasMany('GoogleAnalyticsProperty'); }
 
     /* -- Custom relations. -- */
-    public function widgets() {
-        $widgets = array();
-        foreach ($this->dashboards as $dashboard) {
-            foreach ($dashboard->widgets as $widget) {
-                array_push($widgets, $widget->getSpecific());
-            }
-        }
-        return $widgets;
-    }
+    public function widgets() { return $this->hasManyThrough('Widget', 'Dashboard'); }
 
     /**
      * isServiceConnected
@@ -57,6 +56,51 @@ class User extends Eloquent implements UserInterface
             return True;
         }
         return False;
+    }
+
+    /**
+     * checkOrCreateDefaultDashboard
+     * --------------------------------------------------
+     * Checks if the user has a default dashboard, and
+     * creates / makes the first if not.
+     * @return (Dashboard) $dashboard the default dashboard object
+     * --------------------------------------------------
+     */
+    public function checkOrCreateDefaultDashboard() {
+        /* Get the dashboard and return if exists */
+        if ($this->dashboards()->where('is_default', TRUE)->count()) {
+            /* Return */
+            return $this->dashboards()->where('is_default', TRUE)->first();
+
+        /* Default dashboard doesn't exist */
+        } else {
+            /* Dashboard exists, but none of them is default */
+            if ($this->dashboards()->count()) {
+                /* Make the first default */
+                $dashboard = $this->dashboards()->first();
+                $dashboard->is_default = TRUE;
+                $dashboard->save();
+
+                /* Return */
+                return $dashboard;
+            
+            /* No dashboard object exists */
+            } else {
+                /* Create a new dashboard objec*/
+                $dashboard = new Dashboard(array(
+                    'name'       => 'Default dashboard',
+                    'number'     => 1,
+                    'background' => TRUE,
+                    'is_default' => TRUE,
+                    'is_locked'  => FALSE
+                ));
+                $dashboard->user()->associate($this);
+                $dashboard->save();
+
+                /* Return */
+                return $dashboard;
+            }
+        }
     }
 
 }

@@ -19,6 +19,7 @@ abstract class GeneralServiceConnector
     }
 
     abstract public function connect();
+    abstract protected function populateData();
 
     /**
      * disconnect
@@ -34,22 +35,19 @@ abstract class GeneralServiceConnector
         /* Deleting connection */
         $this->user->connections()->where('service', static::$service)->delete();
 
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
+        /* Deleting all widgets*/
+        foreach ($this->user->widgets as $widget) {
             if ($widget->descriptor->category == static::$service) {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
                 $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
+            }
+        }
+        /* Deleting all DataManagers */
+        foreach ($this->user->dataManagers as $dataManager) {
+            if ($dataManager->descriptor->category == static::$service) {
+                /* Saving data while it is accessible. */
+                $dataID = $dataManager->data->id;
+                $dataManager->delete();
+                Data::find($dataID)->delete();
             }
         }
     }
@@ -94,5 +92,56 @@ abstract class GeneralServiceConnector
         $connection->save();
         return $connection;
     }
+
+    /**
+     * saveConnection
+     * Saving the tokens, creating data managers.
+     */
+    public function saveConnection(array $parameters=array()) {
+
+        /* Saving tokens */
+        $this->getTokens($parameters);
+
+        /* Creating dataManagers */
+        $this->createDataManagers();
+
+        /* Getting data */
+        $this->populateData();
+    }
+
+    /**
+     * Creating the dataManagers.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function createDataManagers() {
+        $dataManagers = array();
+        foreach(WidgetDescriptor::where('category', static::$service)->get() as $descriptor) {
+            /* Creating widget instance. */
+            $className = str_replace('Widget', 'DataManager', $descriptor->getClassName());
+
+            /* No manager found */
+            if ( ! class_exists($className)) {
+                continue;
+            }
+
+            /* Creating data */
+            $data = Data::create(array('raw_value' => 'loading'));
+
+            /* Creating DataManager instance */
+            $dataManager = new $className;
+            $dataManager->descriptor()->associate($descriptor);
+            $dataManager->user()->associate($this->user);
+
+            /* Assigning data */
+            $dataManager->data()->associate($data);
+            $dataManager->save();
+
+            array_push($dataManagers, $dataManager);
+        }
+        return $dataManagers;
+    }
+
 
 } /* GeneralServiceConnector */

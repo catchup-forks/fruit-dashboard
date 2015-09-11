@@ -71,16 +71,16 @@ class StripeConnector extends GeneralServiceConnector
     /**
      * disconnect
      * --------------------------------------------------
-     * Disconnecting the user from stripe.
-     * @throws StripeNotConnected
+     * disconnecting the user from stripe.
+     * @throws stripenotconnected
      * --------------------------------------------------
      */
     public function disconnect() {
         parent::disconnect();
-        /* Deleting all plans. */
-        foreach ($this->user->stripePlans as $stripePlan) {
-            StripeSubscription::where('plan_id', $stripePlan->id)->delete();
-            $stripePlan->delete();
+        /* deleting all plans. */
+        foreach ($this->user->stripePlans as $stripeplan) {
+            StripeSubscription::where('plan_id', $stripeplan->id)->delete();
+            $stripeplan->delete();
         }
     }
 
@@ -88,12 +88,13 @@ class StripeConnector extends GeneralServiceConnector
      * getTokens
      * --------------------------------------------------
      * Retrieving the access, and refresh tokens from authentication code.
-     * @param (string) ($code) The returned code by stripe.
+     * @param array $parameters
      * @return None
      * @throws StripeConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens($code) {
+    public function getTokens(array $parameters=array()) {
+        $code = $parameters['auth_code'];
         /* Build and send POST request */
         $url = $this->buildTokenPostUriFromAuthCode($code);
         $response = SiteFunctions::postUrl($url);
@@ -109,9 +110,6 @@ class StripeConnector extends GeneralServiceConnector
         }
 
         $this->createConnection($response['access_token'], $response['refresh_token']);
-
-        /* Creating custom dashboard in the background. */
-        Queue::push('StripeAutoDashboardCreator', array('user_id' => Auth::user()->id));
     }
 
     /**
@@ -203,5 +201,16 @@ class StripeConnector extends GeneralServiceConnector
         return $post_uri;
     }
 
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('StripePopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
 
 } /* StripeConnector */

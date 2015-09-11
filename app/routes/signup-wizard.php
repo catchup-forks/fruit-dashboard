@@ -23,6 +23,18 @@ Route::group([
         'uses'   => 'SignupWizardController@postAuthentication',
     ]);
 
+    Route::any('financial-connections', [
+        'before' => 'auth',
+        'as'     => 'signup-wizard.financial-connections',
+        'uses'   => 'SignupWizardController@anyFinancialConnections'
+    ]);
+    
+    Route::any('social-connections', [
+        'before' => 'auth',
+        'as'     => 'signup-wizard.social-connections',
+        'uses'   => 'SignupWizardController@anySocialConnections'
+    ]);
+
     Route::get('personal-widgets', [
         'before' => 'auth',
         'as'     => 'signup-wizard.personal-widgets',
@@ -34,23 +46,4 @@ Route::group([
         'as'     => 'signup-wizard.personal-widgets',
         'uses'   => 'SignupWizardController@postPersonalWidgets'
     ]);
-
-    Route::get('financial-connections', [
-        'before' => 'auth',
-        'as'     => 'signup-wizard.financial-connections',
-        'uses'   => 'SignupWizardController@getFinancialConnections'
-    ]);
-
-    Route::post('financial-connections', [
-        'before' => 'auth',
-        'as'     => 'signup-wizard.financial-connections',
-        'uses'   => 'SignupWizardController@postFinancialConnections'
-    ]);
-
-    Route::get('social-connections', [
-        'before' => 'auth',
-        'as'     => 'signup-wizard.social-connections',
-        'uses'   => 'SignupWizardController@getSocialConnections'
-    ]);
-
 });

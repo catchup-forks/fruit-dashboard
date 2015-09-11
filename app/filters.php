@@ -11,21 +11,22 @@
 |
 */
 
-if (!App::environment('local'))
-{
-    App::before(function($request)
-    {
-        if(!Request::secure())
-        {
-            return Redirect::secure(Request::path());
-        }
-    });
-}
+/* This filter runs before a request is served */
+App::before(function($request) {
+    /* Make secure connection */
+    if ( (!App::environment('local')) and (!Request::secure()) ) {
+        return Redirect::secure(Request::path());
+    }
+});
 
-
-App::after(function($request, $response)
-{
-    //
+/* This filter runs after a request is served */
+App::after(function($request, $response) {
+    /* Update last activity for the User */
+    if (Auth::check()) {
+        $user = Auth::user();
+        $user->last_activity = Carbon::now();
+        $user->save();
+    }
 });
 
 /*
@@ -41,39 +42,15 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-    # not auth, ajax request
+    /* Not authenticated, ajax request */
     if (Auth::guest() && Request::ajax()) {
         return Response::make('Unauthorized', 401);
     }
-    # not auth
+    
+    /* Not authenticated */
     if (Auth::guest()) {
         return Redirect::route('auth.signin');
     }
-});
-
-
-Route::filter('auth.basic', function()
-{
-    return Auth::basic();
-});
-
-Route::filter('api_key', function() {
-    // if (!Auth::user()->isConnected())
-    // {
-    //     // no valid key
-    //     return Redirect::route('connect.connect')
-    //         ->with(Session::all())
-    //         ->with('error','Connect a payment provider');
-    // }
-});
-
-Route::filter('cancelled', function()
-{
-    // if (Auth::user()->plan == 'cancelled')
-    // {
-    //     return Redirect::route('payment.plan')
-    //         ->with('error','Please subscribe.');
-    // }
 });
 
 /*

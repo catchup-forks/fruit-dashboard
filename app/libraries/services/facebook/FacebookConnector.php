@@ -1,43 +1,94 @@
 <?php
-use Facebook\FacebookSession;
-use Facebook\FacebookRedirectLoginHelper;
+
+use Facebook\Facebook;
+use Facebook\PersistentData\PersistentDataInterface;
 
 /**
 * --------------------------------------------------------------------------
 * FacebookConnector:
 *       Wrapper functions for Facebook connection
 * Usage:
-*       // For the connection url, and tokens.
-*       TwitterHelper::getTwitterConnectURL()
-*
-*       // For connecting the user
-*       $twitterConnector = new FacebookConnector($user);
-*       $twitterConnector->getTokens($token_ours, $token_request, $token_secret, $verifier);
 *       $connector->connect();
 * --------------------------------------------------------------------------
 */
 
+class LaravelFacebookSessionPersistendDataHandler implements PersistentDataInterface {
+    /**
+     * @var string Prefix to use for session variables.
+     */
+    protected $sessionPrefix = 'FBRLH_';
+
+    /**
+     * @inheritdoc
+     */
+    public function get($key) {
+        return Session::get($this->sessionPrefix . $key);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function set($key, $value) {
+        Session::put($this->sessionPrefix . $key, $value);
+    }
+}
+
 class FacebookConnector extends GeneralServiceConnector
 {
-    protected static $service = 'facebook';
+    protected static $service     = 'facebook';
+    protected static $permissions = array('manage_pages', 'read_insights');
+
+    protected $fb;
 
     /* -- Constructor -- */
     function __construct($user) {
         parent::__construct($user);
-        FacebookSession::setDefaultApplication($_ENV['FACEBOOK_APP_ID'], $_ENV['FACEBOOK_APP_SECRET']);
-
+        $persistentDataHandler = new LaravelFacebookSessionPersistendDataHandler();
+        // FIXME graph version -> ENV
+        $this->fb = new Facebook(array(
+            'app_id'                  => $_ENV['FACEBOOK_APP_ID'],
+            'app_secret'              => $_ENV['FACEBOOK_APP_SECRET'],
+            'default_graph_version'   => $_ENV['FACEBOOK_DEFAULT_GRAPH_VERSION'],
+            'persistent_data_handler' => $persistentDataHandler
+        ));
     }
 
     /**
-     * getFacebookConnectURL
+     * getFB
      * --------------------------------------------------
-     * Returns the twitter connect url, based on config.
-     * @return array
+     * Returns the facebook entity.
+     * @return Facebook
+     * --------------------------------------------------
+     */
+    public function getFB() {
+        return $this->fb;
+    }
+
+    /**
+     * getFacebookConnectUrl
+     * --------------------------------------------------
+     * Returns the facebook connect url, based on config.
+     * @return string
      * --------------------------------------------------
      */
     public function getFacebookConnectUrl() {
-        $loginUrlGenerator = new FacebookRedirectLoginHelper(route('service.facebook.connect'));
-        return $loginUrlGenerator->getLoginUrl();
+        $helper = $this->fb->getRedirectLoginHelper();
+        if (App::environment('local')) {
+            // we must use this in development
+            return $helper->getLoginUrl('http://localhost:8001/service/facebook/connect', static::$permissions);
+        }
+
+        return $helper->getLoginUrl(route('service.facebook.connect'), static::$permissions);
+    }
+
+    /**
+     * connect
+     * --------------------------------------------------
+     * @return FacebookSession
+     * --------------------------------------------------
+     */
+    public function connect() {
+        return $this->getConnection()->access_token;
     }
 
     /**
@@ -53,12 +104,63 @@ class FacebookConnector extends GeneralServiceConnector
      * @return None
      * --------------------------------------------------
      */
-    public function getTokens() {
+    public function getTokens(array $parameters=array()) {
+        $helper = $this->fb->getRedirectLoginHelper();
 
-        $helper = new FacebookRedirectLoginHelper();
-        $session = $helper->getSessionFromRedirect();
-        Log::info($session);
+        if (App::environment('local')) {
+            $this->createConnection($helper->getAccessToken(str_replace(8000, 8001, URL::full())), '');
+        } else {
+            $this->createConnection($helper->getAccessToken(), '');
+        }
+
+        /* Getting facebook pages  (will be moved to autodashboard) */
+        $collector = new FacebookDataCollector(Auth::user());
+        $collector->savePages();
     }
 
+    /**
+     * disconnect
+     * --------------------------------------------------
+     * disconnecting the user from facebook.
+     * @throws ServiceNotConnected
+     * --------------------------------------------------
+     */
+    public function disconnect() {
+        parent::disconnect();
+        /* deleting all plans. */
+        FacebookPage::where('user_id', $this->user->id)->delete();
+    }
 
-} /* TwitterConnector */
+    /**
+     * createDataManagers
+     * --------------------------------------------------
+     * Creating the dataManagers for each page.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function createDataManagers() {
+        $dataManagers = array();
+        foreach ($this->user->facebookPages()->get() as $facebookPage) {
+            foreach (parent::createDataManagers() as $dataManager) {
+                $dataManager->settings_criteria = json_encode(array(
+                    'page' => $facebookPage->id
+                ));
+                array_push($dataManagers, $dataManager->save());
+            }
+        }
+        return $dataManagers;
+    }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('FacebookPopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
+
+} /* FacebookConnector */

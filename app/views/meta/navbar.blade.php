@@ -1,7 +1,7 @@
 <!-- if not on dashboard display the home button -->
 @if (!Request::is('dashboard'))
     <div class="position-tl drop-shadow z-top">
-      <a href="/" alt="Dashboard" title="Dashboard">
+      <a href="{{ route('dashboard.dashboard') }}" alt="Dashboard" title="Dashboard">
         <span class="fa fa-home fa-2x fa-inverse color-hovered"></span>
       </a>
     </div>
@@ -37,6 +37,13 @@
                 <span class="fa fa-list"></span> Manage Dashboards
             </a>
         </li>
+        @if (Request::is('dashboard'))
+            <li>
+                <a href="#" onclick="startTour();">
+                    <span class="fa fa-question"></span> Take tour
+                </a>
+            </li>
+        @endif
         <li>
             <a href="https://fruitdashboard.uservoice.com/" target="blank">
                 <span class="fa fa-bullhorn"></span> Feedback
@@ -52,43 +59,30 @@
                 <span class="fa fa-tag"></span> Plans
             </a>
         </li>
-        @if (Auth::check() && Auth::user()->id==1)
-        <li>
-            <a href="{{ URL::route('signup') }}">
-                <span class="fa fa-cloud"></span> Sign up
-            </a>
-        </li>
-        <li>
-            <a href="{{ URL::route('auth.signin') }}">
-                <span class="fa fa-sign-in"></span> Sign in
-            </a>
-        </li>
-        @else
         <li>
             <a href="{{ URL::route('auth.signout') }}">
                 <span class="fa fa-sign-out"></span> Sign out
             </a>
         </li>
-        @endif
     </ul>
 
 </div> <!-- /.btn-group -->
 
 <!-- Display the Remaining Days counter -->
-@if (Auth::user()->subscription->getTrialInfo()['enabled'])
+@if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
     <a href="{{ route('payment.plans') }}"
        class="position-br drop-shadow z-top no-underline"
        data-toggle="tooltip"
        data-placement="left"
        title=
-        "@if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
-            Your trial period will end on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click here to change your Plan.
+        "@if (Auth::user()->subscription->getSubscriptionInfo()['TS'] == 'active')
+            Your trial period will end on <br> {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d') }} <br> Click here to change your Plan.
         @else
-            Your trial period ended on <br> {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d') }} <br> Click here to change your Plan.
+            Your trial period ended on <br> {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d') }} <br> Click here to change your Plan.
         @endif">
 
-        <span class="label @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] < SiteConstants::getTrialPeriodInDays() / 2) label-danger @else label-warning @endif label-as-badge valign-middle">
-            {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }}
+        <span class="label @if (Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] < SiteConstants::getTrialPeriodInDays() / 2) label-danger @else label-warning @endif label-as-badge valign-middle">
+            {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }}
         </span>
     </a>
 @endif

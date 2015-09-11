@@ -30,7 +30,7 @@
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
                     @else
-                      {{ route($service['connect_route']) }}
+                      {{ route($service['connect_route']) }}?createDashboard=true
                     @endif
                   " class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
                     @if(Auth::user()->isServiceConnected($service['name']))
@@ -69,8 +69,8 @@
             <div class="row">
               <div class="col-md-12">
                 <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>
-                <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-primary pull-right">Finish</a>
-
+                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-primary pull-right">Next</a>
+                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-link pull-right">Skip</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 

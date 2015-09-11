@@ -38,6 +38,12 @@ Route::group([
         'uses'   => 'DashboardController@anyUnlockDashboard'
     ]);
 
+    Route::any('makedefault/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.makedefault',
+        'uses'   => 'DashboardController@anyMakeDefault'
+    ]);
+
     Route::post('rename/{dashboardId}', [
         'before' => 'auth',
         'as'     => 'dashboard.rename',

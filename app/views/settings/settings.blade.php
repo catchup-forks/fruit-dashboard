@@ -105,7 +105,7 @@
               {{-- General settings - Background --}}
               {{-- START --}}
               {{ Form::open(array(
-                  'data-setting-name' => 'background',
+                  'data-setting-name' => 'background-enabled',
                   'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
@@ -115,9 +115,9 @@
 
                   <div class="col-sm-6">
 
-                    {{ Form::select('background',
+                    {{ Form::select('background-enabled',
                        array('1' => 'Yes', '0' => 'No'),
-                       Auth::user()->settings->background_enabled,
+                       Auth::user()->background->is_enabled,
                        array('class' => 'form-control' )); }}
 
                   </div> <!-- /.col-sm-6 -->
@@ -130,10 +130,37 @@
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
+              
+              {{ Form::close() }}
+              {{-- END --}}
+              {{-- General settings - Background enabled --}}
+
+              {{-- General settings - Background change --}}
+              {{-- START --}}
+              {{ Form::open(array(
+                  'data-setting-name' => 'background-change',
+                  'class' => 'form-horizontal settings-form' )) }}
+
+                <div class="form-group">
+                  <label for="changeBackground" class="col-sm-3 control-label">
+                    Background picture
+                  </label>
+                  <div class="col-sm-6">
+                    <p class="form-control-static">
+                      Change the current background picture
+                      {{ Form::hidden('background-change'); }}
+                    </p>
+                  </div> <!-- /.col-sm-6 -->
+                  <div class="col-sm-2">
+                    {{ Form::submit('Modify' , array(
+                      'class' => 'btn btn-primary',
+                      'data-loading-text' => 'Saving...' )) }}
+                  </div> <!-- /.col-sm-2 -->
+                </div> <!-- /.form-group -->
 
               {{ Form::close() }}
               {{-- END --}}
-              {{-- General settings - Background --}}
+              {{-- General settings - Background change --}}
 
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
@@ -167,7 +194,7 @@
                         </p>
                       </div> <!-- /.col-sm-6 -->
                       <div class="col-sm-2">
-                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Change</a>
+                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Modify</a>
                       </div> <!-- /.col-sm-2 -->
                     </div> <!-- /.form-group -->
                   </form>
@@ -175,18 +202,18 @@
               </div> <!-- /.row -->
               <div class="row">
                 <div class="col-md-12 text-center">
-                  @if (Auth::user()->subscription->getTrialInfo()['enabled'])
-                    @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
+                  @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
+                    @if (Auth::user()->subscription->getSubscriptionInfo()['TS'] == 'active')
                       <p>
                         Your trial ends in
                         <strong>
-                          {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
+                          {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }} day(s)
                         </strong>
-                        <small class="text-muted">on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}.</small>
+                        <small class="text-muted">on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}.</small>
                       </p>
                     @else
                       <p>
-                        Your trial has ended on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
+                        Your trial has ended on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
                       </p>
                     @endif
                   @endif
@@ -309,7 +336,7 @@
                   form.find(':submit').button('reset');
 
                   // Reload page on certain changes
-                  if (setting == 'background') {
+                  if (setting.indexOf('background') > -1) {
                     location.reload();
                   };
 

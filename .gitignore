@@ -10,7 +10,7 @@ bootstrap/environment.php
 app/config/local/*
 
 # ---- DB backups ---- #
-/db-backup
+/backup
 
 # ---- Filesystem ---- #
 .DS_Store

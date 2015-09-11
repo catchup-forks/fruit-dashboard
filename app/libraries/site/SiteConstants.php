@@ -14,13 +14,27 @@ class SiteConstants {
     /* -- Class properties -- */
     private static $gridNumberOfCols  = 12;
     private static $gridNumberOfRows  = 12;
+    private static $widgetMargin      = 5;
     private static $morningStartsAt   = 5;
     private static $afternoonStartsAt = 13;
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
     private static $financialServices = array('braintree', 'stripe');
-    private static $socialServices    = array('google_analytics', 'google_calendar', 'facebook', 'twitter');
+    private static $socialServices    = array('google_analytics', 'facebook', 'twitter');
+
+    private static $chartJsColors = array(
+        '77, 255, 121',
+        '255, 121, 77',
+        '77, 121, 255',
+        '255, 77, 121',
+        '210, 255, 77',
+        '0, 209, 52',
+        '121, 77, 255',
+        '255, 210, 77',
+        '77, 255, 210',
+        '209, 0, 157',
+    );
    /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *
@@ -39,6 +53,17 @@ class SiteConstants {
     }
 
     /**
+     * getChartJsColors:
+     * --------------------------------------------------
+     * Returning colors for chartJS
+     * @return (array) ($chartJsColors) chartJsColors
+     * --------------------------------------------------
+     */
+    public static function getChartJsColors() {
+        return self::$chartJsColors;
+    }
+
+    /**
      * getGridNumberOfRows:
      * --------------------------------------------------
      * Returns the number of grid X axis slots.
@@ -47,6 +72,17 @@ class SiteConstants {
      */
     public static function getGridNumberOfRows() {
         return self::$gridNumberOfRows;
+    }
+
+    /**
+     * getWidgetMargin:
+     * --------------------------------------------------
+     * Returns the general widget margin.
+     * @return (integer) ($widgetMargin) widgetMargin
+     * --------------------------------------------------
+     */
+    public static function getWidgetMargin() {
+        return self::$widgetMargin;
     }
 
     /**
@@ -135,6 +171,32 @@ class SiteConstants {
             array_push($services, self::getServiceMeta($service));
         }
         return $services;
+    }
+
+    /**
+     * getWidgetDescriptorGroups:
+     * --------------------------------------------------
+     * Returns all widgetDescriptor groups.
+     * @return (array) ($DescriptorGroups)
+     * --------------------------------------------------
+     */
+    public static function getWidgetDescriptorGroups() {
+        $customGroups = array(
+            array(
+                'name'         => 'personal',
+                'display_name' => 'Personal'
+            ),
+        );
+        $groups = array();
+
+        foreach (array_merge($customGroups, self::getSocialServices(), self::getFinancialServices()) as $group ) {
+            array_push($groups, array(
+                'name'         => $group['name'],
+                'display_name' => $group['display_name'],
+                'descriptors'  => WidgetDescriptor::where('category', $group['name'])->orderBy('name', 'asc')->get()
+            ));
+        }
+        return $groups;
     }
 
     /**

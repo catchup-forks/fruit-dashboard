@@ -39,23 +39,19 @@ class BraintreeConnector extends GeneralServiceConnector
      * Creating an access token.
      * --------------------------------------------------
      * Creating an 'access_token'
-     * @param array $credentials
+     * @param array $parameters
      * --------------------------------------------------
      */
-    public function getTokens($input) {
+    public function getTokens(array $parameters=array()) {
         // Populating access_token array.
         $credentials = array();
-        foreach ($input as $key=>$value) {
+        foreach ($parameters as $key=>$value) {
             if (in_array($key, $this->getAuthFields())) {
-                Log::info($key . " " . $value);
                 $credentials[$key] = $value;
             }
         }
 
-        $this->createConenction(json_encode($credentials), '');
-
-        /* Creating custom dashboard in the background. */
-        Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));
+        $this->createConnection(json_encode($credentials), '');
     }
 
     /**
@@ -93,6 +89,18 @@ class BraintreeConnector extends GeneralServiceConnector
             BraintreeSubscription::where('plan_id', $braintreePlan->id)->delete();
             $braintreePlan->delete();
         }
+    }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * --------------------------------------------------
+     */
+    protected function populateData() {
+        Queue::push('BraintreePopulateData', array(
+            'user_id' => $this->user->id
+        ));
     }
 
 } /* BraintreeConnector */

@@ -1,53 +1,72 @@
-<div class="text-center">
+<div class="text-center margin-top-sm">
   <span class="text-white drop-shadow">
       {{ $widget->descriptor->name }}
   </span>
-  <span class="text-white drop-shadow pull-right" id="{{$widget->descriptor->type}}-value">
-    ${{ $widget->getLatestData()['value'] }}
+  <span class="text-white drop-shadow pull-right has-margin-horizontal" id="{{$widget->id}}-value">
+  @if ($widget->state == 'active')
+    {{ $widget->getLatestData()['value'] }}
+  @endif
   </span>
 </div>
-<div id="{{ $widget->descriptor->type }}-chart-container">
-  <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
+<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
+  <canvas id="{{$widget->id}}-chart"></canvas>
 </div>
 <div class="text-center drop-shadow text-white">
     Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more details.
+   <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
 </div>
 
 @section('widgetScripts')
 <script type="text/javascript">
   $(document).ready(function(){
     // Default values.
-    var canvas = $("#{{ $widget->descriptor->type }}-chart");
-    var valueSpan = $("#{{ $widget->descriptor->type }}-value");
+    var canvas = $("#{{ $widget->id }}-chart");
+    var container = $('#{{ $widget->id }}-chart-container');
+    var valueSpan = $("#{{ $widget->id }}-value");
     var name = "{{ $widget->descriptor->name }}";
 
     @if ($widget->state == 'active')
       // Active widget.
-      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
+      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach];
       var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
 
-      // Calling drawer.
-       drawLineGraph(canvas, values, labels, name, 3000);
+      // Removing the canvas and redrawing for proper sizing.
+      canvas = reinsertCanvas(canvas);
+
+      // Calling drawer for the first time.
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+
+    @elseif ($widget->state == 'loading')
+      // Loading widget.
+      values = [];
+      labels = [];
+      loadWidget({{$widget->id}}, function (data) {
+        histogram = updateHistogramWidget(data, canvas, name, valueSpan);
+        values = historgam['values'];
+        labels = histogram['labels'];
+      });
     @endif
 
-    @if ($widget->state == 'loading')
-      // Loading widget.
-      loadWidget({{$widget->id}}, function (data) {updateChartWidget(data, canvas, name, valueSpan); });
-    @endif
+    // Calling drawer every time carousel is changed.
+    $('.carousel').on('slid.bs.carousel', function () {
+      canvas = reinsertCanvas(canvas);
+
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+    })
 
     // Bind redraw to resize event.
     $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
-        drawLineGraph(canvas, values, labels, name, 0);
+      canvas = reinsertCanvas(canvas);
+      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
     });
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) { updateChartWidget(data, canvas, name, valueSpan);});
+      refreshWidget({{ $widget->id }}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan);});
+      canvas = $("#{{ $widget->id }}-chart");
      });
 
   });
-
 </script>
 
 @append

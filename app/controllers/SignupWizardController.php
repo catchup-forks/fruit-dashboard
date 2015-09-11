@@ -68,7 +68,7 @@ class SignupWizardController extends BaseController
             );
 
             /* Redirect to next step */
-            return Redirect::route('signup-wizard.personal-widgets');
+            return Redirect::route('signup-wizard.financial-connections');
 
         /* Validator failed */
         } else {
@@ -79,17 +79,34 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * anyFinancialConnections
+     * --------------------------------------------------
+     * @return Renders the financial connections step
+     * --------------------------------------------------
+     */
+    public function anyFinancialConnections() {
+        /* Render the page */
+        return View::make('signup-wizard.financial-connections');
+    }
+
+    /**
+     * anySocialConnections
+     * --------------------------------------------------
+     * @return Renders the personal widget setup step
+     * --------------------------------------------------
+     */
+    public function anySocialConnections() {
+        /* Render the page */
+        return View::make('signup-wizard.social-connections');
+    }
+
+    /**
      * getPersonalWidgets
      * --------------------------------------------------
      * @return Renders the personal widget setup step
      * --------------------------------------------------
      */
     public function getPersonalWidgets() {
-        /* Redirect if the user already has a dashboard (not a new user) */
-        if (Auth::user()->dashboards()->count()) {
-            return Redirect::route('dashboard.dashboard');
-        }
-
         /* Render the page */
         return View::make('signup-wizard.personal-widgets');
     }
@@ -101,57 +118,11 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function postPersonalWidgets() {
-        /* Check for authenticated user, redirect if nobody found */
-        if (!Auth::check()) {
-            return Redirect::route('signup');
-        }
-
         /* Create the personal dashboard based on the inputs */
         $this->makePersonalAutoDashboard(Auth::user(), Input::all());
 
         /* Render the page */
-        return Redirect::route('signup-wizard.financial-connections');
-    }
-
-    /**
-     * getFinancialConnections
-     * --------------------------------------------------
-     * @return Renders the financial connections step
-     * --------------------------------------------------
-     */
-    public function getFinancialConnections() {
-        /* Render the page */
-        return View::make('signup-wizard.financial-connections');
-    }
-
-    /**
-     * postFinancialConnections
-     * --------------------------------------------------
-     * @return Saves the financial connection setting
-     * --------------------------------------------------
-     */
-    public function postFinancialConnections() {
-        /* Stripe connection */
-        if(Input::get('stripe-connect', FALSE)) {
-        }
-
-        /* Braintree connection */
-        if(Input::get('braintree-connect', FALSE)) {
-        }
-
-        /* Redirect to the same page */
-        return Redirect::route('signup-wizard.financial-connections');
-    }
-
-    /**
-     * getSocialConnections
-     * --------------------------------------------------
-     * @return Renders the personal widget setup step
-     * --------------------------------------------------
-     */
-    public function getSocialConnections() {
-        /* Render the page */
-        return View::make('signup-wizard.social-connections');
+        return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
     }
 
     /**
@@ -185,10 +156,17 @@ class SignupWizardController extends BaseController
         $settings = new Settings;
         $settings->user()->associate($user);
         $settings->newsletter_frequency = 0;
-        $settings->background_enabled   = true;
 
         /* Save settings */
         $settings->save();
+
+        /* Create default background for the user */
+        $background = new Background;
+        $background->user()->associate($user);
+        $background->changeUrl();
+
+        /* Save background */
+        $background->save();
 
         /* Create default subscription for the user */
         $plan = Plan::getFreePlan();
@@ -197,7 +175,7 @@ class SignupWizardController extends BaseController
         $subscription->plan()->associate($plan);
         $subscription->status = 'active';
         $subscription->trial_status = 'possible';
-        $subscription->trial_start = null;
+        $subscription->trial_start  = null;
 
         /* Save subscription */
         $subscription->save();
@@ -218,23 +196,24 @@ class SignupWizardController extends BaseController
      */
     private function makePersonalAutoDashboard($user, $widgetdata) {
         /* Create new dashboard */
-        $dashboard = new Dashboard;
-
-        $dashboard->user_id     = $user->id;
-        $dashboard->name        = 'My personal dashboard';
-        $dashboard->background  = 'On';
-        $dashboard->number      = 0;
+        $dashboard = new Dashboard(array(
+            'name'       => 'Personal dashboard',
+            'background' => 'On',
+            'number'     => Dashboard::where('user_id', $user->id)->max('number') + 1,
+            'is_default' => TRUE
+        ));
+        $dashboard->user()->associate($user);
 
         /* Save dashboard object */
         $dashboard->save();
 
         /* Create clock widget */
         if (array_key_exists('widget-clock', $widgetdata)) {
-            $clockwidget = new ClockWidget;
-
+            $clockwidget = new ClockWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
+            ));
             $clockwidget->dashboard()->associate($dashboard);
-            $clockwidget->state         = 'active';
-            $clockwidget->position      = '{"row":1,"col":3,"size_x":8,"size_y":3}';
 
             /* Save clock widget object */
             $clockwidget->save();
@@ -242,54 +221,27 @@ class SignupWizardController extends BaseController
 
         /* Create greetings widget */
         if (array_key_exists('widget-greetings', $widgetdata)) {
-            $greetingswidget = new GreetingsWidget;
-
+            $greetingswidget = new GreetingsWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
+            ));
             $greetingswidget->dashboard()->associate($dashboard);
-            $greetingswidget->state         = 'active';
-            $greetingswidget->position      = '{"row":4,"col":3,"size_x":8,"size_y":1}';
 
             /* Save greetings widget object */
             $greetingswidget->save();
-
         }
 
         /* Create quote widget */
         if (array_key_exists('widget-quote', $widgetdata)) {
-            $quotewidget = new QuoteWidget;
-
+            $quotewidget = new QuoteWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":11,"col":1,"size_x":12,"size_y":1}',
+            ));
             $quotewidget->dashboard()->associate($dashboard);
-            $quotewidget->state         = 'active';
-            $quotewidget->position      = '{"row":11,"col":1,"size_x":12,"size_y":1}';
 
             /* Save quote widget object */
-            $quotewidget->save();
-            $quotewidget->collectData();
+            $quotewidget->saveSettings(array('type' => 'inspirational'));
         }
-
-        $dashboard2 = new Dashboard(array(
-            'name'       => 'Second dashboard',
-            'background' => TRUE,
-            'number'     => 1
-        ));
-        $dashboard2->user()->associate($user);
-        $dashboard2->save();
-
-        /* Create text widgets */
-        $textWidget = new TextWidget(array(
-            'state'    => 'active',
-            'position' => '{"col":2,"row":6,"size_x":6,"size_y":1}',
-            'settings' => '{"text":"You can add a new widget by pressing the + sign at the bottom left."}'
-        ));
-        $textWidget->dashboard()->associate($dashboard2);
-        $textWidget->save();
-
-        $textWidget2 = new TextWidget(array(
-            'state'    => 'active',
-            'position' => '{"col":7,"row":3,"size_x":6,"size_y":1}',
-            'settings' => '{"text":"You can move & resize & delete widgets by hovering them."}'
-        ));
-        $textWidget2->dashboard()->associate($dashboard2);
-        $textWidget2->save();
 
         /* Return */
         return $dashboard;

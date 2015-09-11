@@ -1,0 +1,197 @@
+<?php
+
+/* This class is responsible for histogram data collection. */
+abstract class MultipleHistogramDataManager extends HistogramDataManager
+{
+    /**
+     * initializeData
+     * --------------------------------------------------
+     * First time population of the data.
+     * --------------------------------------------------
+     */
+    public function initializeData() {
+        $this->saveData(array($this->getCurrentValue()), TRUE);
+    }
+
+    /**
+     * formatData
+     * Returning the last data in the histogram.
+     * --------------------------------------------------
+     * @param Carbon $date
+     * @param mixed $data
+     * @return array
+     * --------------------------------------------------
+     */
+     protected function formatData($date, $data) {
+        $dataSets = $this->getDataSets();
+        $decodedData = array(
+            'timestamp' => $date->getTimestamp()
+        );
+        foreach ($data as $key=>$value) {
+            if (!array_key_exists($key, $dataSets)) {
+                $this->addToDataSets($key);
+                $dataSets = $this->getDataSets();
+            }
+            $decodedData[$dataSets[$key]] = $value;
+        }
+
+        return $decodedData;
+     }
+
+    /**
+     * getDataScheme
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getDataScheme() {
+        return array('datasets', 'data');
+    }
+
+    /**
+     * getData
+     * Returning the raw data json decoded.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getData() {
+        return json_decode($this->data->raw_value, 1)['data'];
+    }
+
+    /**
+     * getDataSets
+     * Returning the dataSets json decoded.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getDataSets() {
+        return json_decode($this->data->raw_value, 1)['datasets'];
+    }
+
+    /**
+     * buildHistogram
+     * Returning template ready grouped dataset.
+     * --------------------------------------------------
+     * @param array $range
+     * @param string $frequency
+     * @param string $dateFormat
+     * @return array
+     * --------------------------------------------------
+     */
+    public function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
+        $groupedData = array();
+        $datetimes = array();
+        $i = 0;
+        foreach ($this->getDataSets() as $name=>$dataId) {
+            $groupedData[$dataId] = array(
+                'name'   => $name,
+                'color'  => SiteConstants::getChartJsColors()[$i++],
+                'values' => array()
+            );
+        }
+        foreach (parent::buildHistogram($range, $frequency, $dateFormat) as $oneValues) {
+            array_push($datetimes, $oneValues['datetime']);
+            foreach ($oneValues as $dataId => $value) {
+                if ( ! in_array($dataId, static::$staticFields)) {
+                    if (array_key_exists($dataId, $groupedData)) {
+                        array_push($groupedData[$dataId]['values'], $value);
+                    }
+                }
+            }
+        }
+
+        return array('datasets' => array_values($groupedData), 'datetimes' => $datetimes);
+    }
+
+    /**
+     * saveData
+     * Saving the data to DB
+     * --------------------------------------------------
+     * @param data $inputData
+     * @param boolean $transform
+     * --------------------------------------------------
+     */
+     public function saveData($inputData, $transform=FALSE) {
+        if ($transform) {
+            $this->data->raw_value = self::transformData($inputData);
+        } else {
+            /* Getting dataSets */
+            $this->data->raw_value = json_encode(array(
+                'datasets' => $this->getDataSets(),
+                'data'     => $inputData
+            ));
+        }
+        $this->data->save();
+     }
+
+    /**
+     * transformData
+     * Creating the final DB-ready json
+     * --------------------------------------------------
+     * @param array $histogramData
+     * @return string (json)
+     * --------------------------------------------------
+     */
+    public static final function transformData($histogramData) {
+        $dbData = array(
+            'datasets' => array(),
+            'data'     => array()
+        );
+
+        $i = 0;
+        foreach ($histogramData as $entry) {
+            /* Creating the new entry */
+            $newEntry = array();
+
+            /* Iterating through the entry. */
+            foreach ($entry as $key=>$value) {
+                if (in_array($key, static::$staticFields)) {
+                    /* In static fields */
+                    $newEntry[$key] = $value;
+                } else {
+                    /* In dataset */
+                    if ( ! array_key_exists($key, $dbData['datasets'])) {
+                        $dbData['datasets'][$key] = 'data_' . $i++;
+                    }
+                    $dataSetKey = $dbData['datasets'][$key];
+                    $newEntry[$dataSetKey] = is_numeric($value) ? $value : 0;
+                }
+            }
+            /* Final integrity check. */
+            if ( ! array_key_exists('timestamp', $newEntry)) {
+                $newEntry['timestamp'] = time();
+            }
+
+            array_push($dbData['data'], $newEntry);
+        }
+
+        return json_encode($dbData);
+    }
+
+    /**
+     * addToDataSets
+     * Adding a new key to the datasets.
+     * --------------------------------------------------
+     * @param string $key
+     * --------------------------------------------------
+     */
+    private function addToDataSets($key) {
+        $dataSets = $this->getDataSets();
+        if (is_null($dataSets)) {
+           $this->data->raw_value = json_encode(array(
+                'datasets' => array($key => 'data_0'),
+                'data'     => array()
+           ));
+       } else {
+           $dataSets[$key] = 'data_' . count($dataSets);
+           $this->data->raw_value = json_encode(array(
+                'datasets' => $dataSets,
+                'data'     => $this->getData()
+           ));
+        }
+       $this->data->save();
+    }
+
+}

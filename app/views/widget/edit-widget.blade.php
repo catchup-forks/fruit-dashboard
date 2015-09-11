@@ -53,9 +53,21 @@
                     </div>
                   </div>
                 <!-- /.dashboard select -->
-                <p class="text-center">
-                  {{ Form::submit('Save settings', array('class' => 'btn btn-primary') ) }}
-                </p>
+                @if ($widget instanceof CronWidget)
+                  <!-- Update interval select -->
+                  <div class="form-group">
+                    {{ Form::label('update_period', 'Update (Minutes)', array(
+                        'class' => 'col-sm-3 control-label'
+                      ))}}
+                    <div class="col-sm-7">
+                      {{ Form::text('update_period', $widget->dataManager()->update_period, ['class' => 'form-control']) }}
+                    </div>
+                  </div>
+                @endif
+                <!-- /.Update interval select -->
+                <hr>
+                  <a href="/" class="btn btn-warning">Cancel</a>
+                  {{ Form::submit('Save', array('class' => 'btn btn-primary pull-right') ) }}
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->

@@ -7,14 +7,14 @@
   left: @carousel-control-width;
   right: @carousel-control-width;
   margin-bottom: @margin;
+  overflow-x: hidden;
 }
 
 .gridster ul li {
-  list-style: none;
   cursor: default;
 }
 
-.gridster ul li:hover,
+.can-hover:hover,
 .hovered {
   background: @gridster-bg; /* Fallback */
   background: fade(@gridster-bg, @alpha/2);

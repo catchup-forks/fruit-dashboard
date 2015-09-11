@@ -22,10 +22,13 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
+
+        /* Checking the user's widget data integrity */
+        //$time = microtime(true);
+        Widget::checkUserWidgetsIntegrity(Auth::user());
+        //Log::info(microtime(true) - $time);
 
         /* Render the page */
         return View::make('dashboard.dashboard');
@@ -38,10 +41,8 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function getManageDashboards() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Render the page */
         return View::make('dashboard.manage-dashboards');
@@ -76,7 +77,7 @@ class DashboardController extends BaseController
             return Response::json(FALSE);
         }
 
-        $dashboard->locked = TRUE;
+        $dashboard->is_locked = TRUE;
         $dashboard->save();
 
         /* Return. */
@@ -95,7 +96,33 @@ class DashboardController extends BaseController
             return Response::json(FALSE);
         }
 
-        $dashboard->locked = FALSE;
+        $dashboard->is_locked = FALSE;
+        $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyMakeDefault
+     * --------------------------------------------------
+     * @return Makes a dashboard the default one.
+     * --------------------------------------------------
+     */
+    public function anyMakeDefault($dashboardId) {
+        // Make is_default false for all dashboards
+        foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
+            Log::info($oldDashboard->id);
+            $oldDashboard->is_default = FALSE;
+            $oldDashboard->save();
+        }
+
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+
+        $dashboard->is_default = TRUE;
         $dashboard->save();
 
         /* Return. */
@@ -159,13 +186,19 @@ class DashboardController extends BaseController
             array_push($dashboards, array(
                 'id'        => $dashboard->id,
                 'name'      => $dashboard->name,
-                'locked'    => $dashboard->locked,
+                'is_locked' => $dashboard->is_locked,
             ));
         }
 
         /* Return. */
         return Response::json($dashboards);
     }
+
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
 
     /**
      * getDashboard
@@ -183,4 +216,5 @@ class DashboardController extends BaseController
         }
         return $dashboard;
     }
+
 } /* DashboardController */
