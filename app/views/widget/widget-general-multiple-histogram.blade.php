@@ -41,7 +41,13 @@
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
-      loadWidget({{$widget->id}}, function (data) {updateMultipleHistogramWidget(data, canvas, name, valueSpan); });
+      datasets = [];
+      labels = [];
+      loadWidget({{$widget->id}}, function (data) {
+        updateMultipleHistogramWidget(data, canvas, name, valueSpan);
+        datasets = data['datasets'];
+        labels = data['datetimes'];
+      });
     @endif
 
     // Calling drawer every time carousel is changed.
