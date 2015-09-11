@@ -33,12 +33,9 @@
                   <div class="col-sm-6">
                     
                     {{ Form::select('pages[]', $pages, null, array(
-                      'multiple',
-                      'class' => 'form-control',
-                      'size' => count($pages)
+                      'class' => 'form-control'
                     ))}}
 
-                    <span class="help-block">Click to select. Hold down CMD or CTRL and click to select more.</span>             
                   </div> <!-- /.col-sm-6 -->
 
                 </div> <!-- /.row -->
@@ -48,6 +45,8 @@
                   <div class="col-md-12">
 
                     <hr>
+
+                    <a href="{{ route('signup-wizard.social-connections') }}" class="btn btn-warning">Cancel</a>
 
                     {{ Form::submit('Choose', array(
                       'class' => 'btn btn-primary pull-right'
