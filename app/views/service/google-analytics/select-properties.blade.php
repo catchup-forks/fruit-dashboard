@@ -1,4 +1,4 @@
-@extends('meta.base-user')
+ú@extends('meta.base-user')
 
   @section('pageTitle')
     Financial connections
@@ -33,12 +33,8 @@
                 <div class="col-sm-6">
                   
                   {{ Form::select('properties[]', $properties, null, array(
-                      'multiple',
-                      'class' => 'form-control',
-                      'size' => count($properties)
+                      'class' => 'form-control'
                     ))}}
-
-                  <span class="help-block">Click to select. Hold down CMD or CTRL and click to select more.</span>
 
                 </div> <!-- /.col-sm-6 -->
 
@@ -49,6 +45,8 @@
                 <div class="col-md-12">
 
                   <hr>
+
+                  <a href="{{ route('signup-wizard.social-connections') }}" class="btn btn-warning">Cancel</a>                  
                   
                   {{ Form::submit('Choose', array(
                     'class' => 'btn btn-primary pull-right'
