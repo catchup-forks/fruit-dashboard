@@ -273,6 +273,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'facebook_likes',
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
+                    'min_cols'     => 3,
+                    'min_rows'     => 2,
+                    'default_cols' => 5,
+                    'default_rows' => 3
                 )
             );
 
@@ -284,6 +288,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'facebook_likes_count',
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
+                    'min_cols'     => 3,
+                    'min_rows'     => 2,
+                    'default_cols' => 5,
+                    'default_rows' => 3
                 )
             );
 

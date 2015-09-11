@@ -47,7 +47,6 @@
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
       canvas = reinsertCanvas(canvas);
-
       drawLineGraph(canvas, datasets, labels, name);
     })
 

@@ -140,7 +140,8 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         } else if (is_null(json_decode($this->data->raw_value)) || ! $this->hasValidScheme()) {
             /* No json in data, this is a problem. */
             $this->dataManager()->initializeData();
-        } else if ($this->state != 'active') {
+        } else if ($this->state == 'loading') {
+            /* Everything looks good, but is stuck in loading. */
             $this->setState('active');
         }
     }
@@ -168,7 +169,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * @return boolean
      * --------------------------------------------------
     */
-    private function dataExists() {
+    public function dataExists() {
         return  ! (is_null($this->data) || is_null($this->dataManager()));
     }
 
@@ -179,7 +180,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * @return boolean
      * --------------------------------------------------
     */
-    private function hasValidScheme() {
+    public function hasValidScheme() {
         $scheme = $this->dataManager()->getDataScheme();
         $dataScheme = json_decode($this->data->raw_value, 1);
         if ( ! is_array($dataScheme)) {
