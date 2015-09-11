@@ -77,7 +77,7 @@
               <!-- widget description col -->
                 <div class="col-md-5">
                   @foreach ($widgetDescriptors as $descriptor)
-                    <div data-descriptor-type="widget-{{$descriptor->type}}" class="descriptors not-visible">
+                    <div data-descriptor-type="widget-{{$descriptor->type}}" data-descriptor-id="{{$descriptor->id}}" class="descriptors not-visible">
                         <div class="row">
                           <div class="col-md-12">
                             
@@ -125,7 +125,7 @@
                           <div class="form-actions text-center">
                           {{ Form::submit('Add' , array(
                               'id' => 'add-widget-submit-button',
-                              'class' => 'btn btn-primary pull-right disabled' )) }}
+                              'class' => 'btn btn-primary pull-right' )) }}
 
                           </div> <!-- /.form-actions -->
 
@@ -190,7 +190,11 @@
         
         $('[data-descriptor-type]').hide();
         $('[data-descriptor-type="' + descriptorType + '"]').removeClass('not-visible').show();
-
+        
+        // Change the form url
+        descriptorID = $('[data-descriptor-type="' + descriptorType + '"]').attr('data-descriptor-id')
+        url = "{{ route('widget.doAdd', 'descriptorID') }}".replace('descriptorID', descriptorID);
+        $('#add-widget-form').attr('action', url)
       }
 
       // Select or deselect list-group-items by clicking.
