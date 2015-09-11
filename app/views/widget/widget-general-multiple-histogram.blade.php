@@ -6,6 +6,10 @@
 <div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
   <canvas id="{{$widget->id}}-chart"></canvas>
 </div>
+<div class="text-center drop-shadow text-white">
+    Click
+   <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
+</div>
 
 @section('widgetScripts')
 <script type="text/javascript">
