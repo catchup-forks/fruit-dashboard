@@ -8,11 +8,6 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
             'name'    => 'Type',
             'type'    => 'SCHOICE',
         ),
-        'update_frequency' => array(
-            'name'    => 'Changes (in hours)',
-            'type'    => 'INT',
-            'default' => 6
-        ),
     );
 
     /* The settings to setup in the setup-wizard */
