@@ -26,7 +26,7 @@
 
               <div class="row">
                 
-                {{ Form::label('properties', 'Google properties', array(
+                {{ Form::label('properties', 'Google property', array(
                   'class' => 'col-sm-3 control-label'
                 ))}}
 

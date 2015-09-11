@@ -41,6 +41,8 @@
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
+      var labels = [];
+      var datasets = [];
       loadWidget({{$widget->id}}, function (data) {updateMultipleHistogramWidget(data, canvas, name, valueSpan); });
     @endif
 
