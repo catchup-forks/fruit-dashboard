@@ -22,7 +22,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        /* Dealing only with datawidgets */
         $this->checkDataIntegrity();
     }
 
@@ -141,6 +140,8 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         } else if (is_null(json_decode($this->data->raw_value)) || ! $this->hasValidScheme()) {
             /* No json in data, this is a problem. */
             $this->dataManager()->initializeData();
+        } else if ($this->state != 'active') {
+            $this->setState('active');
         }
     }
 

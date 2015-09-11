@@ -24,7 +24,7 @@
               <!-- category list-group -->
               <div class="col-md-3">
 
-                <h3 class="text-center">Select a category</h3>
+                <h3 class="text-center">Select a group</h3>
 
                 <div class="list-group margin-top-sm">
                   

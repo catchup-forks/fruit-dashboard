@@ -64,8 +64,8 @@ class MetricsController extends BaseController
     /**
      * getServiceWidgetUsersCount
      * --------------------------------------------------
-     * @return Returns the number of users who have at least 
-     *          one widget with the provided service 
+     * @return Returns the number of users who have at least
+     *          one widget with the provided service
      * --------------------------------------------------
      */
     public function getServiceWidgetUsersCount($service) {
@@ -96,6 +96,42 @@ class MetricsController extends BaseController
             "timestamp" => Carbon::now()->getTimestamp(),
             "value"     => $serviceWidgetUsers
         ];
+
+        /* Return json */
+        return Response::json($data);
+    }
+
+    /**
+     * getAllServiceWidgetsCount
+     * --------------------------------------------------
+     * @return Returns the number of users who have at least
+     *          one widget with the provided service
+     * --------------------------------------------------
+     */
+    public function getAllServiceWidgetsCount() {
+        /* Get active users */
+        $data = array(
+            'timestamp' => Carbon::now()->getTimestamp()
+        );
+        $services = array();
+
+        foreach (array_merge(SiteConstants::getSocialServices(), SiteConstants::getFinancialServices()) as $serviceMeta) {
+            $services[$serviceMeta['name']] = $serviceMeta['display_name'];
+        }
+
+        /* Iterate through all users */
+        foreach (Widget::all() as $widget) {
+            $key = $widget->descriptor->category;
+            /* Service exists */
+            if (array_key_exists($key, $services)) {
+                /* Data key exists. */
+                $display_name = $services[$key];
+                if ( ! array_key_exists($display_name, $data)) {
+                    $data[$display_name] = 0;
+                }
+                $data[$display_name]++;
+            }
+        }
 
         /* Return json */
         return Response::json($data);
@@ -145,7 +181,7 @@ class MetricsController extends BaseController
      */
     public function getNumberOfDataPoints() {
         $numberOfDataPoints = 0;
-        
+
         /* Iterate through all users */
         foreach (User::all() as $user) {
             /* Iterate through all widgets */

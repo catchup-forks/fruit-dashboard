@@ -30,7 +30,9 @@
         title: "lock dashboard",
         content: "You can lock or unlock the grid on your dashboard.",
         target: document.querySelector(".item.active > .lock-icon span"),
-        placement: "top"
+        placement: "left",
+        yOffset: -150,
+        arrowOffset: 80
       },               
       {
         title: "settings",

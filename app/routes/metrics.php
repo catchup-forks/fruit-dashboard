@@ -37,4 +37,10 @@ Route::group([
         'as'     => 'metrics.numberOfDataPoints',
         'uses'   => 'MetricsController@getNumberOfDataPoints'
     ]);
+
+    Route::get('services/widgets/', [
+        'as'     => 'metrics.',
+        'uses'   => 'MetricsController@getAllServiceWidgetsCount'
+    ]);
+
 });
