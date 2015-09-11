@@ -26,7 +26,7 @@
 
                 <div class="row">
 
-                  {{ Form::label('pages', 'Facebook pages', array(
+                  {{ Form::label('pages', 'Facebook page', array(
                     'class' => 'col-sm-3 control-label'
                   ))}}
 

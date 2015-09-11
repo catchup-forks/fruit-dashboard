@@ -6,7 +6,7 @@ class WidgetDescriptorSeeder extends Seeder
     {
 
         /* WidgetDescriptor: Update or create all */
-        /* Personal widgets */
+        /* Webhook widgets | HISTOGRAM */
         WidgetDescriptor::updateOrCreate(
             ['type' => 'webhook_histogram'],
             array(
@@ -21,6 +21,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'default_rows' => 3
             )
         );
+        
+        /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
             ['type' => 'clock'],
             array(
@@ -81,7 +83,22 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        if (!App::environment('production', 'staging')) {
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'timer'],
+            array(
+                'name'         => 'Timer',
+                'description'  => 'A simple timer',
+                'type'         => 'timer',
+                'category'     => 'personal',
+                'is_premium'   => FALSE,
+                'min_cols'     => 2,
+                'min_rows'     => 2,
+                'default_cols' => 2,
+                'default_rows' => 2
+            )
+        );
+
+        if (!App::environment('production')) {
 
             WidgetDescriptor::updateOrCreate(
                 ['type' => 'iframe'],
@@ -105,22 +122,7 @@ class WidgetDescriptorSeeder extends Seeder
                 )
             );
 
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'timer'],
-                array(
-                    'name'         => 'Timer',
-                    'description'  => 'A simple timer',
-                    'type'         => 'timer',
-                    'category'     => 'personal',
-                    'is_premium'   => FALSE,
-                    'min_cols'     => 2,
-                    'min_rows'     => 2,
-                    'default_cols' => 2,
-                    'default_rows' => 2
-                )
-            );
-
-        } /* !App::environment('production', 'staging')*/
+        } /* !App::environment('production')*/
 
 
         /* Financial widgets | STRIPE */
@@ -169,7 +171,7 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        if (!App::environment('production', 'staging')) {
+        if (!App::environment('production')) {
             WidgetDescriptor::updateOrCreate(
                 ['type' => 'stripe_events'],
                 array(
@@ -184,7 +186,7 @@ class WidgetDescriptorSeeder extends Seeder
                     'default_rows' => 5
                 )
             );
-        } /* !App::environment('production', 'staging')*/
+        } /* !App::environment('production')*/
 
         /* Financial widgets | BRAINTREE */
         WidgetDescriptor::updateOrCreate(
@@ -232,50 +234,54 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        /* Social widgets | TWITTER */
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'twitter_followers'],
+            array(
+                'name'        => 'Followers',
+                'description' => 'Follower count',
+                'type'        => 'twitter_followers',
+                'category'    => 'twitter',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'twitter_new_followers'],
+            array(
+                'name'        => 'New followers',
+                'description' => 'New follower count',
+                'type'        => 'twitter_new_followers',
+                'category'    => 'twitter',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
+
+        /* Social widgets | FACEBOOK */
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'facebook_likes'],
+            array(
+                'name'        => 'Likes',
+                'description' => 'The total number of people who have liked your Page.',
+                'type'        => 'facebook_likes',
+                'category'    => 'facebook',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
+
         if (!App::environment('production')) {
-            /* Social widgets | TWITTER */
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'twitter_followers'],
-                array(
-                    'name'        => 'Followers',
-                    'description' => 'Follower count',
-                    'type'        => 'twitter_followers',
-                    'category'    => 'twitter',
-                    'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
-                )
-            );
-
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'twitter_new_followers'],
-                array(
-                    'name'        => 'New followers',
-                    'description' => 'New follower count',
-                    'type'        => 'twitter_new_followers',
-                    'category'    => 'twitter',
-                    'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
-                )
-            );
-
-            /* Social widgets | FACEBOOK */
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'facebook_likes'],
-                array(
-                    'name'        => 'Likes',
-                    'description' => 'The total number of people who have liked your Page.',
-                    'type'        => 'facebook_likes',
-                    'category'    => 'facebook',
-                    'is_premium'  => TRUE,
-                )
-            );
-
             WidgetDescriptor::updateOrCreate(
                 ['type' => 'facebook_likes_count'],
                 array(
@@ -284,70 +290,76 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'facebook_likes_count',
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
-                )
-            );
-
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'facebook_new_likes'],
-                array(
-                    'name'        => 'New likes',
-                    'description' => 'The total number of people who have liked your Page daily.',
-                    'type'        => 'facebook_new_likes',
-                    'category'    => 'facebook',
-                    'is_premium'  => TRUE,
                     'min_cols'     => 3,
                     'min_rows'     => 2,
                     'default_cols' => 5,
                     'default_rows' => 3
                 )
             );
+        } /* !App::environment('production')*/
 
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'facebook_page_impressions'],
-                array(
-                    'name'        => 'Page impressions',
-                    'description' => 'The number of people who have seen any content associated with your Page',
-                    'type'        => 'facebook_page_impressions',
-                    'category'    => 'facebook',
-                    'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
-                )
-            );
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'facebook_new_likes'],
+            array(
+                'name'        => 'New likes',
+                'description' => 'The total number of people who have liked your Page daily.',
+                'type'        => 'facebook_new_likes',
+                'category'    => 'facebook',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
 
-            /* Social widgets | GOOGLE ANALYTICS */
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'google_analytics_bounce_rate'],
-                array(
-                    'name'        => 'Bounce rate',
-                    'description' => 'The percentage of single-page session (i.e., session in which the person left your property from the first page).',
-                    'type'        => 'google_analytics_bounce_rate',
-                    'category'    => 'google_analytics',
-                    'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
-                )
-            );
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'facebook_page_impressions'],
+            array(
+                'name'        => 'Page impressions',
+                'description' => 'The number of people who have seen any content associated with your Page',
+                'type'        => 'facebook_page_impressions',
+                'category'    => 'facebook',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
 
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'google_analytics_sessions'],
-                array(
-                    'name'        => 'Sessions',
-                    'description' => 'The total number of sessions',
-                    'type'        => 'google_analytics_sessions',
-                    'category'    => 'google_analytics',
-                    'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
-                )
-            );
+        /* Social widgets | GOOGLE ANALYTICS */
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_bounce_rate'],
+            array(
+                'name'        => 'Bounce rate',
+                'description' => 'The percentage of single-page session (i.e., session in which the person left your property from the first page).',
+                'type'        => 'google_analytics_bounce_rate',
+                'category'    => 'google_analytics',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
 
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_sessions'],
+            array(
+                'name'        => 'Sessions',
+                'description' => 'The total number of sessions',
+                'type'        => 'google_analytics_sessions',
+                'category'    => 'google_analytics',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
+
+        if (!App::environment('production')) {
             WidgetDescriptor::updateOrCreate(
                 ['type' => 'google_analytics_avg_session_duration'],
                 array(
@@ -362,7 +374,7 @@ class WidgetDescriptorSeeder extends Seeder
                     'default_rows' => 3
                 )
             );
-        } /* !App::environment('production', 'staging')*/
+        } /* !App::environment('production')*/
 
         /* Send message to console */
         Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated');

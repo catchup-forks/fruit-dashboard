@@ -75,56 +75,66 @@
               <!-- / widget list-group -->
 
               <!-- widget description col -->
-              <div id="descriptors" class="col-md-5 not-visible">
+                <div class="col-md-5">
+                  @foreach ($widgetDescriptors as $descriptor)
+                    <div data-descriptor-type="widget-{{$descriptor->type}}" class="descriptors not-visible">
+                        <div class="row">
+                          <div class="col-md-12">
+                            
+                              <h3 class="descriptor-name text-center">{{ $descriptor->name }}
+                              </h3> <!-- /.descriptor-name -->
+                              {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
+                                  'class' => 'img-responsive img-rounded center-block'
+                              ))}}
+                              
+                          </div> <!-- /.col-md-12 -->
+                        </div> <!-- /.row -->
+                        
+                        <div class="row">
+                          <div class="col-md-12">
+                            <p id="" class="lead margin-top-sm descriptor-description">{{ $descriptor->description }}</p>
+                            <hr>
+                          </div> <!-- /.col-md-12 -->
+                        </div> <!-- /.row -->
+
+                    </div> <!-- /.descriptors -->
+                        
+                    <!-- / widget description col -->
+
+                  @endforeach
                 
                 <div class="row">
                   <div class="col-md-12">
-                    <h3 id="descriptor-name" class="text-center">Add widget to dashboard</h3>
-                    {{ HTML::image('img/demonstration/widget-empty.png', 'The Clock Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded center-block')) }}
-                  </div> <!-- /.col-md-12 -->
-                </div> <!-- /.row -->
-                
-                <div class="row">
-                  <div class="col-md-12">
-                    <p id="descriptor-description" class="lead margin-top-sm">Select a widget to add it to one of your dashboards.</p>
-                    <hr>
-                  </div> <!-- /.col-md-12 -->
-                </div> <!-- /.row -->
 
-                <div class="row">
-                  <div class="col-md-12">
+                        {{ Form::open(array(
+                            'id' => 'add-widget-form',
+                            'action' => 'widget.add')) }}
 
-                    {{ Form::open(array(
-                        'id' => 'add-widget-form',
-                        'action' => 'widget.add')) }}
+                          <div class="form-group">
+                            <label for="addToDashboard">Add to dashboard:</label>
+                            <select name="toDashboard" class="form-control">
 
-                      <div class="form-group">
-                        <label for="addToDashboard">Add to dashboard:</label>
-                        <select name="toDashboard" class="form-control">
+                              @foreach( Auth::user()->dashboards->all() as $dashboard )
+                              <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
+                              @endforeach
 
-                          @foreach( Auth::user()->dashboards->all() as $dashboard )
-                          <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
-                          @endforeach
+                            </select>
 
-                        </select>
+                          </div> <!-- .form-group -->
 
-                      </div> <!-- .form-group -->
+                          <div class="form-actions text-center">
+                          {{ Form::submit('Add' , array(
+                              'id' => 'add-widget-submit-button',
+                              'class' => 'btn btn-primary pull-right disabled' )) }}
 
-                      <div class="form-actions text-center">
-                      {{ Form::submit('Add' , array(
-                          'id' => 'add-widget-submit-button',
-                          'class' => 'btn btn-primary pull-right disabled' )) }}
+                          </div> <!-- /.form-actions -->
 
-                      </div> <!-- /.form-actions -->
+                        {{ Form::close() }}
 
-                    {{ Form::close() }}
-
-                  </div> <!-- /.col-md-12 -->
+                    </div> <!-- /.col-md-12 -->
                 </div> <!-- /.row -->
 
-              </div> <!-- /#descriptors .col-md-5 -->
-              <!-- / widget description col -->
-
+                </div> <!-- /.col-md-5 -->              
 
             </div> <!-- /.row -->              
           </div> <!-- /.panel-body -->
@@ -148,7 +158,7 @@
       filterWidgets($('[data-selection="group"]').first().data('group'));
 
       selectFirstWidgetFromGroup($('[data-selection="group"]').first().data('group'));
-      
+
       // Filter widgets by group.
       function filterWidgets(group) {
         // Hide all widget list-group-items.
@@ -165,7 +175,8 @@
         var firstAvailableWidget = $('[data-group="' + group + '"][data-selection="widget"]');
 
         firstAvailableWidget.find('span').first().toggleClass('fa fa-check text-success pull-right');
-        showWidget(firstAvailableWidget.attr('id').substring(firstAvailableWidget.attr('id').indexOf('-') + 1));
+
+        showWidgetDescription(firstAvailableWidget.first().data('widget'));
       }
 
       // Remove previously added checkmarks from context.
@@ -173,30 +184,12 @@
         $('[data-selection="' + context + '"] > .selection-icon').attr('class', 'selection-icon');
       }
 
-      function getID(element) {
-        return element.id.substr(element.id.indexOf('-') + 1)
-      }
 
-      // Gets the relevant descriptors by ID.
-      function showWidget(descriptorID) {
+      // Shows the relevant widget descriptors.
+      function showWidgetDescription(descriptorType) {
         
-        // Fade out the wrapper
-        $('#descriptors').fadeOut();
-
-        // Start AJAX call
-         $.ajax({
-           type: "POST",
-           data: {'descriptorID': descriptorID},
-           url: "{{ route('widget.get-descriptor') }}"
-          }).done(function( data ) {
-            $("#descriptor-name").html(data['name']);
-            $("#descriptor-description").html(data['description']);
-            $("#add-widget-form").attr("action", "{{ URL::route('widget.doAdd', 'descriptor_id') }}".replace("descriptor_id", descriptorID));
-            $('#img-change').attr('src', baseUrl + 'widget-' + data['type'] + ext);
-            $('#img-change').attr('alt', "The " + data['name']);
-            $('#descriptors').fadeIn();
-            $('#add-widget-submit-button').removeClass('disabled');
-          });
+        $('[data-descriptor-type]').hide();
+        $('[data-descriptor-type="' + descriptorType + '"]').removeClass('not-visible').show();
 
       }
 
@@ -215,8 +208,7 @@
           selectFirstWidgetFromGroup(group);
         // If a widget was clicked, show descriptions.
         } else if (context == "widget") {
-          var descriptorID = getID(this);
-          showWidget(descriptorID);
+          showWidgetDescription($(this).data('widget'));
         } else {
           return false
         };

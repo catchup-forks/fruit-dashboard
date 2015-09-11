@@ -77,22 +77,6 @@ class Widget extends Eloquent
     }
 
     /**
-     * getSpecific
-     * Getting the correct widget from a general widget,
-     * --------------------------------------------------
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function getSpecific($checkIntegrity=FALSE) {
-        $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-        $widget = $className::find($this->id);
-        if ($checkIntegrity) {
-            $widget->checkIntegrity();
-        }
-        return $widget;
-    }
-
-    /**
      * getPosition
      * Getting the position from DB and converting it to an object.
      * --------------------------------------------------
@@ -112,6 +96,24 @@ class Widget extends Eloquent
     */
     public function getSettings() {
         return json_decode($this->settings, 1);
+    }
+
+
+
+    /**
+     * getSpecific
+     * Getting the correct widget from a general widget,
+     * --------------------------------------------------
+     * @return mixed
+     * --------------------------------------------------
+    */
+    public function getSpecific($checkIntegrity=FALSE) {
+        $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
+        $widget = $className::find($this->id);
+        if ($checkIntegrity) {
+            $widget->checkIntegrity();
+        }
+        return $widget;
     }
 
     /**
@@ -169,7 +171,7 @@ class Widget extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getSettingsValidationArray($fields) {
+    public function getSettingsValidationArray(array $fields) {
         $validationArray = array();
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
@@ -212,7 +214,7 @@ class Widget extends Eloquent
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings($inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=TRUE) {
         $settings = array();
         $oldSettings = $this->getSettings();
 

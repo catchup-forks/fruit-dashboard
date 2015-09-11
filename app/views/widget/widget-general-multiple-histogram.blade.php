@@ -6,6 +6,10 @@
 <div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
   <canvas id="{{$widget->id}}-chart"></canvas>
 </div>
+<div class="text-center drop-shadow text-white">
+    Click
+   <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
+</div>
 
 @section('widgetScripts')
 <script type="text/javascript">
@@ -37,13 +41,18 @@
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
-      loadWidget({{$widget->id}}, function (data) {updateMultipleHistogramWidget(data, canvas, name, valueSpan); });
+      datasets = [];
+      labels = [];
+      loadWidget({{$widget->id}}, function (data) {
+        updateMultipleHistogramWidget(data, canvas, name, valueSpan);
+        datasets = data['datasets'];
+        labels = data['datetimes'];
+      });
     @endif
 
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
       canvas = reinsertCanvas(canvas);
-
       drawLineGraph(canvas, datasets, labels, name);
     })
 
@@ -56,6 +65,7 @@
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) { updateMultipleHistogramWidget(data, canvas, name, valueSpan);});
+      canvas = $("#{{ $widget->id }}-chart");
      });
 
   });
