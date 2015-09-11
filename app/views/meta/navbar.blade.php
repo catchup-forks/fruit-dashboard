@@ -59,24 +59,11 @@
                 <span class="fa fa-tag"></span> Plans
             </a>
         </li>
-        @if (Auth::check() && Auth::user()->id==1)
-        <li>
-            <a href="{{ URL::route('signup') }}">
-                <span class="fa fa-cloud"></span> Sign up
-            </a>
-        </li>
-        <li>
-            <a href="{{ URL::route('auth.signin') }}">
-                <span class="fa fa-sign-in"></span> Sign in
-            </a>
-        </li>
-        @else
         <li>
             <a href="{{ URL::route('auth.signout') }}">
                 <span class="fa fa-sign-out"></span> Sign out
             </a>
         </li>
-        @endif
     </ul>
 
 </div> <!-- /.btn-group -->
