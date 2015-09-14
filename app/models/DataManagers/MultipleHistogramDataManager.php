@@ -87,7 +87,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
                 'name'   => $name,
-                'color'  => SiteConstants::getChartJsColors()[$i++],
+                'color'  => SiteConstants::getChartJsColors()[($i++) % count(SiteConstants::getChartJsColors())],
                 'values' => array()
             );
         }
@@ -191,11 +191,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
            $dataSets[$key] = $name;
 
            /* Adding 0 to previous values. */
-           $newData = array():
+           $newData = array();
            foreach ($this->getData() as $entry) {
                 $newEntry = $entry;
                 $newEntry[$name] = 0;
-                array_push($newData, $newEntry):
+                array_push($newData, $newEntry);
            }
 
            /* Creating layout. */

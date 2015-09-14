@@ -273,7 +273,7 @@ class GeneralWidgetController extends BaseController {
         $className = $descriptor->getClassName();
 
         /* Looking for a connection */
-        if ($descriptor->category != 'personal') {
+        if (in_array($descriptor->category, SiteConstants::getServices())) {
             $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
                 $redirectRoute = 'service.' . $descriptor->category . '.connect';

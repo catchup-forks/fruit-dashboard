@@ -174,6 +174,17 @@ class SiteConstants {
     }
 
     /**
+     * getServices:
+     * --------------------------------------------------
+     * Returns all the services.
+     * @return (array) ($services)
+     * --------------------------------------------------
+     */
+    public static function getServices() {
+        return array_merge(self::$socialServices, self::$financialServices);
+    }
+
+    /**
      * getWidgetDescriptorGroups:
      * --------------------------------------------------
      * Returns all widgetDescriptor groups.

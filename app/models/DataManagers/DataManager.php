@@ -91,7 +91,7 @@ class DataManager extends Eloquent
 
         /* Creating manager. */
         $generalManager = new DataManager(array(
-            'settings_criteria' => json_encode($widget->getCriteria),
+            'settings_criteria' => json_encode($widget->getCriteria()),
             'last_updated'      => Carbon::now()
         ));
         $generalManager->user()->associate($widget->user());
