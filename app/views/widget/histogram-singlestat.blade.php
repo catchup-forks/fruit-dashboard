@@ -57,7 +57,11 @@ Widget stats
         };
         var canvas = $("#chart-" + frequencies[i]);
         sendAjax(postData, {{ $widget->id }}, function (data) {
-          updateHistogramWidget(data['data'], canvas, frequencies[i]);
+          @if($widget instanceof MultipleHistogramWidget )
+            updateMultipleHistogramWidget(data['data'], canvas, frequencies[i]);
+          @else
+            updateHistogramWidget(data['data'], canvas, frequencies[i]);
+          @endif
           // Recursive call.
           loadStat(++i, callback);
         });
