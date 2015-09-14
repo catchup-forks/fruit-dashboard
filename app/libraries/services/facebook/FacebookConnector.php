@@ -98,13 +98,13 @@ class FacebookConnector extends GeneralServiceConnector
      */
 
     /**
-     * getTokens
+     * saveTokens
      * Retrieving the access tokens, OAUTH.
      * --------------------------------------------------
      * @return None
      * --------------------------------------------------
      */
-    public function getTokens(array $parameters=array()) {
+    public function saveTokens(array $parameters=array()) {
         $helper = $this->fb->getRedirectLoginHelper();
 
         if (App::environment('local')) {
@@ -112,10 +112,6 @@ class FacebookConnector extends GeneralServiceConnector
         } else {
             $this->createConnection($helper->getAccessToken(), '');
         }
-
-        /* Getting facebook pages  (will be moved to autodashboard) */
-        $collector = new FacebookDataCollector(Auth::user());
-        $collector->savePages();
     }
 
     /**
@@ -132,32 +128,12 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
     /**
-     * createDataManagers
-     * --------------------------------------------------
-     * Creating the dataManagers for each page.
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function createDataManagers() {
-        $dataManagers = array();
-        foreach ($this->user->facebookPages()->get() as $facebookPage) {
-            foreach (parent::createDataManagers() as $dataManager) {
-                $dataManager->settings_criteria = json_encode(array(
-                    'page' => $facebookPage->id
-                ));
-                array_push($dataManagers, $dataManager->save());
-            }
-        }
-        return $dataManagers;
-    }
-
-    /**
      * populateData
      * --------------------------------------------------
      * Collecting the initial data from the service.
      * --------------------------------------------------
      */
-    protected function populateData() {
+    public function populateData() {
         Queue::push('FacebookPopulateData', array(
             'user_id' => $this->user->id
         ));

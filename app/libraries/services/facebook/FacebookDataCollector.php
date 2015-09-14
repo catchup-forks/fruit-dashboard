@@ -66,13 +66,13 @@ class FacebookDataCollector
     }
 
     /**
-     * savePages
+     * getPages
      * Saves The user's pages
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function savePages() {
+    public function getPages() {
         $this->user->facebookPages()->delete();
         $userId = $this->getUserID();
         if (is_null($userId)) {
@@ -97,7 +97,8 @@ class FacebookDataCollector
             ));
             $page->user()->associate($this->user);
             $page->save();
-            array_push($pages, $page);
+
+            $pages[$graphNode['id']] = $graphNode['name'];
         }
         return $pages;
     }

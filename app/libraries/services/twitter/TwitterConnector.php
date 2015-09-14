@@ -12,7 +12,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 *
 *       // For connecting the user
 *       $twitterConnector = new TwitterConnector($user);
-*       $twitterConnector->getTokens($token_ours, $token_request, $token_secret, $verifier);
+*       $twitterConnector->saveTokens($token_ours, $token_request, $token_secret, $verifier);
 *       $connector->connect();
 * --------------------------------------------------------------------------
 */
@@ -80,7 +80,7 @@ class TwitterConnector extends GeneralServiceConnector
     }
 
     /**
-     * getTokens
+     * saveTokens
      * --------------------------------------------------
      * Retrieving the access tokens, OAUTH.
      * @param array $parameters
@@ -88,7 +88,7 @@ class TwitterConnector extends GeneralServiceConnector
      * @throws TwitterConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens(array $parameters=array()) {
+    public function saveTokens(array $parameters=array()) {
         $tokenOurs = $parameters['token_ours'];
 
         /* Oauth ready. */
@@ -132,7 +132,7 @@ class TwitterConnector extends GeneralServiceConnector
      * Collecting the initial data from the service.
      * --------------------------------------------------
      */
-    protected function populateData() {
+    public function populateData() {
         Queue::push('TwitterPopulateData', array(
             'user_id' => $this->user->id
         ));

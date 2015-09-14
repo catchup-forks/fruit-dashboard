@@ -11,7 +11,7 @@
 *       // For connecting the user
 *       $stripeconnector = new StripeConnector($user);
 *       try {
-*           $stripeconnector->getTokens($code);
+*           $stripeconnector->saveTokens($code);
 *       } catch (StripeConnectFailed $e) {
 *           // error handling
 *       }
@@ -85,7 +85,7 @@ class StripeConnector extends GeneralServiceConnector
     }
 
     /**
-     * getTokens
+     * saveTokens
      * --------------------------------------------------
      * Retrieving the access, and refresh tokens from authentication code.
      * @param array $parameters
@@ -93,7 +93,7 @@ class StripeConnector extends GeneralServiceConnector
      * @throws StripeConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens(array $parameters=array()) {
+    public function saveTokens(array $parameters=array()) {
         $code = $parameters['auth_code'];
         /* Build and send POST request */
         $url = $this->buildTokenPostUriFromAuthCode($code);
@@ -207,7 +207,7 @@ class StripeConnector extends GeneralServiceConnector
      * Collecting the initial data from the service.
      * --------------------------------------------------
      */
-    protected function populateData() {
+    public function populateData() {
         Queue::push('StripePopulateData', array(
             'user_id' => $this->user->id
         ));

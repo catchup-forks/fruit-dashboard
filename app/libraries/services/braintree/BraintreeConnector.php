@@ -5,7 +5,7 @@
 * BraintreeConnector:
 *       Wrapper functions for Braintree connection
 * Usage:
-*       Connect the user by calling getTokens()
+*       Connect the user by calling saveTokens()
 *       with validated input.
 *       If the user has an access_token, use the connect() method.
 * --------------------------------------------------------------------------
@@ -42,7 +42,7 @@ class BraintreeConnector extends GeneralServiceConnector
      * @param array $parameters
      * --------------------------------------------------
      */
-    public function getTokens(array $parameters=array()) {
+    public function saveTokens(array $parameters=array()) {
         // Populating access_token array.
         $credentials = array();
         foreach ($parameters as $key=>$value) {
@@ -97,7 +97,7 @@ class BraintreeConnector extends GeneralServiceConnector
      * Collecting the initial data from the service.
      * --------------------------------------------------
      */
-    protected function populateData() {
+    public function populateData() {
         Queue::push('BraintreePopulateData', array(
             'user_id' => $this->user->id
         ));
