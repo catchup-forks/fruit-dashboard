@@ -134,11 +134,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return string (json)
      * --------------------------------------------------
      */
-    public static final function transformData($histogramData) {
+    public static final function transformData(array $histogramData) {
         $dbData = array(
             'datasets' => array(),
             'data'     => array()
         );
+
+        /* Saving empty histogram. */
+        if (empty($histogramData)) {
+            return json_encode($dbData);
+        }
 
         $i = 0;
         foreach ($histogramData as $entry) {
