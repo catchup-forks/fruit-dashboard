@@ -21,7 +21,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'default_rows' => 3
             )
         );
-        
+
         /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
             ['type' => 'clock'],
@@ -39,7 +39,7 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['type' => 'quotes'],
+            ['type' => 'quote'],
             array(
                 'name'        => 'Quotes',
                 'description' => 'Get inspired every day, by this awesome widget.',
@@ -359,19 +359,34 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_avg_session_duration'],
+            array(
+                'name'        => 'Average session duration',
+                'description' => 'The average duration of user sessions represented in total seconds.',
+                'type'        => 'google_analytics_avg_session_duration',
+                'category'    => 'google_analytics',
+                'is_premium'  => TRUE,
+                'min_cols'     => 3,
+                'min_rows'     => 2,
+                'default_cols' => 5,
+                'default_rows' => 3
+            )
+        );
+
         if (!App::environment('production')) {
             WidgetDescriptor::updateOrCreate(
-                ['type' => 'google_analytics_avg_session_duration'],
+                ['type' => 'shared'],
                 array(
-                    'name'        => 'Average session duration',
-                    'description' => 'The average duration of user sessions represented in total seconds.',
-                    'type'        => 'google_analytics_avg_session_duration',
-                    'category'    => 'google_analytics',
-                    'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
+                    'name'        => 'Shared widget',
+                    'description' => '',
+                    'type'        => 'shared',
+                    'category'    => 'hidden',
+                    'is_premium'  => FALSE,
+                    'min_cols'     => 1,
+                    'min_rows'     => 1,
+                    'default_cols' => 1,
+                    'default_rows' => 1
                 )
             );
         } /* !App::environment('production')*/

@@ -30,6 +30,14 @@ class DashboardController extends BaseController
         Widget::checkUserWidgetsIntegrity(Auth::user());
         //Log::info(microtime(true) - $time);
 
+        //$connector = new GoogleAnalyticsConnector(Auth::user());
+        //$connector->refreshToken();
+        /*
+        $widget = Widget::find(21)->getSpecific();
+        Log::info($widget->getRelatedWidget());
+        Log::info($widget->woohoo("hello", "world"));
+        */
+
         /* Render the page */
         return View::make('dashboard.dashboard');
     }

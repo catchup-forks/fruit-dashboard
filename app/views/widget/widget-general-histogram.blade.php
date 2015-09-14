@@ -44,6 +44,7 @@
         histogram = updateHistogramWidget(data, canvas, name, valueSpan);
         values = historgam['values'];
         labels = histogram['labels'];
+        canvas = $("#{{ $widget->id }}-chart");
       });
     @endif
 

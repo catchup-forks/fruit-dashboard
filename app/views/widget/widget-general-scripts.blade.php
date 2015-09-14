@@ -158,7 +158,7 @@
     }
     if (data.length > 0 && valueSpan) {
       valueSpan.html(data[data.length-1]['value']);
-      canvas = reinsertcanvas(canvas);
+      canvas = reinsertCanvas(canvas);
     }
 
     drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);

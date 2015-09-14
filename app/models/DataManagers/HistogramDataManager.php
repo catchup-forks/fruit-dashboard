@@ -94,16 +94,13 @@ abstract class HistogramDataManager extends DataManager
         /* Calling proper method based on frequency. */
         switch ($frequency) {
             case 'minutely':  return $this->buildHistogram($range, $frequency, 'h:i'); break;
-            case 'hourly':  return $this->buildHistogram($range, $frequency, 'm'); break;
+            case 'hourly':  return $this->buildHistogram($range, $frequency, 'M-d h'); break;
             case 'daily':   return $this->buildHistogram($range, $frequency, 'M-d'); break;
             case 'weekly':  return $this->buildHistogram($range, $frequency, 'W'); break;
             case 'monthly': return $this->buildHistogram($range, $frequency, 'Y-M'); break;
             case 'yearly':  return $this->buildHistogram($range, $frequency, 'Y'); break;
             default: return $this->buildHistogram($range, $frequency, 'd'); break;
         }
-
-        /* Default return. */
-        return $this->getData();
     }
 
     /**

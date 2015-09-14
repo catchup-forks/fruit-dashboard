@@ -334,7 +334,6 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
         } else if (count($pages) == 1) {
-
             /* Creating dashboard automatically. */
             $dashboardCreator = new FacebookAutoDashboardCreator(
                 Auth::user(), array('page' => array_keys($pages)[0])

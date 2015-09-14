@@ -47,6 +47,7 @@
         updateMultipleHistogramWidget(data, canvas, name, valueSpan);
         datasets = data['datasets'];
         labels = data['datetimes'];
+        canvas = $("#{{ $widget->id }}-chart");
       });
     @endif
 
