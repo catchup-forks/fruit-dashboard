@@ -75,7 +75,7 @@ abstract class HistogramDataManager extends DataManager
         $histogram = $this->getData();
         /* Handle empty data */
         if ($histogram == null) {
-            return 0;
+            return array();
         } else {
             return end($histogram);
         }
@@ -141,7 +141,7 @@ abstract class HistogramDataManager extends DataManager
             }
             if ($recording) {
                 /* Frequency conditions. */
-                if (( ! $first && $this->isBreakPoint($entryTime, $previousEntryTime, $frequency)) || ($entry == $last)) {
+                if (( ! $first && static::isBreakPoint($entryTime, $previousEntryTime, $frequency)) || ($entry == $last)) {
                     if ($entry == $last) {
                         array_push($sampleEntries, $entry);
                     }
@@ -182,7 +182,7 @@ abstract class HistogramDataManager extends DataManager
      * @return boolean
      * --------------------------------------------------
     */
-    protected function isBreakPoint($entryTime, $previousEntryTime, $frequency) {
+    private static function isBreakPoint($entryTime, $previousEntryTime, $frequency) {
         if ($frequency == 'minutely') {
             return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
         } else if ($frequency == 'hourly') {
@@ -207,7 +207,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    public static final function getDiff($data, $dataName='value') {
+    public static final function getDiff(array $data, $dataName='value') {
         $differentiatedArray = array();
         foreach ($data as $entry) {
             /* Copying entry. */
@@ -224,7 +224,39 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * getAverageValues
+     * compare
+     * Comparing the current value respect to period.
+     * --------------------------------------------------
+     * @param string $period
+     * @param int $multiplier
+     * @return array
+     * --------------------------------------------------
+     */
+    public function compare($period, $multiplier=1) {
+        $latestData = $this->getLatestData();
+
+        foreach ($this->getData() as $entry) {
+            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
+
+            /* Checking for a match. */
+            if (static::matchesTime($entryTime, $period, $multiplier)) {
+                /* Creating an arrays that will hold the values. */
+                $values = array();
+                foreach ($entry as $key=>$value) {
+                    if ( ! in_array($key, static::$staticFields) && array_key_exists($key, $latestData)) {
+                        $values[$key] = $latestData[$key] - $value;
+                    }
+                }
+                return $values;
+            }
+        }
+
+        /* No values found using last one */
+        return array();
+    }
+
+    /**
+     * getAverageValues (buildHistogram)
      * Merging multiple entries into one, by avereging the values.
      * --------------------------------------------------
      * @param array $entries
@@ -256,7 +288,36 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * Comparing two timestamps.
+     * matchesTime (compare())
+     * Checks if the datetime should be used in compare.
+     * (Carbon extension)
+     * --------------------------------------------------
+     * @param Carbon $entryTime
+     * @param string $period
+     * @param integer $multiplier
+     * @return boolean
+     * --------------------------------------------------
+    */
+    private static function matchesTime($entryTime, $period, $multiplier) {
+        $now = Carbon::now();
+        if ($period == 'minutes') {
+            return $entryTime->diffInMinutes($now) == $multiplier;
+        } else if ($period == 'hours') {
+            return $entryTime->diffInHours($now) == $multiplier;
+        } else if ($period == 'days') {
+            return $entryTime->diffInDays($now) == $multiplier;
+        } else if ($period == 'weeks') {
+            return $entryTime->diffInWeeks($now) == $multiplier;
+        } else if ($period == 'months') {
+            return $entryTime->diffInMonths($now) == $multiplier;
+        } else if ($period == 'years') {
+            return $entryTime->diffInYears($now) == $multiplier;
+        }
+        return FALSE;
+    }
+
+    /**
+     * Comparing two timestamps. (buildHistogram())
      * --------------------------------------------------
      * @param array $CseZso1
      * @param array $CseZso2
