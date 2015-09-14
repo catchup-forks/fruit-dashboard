@@ -180,18 +180,33 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     private function addToDataSets($key) {
         $dataSets = $this->getDataSets();
         if (is_null($dataSets)) {
+            /* Empty dataset */
            $this->data->raw_value = json_encode(array(
                 'datasets' => array($key => 'data_0'),
                 'data'     => array()
            ));
        } else {
-           $dataSets[$key] = 'data_' . count($dataSets);
+            /* Adding to datasets. */
+           $name = 'data_' . count($dataSets);
+           $dataSets[$key] = $name;
+
+           /* Adding 0 to previous values. */
+           $newData = array():
+           foreach ($this->getData() as $entry) {
+                $newEntry = $entry;
+                $newEntry[$name] = 0;
+                array_push($newData, $newEntry):
+           }
+
+           /* Creating layout. */
            $this->data->raw_value = json_encode(array(
                 'datasets' => $dataSets,
-                'data'     => $this->getData()
+                'data'     => $newData
            ));
         }
-       $this->data->save();
+
+       /* Saving to DB. */
+        $this->data->save();
     }
 
 }

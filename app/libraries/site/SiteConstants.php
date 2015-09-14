@@ -184,7 +184,11 @@ class SiteConstants {
         $customGroups = array(
             array(
                 'name'         => 'personal',
-                'display_name' => 'Personal'
+                'display_name' => 'Personal',
+            ),
+            array(
+                'name'         => 'webhook',
+                'display_name' => 'Webhook',
             ),
         );
         $groups = array();

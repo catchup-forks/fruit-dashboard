@@ -13,7 +13,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Webhook histogram',
                 'description' => 'Building a simple line histogram from your data.',
                 'type'        => 'webhook_histogram',
-                'category'    => 'personal',
+                'category'    => 'webhook',
                 'is_premium'  => TRUE,
                 'min_cols'     => 3,
                 'min_rows'     => 2,
