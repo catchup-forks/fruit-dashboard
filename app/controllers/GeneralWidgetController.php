@@ -430,10 +430,11 @@ class GeneralWidgetController extends BaseController {
             }
 
             /* Find widget */
-            $widget = Widget::find($widgetData['id'])->getSpecific();
+            $generalWidget = Widget::find($widgetData['id']);
 
             /* Skip widget if not found */
-            if ($widget === null) { continue; }
+            if ($generalWidget === null) { continue; }
+            $widget = $generalWidget->getSpecific();
 
             /* Set position */
             try {

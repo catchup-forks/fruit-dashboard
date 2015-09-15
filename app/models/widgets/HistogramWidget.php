@@ -37,14 +37,6 @@ abstract class HistogramWidget extends CronWidget
      }
 
     /**
-     * collectData
-     * Passing the job to the DataManager
-     */
-    public function collectData() {
-        return $this->data->manager->getSpecific()->collectData();
-    }
-
-    /**
      * getData
      * Returning the histogram.
      * --------------------------------------------------
