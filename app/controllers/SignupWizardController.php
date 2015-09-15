@@ -92,7 +92,7 @@ class SignupWizardController extends BaseController
     /**
      * anySocialConnections
      * --------------------------------------------------
-     * @return Renders the personal widget setup step
+     * @return Renders the social connections setup step
      * --------------------------------------------------
      */
     public function anySocialConnections() {
@@ -101,27 +101,26 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * anyWebAnalyticsConnections
+     * --------------------------------------------------
+     * @return Renders the web analytics connections setup step
+     * --------------------------------------------------
+     */
+    public function anyWebAnalyticsConnections() {
+        /* Render the page */
+        return View::make('signup-wizard.web-analytics-connections');
+    }
+
+    /**
      * getPersonalWidgets
      * --------------------------------------------------
      * @return Renders the personal widget setup step
      * --------------------------------------------------
      */
-    public function getPersonalWidgets() {
-        /* Render the page */
-        return View::make('signup-wizard.personal-widgets');
-    }
-
-    /**
-     * postPersonalWidgets
-     * --------------------------------------------------
-     * @return Saves the user personal widget settings
-     * --------------------------------------------------
-     */
-    public function postPersonalWidgets() {
-        /* Create the personal dashboard based on the inputs */
-        $this->makePersonalAutoDashboard(Auth::user(), Input::all());
-
-        /* Render the page */
+    public function anyPersonalWidgets() {
+        /* Make personal dashboard automatically */
+        $this->makePersonalAutoDashboard(Auth::user(), 'auto', null);
+        /* Redirect to the dashboard */
         return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
     }
 
@@ -189,12 +188,13 @@ class SignupWizardController extends BaseController
      * creates a new Dashboard object and personal widgets
      * from the POST data
      * --------------------------------------------------
-     * @param (User) ($user) The current user
-     * @param (array) ($widgetdata) Personal widgets data
+     * @param (User)    ($user) The current user
+     * @param (string)  ($mode) 'auto' or 'manual'
+     * @param (array)   ($widgetdata) Personal widgets data
      * @return (Dashboard) ($dashboard) The new Dashboard object
      * --------------------------------------------------
      */
-    private function makePersonalAutoDashboard($user, $widgetdata) {
+    private function makePersonalAutoDashboard($user, $mode, $widgetdata) {
         /* Create new dashboard */
         $dashboard = new Dashboard(array(
             'name'       => 'Personal dashboard',
@@ -208,7 +208,8 @@ class SignupWizardController extends BaseController
         $dashboard->save();
 
         /* Create clock widget */
-        if (array_key_exists('widget-clock', $widgetdata)) {
+        if (($mode == 'auto') or 
+            array_key_exists('widget-clock', $widgetdata)) {
             $clockwidget = new ClockWidget(array(
                 'state'    => 'active',
                 'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
@@ -220,7 +221,8 @@ class SignupWizardController extends BaseController
         }
 
         /* Create greetings widget */
-        if (array_key_exists('widget-greetings', $widgetdata)) {
+        if (($mode == 'auto') or
+            array_key_exists('widget-greetings', $widgetdata)) {
             $greetingswidget = new GreetingsWidget(array(
                 'state'    => 'active',
                 'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
@@ -232,7 +234,8 @@ class SignupWizardController extends BaseController
         }
 
         /* Create quote widget */
-        if (array_key_exists('widget-quote', $widgetdata)) {
+        if (($mode == 'auto') or
+            array_key_exists('widget-quote', $widgetdata)) {
             $quotewidget = new QuoteWidget(array(
                 'state'    => 'active',
                 'position' => '{"row":11,"col":1,"size_x":12,"size_y":1}',

@@ -35,15 +35,15 @@ Route::group([
         'uses'   => 'SignupWizardController@anySocialConnections'
     ]);
 
-    Route::get('personal-widgets', [
+    Route::any('web-analytics-connections', [
         'before' => 'auth',
-        'as'     => 'signup-wizard.personal-widgets',
-        'uses'   => 'SignupWizardController@getPersonalWidgets'
+        'as'     => 'signup-wizard.web-analytics-connections',
+        'uses'   => 'SignupWizardController@anyWebAnalyticsConnections'
     ]);
 
-    Route::post('personal-widgets', [
+    Route::any('personal-widgets', [
         'before' => 'auth',
         'as'     => 'signup-wizard.personal-widgets',
-        'uses'   => 'SignupWizardController@postPersonalWidgets'
+        'uses'   => 'SignupWizardController@anyPersonalWidgets'
     ]);
 });

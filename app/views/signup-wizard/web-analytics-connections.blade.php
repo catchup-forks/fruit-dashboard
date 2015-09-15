@@ -1,7 +1,7 @@
 @extends('meta.base-user')
 
   @section('pageTitle')
-    Financial connections
+    Web Analytics connections
   @stop
 
   @section('pageStylesheet')
@@ -12,7 +12,7 @@
   <div class="container">
 
     <h1 class="text-center text-white drop-shadow">
-      Connect your financial accounts
+      Connect your web analytics accounts
     </h1>
 
     <div class="row">
@@ -25,7 +25,7 @@
 
                 <div class="list-group margin-top-sm">
 
-               @foreach (SiteConstants::getServicesMetaByType('financial') as $service)
+               @foreach (SiteConstants::getServicesMetaByType('webAnalytics') as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
@@ -60,7 +60,7 @@
 
               </div> <!-- /.col-md-5 -->
               <div class="col-md-7">
-                {{ HTML::image('img/demonstration/widget-braintree.jpg', 'Braintree', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
+                {{ HTML::image('img/demonstration/widget-google_analytics.jpg', 'Google Analytics', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
               </div> <!-- /.col-md-7 -->
             </div> <!-- /.row -->
 
@@ -68,8 +68,9 @@
 
             <div class="row">
               <div class="col-md-12">
-                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-primary pull-right">Next</a>
-                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-link pull-right">Skip</a>
+                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-warning">Back</a>
+                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-primary pull-right">Finish</a>
+                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-link pull-right">Skip, and finish</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 

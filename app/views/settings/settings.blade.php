@@ -242,7 +242,7 @@
               {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="list-group margin-top-sm">
-               @foreach (array_merge(SiteConstants::getFinancialServices(), SiteConstants::getSocialServices()) as $service)
+               @foreach (SiteConstants::getAllServicesMeta() as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}

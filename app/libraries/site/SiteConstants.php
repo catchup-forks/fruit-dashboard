@@ -20,9 +20,9 @@ class SiteConstants {
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
-    private static $financialServices = array('braintree', 'stripe');
-    private static $socialServices    = array('google_analytics', 'facebook', 'twitter');
-
+    private static $financialServices    = array('braintree', 'stripe');
+    private static $socialServices       = array('facebook', 'twitter');
+    private static $webAnalyticsServices = array('google_analytics');
     private static $chartJsColors = array(
         '77, 255, 121',
         '255, 121, 77',
@@ -144,74 +144,18 @@ class SiteConstants {
     }
 
     /**
-     * getFinancialServices:
-     * --------------------------------------------------
-     * Returns the financial services.
-     * @return (array) ($financialServices)
-     * --------------------------------------------------
-     */
-    public static function getFinancialServices() {
-        $services = array();
-        foreach (self::$financialServices as $service) {
-            array_push($services, self::getServiceMeta($service));
-        }
-        return $services;
-    }
-
-    /**
-     * getSocialServices:
-     * --------------------------------------------------
-     * Returns the social services.
-     * @return (array) ($socialServices)
-     * --------------------------------------------------
-     */
-    public static function getSocialServices() {
-        $services = array();
-        foreach (self::$socialServices as $service) {
-            array_push($services, self::getServiceMeta($service));
-        }
-        return $services;
-    }
-
-    /**
-     * getServices:
+     * getServices
      * --------------------------------------------------
      * Returns all the services.
      * @return (array) ($services)
      * --------------------------------------------------
      */
     public static function getServices() {
-        return array_merge(self::$socialServices, self::$financialServices);
-    }
-
-    /**
-     * getWidgetDescriptorGroups:
-     * --------------------------------------------------
-     * Returns all widgetDescriptor groups.
-     * @return (array) ($DescriptorGroups)
-     * --------------------------------------------------
-     */
-    public static function getWidgetDescriptorGroups() {
-        $customGroups = array(
-            array(
-                'name'         => 'personal',
-                'display_name' => 'Personal',
-            ),
-            array(
-                'name'         => 'webhook',
-                'display_name' => 'Webhook',
-            ),
+        return array_merge(
+                self::$socialServices, 
+                self::$financialServices,
+                self::$webAnalyticsServices
         );
-        $groups = array();
-
-        foreach (array_merge($customGroups, self::getSocialServices(), self::getFinancialServices()) as $group ) {
-            array_push($groups, array(
-                'name'         => $group['name'],
-                'display_name' => $group['display_name'],
-                'descriptors'  => WidgetDescriptor::where('category', $group['name'])->orderBy('name', 'asc')->get()
-            ));
-        }
-        return $groups;
     }
 
     /**
@@ -226,10 +170,131 @@ class SiteConstants {
         return array(
             'name'             => $service,
             'display_name'     => ucfirst(str_replace('_', ' ', $service)),
+            'type'             => 'service',
             'disconnect_route' => 'service.' . $service . '.disconnect',
             'connect_route'    => 'service.' . $service . '.connect',
         );
     }
 
+    /**
+     * getCustomGroupsMeta:
+     * --------------------------------------------------
+     * Returns the custom groups (not services).
+     * @return (array) ($customGroups)
+     * --------------------------------------------------
+     */
+    public static function getCustomGroupsMeta() {
+        /* Create custom groups */
+        $customGroups = array(
+            array(
+                'name'              => 'personal',
+                'display_name'      => 'Personal',
+                'type'              => 'custom',
+                'disconnect_route'  => null,
+                'connect_route'     => null
+            ),
+            array(
+                'name'              => 'webhook',
+                'display_name'      => 'Webhook',
+                'type'              => 'custom',
+                'disconnect_route'  => null,
+                'connect_route'     => null
+            ),
+        );
+
+        /* Return */
+        return $customGroups;
+    }
+
+    /**
+     * getServicesMetaByType
+     * --------------------------------------------------
+     * Returns the meta data from a selected service group.
+     * @param  (string) ($groupname)
+     * @return (array) ($financialServices)
+     * --------------------------------------------------
+     */
+    public static function getServicesMetaByType($group) {
+        /* Initialize variables */
+        $services = array();
+        $groupServices = array();
+
+        /* Get the requested services */
+        if      ($group == 'financial')     { $groupServices = self::$financialServices; }
+        else if ($group == 'social')        { $groupServices = self::$socialServices; }
+        else if ($group == 'webAnalytics')  { $groupServices = self::$webAnalyticsServices; }
+
+        /* Build meta array */
+        foreach ($groupServices as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+
+        /* Return */
+        return $services;
+    }
+
+    /**
+     * getAllServicesMeta:
+     * --------------------------------------------------
+     * Returns all the meta information from the services
+     *      and custom groups.
+     * @return (array) ()
+     * --------------------------------------------------
+     */
+    public static function getAllServicesMeta() {
+        /* Initialize variables */
+        $services = array();
+
+        /* Build meta array */
+        foreach (self::getServices() as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+
+        /* Return */
+        return $services;
+    }
+
+    /**
+     * getAllGroupsMeta
+     * --------------------------------------------------
+     * Returns all the meta information from the services
+     *      and custom groups.
+     * @return (array) ()
+     * --------------------------------------------------
+     */
+    public static function getAllGroupsMeta() {
+        return array_merge(
+                self::getCustomGroupsMeta(),
+                self::getAllServicesMeta()
+        );
+    }
+
+    /**
+     * getWidgetDescriptorGroups:
+     * --------------------------------------------------
+     * Returns all widgetDescriptor groups.
+     * @return (array) ($DescriptorGroups)
+     * --------------------------------------------------
+     */
+    public static function getWidgetDescriptorGroups() {
+        /* Initialize variables */
+        $groups = array();
+
+        /* Build the group array */
+        foreach (self::getAllGroupsMeta() as $group) {
+            /* Create array */
+            array_push($groups, array(
+                'name'              => $group['name'],
+                'display_name'      => $group['display_name'],
+                'type'              => $group['type'],
+                'connect_route'     => $group['connect_route'],
+                'disconnect_route'  => $group['disconnect_route'],
+                'descriptors'       => WidgetDescriptor::where('category', $group['name'])
+                                                            ->orderBy('name', 'asc')->get()
+            ));
+        }
+        /* Return */
+        return $groups;
+    }
 
 } /* SiteConstants */
