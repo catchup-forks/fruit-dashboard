@@ -143,7 +143,7 @@
       type: "POST",
       url: "{{ route('dashboard.delete', 'dashboard_id') }}".replace('dashboard_id', dashboardId)
      }).done(function() {
-      location.reload();
+      window.location.href = '{{ URL::route('dashboard.manage') }}'
      });
   }
 
@@ -154,7 +154,7 @@
       data: {'dashboard_name': dashboardName},
       url: "{{ route('dashboard.rename', 'dashboard_id') }}".replace('dashboard_id', dashboardId)
      }).done(function () {
-       location.reload();
+       window.location.href = '{{ URL::route('dashboard.manage') }}'
      });
   }
 
