@@ -11,7 +11,7 @@
 
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Select your google analytics properties.
+      Select your Google Analytics properties
     </h1> <!-- /.text-center -->
     
     <div class="row">
@@ -48,7 +48,7 @@
 
                   <a href="{{ route('signup-wizard.social-connections') }}" class="btn btn-warning">Cancel</a>                  
                   
-                  {{ Form::submit('Choose', array(
+                  {{ Form::submit('Select', array(
                     'class' => 'btn btn-primary pull-right'
                   )) }}
 

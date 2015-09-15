@@ -20,9 +20,9 @@ class SiteConstants {
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
-    private static $financialServices = array('braintree', 'stripe');
-    private static $socialServices    = array('google_analytics', 'facebook', 'twitter');
-
+    private static $financialServices    = array('braintree', 'stripe');
+    private static $socialServices       = array('facebook', 'twitter');
+    private static $webAnalyticsServices = array('google_analytics');
     private static $chartJsColors = array(
         '77, 255, 121',
         '255, 121, 77',
@@ -174,6 +174,21 @@ class SiteConstants {
     }
 
     /**
+     * getWebAnalyticsServices:
+     * --------------------------------------------------
+     * Returns the web analytics services.
+     * @return (array) ($webAnalyticsServices)
+     * --------------------------------------------------
+     */
+    public static function getWebAnalyticsServices() {
+        $services = array();
+        foreach (self::$webAnalyticsServices as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+        return $services;
+    }
+
+    /**
      * getServices:
      * --------------------------------------------------
      * Returns all the services.
@@ -181,7 +196,11 @@ class SiteConstants {
      * --------------------------------------------------
      */
     public static function getServices() {
-        return array_merge(self::$socialServices, self::$financialServices);
+        return array_merge(
+                self::$socialServices, 
+                self::$financialServices,
+                self::$webAnalyticsServices
+        );
     }
 
     /**
@@ -204,7 +223,11 @@ class SiteConstants {
         );
         $groups = array();
 
-        foreach (array_merge($customGroups, self::getSocialServices(), self::getFinancialServices()) as $group ) {
+        foreach (array_merge($customGroups, 
+                             self::getSocialServices(), 
+                             self::getFinancialServices(),
+                             self::getWebAnalyticsServices()) as $group ) {
+            /* Create array */
             array_push($groups, array(
                 'name'         => $group['name'],
                 'display_name' => $group['display_name'],
