@@ -54,7 +54,7 @@
                 
                 <h3 class="text-center">Select a widget</h3>
 
-                <div class="list-group margin-top-sm">
+                <div class="list-group margin-top-sm not-visible">
                   
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
@@ -121,10 +121,12 @@
 
                           </div> <!-- .form-group -->
 
-                          <div class="form-actions text-center">
-                          {{ Form::submit('Add' , array(
+                          <div class="form-actions pull-right">
+                            <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-link">Cancel</a>
+                            
+                            {{ Form::submit('Add' , array(
                               'id' => 'add-widget-submit-button',
-                              'class' => 'btn btn-primary pull-right' )) }}
+                              'class' => 'btn btn-primary' )) }}
 
                           </div> <!-- /.form-actions -->
 
@@ -160,6 +162,8 @@
 
       // Filter widgets by group.
       function filterWidgets(group) {
+        // Look for .not-visible wrapper and remove if any.
+        $('.list-group.not-visible').removeClass('not-visible');
         // Hide all widget list-group-items.
         $('[data-selection="widget"]').hide();
         // Show the filtered list-group-items.

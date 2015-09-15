@@ -25,7 +25,7 @@
   @if ($widget->state == 'setup_required')
       @include('widget.widget-setup-required', ['widget' => $widget,])
   @else
-    @if ($widget instanceof CronWidget)
+    @if ($widget instanceof iAjaxWidget)
       @include('widget.widget-loading', ['widget' => $widget,])
       <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
     @endif
