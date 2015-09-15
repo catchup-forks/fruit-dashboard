@@ -363,10 +363,14 @@ class ServiceConnectionController extends BaseController
             return Redirect::back()
                 ->with('error', 'Please select at least one of the pages.');
         }
-        foreach (Input::get('pages') as $id=>$name) {
+
+        $dataCollector = new FacebookDataCollector(Auth::user());
+        $pages = $dataCollector->getPages();
+
+        foreach (Input::get('pages') as $id) {
             $page = new FacebookPage(array(
                 'id'   => $id,
-                'name' => $name
+                'name' => $pages[$id]
             ));
             $page->user()->associate(Auth::user());
             $page->save();

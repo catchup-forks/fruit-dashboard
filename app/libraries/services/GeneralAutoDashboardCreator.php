@@ -79,7 +79,7 @@ abstract class GeneralAutoDashboardCreator {
                 $widget->saveSettings($this->widgetSettings);
 
                 /* Checking if the data is already available. */
-                if (json_decode($widget->data->raw_value) != FALSE) {
+                if ($widget->data->raw_value != 'loading') {
                     $widget->state = 'active';
                     $widget->save();
                 }
