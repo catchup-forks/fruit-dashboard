@@ -3,4 +3,12 @@
 </span>
 
 @section('widgetScripts')
+<script type="text/javascript">
+  $(document).ready(function(){
+    // Adding refresh handler.
+    $("#refresh-{{$widget->id}}").click(function () {
+      refreshWidget({{ $widget->id }}, function (data) {console.log(data)});
+     });
+  });
+</script>
 @append
