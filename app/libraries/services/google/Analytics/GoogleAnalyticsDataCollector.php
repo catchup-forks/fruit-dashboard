@@ -65,13 +65,13 @@ class GoogleAnalyticsDataCollector
      */
     public function getProperties() {
         $this->user->googleAnalyticsProperties()->delete();
+        $properties = array();
         foreach ($this->getAccountIds() as $accountId) {
             $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($accountId);
             $items = $ga_properties->getItems();
             if (count($items) <= 0) {
                 return null;
             }
-            $properties = array();
             foreach ($items as $item) {
                 $properties[$accountId . ',' . $item->getId()] = $item->getName();
             }

@@ -368,7 +368,7 @@ class ServiceConnectionController extends BaseController
                 'id'   => $id,
                 'name' => $name
             ));
-            $page->user()->associate($this->user);
+            $page->user()->associate(Auth::user());
             $page->save();
 
             /* Creating data managers. */
