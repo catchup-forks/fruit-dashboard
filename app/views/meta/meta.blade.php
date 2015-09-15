@@ -80,6 +80,7 @@
     {{ HTML::script('js/Chart.js'); }}
     {{ HTML::script('js/jstz.min.js') }}
     {{ HTML::script('js/hopscotch.min.js') }}
+    {{ HTML::script('js/bootbox.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->
