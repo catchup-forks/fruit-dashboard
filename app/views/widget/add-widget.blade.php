@@ -41,7 +41,6 @@
                 </div> <!-- /.list-group -->
 
                 <div class="alert alert-info alert-dismissible" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   Can't find the service you were looking for?
                   <strong><a href="https://fruitdashboard.uservoice.com" target="_blank">Tell us</a>.</strong>
                 </div> <!-- /.alert -->
@@ -55,7 +54,7 @@
                 
                 <h3 class="text-center">Select a widget</h3>
 
-                <div class="list-group margin-top-sm">
+                <div class="list-group margin-top-sm not-visible">
                   
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
@@ -122,10 +121,12 @@
 
                           </div> <!-- .form-group -->
 
-                          <div class="form-actions text-center">
-                          {{ Form::submit('Add' , array(
+                          <div class="form-actions pull-right">
+                            <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-link">Cancel</a>
+                            
+                            {{ Form::submit('Add' , array(
                               'id' => 'add-widget-submit-button',
-                              'class' => 'btn btn-primary pull-right' )) }}
+                              'class' => 'btn btn-primary' )) }}
 
                           </div> <!-- /.form-actions -->
 
@@ -161,6 +162,8 @@
 
       // Filter widgets by group.
       function filterWidgets(group) {
+        // Look for .not-visible wrapper and remove if any.
+        $('.list-group.not-visible').removeClass('not-visible');
         // Hide all widget list-group-items.
         $('[data-selection="widget"]').hide();
         // Show the filtered list-group-items.
