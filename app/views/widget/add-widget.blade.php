@@ -55,7 +55,7 @@
                 
                 <h3 class="text-center">Select a widget</h3>
 
-                <div class="list-group margin-top-sm">
+                <div class="list-group margin-top-sm not-visible">
                   
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
@@ -161,6 +161,8 @@
 
       // Filter widgets by group.
       function filterWidgets(group) {
+        // Look for .not-visible wrapper and remove if any.
+        $('.list-group.not-visible').removeClass('not-visible');
         // Hide all widget list-group-items.
         $('[data-selection="widget"]').hide();
         // Show the filtered list-group-items.
