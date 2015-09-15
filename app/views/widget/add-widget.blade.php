@@ -122,10 +122,12 @@
 
                           </div> <!-- .form-group -->
 
-                          <div class="form-actions text-center">
-                          {{ Form::submit('Add' , array(
+                          <div class="form-actions pull-right">
+                            <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-link">Cancel</a>
+                            
+                            {{ Form::submit('Add' , array(
                               'id' => 'add-widget-submit-button',
-                              'class' => 'btn btn-primary pull-right' )) }}
+                              'class' => 'btn btn-primary' )) }}
 
                           </div> <!-- /.form-actions -->
 
