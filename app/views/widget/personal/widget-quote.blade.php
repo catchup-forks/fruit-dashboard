@@ -18,7 +18,7 @@
   }
 
   $(document).ready(function() {
-    @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) /3660 > $widget->dataManager()->update_period)
+    @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) / 60 > $widget->dataManager()->update_period)
       refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
     @endif
 

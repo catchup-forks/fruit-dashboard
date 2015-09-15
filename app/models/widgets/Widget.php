@@ -20,6 +20,7 @@ class Widget extends Eloquent
     /* These variables will be overwritten, with late static binding. */
     public static $settingsFields = array();
     public static $setupSettings = array();
+    public static $criteriaSettings = array();
 
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -98,8 +99,6 @@ class Widget extends Eloquent
         return json_decode($this->settings, 1);
     }
 
-
-
     /**
      * getSpecific
      * Getting the correct widget from a general widget,
@@ -114,6 +113,44 @@ class Widget extends Eloquent
             $widget->checkIntegrity();
         }
         return $widget;
+    }
+
+    /**
+     * getCriteria
+     * Returning the settings that makes a difference among widgets.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getCriteria() {
+        $settings = array();
+        foreach (static::$criteriaSettings as $key) {
+            if (array_key_exists($key, $this->getSettings())) {
+                $settings[$key] = $this->getSettings()[$key];
+            } else {
+                return array();
+            }
+        }
+        return $settings;
+    }
+
+    /**
+     * hasValidCriteria
+     * Checking if the widget has valid criteria
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    public function hasValidCriteria() {
+        if (empty(static::$criteriaSettings)) {
+            return TRUE;
+        }
+        $criteria = $this->getCriteria();
+        foreach (static::$criteriaSettings as $setting) {
+            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
+                return FALSE;
+        }
+        return TRUE;
     }
 
     /**
