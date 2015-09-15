@@ -332,6 +332,14 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
         } else if (count($pages) == 1) {
+            $pageId = array_keys($pages)[0];
+            $page = new FacebookPage(array(
+                'id'   => $pageId,
+                'name' => $pages[$pageId]
+            ));
+            $page->user()->associate(Auth::user());
+            $page->save();
+
             $settings = array('page' => array_keys($pages)[0]);
             $connector = new FacebookConnector(auth::user());
             $connector->createDataManagers($settings);
@@ -459,7 +467,12 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
-            $settings = array('property' => explode(',', array_keys($properties)[0])[1]);
+            $ids = explode(',', array_keys($properties)[0]);
+            $accountId = $ids[0];
+            $propertyId = $ids[1];
+
+
+            $settings = array('property' => $propertyId);
             $connector = new GoogleAnalyticsConnector(Auth::user());
             $connector->createDataManagers($settings);
 
