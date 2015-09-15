@@ -116,7 +116,7 @@ class DataManager extends Eloquent
     }
 
     public function getSpecific() {
-        $className = str_replace('Widget', 'DataManager', WidgetDescriptor::find($this->descriptor_id)->getClassName());
+        $className = WidgetDescriptor::find($this->descriptor_id)->getDMClassName();
         return $className::find($this->id);
     }
 
