@@ -91,13 +91,6 @@ class FacebookDataCollector
 
         $pages = array();
         foreach ($response->getGraphEdge() as $graphNode) {
-            $page = new FacebookPage(array(
-                'id'   => $graphNode['id'],
-                'name' => $graphNode['name']
-            ));
-            $page->user()->associate($this->user);
-            $page->save();
-
             $pages[$graphNode['id']] = $graphNode['name'];
         }
         return $pages;
