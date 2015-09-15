@@ -63,10 +63,20 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDeleteDashboard($dashboardId) {
+        /* Get the dashboard */
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
+        
+        /* Track event | DELETE DASHBOARD */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Dashboard deleted', 
+            'el' => $dashboard->name)
+        );
+
+        /* Delete the dashboard*/
         $dashboard->delete();
 
         /* Return. */
@@ -177,6 +187,13 @@ class DashboardController extends BaseController
         ));
         $dashboard->user()->associate(Auth::user());
         $dashboard->save();
+
+        /* Track event | ADD DASHBOARD */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Dashboard added', 
+            'el' => $dashboard->name)
+        );
 
         /* Return. */
         return Response::json(TRUE);

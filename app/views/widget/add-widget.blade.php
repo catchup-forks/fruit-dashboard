@@ -41,7 +41,6 @@
                 </div> <!-- /.list-group -->
 
                 <div class="alert alert-info alert-dismissible" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   Can't find the service you were looking for?
                   <strong><a href="https://fruitdashboard.uservoice.com" target="_blank">Tell us</a>.</strong>
                 </div> <!-- /.alert -->
