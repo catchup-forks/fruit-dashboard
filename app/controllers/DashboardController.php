@@ -68,11 +68,11 @@ class DashboardController extends BaseController
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
-        
+
         /* Track event | DELETE DASHBOARD */
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
-            'en' => 'Dashboard deleted', 
+            'en' => 'Dashboard deleted',
             'el' => $dashboard->name)
         );
 
@@ -191,7 +191,7 @@ class DashboardController extends BaseController
         /* Track event | ADD DASHBOARD */
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
-            'en' => 'Dashboard added', 
+            'en' => 'Dashboard added',
             'el' => $dashboard->name)
         );
 
