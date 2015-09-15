@@ -1,4 +1,4 @@
-ú@extends('meta.base-user')
+@extends('meta.base-user')
 
   @section('pageTitle')
     Financial connections
