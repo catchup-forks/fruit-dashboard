@@ -42,7 +42,7 @@
       labels = [];
       loadWidget({{$widget->id}}, function (data) {
         histogram = updateHistogramWidget(data, canvas, name, valueSpan);
-        values = historgam['values'];
+        values = histogram['values'];
         labels = histogram['labels'];
         canvas = $("#{{ $widget->id }}-chart");
       });
