@@ -290,10 +290,6 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'facebook_likes_count',
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
-                    'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
                 )
             );
         } /* !App::environment('production')*/
@@ -356,6 +352,17 @@ class WidgetDescriptorSeeder extends Seeder
                 'min_rows'     => 2,
                 'default_cols' => 5,
                 'default_rows' => 3
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_sessions_count'],
+            array(
+                'name'        => 'Sessions count',
+                'description' => 'The total number of sessions',
+                'type'        => 'google_analytics_sessions_count',
+                'category'    => 'google_analytics',
+                'is_premium'  => TRUE,
             )
         );
 

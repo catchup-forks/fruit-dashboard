@@ -123,6 +123,7 @@ abstract class GoogleConnector extends GeneralServiceConnector
 
         if (($token['created'] + $token['expires_in']) < Carbon::now()->timestamp) {
             $this->refreshToken();
+            $connection = $this->getConnection();
         }
 
         $this->client->setAccessToken($connection->access_token);

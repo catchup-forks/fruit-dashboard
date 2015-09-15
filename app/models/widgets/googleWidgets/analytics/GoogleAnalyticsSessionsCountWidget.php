@@ -1,8 +1,8 @@
 <?php
 
-class FacebookLikesCountWidget extends CountWidget
+class GoogleAnalyticsSessionsCountWidget extends CountWidget
 {
-    protected static $histogramDescriptor = 'facebook_likes';
+    protected static $histogramDescriptor = 'google_analytics_sessions';
 
     /* -- Settings -- */
     public static $settingsFields = array(
@@ -18,22 +18,22 @@ class FacebookLikesCountWidget extends CountWidget
             'validation' => 'required',
             'default'    => '1'
         ),
-        'page' => array(
-            'name'       => 'Page',
+        'property' => array(
+            'name'       => 'Property',
             'type'       => 'SCHOICE',
             'validation' => 'required'
         )
     );
-    public static $setupSettings = array('page');
-    public static $criteriaSettings = array('page');
+    public static $setupSettings = array('property');
+    public static $criteriaSettings = array('property');
 
     /* Choices functions */
-    public function page() {
-        $pages = array();
-        foreach ($this->user()->facebookPages as $page) {
-            $pages[$page->id] = $page->name;
+    public function property() {
+        $properties = array();
+        foreach ($this->user()->googleAnalyticsProperties as $property) {
+            $properties[$property->id] = $property->name;
         }
-        return $pages;
+        return $properties;
     }
 
 }
