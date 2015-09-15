@@ -25,7 +25,7 @@
 
                 <div class="list-group margin-top-sm">
 
-               @foreach (SiteConstants::getWebAnalyticsServices() as $service)
+               @foreach (SiteConstants::getServicesMetaByType('webAnalytics') as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}

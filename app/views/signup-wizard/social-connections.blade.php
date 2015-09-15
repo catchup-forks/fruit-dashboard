@@ -25,7 +25,7 @@
 
                 <div class="list-group margin-top-sm">
 
-               @foreach (SiteConstants::getSocialServices() as $service)
+               @foreach (SiteConstants::getServicesMetaByType('social') as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
