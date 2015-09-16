@@ -150,34 +150,7 @@ class SignupWizardController extends BaseController
 
         /* Save the user */
         $user->save();
-
-        /* Create default settings for the user */
-        $settings = new Settings;
-        $settings->user()->associate($user);
-        $settings->newsletter_frequency = 0;
-
-        /* Save settings */
-        $settings->save();
-
-        /* Create default background for the user */
-        $background = new Background;
-        $background->user()->associate($user);
-        $background->changeUrl();
-
-        /* Save background */
-        $background->save();
-
-        /* Create default subscription for the user */
-        $plan = Plan::getFreePlan();
-        $subscription = new Subscription;
-        $subscription->user()->associate($user);
-        $subscription->plan()->associate($plan);
-        $subscription->status = 'active';
-        $subscription->trial_status = 'possible';
-        $subscription->trial_start  = null;
-
-        /* Save subscription */
-        $subscription->save();
+        $user->createDefaultProfile();
 
         /* Return */
         return $user;
@@ -208,7 +181,7 @@ class SignupWizardController extends BaseController
         $dashboard->save();
 
         /* Create clock widget */
-        if (($mode == 'auto') or 
+        if (($mode == 'auto') or
             array_key_exists('widget-clock', $widgetdata)) {
             $clockwidget = new ClockWidget(array(
                 'state'    => 'active',

@@ -233,6 +233,28 @@ class ServiceConnectionController extends BaseController
      */
 
     /**
+     * anyFacebookLogin
+     * --------------------------------------------------
+     * @return logs a user in with facebook.
+     * --------------------------------------------------
+     */
+    public function anyFacebookLogin() {
+        if (Input::get('code', FALSE)) {
+            /* Oauth ready. */
+            FacebookConnector::loginWithFacebook();
+            return Redirect::route('signup-wizard.financial-connections')
+                ->with('success', 'Facebook login successful');
+
+        } else if (Input::get('error', FALSE)) {
+            log::info("error");
+            /* User declined */
+            return Redirect::route('signin')
+                ->with('error', 'You\'ve declined the request.');
+        }
+        return Redirect::to(FacebookConnector::getFacebookLoginUrl());
+    }
+
+    /**
      * anyFacebookConnect
      * --------------------------------------------------
      * @return connects a user to facebook.
