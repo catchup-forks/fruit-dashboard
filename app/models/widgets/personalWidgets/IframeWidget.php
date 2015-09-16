@@ -3,7 +3,7 @@
 class IframeWidget extends Widget
 {
     /* -- Settings -- */
-    protected static $iframeSettings = array(
+    private static $iframeSettings = array(
         'url' => array(
             'name'       => 'Iframe URL',
             'type'       => 'TEXT',
@@ -24,7 +24,7 @@ class IframeWidget extends Widget
         ),
    );
     /* The settings to setup in the setup-wizard. */
-    public static $url = array('url');
+    private static $url = array('url');
 
     /**
      * getSettingsFields

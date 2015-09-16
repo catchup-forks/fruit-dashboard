@@ -3,7 +3,7 @@
 class WebhookHistogramWidget extends MultipleHistogramWidget
 {
     /* -- Settings -- */
-    protected static $webhookSettings = array(
+    private static $webhookSettings = array(
         'url' => array(
             'name'       => 'Webhook url',
             'type'       => 'TEXT',
@@ -19,8 +19,8 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
    );
 
     /* The settings to setup in the setup-wizard. */
-    protected static $webhookSetupFields = array('name', 'url');
-    protected static $webhookCriteriaFields = array('url');
+    private static $webhookSetupFields = array('name', 'url');
+    private static $webhookCriteriaFields = array('url');
 
     /* -- Choice functions -- */
     public function resolution() {

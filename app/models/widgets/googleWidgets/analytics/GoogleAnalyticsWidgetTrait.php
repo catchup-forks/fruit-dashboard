@@ -3,7 +3,7 @@
 trait GoogleAnalyticsWidgetTrait
 {
     /* -- Settings -- */
-    public static $propertySettings = array(
+    private static $propertySettings = array(
         'property' => array(
             'name'       => 'Property',
             'type'       => 'SCHOICE',
@@ -11,7 +11,7 @@ trait GoogleAnalyticsWidgetTrait
             'help_text'  => 'The widget uses this Google Analytics property (website, mobile app, etc.) for data representation.'
         )
     );
-    protected static $property = array('property');
+    private static $property = array('property');
 
     /**
      * getSettingsFields

@@ -3,7 +3,7 @@
 abstract class HistogramWidget extends CronWidget
 {
     /* -- Settings -- */
-    protected static $resolutionSettings = array(
+    private static $resolutionSettings = array(
         'resolution' => array(
             'name'       => 'Resolution',
             'type'       => 'SCHOICE',

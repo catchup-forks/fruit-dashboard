@@ -3,7 +3,7 @@
 trait FacebookWidgetTrait
 {
     /* -- Settings -- */
-    protected static $pageSettings = array(
+    private static $pageSettings = array(
         'page' => array(
             'name'       => 'Page',
             'type'       => 'SCHOICE',
@@ -11,7 +11,7 @@ trait FacebookWidgetTrait
             'help_text'  => 'The widget uses this facebook page for data representation.'
         )
     );
-    protected static $page = array('page');
+    private static $page = array('page');
 
     /* Choices functions */
     public function page() {

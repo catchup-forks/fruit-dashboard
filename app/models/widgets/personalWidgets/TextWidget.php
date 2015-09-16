@@ -3,7 +3,7 @@
 class TextWidget extends Widget
 {
     /* -- Settings -- */
-    public static $textSettings = array(
+    private static $textSettings = array(
         'text' => array(
             'name'       => 'Text',
             'type'       => 'TEXT',
@@ -11,7 +11,7 @@ class TextWidget extends Widget
         ),
    );
     /* The settings to setup in the setup-wizard. */
-    public static $textSetupFields = array('text');
+    private static $textSetupFields = array('text');
 
     /**
      * getSettingsFields
