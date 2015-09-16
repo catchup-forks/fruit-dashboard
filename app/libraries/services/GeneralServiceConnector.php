@@ -30,7 +30,7 @@ abstract class GeneralServiceConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
+        if ( ! $this->user->isServiceConnected(static::$service)) {
             throw new ServiceNotConnected(static::$service . ' service is not connected.', 1);
         }
         /* Deleting connection */
@@ -63,7 +63,7 @@ abstract class GeneralServiceConnector
      */
     protected function getConnection() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
+        if ( ! $this->user->isServiceConnected(static::$service)) {
             throw new ServiceNotConnected(static::$service . ' service is not connected.', 1);
         }
         $connection = $this->user->connections()

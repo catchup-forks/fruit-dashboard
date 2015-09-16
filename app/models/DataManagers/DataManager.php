@@ -100,8 +100,8 @@ class DataManager extends Eloquent
         if (isset($widget->data)) {
             $generalManager->data()->associate($widget->data);
         } else {
-           $data = Data::create(array('raw_value' => '[]'));
-           $generalManager->data()->associate($data);
+            $data = Data::create(array('raw_value' => '[]'));
+            $generalManager->data()->associate($data);
         }
 
         /* Saving changes. */

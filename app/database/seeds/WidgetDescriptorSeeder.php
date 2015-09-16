@@ -432,6 +432,21 @@ class WidgetDescriptorSeeder extends Seeder
                     'default_rows' => 1
                 )
             );
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'google_analytics_top_sources'],
+                array(
+                    'name'        => 'Top sources',
+                    'description' => '',
+                    'type'        => 'google_analytics_top_sources',
+                    'category'    => 'google_analytics',
+                    'is_premium'  => TRUE,
+                    'number'       => 3,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 6,
+                    'default_rows' => 6
+                )
+            );
         } /* !App::environment('production')*/
 
         /* Send message to console */

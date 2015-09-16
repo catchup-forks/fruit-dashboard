@@ -136,7 +136,7 @@ class GoogleAnalyticsDataCollector
             if (count($rows) > 0) {
                 /* Populating metricsData. */
                 if ($useDimensions) {
-                    $metricsData = $this->buildDimensionsData($metrics, $rows);
+                    $metricsData = $this->buildDimensionsData($metrics, $rows, $profileName);
                 } else {
                     $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
                 }
@@ -179,10 +179,11 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
     * @param array $metrics
     * @param array $rows
+    * @param string $profileName
     * @return array
      * --------------------------------------------------
     */
-    private function buildDimensionsData($metrics, $rows) {
+    private function buildDimensionsData($metrics, $rows, $profileName) {
         /* Creating metrics array. */
         $metricsData = array();
         foreach ($metrics as $metric) {

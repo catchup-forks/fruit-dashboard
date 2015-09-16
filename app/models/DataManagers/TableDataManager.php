@@ -1,8 +1,27 @@
 <?php
 
 /* This class is responsible for table widgets data collection. */
-class TableDataManager extends DataManager
+abstract class TableDataManager extends DataManager
 {
+    abstract public function updateTable();
+
+    public function initializeData() {
+        $this->updateTable();
+    }
+
+    /**
+     * hasCol
+     * Returns whether or not the col exists.
+     * --------------------------------------------------
+     * @param string $col
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function hasCol($col) {
+        $header = $this->getHeader();
+        return array_key_exists($col, $header);
+    }
+
     /**
      * getHeader
      * Returns the header from data.
@@ -105,9 +124,6 @@ class TableDataManager extends DataManager
         $currentData = $this->getContent();
         $entry = array();
         foreach ($this->getHeader() as $name=>$key) {
-            Log::info($name);
-            Log::info($key);
-            Log::info("----");
             if (array_key_exists($key, $data)) {
                 $entry[$key] = $data[$key];
             } else if (array_key_exists($name, $data)) {
