@@ -149,7 +149,7 @@ class FacebookConnector extends GeneralServiceConnector
      * loginWithFacebook
      * Logs a user in with facebook.
      * --------------------------------------------------
-     * @return None
+     * @return string (route)
      * --------------------------------------------------
      */
     public static function loginWithFacebook() {
@@ -176,9 +176,10 @@ class FacebookConnector extends GeneralServiceConnector
             ));
             $user->createDefaultProfile();
             Auth::login($user);
-
+            return 'signup-wizard.financial-connections';
         } else {
             Auth::login($registeredUser);
+            return 'dashboard.dashboard';
         }
     }
 
