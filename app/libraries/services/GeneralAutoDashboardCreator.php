@@ -65,7 +65,7 @@ abstract class GeneralAutoDashboardCreator {
      * Creating the widgets and adding them to the dashboard.
      */
     protected function createWidgets() {
-        foreach(WidgetDescriptor::where('category', static::$service)->get() as $descriptor) {
+        foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
             if (array_key_exists($descriptor->type, static::$positioning)) {
                 /* Creating widget instance. */
                 $className = $descriptor->getClassName();

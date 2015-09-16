@@ -103,7 +103,7 @@ abstract class GeneralServiceConnector
      */
     public function createDataManagers(array $criteria=array()) {
         $dataManagers = array();
-        foreach(WidgetDescriptor::where('category', static::$service)->get() as $descriptor) {
+        foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
             /* Creating widget instance. */
             $className = $descriptor->getDMClassName();
 
