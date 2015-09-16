@@ -329,14 +329,12 @@ class Widget extends Eloquent
     */
     protected function checkSettingsIntegrity() {
         if (is_null($this->getSettings())) {
-            $this->state = 'setup_required';
-            $this->save();
+            $this->setState('setup_required');
             return ;
         }
         foreach ($this->getSettingsFields() as $key=>$value) {
             if ( ! array_key_exists($key, $this->getSettings())) {
-                $this->state = 'setup_required';
-                $this->save();
+            $this->setState('setup_required');
             }
         }
     }
