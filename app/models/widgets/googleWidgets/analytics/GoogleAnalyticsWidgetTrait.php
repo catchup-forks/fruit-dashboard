@@ -1,16 +1,9 @@
 <?php
 
-abstract class GeneralGoogleAnalyticsWidget extends MultipleHistogramWidget
+trait GoogleAnalyticsWidgetTrait
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
-        'resolution' => array(
-            'name'       => 'Resolution',
-            'type'       => 'SCHOICE',
-            'validation' => 'required',
-            'default'    => 'daily',
-            'help_text'  => 'The resolution of the chart.'
-        ),
+    public static $propertySettings = array(
         'property' => array(
             'name'       => 'Property',
             'type'       => 'SCHOICE',
@@ -18,8 +11,40 @@ abstract class GeneralGoogleAnalyticsWidget extends MultipleHistogramWidget
             'help_text'  => 'The widget uses this Google Analytics property (website, mobile app, etc.) for data representation.'
         )
     );
-    public static $setupSettings = array('property');
-    public static $criteriaSettings = array('property');
+    protected static $property = array('property');
+
+    /**
+     * getSettingsFields
+     * --------------------------------------------------
+     * Returns the updated settings fields
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$propertySettings);
+    }
+
+    /**
+     * getSetupFields
+     * --------------------------------------------------
+     * Updating setup fields.
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), self::$property);
+    }
+
+    /**
+     * getCriteriaSettings
+     * --------------------------------------------------
+     * Updating criteria fields.
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getCriteriaSettings() {
+        return array_merge(parent::getSetupFields(), self::$property);
+    }
 
     /* Choices functions */
     public function property() {

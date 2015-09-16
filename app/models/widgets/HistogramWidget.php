@@ -3,7 +3,7 @@
 abstract class HistogramWidget extends CronWidget
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
+    protected static $resolutionSettings = array(
         'resolution' => array(
             'name'       => 'Resolution',
             'type'       => 'SCHOICE',
@@ -12,9 +12,6 @@ abstract class HistogramWidget extends CronWidget
             'help_text'  => 'The resolution of the chart.'
         ),
     );
-
-    /* The settings to setup in the setup-wizard.*/
-    public static $setupSettings = array();
 
     /* -- Choice functions -- */
     public function resolution() {
@@ -38,6 +35,17 @@ abstract class HistogramWidget extends CronWidget
      }
 
     /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$resolutionSettings);
+     }
+
+    /**
      * premiumUserCheck
      * Returns whether or not the resolution is a premium feature.
      * --------------------------------------------------
@@ -51,7 +59,7 @@ abstract class HistogramWidget extends CronWidget
         }
 
         /* The resolution is set to default. */
-        if (static::$settingsFields['resolution']['default'] == $this->getSettings()['resolution']) {
+        if (static::getSettingsFields()['resolution']['default'] == $this->getSettings()['resolution']) {
             return TRUE;
         }
 

@@ -233,6 +233,25 @@ class ServiceConnectionController extends BaseController
      */
 
     /**
+     * anyFacebookLogin
+     * --------------------------------------------------
+     * @return logs a user in with facebook.
+     * --------------------------------------------------
+     */
+    public function anyFacebookLogin() {
+        if (Input::get('code', FALSE)) {
+            /* Oauth ready. */
+            return Redirect::route(FacebookConnector::loginWithFacebook())
+                ->with('success', 'Facebook login successful');
+        } else if (Input::get('error', FALSE)) {
+            /* User declined */
+            return Redirect::route('auth.signin')
+                ->with('error', 'You\'ve declined the request.');
+        }
+        return Redirect::to(FacebookConnector::getFacebookLoginUrl());
+    }
+
+    /**
      * anyFacebookConnect
      * --------------------------------------------------
      * @return connects a user to facebook.
@@ -537,6 +556,7 @@ class ServiceConnectionController extends BaseController
 
         /* Populating GA data. */
         $connector->populateData();
+        $message = 'Connection successful.';
 
         /* Creating dashboards if necessary. */
         if (Session::pull('createDashboard')) {
@@ -546,10 +566,11 @@ class ServiceConnectionController extends BaseController
                 );
                 $dashboardCreator->create($property->name);
             }
+            $message .= ' Your dashboards are being created at the moment.';
         }
 
         return Redirect::to($this->getReferer())
-            ->with('success', 'Your dashboards are being created at the moment.');
+            ->with('success', $message);
     }
     /**
      * ================================================== *

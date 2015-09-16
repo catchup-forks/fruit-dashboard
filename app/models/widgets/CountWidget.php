@@ -5,7 +5,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     protected static $histogramDescriptor = '';
 
     /* -- Settings -- */
-    public static $settingsFields = array(
+    protected static $countWidgetSettings = array(
         'period' => array(
             'name'       => 'Period',
             'type'       => 'SCHOICE',
@@ -31,6 +31,16 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         );
     }
 
+    /**
+     * getSettingsFields
+     * --------------------------------------------------
+     * Returns the updated settings fields
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$countWidgetSettings);
+    }
     /**
      * getDataManager
      * Returning the corresponding DataManager

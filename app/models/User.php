@@ -83,7 +83,7 @@ class User extends Eloquent implements UserInterface
 
                 /* Return */
                 return $dashboard;
-            
+
             /* No dashboard object exists */
             } else {
                 /* Create a new dashboard objec*/
@@ -101,6 +101,42 @@ class User extends Eloquent implements UserInterface
                 return $dashboard;
             }
         }
+    }
+
+    /**
+     * createDefaultProfile
+     * Creating a default profile for the user including
+     * settings, background, subscription.
+     */
+    public function createDefaultProfile() {
+        /* Create default settings for the user */
+        $settings = new Settings;
+        $settings->user()->associate($this);
+        $settings->newsletter_frequency = 0;
+
+        /* Save settings */
+        $settings->save();
+
+        /* Create default background for the user */
+        $background = new Background;
+        $background->user()->associate($this);
+        $background->changeUrl();
+
+        /* Save background */
+        $background->save();
+
+        /* Create default subscription for the user */
+        $plan = Plan::getFreePlan();
+        $subscription = new Subscription;
+        $subscription->user()->associate($this);
+        $subscription->plan()->associate($plan);
+        $subscription->status = 'active';
+        $subscription->trial_status = 'possible';
+        $subscription->trial_start  = null;
+
+        /* Save subscription */
+        $subscription->save();
+
     }
 
 }

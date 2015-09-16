@@ -1,7 +1,8 @@
 <?php
 
-class GoogleAnalyticsBounceRateDataManager extends GeneralGoogleAnalyticsDataManager
+class GoogleAnalyticsBounceRateDataManager extends MultipleHistogramDataManager
 {
+    use GoogleAnalyticsDataManagerTrait;
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);
