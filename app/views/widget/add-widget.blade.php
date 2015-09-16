@@ -30,7 +30,20 @@
                   
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
                     
-                    <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}">
+                    <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
+                      @if($group['type'] == 'service')
+                        <small>
+                          @if(Auth::user()->isServiceConnected($group['name']))
+                            <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive"></span>
+                          @else
+                            <span class="fa fa-circle text-danger" data-connected="false" data-redirect-url="{{ route($group['connect_route']) }}" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
+                          @endif
+                        </small>
+                      @else
+                        <small>
+                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
+                        </small>
+                      @endif
                       {{ $group['display_name'] }}
                       {{-- This is the span for the selection icon --}}
                       <span class="selection-icon"> </span>
@@ -75,30 +88,36 @@
 
               <!-- widget description col -->
                 <div class="col-md-5">
-                  @foreach ($widgetDescriptors as $descriptor)
-                    <div data-descriptor-type="widget-{{$descriptor->type}}" data-descriptor-id="{{$descriptor->id}}" class="descriptors not-visible">
-                        <div class="row">
-                          <div class="col-md-12">
-                            
-                              <h3 class="descriptor-name text-center">{{ $descriptor->name }}
-                              </h3> <!-- /.descriptor-name -->
-                              {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
-                                  'class' => 'img-responsive img-rounded center-block'
-                              ))}}
-                              
-                          </div> <!-- /.col-md-12 -->
-                        </div> <!-- /.row -->
-                        
-                        <div class="row">
-                          <div class="col-md-12">
-                            <p id="" class="lead margin-top-sm descriptor-description">{{ $descriptor->description }}</p>
-                            <hr>
-                          </div> <!-- /.col-md-12 -->
-                        </div> <!-- /.row -->
+                  
+                  @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
-                    </div> <!-- /.descriptors -->
+                    @foreach($group['descriptors'] as $descriptor)
+
+                      <div data-descriptor-type="widget-{{$descriptor->type}}" data-descriptor-id="{{$descriptor->id}}" class="descriptors not-visible">
+                          <div class="row">
+                            <div class="col-md-12">
+                              
+                                <h3 class="descriptor-name text-center">{{ $descriptor->name }}
+                                </h3> <!-- /.descriptor-name -->
+                                {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
+                                    'class' => 'img-responsive img-rounded center-block'
+                                ))}}
+                                
+                            </div> <!-- /.col-md-12 -->
+                          </div> <!-- /.row -->
+                          
+                          <div class="row">
+                            <div class="col-md-12">
+                              <p id="" class="lead margin-top-sm descriptor-description">{{ $descriptor->description }}</p>
+                              <hr>
+                            </div> <!-- /.col-md-12 -->
+                          </div> <!-- /.row -->
+
+                      </div> <!-- /.descriptors -->
                         
                     <!-- / widget description col -->
+
+                    @endforeach
 
                   @endforeach
                 
@@ -155,7 +174,7 @@
       var ext = ".png";
 
       // Select the first available group and filter the widgets.
-      $('[data-selection="group"]').find('span').first().toggleClass('fa fa-check text-success pull-right');
+      $('[data-selection="group"]').find('.selection-icon').first().toggleClass('fa fa-check text-success pull-right');
       filterWidgets($('[data-selection="group"]').first().data('group'));
 
       selectFirstWidgetFromGroup($('[data-selection="group"]').first().data('group'));
@@ -223,8 +242,36 @@
         removeSelectionFromContext(context);
 
         // Add checkmark to the clicked one.
-        $(this).find('span').first().toggleClass('fa fa-check text-success pull-right');
+        $(this).find('.selection-icon').first().toggleClass('fa fa-check text-success pull-right');
+   
+      });
+
+      // Listen clicks on Add widget button.
+      $('#add-widget-submit-button').click(function(e){
         
+        var firstCheckedGroup = $('.fa-check').first().parent();
+        var groupConnectionMarker = firstCheckedGroup.find('span').first();
+
+        // If the selected group is a service and is not connected show a confirm modal for redirection.
+        if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
+          e.preventDefault()
+
+          var url = groupConnectionMarker.data('redirect-url');
+
+          bootbox.confirm({
+              title: 'Fasten seatbelts, redirection ahead',
+              message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+              // On clicking OK redirect to service connection route.
+              callback: function(result) {
+                  if (result) {
+                    window.location = url;
+                  }
+              }
+          });
+                    
+        } else {
+          return true;
+        }
       });
 
 
