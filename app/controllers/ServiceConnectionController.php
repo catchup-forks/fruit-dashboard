@@ -349,7 +349,7 @@ class ServiceConnectionController extends BaseController
                 $dashboardCreator = new FacebookAutoDashboardCreator(
                     Auth::user(), $settings
                 );
-                $dashboardCreator->create();
+                $dashboardCreator->create($pages[$pageId]);
             }
 
             return Redirect::to($this->getReferer());
@@ -397,7 +397,7 @@ class ServiceConnectionController extends BaseController
                 $dashboardCreator = new FacebookAutoDashboardCreator(
                     Auth::user(), array('page' => $page->id)
                 );
-                $dashboardCreator->create();
+                $dashboardCreator->create($page->name);
             }
         }
 
@@ -467,10 +467,18 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
-            $ids = explode(',', array_keys($properties)[0]);
+            $key = array_keys($properties)[0];
+            $ids = explode(',', $key);
             $accountId = $ids[0];
             $propertyId = $ids[1];
 
+            $property = new GoogleAnalyticsProperty(array(
+                'id'         => $propertyId,
+                'name'       => $properties[$key],
+                'account_id' => $accountId
+            ));
+            $property->user()->associate(Auth::user());
+            $property->save();
 
             $settings = array('property' => $propertyId);
             $connector = new GoogleAnalyticsConnector(Auth::user());
@@ -481,8 +489,7 @@ class ServiceConnectionController extends BaseController
                 $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
                     Auth::user(), $settings
                 );
-
-                $dashboardCreator->create();
+                $dashboardCreator->create($properties[$key]);
             }
             return Redirect::to($this->getReferer());
         }
@@ -537,7 +544,7 @@ class ServiceConnectionController extends BaseController
                 $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
                     Auth::user(), array('property' => $property->id)
                 );
-                $dashboardCreator->create();
+                $dashboardCreator->create($property->name);
             }
         }
 

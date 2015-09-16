@@ -42,18 +42,19 @@ abstract class GeneralAutoDashboardCreator {
         $this->widgetSettings = $widgetSettings;
     }
 
-    public function create() {
-        $this->createDashboard();
+    public function create($dashboard_name=null) {
+
+        $this->createDashboard(is_null($dashboard_name) ? ucwords(str_replace('_', ' ', static::$service)) : $dashboard_name);
         $this->createWidgets();
     }
 
     /**
      * Creating a dashboard.
      */
-    protected function createDashboard() {
+    protected function createDashboard($dashboard_name) {
         /* Creating dashboard. */
         $this->dashboard = new Dashboard(array(
-            'name'       => ucwords(str_replace('_', ' ', static::$service)) . ' dashboard',
+            'name'       => $dashboard_name . ' dashboard',
             'background' => TRUE,
             'number'     => $this->user->dashboards->max('number') + 1
         ));
