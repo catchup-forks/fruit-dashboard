@@ -1,3 +1,6 @@
+@if ( ! $widget->premiumUserCheck())
+  @include('widget.widget-premium-not-allowed', ['feature' => $widget->getSettings()['resolution'] . ' statistics'])
+@else
 <div class="text-center margin-top-sm">
   <span class="text-white drop-shadow">
       {{ $widget->descriptor->name }}
@@ -15,8 +18,10 @@
     Click
    <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
 </div>
+@endif
 
 @section('widgetScripts')
+@if ($widget->premiumUserCheck())
 <script type="text/javascript">
   $(document).ready(function(){
     // Default values.
@@ -69,5 +74,5 @@
 
   });
 </script>
-
+@endif
 @append

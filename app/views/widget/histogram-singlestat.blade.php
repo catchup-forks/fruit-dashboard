@@ -16,11 +16,11 @@ Widget stats
 
   <div class="row">
     <div class="col-md-10 col-md-offset-1">
-    @foreach ($widget->frequency() as $frequency=>$value)
+    @foreach ($widget->resolution() as $resolution=>$value)
       {{-- Check Premium feature and disable charts if needed --}}
       @if (!Auth::user()->subscription->getSubscriptionInfo()['PE'])
         {{-- Allow the default chart, disable others --}}
-        @if ($frequency != $widget->getSettingsFields()['frequency']['default'])
+        @if ($resolution != $widget->getSettingsFields()['resolution']['default'])
           @include('widget.widget-singlestat-premium-feature-needed')
         @else
           @include('widget.widget-singlestat-element')
@@ -45,22 +45,22 @@ Widget stats
 
   <script type="text/javascript">
     $(document).ready(function () {
-      var frequencies = [@foreach (array_keys($widget->frequency()) as $frequency) '{{$frequency}}', @endforeach];
+      var resolutions = [@foreach (array_keys($widget->resolution()) as $resolution) '{{$resolution}}', @endforeach];
 
       function loadStat(i, callback) {
-        if (i >= frequencies.length) {
+        if (i >= resolutions.length) {
           return callback();
         }
         var postData = {
-          'frequency': frequencies[i],
+          'resolution': resolutions[i],
           'state_query': true
         };
-        var canvas = $("#chart-" + frequencies[i]);
+        var canvas = $("#chart-" + resolutions[i]);
         sendAjax(postData, {{ $widget->id }}, function (data) {
           @if($widget instanceof MultipleHistogramWidget )
-            updateMultipleHistogramWidget(data['data'], canvas, frequencies[i]);
+            updateMultipleHistogramWidget(data['data'], canvas, resolutions[i]);
           @else
-            updateHistogramWidget(data['data'], canvas, frequencies[i]);
+            updateHistogramWidget(data['data'], canvas, resolutions[i]);
           @endif
           // Recursive call.
           loadStat(++i, callback);

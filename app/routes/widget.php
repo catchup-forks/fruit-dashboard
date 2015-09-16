@@ -62,7 +62,7 @@ Route::group([
         'uses'  => 'GeneralWidgetController@getSinglestat',
     ]);
 
-    Route::any('{widgetID}/pin-to-dashboard/{frequency}', [
+    Route::any('{widgetID}/pin-to-dashboard/{resolution}', [
         'before' => 'auth',
         'as'    => 'widget.pin-to-dashboard',
         'uses'  => 'GeneralWidgetController@anyPinToDashboard',

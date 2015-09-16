@@ -86,20 +86,20 @@ abstract class HistogramDataManager extends DataManager
      * Returning the histogram.
      * --------------------------------------------------
      * @param array $range
-     * @param string $frequency
+     * @param string $resolution
      * @return array
      * --------------------------------------------------
      */
-    public function getHistogram($range, $frequency) {
-        /* Calling proper method based on frequency. */
-        switch ($frequency) {
-            case 'minutely':  return $this->buildHistogram($range, $frequency, 'h:i'); break;
-            case 'hourly':  return $this->buildHistogram($range, $frequency, 'M-d h'); break;
-            case 'daily':   return $this->buildHistogram($range, $frequency, 'M-d'); break;
-            case 'weekly':  return $this->buildHistogram($range, $frequency, 'W'); break;
-            case 'monthly': return $this->buildHistogram($range, $frequency, 'Y-M'); break;
-            case 'yearly':  return $this->buildHistogram($range, $frequency, 'Y'); break;
-            default: return $this->buildHistogram($range, $frequency, 'd'); break;
+    public function getHistogram($range, $resolution) {
+        /* Calling proper method based on resolution. */
+        switch ($resolution) {
+            case 'minutely':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
+            case 'hourly':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
+            case 'daily':   return $this->buildHistogram($range, $resolution, 'M-d'); break;
+            case 'weekly':  return $this->buildHistogram($range, $resolution, 'W'); break;
+            case 'monthly': return $this->buildHistogram($range, $resolution, 'Y-M'); break;
+            case 'yearly':  return $this->buildHistogram($range, $resolution, 'Y'); break;
+            default: return $this->buildHistogram($range, $resolution, 'd'); break;
         }
     }
 
@@ -108,12 +108,12 @@ abstract class HistogramDataManager extends DataManager
      * Returning the Histogram in the range,
      * --------------------------------------------------
      * @param array $range
-     * @param string $frequency
+     * @param string $resolution
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
+    protected function buildHistogram($range, $resolution, $dateFormat='Y-m-d') {
         /* Getting recorded histogram sorted by timestamp. */
         $fullHistogram = $this->getData();
         if ($fullHistogram != null) {
@@ -141,7 +141,7 @@ abstract class HistogramDataManager extends DataManager
             }
             if ($recording) {
                 /* Frequency conditions. */
-                if (( ! $first && static::isBreakPoint($entryTime, $previousEntryTime, $frequency)) || ($entry == $last)) {
+                if (( ! $first && static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) || ($entry == $last)) {
                     if ($entry == $last) {
                         array_push($sampleEntries, $entry);
                     }
@@ -178,22 +178,22 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      * @param Carbon $entryTime
      * @param Carbon $previousEntryTime
-     * @param string $frequency
+     * @param string $resolution
      * @return boolean
      * --------------------------------------------------
     */
-    private static function isBreakPoint($entryTime, $previousEntryTime, $frequency) {
-        if ($frequency == 'minutely') {
+    private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
+        if ($resolution == 'minutely') {
             return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
-        } else if ($frequency == 'hourly') {
+        } else if ($resolution == 'hourly') {
             return $entryTime->format('Y-m-d h') !== $previousEntryTime->format('Y-m-d h');
-        } else if ($frequency == 'daily') {
+        } else if ($resolution == 'daily') {
             return ! $entryTime->isSameDay($previousEntryTime);
-        } else if ($frequency == 'weekly') {
+        } else if ($resolution == 'weekly') {
             return $entryTime->format('Y-W') !== $previousEntryTime->format('Y-W');
-        } else if ($frequency == 'monthly') {
+        } else if ($resolution == 'monthly') {
             return $entryTime->format('Y-m') !== $previousEntryTime->format('Y-m');
-        } else if ($frequency == 'yearly') {
+        } else if ($resolution == 'yearly') {
             return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
         return FALSE;

@@ -332,7 +332,7 @@ class GeneralWidgetController extends BaseController {
      * @return Pinning a widget to dashboard.
      * --------------------------------------------------
      */
-    public function anyPinToDashboard($widgetID, $frequency) {
+    public function anyPinToDashboard($widgetID, $resolution) {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
@@ -344,7 +344,7 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
         $widget->state = 'active';
-        $widget->saveSettings(array('frequency' => $frequency), TRUE);
+        $widget->saveSettings(array('resolution' => $resolution), TRUE);
 
         /* Rendering view. */
         return Redirect::route('dashboard.dashboard')

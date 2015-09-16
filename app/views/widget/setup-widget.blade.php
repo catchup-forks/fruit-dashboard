@@ -39,6 +39,9 @@
                           {{ Form::text($field, $widget->getSettings()[$field], array(
                         'class' => 'form-control' )) }}
                         @endif
+                        @if (array_key_exists('help_text', $meta))
+                          <p class="text-info">{{ $meta['help_text'] }}</p>
+                        @endif
                       </div> <!-- /.col-sm-6 -->
 
                     </div> <!-- /.form-group -->

@@ -4,16 +4,18 @@ abstract class GeneralGoogleAnalyticsWidget extends MultipleHistogramWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
-        'frequency' => array(
-            'name'       => 'Frequency',
+        'resolution' => array(
+            'name'       => 'Resolution',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'daily'
+            'default'    => 'daily',
+            'help_text'  => 'The resolution of the chart.'
         ),
         'property' => array(
             'name'       => 'Property',
             'type'       => 'SCHOICE',
-            'validation' => 'required'
+            'validation' => 'required',
+            'help_text'  => 'The widget uses this Google Analytics property (website, mobile app, etc.) for data representation.'
         )
     );
     public static $setupSettings = array('property');

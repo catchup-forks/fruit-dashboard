@@ -4,16 +4,18 @@ abstract class GeneralFacebookWidget extends HistogramWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
-        'frequency' => array(
-            'name'       => 'Frequency',
+        'resolution' => array(
+            'name'       => 'Resolution',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'daily'
+            'default'    => 'daily',
+            'help_text'  => 'The resolution of the chart.'
         ),
         'page' => array(
             'name'       => 'Page',
             'type'       => 'SCHOICE',
-            'validation' => 'required'
+            'validation' => 'required',
+            'help_text'  => 'The widget uses this facebook page for data representation.'
         )
     );
     public static $setupSettings = array('page');

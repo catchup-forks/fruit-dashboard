@@ -4,21 +4,24 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
 {
     /* -- Settings -- */
     public static $settingsFields = array(
-        'frequency' => array(
-            'name'       => 'Frequency',
+        'resolution' => array(
+            'name'       => 'Resolution',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'daily'
+            'default'    => 'daily',
+            'help_text'  => 'The resolution of the chart.'
         ),
         'url' => array(
             'name'       => 'Webhook url',
             'type'       => 'TEXT',
             'validation' => 'required',
+            'help_text'  => 'The widget data will be populated from data on this url.'
         ),
         'name' => array(
             'name'       => 'Name',
             'type'       => 'TEXT',
             'validation' => 'required',
+            'help_text'  => 'The name of the chart.'
         ),
    );
 
@@ -27,7 +30,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
     public static $criteriaSettings = array('url');
 
     /* -- Choice functions -- */
-    public function frequency() {
+    public function resolution() {
         return array(
             'hourly'  => 'Hourly',
             'daily'   => 'Daily',
