@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralGoogleAnalyticsDataManager extends MultipleHistogramDataManager
+trait GoogleAnalyticsDataManager
 {
     /**
      * getProperty

@@ -37,6 +37,13 @@ class DashboardController extends BaseController
         Log::info($widget->getRelatedWidget());
         Log::info($widget->woohoo("hello", "world"));
         */
+        /*
+        $collector = new GoogleAnalyticsDataCollector(Auth::user());
+        $property = Auth::user()->googleAnalyticsProperties()->first();
+        var_dump($collector->getMetrics($property, '4daysAgo', 'today', array('sessions', 'users')));
+        var_dump($collector->getMetrics($property, '4daysAgo', 'today', array('sessions', 'users'), array('dimensions' => 'ga:source', 'sort' => '-ga:sessions', 'max-results' => '5')));
+        exit(1);
+        */
 
         /* Render the page */
         return View::make('dashboard.dashboard');

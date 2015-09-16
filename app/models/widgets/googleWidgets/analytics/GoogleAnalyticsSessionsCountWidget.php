@@ -2,6 +2,7 @@
 
 class GoogleAnalyticsSessionsCountWidget extends CountWidget
 {
+    use GoogleAnalyticsWidgetTrait;
     protected static $histogramDescriptor = 'google_analytics_sessions';
 
     /* -- Settings -- */
@@ -26,15 +27,6 @@ class GoogleAnalyticsSessionsCountWidget extends CountWidget
     );
     public static $setupSettings = array('property');
     public static $criteriaSettings = array('property');
-
-    /* Choices functions */
-    public function property() {
-        $properties = array();
-        foreach ($this->user()->googleAnalyticsProperties as $property) {
-            $properties[$property->id] = $property->name;
-        }
-        return $properties;
-    }
 
 }
 ?>

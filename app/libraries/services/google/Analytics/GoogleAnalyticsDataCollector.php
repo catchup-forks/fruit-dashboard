@@ -80,41 +80,135 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-     * getMetrics
-     * Retrieving specific metrics for all profiles.
+     * getDimensions
+     * Retrieving specific dimensions for the selected property.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @param string $start
+     * @param string $end
+     * @param array $dimensions
+     * --------------------------------------------------
      */
-    public function getMetrics($property, $start, $end, $metrics) {
+    public function getDimensions($property, $start, $end, $dimensions) {
         /* Creating metrics array. */
-        $metricsData = array();
-        foreach ($metrics as $metric) {
-            $metricsData[$metric] = array();
+        $dimensionsData = array();
+        foreach ($dimensions as $dimension) {
+            $dimensionsData[$dimension] = array();
         }
 
         /* Iterating through the profiles. */
         foreach ($this->getProfiles($property) as $profile) {
             /* Retrieving results from API */
             $results = $this->analytics->data_ga->get(
-               'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics));
+               'ga:' . $profile->getId(),
+               $start,
+               $end,
+               'ga:' . implode(',ga:', $dimensions));
             $rows = $results->getRows();
+            var_dump($rows);
+            exit(1);
+        }
+    }
+
+    /**
+     * getMetrics
+     * Retrieving specific metrics for the selected property.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @param string $start
+     * @param string $end
+     * @param array $metrics
+     * @param array $optParams
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getMetrics($property, $start, $end, $metrics, $optParams=array()) {
+        $useDimensions = array_key_exists('dimensions', $optParams);
+
+        /* Iterating through the profiles. */
+        foreach ($this->getProfiles($property) as $profile) {
+            /* Retrieving results from API */
+            $results = $this->analytics->data_ga->get(
+               'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
+            $rows = $results->getRows();
+            $profileName = $results->getProfileInfo()->getProfileName();
 
             if (count($rows) > 0) {
-                $profileName = $results->getProfileInfo()->getProfileName();
-
                 /* Populating metricsData. */
-                $i = 0;
-                foreach ($metrics as $metric) {
-                    if (!isset($metricsData[$metric][$profileName])) {
-                        $metricsData[$metric][$profileName] = array();
-                    }
-                    array_push($metricsData[$metric][$profileName], $rows[0][$i++]);
+                if ($useDimensions) {
+                    $metricsData = $this->buildDimensionsData($metrics, $rows);
+                } else {
+                    $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
                 }
             }
-        } return $metricsData;
+        }
+        return $metricsData;
+    }
+
+    /**
+    * buildSimpleMetricsData
+    * Building dimension specific data.
+     * --------------------------------------------------
+    * @param array $metrics
+    * @param array  $rows
+    * @param string $profileName
+    * @return array
+     * --------------------------------------------------
+    */
+    private function buildSimpleMetricsData($metrics, $rows, $profileName) {
+        /* Creating metrics array. */
+        $metricsData = array();
+        foreach ($metrics as $metric) {
+            $metricsData[$metric] = array();
+        }
+
+        $i = 0;
+
+        foreach ($metrics as $metric) {
+            if ( ! array_key_exists($profileName, $metricsData[$metric])) {
+                $metricsData[$metric][$profileName] = array();
+            }
+            array_push($metricsData[$metric][$profileName], $rows[0][$i++]);
+        }
+        return $metricsData;
+    }
+
+    /**
+    * buildDimensionsData
+    * Building dimension specific data.
+     * --------------------------------------------------
+    * @param array $metrics
+    * @param array $rows
+    * @return array
+     * --------------------------------------------------
+    */
+    private function buildDimensionsData($metrics, $rows) {
+        /* Creating metrics array. */
+        $metricsData = array();
+        foreach ($metrics as $metric) {
+            $metricsData[$metric] = array();
+        }
+
+        $i = 1;
+        foreach ($metrics as $metric) {
+            foreach ($rows as $row) {
+                if ( ! array_key_exists($row[0], $metricsData[$metric])) {
+                    $metricsData[$metric][$row[0]] = array();
+                }
+                array_push($metricsData[$metric][$row[0]], $row[$i]);
+            }
+            ++$i;
+        }
+        return $metricsData;
     }
 
     /**
      * getAvgSessionDuration
      * Returning the number of sessions.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @return array
+     * --------------------------------------------------
      */
     public function getAvgSessionDuration($property) {
         return $this->getMetrics($property, 'yesterday', 'today', array('avgSessionDuration'))['avgSessionDuration'];
@@ -124,6 +218,10 @@ class GoogleAnalyticsDataCollector
     /**
      * getSessions
      * Returning the number of sessions.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @return array
+     * --------------------------------------------------
      */
     public function getSessions($property) {
         return $this->getMetrics($property, 'yesterday', 'today', array('sessions'))['sessions'];
@@ -132,6 +230,10 @@ class GoogleAnalyticsDataCollector
     /**
      * getBounceRate
      * Returning the percentage of boucne rate.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @return array
+     * --------------------------------------------------
      */
     public function getBounceRate($property) {
         return $this->getMetrics($property, 'yesterday', 'today', array('bounceRate'))['bounceRate'];
@@ -139,6 +241,10 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getProfiles
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @return array
+     * --------------------------------------------------
      */
     private function getProfiles($property) {
         return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->id)->getItems();

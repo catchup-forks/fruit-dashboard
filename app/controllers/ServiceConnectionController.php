@@ -556,6 +556,7 @@ class ServiceConnectionController extends BaseController
 
         /* Populating GA data. */
         $connector->populateData();
+        $message = 'Connection successful.';
 
         /* Creating dashboards if necessary. */
         if (Session::pull('createDashboard')) {
@@ -565,10 +566,11 @@ class ServiceConnectionController extends BaseController
                 );
                 $dashboardCreator->create($property->name);
             }
+            $message .= ' Your dashboards are being created at the moment.';
         }
 
         return Redirect::to($this->getReferer())
-            ->with('success', 'Your dashboards are being created at the moment.');
+            ->with('success', $message);
     }
     /**
      * ================================================== *

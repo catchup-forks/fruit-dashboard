@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralFacebookWidget extends HistogramWidget
+trait FacebookWidgetTrait
 {
     /* -- Settings -- */
     public static $settingsFields = array(

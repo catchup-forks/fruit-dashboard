@@ -170,14 +170,19 @@ class FacebookConnector extends GeneralServiceConnector
         /* Saving user/logging in registered. */
         $registeredUser = User::where('email', $userInfo['email'])->first();
         if (is_null($registeredUser)) {
+            /* New user */
             $user = User::create(array(
                 'email'  => $userInfo['email'],
                 'name'   => $userInfo['first_name'] . ' ' . $userInfo['last_name'],
             ));
             $user->createDefaultProfile();
+
+            /* Authenticate */
             Auth::login($user);
             return 'signup-wizard.financial-connections';
+
         } else {
+            /* User already registered. */
             Auth::login($registeredUser);
             return 'dashboard.dashboard';
         }

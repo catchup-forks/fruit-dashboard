@@ -2,6 +2,7 @@
 
 class FacebookLikesCountWidget extends CountWidget
 {
+    use FacebookWidgetTrait;
     protected static $histogramDescriptor = 'facebook_likes';
 
     /* -- Settings -- */
@@ -26,15 +27,5 @@ class FacebookLikesCountWidget extends CountWidget
     );
     public static $setupSettings = array('page');
     public static $criteriaSettings = array('page');
-
-    /* Choices functions */
-    public function page() {
-        $pages = array();
-        foreach ($this->user()->facebookPages as $page) {
-            $pages[$page->id] = $page->name;
-        }
-        return $pages;
-    }
-
 }
 ?>

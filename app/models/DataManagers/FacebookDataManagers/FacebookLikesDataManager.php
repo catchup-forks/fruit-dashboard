@@ -1,7 +1,8 @@
 <?php
 
-class FacebookLikesDataManager extends GeneralFacebookDataManager
+class FacebookLikesDataManager extends HistogramDataManager
 {
+    use FacebookDataManagerTrait;
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $facebookCollector = new FacebookDataCollector($this->user);
