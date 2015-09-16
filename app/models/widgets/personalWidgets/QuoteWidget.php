@@ -3,16 +3,13 @@
 class QuoteWidget extends CronWidget implements iAjaxWidget
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
+    public static $quoteSettings = array(
         'type' => array(
             'name'    => 'Type',
             'type'    => 'SCHOICE',
+            'default' => 'inspirational'
         ),
     );
-
-    /* The settings to setup in the setup-wizard */
-    public static $setupSettings = array('type');
-    public static $criteriaSettings = array('type');
 
     /* Choices functions */
     public function type() {
@@ -22,6 +19,17 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
             'first-line'    => 'First lines from books',
         );
     }
+
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$quoteSettings);
+     }
 }
 
 ?>

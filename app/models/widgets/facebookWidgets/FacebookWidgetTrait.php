@@ -3,14 +3,7 @@
 trait FacebookWidgetTrait
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
-        'resolution' => array(
-            'name'       => 'Resolution',
-            'type'       => 'SCHOICE',
-            'validation' => 'required',
-            'default'    => 'daily',
-            'help_text'  => 'The resolution of the chart.'
-        ),
+    protected static $pageSettings = array(
         'page' => array(
             'name'       => 'Page',
             'type'       => 'SCHOICE',
@@ -18,8 +11,7 @@ trait FacebookWidgetTrait
             'help_text'  => 'The widget uses this facebook page for data representation.'
         )
     );
-    public static $setupSettings = array('page');
-    public static $criteriaSettings = array('page');
+    protected static $page = array('page');
 
     /* Choices functions */
     public function page() {
@@ -28,6 +20,39 @@ trait FacebookWidgetTrait
             $pages[$page->id] = $page->name;
         }
         return $pages;
+    }
+
+    /**
+     * getSettingsFields
+     * --------------------------------------------------
+     * Returns the updated settings fields
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$pageSettings);
+    }
+
+    /**
+     * getSetupFields
+     * --------------------------------------------------
+     * Updating setup fields.
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), self::$page);
+    }
+
+    /**
+     * getCriteriaSettings
+     * --------------------------------------------------
+     * Updating criteria fields.
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getCriteriaSettings() {
+        return array_merge(parent::getSetupFields(), self::$page);
     }
 
     /**

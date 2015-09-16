@@ -18,9 +18,9 @@ class Widget extends Eloquent
     public $timestamps = FALSE;
 
     /* These variables will be overwritten, with late static binding. */
-    public static $settingsFields = array();
-    public static $setupSettings = array();
-    public static $criteriaSettings = array();
+    protected static $settingsFields = array();
+    protected static $setupSettings = array();
+    protected static $criteriaSettings = array();
 
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -62,8 +62,8 @@ class Widget extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getSettingsFields() {
-        return static::$settingsFields;
+    public static function getSettingsFields() {
+        return self::$settingsFields;
     }
 
     /**
@@ -73,8 +73,19 @@ class Widget extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getSetupFields() {
-        return static::$setupSettings;
+    public static function getSetupFields() {
+        return self::$setupSettings;
+    }
+
+    /**
+     * getCriteriaSettings
+     * Returns the criteria settings.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getCriteriaSettings() {
+        return self::$criteriaSettings;
     }
 
     /**
@@ -124,7 +135,7 @@ class Widget extends Eloquent
     */
     public function getCriteria() {
         $settings = array();
-        foreach (static::$criteriaSettings as $key) {
+        foreach (static::getCriteriaSettings() as $key) {
             if (array_key_exists($key, $this->getSettings())) {
                 $settings[$key] = $this->getSettings()[$key];
             } else {
@@ -146,7 +157,7 @@ class Widget extends Eloquent
             return TRUE;
         }
         $criteria = $this->getCriteria();
-        foreach (static::$criteriaSettings as $setting) {
+        foreach (static::getCriteriaSettings() as $setting) {
             if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
                 return FALSE;
         }
