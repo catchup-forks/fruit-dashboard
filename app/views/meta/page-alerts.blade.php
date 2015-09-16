@@ -1,40 +1,45 @@
+<script type="text/javascript">
+function easyGrowl(type, message, durationMS) {
+  var growlOptions = {
+    message: message,
+    size: "large",
+    duration: durationMS,
+    location: "br"
+  };
+
+  switch(type) {
+    case 'success':
+        growlOptions['title'] = 'Success!';
+        $.growl.notice(growlOptions);
+        break;
+    case 'error':
+        growlOptions['title'] = 'Error!';
+        $.growl.error(growlOptions);
+        break;
+    case 'warning':
+        growlOptions['title'] = 'Warning!';
+        $.growl.warning(growlOptions);
+        break;
+    default:
+        growlOptions['title'] = 'Warning!';
+        $.growl.warning(growlOptions);
+  }
+}
+
 @if (Session::get('error'))
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $.growl.error({
-        message: "{{ Session::get('error')}}",
-        size: "large",
-        duration: 5000,
-        location: "br"
-      });
-    });
-  </script>
+  $(document).ready(function() {
+    easyGrowl('error', "{{ Session::get('error')}}", 5000);
+  });
 @endif
-
 @if (Session::get('success'))
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $.growl.notice({
-        title: "Success!",
-        message: "{{ Session::get('success')}}",
-        size: "large",
-        duration: 5000,
-        location: "br"
-      });
-    });
-  </script>
+  $(document).ready(function() {
+    easyGrowl('success', "{{ Session::get('success')}}", 5000);
+  });
+@endif
+@if (Session::get('warning'))
+  $(document).ready(function() {
+    easyGrowl('warning', "{{ Session::get('warning')}}", 5000);
+  });
 @endif
 
-@if (Session::get('warning'))
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $.growl.warning({
-        title: "Warning!",
-        message: "{{ Session::get('warning')}}",
-        size: "large",
-        duration: 5000,
-        location: "br"
-      });
-    });
-  </script>
-@endif
+</script>
