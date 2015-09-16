@@ -1,6 +1,6 @@
 <?php
-class GoogleAnalyticsBounceRateWidget extends MultipleHistogramWidget;
+class GoogleAnalyticsBounceRateWidget extends MultipleHistogramWidget
 {
-    use GoogleAnalyticsWidgetTrait
+    use GoogleAnalyticsWidgetTrait;
 }
 ?>

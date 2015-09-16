@@ -78,13 +78,13 @@ class Widget extends Eloquent
     }
 
     /**
-     * getCriteriaSettings
+     * getCriteriaFields
      * Returns the criteria settings.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    public static function getCriteriaSettings() {
+    public static function getCriteriaFields() {
         return self::$criteriaSettings;
     }
 
@@ -135,7 +135,7 @@ class Widget extends Eloquent
     */
     public function getCriteria() {
         $settings = array();
-        foreach (static::getCriteriaSettings() as $key) {
+        foreach (static::getCriteriaFields() as $key) {
             if (array_key_exists($key, $this->getSettings())) {
                 $settings[$key] = $this->getSettings()[$key];
             } else {
@@ -153,11 +153,11 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function hasValidCriteria() {
-        if (empty(static::$criteriaSettings)) {
+        if (empty(static::getCriteriaFields())) {
             return TRUE;
         }
         $criteria = $this->getCriteria();
-        foreach (static::getCriteriaSettings() as $setting) {
+        foreach (static::getCriteriaFields() as $setting) {
             if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
                 return FALSE;
         }

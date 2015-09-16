@@ -36,13 +36,13 @@ trait GoogleAnalyticsWidgetTrait
     }
 
     /**
-     * getCriteriaSettings
+     * getCriteriaFields
      * --------------------------------------------------
      * Updating criteria fields.
      * @return array
      * --------------------------------------------------
      */
-    public static function getCriteriaSettings() {
+    public static function getCriteriaFields() {
         return array_merge(parent::getSetupFields(), self::$property);
     }
 

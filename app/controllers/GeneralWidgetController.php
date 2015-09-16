@@ -305,7 +305,7 @@ class GeneralWidgetController extends BaseController {
          /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $options = array();
-        if ($widget instanceof CronWidget && $className::getCriteriaSettings() !== FALSE) {
+        if ($widget instanceof CronWidget && $className::getCriteriaFields() !== FALSE) {
             $options['skipManager'] = TRUE;
         }
         $widget->save($options);

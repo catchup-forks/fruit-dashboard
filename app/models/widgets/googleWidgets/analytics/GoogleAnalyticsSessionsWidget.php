@@ -1,6 +1,6 @@
 <?php
 class GoogleAnalyticsSessionsWidget extends MultipleHistogramWidget
 {
-    use GoogleAnalyticsTrait;
+    use GoogleAnalyticsWidgetTrait;
 }
 ?>

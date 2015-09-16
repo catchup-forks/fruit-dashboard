@@ -3,14 +3,7 @@
 class WebhookHistogramWidget extends MultipleHistogramWidget
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
-        'resolution' => array(
-            'name'       => 'Resolution',
-            'type'       => 'SCHOICE',
-            'validation' => 'required',
-            'default'    => 'daily',
-            'help_text'  => 'The resolution of the chart.'
-        ),
+    protected static $webhookSettings = array(
         'url' => array(
             'name'       => 'Webhook url',
             'type'       => 'TEXT',
@@ -26,8 +19,8 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
    );
 
     /* The settings to setup in the setup-wizard. */
-    public static $setupSettings = array('name', 'url');
-    public static $criteriaSettings = array('url');
+    protected static $webhookSetupFields = array('name', 'url');
+    protected static $webhookCriteriaFields = array('url');
 
     /* -- Choice functions -- */
     public function resolution() {
@@ -39,5 +32,38 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
             'yearly'  => 'Yearly'
         );
     }
+
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$webhookSettings);
+     }
+
+    /**
+     * getSetupFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), self::$webhookSetupFields);
+     }
+
+    /**
+     * getCriteriaSettings
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getCriteriaSettings() {
+        return array_merge(parent::getCriteriaSettings(), self::$webhookCriteriaFields);
+     }
 }
 ?>

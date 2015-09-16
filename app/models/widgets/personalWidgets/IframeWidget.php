@@ -2,11 +2,8 @@
 
 class IframeWidget extends Widget
 {
-    /* -- Table specs -- */
-    public static $type = 'iframe';
-
     /* -- Settings -- */
-    public static $settingsFields = array(
+    protected static $iframeSettings = array(
         'url' => array(
             'name'       => 'Iframe URL',
             'type'       => 'TEXT',
@@ -26,8 +23,41 @@ class IframeWidget extends Widget
             'help_text'  => 'If you set this, you won\'t be able to move the widget, but will be able to navigate in the iframe'
         ),
    );
-    // The settings to setup in the setup-wizard.
-    public static $setupSettings = array('url');
+    /* The settings to setup in the setup-wizard. */
+    public static $url = array('url');
+
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$iframeSettings);
+     }
+
+    /**
+     * getSetupFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), self::$url);
+     }
+
+    /**
+     * getCriteriaSettings
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getCriteriaSettings() {
+        return array_merge(parent::getCriteriaSettings(), self::$url);
+     }
 }
 
 ?>

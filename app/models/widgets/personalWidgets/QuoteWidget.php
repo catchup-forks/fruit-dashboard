@@ -3,13 +3,15 @@
 class QuoteWidget extends CronWidget implements iAjaxWidget
 {
     /* -- Settings -- */
-    public static $quoteSettings = array(
+    private static $quoteSettings = array(
         'type' => array(
             'name'    => 'Type',
             'type'    => 'SCHOICE',
             'default' => 'inspirational'
         ),
     );
+
+    private static $typeSettings = array('type');
 
     /* Choices functions */
     public function type() {
@@ -29,6 +31,28 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
      */
      public static function getSettingsFields() {
         return array_merge(parent::getSettingsFields(), self::$quoteSettings);
+     }
+
+    /**
+     * getCriteriaFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getCriteriaFields() {
+        return array_merge(parent::getCriteriaFields(), self::$typeSettings);
+     }
+
+    /**
+     * getSetupFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), self::$typeSettings);
      }
 }
 
