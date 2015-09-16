@@ -17,9 +17,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'   => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -144,9 +144,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -160,9 +160,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -176,9 +176,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -192,10 +192,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'category'    => 'stripe',
                     'is_premium'  => TRUE,
                     'number'       => 4,
-                    'min_cols'     => 2,
-                    'min_rows'     => 4,
-                    'default_cols' => 2,
-                    'default_rows' => 5
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 10
                 )
             );
         } /* !App::environment('production')*/
@@ -211,9 +211,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -227,9 +227,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -243,9 +243,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -260,9 +260,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -276,9 +276,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -293,9 +293,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -323,9 +323,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'   => TRUE,
                 'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -339,9 +339,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'   => TRUE,
                 'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -356,9 +356,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -372,9 +372,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -400,9 +400,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'  => TRUE,
                 'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
