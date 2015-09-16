@@ -129,15 +129,21 @@
                             'action' => 'widget.add')) }}
 
                           <div class="form-group">
-                            <label for="addToDashboard">Add to dashboard:</label>
-                            <select name="toDashboard" class="form-control">
+                            <div id="add_to_dashboard_select">
+                              <label for="addToDashboard">Add to dashboard:</label>
+                              <select name="toDashboard" class="form-control">
 
-                              @foreach( Auth::user()->dashboards->all() as $dashboard )
-                              <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
-                              @endforeach
+                                @foreach( Auth::user()->dashboards->all() as $dashboard )
+                                <option value="{{ $dashboard->id }}">{{ $dashboard->name }}</option>
+                                @endforeach
+                                <option value='0'>Create a new dashboard</option>
 
-                            </select>
-
+                              </select>
+                            </div>
+                            <div class="hidden" id="add_new_dashboard_input">
+                              <label for="newToDashboard">Please enter the name of the new dashboard:</label>
+                              <input type="text" name="newDashboardName" value='' placeholder='New dashboard' class="form-control">
+                            </div>
                           </div> <!-- .form-group -->
 
                           <div class="form-actions pull-right">
@@ -274,7 +280,42 @@
         }
       });
 
+      /**
+       * @listens | element(s): $('#add_to_dashboard_select > select') | event:change
+       * --------------------------------------------------------------------------
+       * Changes the select to a text input when 'add to new dashboard' is selected
+       * --------------------------------------------------------------------------
+       */
+       $('#add_to_dashboard_select > select').change(function() {
+          // Get items
+          inputDiv  = $('#add_new_dashboard_input');
+          
+          // Switch items
+          if ($(this).find("option:selected").val() == 0) {
+            inputDiv.removeClass('hidden').fadeIn();
+            inputDiv.find('input').focus();
+          }
+       });
 
+      /**
+       * @listens | element(s): $('#add_to_dashboard_select > select') | event:change
+       * --------------------------------------------------------------------------
+       * Changes the select to a text input when 'add to new dashboard' is selected
+       * --------------------------------------------------------------------------
+       */
+       $('#add-widget-form').submit(function(e) {
+          // Get items
+          selectDiv = $('#add_to_dashboard_select');
+          inputDiv  = $('#add_new_dashboard_input');
+
+          // Check if the user added a name for the new dashboard
+          if ((selectDiv.find(':selected').val() == 0) &&
+              !(inputDiv.find('[name=newDashboardName]').val())) {
+            // Don't send submit and show error message
+            e.preventDefault();
+            easyGrowl('error', "Please enter a name for the new dashboard", 3000);
+          }
+       });
     });
   </script>
   @append

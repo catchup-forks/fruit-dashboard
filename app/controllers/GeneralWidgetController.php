@@ -288,21 +288,43 @@ class GeneralWidgetController extends BaseController {
         ));
 
         /* Associate to dashboard */
-        if (Input::get('toDashboard')) {
-            $dashboard = Dashboard::find(Input::get('toDashboard'));
+        $dashboardNum = Input::get('toDashboard');
+
+        /* Add to new dashboard */
+        if ($dashboardNum == 0) {
+            /* Get the new name or fallback to the default */
+            $newDashboardName = Input::get('newDashboardName');
+            if (empty($newDashboardName)) {
+                $newDashboardName = 'New Dashboard';
+            }
+            /* Create new dashboard and associate */
+            $dashboard = new Dashboard(array(
+                'name'       => $newDashboardName,
+                'background' => TRUE,
+                'number'     => Auth::user()->dashboards->max('number') + 1
+            ));
+            $dashboard->user()->associate(Auth::user());
+            $dashboard->save();
+
+        /* Adding to existing dashboard*/
+        } else if (Input::get('toDashboard')) {
+            $dashboard = Dashboard::find($dashboardNum);
             if (is_null($dashboard)) {
                 $dashboard = Auth::user()->dashboards[0];
             }
+
+        /* Error handling */
         } else {
             $dashboard = Auth::user()->dashboards[0];
         }
 
+        /* Associate the widget to the dashboard */
         $widget->dashboard()->associate($dashboard);
 
-    /* Finding position. */
+        /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
-         /* Associate descriptor and save */
+        /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $options = array();
         if ($widget instanceof CronWidget && $className::$criteriaSettings !== FALSE) {

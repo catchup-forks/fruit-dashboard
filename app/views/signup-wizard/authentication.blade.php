@@ -91,12 +91,7 @@
                       });
                     });      
                 } else {
-                    $.growl.warning({
-                      message: "Please enter your name.",
-                      size: "large",
-                      duration: 5000,
-                      location: "br"
-                    });
+                  easyGrowl('warning', "Please enter your name.", 5000);
                 }
             }    
           });
@@ -142,12 +137,7 @@
                   });
                                   
               } else {
-                $.growl.warning({
-                  message: "Please enter a valid email address.",
-                  size: "large",
-                  duration: 5000,
-                  location: "br"
-                });
+                easyGrowl('warning', "Please enter a valid email address.", 5000);
               }
               
             }    
@@ -165,14 +155,7 @@
                 $('#signup-form-id').submit();
                   
               } else {
-                
-                $.growl.warning({
-                  message: "Your password should be at least 4 characters.",
-                  size: "large",
-                  duration: 5000,
-                  location: "br"
-                });
-              
+                easyGrowl('warning', "Your password should be at least 4 characters long.", 5000);
               }
             }
             });
