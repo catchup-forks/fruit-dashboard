@@ -311,6 +311,17 @@ class WidgetDescriptorSeeder extends Seeder
                     'number'      => 4,
                 )
             );
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'table'],
+                array(
+                    'name'        => 'General table',
+                    'description' => 'A general table widget',
+                    'type'        => 'table',
+                    'category'    => 'personal',
+                    'is_premium'  => FALSE,
+                    'number'      => 213,
+                )
+            );
         } /* !App::environment('production')*/
 
         WidgetDescriptor::updateOrCreate(

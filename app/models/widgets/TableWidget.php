@@ -1,6 +1,6 @@
 <?php
 
-abstract class TableWidget extends CronWidget
+class TableWidget extends CronWidget
 {
 }
 

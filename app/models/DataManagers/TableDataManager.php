@@ -104,7 +104,10 @@ class TableDataManager extends DataManager
     public function insert($data) {
         $currentData = $this->getContent();
         $entry = array();
-        foreach ($this->getHeader() as $key=>$name) {
+        foreach ($this->getHeader() as $name=>$key) {
+            Log::info($name);
+            Log::info($key);
+            Log::info("----");
             if (array_key_exists($key, $data)) {
                 $entry[$key] = $data[$key];
             } else if (array_key_exists($name, $data)) {
@@ -131,6 +134,8 @@ class TableDataManager extends DataManager
         if (is_null($header) || empty($header)) {
             /* Empty dataset */
             $this->saveHeader(array($key => 0));
+       } else if (in_array($key, array_keys($header))) {
+             return;
        } else {
             /* Adding to datasets. */
            $id =  count($header);
