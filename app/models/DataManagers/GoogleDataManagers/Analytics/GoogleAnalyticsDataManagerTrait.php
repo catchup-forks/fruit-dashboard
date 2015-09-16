@@ -1,6 +1,6 @@
 <?php
 
-trait GoogleAnalyticsDataManager
+trait GoogleAnalyticsDataManagerTrait
 {
     /**
      * getProperty
