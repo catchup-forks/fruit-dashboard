@@ -3,10 +3,8 @@
 /* This class is responsible for table widgets data collection. */
 abstract class TableDataManager extends DataManager
 {
-    abstract public function updateTable();
-
     public function initializeData() {
-        $this->updateTable();
+        $this->collectData();
     }
 
     /**
@@ -20,6 +18,30 @@ abstract class TableDataManager extends DataManager
     public function hasCol($col) {
         $header = $this->getHeader();
         return array_key_exists($col, $header);
+    }
+
+    /**
+     * deleteCol
+     * Removes the specific col.
+     * --------------------------------------------------
+     * @param string $col
+     * --------------------------------------------------
+     */
+    public function deleteCol($col) {
+        $header = $this->getHeader();
+        /* Saving id and deleting col from header. */
+        $dataId = $header[$col];
+        unset($header[$col]);
+
+        /* Creating a new content */
+        $content = $this->getContent();
+        $newContent = array();
+        foreach ($content as $row) {
+            unset($row[$dataId]);
+            array_push($newContent, $row);
+        }
+
+        $this->saveData(array('header' => $header, 'content' => $newContent));
     }
 
     /**
@@ -114,9 +136,7 @@ abstract class TableDataManager extends DataManager
      * Deletes all rows from the table
      */
     public function clearTable() {
-        foreach ($this->getContent() as $i=>$row) {
-            $this->deleteRow($i);
-        }
+        $this->saveData(array('header' => array(), 'content' => array()));
     }
 
     /**

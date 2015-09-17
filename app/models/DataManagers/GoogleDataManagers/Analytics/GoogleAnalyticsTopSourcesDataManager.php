@@ -3,10 +3,10 @@
 class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
-    private static $start = 'weekAgo';
+    private static $start = 'yesterday';
     private static $end = 'today';
     private static $dimensions = 'source';
-    private static $sortBy '-ga:sessions';
+    private static $sortBy = '-ga:sessions';
     private static $maxResults = '10';
     private static $metrics = array('sessions', 'users');
 
@@ -15,10 +15,10 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         return $collector->getMetrics($this->getProperty(), self::$start, self::$end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => self::$maxResults));
     }
 
-    public function updateTable() {
+    public function collectData() {
         /* Collecting and transforming data.*/
         $metricsData = array();
-        foreach ($this->getMetric() as $metric=>$data)  {
+        foreach ($this->getMetric() as $metric=>$data) {
             foreach ($data as $source=>$value) {
                 $metricsData[$source][ucwords($metric)] = $value[0];
             }
