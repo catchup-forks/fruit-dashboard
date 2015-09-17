@@ -10,6 +10,7 @@
         name: '{{ Auth::user()->email }}',
         email: '{{ Auth::user()->email }}',
         created_at: {{ strtotime(Auth::user()->created_at) }},
+        "is_extension_installed": (window!=window.top) ? true : false
     @else
         user_id: 0,
         name: 'Anonymous user',
