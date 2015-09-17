@@ -74,6 +74,9 @@ body {
 .margin-top-sm {
   margin-top: 12.5px;
 }
+.padding {
+  padding: 5px;
+}
 .not-visible {
   display: none;
 }
@@ -265,4 +268,17 @@ input.greetings-name:focus {
 .modification-icons {
   position: relative;
   top: -40px;
+}
+.chart {
+  background-color: #e6e6e6;
+  background-color: rgba(230, 230, 230, 0.2125);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+html,
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
 }

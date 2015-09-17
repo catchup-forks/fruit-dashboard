@@ -56,14 +56,14 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      }
 
     /**
-     * getCriteriaSettings
+     * getCriteriaFields
      * Returns the SettingsFields
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-     public static function getCriteriaSettings() {
-        return array_merge(parent::getCriteriaSettings(), self::$webhookCriteriaFields);
+     public static function getCriteriaFields() {
+        return array_merge(parent::getCriteriaFields(), self::$webhookCriteriaFields);
      }
 }
 ?>
