@@ -7,7 +7,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
     private static $end = 'today';
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
-    private static $maxResults = '10';
+    private static $maxResults = '4';
     private static $metrics = array('sessions', 'users');
 
     private function getMetric() {

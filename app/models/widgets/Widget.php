@@ -153,11 +153,12 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function hasValidCriteria() {
-        if (empty(static::getCriteriaFields())) {
+        $criteriaFields = static::getCriteriaFields();
+        if (empty($criteriaFields)) {
             return TRUE;
         }
         $criteria = $this->getCriteria();
-        foreach (static::getCriteriaFields() as $setting) {
+        foreach ($criteriaFields as $setting) {
             if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
                 return FALSE;
         }

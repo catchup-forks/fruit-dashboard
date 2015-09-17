@@ -26,6 +26,7 @@
      scaleGridLineColor : "rgba(179,179,179,0.4)",
      scaleGridLineWidth : 0.35,
      tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
+     multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
      animation: true
   };
 
@@ -96,6 +97,7 @@
   };
 
   function createDataSet(values, name, color) {
+
     return {
       label: name,
       fillColor : "rgba(" + color + ",0.2)",

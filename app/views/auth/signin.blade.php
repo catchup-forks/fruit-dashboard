@@ -60,7 +60,11 @@
             </form>
             <!-- /Form -->
 
-            <a href="{{ route('service.facebook.login') }}"><button class="btn btn-primary">Login with facebook</button></a>
+            <a href="{{ route('service.facebook.login') }}">
+              <button class="btn btn-primary">
+                 <span class="fa fa-facebook"> | </span> Login with facebook
+              </button>
+            </a>
 
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->

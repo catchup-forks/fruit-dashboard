@@ -22,7 +22,8 @@
       email:      '{{ Auth::user()->email }}',
       created_at: {{ strtotime(Auth::user()->created_at) }},
       name:       '{{ Auth::user()->name }}',
-      plan:       '{{ Auth::user()->subscription->plan->name }}'
+      plan:       '{{ Auth::user()->subscription->plan->name }}',
+      is_extension_installed: (window!=window.top) ? true : false
     });
   @else
     _cio.identify({

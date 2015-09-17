@@ -49,14 +49,14 @@ class IframeWidget extends Widget
      }
 
     /**
-     * getCriteriaSettings
+     * getCriteriaFields
      * Returns the SettingsFields
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-     public static function getCriteriaSettings() {
-        return array_merge(parent::getCriteriaSettings(), self::$url);
+     public static function getCriteriaFields() {
+        return array_merge(parent::getCriteriaFields(), self::$url);
      }
 }
 

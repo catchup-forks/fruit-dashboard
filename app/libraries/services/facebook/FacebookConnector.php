@@ -173,7 +173,7 @@ class FacebookConnector extends GeneralServiceConnector
             /* New user */
             $user = User::create(array(
                 'email'  => $userInfo['email'],
-                'name'   => $userInfo['first_name'] . ' ' . $userInfo['last_name'],
+                'name'   => $userInfo['first_name'],
             ));
             $user->createDefaultProfile();
 
