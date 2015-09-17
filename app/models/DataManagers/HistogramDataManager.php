@@ -251,7 +251,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* No values found using last one */
-        return $this->getEntryValues($entry);
+        return $this->getEntryValues($latestData);
     }
 
     /**
