@@ -161,4 +161,37 @@
     drawLineGraph(canvas, data['datasets'], data['datetimes'], name);
   }
 
+  function updateTableWidget(data, tableId) {
+    if ( ! data['content']) {
+      return;
+    }
+
+    clearTable(tableId);
+
+    // Adding header
+    var header = '<thead>';
+    for (var name in data['header']) {
+      header += '<th>' + name + '</th>';
+    }
+    header += '</thead>';
+    $("#" + tableId).append(header);
+
+    // Adding content
+    var content = '<tbody>';
+    for (var row=0; row < data['content'].length; row++) {
+      content += '<tr>';
+      for (var key in data['content'][row]) {
+        content += '<td>' + data['content'][row][key] + '</td>';
+      }
+      content += '</tr>';
+    }
+      content += '</tbody>';
+    $("#" + tableId).append(content);
+
+  }
+
+  function clearTable(tableId) {
+    $("#" + tableId + " tbody").remove();
+    $("#" + tableId + " thead").remove();
+  }
 </script>
