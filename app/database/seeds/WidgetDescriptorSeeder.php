@@ -275,11 +275,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'twitter_followers_count',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
-                'number'       => 1,
+                'number'       => 2,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 3
             )
         );
 
@@ -291,7 +291,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'twitter_new_followers',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
-                'number'       => 2,
+                'number'       => 3,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
                 'default_cols' => 6,
@@ -326,6 +326,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
                     'number'      => 4,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 3
                 )
             );
         } /* !App::environment('production')*/

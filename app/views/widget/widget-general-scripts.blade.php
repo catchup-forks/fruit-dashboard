@@ -1,12 +1,10 @@
 <script type="text/javascript">
 
   // Overriding chartjs defaults.
-  Chart.defaults.global.animationSteps = 50;
   Chart.defaults.global.tooltipYPadding = 16;
   Chart.defaults.global.tooltipCornerRadius = 0;
   Chart.defaults.global.tooltipTitleFontStyle = "normal";
   Chart.defaults.global.tooltipFillColor = "rgba(160,160,160,0.8)";
-  Chart.defaults.global.animationEasing = "easeOutBounce";
   Chart.defaults.global.responsive = true;
   Chart.defaults.global.scaleLineColor = "black";
   Chart.defaults.global.scaleFontSize = 9;
@@ -18,6 +16,7 @@
      bezierCurve: false,
      scaleShowVerticalLines: false,
      tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
+     multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
      animation: false
   };
 
@@ -88,6 +87,7 @@
   };
 
   function createDataSet(values, name, color) {
+
     return {
       label: name,
       fillColor : "rgba(" + color + ",0.2)",
