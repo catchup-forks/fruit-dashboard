@@ -1,7 +1,7 @@
 @if ( ! $widget->premiumUserCheck())
   @include('widget.widget-premium-not-allowed', ['feature' => $widget->getSettings()['resolution'] . ' statistics'])
 @else
-<div class="text-center margin-top-sm">
+<div class="padding text-center">
   <span class="text-white drop-shadow">
       {{ $widget->descriptor->name }}
   </span>
@@ -12,7 +12,7 @@
   </span>
 </div>
 <div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal clickable">
-  <canvas id="{{$widget->id}}-chart"></canvas>
+  <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 @endif
 
@@ -58,8 +58,11 @@
 
     // Bind redraw to resize event.
     $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
+      // turn off animation while redrawing
+      chartOptions.animation = false;
       canvas = reinsertCanvas(canvas);
       drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+      chartOptions.animation = true;
     });
 
     // Adding refresh handler.
