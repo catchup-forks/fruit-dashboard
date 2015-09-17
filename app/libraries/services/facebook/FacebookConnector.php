@@ -152,7 +152,7 @@ class FacebookConnector extends GeneralServiceConnector
      * @return string (route)
      * --------------------------------------------------
      */
-    public static function loginWithFacebook() {
+    public static function loginWithFacebook() {       
         $fb = self::setFB();
         $helper = $fb->getRedirectLoginHelper();
 
@@ -179,12 +179,14 @@ class FacebookConnector extends GeneralServiceConnector
 
             /* Authenticate */
             Auth::login($user);
-            return 'signup-wizard.financial-connections';
+            return array('isNew' => true,
+                         'user'  => $user);
 
         } else {
             /* User already registered. */
             Auth::login($registeredUser);
-            return 'dashboard.dashboard';
+            return array('isNew' => false,
+                         'user'  => $registeredUser);
         }
     }
 
