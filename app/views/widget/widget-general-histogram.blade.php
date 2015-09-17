@@ -11,12 +11,8 @@
   @endif
   </span>
 </div>
-<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
+<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal clickable">
   <canvas id="{{$widget->id}}-chart"></canvas>
-</div>
-<div class="text-center drop-shadow text-white">
-    Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
 </div>
 @endif
 
@@ -71,6 +67,24 @@
       refreshWidget({{ $widget->id }}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan);});
       canvas = $("#{{ $widget->id }}-chart");
      });
+
+    // Detecting clicks and drags.
+    // Redirect to single stat page on click.
+    var isDragging = false;
+    $('#{{ $widget->id }}-chart-container')
+    .mousedown(function() {
+        isDragging = false;
+    })
+    .mousemove(function() {
+        isDragging = true;
+     })
+    .mouseup(function() {
+        var wasDragging = isDragging;
+        isDragging = false;
+        if (!wasDragging) {
+          window.location = "{{ route('widget.singlestat', $widget->id) }}";
+        }
+    });
 
   });
 </script>
