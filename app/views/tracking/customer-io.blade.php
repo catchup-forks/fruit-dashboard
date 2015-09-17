@@ -16,12 +16,6 @@
 </script>
 
 <script type="text/javascript">
-  if (window!=window.top) {
-    console.log('extension');
-  } else {
-    console.log('native');
-  }
-
   @if (Auth::user())
     _cio.identify({
       id:         '{{ Auth::user()->id }}',
