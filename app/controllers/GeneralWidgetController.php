@@ -113,7 +113,7 @@ class GeneralWidgetController extends BaseController {
         );
 
         /* Return */
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $newDashboard->id))
             ->with('success', "Widget successfully updated.");
     }
 
@@ -176,7 +176,7 @@ class GeneralWidgetController extends BaseController {
         /* Validation successful, ready to save. */
         $widget->saveSettings(Input::all());
 
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
             ->with('success', "Widget successfully updated.");
     }
 
@@ -239,7 +239,7 @@ class GeneralWidgetController extends BaseController {
                     ->with('success', 'You successfully restored the widget.');
             }
         }
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
             ->with('success', 'You successfully restored the widget.');
     }
     /**
@@ -342,7 +342,7 @@ class GeneralWidgetController extends BaseController {
         /* If widget has no setup fields, redirect to dashboard automatically */
         $setupFields = $widget->getSetupFields();
         if (empty($setupFields)) {
-            return Redirect::route('dashboard.dashboard')
+            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
             ->with('success', 'Widget successfully created. You can customize it here.');
@@ -369,7 +369,7 @@ class GeneralWidgetController extends BaseController {
         $widget->saveSettings(array('resolution' => $resolution), TRUE);
 
         /* Rendering view. */
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
             ->with('success', 'Widget pinned successfully.');
     }
 

@@ -294,6 +294,8 @@
           if ($(this).find("option:selected").val() == 0) {
             inputDiv.removeClass('hidden').fadeIn();
             inputDiv.find('input').focus();
+          } else {
+            inputDiv.fadeOut();
           }
        });
 
