@@ -55,7 +55,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::where('type', static::$histogramDescriptor)->first();
         if (is_null($descriptor)) {
-            throw new DescriptorDoesNotExist("The descriptor for " . $histogramDescriptor . " does not exist", 1);
+            throw new DescriptorDoesNotExist("The descriptor for " . static::$histogramDescriptor . " does not exist", 1);
         }
 
         $managers = $this->user()->dataManagers()->where(

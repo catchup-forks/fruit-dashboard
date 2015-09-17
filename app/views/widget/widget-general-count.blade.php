@@ -1,6 +1,6 @@
-<span class="text-white drop-shadow has-margin-horizontal" id="{{$widget->id}}-value">
+<h2 class="text-white drop-shadow has-margin-horizontal text-center" id="{{$widget->id}}-value">
   {{ var_dump($widget->getCurrentValue()) }}
-</span>
+</h2>
 
 @section('widgetScripts')
 <script type="text/javascript">

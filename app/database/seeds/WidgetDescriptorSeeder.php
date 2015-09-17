@@ -253,9 +253,26 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'twitter_followers'],
             array(
-                'name'        => 'Followers',
-                'description' => 'Follower count',
+                'name'        => 'Followers chart',
+                'description' => 'Follower chart',
                 'type'        => 'twitter_followers',
+                'category'    => 'twitter',
+                'is_premium'  => TRUE,
+                'number'       => 1,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
+
+        /* Social widgets | TWITTER */
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'twitter_followers_count'],
+            array(
+                'name'        => 'Followers count',
+                'description' => 'Follower count',
+                'type'        => 'twitter_followers_count',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
                 'number'       => 1,
@@ -309,17 +326,6 @@ class WidgetDescriptorSeeder extends Seeder
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
                     'number'      => 4,
-                )
-            );
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'table'],
-                array(
-                    'name'        => 'General table',
-                    'description' => 'A general table widget',
-                    'type'        => 'table',
-                    'category'    => 'personal',
-                    'is_premium'  => FALSE,
-                    'number'      => 213,
                 )
             );
         } /* !App::environment('production')*/
