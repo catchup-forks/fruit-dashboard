@@ -9,7 +9,7 @@ trait GoogleAnalyticsDataManagerTrait
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    protected function getProperty() {
+    public function getProperty() {
         return GoogleAnalyticsProperty::find($this->getCriteria()['property']);
     }
 

@@ -9,8 +9,8 @@ trait FacebookDataManagerTrait
      * @return FacebookPage
      * --------------------------------------------------
     */
-    protected function getPage() {
-        return $this->getCriteria()['page'];
+    public function getPage() {
+        return FacebookPage::find($this->getCriteria()['page']);
     }
 }
 ?>

@@ -115,9 +115,8 @@ abstract class HistogramDataManager extends DataManager
     */
     protected function buildHistogram($range, $resolution, $dateFormat='Y-m-d') {
         /* Getting recorded histogram sorted by timestamp. */
-        $fullHistogram = $this->getData();
-        if ($fullHistogram != null) {
-            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+        $fullHistogram = $this->sortHistogram();
+        if ( ! is_null($fullHistogram)) {
             $last = end($fullHistogram);
         }
 
@@ -235,7 +234,7 @@ abstract class HistogramDataManager extends DataManager
     public function compare($period, $multiplier=1) {
         $latestData = $this->getLatestData();
 
-        foreach ($this->getData() as $entry) {
+        foreach ($this->sortHistogram() as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
 
             /* Checking for a match. */
@@ -335,6 +334,23 @@ abstract class HistogramDataManager extends DataManager
             return $entryTime->diffInYears($now) == $multiplier;
         }
         return FALSE;
+    }
+
+    /**
+     * Sorting the array.
+     * --------------------------------------------------
+     * @param boolean $asc
+     * @return array
+     * --------------------------------------------------
+     */
+    private function sortHistogram($asc=TRUE) {
+        $fullHistogram = $this->getData();
+        if ($fullHistogram != null) {
+            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+        } else {
+            $fullHistogram = array();
+        }
+        return $asc ? $fullHistogram : array_reverse($fullHistogram);
     }
 
     /**

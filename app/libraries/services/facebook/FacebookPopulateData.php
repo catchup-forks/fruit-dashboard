@@ -3,7 +3,7 @@
 class FacebookPopulateData
 {
     /* -- Class properties -- */
-    const DAYS = 30;
+    const DAYS = 60;
 
     /**
      * The facebook collector object.

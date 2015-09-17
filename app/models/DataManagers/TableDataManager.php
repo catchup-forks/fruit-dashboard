@@ -8,43 +8,6 @@ abstract class TableDataManager extends DataManager
     }
 
     /**
-     * hasCol
-     * Returns whether or not the col exists.
-     * --------------------------------------------------
-     * @param string $col
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function hasCol($col) {
-        $header = $this->getHeader();
-        return array_key_exists($col, $header);
-    }
-
-    /**
-     * deleteCol
-     * Removes the specific col.
-     * --------------------------------------------------
-     * @param string $col
-     * --------------------------------------------------
-     */
-    public function deleteCol($col) {
-        $header = $this->getHeader();
-        /* Saving id and deleting col from header. */
-        $dataId = $header[$col];
-        unset($header[$col]);
-
-        /* Creating a new content */
-        $content = $this->getContent();
-        $newContent = array();
-        foreach ($content as $row) {
-            unset($row[$dataId]);
-            array_push($newContent, $row);
-        }
-
-        $this->saveData(array('header' => $header, 'content' => $newContent));
-    }
-
-    /**
      * getHeader
      * Returns the header from data.
      * --------------------------------------------------
@@ -195,6 +158,44 @@ abstract class TableDataManager extends DataManager
            $this->saveContent($content);
         }
     }
+
+    /**
+     * hasCol
+     * Returns whether or not the col exists.
+     * --------------------------------------------------
+     * @param string $col
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function hasCol($col) {
+        $header = $this->getHeader();
+        return array_key_exists($col, $header);
+    }
+
+    /**
+     * deleteCol
+     * Removes the specific col.
+     * --------------------------------------------------
+     * @param string $col
+     * --------------------------------------------------
+     */
+    public function deleteCol($col) {
+        $header = $this->getHeader();
+        /* Saving id and deleting col from header. */
+        $dataId = $header[$col];
+        unset($header[$col]);
+
+        /* Creating a new content */
+        $content = $this->getContent();
+        $newContent = array();
+        foreach ($content as $row) {
+            unset($row[$dataId]);
+            array_push($newContent, $row);
+        }
+
+        $this->saveData(array('header' => $header, 'content' => $newContent));
+    }
+
 
     /**
      * saveContent

@@ -27,7 +27,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             'days'   => 'Day',
             'weeks'  => 'Week',
             'months' => 'Month',
-            'years'  => 'Year'
         );
     }
 
@@ -41,6 +40,25 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     public static function getSettingsFields() {
         return array_merge(parent::getSettingsFields(), self::$countWidgetSettings);
     }
+
+    /**
+     * getStartDate
+     * --------------------------------------------------
+     * Returns the start date based on settings.
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getStartDate() {
+        $multiplier = $this->getSettings()['multiplier'];
+        switch ($this->getSettings()['period']) {
+            case 'hours': return Carbon::now()->subHours($multiplier)->format('H:i');
+            case 'days': return Carbon::now()->subDays($multiplier)->format('l');
+            case 'weeks': return Carbon::now()->subWeeks($multiplier)->format('Y.m.d');
+            case 'months': return Carbon::now()->subMonths($multiplier)->format('F, Y');
+            default: return '';
+        }
+    }
+
     /**
      * getDataManager
      * Returning the corresponding DataManager
@@ -81,6 +99,12 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     public function getCurrentValue() {
         /* Getting manager. */
         $manager = $this->getDataManager();
+        try {
+            Log::info($manager->getDataSets()[0]);
+            exit(1);
+        } catch (Exception $e) {
+
+        }
         if (is_null($manager)) {
             return array();
         }

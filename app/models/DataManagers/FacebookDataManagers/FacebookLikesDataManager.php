@@ -6,7 +6,7 @@ class FacebookLikesDataManager extends HistogramDataManager
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $facebookCollector = new FacebookDataCollector($this->user);
-        return $facebookCollector->getTotalLikes($this->getPage());
+        return $facebookCollector->getTotalLikes($this->getPage()->id);
     }
 }
 ?>

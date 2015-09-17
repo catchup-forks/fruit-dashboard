@@ -1,1 +1,1 @@
- @include('widget.widget-general-count', ['widget' => $widget])
+ @include('widget.widget-general-count', ['widget' => $widget, 'metric' => 'your followers'])

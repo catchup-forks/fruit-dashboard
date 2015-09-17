@@ -408,6 +408,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'    => 'google_analytics',
                 'is_premium'  => TRUE,
                 'number'       => 4,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 3
             )
         );
 
