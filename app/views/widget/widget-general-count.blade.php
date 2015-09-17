@@ -1,4 +1,10 @@
-  <div class="text-white drop-shadow has-margin-horizontal text-center" data-toggle="tooltip" data-placement="bottom" title="for which page FIXME">
+  <div class="text-white drop-shadow has-margin-horizontal text-center" data-toggle="tooltip" data-placement="bottom" title="
+  @if ($widget->descriptor->category == 'facebook')
+    facebook page name FIXME
+  @else if ($widget->descriptor->category == 'google_analytics')
+    google analytics property name FIXME
+  @endif
+  ">
     <h3 id="{{$widget->id}}-value" class="truncate">
       {{ $widget->getCurrentValue()['value'] }}
     </h3>
