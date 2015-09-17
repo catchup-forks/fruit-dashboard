@@ -1,7 +1,7 @@
 @if ( ! $widget->premiumUserCheck())
   @include('widget.widget-premium-not-allowed', ['feature' => $widget->getSettings()['resolution'] . ' statistics'])
 @else
-<div class="text-center margin-top-sm">
+<div class="padding text-center">
   <span class="text-white drop-shadow">
       {{ $widget->descriptor->name }}
   </span>
@@ -11,12 +11,8 @@
   @endif
   </span>
 </div>
-<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
-  <canvas id="{{$widget->id}}-chart"></canvas>
-</div>
-<div class="text-center drop-shadow text-white">
-    Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}" class="btn btn-primary btn-xs">here </a> for more details.
+<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal clickable">
+  <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 @endif
 
@@ -62,8 +58,11 @@
 
     // Bind redraw to resize event.
     $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
+      // turn off animation while redrawing
+      chartOptions.animation = false;
       canvas = reinsertCanvas(canvas);
       drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+      chartOptions.animation = true;
     });
 
     // Adding refresh handler.
@@ -71,6 +70,24 @@
       refreshWidget({{ $widget->id }}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan);});
       canvas = $("#{{ $widget->id }}-chart");
      });
+
+    // Detecting clicks and drags.
+    // Redirect to single stat page on click.
+    var isDragging = false;
+    $('#{{ $widget->id }}-chart-container')
+    .mousedown(function() {
+        isDragging = false;
+    })
+    .mousemove(function() {
+        isDragging = true;
+     })
+    .mouseup(function() {
+        var wasDragging = isDragging;
+        isDragging = false;
+        if (!wasDragging) {
+          window.location = "{{ route('widget.singlestat', $widget->id) }}";
+        }
+    });
 
   });
 </script>
