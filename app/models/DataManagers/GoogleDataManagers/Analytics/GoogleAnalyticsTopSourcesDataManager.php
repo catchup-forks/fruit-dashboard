@@ -24,6 +24,9 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
     }
 
     private function initTable() {
+        foreach ($this->getContent() as $i=>$row) {
+            $this->deleteRow($i);
+        }
         $this->addCol('Metric');
         foreach (self::$metrics as $metric) {
             $this->addCol(ucwords($metric));

@@ -99,10 +99,6 @@ abstract class TableDataManager extends DataManager
     /**
      * deleteRow
      * Deletes a specific row from the dataset.
-     * --------------------------------------------------
-     * @param int $row
-     * @return array
-     * --------------------------------------------------
      */
     public function deleteRow($row) {
         $content = $this->getContent();
@@ -111,6 +107,16 @@ abstract class TableDataManager extends DataManager
         }
         unset($content[$row]);
         $this->saveContent($content);
+    }
+
+    /**
+     * clearTable
+     * Deletes all rows from the table
+     */
+    public function clearTable() {
+        foreach ($this->getContent() as $i=>$row) {
+            $this->deleteRow($i);
+        }
     }
 
     /**
@@ -224,5 +230,19 @@ abstract class TableDataManager extends DataManager
         $this->data->save();
     }
 
+    /**
+     * getData
+     * Returning the raw data json decoded.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getData() {
+        $data = json_decode($this->data->raw_value, 1);
+        if ( ! is_array($data)) {
+            return array();
+        }
+        return $data;
+    }
 
 }

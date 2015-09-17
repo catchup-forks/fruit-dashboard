@@ -242,9 +242,9 @@ abstract class HistogramDataManager extends DataManager
             if (static::matchesTime($entryTime, $period, $multiplier)) {
                 /* Creating an arrays that will hold the values. */
                 $values = array();
-                foreach ($entry as $key=>$value) {
-                    if ( ! in_array($key, static::$staticFields) && array_key_exists($key, $latestData)) {
-                        $values[$key] = $latestData[$key] - $value;
+                foreach ($this->getEntryValues($entry) as $dataId=>$value) {
+                    if (array_key_exists($dataId, $latestData)) {
+                        $values[$dataId] = $latestData[$dataId] - $value;
                     }
                 }
                 return $values;
@@ -252,8 +252,29 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* No values found using last one */
-        return array();
+        return $this->getEntryValues($entry);
     }
+
+    /**
+     * getEntryValues (buildHistogram)
+     * Returning only the values of the entry,
+     * excluding staticFields.
+     * --------------------------------------------------
+     * @param array $entriy
+     * @return array
+     * --------------------------------------------------
+     */
+    private static final function getEntryValues($entry) {
+        $values = array();
+        foreach ($entry as $key=>$value) {
+            if ( ! in_array($key, static::$staticFields)) {
+                $values[$key] = $value;
+            }
+        }
+        return $values;
+    }
+
+
 
     /**
      * getAverageValues (buildHistogram)
