@@ -166,7 +166,15 @@
                           <span class="fa fa-exclamation-triangle"></span>
                         </strong>
                         You have to connect this service first.</div>
-                      <a id="connect-widget-submit" href="#connect" class="btn btn-primary pull-right">Connect</a>
+
+                      <div class="form-actions pull-right">
+
+                      <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-link">Cancel</a>
+
+                      <a id="connect-widget-submit" href="#connect" class="btn btn-primary">Connect</a>
+
+                      </div> <!-- /.form-actions -->
+
                     </div> <!-- /#connect-service .col-md-12 -->
                
                 </div> <!-- /.row -->
