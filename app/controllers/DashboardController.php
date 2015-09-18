@@ -22,6 +22,7 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+        $time = microtime(true);
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
@@ -29,17 +30,7 @@ class DashboardController extends BaseController
         $activeDashboard = Request::query('active');
 
         /* Checking the user's widget data integrity */
-        $time = microtime(true);
         Widget::checkUserWidgetsIntegrity(Auth::user());
-        Log::info(microtime(true) - $time);
-
-        //$connector = new GoogleAnalyticsConnector(Auth::user());
-        //$connector->refreshToken();
-        /*
-        $widget = Widget::find(21)->getSpecific();
-        Log::info($widget->getRelatedWidget());
-        Log::info($widget->woohoo("hello", "world"));
-        */
 
         $parameters = array();
         /* Render the page */
@@ -55,8 +46,8 @@ class DashboardController extends BaseController
         } catch (Exception $e) {
             /* Error occured trying to find the widget. */
             Widget::turnOffBrokenWidgets(Auth::user());
-            $view = View::make('dashboard.dashboard', $parameters);
             /* Recreating view. */
+            $view = View::make('dashboard.dashboard', $parameters);
         }
         return $view;
 
