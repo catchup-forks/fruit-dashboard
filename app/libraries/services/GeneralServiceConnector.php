@@ -112,6 +112,10 @@ abstract class GeneralServiceConnector
                 continue;
             }
 
+            /* Deleting previous managers, if any. */
+           $settingsCriteria = json_encode($criteria);
+           $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->delete();
+
             /* Creating data */
             $data = Data::create(array('raw_value' => 'loading'));
 
