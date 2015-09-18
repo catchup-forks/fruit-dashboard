@@ -48,8 +48,9 @@
     {{ $widget->getDataManager()->getPage()->name }}
     @elseif ($widget->descriptor->category == 'google_analytics')
     {{ $widget->getDataManager()->getProperty()->name }}
+    @elseif ($widget->descriptor->category == 'twitter')
+    {{ SiteConstants::underscoreToCamelCase($widget->descriptor->category, TRUE) }} {{ $metric }}
     @endif
-    {{-- {{ SiteConstants::underscoreToCamelCase($widget->descriptor->category, TRUE) }} {{ $metric }} --}}
   </p>
 </div>
 
