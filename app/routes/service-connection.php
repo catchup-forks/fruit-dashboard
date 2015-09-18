@@ -90,11 +90,6 @@ Route::group([
 
 
     /* -- Facebook -- */
-    Route::any('facebook/login', array(
-        'as'     => 'service.facebook.login',
-        'uses'   => 'ServiceConnectionController@anyFacebookLogin'
-    ));
-
     Route::any('facebook/connect', array(
         'before' => 'auth',
         'as'     => 'service.facebook.connect',
