@@ -155,8 +155,10 @@ class ServiceConnectionController extends BaseController
             $connector->createDataManagers();
 
             /* Creating dashboard automatically. */
-            $dashboardCreator = new TwitterAutoDashboardCreator(Auth::user());
-            $dashboardCreator->create();
+            if (Session::pull('createDashboard')) {
+                $dashboardCreator = new TwitterAutoDashboardCreator(Auth::user());
+                $dashboardCreator->create();
+            }
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())

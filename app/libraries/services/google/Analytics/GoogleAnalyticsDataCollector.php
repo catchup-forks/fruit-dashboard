@@ -99,6 +99,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getMetrics($property, $start, $end, $metrics, $optParams=array()) {
         $useDimensions = array_key_exists('dimensions', $optParams);
+        $metricsData = array();
 
         /* Iterating through the profiles. */
         foreach ($this->getProfiles($property) as $profile) {
@@ -115,6 +116,12 @@ class GoogleAnalyticsDataCollector
                 } else {
                     $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
                 }
+            } else if( ! $useDimensions) {
+                $rows = array();
+                foreach ($metrics as $metric) {
+                    array_push($rows, 0);
+                }
+                $metricsData = $this->buildSimpleMetricsData($metrics, array($rows), $profileName);
             }
         }
         return $metricsData;
