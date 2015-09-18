@@ -11,7 +11,7 @@
 
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Select facebook pages to analyze
+      Select facebook page to analyze
     </h1> <!-- /.text-center -->
     
     <div class="row">
