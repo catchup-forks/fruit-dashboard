@@ -20,7 +20,7 @@ abstract class GeneralServiceConnector
 
     abstract public function connect();
     abstract public function saveTokens(array $parameters);
-    abstract public function populateData();
+    abstract public function populateData($criteria);
 
     /**
      * disconnect
@@ -130,7 +130,7 @@ abstract class GeneralServiceConnector
             array_push($dataManagers, $dataManager);
         }
 
-        $this->populateData($dataManagers);
+        $this->populateData($criteria);
 
         return $dataManagers;
     }

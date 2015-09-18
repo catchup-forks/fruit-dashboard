@@ -27,12 +27,33 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     }
 
     /**
+     * saveTokens
+     * Retrieving the access, and refresh tokens from authentication code.
+     * --------------------------------------------------
+     * @param array $parameters
+     * @return None
+     * @throws GoogleConnectFailed
+     * --------------------------------------------------
+     */
+    public function saveTokens(array $parameters=array()) {
+        parent::saveTokens($parameters);
+        $collector = new GoogleAnalyticsDataCollector($this->user);
+        $collector->saveProperties();
+    }
+
+
+    /**
      * populateData
      * Collecting the initial data from the service.
+     * --------------------------------------------------
+     * @param array $criteria
+     * --------------------------------------------------
      */
-    public function populateData() {
+    public function populateData($criteria) {
         Queue::push('GoogleAnalyticsPopulateData', array(
-            'user_id'   => $this->user->id
+            'user_id'  => $this->user->id,
+            'criteria' => $criteria
+
         ));
     }
 

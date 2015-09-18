@@ -63,11 +63,12 @@ abstract class CountWidget extends Widget implements iAjaxWidget
      */
     public function getStartDate() {
         $multiplier = $this->getSettings()['multiplier'];
+        $now = Carbon::now();
         switch ($this->getSettings()['period']) {
-            case 'hours': return Carbon::now()->subHours($multiplier)->format('H:i');
-            case 'days': return Carbon::now()->subDays($multiplier)->format('l');
-            case 'weeks': return Carbon::now()->subWeeks($multiplier)->format('Y.m.d');
-            case 'months': return Carbon::now()->subMonths($multiplier)->format('F, Y');
+            case 'hours' : return $now->subHours($multiplier)->format('H:i');
+            case 'days'  : return $now->subDays($multiplier)->format('l (m.d)');
+            case 'weeks' : return $now->subWeeks($multiplier)->format('Y.m.d');
+            case 'months': return $now->subMonths($multiplier)->format('F, Y');
             default: return '';
         }
     }
@@ -116,7 +117,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             return array();
         }
         $settings = $this->getSettings();
-        return $manager->compare($settings['period'], $settings['multiplier']);
+        return array('latest' => $manager->getLatestData(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
     }
 
     /**

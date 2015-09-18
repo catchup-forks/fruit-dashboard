@@ -60,20 +60,26 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-     * getProperties
+     * saveProperties
      * Saves a user's google analytics properties.
      */
-    public function getProperties() {
+    public function saveProperties() {
         $this->user->googleAnalyticsProperties()->delete();
-        $properties = array();
         foreach ($this->getAccountIds() as $accountId) {
             $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($accountId);
             $items = $ga_properties->getItems();
             if (count($items) <= 0) {
                 return null;
             }
+            $properties = array();
             foreach ($items as $item) {
-                $properties[$accountId . ',' . $item->getId()] = $item->getName();
+                $property = new GoogleAnalyticsProperty(array(
+                    'id'         => $item->getId(),
+                    'name'       => $item->getName(),
+                    'account_id' => $accountId
+                )); $property->user()->associate($this->user);
+                $property->save();
+                array_push($properties, $property);
             }
         }
         return $properties;

@@ -14,11 +14,11 @@
 
    <!-- Widget type related information -->
     has
-    @if (array_values($widget->getCurrentValue())[0] >= 0) increased @else decreased @endif
+    @if (array_values($widget->getCurrentValue()['diff'])[0] >= 0) increased @else decreased @endif
     by
 
     <h3 id="{{$widget->id}}-value" class="truncate margin-top-sm">
-      {{ abs(array_values($widget->getCurrentValue())[0]) }}
+      {{ abs(array_values($widget->getCurrentValue()['diff'])[0]) }}
     </h3>
    <!-- Widget type related information -->
 
