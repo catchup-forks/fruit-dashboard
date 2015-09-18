@@ -103,12 +103,13 @@ class GoogleAnalyticsDataCollector
 
         /* Iterating through the profiles. */
         foreach ($this->getProfiles($property) as $profile) {
-            Log::info("has profile");
             /* Retrieving results from API */
             $results = $this->analytics->data_ga->get(
                'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
             $rows = $results->getRows();
             $profileName = $results->getProfileInfo()->getProfileName();
+
+            Log::info($rows);
 
             if (count($rows) > 0) {
                 /* Populating metricsData. */
@@ -117,6 +118,7 @@ class GoogleAnalyticsDataCollector
                 } else {
                     $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
                 }
+            } else {
             }
         }
         return $metricsData;
