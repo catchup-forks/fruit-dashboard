@@ -103,6 +103,7 @@ class GoogleAnalyticsDataCollector
 
         /* Iterating through the profiles. */
         foreach ($this->getProfiles($property) as $profile) {
+            Log::info("has profile");
             /* Retrieving results from API */
             $results = $this->analytics->data_ga->get(
                'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
