@@ -52,7 +52,7 @@
       // Calling drawer every time carousel is changed.
       $('.carousel').on('slid.bs.carousel', function () {
         canvas = reinsertCanvas(canvas);
-
+        chartOptions.animation = false;
         drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
       })
 
@@ -62,7 +62,6 @@
         chartOptions.animation = false;
         canvas = reinsertCanvas(canvas);
         drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
-        chartOptions.animation = true;
       });
 
       // Adding refresh handler.
