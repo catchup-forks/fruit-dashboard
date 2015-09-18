@@ -2,7 +2,7 @@
   <div class="panel fill panel-default panel-transparent">
     <div class="panel-heading">
       <div class="panel-title">
-        @if (($widget->getSettings()['frequency'] == $frequency) && ($widget->state != 'hidden'))
+        @if (($widget->getSettings()['resolution'] == $resolution) && ($widget->state != 'hidden'))
         <span
          class="drop-shadow z-top pull-right"
          data-toggle="tooltip"
@@ -14,7 +14,7 @@
           </span>
         </span>
         @else
-        <a href="{{ route('widget.pin-to-dashboard', array($widget->id, $frequency)) }}"
+        <a href="{{ route('widget.pin-to-dashboard', array($widget->id, $resolution)) }}"
          class="drop-shadow z-top no-underline pull-right"
          data-toggle="tooltip"
          data-placement="left"
@@ -28,10 +28,10 @@
         {{ $value }} statistics
       </div>
     </div>
-    
-    <div class="panel-body no-padding" id="chart-container-{{$frequency}}">
-      <canvas id="chart-{{$frequency}}"></canvas>
+
+    <div class="panel-body no-padding" id="chart-container-{{$resolution}}">
+      <canvas id="chart-{{$resolution}}"></canvas>
     </div> <!-- /.panel-body -->
-    
+
   </div> <!-- /.panel -->
 </div> <!-- /.col-md-6 -->

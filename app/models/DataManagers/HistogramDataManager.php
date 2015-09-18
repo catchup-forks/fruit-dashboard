@@ -75,9 +75,9 @@ abstract class HistogramDataManager extends DataManager
         $histogram = $this->getData();
         /* Handle empty data */
         if ($histogram == null) {
-            return 0;
+            return array();
         } else {
-            return end($histogram);
+            return $this->getEntryValues(end($histogram));
         }
      }
 
@@ -86,24 +86,21 @@ abstract class HistogramDataManager extends DataManager
      * Returning the histogram.
      * --------------------------------------------------
      * @param array $range
-     * @param string $frequency
+     * @param string $resolution
      * @return array
      * --------------------------------------------------
      */
-    public function getHistogram($range, $frequency) {
-        /* Calling proper method based on frequency. */
-        switch ($frequency) {
-            case 'minutely':  return $this->buildHistogram($range, $frequency, 'h:i'); break;
-            case 'hourly':  return $this->buildHistogram($range, $frequency, 'm'); break;
-            case 'daily':   return $this->buildHistogram($range, $frequency, 'M-d'); break;
-            case 'weekly':  return $this->buildHistogram($range, $frequency, 'W'); break;
-            case 'monthly': return $this->buildHistogram($range, $frequency, 'Y-M'); break;
-            case 'yearly':  return $this->buildHistogram($range, $frequency, 'Y'); break;
-            default: return $this->buildHistogram($range, $frequency, 'd'); break;
+    public function getHistogram($range, $resolution) {
+        /* Calling proper method based on resolution. */
+        switch ($resolution) {
+            case 'minutely':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
+            case 'hourly':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
+            case 'daily':   return $this->buildHistogram($range, $resolution, 'M-d'); break;
+            case 'weekly':  return $this->buildHistogram($range, $resolution, 'W'); break;
+            case 'monthly': return $this->buildHistogram($range, $resolution, 'Y-M'); break;
+            case 'yearly':  return $this->buildHistogram($range, $resolution, 'Y'); break;
+            default: return $this->buildHistogram($range, $resolution, 'd'); break;
         }
-
-        /* Default return. */
-        return $this->getData();
     }
 
     /**
@@ -111,16 +108,15 @@ abstract class HistogramDataManager extends DataManager
      * Returning the Histogram in the range,
      * --------------------------------------------------
      * @param array $range
-     * @param string $frequency
+     * @param string $resolution
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
+    protected function buildHistogram($range, $resolution, $dateFormat='Y-m-d') {
         /* Getting recorded histogram sorted by timestamp. */
-        $fullHistogram = $this->getData();
-        if ($fullHistogram != null) {
-            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+        $fullHistogram = $this->sortHistogram();
+        if ( ! is_null($fullHistogram)) {
             $last = end($fullHistogram);
         }
 
@@ -144,7 +140,7 @@ abstract class HistogramDataManager extends DataManager
             }
             if ($recording) {
                 /* Frequency conditions. */
-                if (( ! $first && $this->isBreakPoint($entryTime, $previousEntryTime, $frequency)) || ($entry == $last)) {
+                if (( ! $first && static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) || ($entry == $last)) {
                     if ($entry == $last) {
                         array_push($sampleEntries, $entry);
                     }
@@ -181,22 +177,22 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      * @param Carbon $entryTime
      * @param Carbon $previousEntryTime
-     * @param string $frequency
+     * @param string $resolution
      * @return boolean
      * --------------------------------------------------
     */
-    protected function isBreakPoint($entryTime, $previousEntryTime, $frequency) {
-        if ($frequency == 'minutely') {
+    private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
+        if ($resolution == 'minutely') {
             return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
-        } else if ($frequency == 'hourly') {
+        } else if ($resolution == 'hourly') {
             return $entryTime->format('Y-m-d h') !== $previousEntryTime->format('Y-m-d h');
-        } else if ($frequency == 'daily') {
+        } else if ($resolution == 'daily') {
             return ! $entryTime->isSameDay($previousEntryTime);
-        } else if ($frequency == 'weekly') {
+        } else if ($resolution == 'weekly') {
             return $entryTime->format('Y-W') !== $previousEntryTime->format('Y-W');
-        } else if ($frequency == 'monthly') {
+        } else if ($resolution == 'monthly') {
             return $entryTime->format('Y-m') !== $previousEntryTime->format('Y-m');
-        } else if ($frequency == 'yearly') {
+        } else if ($resolution == 'yearly') {
             return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
         return FALSE;
@@ -210,7 +206,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    public static final function getDiff($data, $dataName='value') {
+    public static final function getDiff(array $data, $dataName='value') {
         $differentiatedArray = array();
         foreach ($data as $entry) {
             /* Copying entry. */
@@ -227,7 +223,60 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * getAverageValues
+     * compare
+     * Comparing the current value respect to period.
+     * --------------------------------------------------
+     * @param string $period
+     * @param int $multiplier
+     * @return array
+     * --------------------------------------------------
+     */
+    public function compare($period, $multiplier=1) {
+        $latestData = $this->getLatestData();
+
+        foreach ($this->sortHistogram() as $entry) {
+            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
+
+            /* Checking for a match. */
+            if (static::matchesTime($entryTime, $period, $multiplier)) {
+                /* Creating an arrays that will hold the values. */
+                $values = array();
+                foreach ($this->getEntryValues($entry) as $dataId=>$value) {
+                    if (array_key_exists($dataId, $latestData)) {
+                        $values[$dataId] = $latestData[$dataId] - $value;
+                    }
+                }
+                return $values;
+            }
+        }
+
+        /* No values found using last one */
+        return $this->getEntryValues($latestData);
+    }
+
+    /**
+     * getEntryValues (buildHistogram)
+     * Returning only the values of the entry,
+     * excluding staticFields.
+     * --------------------------------------------------
+     * @param array $entriy
+     * @return array
+     * --------------------------------------------------
+     */
+    private static final function getEntryValues($entry) {
+        $values = array();
+        foreach ($entry as $key=>$value) {
+            if ( ! in_array($key, static::$staticFields)) {
+                $values[$key] = $value;
+            }
+        }
+        return $values;
+    }
+
+
+
+    /**
+     * getAverageValues (buildHistogram)
      * Merging multiple entries into one, by avereging the values.
      * --------------------------------------------------
      * @param array $entries
@@ -259,7 +308,53 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * Comparing two timestamps.
+     * matchesTime (compare())
+     * Checks if the datetime should be used in compare.
+     * (Carbon extension)
+     * --------------------------------------------------
+     * @param Carbon $entryTime
+     * @param string $period
+     * @param integer $multiplier
+     * @return boolean
+     * --------------------------------------------------
+    */
+    private static function matchesTime($entryTime, $period, $multiplier) {
+        $now = Carbon::now();
+        if ($period == 'minutes') {
+            return $entryTime->diffInMinutes($now) == $multiplier;
+        } else if ($period == 'hours') {
+            return $entryTime->diffInHours($now) == $multiplier;
+        } else if ($period == 'days') {
+            return $entryTime->diffInDays($now) == $multiplier;
+        } else if ($period == 'weeks') {
+            return $entryTime->diffInWeeks($now) == $multiplier;
+        } else if ($period == 'months') {
+            return $entryTime->diffInMonths($now) == $multiplier;
+        } else if ($period == 'years') {
+            return $entryTime->diffInYears($now) == $multiplier;
+        }
+        return FALSE;
+    }
+
+    /**
+     * Sorting the array.
+     * --------------------------------------------------
+     * @param boolean $asc
+     * @return array
+     * --------------------------------------------------
+     */
+    private function sortHistogram($asc=TRUE) {
+        $fullHistogram = $this->getData();
+        if ($fullHistogram != null) {
+            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+        } else {
+            $fullHistogram = array();
+        }
+        return $asc ? $fullHistogram : array_reverse($fullHistogram);
+    }
+
+    /**
+     * Comparing two timestamps. (buildHistogram())
      * --------------------------------------------------
      * @param array $CseZso1
      * @param array $CseZso2

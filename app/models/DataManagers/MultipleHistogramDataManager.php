@@ -75,23 +75,23 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * Returning template ready grouped dataset.
      * --------------------------------------------------
      * @param array $range
-     * @param string $frequency
+     * @param string $resolution
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
      */
-    public function buildHistogram($range, $frequency, $dateFormat='Y-m-d') {
+    public function buildHistogram($range, $resolution, $dateFormat='Y-m-d') {
         $groupedData = array();
         $datetimes = array();
         $i = 0;
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
                 'name'   => $name,
-                'color'  => SiteConstants::getChartJsColors()[$i++],
+                'color'  => SiteConstants::getChartJsColors()[($i++) % count(SiteConstants::getChartJsColors())],
                 'values' => array()
             );
         }
-        foreach (parent::buildHistogram($range, $frequency, $dateFormat) as $oneValues) {
+        foreach (parent::buildHistogram($range, $resolution, $dateFormat) as $oneValues) {
             array_push($datetimes, $oneValues['datetime']);
             foreach ($oneValues as $dataId => $value) {
                 if ( ! in_array($dataId, static::$staticFields)) {
@@ -134,11 +134,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return string (json)
      * --------------------------------------------------
      */
-    public static final function transformData($histogramData) {
+    public static final function transformData(array $histogramData) {
         $dbData = array(
             'datasets' => array(),
             'data'     => array()
         );
+
+        /* Saving empty histogram. */
+        if (empty($histogramData)) {
+            return json_encode($dbData);
+        }
 
         $i = 0;
         foreach ($histogramData as $entry) {
@@ -180,18 +185,33 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     private function addToDataSets($key) {
         $dataSets = $this->getDataSets();
         if (is_null($dataSets)) {
+            /* Empty dataset */
            $this->data->raw_value = json_encode(array(
                 'datasets' => array($key => 'data_0'),
                 'data'     => array()
            ));
        } else {
-           $dataSets[$key] = 'data_' . count($dataSets);
+            /* Adding to datasets. */
+           $name = 'data_' . count($dataSets);
+           $dataSets[$key] = $name;
+
+           /* Adding 0 to previous values. */
+           $newData = array();
+           foreach ($this->getData() as $entry) {
+                $newEntry = $entry;
+                $newEntry[$name] = 0;
+                array_push($newData, $newEntry);
+           }
+
+           /* Creating layout. */
            $this->data->raw_value = json_encode(array(
                 'datasets' => $dataSets,
-                'data'     => $this->getData()
+                'data'     => $newData
            ));
         }
-       $this->data->save();
+
+       /* Saving to DB. */
+        $this->data->save();
     }
 
 }

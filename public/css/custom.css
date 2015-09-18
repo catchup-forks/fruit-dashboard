@@ -74,6 +74,9 @@ body {
 .margin-top-sm {
   margin-top: 12.5px;
 }
+.padding {
+  padding: 5px;
+}
 .not-visible {
   display: none;
 }
@@ -151,6 +154,24 @@ body {
 }
 .gs-w:hover span.display-hovered {
   display: inline-block;
+}
+.gs-resize-handle,
+.gs-resize-handle-both {
+  bottom: -1px;
+  right: -1px;
+  background-image: none;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.gs-resize-handle:before {
+  content: "\f065";
+  font-size: 75%;
+  font-family: FontAwesome;
+  color: #ffffff;
+  text-shadow: 1px -1px 3px #141414;
 }
 .quote p {
   line-height: 1em;
@@ -248,4 +269,18 @@ input.greetings-name:focus {
 .modification-icons {
   position: relative;
   top: -40px;
+}
+.chart {
+  background-color: #e6e6e6;
+  background-color: rgba(230, 230, 230, 0.2125);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+html,
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  background-color: #333333;
 }

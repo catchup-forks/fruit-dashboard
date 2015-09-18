@@ -92,7 +92,7 @@ class SignupWizardController extends BaseController
     /**
      * anySocialConnections
      * --------------------------------------------------
-     * @return Renders the personal widget setup step
+     * @return Renders the social connections setup step
      * --------------------------------------------------
      */
     public function anySocialConnections() {
@@ -101,28 +101,54 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * anyWebAnalyticsConnections
+     * --------------------------------------------------
+     * @return Renders the web analytics connections setup step
+     * --------------------------------------------------
+     */
+    public function anyWebAnalyticsConnections() {
+        /* Render the page */
+        return View::make('signup-wizard.web-analytics-connections');
+    }
+
+    /**
      * getPersonalWidgets
      * --------------------------------------------------
      * @return Renders the personal widget setup step
      * --------------------------------------------------
      */
-    public function getPersonalWidgets() {
-        /* Render the page */
-        return View::make('signup-wizard.personal-widgets');
+    public function anyPersonalWidgets() {
+        /* Make personal dashboard automatically */
+        $this->makePersonalAutoDashboard(Auth::user(), 'auto', null);
+        /* Redirect to the dashboard */
+        return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
     }
 
     /**
-     * postPersonalWidgets
+     * anyFacebookLogin
      * --------------------------------------------------
-     * @return Saves the user personal widget settings
+     * @return logs a user in with facebook.
      * --------------------------------------------------
      */
-    public function postPersonalWidgets() {
-        /* Create the personal dashboard based on the inputs */
-        $this->makePersonalAutoDashboard(Auth::user(), Input::all());
+    public function anyFacebookLogin() {
+        /* Oauth ready. */
+        if (Input::get('code', FALSE)) {
+            $userInfo = FacebookConnector::loginWithFacebook();
+            if ($userInfo['isNew']) {
+                return Redirect::route('signup-wizard.financial-connections')
+                    ->with('success', 'Welcome on board, '. $userInfo['user']->name. '!');
+            } else {
+                return Redirect::route('dashboard.dashboard')
+                    ->with('success', 'Welcome back, '. $userInfo['user']->name. '!');
+            }
+        /* User declined */
+        } else if (Input::get('error', FALSE)) {
+            return Redirect::route('auth.signin')
+                ->with('error', 'Sorry, we couldn\'t log you in. Please try again.');
+        }
 
-        /* Render the page */
-        return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
+        /* Basic page load */
+        return Redirect::to(FacebookConnector::getFacebookLoginUrl());
     }
 
     /**
@@ -151,34 +177,7 @@ class SignupWizardController extends BaseController
 
         /* Save the user */
         $user->save();
-
-        /* Create default settings for the user */
-        $settings = new Settings;
-        $settings->user()->associate($user);
-        $settings->newsletter_frequency = 0;
-
-        /* Save settings */
-        $settings->save();
-
-        /* Create default background for the user */
-        $background = new Background;
-        $background->user()->associate($user);
-        $background->changeUrl();
-
-        /* Save background */
-        $background->save();
-
-        /* Create default subscription for the user */
-        $plan = Plan::getFreePlan();
-        $subscription = new Subscription;
-        $subscription->user()->associate($user);
-        $subscription->plan()->associate($plan);
-        $subscription->status = 'active';
-        $subscription->trial_status = 'possible';
-        $subscription->trial_start  = null;
-
-        /* Save subscription */
-        $subscription->save();
+        $user->createDefaultProfile();
 
         /* Return */
         return $user;
@@ -189,12 +188,13 @@ class SignupWizardController extends BaseController
      * creates a new Dashboard object and personal widgets
      * from the POST data
      * --------------------------------------------------
-     * @param (User) ($user) The current user
-     * @param (array) ($widgetdata) Personal widgets data
+     * @param (User)    ($user) The current user
+     * @param (string)  ($mode) 'auto' or 'manual'
+     * @param (array)   ($widgetdata) Personal widgets data
      * @return (Dashboard) ($dashboard) The new Dashboard object
      * --------------------------------------------------
      */
-    private function makePersonalAutoDashboard($user, $widgetdata) {
+    private function makePersonalAutoDashboard($user, $mode, $widgetdata) {
         /* Create new dashboard */
         $dashboard = new Dashboard(array(
             'name'       => 'Personal dashboard',
@@ -208,7 +208,8 @@ class SignupWizardController extends BaseController
         $dashboard->save();
 
         /* Create clock widget */
-        if (array_key_exists('widget-clock', $widgetdata)) {
+        if (($mode == 'auto') or
+            array_key_exists('widget-clock', $widgetdata)) {
             $clockwidget = new ClockWidget(array(
                 'state'    => 'active',
                 'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
@@ -220,7 +221,8 @@ class SignupWizardController extends BaseController
         }
 
         /* Create greetings widget */
-        if (array_key_exists('widget-greetings', $widgetdata)) {
+        if (($mode == 'auto') or
+            array_key_exists('widget-greetings', $widgetdata)) {
             $greetingswidget = new GreetingsWidget(array(
                 'state'    => 'active',
                 'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
@@ -232,7 +234,8 @@ class SignupWizardController extends BaseController
         }
 
         /* Create quote widget */
-        if (array_key_exists('widget-quote', $widgetdata)) {
+        if (($mode == 'auto') or
+            array_key_exists('widget-quote', $widgetdata)) {
             $quotewidget = new QuoteWidget(array(
                 'state'    => 'active',
                 'position' => '{"row":11,"col":1,"size_x":12,"size_y":1}',

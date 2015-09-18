@@ -12,7 +12,7 @@
   <div class="container">
 
     <h1 class="text-center text-white drop-shadow">
-      Connect your financial tools
+      Connect your financial accounts
     </h1>
 
     <div class="row">
@@ -25,7 +25,7 @@
 
                 <div class="list-group margin-top-sm">
 
-               @foreach (SiteConstants::getFinancialServices() as $service)
+               @foreach (SiteConstants::getServicesMetaByType('financial') as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
@@ -60,7 +60,7 @@
 
               </div> <!-- /.col-md-5 -->
               <div class="col-md-7">
-                {{ HTML::image('img/demonstration/widget-stripe.jpg', 'The Stripe Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
+                {{ HTML::image('img/demonstration/widget-braintree.jpg', 'Braintree', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
               </div> <!-- /.col-md-7 -->
             </div> <!-- /.row -->
 

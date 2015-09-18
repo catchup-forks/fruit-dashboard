@@ -3,7 +3,7 @@
 class FacebookPopulateData
 {
     /* -- Class properties -- */
-    const DAYS = 30;
+    const DAYS = 60;
 
     /**
      * The facebook collector object.
@@ -34,16 +34,24 @@ class FacebookPopulateData
     private $dataManagers = null;
 
     /**
+     * The dataManager criteria.
+     *
+     * @var array
+     */
+    private $criteria = null;
+
+    /**
      * Main job handler.
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
         $this->collector = new FacebookDataCollector($this->user);
-        foreach ($this->user->facebookPages()->get() as $page) {
-            $this->page = $page;
-            $this->dataManagers = $this->getManagers();
-            $this->collectData();
-        }
+
+        $this->criteria = $data['criteria'];
+        $this->page = $this->user->facebookPages()->where('id', $data['criteria']['page'])->first();
+        $this->dataManagers = $this->getManagers();
+        $this->collectData();
+
         $job->delete();
     }
 
@@ -75,9 +83,7 @@ class FacebookPopulateData
         foreach ($this->user->dataManagers()->get() as $generalDataManager) {
             $dataManager = $generalDataManager->getSpecific();
 
-            if (($dataManager->descriptor->category == 'facebook') && ($dataManager->getCriteria()['page'] == $this->page->id)) {
-
-                /* Setting dataManager. */
+            if ($dataManager->descriptor->category == 'facebook' && $dataManager->getCriteria() == $this->criteria) {
                 $dataManagers[$dataManager->descriptor->type] = $dataManager;
             }
         }

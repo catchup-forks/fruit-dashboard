@@ -1,6 +1,7 @@
 <?php
 
-class TwitterFollowersWidget extends HistogramWidget
+class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
 {
+    use TwitterWidgetTrait;
 }
 ?>

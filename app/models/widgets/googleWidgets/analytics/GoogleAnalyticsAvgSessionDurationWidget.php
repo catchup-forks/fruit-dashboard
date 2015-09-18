@@ -1,5 +1,6 @@
 <?php
-class GoogleAnalyticsAvgSessionDurationWidget extends GeneralGoogleAnalyticsWidget
+class GoogleAnalyticsAvgSessionDurationWidget extends MultipleHistogramWidget implements iServiceWidget
 {
+    use GoogleAnalyticsWidgetTrait;
 }
 ?>

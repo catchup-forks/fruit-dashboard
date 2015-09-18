@@ -35,22 +35,18 @@ class LaravelFacebookSessionPersistendDataHandler implements PersistentDataInter
 
 class FacebookConnector extends GeneralServiceConnector
 {
-    protected static $service     = 'facebook';
-    protected static $permissions = array('manage_pages', 'read_insights');
+    protected static $service          = 'facebook';
+    protected static $permissions      = array('manage_pages', 'read_insights');
+    protected static $loginPermissions = array('email', 'public_profile');
+    protected static $userInfo = array('email', 'first_name', 'last_name');
+    protected static $dataHandler = null;
 
     protected $fb;
 
     /* -- Constructor -- */
     function __construct($user) {
         parent::__construct($user);
-        $persistentDataHandler = new LaravelFacebookSessionPersistendDataHandler();
-        // FIXME graph version -> ENV
-        $this->fb = new Facebook(array(
-            'app_id'                  => $_ENV['FACEBOOK_APP_ID'],
-            'app_secret'              => $_ENV['FACEBOOK_APP_SECRET'],
-            'default_graph_version'   => $_ENV['FACEBOOK_DEFAULT_GRAPH_VERSION'],
-            'persistent_data_handler' => $persistentDataHandler
-        ));
+        $this->fb = self::setFB();
     }
 
     /**
@@ -65,9 +61,27 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
     /**
-     * getFacebookConnectUrl
+     * setFB
      * --------------------------------------------------
+     * Creates and returns the facebook entity.
+     * @return Facebook
+     * --------------------------------------------------
+     */
+    public static function setFB() {
+        self::$dataHandler = new LaravelFacebookSessionPersistendDataHandler;
+        $fb = new Facebook(array(
+            'app_id'                  => $_ENV['FACEBOOK_APP_ID'],
+            'app_secret'              => $_ENV['FACEBOOK_APP_SECRET'],
+            'default_graph_version'   => $_ENV['FACEBOOK_DEFAULT_GRAPH_VERSION'],
+            'persistent_data_handler' => self::$dataHandler
+        ));
+        return $fb;
+    }
+
+    /**
+     * getFacebookConnectUrl
      * Returns the facebook connect url, based on config.
+     * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
@@ -79,6 +93,23 @@ class FacebookConnector extends GeneralServiceConnector
         }
 
         return $helper->getLoginUrl(route('service.facebook.connect'), static::$permissions);
+    }
+
+    /**
+     * getFacebookLoginUrl
+     * Returns the facebook connect url for login, based on config.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getFacebookLoginUrl() {
+        $fb = self::setFB();
+        $helper = $fb->getRedirectLoginHelper();
+        if (App::environment('local')) {
+            // we must use this in development
+            return $helper->getLoginUrl('http://localhost:8001/signup/facebook/login', static::$loginPermissions);
+        }
+        return $helper->getLoginUrl(route('signup-wizard.facebook-login'), static::$loginPermissions);
     }
 
     /**
@@ -98,13 +129,13 @@ class FacebookConnector extends GeneralServiceConnector
      */
 
     /**
-     * getTokens
+     * saveTokens
      * Retrieving the access tokens, OAUTH.
      * --------------------------------------------------
      * @return None
      * --------------------------------------------------
      */
-    public function getTokens(array $parameters=array()) {
+    public function saveTokens(array $parameters=array()) {
         $helper = $this->fb->getRedirectLoginHelper();
 
         if (App::environment('local')) {
@@ -113,10 +144,56 @@ class FacebookConnector extends GeneralServiceConnector
             $this->createConnection($helper->getAccessToken(), '');
         }
 
-        /* Getting facebook pages  (will be moved to autodashboard) */
-        $collector = new FacebookDataCollector(Auth::user());
+        $collector = new FacebookDataCollector($this->user);
         $collector->savePages();
+
     }
+
+    /**
+     * loginWithFacebook
+     * Logs a user in with facebook.
+     * --------------------------------------------------
+     * @return string (route)
+     * --------------------------------------------------
+     */
+    public static function loginWithFacebook() {
+        $fb = self::setFB();
+        $helper = $fb->getRedirectLoginHelper();
+
+        /* Retrieving access token */
+        if (App::environment('local')) {
+            $accessToken = $helper->getAccessToken(str_replace(8000, 8001, URL::full()));
+        } else {
+            $accessToken = $helper->getAccessToken();
+        }
+
+        /* Retrieving user info. */
+        $response = $fb->get('/me?fields=' . implode(',', self::$userInfo), $accessToken);
+        $userInfo = $response->getGraphUser();
+
+        /* Saving user/logging in registered. */
+        $registeredUser = User::where('email', $userInfo['email'])->first();
+        if (is_null($registeredUser)) {
+            /* New user */
+            $user = User::create(array(
+                'email'  => $userInfo['email'],
+                'name'   => $userInfo['first_name'] . ' ' . $userInfo['last_name'],
+            ));
+            $user->createDefaultProfile();
+
+            /* Authenticate */
+            Auth::login($user);
+            return array('isNew' => true,
+                         'user'  => $user);
+
+        } else {
+            /* User already registered. */
+            Auth::login($registeredUser);
+            return array('isNew' => false,
+                         'user'  => $registeredUser);
+        }
+    }
+
 
     /**
      * disconnect
@@ -132,34 +209,16 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
     /**
-     * createDataManagers
-     * --------------------------------------------------
-     * Creating the dataManagers for each page.
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function createDataManagers() {
-        $dataManagers = array();
-        foreach ($this->user->facebookPages()->get() as $facebookPage) {
-            foreach (parent::createDataManagers() as $dataManager) {
-                $dataManager->settings_criteria = json_encode(array(
-                    'page' => $facebookPage->id
-                ));
-                array_push($dataManagers, $dataManager->save());
-            }
-        }
-        return $dataManagers;
-    }
-
-    /**
      * populateData
      * --------------------------------------------------
      * Collecting the initial data from the service.
+     * @param array $criteria
      * --------------------------------------------------
      */
-    protected function populateData() {
+    public function populateData($criteria) {
         Queue::push('FacebookPopulateData', array(
-            'user_id' => $this->user->id
+            'user_id'  => $this->user->id,
+            'criteria' => $criteria
         ));
     }
 

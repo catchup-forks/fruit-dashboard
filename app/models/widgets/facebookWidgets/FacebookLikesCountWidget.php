@@ -1,7 +1,8 @@
 <?php
 
-class FacebookLikesCountWidget extends CountWidget
+class FacebookLikesCountWidget extends CountWidget implements iServiceWidget
 {
-    $dataManager = 'facebook_likes';
+    use FacebookWidgetTrait;
+    protected static $histogramDescriptor = 'facebook_likes';
 }
 ?>

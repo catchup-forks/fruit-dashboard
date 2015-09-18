@@ -1,8 +1,4 @@
 <?php
-interface iAjaxWidget
-{
-    public function handleAjax($postData);
-}
 /* Main widget class */
 class Widget extends Eloquent
 {
@@ -18,8 +14,9 @@ class Widget extends Eloquent
     public $timestamps = FALSE;
 
     /* These variables will be overwritten, with late static binding. */
-    public static $settingsFields = array();
-    public static $setupSettings = array();
+    protected static $settingsFields = array();
+    protected static $setupSettings = array();
+    protected static $criteriaSettings = array();
 
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
@@ -47,8 +44,27 @@ class Widget extends Eloquent
     }
 
     /**
+     * turnOffBrokenWidgets
+     * Setting all broken widget's state to setup required.
+     * --------------------------------------------------
+     * @param User $user
+     * --------------------------------------------------
+    */
+    public static function turnOffBrokenWidgets($user) {
+        foreach ($user->widgets as $generalWidget) {
+            $widget = $generalWidget->getSpecific();
+            $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
+            try {
+                $view->render();
+            } catch (Exception $e) {
+                $widget->setState('setup_required');
+            }
+        }
+    }
+
+    /**
      * checkIntegrity
-     * Checking the widgets settings integrity.
+     * Checking the widgets settings integrity, and trying to render the view.
     */
     public function checkIntegrity() {
         $this->checkSettingsIntegrity();
@@ -61,8 +77,8 @@ class Widget extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getSettingsFields() {
-        return static::$settingsFields;
+    public static function getSettingsFields() {
+        return self::$settingsFields;
     }
 
     /**
@@ -72,8 +88,19 @@ class Widget extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getSetupFields() {
-        return static::$setupSettings;
+    public static function getSetupFields() {
+        return self::$setupSettings;
+    }
+
+    /**
+     * getCriteriaFields
+     * Returns the criteria settings.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getCriteriaFields() {
+        return self::$criteriaSettings;
     }
 
     /**
@@ -98,8 +125,6 @@ class Widget extends Eloquent
         return json_decode($this->settings, 1);
     }
 
-
-
     /**
      * getSpecific
      * Getting the correct widget from a general widget,
@@ -114,6 +139,45 @@ class Widget extends Eloquent
             $widget->checkIntegrity();
         }
         return $widget;
+    }
+
+    /**
+     * getCriteria
+     * Returning the settings that makes a difference among widgets.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getCriteria() {
+        $settings = array();
+        foreach (static::getCriteriaFields() as $key) {
+            if (array_key_exists($key, $this->getSettings())) {
+                $settings[$key] = $this->getSettings()[$key];
+            } else {
+                return array();
+            }
+        }
+        return $settings;
+    }
+
+    /**
+     * hasValidCriteria
+     * Checking if the widget has valid criteria
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    public function hasValidCriteria() {
+        $criteriaFields = static::getCriteriaFields();
+        if (empty($criteriaFields)) {
+            return TRUE;
+        }
+        $criteria = $this->getCriteria();
+        foreach ($criteriaFields as $setting) {
+            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
+                return FALSE;
+        }
+        return TRUE;
     }
 
     /**
@@ -281,14 +345,12 @@ class Widget extends Eloquent
     */
     protected function checkSettingsIntegrity() {
         if (is_null($this->getSettings())) {
-            $this->state = 'setup_required';
-            $this->save();
+            $this->setState('setup_required');
             return ;
         }
         foreach ($this->getSettingsFields() as $key=>$value) {
             if ( ! array_key_exists($key, $this->getSettings())) {
-                $this->state = 'setup_required';
-                $this->save();
+            $this->setState('setup_required');
             }
         }
     }

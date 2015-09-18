@@ -3,7 +3,7 @@
 class ClockWidget extends Widget
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
+    private static $clockSettings = array(
         'clock_type' => array(
             'name'       => 'Type',
             'type'       => 'SCHOICE',
@@ -11,8 +11,6 @@ class ClockWidget extends Widget
             'default'    => 'digital'
         ),
    );
-    /* The settings to setup in the setup-wizard. */
-    public static $setupSettings = array();
 
     /* Choices functions */
     public function clock_type() {
@@ -21,6 +19,17 @@ class ClockWidget extends Widget
             'analog'  => 'analogue'
         );
     }
+
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$clockSettings);
+     }
 }
 
 ?>

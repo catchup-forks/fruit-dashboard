@@ -18,15 +18,26 @@ class WidgetDescriptor extends Eloquent
     public function widgets() {return $this->hasMany('Widget', 'descriptor_id');}
     public function dataManagers() {return $this->hasMany('DataManager', 'descriptor_id');}
 
-    /* Returning the specific widgetClass Name
-     *
+    /**
+     * getClassName
+     * Returning the specific widgetClass Name
+     * --------------------------------------------------
      * @return string The widget class Name
+     * --------------------------------------------------
     */
     public function getClassName() {
-        return str_replace(
-            ' ', '',
-            ucwords(str_replace('_',' ', $this->type))
-        ) . "Widget";
+        return SiteConstants::underscoreToCamelCase($this->type) . 'Widget';
+    }
+
+    /**
+     * getDataManager
+     * Returning the specific DataManager class Name
+     * --------------------------------------------------
+     * @return string The widget class Name
+     * --------------------------------------------------
+    */
+    public function getDMClassName() {
+        return str_replace('Widget', 'DataManager', $this->getClassName());
     }
 
     /**
@@ -48,30 +59,35 @@ class WidgetDescriptor extends Eloquent
      * @return DataManager
      * --------------------------------------------------
     */
-    public function getDataManager($widget) {
-        $className = str_replace('Widget', 'DataManager', $this->getClassName());
-        if (class_exists($className)) {
-            /* Manager class exists. */
+    public function getDataManager($widget, $firstRun=TRUE) {
+        $className = $this->getDMClassName();
+        if (class_exists($className) && $widget->hasValidCriteria()) {
+            /* Manager class exists, and widget has been set up */
             $managers = $widget->user()->dataManagers()->where('descriptor_id', $this->id)->get();
 
-            if ($widget->getCriteria()) {
-                /* More managers, checking criteria. */
-                foreach ($managers as $manager) {
-                    if ($manager->getCriteria() == $widget->getCriteria()) {
-                        return $manager;
-                    }
+            foreach ($managers as $manager) {
+                if ($manager->getCriteria() == $widget->getCriteria()) {
+                    return $manager;
                 }
-            } else if (count($managers) == 1) {
-                /* Only one manager using it automatically. */
-                return $managers[0];
             }
 
-            /* No manager found, creating one. */
-            if (empty($widget::$criteriaSettings) || $widget->hasValidCriteria()) {
+            /* No manager found */
+            if ($widget instanceof iServiceWidget && $firstRun) {
+                /* It's a service widget. */
+                /* Creating all related managers. */
+                $connectorClass = $widget->getConnectorClass();
+                $connector = new $connectorClass($widget->user());
+                $connector->createDataManagers($widget->getCriteria());
+
+                /* Calling getManager again, there should be a match now. */
+                return $this->getDataManager($widget, FALSE);
+            } else {
+                /* Creating a manager. */
                 return DataManager::createManagerFromWidget($widget);
             }
-        }
+       }
         return null;
     }
+
 }
 ?>

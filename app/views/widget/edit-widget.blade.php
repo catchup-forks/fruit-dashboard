@@ -11,11 +11,13 @@
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
           <div class="panel panel-default panel-transparent">
-            <div class="panel-body">
-              <p class="lead text-center">
+            <div class="panel-heading">
+              <h3 class="panel-title text-center">
                 Edit the settings of the
                 <span class="text-success"><strong>{{ $widget->descriptor->name }} widget</strong></span>.
-              </p>
+              </h3>
+            </div> <!-- /.panel-heading -->
+            <div class="panel-body">
               {{ Form::open(array('route' => array(
                 'widget.edit',
                 $widget->id),
@@ -38,6 +40,9 @@
                         {{ Form::text($field, $widget->getSettings()[$field], array(
                       'class' => 'form-control' )) }}
                       @endif
+                      @if (array_key_exists('help_text', $meta))
+                        <p class="text-info">{{ $meta['help_text'] }}</p>
+                      @endif
                     </div> <!-- /.col-sm-6 -->
 
                   </div> <!-- /.form-group -->
@@ -50,6 +55,7 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::select('dashboard', $dashboards, $widget->dashboard->id, ['class' => 'form-control']) }}
+                      <p class="text-info">The widget will be assigned to this dashboard.</p>
                     </div>
                   </div>
                 <!-- /.dashboard select -->
@@ -61,13 +67,14 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::text('update_period', $widget->dataManager()->update_period, ['class' => 'form-control']) }}
+                      <p class="text-info">The number of minutes the widget data will be updated automatically. (min. 30)</p>
                     </div>
                   </div>
                 @endif
                 <!-- /.Update interval select -->
                 <hr>
-                  <a href="/" class="btn btn-warning">Cancel</a>
                   {{ Form::submit('Save', array('class' => 'btn btn-primary pull-right') ) }}
+                  <a href="/" class="btn btn-link pull-right">Cancel</a>
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->

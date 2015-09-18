@@ -113,7 +113,7 @@ class GeneralWidgetController extends BaseController {
         );
 
         /* Return */
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $newDashboard->id))
             ->with('success', "Widget successfully updated.");
     }
 
@@ -166,6 +166,9 @@ class GeneralWidgetController extends BaseController {
         );
 
         if ($validator->fails()) {
+            var_dump(Input::all());
+            var_dump($widget->getSettingsValidationArray($widget->getSetupFields()));
+            exit(1);
             // validation failed.
             return Redirect::back()
                 ->with('error', "Please correct the form errors.")
@@ -176,7 +179,7 @@ class GeneralWidgetController extends BaseController {
         /* Validation successful, ready to save. */
         $widget->saveSettings(Input::all());
 
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
             ->with('success', "Widget successfully updated.");
     }
 
@@ -239,7 +242,7 @@ class GeneralWidgetController extends BaseController {
                     ->with('success', 'You successfully restored the widget.');
             }
         }
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
             ->with('success', 'You successfully restored the widget.');
     }
     /**
@@ -253,7 +256,7 @@ class GeneralWidgetController extends BaseController {
         Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Rendering view */
-        return View::make('widget.add-widget', array('widgetDescriptors' => WidgetDescriptor::all()));
+        return View::make('widget.add-widget');
     }
 
     /**
@@ -273,7 +276,7 @@ class GeneralWidgetController extends BaseController {
         $className = $descriptor->getClassName();
 
         /* Looking for a connection */
-        if ($descriptor->category != 'personal') {
+        if (in_array($descriptor->category, SiteConstants::getServices())) {
             $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
             if ( ! $connected) {
                 $redirectRoute = 'service.' . $descriptor->category . '.connect';
@@ -288,24 +291,46 @@ class GeneralWidgetController extends BaseController {
         ));
 
         /* Associate to dashboard */
-        if (Input::get('toDashboard')) {
-            $dashboard = Dashboard::find(Input::get('toDashboard'));
+        $dashboardNum = Input::get('toDashboard');
+
+        /* Add to new dashboard */
+        if ($dashboardNum == 0) {
+            /* Get the new name or fallback to the default */
+            $newDashboardName = Input::get('newDashboardName');
+            if (empty($newDashboardName)) {
+                $newDashboardName = 'New Dashboard';
+            }
+            /* Create new dashboard and associate */
+            $dashboard = new Dashboard(array(
+                'name'       => $newDashboardName,
+                'background' => TRUE,
+                'number'     => Auth::user()->dashboards->max('number') + 1
+            ));
+            $dashboard->user()->associate(Auth::user());
+            $dashboard->save();
+
+        /* Adding to existing dashboard*/
+        } else if (Input::get('toDashboard')) {
+            $dashboard = Dashboard::find($dashboardNum);
             if (is_null($dashboard)) {
                 $dashboard = Auth::user()->dashboards[0];
             }
+
+        /* Error handling */
         } else {
             $dashboard = Auth::user()->dashboards[0];
         }
 
+        /* Associate the widget to the dashboard */
         $widget->dashboard()->associate($dashboard);
 
-    /* Finding position. */
+        /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
-         /* Associate descriptor and save */
+        /* Associate descriptor and save */
         $widget->descriptor()->associate($descriptor);
         $options = array();
-        if ($widget instanceof CronWidget && $className::$criteriaSettings !== FALSE) {
+        if ($widget instanceof CronWidget && $className::getCriteriaFields() !== FALSE) {
             $options['skipManager'] = TRUE;
         }
         $widget->save($options);
@@ -320,7 +345,7 @@ class GeneralWidgetController extends BaseController {
         /* If widget has no setup fields, redirect to dashboard automatically */
         $setupFields = $widget->getSetupFields();
         if (empty($setupFields)) {
-            return Redirect::route('dashboard.dashboard')
+            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
             ->with('success', 'Widget successfully created. You can customize it here.');
@@ -332,7 +357,7 @@ class GeneralWidgetController extends BaseController {
      * @return Pinning a widget to dashboard.
      * --------------------------------------------------
      */
-    public function anyPinToDashboard($widgetID, $frequency) {
+    public function anyPinToDashboard($widgetID, $resolution) {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
@@ -344,10 +369,10 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
         $widget->state = 'active';
-        $widget->saveSettings(array('frequency' => $frequency), TRUE);
+        $widget->saveSettings(array('resolution' => $resolution), TRUE);
 
         /* Rendering view. */
-        return Redirect::route('dashboard.dashboard')
+        return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
             ->with('success', 'Widget pinned successfully.');
     }
 
@@ -430,10 +455,11 @@ class GeneralWidgetController extends BaseController {
             }
 
             /* Find widget */
-            $widget = Widget::find($widgetData['id'])->getSpecific();
+            $generalWidget = Widget::find($widgetData['id']);
 
             /* Skip widget if not found */
-            if ($widget === null) { continue; }
+            if ($generalWidget === null) { continue; }
+            $widget = $generalWidget->getSpecific();
 
             /* Set position */
             try {
