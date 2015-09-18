@@ -3,12 +3,12 @@
 class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
-    private static $start = 'yesterday';
+    private static $start = '30daysAgo';
     private static $end = 'today';
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
-    private static $maxResults = '4';
-    private static $metrics = array('sessions', 'users');
+    private static $maxResults = '15';
+    private static $metrics = array('sessions', 'users', 'hits');
 
     private function getMetric() {
         $collector = new GoogleAnalyticsDataCollector($this->user);

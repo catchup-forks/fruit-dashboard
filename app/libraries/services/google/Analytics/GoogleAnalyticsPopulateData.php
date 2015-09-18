@@ -102,7 +102,7 @@ class GoogleAnalyticsPopulateData
 
         for ($i = self::DAYS; $i > 0; --$i) {
             /* Creating start, end days. */
-            $start = Carbon::now()->subDays($i+1);
+            $start = Carbon::now()->subDays($i);
             $end = Carbon::now()->subDays($i);
             $metrics = $this->collector->getMetrics($this->property, $start->toDateString(), $end->toDateString(), array_keys($data));
 

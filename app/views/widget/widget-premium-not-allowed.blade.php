@@ -1,6 +1,6 @@
 <div class="text-white drop-shadow text-center">
   <p>
-    {{ $feature }} is a premium feature
+    {{ ucfirst($feature) }} is a premium feature
   </p>
   <a href="{{ route('widget.singlestat', $widget->id) }}">
     <img src="/img/demonstration/graph_transparent.png" class="locked center-block">
