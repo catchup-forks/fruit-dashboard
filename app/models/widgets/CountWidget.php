@@ -31,6 +31,19 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     }
 
     /**
+     * checkIntegrity
+     * Adding manager loading integrity check.
+    */
+    public function checkIntegrity() {
+        parent::checkIntegrity();
+        if ($this->getDataManager()->data->raw_value == 'loading') {
+            $this->setState('loading');
+        } else if ($this->state != 'setup_required') {
+            $this->setState('active');
+        }
+    }
+
+    /**
      * getSettingsFields
      * --------------------------------------------------
      * Returns the updated settings fields
@@ -99,12 +112,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     public function getCurrentValue() {
         /* Getting manager. */
         $manager = $this->getDataManager();
-        try {
-            Log::info($manager->getDataSets()[0]);
-            exit(1);
-        } catch (Exception $e) {
-
-        }
         if (is_null($manager)) {
             return array();
         }

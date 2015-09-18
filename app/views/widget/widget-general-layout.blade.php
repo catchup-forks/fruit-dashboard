@@ -31,7 +31,6 @@
     @endif
 
     @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
-
     <!-- Adding loading on DataWidget -->
     @if ($widget instanceof CronWidget)
       </div>

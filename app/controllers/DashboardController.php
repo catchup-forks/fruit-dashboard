@@ -29,10 +29,9 @@ class DashboardController extends BaseController
         $activeDashboard = Request::query('active');
 
         /* Checking the user's widget data integrity */
-        //$time = microtime(true);
+        $time = microtime(true);
         Widget::checkUserWidgetsIntegrity(Auth::user());
-        //Log::info(microtime(true) - $time);
-
+        Log::info(microtime(true) - $time);
 
         //$connector = new GoogleAnalyticsConnector(Auth::user());
         //$connector->refreshToken();
@@ -44,7 +43,7 @@ class DashboardController extends BaseController
 
         /* Render the page */
         if ($activeDashboard) {
-            return View::make('dashboard.dashboard', 
+            return View::make('dashboard.dashboard',
                               array('activeDashboard' => $activeDashboard));
         } else {
             return View::make('dashboard.dashboard');

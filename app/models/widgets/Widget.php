@@ -49,10 +49,16 @@ class Widget extends Eloquent
 
     /**
      * checkIntegrity
-     * Checking the widgets settings integrity.
+     * Checking the widgets settings integrity, and trying to render the view.
     */
     public function checkIntegrity() {
         $this->checkSettingsIntegrity();
+        try {
+            $view = View::make($this->descriptor->getTemplateName())->with('widget', $this);
+            $view->render();
+        } catch (Exception $e) {
+            $this->setState('setup_required');
+        }
     }
 
     /**
