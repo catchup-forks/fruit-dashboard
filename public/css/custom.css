@@ -158,7 +158,7 @@ body {
 .gs-resize-handle,
 .gs-resize-handle-both {
   bottom: -1px;
-  right: 1px;
+  right: -1px;
   background-image: none;
   -webkit-transform: rotate(90deg);
   -moz-transform: rotate(90deg);
@@ -168,9 +168,10 @@ body {
 }
 .gs-resize-handle:before {
   content: "\f065";
+  font-size: 75%;
   font-family: FontAwesome;
   color: #ffffff;
-  text-shadow: 1px 1px 3px #141414;
+  text-shadow: 1px -1px 3px #141414;
 }
 .quote p {
   line-height: 1em;
