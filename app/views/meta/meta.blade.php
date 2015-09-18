@@ -71,7 +71,7 @@
     <!-- Base scripts -->
     {{ HTML::script('js/jquery.min.js'); }}
     {{ HTML::script('js/bootstrap.min.js'); }}
-    {{ HTML::script('js/jquery.gridster.with-extras-CUSTOM.js'); }}
+    {{ HTML::script('js/jquery.gridster.min.js'); }}
     {{ HTML::script('js/underscore-min.js'); }}
     {{ HTML::script('js/jquery.ba-resize.min.js'); }}
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
