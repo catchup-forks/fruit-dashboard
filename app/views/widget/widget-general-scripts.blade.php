@@ -5,7 +5,6 @@
   Chart.defaults.global.animationEasing = "easeOutQuart";
   Chart.defaults.global.scaleLineColor = "rgba(179,179,179,1)";
   Chart.defaults.global.scaleFontSize = 9;
-  Chart.defaults.global.scaleFontFamily = "'Open Sans', sans-serif";
   Chart.defaults.global.scaleFontColor = "rgba(230,230,230,1)";
   Chart.defaults.global.responsive = false;
   Chart.defaults.global.tooltipCornerRadius = 4;
@@ -13,10 +12,12 @@
   Chart.defaults.global.tooltipYPadding = 5;
   Chart.defaults.global.tooltipCaretSize = 5;
   Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.6)";
-  Chart.defaults.global.tooltipFontFamily = "'Open Sans', sans-serif";
   Chart.defaults.global.tooltipFontSize = 11;
-  Chart.defaults.global.tooltipFontStyle = "lighter";
 
+  // Open sans makes the text rendering blurry
+  //Chart.defaults.global.scaleFontFamily = "'Open Sans', sans-serif";
+  //Chart.defaults.global.tooltipFontFamily = "'Open Sans', sans-serif";
+  // Chart.defaults.global.tooltipFontStyle = "lighter";
 
   var chartOptions = {
      pointHitDetectionRadius : 5,

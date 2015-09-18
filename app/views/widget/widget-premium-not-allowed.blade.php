@@ -23,17 +23,6 @@
         $(this).height(containerHeight-2*35);  
       };
     });
-    
-
-    
-
-    // console.log(containerHeight);
-
-
-    
-    
-
-    // console.log(locked.height());
   });
     
   </script>
