@@ -99,6 +99,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getMetrics($property, $start, $end, $metrics, $optParams=array()) {
         $useDimensions = array_key_exists('dimensions', $optParams);
+        $metricsData = array();
 
         /* Iterating through the profiles. */
         foreach ($this->getProfiles($property) as $profile) {
