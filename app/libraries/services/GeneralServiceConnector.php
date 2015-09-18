@@ -112,8 +112,6 @@ abstract class GeneralServiceConnector
                 continue;
             }
 
-            /* Trying to find previous instance. */
-
             /* Creating data */
             $data = Data::create(array('raw_value' => 'loading'));
 

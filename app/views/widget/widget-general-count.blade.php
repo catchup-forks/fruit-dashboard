@@ -10,20 +10,20 @@
     @endif
    <!-- ./Widget category related information -->
 
-   is 
+   is
     <strong>
       {{ array_values($widget->getCurrentValue()['latest'])[0] }}
-    </strong> 
-    and it 
+    </strong>
+    and it
 
    <!-- Widget type related information -->
     has
     @if (array_values($widget->getCurrentValue()['diff'])[0] >= 0) increased @else decreased @endif
-    by 
+    by
     <strong>{{ abs(array_values($widget->getCurrentValue()['diff'])[0]) }}
     </strong>
 
-    since 
+    since
     <i>
       {{ $widget->getStartDate() }}
     </i>
@@ -39,12 +39,16 @@
       <small class="text-danger">
         <span class="fa fa-arrow-down"> </span>
     @endif
-    
+
       {{ abs(array_values($widget->getCurrentValue()['diff'])[0]) }}
     </small>
   </h3>
   <p class="text-white drop-shadow has-margin-horizontal text-center">
+    @if ($widget->descriptor->category == 'facebook')
     {{ $widget->getDataManager()->getPage()->name }}
+    @elseif ($widget->descriptor->category == 'google_analytics')
+    {{ $widget->getDataManager()->getProperty()->name }}
+    @endif
     {{-- {{ SiteConstants::underscoreToCamelCase($widget->descriptor->category, TRUE) }} {{ $metric }} --}}
   </p>
 </div>

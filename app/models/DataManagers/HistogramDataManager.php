@@ -77,7 +77,7 @@ abstract class HistogramDataManager extends DataManager
         if ($histogram == null) {
             return array();
         } else {
-            return end($histogram);
+            return $this->getEntryValues(end($histogram));
         }
      }
 
