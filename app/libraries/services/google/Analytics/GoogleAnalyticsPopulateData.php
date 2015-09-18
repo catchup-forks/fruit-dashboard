@@ -61,7 +61,9 @@ class GoogleAnalyticsPopulateData
         $this->dataManagers['google_analytics_sessions']->saveData($sessionsData, TRUE);
         $this->dataManagers['google_analytics_bounce_rate']->saveData($bounceRateData, TRUE);
         $this->dataManagers['google_analytics_avg_session_duration']->saveData($avgSessionDurationData, TRUE);
-        $this->dataManagers['google_analytics_top_sources']->initializeData();
+        if (!App::environment('production')) {
+            $this->dataManagers['google_analytics_top_sources']->initializeData();
+        }
 
         foreach ($this->dataManagers as $manager) {
             $manager->setWidgetsState('active');
@@ -104,7 +106,6 @@ class GoogleAnalyticsPopulateData
             /* Creating start, end days. */
             $start = Carbon::now()->subDays($i);
             $end = Carbon::now()->subDays($i);
-            Log::info($end);
             $metrics = $this->collector->getMetrics($this->property, $start->toDateString(), $end->toDateString(), array_keys($data));
 
             foreach ($metrics as $metric=>$dailyData) {
