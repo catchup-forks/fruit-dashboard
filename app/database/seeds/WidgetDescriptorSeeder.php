@@ -254,7 +254,7 @@ class WidgetDescriptorSeeder extends Seeder
             ['type' => 'twitter_followers'],
             array(
                 'name'        => 'Followers chart',
-                'description' => 'Follower chart',
+                'description' => 'Followers chart',
                 'type'        => 'twitter_followers',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
@@ -271,7 +271,7 @@ class WidgetDescriptorSeeder extends Seeder
             ['type' => 'twitter_followers_count'],
             array(
                 'name'        => 'Followers count',
-                'description' => 'Follower count',
+                'description' => 'Followers count',
                 'type'        => 'twitter_followers_count',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
@@ -286,8 +286,8 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'twitter_new_followers'],
             array(
-                'name'        => 'New followers',
-                'description' => 'New follower count',
+                'name'        => 'New followers chart',
+                'description' => 'New followers chart',
                 'type'        => 'twitter_new_followers',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
@@ -316,23 +316,21 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        if (!App::environment('production')) {
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'facebook_likes_count'],
-                array(
-                    'name'        => 'Likes count',
-                    'description' => 'The total number of people who have liked your Page.',
-                    'type'        => 'facebook_likes_count',
-                    'category'    => 'facebook',
-                    'is_premium'  => TRUE,
-                    'number'      => 4,
-                    'min_cols'     => 2,
-                    'min_rows'     => 2,
-                    'default_cols' => 2,
-                    'default_rows' => 2
-                )
-            );
-        } /* !App::environment('production')*/
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'facebook_likes_count'],
+            array(
+                'name'        => 'Likes count',
+                'description' => 'The total number of people who have liked your Page.',
+                'type'        => 'facebook_likes_count',
+                'category'    => 'facebook',
+                'is_premium'  => TRUE,
+                'number'      => 4,
+                'min_cols'     => 2,
+                'min_rows'     => 2,
+                'default_cols' => 2,
+                'default_rows' => 2
+            )
+        );
 
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_new_likes'],
