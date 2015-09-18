@@ -276,10 +276,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
                 'number'       => 2,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 3
+                'min_cols'     => 2,
+                'min_rows'     => 2,
+                'default_cols' => 2,
+                'default_rows' => 2
             )
         );
 
@@ -326,10 +326,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
                     'number'      => 4,
-                    'min_cols'     => 3,
-                    'min_rows'     => 3,
-                    'default_cols' => 3,
-                    'default_rows' => 3
+                    'min_cols'     => 2,
+                    'min_rows'     => 2,
+                    'default_cols' => 2,
+                    'default_rows' => 2
                 )
             );
         } /* !App::environment('production')*/
@@ -408,10 +408,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'    => 'google_analytics',
                 'is_premium'  => TRUE,
                 'number'       => 4,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 3
+                'min_cols'     => 2,
+                'min_rows'     => 2,
+                'default_cols' => 2,
+                'default_rows' => 2
             )
         );
 
