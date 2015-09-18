@@ -166,6 +166,9 @@ class GeneralWidgetController extends BaseController {
         );
 
         if ($validator->fails()) {
+            var_dump(Input::all());
+            var_dump($widget->getSettingsValidationArray($widget->getSetupFields()));
+            exit(1);
             // validation failed.
             return Redirect::back()
                 ->with('error', "Please correct the form errors.")

@@ -27,16 +27,22 @@ class GoogleAnalyticsPopulateData
     private $dataManagers = null;
 
     /**
+     * The dataManager criteria.
+     *
+     * @var array
+     */
+    private $criteria = null;
+
+    /**
      * Main job handler.
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
         $this->collector = new GoogleAnalyticsDataCollector($this->user);
-        foreach ($this->user->googleAnalyticsProperties()->get() as $property) {
-            $this->property = $property;
-            $this->dataManagers = $this->getManagers();
-            $this->collectData();
-        }
+        $this->criteria = $data['criteria'];
+        $this->property = $this->user->googleAnalyticsProperties()->where('id', $data['criteria']['property'])->first();
+        $this->dataManagers = $this->getManagers();
+        $this->collectData();
         $job->delete();
     }
 
@@ -73,9 +79,7 @@ class GoogleAnalyticsPopulateData
         foreach ($this->user->dataManagers()->get() as $generalDataManager) {
             $dataManager = $generalDataManager->getSpecific();
 
-            if (($dataManager->descriptor->category == 'google_analytics') && ($dataManager->getCriteria()['property'] == $this->property->id)) {
-
-                /* Setting dataManager. */
+            if ($dataManager->descriptor->category == 'google_analytics' && $dataManager->getCriteria() == $this->criteria) {
                 $dataManagers[$dataManager->descriptor->type] = $dataManager;
             }
         }

@@ -66,13 +66,13 @@ class FacebookDataCollector
     }
 
     /**
-     * getPages
+     * savePages
      * Saves The user's pages
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function getPages() {
+    public function savePages() {
         $this->user->facebookPages()->delete();
         $userId = $this->getUserID();
         if (is_null($userId)) {
@@ -85,13 +85,17 @@ class FacebookDataCollector
         } catch (FacebookSDKException $e) {
             return;
         }
-
         /* Deleting previous pages. */
         $this->user->facebookPages()->delete();
-
         $pages = array();
         foreach ($response->getGraphEdge() as $graphNode) {
-            $pages[$graphNode['id']] = $graphNode['name'];
+            $page = new FacebookPage(array(
+                'id'   => $graphNode['id'],
+                'name' => $graphNode['name']
+            ));
+            $page->user()->associate($this->user);
+            $page->save();
+            array_push($pages, $page);
         }
         return $pages;
     }
