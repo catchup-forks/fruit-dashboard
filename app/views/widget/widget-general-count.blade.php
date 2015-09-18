@@ -1,7 +1,5 @@
-  <div class="text-white drop-shadow has-margin-horizontal text-center" data-toggle="tooltip" data-placement="bottom" title="
-   {{ SiteConstants::underscoreToCamelCase($widget->descriptor->category, TRUE) }}">
-   <p>
-   The number of {{ $metric }}
+<div data-toggle="tooltip" data-placement="bottom" title="
+  The number of {{ $metric }}
    <!-- Widget category related information -->
     @if ($widget->descriptor->category == 'facebook')
     on your page <i>{{ $widget->getDataManager()->getPage()->name }}</i>
@@ -12,19 +10,45 @@
     @endif
    <!-- ./Widget category related information -->
 
+   is 
+    <strong>
+      {{ array_values($widget->getCurrentValue()['latest'])[0] }}
+    </strong> 
+    and it 
+
    <!-- Widget type related information -->
     has
     @if (array_values($widget->getCurrentValue()['diff'])[0] >= 0) increased @else decreased @endif
-    by
+    by 
+    <strong>{{ abs(array_values($widget->getCurrentValue()['diff'])[0]) }}
+    </strong>
 
-    <h3 id="{{$widget->id}}-value" class="truncate margin-top-sm">
+    since 
+    <i>
+      {{ $widget->getStartDate() }}
+    </i>
+    .
+  ">
+  <h3 class="text-white drop-shadow has-margin-horizontal text-center truncate">
+    {{ array_values($widget->getCurrentValue()['latest'])[0] }}
+
+    @if (array_values($widget->getCurrentValue()['diff'])[0] >= 0)
+      <small class="text-success">
+        <span class="fa fa-arrow-up"> </span>
+    @else
+      <small class="text-danger">
+        <span class="fa fa-arrow-down"> </span>
+    @endif
+    
       {{ abs(array_values($widget->getCurrentValue()['diff'])[0]) }}
-    </h3>
-   <!-- Widget type related information -->
+    </small>
+  </h3>
+  <p class="text-white drop-shadow has-margin-horizontal text-center">
+    {{ $widget->getDataManager()->getPage()->name }}
+    {{-- {{ SiteConstants::underscoreToCamelCase($widget->descriptor->category, TRUE) }} {{ $metric }} --}}
+  </p>
+</div>
 
-    since <!--<a href="{{ route('widget.edit', $widget->id) }}">--><i>{{ $widget->getStartDate() }}<!--</a>--></i>
-    </p>
-  </div>
 
 @section('widgetScripts')
 <script type="text/javascript">
