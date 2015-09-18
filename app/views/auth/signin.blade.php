@@ -60,7 +60,7 @@
             </form>
             <!-- /Form -->
 
-            <a href="{{ route('service.facebook.login') }}">
+            <a href="{{ route('signup-wizard.facebook-login') }}">
               <button class="btn btn-primary">
                  <span class="fa fa-facebook"> | </span> Login with facebook
               </button>

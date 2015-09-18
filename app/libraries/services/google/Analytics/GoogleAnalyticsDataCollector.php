@@ -80,37 +80,6 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-     * getDimensions
-     * Retrieving specific dimensions for the selected property.
-     * --------------------------------------------------
-     * @param GoogleAnalyticsProperty $property
-     * @param string $start
-     * @param string $end
-     * @param array $dimensions
-     * --------------------------------------------------
-     */
-    public function getDimensions($property, $start, $end, $dimensions) {
-        /* Creating metrics array. */
-        $dimensionsData = array();
-        foreach ($dimensions as $dimension) {
-            $dimensionsData[$dimension] = array();
-        }
-
-        /* Iterating through the profiles. */
-        foreach ($this->getProfiles($property) as $profile) {
-            /* Retrieving results from API */
-            $results = $this->analytics->data_ga->get(
-               'ga:' . $profile->getId(),
-               $start,
-               $end,
-               'ga:' . implode(',ga:', $dimensions));
-            $rows = $results->getRows();
-            var_dump($rows);
-            exit(1);
-        }
-    }
-
-    /**
      * getMetrics
      * Retrieving specific metrics for the selected property.
      * --------------------------------------------------

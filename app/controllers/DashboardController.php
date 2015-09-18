@@ -41,13 +41,25 @@ class DashboardController extends BaseController
         Log::info($widget->woohoo("hello", "world"));
         */
 
+        $parameters = array();
         /* Render the page */
         if ($activeDashboard) {
-            return View::make('dashboard.dashboard',
-                              array('activeDashboard' => $activeDashboard));
-        } else {
-            return View::make('dashboard.dashboard');
+            $parameters['activeDashboard'] = $activeDashboard;
         }
+
+        /* Creating view */
+        $view = View::make('dashboard.dashboard', $parameters);
+
+        try {
+            return $view->render();
+        } catch (Exception $e) {
+            /* Error occured trying to find the widget. */
+            Widget::turnOffBrokenWidgets(Auth::user());
+            $view = View::make('dashboard.dashboard', $parameters);
+            /* Recreating view. */
+        }
+        return $view;
+
     }
 
     /**

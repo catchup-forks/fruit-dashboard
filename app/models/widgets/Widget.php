@@ -48,17 +48,30 @@ class Widget extends Eloquent
     }
 
     /**
+     * turnOffBrokenWidgets
+     * Setting all broken widget's state to setup required.
+     * --------------------------------------------------
+     * @param User $user
+     * --------------------------------------------------
+    */
+    public static function turnOffBrokenWidgets($user) {
+        foreach ($user->widgets as $generalWidget) {
+            $widget = $generalWidget->getSpecific();
+            $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
+            try {
+                $view->render();
+            } catch (Exception $e) {
+                $widget->setState('setup_required');
+            }
+        }
+    }
+
+    /**
      * checkIntegrity
      * Checking the widgets settings integrity, and trying to render the view.
     */
     public function checkIntegrity() {
         $this->checkSettingsIntegrity();
-        try {
-            $view = View::make($this->descriptor->getTemplateName())->with('widget', $this);
-            $view->render();
-        } catch (Exception $e) {
-            $this->setState('setup_required');
-        }
     }
 
     /**

@@ -107,9 +107,9 @@ class FacebookConnector extends GeneralServiceConnector
         $helper = $fb->getRedirectLoginHelper();
         if (App::environment('local')) {
             // we must use this in development
-            return $helper->getLoginUrl('http://localhost:8001/service/facebook/login', static::$loginPermissions);
+            return $helper->getLoginUrl('http://localhost:8001/signup/facebook/login', static::$loginPermissions);
         }
-        return $helper->getLoginUrl(route('service.facebook.login'), static::$loginPermissions);
+        return $helper->getLoginUrl(route('signup-wizard.facebook-login'), static::$loginPermissions);
     }
 
     /**
@@ -152,7 +152,7 @@ class FacebookConnector extends GeneralServiceConnector
      * @return string (route)
      * --------------------------------------------------
      */
-    public static function loginWithFacebook() {       
+    public static function loginWithFacebook() {
         $fb = self::setFB();
         $helper = $fb->getRedirectLoginHelper();
 
@@ -173,7 +173,7 @@ class FacebookConnector extends GeneralServiceConnector
             /* New user */
             $user = User::create(array(
                 'email'  => $userInfo['email'],
-                'name'   => $userInfo['first_name'],
+                'name'   => $userInfo['first_name'] . ' ' . $userInfo['last_name'],
             ));
             $user->createDefaultProfile();
 
