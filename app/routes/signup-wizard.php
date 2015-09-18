@@ -28,22 +28,28 @@ Route::group([
         'as'     => 'signup-wizard.financial-connections',
         'uses'   => 'SignupWizardController@anyFinancialConnections'
     ]);
-    
+
     Route::any('social-connections', [
         'before' => 'auth',
         'as'     => 'signup-wizard.social-connections',
         'uses'   => 'SignupWizardController@anySocialConnections'
     ]);
 
-    Route::get('personal-widgets', [
+    Route::any('web-analytics-connections', [
         'before' => 'auth',
-        'as'     => 'signup-wizard.personal-widgets',
-        'uses'   => 'SignupWizardController@getPersonalWidgets'
+        'as'     => 'signup-wizard.web-analytics-connections',
+        'uses'   => 'SignupWizardController@anyWebAnalyticsConnections'
     ]);
 
-    Route::post('personal-widgets', [
+    Route::any('personal-widgets', [
         'before' => 'auth',
         'as'     => 'signup-wizard.personal-widgets',
-        'uses'   => 'SignupWizardController@postPersonalWidgets'
+        'uses'   => 'SignupWizardController@anyPersonalWidgets'
     ]);
+
+    Route::any('facebook/login', array(
+        'as'     => 'signup-wizard.facebook-login',
+        'uses'   => 'SignupWizardController@anyFacebookLogin'
+    ));
+
 });

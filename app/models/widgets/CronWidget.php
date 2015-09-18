@@ -3,7 +3,6 @@
 /* All classes that have interaction with data. */
 abstract class CronWidget extends Widget implements iAjaxWidget
 {
-    public static $criteriaSettings = array();
 
     /* Custom relation. */
     public function dataManager() {
@@ -72,25 +71,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * getCriteria
-     * Returning the settings that makes a difference among widgets.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-    */
-    public function getCriteria() {
-        $settings = array();
-        foreach (static::$criteriaSettings as $key) {
-            if (array_key_exists($key, $this->getSettings())) {
-                $settings[$key] = $this->getSettings()[$key];
-            } else {
-                return array();
-            }
-        }
-        return $settings;
-    }
-
-    /**
      * getData
      * Passing the job to the DataManager
      */
@@ -144,22 +124,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             /* Everything looks good, but is stuck in loading. */
             $this->setState('active');
         }
-    }
-
-    /*
-     * hasValidCriteria
-     * Checking if the widget has valid criteria
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-    */
-    public function hasValidCriteria() {
-        $criteria = $this->getCriteria();
-        foreach (static::$criteriaSettings as $setting) {
-            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
-                return FALSE;
-        }
-        return TRUE;
     }
 
     /*

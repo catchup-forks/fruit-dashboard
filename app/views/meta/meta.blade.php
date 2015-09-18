@@ -24,7 +24,6 @@
     @section('stylesheet')
       <!-- Fonts -->
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
-      <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
       <!-- /Fonts -->
 
       <!-- Bootstrap CSS -->
@@ -80,6 +79,7 @@
     {{ HTML::script('js/Chart.js'); }}
     {{ HTML::script('js/jstz.min.js') }}
     {{ HTML::script('js/hopscotch.min.js') }}
+    {{ HTML::script('js/bootbox.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->

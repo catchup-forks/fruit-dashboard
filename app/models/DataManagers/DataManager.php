@@ -47,7 +47,6 @@ class DataManager extends Eloquent
         return $this->data->widgets();
     }
 
-
     public function collectData() {}
     public function initializeData() {}
 
@@ -90,17 +89,19 @@ class DataManager extends Eloquent
         }
 
         /* Creating manager. */
-        $generalManager = new DataManager;
+        $generalManager = new DataManager(array(
+            'settings_criteria' => json_encode($widget->getCriteria()),
+            'last_updated'      => Carbon::now()
+        ));
         $generalManager->user()->associate($widget->user());
         $generalManager->descriptor()->associate($widget->descriptor);
-        $generalManager->settings_criteria = json_encode($widget->getCriteria());
 
         /* Creating/assigning data. */
         if (isset($widget->data)) {
             $generalManager->data()->associate($widget->data);
         } else {
-           $data = Data::create(array('raw_value' => '[]'));
-           $generalManager->data()->associate($data);
+            $data = Data::create(array('raw_value' => '[]'));
+            $generalManager->data()->associate($data);
         }
 
         /* Saving changes. */
@@ -114,7 +115,7 @@ class DataManager extends Eloquent
     }
 
     public function getSpecific() {
-        $className = str_replace('Widget', 'DataManager', WidgetDescriptor::find($this->descriptor_id)->getClassName());
+        $className = WidgetDescriptor::find($this->descriptor_id)->getDMClassName();
         return $className::find($this->id);
     }
 

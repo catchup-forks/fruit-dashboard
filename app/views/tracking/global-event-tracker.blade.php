@@ -104,6 +104,5 @@ function trackAll(mode, eventData){
     // Return
     return true;
 }
-
 </script>
 <!-- /Global tracking function -->

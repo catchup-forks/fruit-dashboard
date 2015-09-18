@@ -54,8 +54,10 @@ class ServiceConnectionController extends BaseController
                 ->withInput(); // sending back data
         }
 
+        /* Saving connection. */
         $braintreeConnector = new BraintreeConnector(Auth::user());
-        $braintreeConnector->saveConnection(Input::all());
+        $braintreeConnector->saveTokens(Input::all());
+        $braintreeConnector->createDataManagers();
 
         /* Track event | SERVICE CONNECTED */
         $tracker = new GlobalTracker();
@@ -139,7 +141,7 @@ class ServiceConnectionController extends BaseController
         else if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
             $connector = new TwitterConnector(Auth::user());
             try {
-                $connector->saveConnection(array(
+                $connector->saveTokens(array(
                     'token_ours'    => Session::get('oauth_token'),
                     'token_request' => Input::get('oauth_token'),
                     'token_secret'  => Session::get('oauth_token_secret'),
@@ -149,6 +151,8 @@ class ServiceConnectionController extends BaseController
                 return Redirect::route('signup-wizard.social-connections')
                     ->with('error', 'Something went wrong, please try again.');
             }
+
+            $connector->createDataManagers();
 
             /* Creating dashboard automatically. */
             $dashboardCreator = new TwitterAutoDashboardCreator(Auth::user());
@@ -241,7 +245,7 @@ class ServiceConnectionController extends BaseController
         if (Input::get('code', FALSE)) {
             /* Oauth ready. */
             try {
-                $connector->saveConnection();
+                $connector->saveTokens();
             } catch (FacebookNotConnected $e) {
                 Log::info($e->getMessage());
                 return Redirect::route('signup-wizard.social-connections')
@@ -265,7 +269,6 @@ class ServiceConnectionController extends BaseController
             $message = 'Facebook connection successful';
 
             if (Session::pull('createDashboard')) {
-                /* Successful connect. */
                 return Redirect::route('service.facebook.select-pages')
                     ->with('success', $message);
             } else {
@@ -324,6 +327,8 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectFacebookPages() {
         /* Getting a user's facebook pages for multiple select. */
+        $dataCollector = new FacebookDataCollector(Auth::user());
+
         $pages = array();
         foreach (Auth::user()->facebookPages as $page) {
             $pages[$page->id] = $page->name;
@@ -334,12 +339,18 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
         } else if (count($pages) == 1) {
+            $pageId = array_keys($pages)[0];
+
+            /* Creating data managers */
+            $settings = array('page' => $pageId);
+            $connector = new FacebookConnector(Auth::user());
+            $connector->createDataManagers($settings);
 
             /* Creating dashboard automatically. */
             $dashboardCreator = new FacebookAutoDashboardCreator(
-                Auth::user(), array('page' => array_keys($pages)[0])
+                Auth::user(), $settings
             );
-            $dashboardCreator->create();
+            $dashboardCreator->create($pages[$pageId]);
 
             return Redirect::to($this->getReferer());
         }
@@ -360,14 +371,30 @@ class ServiceConnectionController extends BaseController
             return Redirect::back()
                 ->with('error', 'Please select at least one of the pages.');
         }
-        foreach (Input::get('pages') as $page) {
-            $dashboardCreator = new FacebookAutoDashboardCreator(
-                Auth::user(), array('page' => $page)
-            );
-            $dashboardCreator->create();
+
+        $dataCollector = new FacebookDataCollector(Auth::user());
+        $pages = array();
+        foreach (Auth::user()->facebookPages as $page) {
+            $pages[$page->id] = $page->name;
         }
+
+        foreach (Input::get('pages') as $id) {
+            /* Creating data managers. */
+            $connector = new FacebookConnector(Auth::user());
+            $connector->createDataManagers(array('page' => $id));
+
+            $dashboardCreator = new FacebookAutoDashboardCreator(
+                Auth::user(), array('page' => $id)
+            );
+            $dashboardCreator->create($pages[$id]);
+        }
+
+        /* Creating dashboards if necessary. */
+        foreach (Auth::user()->facebookPages as $page) {
+        }
+
         return Redirect::to($this->getReferer())
-            ->with('success', 'Your dashboards are being created at the moment.');
+            ->with('success', 'Connection successful.');
     }
 
     /**
@@ -383,11 +410,11 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function anyGoogleAnalyticsConnect() {
-        $returnRoute = NULL;
+        $route = null;
         if (Session::pull('createDashboard')) {
-            $returnRoute = 'service.google-analytics.select-properties';
+            $route = 'service.google-analytics.select-properties';
         }
-        return $this->connectGoogle("GoogleAnalyticsConnector", $returnRoute);
+        return $this->connectGoogle("GoogleAnalyticsConnector", $route);
      }
 
     /**
@@ -428,6 +455,7 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectGoogleAnalyticsProperties() {
         /* Getting a user's google analytics properties for multiple select. */
+        $dataCollector = new GoogleAnalyticsDataCollector(Auth::user());
         $properties = array();
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;
@@ -438,10 +466,17 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
+            $propertyId = array_keys($properties)[0];
+            $settings = array('property' => $propertyId);
+            $connector = new GoogleAnalyticsConnector(Auth::user());
+            $connector->createDataManagers($settings);
+
+            /* Creating dashboard automatically. */
             $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
-                Auth::user(), array('property' => array_keys($properties)[0])
+                Auth::user(), $settings
             );
-            $dashboardCreator->create();
+            $dashboardCreator->create($properties[$propertyId]);
+
             return Redirect::to($this->getReferer());
         }
 
@@ -460,14 +495,28 @@ class ServiceConnectionController extends BaseController
             return Redirect::back()
                 ->with('error', 'Please select at least one of the properties.');
         }
-        foreach (Input::get('properties') as $property) {
-            $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
-                Auth::user(), array('property' => $property)
-            );
-            $dashboardCreator->create();
+
+        $dataCollector = new GoogleAnalyticsDataCollector(Auth::user());
+        $properties = array();
+        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+            $properties[$property->id] = $property->name;
         }
+
+        foreach (Input::get('properties') as $id) {
+            /* Creating data managers. */
+            $connector = new GoogleAnalyticsConnector(Auth::user());
+            $connector->createDataManagers(array('property' => $id));
+
+            $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
+                Auth::user(), array('property' => $id)
+            );
+            $dashboardCreator->create($properties[$id]);
+        }
+
+        $message = 'Connection successful.';
+
         return Redirect::to($this->getReferer())
-            ->with('success', 'Your dashboards are being created at the moment.');
+            ->with('success', $message);
     }
     /**
      * ================================================== *
@@ -491,11 +540,13 @@ class ServiceConnectionController extends BaseController
             /* Oauth ready. */
             $connector = new StripeConnector(Auth::user());
             try {
-                $connector->saveConnection(array('auth_code' => Input::get('code')));
+                $connector->saveTokens(array('auth_code' => Input::get('code')));
             } catch (StripeConnectFailed $e) {
                 return Redirect::to($this->getReferer())
                     ->with('error', 'Something went wrong, please try again.');
             }
+
+            $connector->createDataManagers();
 
             /* Track event | SERVICE CONNECTED */
             $tracker = new GlobalTracker();
@@ -583,7 +634,7 @@ class ServiceConnectionController extends BaseController
         $connector = new $connectorClass(Auth::user());
         if (Input::get('code', FALSE)) {
             try {
-                $connector->saveConnection(array('auth_code' => Input::get('code')));
+                $connector->saveTokens(array('auth_code' => Input::get('code')));
             } catch (GoogleConnectFailed $e) {
                 /* User declined */
                 return Redirect::route('signup-wizard.social-connections')

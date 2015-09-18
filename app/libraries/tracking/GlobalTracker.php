@@ -26,7 +26,7 @@ class GlobalTracker {
     public function __construct(){
        self::$google   = new GoogleTracker();
         self::$intercomIO = new IntercomIOTracker();
-        //self::$customerIO = new CustomerIOTracker();
+        self::$customerIO = new CustomerIOTracker();
         self::$mixpanel = new MixpanelTracker();
     }
 
@@ -128,7 +128,7 @@ class GlobalTracker {
                 );
 
                 /* Customer IO event data */
-                $intercomIOEventData = array(
+                $customerIOEventData = array(
                     'en' => $eventData['en'],
                     'md' => $eventData['md'],
                 );

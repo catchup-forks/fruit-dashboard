@@ -1,16 +1,18 @@
 <?php
 
-class FacebookNewLikesDataManager extends GeneralFacebookDataManager
+class FacebookNewLikesDataManager extends HistogramDataManager
 {
+    use FacebookDataManagerTrait;
     public function getCurrentValue() {
         $collector = new FacebookDataCollector($this->user);
         /* Getting previous last data. */
         $lastData = $this->getLikesManager()->getLatestData();
+        $page = $this->getPage();
         if (is_null($lastData)) {
-            return $collector->getTotalLikes($this->getPage());
+            return $collector->getTotalLikes($page->id);
         }
         else {
-            return $collector->getTotalLikes($this->getPage()) - $lastData['value'];
+            return $collector->getTotalLikes($page->id) - $lastData['value'];
         }
     }
 

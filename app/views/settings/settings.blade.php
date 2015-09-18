@@ -242,7 +242,7 @@
               {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="list-group margin-top-sm">
-               @foreach (array_merge(SiteConstants::getFinancialServices(), SiteConstants::getSocialServices()) as $service)
+               @foreach (SiteConstants::getAllServicesMeta() as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
@@ -315,21 +315,9 @@
                data: form.serialize(),
                success: function(data) {
                   if (data.success) {
-                    $.growl.notice({
-                      title: "Success!",
-                      message: data.success,
-                      size: "large",
-                      duration: 3000,
-                      location: "br"
-                    });
+                    easyGrowl('success', data.success, 3000);
                   } else if (data.error) {
-                    $.growl.error({
-                      title: "Error!",
-                      message: data.error,
-                      size: "large",
-                      duration: 3000,
-                      location: "br"
-                    });
+                    easyGrowl('error', data.error, 3000);
                   };
 
                   // Reset button
@@ -342,14 +330,7 @@
 
                },
                error: function(){
-                  $.growl.error({
-                    title: "Error!",
-                    message: "Something went wrong, we couldn't edit your settings. Please try again.",
-                    size: "large",
-                    duration: 3000,
-                    location: "br"
-                  });
-
+                  easyGrowl('error', "Something went wrong, we couldn't edit your settings. Please try again.", 3000);
                   // Reset button
                   form.find(':submit').button('reset');
                }

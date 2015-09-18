@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralGoogleAnalyticsDataManager extends MultipleHistogramDataManager
+trait GoogleAnalyticsDataManagerTrait
 {
     /**
      * getProperty
@@ -9,7 +9,7 @@ abstract class GeneralGoogleAnalyticsDataManager extends MultipleHistogramDataMa
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    protected function getProperty() {
+    public function getProperty() {
         return GoogleAnalyticsProperty::find($this->getCriteria()['property']);
     }
 

@@ -115,7 +115,7 @@ class MetricsController extends BaseController
         );
         $services = array();
 
-        foreach (array_merge(SiteConstants::getSocialServices(), SiteConstants::getFinancialServices()) as $serviceMeta) {
+        foreach (SiteConstants::getAllGroupsMeta() as $serviceMeta) {
             $data[$serviceMeta['display_name']] = 0;
             $services[$serviceMeta['name']] = $serviceMeta['display_name'];
         }

@@ -25,13 +25,41 @@ class DashboardController extends BaseController
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
-        /* Checking the user's widget data integrity */
-        //$time = microtime(true);
-        Widget::checkUserWidgetsIntegrity(Auth::user());
-        //Log::info(microtime(true) - $time);
+        /* Get active dashboard, if the url contains it */
+        $activeDashboard = Request::query('active');
 
+        /* Checking the user's widget data integrity */
+        $time = microtime(true);
+        Widget::checkUserWidgetsIntegrity(Auth::user());
+        Log::info(microtime(true) - $time);
+
+        //$connector = new GoogleAnalyticsConnector(Auth::user());
+        //$connector->refreshToken();
+        /*
+        $widget = Widget::find(21)->getSpecific();
+        Log::info($widget->getRelatedWidget());
+        Log::info($widget->woohoo("hello", "world"));
+        */
+
+        $parameters = array();
         /* Render the page */
-        return View::make('dashboard.dashboard');
+        if ($activeDashboard) {
+            $parameters['activeDashboard'] = $activeDashboard;
+        }
+
+        /* Creating view */
+        $view = View::make('dashboard.dashboard', $parameters);
+
+        try {
+            return $view->render();
+        } catch (Exception $e) {
+            /* Error occured trying to find the widget. */
+            Widget::turnOffBrokenWidgets(Auth::user());
+            $view = View::make('dashboard.dashboard', $parameters);
+            /* Recreating view. */
+        }
+        return $view;
+
     }
 
     /**
@@ -55,10 +83,20 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDeleteDashboard($dashboardId) {
+        /* Get the dashboard */
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
+
+        /* Track event | DELETE DASHBOARD */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Dashboard deleted',
+            'el' => $dashboard->name)
+        );
+
+        /* Delete the dashboard*/
         $dashboard->delete();
 
         /* Return. */
@@ -169,6 +207,13 @@ class DashboardController extends BaseController
         ));
         $dashboard->user()->associate(Auth::user());
         $dashboard->save();
+
+        /* Track event | ADD DASHBOARD */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Dashboard added',
+            'el' => $dashboard->name)
+        );
 
         /* Return. */
         return Response::json(TRUE);

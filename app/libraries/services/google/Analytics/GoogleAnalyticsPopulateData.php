@@ -27,16 +27,22 @@ class GoogleAnalyticsPopulateData
     private $dataManagers = null;
 
     /**
+     * The dataManager criteria.
+     *
+     * @var array
+     */
+    private $criteria = null;
+
+    /**
      * Main job handler.
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
         $this->collector = new GoogleAnalyticsDataCollector($this->user);
-        foreach ($this->user->googleAnalyticsProperties()->get() as $property) {
-            $this->property = $property;
-            $this->dataManagers = $this->getManagers();
-            $this->collectData();
-        }
+        $this->criteria = $data['criteria'];
+        $this->property = $this->user->googleAnalyticsProperties()->where('id', $data['criteria']['property'])->first();
+        $this->dataManagers = $this->getManagers();
+        $this->collectData();
         $job->delete();
     }
 
@@ -55,6 +61,7 @@ class GoogleAnalyticsPopulateData
         $this->dataManagers['google_analytics_sessions']->saveData($sessionsData, TRUE);
         $this->dataManagers['google_analytics_bounce_rate']->saveData($bounceRateData, TRUE);
         $this->dataManagers['google_analytics_avg_session_duration']->saveData($avgSessionDurationData, TRUE);
+        $this->dataManagers['google_analytics_top_sources']->initializeData();
 
         foreach ($this->dataManagers as $manager) {
             $manager->setWidgetsState('active');
@@ -72,9 +79,7 @@ class GoogleAnalyticsPopulateData
         foreach ($this->user->dataManagers()->get() as $generalDataManager) {
             $dataManager = $generalDataManager->getSpecific();
 
-            if (($dataManager->descriptor->category == 'google_analytics') && ($dataManager->getCriteria()['property'] == $this->property->id)) {
-
-                /* Setting dataManager. */
+            if ($dataManager->descriptor->category == 'google_analytics' && $dataManager->getCriteria() == $this->criteria) {
                 $dataManagers[$dataManager->descriptor->type] = $dataManager;
             }
         }
@@ -97,7 +102,7 @@ class GoogleAnalyticsPopulateData
 
         for ($i = self::DAYS; $i > 0; --$i) {
             /* Creating start, end days. */
-            $start = Carbon::now()->subDays($i+1);
+            $start = Carbon::now()->subDays($i);
             $end = Carbon::now()->subDays($i);
             $metrics = $this->collector->getMetrics($this->property, $start->toDateString(), $end->toDateString(), array_keys($data));
 

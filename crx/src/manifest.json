@@ -17,6 +17,6 @@
            "48": "icon48x48.png",
           "128": "icon128x128.png" },
 	"chrome_url_overrides" : {
-	    "newtab": "analytics.html"
-  	}
+	    "newtab": "dashboard.html"
+  }
 }

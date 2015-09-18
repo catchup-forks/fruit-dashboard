@@ -19,7 +19,8 @@ abstract class GeneralServiceConnector
     }
 
     abstract public function connect();
-    abstract protected function populateData();
+    abstract public function saveTokens(array $parameters);
+    abstract public function populateData($criteria);
 
     /**
      * disconnect
@@ -29,7 +30,7 @@ abstract class GeneralServiceConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
+        if ( ! $this->user->isServiceConnected(static::$service)) {
             throw new ServiceNotConnected(static::$service . ' service is not connected.', 1);
         }
         /* Deleting connection */
@@ -62,7 +63,7 @@ abstract class GeneralServiceConnector
      */
     protected function getConnection() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
+        if ( ! $this->user->isServiceConnected(static::$service)) {
             throw new ServiceNotConnected(static::$service . ' service is not connected.', 1);
         }
         $connection = $this->user->connections()
@@ -94,32 +95,17 @@ abstract class GeneralServiceConnector
     }
 
     /**
-     * saveConnection
-     * Saving the tokens, creating data managers.
-     */
-    public function saveConnection(array $parameters=array()) {
-
-        /* Saving tokens */
-        $this->getTokens($parameters);
-
-        /* Creating dataManagers */
-        $this->createDataManagers();
-
-        /* Getting data */
-        $this->populateData();
-    }
-
-    /**
      * Creating the dataManagers.
      * --------------------------------------------------
+     * @param array $criteria
      * @return array
      * --------------------------------------------------
      */
-    protected function createDataManagers() {
+    public function createDataManagers(array $criteria=array()) {
         $dataManagers = array();
-        foreach(WidgetDescriptor::where('category', static::$service)->get() as $descriptor) {
+        foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
             /* Creating widget instance. */
-            $className = str_replace('Widget', 'DataManager', $descriptor->getClassName());
+            $className = $descriptor->getDMClassName();
 
             /* No manager found */
             if ( ! class_exists($className)) {
@@ -130,7 +116,10 @@ abstract class GeneralServiceConnector
             $data = Data::create(array('raw_value' => 'loading'));
 
             /* Creating DataManager instance */
-            $dataManager = new $className;
+            $dataManager = new $className(array(
+                'settings_criteria' => json_encode($criteria),
+                'last_updated'      => Carbon::now()
+            ));
             $dataManager->descriptor()->associate($descriptor);
             $dataManager->user()->associate($this->user);
 
@@ -140,6 +129,9 @@ abstract class GeneralServiceConnector
 
             array_push($dataManagers, $dataManager);
         }
+
+        $this->populateData($criteria);
+
         return $dataManagers;
     }
 

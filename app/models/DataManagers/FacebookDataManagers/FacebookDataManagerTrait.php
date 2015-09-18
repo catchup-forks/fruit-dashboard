@@ -1,6 +1,6 @@
 <?php
 
-abstract class GeneralFacebookDataManager extends HistogramDataManager
+trait FacebookDataManagerTrait
 {
     /**
      * getPage
@@ -9,8 +9,8 @@ abstract class GeneralFacebookDataManager extends HistogramDataManager
      * @return FacebookPage
      * --------------------------------------------------
     */
-    protected function getPage() {
-        return $this->getCriteria()['page'];
+    public function getPage() {
+        return FacebookPage::find($this->getCriteria()['page']);
     }
 }
 ?>

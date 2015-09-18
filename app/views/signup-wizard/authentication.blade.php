@@ -91,12 +91,7 @@
                       });
                     });      
                 } else {
-                    $.growl.warning({
-                      message: "Please enter your name.",
-                      size: "large",
-                      duration: 5000,
-                      location: "br"
-                    });
+                  easyGrowl('warning', "Please enter your name.", 5000);
                 }
             }    
           });
@@ -111,20 +106,38 @@
             if(keycode == '13' || keycode == '9'){
               event.preventDefault();
               if ($('#email_id').val() && IsEmail($('#email_id').val())) {
-                
-                $('.youremail-form').slideUp('fast', function (){
-                  $('.yourpassword-form').slideDown('fast', function() {
-                    $('#password_id').focus();
+                // Call ajax, to check the email
+                $.ajax({
+                  type: "POST",
+                  dataType: 'json',
+                  url: "{{ route('auth.check-email') }}",
+                      data: JSON.stringify({'email': $('#email_id').val()}),
+                      success: function(data) {
+                        // Email is unique, proceed
+                        if(data['email-taken'] == false) {
+                          $('.youremail-form').slideUp('fast', function (){
+                            $('.yourpassword-form').slideDown('fast', function() {
+                              $('#password_id').focus();
+                            });
+                          }); 
+
+                        // Email taken, show error
+                        } else {
+                          $('#email_id').after('<a class="label label-danger" href="{{ route("auth.signin") }}">This email has already been registered. If you would like to sign in, click here.</a>');
+                        }
+                      },
+                      error: function() {
+                        // Something went wrong, check email from backend later
+                        $('.youremail-form').slideUp('fast', function (){
+                          $('.yourpassword-form').slideDown('fast', function() {
+                            $('#password_id').focus();
+                          });
+                        });
+                      }
                   });
-                });
-                  
+                                  
               } else {
-                $.growl.warning({
-                  message: "Please enter a valid email address.",
-                  size: "large",
-                  duration: 5000,
-                  location: "br"
-                });
+                easyGrowl('warning', "Please enter a valid email address.", 5000);
               }
               
             }    
@@ -142,14 +155,7 @@
                 $('#signup-form-id').submit();
                   
               } else {
-                
-                $.growl.warning({
-                  message: "Your password should be at least 4 characters.",
-                  size: "large",
-                  duration: 5000,
-                  location: "br"
-                });
-              
+                easyGrowl('warning', "Your password should be at least 4 characters long.", 5000);
               }
             }
             });

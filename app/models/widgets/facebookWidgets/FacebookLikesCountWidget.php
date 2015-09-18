@@ -2,6 +2,7 @@
 
 class FacebookLikesCountWidget extends CountWidget
 {
-    $dataManager = 'facebook_likes';
+    use FacebookWidgetTrait;
+    protected static $histogramDescriptor = 'facebook_likes';
 }
 ?>

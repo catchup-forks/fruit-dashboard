@@ -22,4 +22,9 @@ Route::group([
         'as'     => 'auth.signout',
         'uses'   => 'AuthController@anySignout'
     ]);
+
+    Route::post('check-email', [
+        'as'     => 'auth.check-email',
+        'uses'   => 'AuthController@postCheckExistingEmail'
+    ]);
 });

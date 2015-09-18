@@ -15,9 +15,20 @@
     <ol class="carousel-indicators">
 
       @foreach (Auth::user()->dashboards as $index => $dashboard)
-
-        <li data-target="#dashboards" data-slide-to="{{ $index}}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->is_default) active @endif"></li>
-
+        {{-- Set active dashboard. Get from backend or make the default --}}
+        @if (isset($activeDashboard))
+          @if ($dashboard->id == $activeDashboard)
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow active"></li>
+          @else
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow"></li>
+          @endif
+        @else
+          @if($dashboard->is_default)
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow active"></li>
+          @else
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow"></li>
+          @endif
+        @endif
       @endforeach
 
     </ol>
@@ -27,7 +38,20 @@
 
       @foreach (Auth::user()->dashboards as $dashboard)
 
-        <div class="item @if($dashboard->is_default) active @endif">
+          {{-- Set active dashboard. Get from backend or make the default --}}
+          @if (isset($activeDashboard))
+            @if ($dashboard->id == $activeDashboard)
+              <div class="item active">
+            @else
+              <div class="item">
+            @endif
+          @else
+            @if($dashboard->is_default)
+              <div class="item active">
+            @else
+              <div class="item">
+            @endif
+          @endif
           
           @if($dashboard->is_locked)
           <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">

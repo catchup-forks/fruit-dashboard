@@ -5,13 +5,13 @@
     id: "introduction",
     steps: [
       {
-        title: "new widget",
+        title: "New widget",
         content: "Add a new widget by clicking the + sign.",
         target: document.querySelector(".fa-plus-circle"),
         placement: "top"
       },
       {
-        title: "hover widget",
+        title: "Hover widget",
         content: "You can move, setup & delete a widget by hovering it.",
         target: document.querySelector(".item.active > .gridster > ul > li"),
         placement: "bottom",
@@ -19,7 +19,7 @@
         arrowOffset: "center"
       },
       {
-        title: "dashboard indicators",
+        title: "Dashboard indicators",
         content: "Clicking these dots take you to one of your dashboards.",
         target: document.querySelector("ol > li"),
         placement: "top",
@@ -27,7 +27,7 @@
         arrowOffset: "center"
       },
       {
-        title: "lock dashboard",
+        title: "Lock dashboard",
         content: "You can lock or unlock the grid on your dashboard.",
         target: document.querySelector(".item.active > .lock-icon span"),
         placement: "left",
@@ -35,7 +35,7 @@
         arrowOffset: 80
       },               
       {
-        title: "settings",
+        title: "Settings",
         content: "More stuff here.",
         target: document.querySelector(".fa-cog"),
         placement: "left"

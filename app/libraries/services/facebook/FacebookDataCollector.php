@@ -85,10 +85,8 @@ class FacebookDataCollector
         } catch (FacebookSDKException $e) {
             return;
         }
-
         /* Deleting previous pages. */
         $this->user->facebookPages()->delete();
-
         $pages = array();
         foreach ($response->getGraphEdge() as $graphNode) {
             $page = new FacebookPage(array(

@@ -87,23 +87,10 @@ function callMakeDefaultAjax(oldID, newID) {
     url: url,
         data: null,
         success: function(data) {
-          $.growl.notice({
-            title: "Success!",
-            message: successmsg,
-            size: "large",
-            duration: 3000,
-            location: "br"
-          });
+          easyGrowl('success', successmsg, 3000);
         },
         error: function() {
-          $.growl.error({
-            title: "Error!",
-            message: errormsg,
-            size: "large",
-            duration: 3000,
-            location: "br"
-          });
-
+          easyGrowl('error', errormsg, 3000);
           // Revert the process
           changeLockIcon(newID, oldID);
         }

@@ -3,7 +3,7 @@
 class TimerWidget extends Widget
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
+    private static $timerSettings = array(
         'countdown' => array(
             'name'       => 'Time',
             'type'       => 'INT',
@@ -11,8 +11,29 @@ class TimerWidget extends Widget
         ),
    );
     /* The settings to setup in the setup-wizard. */
-    public static $setupSettings = array('countdown');
+    private static $timerSetupFields = array('countdown');
 
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$timerSettings);
+     }
+
+    /**
+     * getSetupFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), self::$timerSetupFields);
+     }
 }
 
 ?>

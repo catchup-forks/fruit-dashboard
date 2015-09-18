@@ -10,18 +10,19 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'webhook_histogram'],
             array(
-                'name'        => 'Webhook histogram',
-                'description' => 'Building a simple line histogram from your data.',
-                'type'        => 'webhook_histogram',
-                'category'    => 'personal',
-                'is_premium'  => TRUE,
+                'name'         => 'Webhook histogram',
+                'description'  => 'Building a simple line histogram from your data.',
+                'type'         => 'webhook_histogram',
+                'category'     => 'webhook',
+                'is_premium'   => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
-        
+
         /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
             ['type' => 'clock'],
@@ -31,6 +32,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'clock',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'number'       => 1,
                 'min_cols'     => 2,
                 'min_rows'     => 2,
                 'default_cols' => 3,
@@ -39,13 +41,14 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['type' => 'quotes'],
+            ['type' => 'quote'],
             array(
                 'name'        => 'Quotes',
                 'description' => 'Get inspired every day, by this awesome widget.',
                 'type'        => 'quote',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'number'       => 2,
                 'min_cols'     => 5,
                 'min_rows'     => 1,
                 'default_cols' => 10,
@@ -61,6 +64,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'greetings',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'number'       => 3,
                 'min_cols'     => 5,
                 'min_rows'     => 1,
                 'default_cols' => 7,
@@ -76,6 +80,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'text',
                 'category'    => 'personal',
                 'is_premium'  => FALSE,
+                'number'       => 4,
                 'min_cols'     => 1,
                 'min_rows'     => 1,
                 'default_cols' => 2,
@@ -91,6 +96,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'         => 'timer',
                 'category'     => 'personal',
                 'is_premium'   => FALSE,
+                'number'       => 5,
                 'min_cols'     => 2,
                 'min_rows'     => 2,
                 'default_cols' => 2,
@@ -108,6 +114,7 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'iframe',
                     'category'    => 'personal',
                     'is_premium'  => FALSE,
+                    'number'      => 6,
                 )
             );
 
@@ -119,6 +126,7 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'note',
                     'category'    => 'personal',
                     'is_premium'  => FALSE,
+                    'number'      => 7,
                 )
             );
 
@@ -134,10 +142,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'stripe_mrr',
                 'category'    => 'stripe',
                 'is_premium'  => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -149,10 +158,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'stripe_arr',
                 'category'    => 'stripe',
                 'is_premium'  => TRUE,
+                'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -164,10 +174,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'stripe_arpu',
                 'category'    => 'stripe',
                 'is_premium'  => TRUE,
+                'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -180,10 +191,11 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'stripe_events',
                     'category'    => 'stripe',
                     'is_premium'  => TRUE,
-                    'min_cols'     => 2,
-                    'min_rows'     => 4,
-                    'default_cols' => 2,
-                    'default_rows' => 5
+                    'number'       => 4,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 10
                 )
             );
         } /* !App::environment('production')*/
@@ -197,10 +209,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'braintree_mrr',
                 'category'    => 'braintree',
                 'is_premium'  => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -212,10 +225,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'braintree_arr',
                 'category'    => 'braintree',
                 'is_premium'  => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -227,10 +241,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'braintree_arpu',
                 'category'    => 'braintree',
                 'is_premium'  => TRUE,
+                'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -238,14 +253,32 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'twitter_followers'],
             array(
-                'name'        => 'Followers',
-                'description' => 'Follower count',
+                'name'        => 'Followers chart',
+                'description' => 'Follower chart',
                 'type'        => 'twitter_followers',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
+
+        /* Social widgets | TWITTER */
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'twitter_followers_count'],
+            array(
+                'name'        => 'Followers count',
+                'description' => 'Follower count',
+                'type'        => 'twitter_followers_count',
+                'category'    => 'twitter',
+                'is_premium'  => TRUE,
+                'number'       => 2,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
                 'default_rows' => 3
             )
         );
@@ -258,10 +291,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'twitter_new_followers',
                 'category'    => 'twitter',
                 'is_premium'  => TRUE,
+                'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -269,15 +303,16 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_likes'],
             array(
-                'name'        => 'Likes',
+                'name'        => 'Likes chart',
                 'description' => 'The total number of people who have liked your Page.',
                 'type'        => 'facebook_likes',
                 'category'    => 'facebook',
                 'is_premium'  => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -290,9 +325,10 @@ class WidgetDescriptorSeeder extends Seeder
                     'type'        => 'facebook_likes_count',
                     'category'    => 'facebook',
                     'is_premium'  => TRUE,
+                    'number'      => 4,
                     'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
                     'default_rows' => 3
                 )
             );
@@ -301,30 +337,32 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_new_likes'],
             array(
-                'name'        => 'New likes',
-                'description' => 'The total number of people who have liked your Page daily.',
-                'type'        => 'facebook_new_likes',
-                'category'    => 'facebook',
-                'is_premium'  => TRUE,
+                'name'         => 'New likes chart',
+                'description'  => 'The total number of people who have liked your Page daily.',
+                'type'         => 'facebook_new_likes',
+                'category'     => 'facebook',
+                'is_premium'   => TRUE,
+                'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_page_impressions'],
             array(
-                'name'        => 'Page impressions',
-                'description' => 'The number of people who have seen any content associated with your Page',
-                'type'        => 'facebook_page_impressions',
-                'category'    => 'facebook',
-                'is_premium'  => TRUE,
+                'name'         => 'Page impressions chart',
+                'description'  => 'The number of people who have seen any content associated with your Page',
+                'type'         => 'facebook_page_impressions',
+                'category'     => 'facebook',
+                'is_premium'   => TRUE,
+                'number'       => 3,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -337,10 +375,11 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'google_analytics_bounce_rate',
                 'category'    => 'google_analytics',
                 'is_premium'  => TRUE,
+                'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
-                'default_rows' => 3
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
@@ -352,26 +391,74 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'        => 'google_analytics_sessions',
                 'category'    => 'google_analytics',
                 'is_premium'  => TRUE,
+                'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 2,
-                'default_cols' => 5,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_sessions_count'],
+            array(
+                'name'        => 'Sessions count',
+                'description' => 'The total number of sessions',
+                'type'        => 'google_analytics_sessions_count',
+                'category'    => 'google_analytics',
+                'is_premium'  => TRUE,
+                'number'       => 4,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
                 'default_rows' => 3
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_avg_session_duration'],
+            array(
+                'name'        => 'Average session duration',
+                'description' => 'The average duration of user sessions represented in total seconds.',
+                'type'        => 'google_analytics_avg_session_duration',
+                'category'    => 'google_analytics',
+                'is_premium'  => TRUE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
             )
         );
 
         if (!App::environment('production')) {
             WidgetDescriptor::updateOrCreate(
-                ['type' => 'google_analytics_avg_session_duration'],
+                ['type' => 'shared'],
                 array(
-                    'name'        => 'Average session duration',
-                    'description' => 'The average duration of user sessions represented in total seconds.',
-                    'type'        => 'google_analytics_avg_session_duration',
+                    'name'        => 'Shared widget',
+                    'description' => '',
+                    'type'        => 'shared',
+                    'category'    => 'hidden',
+                    'is_premium'  => FALSE,
+                    'min_cols'     => 1,
+                    'min_rows'     => 1,
+                    'default_cols' => 1,
+                    'default_rows' => 1
+                )
+            );
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'google_analytics_top_sources'],
+                array(
+                    'name'        => 'Top sources',
+                    'description' => '',
+                    'type'        => 'google_analytics_top_sources',
                     'category'    => 'google_analytics',
                     'is_premium'  => TRUE,
+                    'number'       => 3,
                     'min_cols'     => 3,
-                    'min_rows'     => 2,
-                    'default_cols' => 5,
-                    'default_rows' => 3
+                    'min_rows'     => 3,
+                    'default_cols' => 6,
+                    'default_rows' => 6
                 )
             );
         } /* !App::environment('production')*/

@@ -44,6 +44,8 @@ abstract class GoogleConnector extends GeneralServiceConnector
         $client->setAuthConfigFile(base_path($_ENV['GOOGLE_SECRET_JSON']));
         $client->addScope(static::$scope);
         $client->setRedirectUri(route('service.' . static::$service . '.connect'));
+        $client->setAccessType('offline');
+        $client->setApprovalPrompt('force');
         return $client;
     }
 
@@ -65,7 +67,7 @@ abstract class GoogleConnector extends GeneralServiceConnector
     }
 
     /**
-     * getTokens
+     * saveTokens
      * Retrieving the access, and refresh tokens from authentication code.
      * --------------------------------------------------
      * @param array $parameters
@@ -73,12 +75,33 @@ abstract class GoogleConnector extends GeneralServiceConnector
      * @throws GoogleConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens(array $parameters=array()) {
+    public function saveTokens(array $parameters=array()) {
         $code = $parameters['auth_code'];
         /* Build and send POST request */
         $this->client->authenticate($code);
         $accessToken = $this->client->getAccessToken();
-        $this->createConnection($accessToken, '');
+        $refreshToken = $this->client->getRefreshToken();
+        $this->createConnection($accessToken, $refreshToken);
+    }
+
+    /**
+     * refreshToken
+     * Retrieving a new access token from refresh token.
+     * --------------------------------------------------
+     * @return None
+     * --------------------------------------------------
+     */
+    public function refreshToken() {
+        try {
+            $connection = $this->getConnection();
+        } catch (ServiceNotConnected $e) {
+            return;
+        }
+
+        /* Fetching new access token */
+        $this->client->refreshToken($connection->refresh_token);
+        $connection->access_token = $this->client->getAccessToken();
+        $connection->save();
     }
 
     /**
@@ -91,6 +114,18 @@ abstract class GoogleConnector extends GeneralServiceConnector
     public function connect() {
         /* Get access token from DB. */
         $connection = $this->getConnection();
+        /* Handle refresh. */
+        $token = json_decode($connection->access_token, 1);
+        if ( ! is_array($token) || empty($token) || ! array_key_exists('created', $token) || ! array_key_exists('expires_in', $token)) {
+            /* Disconnecting service if the token is invalid. */
+            $this->disconnect();
+        }
+
+        if (($token['created'] + $token['expires_in']) < Carbon::now()->timestamp) {
+            $this->refreshToken();
+            $connection = $this->getConnection();
+        }
+
         $this->client->setAccessToken($connection->access_token);
     }
 

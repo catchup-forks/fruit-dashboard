@@ -1,7 +1,7 @@
 @extends('meta.base-user')
 
   @section('pageTitle')
-    Financial connections
+    Social connections
   @stop
 
   @section('pageStylesheet')
@@ -12,7 +12,7 @@
   <div class="container">
 
     <h1 class="text-center text-white drop-shadow">
-      Connect your social accounts.
+      Connect your social accounts
     </h1>
 
     <div class="row">
@@ -25,7 +25,7 @@
 
                 <div class="list-group margin-top-sm">
 
-               @foreach (SiteConstants::getSocialServices() as $service)
+               @foreach (SiteConstants::getServicesMetaByType('social') as $service)
                   <a href="
                     @if(Auth::user()->isServiceConnected($service['name']))
                       {{ route($service['disconnect_route']) }}
@@ -60,7 +60,7 @@
 
               </div> <!-- /.col-md-5 -->
               <div class="col-md-7">
-                {{ HTML::image('img/demonstration/widget-google_analytics.jpg', 'The Stripe Widget', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
+                {{ HTML::image('img/demonstration/widget-facebook.jpg', 'Facebook', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
               </div> <!-- /.col-md-7 -->
             </div> <!-- /.row -->
 
@@ -69,8 +69,8 @@
             <div class="row">
               <div class="col-md-12">
                 <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>
-                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-primary pull-right">Next</a>
-                <a href="{{ URL::route('signup-wizard.personal-widgets') }}" class="btn btn-link pull-right">Skip</a>
+                <a href="{{ URL::route('signup-wizard.web-analytics-connections') }}" class="btn btn-primary pull-right">Next</a>
+                <a href="{{ URL::route('signup-wizard.web-analytics-connections') }}" class="btn btn-link pull-right">Skip</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 
