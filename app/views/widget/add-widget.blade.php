@@ -120,9 +120,10 @@
                     @endforeach
 
                   @endforeach
-                
+
+                <!-- action panel -->                
                 <div class="row">
-                  <div class="col-md-12">
+                  <div id="add-widget" class="col-md-12 not-visible">
 
                         {{ Form::open(array(
                             'id' => 'add-widget-form',
@@ -157,8 +158,19 @@
 
                         {{ Form::close() }}
 
-                    </div> <!-- /.col-md-12 -->
+                    </div> <!-- /#add-widget .col-md-12 -->
+                    
+                    <div id="connect-service" class="col-md-12 text-center not-visible">
+                      <div class="alert alert-warning" role="alert">
+                        <strong>
+                          <span class="fa fa-exclamation-triangle"></span>
+                        </strong>
+                        You have to connect this service first.</div>
+                      <a id="connect-widget-submit" href="#connect" class="btn btn-primary pull-right">Connect</a>
+                    </div> <!-- /#connect-service .col-md-12 -->
+               
                 </div> <!-- /.row -->
+                <!-- / action panel -->
 
                 </div> <!-- /.col-md-5 -->              
 
@@ -178,12 +190,15 @@
 
       var baseUrl = "/img/demonstration/";
       var ext = ".png";
+      var url;
 
       // Select the first available group and filter the widgets.
       $('[data-selection="group"]').find('.selection-icon').first().toggleClass('fa fa-check text-success pull-right');
       filterWidgets($('[data-selection="group"]').first().data('group'));
 
       selectFirstWidgetFromGroup($('[data-selection="group"]').first().data('group'));
+
+      setTimeout(showActions, 100);
 
       // Filter widgets by group.
       function filterWidgets(group) {
@@ -212,7 +227,6 @@
         $('[data-selection="' + context + '"] > .selection-icon').attr('class', 'selection-icon');
       }
 
-
       // Shows the relevant widget descriptors.
       function showWidgetDescription(descriptorType) {
         
@@ -223,6 +237,27 @@
         descriptorID = $('[data-descriptor-type="' + descriptorType + '"]').attr('data-descriptor-id')
         url = "{{ route('widget.doAdd', 'descriptorID') }}".replace('descriptorID', descriptorID);
         $('#add-widget-form').attr('action', url)
+      }
+
+      // Show the available actions pane.
+      function showActions() {
+        var addPanel = $('#add-widget');
+        var connectPanel = $('#connect-service');
+
+        var firstCheckedGroup = $('.fa-check').first().parent();
+        var groupConnectionMarker = firstCheckedGroup.find('span').first();
+
+        url = groupConnectionMarker.data('redirect-url');
+
+        addPanel.addClass('not-visible');
+        connectPanel.addClass('not-visible');
+
+        if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
+          connectPanel.removeClass('not-visible');
+        } else {
+          addPanel.removeClass('not-visible');
+        }
+
       }
 
       // Select or deselect list-group-items by clicking.
@@ -236,8 +271,12 @@
         // If a group was clicked, filter widgets.
         if (context == "group") {
           var group = $(this).data('group');
+          
           filterWidgets(group);
           selectFirstWidgetFromGroup(group);
+
+          setTimeout(showActions, 100);
+
         // If a widget was clicked, show descriptions.
         } else if (context == "widget") {
           showWidgetDescription($(this).data('widget'));
@@ -252,17 +291,11 @@
    
       });
 
-      // Listen clicks on Add widget button.
-      $('#add-widget-submit-button').click(function(e){
+      // Listen clicks on the #connect-widget-submit button.
+      // Displays modal and redirects to connect service page.
+      $('#connect-widget-submit').click(function(e){     
         
-        var firstCheckedGroup = $('.fa-check').first().parent();
-        var groupConnectionMarker = firstCheckedGroup.find('span').first();
-
-        // If the selected group is a service and is not connected show a confirm modal for redirection.
-        if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
           e.preventDefault()
-
-          var url = groupConnectionMarker.data('redirect-url');
 
           bootbox.confirm({
               title: 'Fasten seatbelts, redirection ahead',
@@ -274,10 +307,7 @@
                   }
               }
           });
-                    
-        } else {
-          return true;
-        }
+
       });
 
       /**
