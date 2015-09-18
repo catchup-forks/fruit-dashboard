@@ -125,6 +125,33 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * anyFacebookLogin
+     * --------------------------------------------------
+     * @return logs a user in with facebook.
+     * --------------------------------------------------
+     */
+    public function anyFacebookLogin() {
+        /* Oauth ready. */
+        if (Input::get('code', FALSE)) {
+            $userInfo = FacebookConnector::loginWithFacebook();
+            if ($userInfo['isNew']) {
+                return Redirect::route('signup-wizard.financial-connections')
+                    ->with('success', 'Welcome on board, '. $userInfo['user']->name. '!');
+            } else {
+                return Redirect::route('dashboard.dashboard')
+                    ->with('success', 'Welcome back, '. $userInfo['user']->name. '!');
+            }
+        /* User declined */
+        } else if (Input::get('error', FALSE)) {
+            return Redirect::route('auth.signin')
+                ->with('error', 'Sorry, we couldn\'t log you in. Please try again.');
+        }
+
+        /* Basic page load */
+        return Redirect::to(FacebookConnector::getFacebookLoginUrl());
+    }
+
+    /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
      * ================================================== *

@@ -28,7 +28,7 @@ Route::group([
         'as'     => 'signup-wizard.financial-connections',
         'uses'   => 'SignupWizardController@anyFinancialConnections'
     ]);
-    
+
     Route::any('social-connections', [
         'before' => 'auth',
         'as'     => 'signup-wizard.social-connections',
@@ -46,4 +46,10 @@ Route::group([
         'as'     => 'signup-wizard.personal-widgets',
         'uses'   => 'SignupWizardController@anyPersonalWidgets'
     ]);
+
+    Route::any('facebook/login', array(
+        'as'     => 'signup-wizard.facebook-login',
+        'uses'   => 'SignupWizardController@anyFacebookLogin'
+    ));
+
 });
