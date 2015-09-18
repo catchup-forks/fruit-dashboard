@@ -245,8 +245,8 @@
         
         // Change the form url
         descriptorID = $('[data-descriptor-type="' + descriptorType + '"]').attr('data-descriptor-id')
-        url = "{{ route('widget.doAdd', 'descriptorID') }}".replace('descriptorID', descriptorID);
-        $('#add-widget-form').attr('action', url)
+        descriptorUrl = "{{ route('widget.doAdd', 'descriptorID') }}".replace('descriptorID', descriptorID);
+        $('#add-widget-form').attr('action', descriptorUrl)
       }
 
       // Show the available actions pane.
