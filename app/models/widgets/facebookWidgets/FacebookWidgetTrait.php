@@ -23,6 +23,17 @@ trait FacebookWidgetTrait
     }
 
     /**
+     * getConnectorClass
+     * --------------------------------------------------
+     * Returns the connector class for the widgets.
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getConnectorClass() {
+        return 'FacebookConnector';
+    }
+
+    /**
      * getSettingsFields
      * --------------------------------------------------
      * Returns the updated settings fields

@@ -1,6 +1,7 @@
 <?php
 
-class BraintreeArpuWidget extends HistogramWidget
+class BraintreeArpuWidget extends HistogramWidget implements iServiceWidget
 {
+    use BraintreeWidgetTrait;
 }
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-class FacebookNewLikesWidget extends HistogramWidget
+class FacebookNewLikesWidget extends HistogramWidget implements iServiceWidget
 {
     use FacebookWidgetTrait;
 }

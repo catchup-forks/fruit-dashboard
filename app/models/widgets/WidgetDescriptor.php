@@ -59,7 +59,7 @@ class WidgetDescriptor extends Eloquent
      * @return DataManager
      * --------------------------------------------------
     */
-    public function getDataManager($widget) {
+    public function getDataManager($widget, $firstRun=TRUE) {
         $className = $this->getDMClassName();
         if (class_exists($className) && $widget->hasValidCriteria()) {
             /* Manager class exists, and widget has been set up */
@@ -71,8 +71,20 @@ class WidgetDescriptor extends Eloquent
                 }
             }
 
-            /* No manager found, creating one. */
-            return DataManager::createManagerFromWidget($widget);
+            /* No manager found */
+            if ($widget instanceof iServiceWidget && $firstRun) {
+                /* It's a service widget. */
+                /* Creating all related managers. */
+                $connectorClass = $widget->getConnectorClass();
+                $connector = new $connectorClass($widget->user());
+                $connector->createDataManagers($widget->getCriteria());
+
+                /* Calling getManager again, there should be a match now. */
+                return $this->getDataManager($widget, FALSE);
+            } else {
+                /* Creating a manager. */
+                return DataManager::createManagerFromWidget($widget);
+            }
        }
         return null;
     }

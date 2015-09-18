@@ -1,6 +1,7 @@
 <?php
 
-class StripeMrrWidget extends HistogramWidget
+class StripeMrrWidget extends HistogramWidget implements iServiceWidget
 {
+    use StripeWidgetTrait;
 }
 ?>

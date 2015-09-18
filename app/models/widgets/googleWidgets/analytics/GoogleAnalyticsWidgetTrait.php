@@ -14,6 +14,17 @@ trait GoogleAnalyticsWidgetTrait
     private static $property = array('property');
 
     /**
+     * getConnectorClass
+     * --------------------------------------------------
+     * Returns the connector class for the widgets.
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getConnectorClass() {
+        return 'GoogleAnalyticsConnector';
+    }
+
+    /**
      * getSettingsFields
      * --------------------------------------------------
      * Returns the updated settings fields

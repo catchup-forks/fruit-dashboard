@@ -107,10 +107,12 @@ abstract class GeneralServiceConnector
             /* Creating widget instance. */
             $className = $descriptor->getDMClassName();
 
-            /* No manager found */
+            /* No manager class found */
             if ( ! class_exists($className)) {
                 continue;
             }
+
+            /* Trying to find previous instance. */
 
             /* Creating data */
             $data = Data::create(array('raw_value' => 'loading'));

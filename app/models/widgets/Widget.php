@@ -1,8 +1,4 @@
 <?php
-interface iAjaxWidget
-{
-    public function handleAjax($postData);
-}
 /* Main widget class */
 class Widget extends Eloquent
 {
