@@ -88,21 +88,23 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'timer'],
-            array(
-                'name'         => 'Timer',
-                'description'  => 'A simple timer',
-                'type'         => 'timer',
-                'category'     => 'personal',
-                'is_premium'   => FALSE,
-                'number'       => 5,
-                'min_cols'     => 2,
-                'min_rows'     => 2,
-                'default_cols' => 2,
-                'default_rows' => 2
-            )
-        );
+        if (!App::environment('production')) {
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'timer'],
+                array(
+                    'name'         => 'Timer',
+                    'description'  => 'A simple timer',
+                    'type'         => 'timer',
+                    'category'     => 'personal',
+                    'is_premium'   => FALSE,
+                    'number'       => 5,
+                    'min_cols'     => 2,
+                    'min_rows'     => 2,
+                    'default_cols' => 2,
+                    'default_rows' => 2
+                )
+            );
+        } /* !App::environment('production')*/
 
         if (!App::environment('production')) {
 
