@@ -3,6 +3,9 @@
 @else
   <div class="padding text-center">
     <span class="text-white drop-shadow">
+      @if ($widget->descriptor->category == 'google_analytics')
+        {{ $widget->dataManager()->getProperty()->name }} -
+      @endif 
         {{ $widget->descriptor->name }}
     </span>
   </div>
