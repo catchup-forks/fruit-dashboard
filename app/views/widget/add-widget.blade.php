@@ -140,6 +140,8 @@
 
                               </select>
                             </div>
+                          </div>
+                          <div class="form-group">
                             <div class="hidden" id="add_new_dashboard_input">
                               <label for="newToDashboard">Please enter the name of the new dashboard:</label>
                               <input type="text" name="newDashboardName" value='' placeholder='New dashboard' class="form-control">
