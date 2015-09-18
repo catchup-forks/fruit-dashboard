@@ -109,8 +109,6 @@ class GoogleAnalyticsDataCollector
             $rows = $results->getRows();
             $profileName = $results->getProfileInfo()->getProfileName();
 
-            Log::info($rows);
-
             if (count($rows) > 0) {
                 /* Populating metricsData. */
                 if ($useDimensions) {
@@ -118,7 +116,12 @@ class GoogleAnalyticsDataCollector
                 } else {
                     $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
                 }
-            } else {
+            } else if( ! $useDimensions) {
+                $rows = array();
+                foreach ($metrics as $metric) {
+                    array_push($rows, 0);
+                }
+                $metricsData = $this->buildSimpleMetricsData($metrics, array($rows), $profileName);
             }
         }
         return $metricsData;
