@@ -16,33 +16,21 @@ class MetricsController extends BaseController
      */
 
     /**
-     * getRegisteredUserCount
+     * getUserCount
      * --------------------------------------------------
-     * @return Returns the number of registered users in json
-     * --------------------------------------------------
-     */
-    public function getRegisteredUserCount() {
-        /* Create data for the json */
-        $data = [
-            "date"      => Carbon::now()->toDateString(),
-            "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => User::all()->count()
-        ];
-
-        /* Return json */
-        return Response::json($data);
-    }
-
-    /**
-     * getActiveUserCount
-     * --------------------------------------------------
-     * @return Returns the number of active users in json
+     * @return Returns the number of users 
+     *          by different dimensions in json
      * --------------------------------------------------
      */
-    public function getActiveUserCount() {
+    public function getUserCount($dimension) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
+
+        /* Get registered users */
+        $registeredUsers = User::all()->count();
+
         /* Get active users */
         $activeUsers = 0;
-
         foreach (User::all() as $user) {
             $diff = Carbon::now()->diffInDays(Carbon::parse($user->last_activity));
             if ($diff <= 30) {
@@ -50,12 +38,104 @@ class MetricsController extends BaseController
             }
         }
 
-        /* Create data for the json */
-        $data = [
-            "date"      => Carbon::now()->toDateString(),
-            "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => $activeUsers
-        ];
+        /* Build data by dimensions */
+        switch ($dimension) {
+            case 'registered':
+                $data['Registered users'] = $registeredUsers;
+                break;
+
+            case 'active':
+                $data['Active users'] = $activeUsers;
+                break;
+
+            case 'all':
+            default:
+                $data['Registered users'] = $registeredUsers;
+                $data['Active users']     = $activeUsers;
+                break;
+        }
+
+        /* Return json */
+        return Response::json($data);
+    }
+
+
+    /**
+     * getVanityCount
+     * --------------------------------------------------
+     * @return Returns the vanity number(s) 
+     *          by different dimensions in json
+     * --------------------------------------------------
+     */
+    public function getVanityCount($dimension) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
+
+        /* Get number of dashboards */
+        $numberOfDashboards = Dashboard::all()->count();
+
+        /* Get number of widgets */
+        $numberOfWidgets = Widget::all()->count();
+
+        /* Get number of datapoints */
+        $numberOfDataPoints = 0;
+        foreach (User::all() as $user) {
+            foreach ($user->widgets as $widget) {
+                try {
+                    $numberOfDataPoints += count($widget->getSpecific()->getData());
+                } catch (Exception $e) {
+                    continue;
+                }
+            }
+        }
+
+        /* Build data by dimensions */
+        switch ($dimension) {
+            case 'dashboards':
+                $data['Dashboards'] = $numberOfDashboards;
+                break;
+
+            case 'widgets':
+                $data['Widgets'] = $numberOfWidgets;
+                break;
+
+            case 'datapoints':
+                $data['Datapoints'] = $numberOfDataPoints;
+                break;
+
+            case 'all':
+            default:
+                $data['Dashboards'] = $numberOfDashboards;
+                $data['Widgets']    = $numberOfWidgets;
+                $data['Datapoints'] = $numberOfDataPoints;
+                break;
+        }
+
+        /* Return json */
+        return Response::json($data);
+    }
+
+    /**
+     * getConnectionsCount
+     * --------------------------------------------------
+     * @return Returns the number of connections
+     *          by different services in json
+     * --------------------------------------------------
+     */
+    public function getConnectionsCount($service) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
+
+        /* Get all connections by services */
+        if ($service == 'all') {
+           foreach (SiteConstants::getAllServicesMeta() as $serviceMeta) {
+               $data[$serviceMeta['display_name']] = Connection::where('service', $serviceMeta['name'])->count();
+           }
+
+        /* Get connections only for one service */
+        } else {
+            $data[$service] = Connection::where('service', $service)->count();
+        }
 
         /* Return json */
         return Response::json($data);
@@ -136,71 +216,21 @@ class MetricsController extends BaseController
     }
 
     /**
-     * getNumberOfDashboards
-     * --------------------------------------------------
-     * @return Returns the number of the dashboards
-     * --------------------------------------------------
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
      */
-    public function getNumberOfDashboards() {
-        /* Create data for the json */
-        $data = [
-            "date"      => Carbon::now()->toDateString(),
-            "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => Dashboard::all()->count()
-        ];
-
-        /* Return json */
-        return Response::json($data);
-    }
-
     /**
-     * getNumberOfWidgets
+     * buildBasicData
      * --------------------------------------------------
-     * @return Returns the number of the dashboards
-     * --------------------------------------------------
-     */
-    public function getNumberOfWidgets() {
-        /* Create data for the json */
-        $data = [
-            "date"      => Carbon::now()->toDateString(),
-            "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => Widget::all()->count()
-        ];
-
-        /* Return json */
-        return Response::json($data);
-    }
-
-    /**
-     * getNumberOfDataPoints
-     * --------------------------------------------------
-     * @return Returns the number of the dashboards
+     * @return Builds the basic data for the JSON object
      * --------------------------------------------------
      */
-    public function getNumberOfDataPoints() {
-        $numberOfDataPoints = 0;
-
-        /* Iterate through all users */
-        foreach (User::all() as $user) {
-            /* Iterate through all widgets */
-            foreach ($user->widgets as $widget) {
-                try {
-                    $numberOfDataPoints += count($widget->getSpecific()->getData());
-                } catch (Exception $e) {
-                    continue;
-                }
-            }
-        }
-
-        /* Create data for the json */
-        $data = [
+    public function buildBasicData() {
+        return array(
             "date"      => Carbon::now()->toDateString(),
             "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => $numberOfDataPoints
-        ];
-
-        /* Return json */
-        return Response::json($data);
+        );
     }
 
 } /* MetricsController */
