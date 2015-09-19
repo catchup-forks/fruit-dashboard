@@ -23,14 +23,8 @@ Route::group([
         'uses'   => 'MetricsController@getConnectionsCount'
     ]);
 
-    Route::get('users/has-widget/{service}', [
-        'as'     => 'metrics.hasWidget',
-        'uses'   => 'MetricsController@getServiceWidgetUsersCount'
+    Route::get('widgets/{service}', [
+        'as'     => 'metrics.getWidgetsCount',
+        'uses'   => 'MetricsController@getWidgetsCount'
     ]);
-
-    Route::get('services/widgets/', [
-        'as'     => 'metrics.',
-        'uses'   => 'MetricsController@getAllServiceWidgetsCount'
-    ]);
-
 });

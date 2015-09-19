@@ -142,73 +142,41 @@ class MetricsController extends BaseController
     }
 
     /**
-     * getServiceWidgetUsersCount
+     * getWidgetsCount
      * --------------------------------------------------
-     * @return Returns the number of users who have at least
-     *          one widget with the provided service
+     * @return Returns the number of widgets
+     *          by different services in json
      * --------------------------------------------------
      */
-    public function getServiceWidgetUsersCount($service) {
-        /* Get active users */
-        $serviceWidgetUsers = 0;
+    public function getWidgetsCount($service) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
 
-        /* Iterate through all users */
-        foreach (User::all() as $user) {
-            /* Skip if service is not connected */
-            if (!$user->isServiceConnected($service)) {
-                continue;
-            } else {
-                /* Check for widgets */
-                foreach ($user->widgets as $widget) {
-                    if ( ($widget->descriptor->category == $service) and
-                         ($widget->state == 'active') ) {
-                        /* Increase counter */
-                        $serviceWidgetUsers += 1;
-                        break;
-                    }
+        /* Get all connections by services */
+        if ($service == 'all') {
+            $services = array();
+            foreach (SiteConstants::getAllGroupsMeta() as $serviceMeta) {
+                $data[$serviceMeta['display_name']] = 0;
+                $services[$serviceMeta['name']] = $serviceMeta['display_name'];
+            }
+
+            /* Iterate through all widgets */
+            foreach (Widget::all() as $widget) {
+                $key = $widget->descriptor->category;
+                if (array_key_exists($key, $services)) {
+                    $data[$services[$key]] += 1;
                 }
             }
-        }
 
-        /* Create data for the json */
-        $data = [
-            "date"      => Carbon::now()->toDateString(),
-            "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => $serviceWidgetUsers
-        ];
-
-        /* Return json */
-        return Response::json($data);
-    }
-
-    /**
-     * getAllServiceWidgetsCount
-     * --------------------------------------------------
-     * @return Returns the number of users who have at least
-     *          one widget with the provided service
-     * --------------------------------------------------
-     */
-    public function getAllServiceWidgetsCount() {
-        /* Get active users */
-        $data = array(
-            'timestamp' => Carbon::now()->getTimestamp()
-        );
-        $services = array();
-
-        foreach (SiteConstants::getAllGroupsMeta() as $serviceMeta) {
-            $data[$serviceMeta['display_name']] = 0;
-            $services[$serviceMeta['name']] = $serviceMeta['display_name'];
-        }
-
-        /* Iterate through all users */
-        foreach (Widget::all() as $widget) {
-            $key = $widget->descriptor->category;
-            /* Service exists */
-            if (array_key_exists($key, $services)) {
-                /* Data key exists. */
-                $display_name = $services[$key];
-                $data[$display_name]++;
+        /* Get connections only for one service */
+        } else {
+            $widgetcount = 0;
+            foreach (Widget::all() as $widget) {
+                if ($widget->descriptor->category == $service) {
+                    $widgetcount += 1;
+                }
             }
+            $data[$service] = $widgetcount;
         }
 
         /* Return json */
