@@ -304,20 +304,23 @@
       // Listen clicks on the #connect-widget-submit button.
       // Displays modal and redirects to connect service page.
       $('#connect-widget-submit').click(function(e){     
-        
-          e.preventDefault()
-
-          bootbox.confirm({
-              title: 'Fasten seatbelts, redirection ahead',
-              message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
-              // On clicking OK redirect to service connection route.
-              callback: function(result) {
-                  if (result) {
-                    window.location = url;
-                  }
+        e.preventDefault()
+        bootbox.confirm({
+          title: 'Fasten seatbelts, redirection ahead',
+          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+          callback: function(result) {
+              if (result) {
+                // Using from extension, redirect in new tab
+                if (window!=window.top) {
+                  window.open(url,'_blank').focus();
+                  
+                // Using website, redirect on same tab
+                } else {
+                  window.location = url;
+                }
               }
-          });
-
+          }
+        });
       });
 
       /**

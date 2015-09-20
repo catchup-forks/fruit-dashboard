@@ -25,14 +25,13 @@
 
                 <div class="list-group margin-top-sm">
 
-               @foreach (SiteConstants::getServicesMetaByType('financial') as $service)
-                  <a href="
+                @foreach (SiteConstants::getServicesMetaByType('financial') as $service)
                     @if(Auth::user()->isServiceConnected($service['name']))
-                      {{ route($service['disconnect_route']) }}
+                      <a href="{{ route($service['disconnect_route']) }}" class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
                     @else
-                      {{ route($service['connect_route']) }}?createDashboard=true
+                      <a href="{{ route($service['connect_route']) }}" class="list-group-item clearfix changes-image connect-redirect" data-image="widget-{{ $service['name'] }}">
                     @endif
-                  " class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
+
                     @if(Auth::user()->isServiceConnected($service['name']))
                         <small>
                           <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span> </small>
@@ -90,6 +89,26 @@
     $(function(){
       var baseUrl = "/img/demonstration/";
       var ext = ".jpg";
+
+      // Service redirection
+      $('.connect-redirect').click(function(e) {
+        var url = $(this).attr('href');
+        e.preventDefault();
+        bootbox.confirm({
+          title: 'Fasten seatbelts, redirection ahead',
+          message: 'To connect the service, we will redirect you to their site. Are you sure?',
+          // On clicking OK redirect to fruit dashboard add widget page.
+          callback: function(result) {
+            if (result) {
+              if (window!=window.top) {
+                window.open(url, '_blank');
+              } else {
+                window.location = url;
+              }
+            }
+          }
+        });
+      });
 
       $('.changes-image').hover(
         //on mouse enter
