@@ -242,14 +242,13 @@
               {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="list-group margin-top-sm">
-               @foreach (SiteConstants::getAllServicesMeta() as $service)
-                  <a href="
+                @foreach (SiteConstants::getAllServicesMeta() as $service)
                     @if(Auth::user()->isServiceConnected($service['name']))
-                      {{ route($service['disconnect_route']) }}
+                      <a href="{{ route($service['disconnect_route']) }}" class="list-group-item clearfix changes-image" data-image="widget-{{$service['name']}}">
                     @else
-                      {{ route($service['connect_route']) }}
+                      <a href="{{ route($service['connect_route']) }}" class="list-group-item clearfix changes-image connect-redirect" data-image="widget-{{$service['name']}}">
                     @endif
-                  " class="list-group-item clearfix changes-image iframe-fix" data-image="widget-{{$service['name']}}">
+
                     @if(Auth::user()->isServiceConnected($service['name']))
                         <small>
                           <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span>
@@ -259,6 +258,7 @@
                           <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
                         </small>
                     @endif
+
                     {{ $service['display_name'] }}
                     <span class="pull-right">
                     @if(Auth::user()->isServiceConnected($service['name']))
@@ -296,21 +296,24 @@
 
   @section('pageScripts')
     <script type="text/javascript">
-      // catch the redirect if in an iframe
-      $('.iframe-fix').click(function(e) {
-        if (window!=window.top) {
-            e.preventDefault();
-            bootbox.confirm({
-              title: 'Fasten seatbelts, redirection ahead',
-              message: 'For security reasons we have to redirect you to our site to connect this service. If you have arrived, <strong>please click again in the new tab to connect this service.</strong>',
-              // On clicking OK redirect to fruit dashboard add widget page.
-              callback: function(result) {
-                  if (result) {
-                    window.open("{{ URL::route('settings.settings') }}");
-                  }
+      // Service redirection
+      $('.connect-redirect').click(function(e) {
+        var url = $(this).attr('href');
+        e.preventDefault();
+        bootbox.confirm({
+          title: 'Fasten seatbelts, redirection ahead',
+          message: 'To connect the service, we will redirect you to their site. Are you sure?',
+          // On clicking OK redirect to fruit dashboard add widget page.
+          callback: function(result) {
+            if (result) {
+              if (window!=window.top) {
+                window.open(url, '_blank');
+              } else {
+                window.location = url;
               }
-            });
+            }
           }
+        });
       });
 
       $(".settings-form").submit(function(e) {

@@ -304,33 +304,23 @@
       // Listen clicks on the #connect-widget-submit button.
       // Displays modal and redirects to connect service page.
       $('#connect-widget-submit').click(function(e){     
-        
-          e.preventDefault()
-
-          if (window!=window.top) {
-              bootbox.confirm({
-                title: 'Fasten seatbelts, redirection ahead',
-                message: 'For security reasons we have to redirect you to our site to connect this service. If you have arrived, <strong>please click again in the new tab to connect this service.</strong>',
-                // On clicking OK redirect to fruit dashboard add widget page.
-                callback: function(result) {
-                    if (result) {
-                      window.open("{{ URL::route('widget.add') }}");
-                    }
+        e.preventDefault()
+        bootbox.confirm({
+          title: 'Fasten seatbelts, redirection ahead',
+          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+          callback: function(result) {
+              if (result) {
+                // Using from extension, redirect in new tab
+                if (window!=window.top) {
+                  window.open(url,'_blank').focus();
+                  
+                // Using website, redirect on same tab
+                } else {
+                  window.location = url;
                 }
-              });
-            } else {
-              bootbox.confirm({
-                title: 'Fasten seatbelts, redirection ahead',
-                message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
-                // On clicking OK redirect to service connection route.
-                callback: function(result) {
-                    if (result) {
-                      window.location = url;
-                    }
-                }
-              });
-            }
-
+              }
+          }
+        });
       });
 
       /**

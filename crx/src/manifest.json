@@ -1,6 +1,6 @@
 {
 	"name": "Fruit Dashboard",
-	"version": "1.2",
+	"version": "1.3.1",
 	"description": "See your startup stats every time you open a new tab.",
 	"manifest_version": 2,
   "browser_action": {
