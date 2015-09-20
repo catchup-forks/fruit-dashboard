@@ -299,6 +299,7 @@
       // catch the redirect if in an iframe
       $('.iframe-fix').click(function(e) {
         if (window!=window.top) {
+            e.preventDefault();
             bootbox.confirm({
               title: 'Fasten seatbelts, redirection ahead',
               message: 'For security reasons we have to redirect you to our site to connect this service. If you have arrived, <strong>please click again in the new tab to connect this service.</strong>',

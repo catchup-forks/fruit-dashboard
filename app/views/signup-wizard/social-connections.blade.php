@@ -32,7 +32,7 @@
                     @else
                       {{ route($service['connect_route']) }}?createDashboard=true
                     @endif
-                  " class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
+                  " class="list-group-item clearfix changes-image iframe-fix" data-image="widget-{{ $service['name'] }}">
                     @if(Auth::user()->isServiceConnected($service['name']))
                         <small>
                           <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span> </small>
@@ -91,6 +91,23 @@
     $(function(){
       var baseUrl = "/img/demonstration/";
       var ext = ".jpg";
+
+      // catch the redirect if in an iframe
+      $('.iframe-fix').click(function(e) {
+        if (window!=window.top) {
+            e.preventDefault();
+            bootbox.confirm({
+              title: 'Fasten seatbelts, redirection ahead',
+              message: 'For security reasons we have to redirect you to our site to connect this service. If you have arrived, <strong>please click again in the new tab to connect this service.</strong>',
+              // On clicking OK redirect to fruit dashboard add widget page.
+              callback: function(result) {
+                  if (result) {
+                    window.open("{{ URL::route('signup-wizard.social-connections') }}");
+                  }
+              }
+            });
+          }
+      });
 
       $('.changes-image').hover(
         //on mouse enter
