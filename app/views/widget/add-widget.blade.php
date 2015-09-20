@@ -307,16 +307,29 @@
         
           e.preventDefault()
 
-          bootbox.confirm({
-              title: 'Fasten seatbelts, redirection ahead',
-              message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
-              // On clicking OK redirect to service connection route.
-              callback: function(result) {
-                  if (result) {
-                    window.location = url;
-                  }
-              }
-          });
+          if (window!=window.top) {
+              bootbox.confirm({
+                title: 'Fasten seatbelts, redirection ahead',
+                message: 'For security reasons we have to redirect you to our site to connect this service. If you have arrived, <strong>please click again in the new tab to connect this service.</strong>',
+                // On clicking OK redirect to fruit dashboard add widget page.
+                callback: function(result) {
+                    if (result) {
+                      window.open("{{ URL::route('widget.add') }}");
+                    }
+                }
+              });
+            } else {
+              bootbox.confirm({
+                title: 'Fasten seatbelts, redirection ahead',
+                message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+                // On clicking OK redirect to service connection route.
+                callback: function(result) {
+                    if (result) {
+                      window.location = url;
+                    }
+                }
+              });
+            }
 
       });
 
