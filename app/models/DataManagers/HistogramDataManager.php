@@ -92,7 +92,6 @@ abstract class HistogramDataManager extends DataManager
      */
     public function getHistogram($range, $resolution) {
         /* Calling proper method based on resolution. */
-        return $this->buildHistogram($range, 'minutely', 'h:i');
         switch ($resolution) {
             case 'minutely':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
             case 'hourly':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
@@ -126,7 +125,7 @@ abstract class HistogramDataManager extends DataManager
         $histogram = array();
         $first = TRUE;
         $sampleEntries = array();
-        $previousEntryTime = Carbon::now();
+        $previousEntryTime = null;
 
         foreach ($fullHistogram as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
@@ -145,7 +144,7 @@ abstract class HistogramDataManager extends DataManager
                 if ($first || $entry == $last) {
                     array_push($sampleEntries, $entry);
                 }
-                if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution) || ($entry == $last)) {
+                if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
                     /* Passing new element to the array. */
                     $newEntry = static::getAverageValues($sampleEntries);
                     $newEntry['datetime'] = $entryTime->format($dateFormat);
@@ -178,12 +177,15 @@ abstract class HistogramDataManager extends DataManager
      * Checks if the entry is a breakpoint in the histogram.
      * --------------------------------------------------
      * @param Carbon $entryTime
-     * @param Carbon $previousEntryTime
+     * @param Carbon/null $previousEntryTime
      * @param string $resolution
      * @return boolean
      * --------------------------------------------------
     */
     private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
+        if (is_null($previousEntryTime)) {
+            return TRUE;
+        }
         if ($resolution == 'minutely') {
             return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
         } else if ($resolution == 'hourly') {
