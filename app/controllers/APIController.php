@@ -23,47 +23,26 @@ class APIController extends BaseController
      */
     
     /**
-     * anySaveData
+     * anyPostData
      * --------------------------------------------------
-     * @return Saves the data to the database
+     * @return Handles the incoming POST request, and checks its integrity
      * --------------------------------------------------
      */
-    public function anySaveData($apiVersion = null, $apiKey = null, $widgetID = null) {
+    public function anyPostData($apiVersion = null, $apiKey = null, $widgetID = null) {
         /* Check API version */
         if (!in_array($apiVersion, self::$apiVersions)) {
             return Response::json(array('error' => 'This API version is not supported.'));
         }
 
-        /* Return */
-        return Response::json(array('success' => 'Everything is OK.'));
+        /* Call API hadler */
+        $status = $this->handlePostData($apiVersion, $apiKey, $widgetID);
 
-        /* Try to get */
-        
-        // $authArray = json_decode(base64_decode($apiKey), true);
-        // if (!isset($authArray['wid'])) {
-        //     Log::info('API authArray decoding failed');
-        //     return;
-        // }
-        // $widgetId = $authArray['wid'];
-
-        // $inputArray = Input::all();
-
-        // if (!isset($inputArray['data'])) {
-        //     Log::info('API inputArray not valid');
-        //     return;
-        // }
-        // $time = time();
-        // foreach ($inputArray['data'] as $dataArray) {
-        //     $data = new Data;
-        //     $data->widget_id = $widgetId;
-        //     $data->data_object = json_encode(array(
-        //         'key'   => $dataArray['key'],
-        //         'value' => $dataArray['value']
-        //     ));
-        //     $data->date = date("Y-m-d", $time);
-        //     $data->timestamp = date('Y-m-d H:i:s', $time);
-        //     $data->save();
-        // }
+        /* Return based on status */
+        if ($status['is_success']) {
+            return Response::json(array('success' => 'Your data has been posted successfully.'));
+        } else {
+            return Response::json(array('error' => $status['message']));
+        }
     }
 
     /**
@@ -73,10 +52,73 @@ class APIController extends BaseController
      * --------------------------------------------------
      */
     public function anyExample() {
+        /* Create default JSON string */
+        $defaultJSON = 
+            "{\n".
+            "'date':'" . Carbon::now()->toDateString(). "', \n" .
+            "'timestamp':" . Carbon::now()->getTimestamp(). ", \n" .
+            "'Graph One': 15, \n" .
+            "'Graph Two': 40 \n" .
+            "}";
+
         /* Render view */
         return View::make('api.example', 
                           array('apiVersion' => end(self::$apiVersions),
-                                'apiKey'     => md5(Auth::user()->id),
-                                'widgetID'   => '-WidgetID-'));
+                                'apiKey'     => Auth::user()->api_key,
+                                'widgetID'   => '-WidgetID-',
+                                'defaultJSON'=> $defaultJSON));
+    }
+
+
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
+    
+    /**
+     * handlePostData
+     * --------------------------------------------------
+     * @return Saves the data to the database
+     * --------------------------------------------------
+     */
+    private function handlePostData($apiVersion, $apiKey, $widgetID) {
+        /* Handle POST data based on the API version */
+        switch ($apiVersion) {
+            case '1.0':
+            default:
+                /* Check API key */
+                if (is_null(User::where('api_key', $apiKey)->first())) {
+                    return array('is_success' => FALSE,
+                                 'message'    => 'Your API key is invalid.');
+                }
+
+                /* Check Widget ID */
+                if (is_null(Widget::where('id', $widgetID)->first())) {
+                    return array('is_success' => FALSE,
+                                 'message'    => 'Your Widget ID is invalid.');
+                }
+
+                return $this->saveWidgetData(
+                            User::where('api_key', $apiKey)->first(), 
+                            Widget::where('id', $widgetID)->first()
+                       );
+                break;
+        }
+    }
+
+    /**
+     * saveWidgetData
+     * --------------------------------------------------
+     * @return Saves the data to the database
+     * --------------------------------------------------
+     */
+    private function saveWidgetData($user, $widget) {
+        /* Initialize status */
+        $status = array();
+
+        $status['is_success'] = TRUE;
+
+        return $status;
     }
 }

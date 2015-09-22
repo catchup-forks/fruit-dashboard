@@ -46,7 +46,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
 
     /**
      * getSetupFields
-     * Returns the SettingsFields
+     * Returns the SetupFields
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -57,7 +57,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
 
     /**
      * getCriteriaFields
-     * Returns the SettingsFields
+     * Returns the CriteriaFields
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
