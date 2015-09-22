@@ -3,7 +3,7 @@
 class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
-    private static $start = '30daysAgo';
+    private static $start = '2005-01-01';
     private static $end = 'today';
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';

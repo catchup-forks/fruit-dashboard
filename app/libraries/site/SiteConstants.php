@@ -35,6 +35,8 @@ class SiteConstants {
         '77, 255, 210',
         '209, 0, 157',
     );
+    private static $googleAnalyticsLaunchDate = '2005-01-01';
+
    /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *
@@ -309,6 +311,17 @@ class SiteConstants {
     public static function underscoreToCamelCase($input, $keepSpace=FALSE) {
         $output = ucwords(str_replace('_',' ', $input));
         return $keepSpace ? $output : str_replace(' ', '', $output);
+    }
+
+    /**
+     * getGoogleAnalyticsLaunchDate:
+     * --------------------------------------------------
+     * Returns the date google analytics service was launched.
+     * @return (integer) ($googleAnalyticsLaunchDate)
+     * --------------------------------------------------
+     */
+    public static function getGoogleAnalyticsLaunchDate() {
+        return self::$googleAnalyticsLaunchDate;
     }
 
 } /* SiteConstants */
