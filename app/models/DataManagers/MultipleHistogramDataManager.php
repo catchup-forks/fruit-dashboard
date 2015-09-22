@@ -60,7 +60,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         if ( ! array_key_exists('data', $data)) {
             return array();
         }
-        Log::info($data['data']);
         return $data['data'];
     }
 

@@ -10,7 +10,7 @@ class ApiHistogramDataManager extends MultipleHistogramDataManager
      * --------------------------------------------------
     */
     protected function getUrl() {
-        return $this->getSettings()['url'];
+        return $this->getCriteria()['url'];
     }
 
     /**

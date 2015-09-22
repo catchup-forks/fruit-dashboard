@@ -8,7 +8,8 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             'name'       => 'POST url',
             'type'       => 'TEXT',
             'validation' => 'required',
-            'help_text'  => 'The widget data will be posted to this url.'
+            'help_text'  => 'The widget data will be posted to this url.',
+            'noedit'     => TRUE
         ),
         'name' => array(
             'name'       => 'Name',
