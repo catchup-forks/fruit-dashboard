@@ -102,7 +102,7 @@ class GoogleAnalyticsPopulateData
             'avgSessionDuration' => array()
         );
 
-        for ($i = self::DAYS; $i > 0; --$i) {
+        for ($i = self::DAYS; $i >= 0; --$i) {
             /* Creating start, end days. */
             $start = Carbon::now()->subDays($i);
             $end = Carbon::now()->subDays($i);
@@ -111,7 +111,7 @@ class GoogleAnalyticsPopulateData
             foreach ($metrics as $metric=>$dailyData) {
                 /* Getting daily data. */
                 $currentDateMetric = array();
-                $currentDateMetric['timestamp'] = $end->getTimestamp();
+                $currentDateMetric['timestamp'] = $end->addDay()->getTimestamp();
                 foreach ($dailyData as $profile=>$value) {
                     $currentDateMetric[$profile] = $value[0];
                 }

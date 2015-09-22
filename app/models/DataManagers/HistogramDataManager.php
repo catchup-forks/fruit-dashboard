@@ -38,7 +38,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* If popping the old value. */
-        if ($today->diffInMinutes($this->last_updated) >= $this->update_period) {
+        if ($today->diffInSeconds($this->last_updated) >= $this->update_period) {
             /* Updating last updated. */
             $this->last_updated = $today;
             $this->save();
@@ -92,6 +92,7 @@ abstract class HistogramDataManager extends DataManager
      */
     public function getHistogram($range, $resolution) {
         /* Calling proper method based on resolution. */
+        return $this->buildHistogram($range, 'minutely', 'h:i');
         switch ($resolution) {
             case 'minutely':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
             case 'hourly':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
@@ -125,6 +126,7 @@ abstract class HistogramDataManager extends DataManager
         $histogram = array();
         $first = TRUE;
         $sampleEntries = array();
+        $previousEntryTime = Carbon::now();
 
         foreach ($fullHistogram as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
@@ -140,10 +142,10 @@ abstract class HistogramDataManager extends DataManager
             }
             if ($recording) {
                 /* Frequency conditions. */
-                if (( ! $first && static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) || ($entry == $last)) {
-                    if ($entry == $last) {
-                        array_push($sampleEntries, $entry);
-                    }
+                if ($first || $entry == $last) {
+                    array_push($sampleEntries, $entry);
+                }
+                if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution) || ($entry == $last)) {
                     /* Passing new element to the array. */
                     $newEntry = static::getAverageValues($sampleEntries);
                     $newEntry['datetime'] = $entryTime->format($dateFormat);

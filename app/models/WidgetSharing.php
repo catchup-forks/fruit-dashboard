@@ -37,6 +37,17 @@ class WidgetSharing extends Eloquent
     }
 
     /**
+     * reject
+     * Setting the state to rejected.
+     * --------------------------------------------------
+     * @param string $state
+     * --------------------------------------------------
+    */
+    public function reject() {
+        $this->setState('rejected.');
+    }
+
+    /**
      * createSharedWidget
      * Creating the sharedWidgetInstance
      * --------------------------------------------------

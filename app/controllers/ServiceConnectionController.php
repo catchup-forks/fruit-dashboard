@@ -269,7 +269,6 @@ class ServiceConnectionController extends BaseController
             );
 
             $message = 'Facebook connection successful';
-
             if (Session::pull('createDashboard')) {
                 return Redirect::route('service.facebook.select-pages')
                     ->with('success', $message);
@@ -727,6 +726,8 @@ class ServiceConnectionController extends BaseController
         }
         if ( ! is_null($previous)) {
             Session::put('referer', $previous);
+        } else {
+            Session::put('referer', 'settings');
         }
     }
 

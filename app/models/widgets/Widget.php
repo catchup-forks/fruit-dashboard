@@ -60,6 +60,7 @@ class Widget extends Eloquent
             try {
                 $view->render();
             } catch (Exception $e) {
+                Log::error($e);
                 $widget->setState('setup_required');
             }
         }
