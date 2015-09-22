@@ -9,8 +9,8 @@ Route::group([
     ], function() {
 
     Route::any('{api_version}/{api_key}/{widgetID}', [
-        'as'     => 'api.save-data',
-        'uses'   => 'APIController@anySaveData'
+        'as'     => 'api.post-data',
+        'uses'   => 'APIController@anyPostData'
     ]);
 
     Route::any('example', [

@@ -56,11 +56,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
     public function getData() {
-        $data = json_decode($this->data->raw_value, 1);
-        if ( ! array_key_exists('data', $data)) {
-            return array();
-        }
-        return $data['data'];
+        return json_decode($this->data->raw_value, 1)['data'];
     }
 
     /**
@@ -71,11 +67,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
     public function getDataSets() {
-        $data = json_decode($this->data->raw_value, 1);
-        if ( ! array_key_exists('datasets', $data)) {
-            return array();
-        }
-        return $data['datasets'];
+        return json_decode($this->data->raw_value, 1)['datasets'];
     }
 
     /**
