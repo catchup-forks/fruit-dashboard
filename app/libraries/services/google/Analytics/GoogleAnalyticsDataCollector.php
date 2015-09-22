@@ -194,7 +194,7 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      */
     public function getAvgSessionDuration($property) {
-        return $this->getMetrics($property, 'today', 'today', array('avgSessionDuration'))['avgSessionDuration'];
+        return $this->getMetrics($property, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('avgSessionDuration'))['avgSessionDuration'];
    }
 
 
@@ -207,7 +207,7 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      */
     public function getSessions($property) {
-        return $this->getMetrics($property, 'today', 'today', array('sessions'))['sessions'];
+        return $this->getMetrics($property, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('sessions'))['sessions'];
    }
 
     /**
@@ -219,7 +219,7 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      */
     public function getBounceRate($property) {
-        return $this->getMetrics($property, 'today', 'today', array('bounceRate'))['bounceRate'];
+        return $this->getMetrics($property, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('bounceRate'))['bounceRate'];
    }
 
     /**
