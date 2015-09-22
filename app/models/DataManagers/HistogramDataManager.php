@@ -145,6 +145,7 @@ abstract class HistogramDataManager extends DataManager
                     array_push($sampleEntries, $entry);
                 }
                 if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
+                    Log::info($sampleEntries);
                     /* Passing new element to the array. */
                     $newEntry = static::getAverageValues($sampleEntries);
                     $newEntry['datetime'] = $entryTime->format($dateFormat);
