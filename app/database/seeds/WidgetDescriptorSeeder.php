@@ -6,22 +6,41 @@ class WidgetDescriptorSeeder extends Seeder
     {
 
         /* WidgetDescriptor: Update or create all */
-        /* Webhook widgets | HISTOGRAM */
+        /* Webhook / API widgets | CHART */
         WidgetDescriptor::updateOrCreate(
             ['type' => 'webhook_histogram'],
             array(
-                'name'         => 'Webhook histogram',
-                'description'  => 'Building a simple line histogram from your data.',
+                'name'         => 'Webhook chart',
+                'description'  => 'Building a simple line chart from your data provided by your server in JSON.',
                 'type'         => 'webhook_histogram',
-                'category'     => 'webhook',
+                'category'     => 'webhook_api',
                 'is_premium'   => TRUE,
-                'number'       => 1,
+                'number'       => 2,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
+
+        if (!App::environment('production')) {
+            /* Webhook / API widgets | CHART */
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'api_histogram'],
+                array(
+                    'name'         => 'API chart',
+                    'description'  => 'Building a simple line chart from your data, which you can post to our server any time.',
+                    'type'         => 'api_histogram',
+                    'category'     => 'webhook_api',
+                    'is_premium'   => TRUE,
+                    'number'       => 1,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 4
+                )
+            );
+        } /* !App::environment('production')*/
 
         /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
@@ -147,8 +166,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 1,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -163,8 +182,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 2,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -179,8 +198,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 3,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -214,8 +233,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 1,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -230,8 +249,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 1,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -246,8 +265,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 3,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -263,8 +282,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 1,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -296,8 +315,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 3,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -313,8 +332,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 1,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -345,8 +364,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 2,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -361,8 +380,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 3,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -378,8 +397,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 1,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -394,8 +413,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 2,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -426,8 +445,8 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 3,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 

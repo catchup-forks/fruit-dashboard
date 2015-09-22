@@ -194,8 +194,8 @@ class SiteConstants {
                 'connect_route'     => null
             ),
             array(
-                'name'              => 'webhook',
-                'display_name'      => 'Webhook',
+                'name'              => 'webhook_api',
+                'display_name'      => 'API / Webhook',
                 'type'              => 'custom',
                 'disconnect_route'  => null,
                 'connect_route'     => null
