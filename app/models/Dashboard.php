@@ -42,12 +42,12 @@ class Dashboard extends Eloquent
                     continue;
                 }
                 if ($this->fits($rectangle, $widget)) {
-                    return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": ' . $j . ', "row": ' . $i . '}';
+                    return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col":' . $j . ', "row": '. $i .'}';
                 }
             }
         }
         /* No match, default positioning. */
-        return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": 1 , "row": 1 }';
+        return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col": 1,"row": 1}';
     }
 
     /**

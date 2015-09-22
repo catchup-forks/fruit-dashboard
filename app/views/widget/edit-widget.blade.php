@@ -23,6 +23,7 @@
                 $widget->id),
                 'class' => 'form-horizontal' )) }}
 
+                @if ( ! $widget instanceof SharedWidget)
                 @foreach ($widget->getSettingsFields() as $field=>$meta)
 
                   <div class="form-group">
@@ -48,6 +49,7 @@
                   </div> <!-- /.form-group -->
 
                 @endforeach
+                @endif
                 <!-- dashboard select -->
                   <div class="form-group">
                     {{ Form::label('dashboard', 'Dashboard', array(
