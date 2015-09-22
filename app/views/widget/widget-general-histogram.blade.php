@@ -1,11 +1,11 @@
 @if ( ! $widget->premiumUserCheck())
   @include('widget.widget-premium-not-allowed', ['feature' => $widget->getSettings()['resolution'] . ' statistics'])
 @else
-  <div class="padding text-center">
+  <div class="padding text-center" id="container-{{ $widget->id }}">
     <span class="text-white drop-shadow">
       @if ($widget->descriptor->category == 'facebook')
         {{ $widget->dataManager()->getPage()->name }} -
-      @endif 
+      @endif
         {{ $widget->descriptor->name }}
     </span>
     <span class="text-white drop-shadow pull-right has-margin-horizontal" id="{{$widget->id}}-value">
@@ -60,7 +60,7 @@
       })
 
       // Bind redraw to resize event.
-      $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
+      $('#container-{{$widget->id}}').bind('resize', function(e){
         // turn off animation while redrawing
         chartOptions.animation = false;
         canvas = reinsertCanvas(canvas);

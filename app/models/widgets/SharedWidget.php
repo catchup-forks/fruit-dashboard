@@ -3,7 +3,7 @@
 class SharedWidget extends Widget
 {
     /* -- Settings -- */
-    public static $settingsFields = array(
+    public static $sharedSettings = array(
         'related_widget' => array(
             'name'       => 'Related widget',
             'type'       => 'INT',
@@ -16,20 +16,27 @@ class SharedWidget extends Widget
         ),
     );
 
-    /* The settings to setup in the setup-wizard.*/
-    public static $setupSettings = array();
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$sharedSettings);
+     }
 
     /**
      * getRelatedWidget
-     * --------------------------------------------------
      * Returning the corresponding widget.
+     * --------------------------------------------------
      * @return Widget
      * --------------------------------------------------
      */
     public function getRelatedWidget() {
-        $widgetId = $this->getSettings()['related_widget'];
+        $widgetId = parent::getSettings()['related_widget'];
         $widget = Widget::find($widgetId);
-
         if (is_null($widget)) {
             /* Related widget does not exist. */
             /* Deleting widget setting sharing object state to deleted. */
@@ -39,8 +46,22 @@ class SharedWidget extends Widget
         return $widget->getSpecific();
     }
 
+    /**
+     * getSettings
+     * Merging the setting of this and the related widget.
+     * --------------------------------------------------
+     * @return Widget
+     * --------------------------------------------------
+     */
+    public function getSettings() {
+        if (is_null($this->getRelatedWidget())) {
+            return parent::getSettings();
+        }
+        return array_merge(parent::getSettings(), $this->getRelatedWidget()->getSettings());
+    }
+
     public function __call($method, $args) {
-        Log::info($method, $args);
+        return $this->getRelatedWidget()->{$method}($args);
     }
 }
 ?>

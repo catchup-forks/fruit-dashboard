@@ -86,4 +86,11 @@ Route::group([
         'uses'  => 'GeneralWidgetController@ajaxHandler',
     ]);
 
+    Route::post('share/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.share',
+        'uses'   => 'GeneralWidgetController@postShareWidget'
+    ]);
+
+
 });

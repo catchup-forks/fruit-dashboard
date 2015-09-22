@@ -26,22 +26,28 @@ class DashboardController extends BaseController
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
-        /* Get active dashboard, if the url contains it */
-        $activeDashboard = Request::query('active');
-
         /* Checking the user's widget data integrity */
         Widget::checkUserWidgetsIntegrity(Auth::user());
 
+        /* Get active dashboard, if the url contains it */
         $parameters = array();
-        /* Render the page */
+        $activeDashboard = Request::query('active');
         if ($activeDashboard) {
             $parameters['activeDashboard'] = $activeDashboard;
+        }
+
+        /* For now doing an auto accept on all sharings. */
+        foreach (Auth::user()->widgetSharings as $sharing) {
+            if ($sharing->state != 'accepted') {
+                $sharing->accept();
+            }
         }
 
         /* Creating view */
         $view = View::make('dashboard.dashboard', $parameters);
 
         try {
+            /* Trying to render the view. */
             return $view->render();
         } catch (Exception $e) {
             /* Error occured trying to find the widget. */

@@ -245,6 +245,7 @@ class GeneralWidgetController extends BaseController {
         return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
             ->with('success', 'You successfully restored the widget.');
     }
+
     /**
      * getAddWidget
      * --------------------------------------------------
@@ -285,10 +286,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Create widget */
-        $widget = new $className(array(
-            'settings' => json_encode(array()),
-            'state'    => 'active',
-        ));
+        $widget = new $className(array('state' => 'active'));
 
         /* Associate to dashboard */
         $dashboardNum = Input::get('toDashboard');
@@ -328,7 +326,6 @@ class GeneralWidgetController extends BaseController {
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
         /* Associate descriptor and save */
-        $widget->descriptor()->associate($descriptor);
         $options = array();
         if ($widget instanceof CronWidget && $className::getCriteriaFields() !== FALSE) {
             $options['skipManager'] = TRUE;
@@ -527,6 +524,44 @@ class GeneralWidgetController extends BaseController {
 
         /* Calling widget specific handler */
         return Response::json($widget->handleAjax(Input::all()));
+    }
+
+    /**
+     * postShareWidget
+     * --------------------------------------------------
+     * @param (integer) ($widgetID) The ID of the sharable widget
+     * @return Creates sharing objects
+     * --------------------------------------------------
+     */
+    public function postShareWidget($widgetID) {
+        $widget = Widget::find($widgetID);
+        $emails = Input::get('email_addresses');
+        if (is_null($widget) || is_null($emails)) {
+            /* Everything OK, return response with 200 status code */
+            return Response::make('Bad request.', 401);
+        }
+
+        /* Splitting emails. */
+        $i = 0;
+        foreach (array_filter(preg_split('/[,\s]+/', $emails)) as $email) {
+            /* Finding registered users. */
+            $user = User::where('email', $email)->first();
+            if (is_null($user) && $user->id != Auth::user()->id) {
+                continue;
+            }
+
+            /* Creating sharing object. */
+            $sharing = new WidgetSharing(array(
+                'state' => 'not_seen'
+            ));
+            $sharing->srcUser()->associate(Auth::user());
+            $sharing->user()->associate($user);
+            $sharing->widget()->associate($widget);
+            $sharing->save();
+        }
+
+        /* Everything OK, return response with 200 status code */
+        return Response::make('Widget shared.', 200);
     }
 
 } /* GeneralWidgetController */

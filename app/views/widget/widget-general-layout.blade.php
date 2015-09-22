@@ -24,6 +24,8 @@
   <!-- Adding loading on DataWidget -->
   @if ($widget->state == 'setup_required')
       @include('widget.widget-setup-required', ['widget' => $widget,])
+  @elseif ($widget instanceof SharedWidget)
+    @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
   @else
     @if ($widget instanceof iAjaxWidget)
       @include('widget.widget-loading', ['widget' => $widget,])
@@ -35,6 +37,11 @@
     @if ($widget instanceof CronWidget)
       </div>
     @endif
-  @endif
 
+  <div class="text-center">
+    <a href="#" id="share-{{$widget->id}}" title="share widget data" data-hover="hover-unlocked" onclick="showShareModal({{$widget->id}})">
+    share
+    </a>
+  </div>
+  @endif
 </li>
