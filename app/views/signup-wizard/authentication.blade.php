@@ -44,8 +44,14 @@
                 <div class="form-group">
                     {{ Form::text('email', Input::old('email'), array('autocomplete' => 'off', 'autocorrect' => 'off', 'class' => 'form-control input-lg text-white drop-shadow text-center greetings-name', 'id' => 'email_id')) }}
                 </div>
-            </div>
 
+                  <h1 id="loading-spinner" class="text-center text-white drop-shadow off-screen">
+                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                  </h1> <!-- /#loading-spinner -->
+
+
+            </div>
+  
             <!-- password -->
             <div class="yourpassword-form not-visible">
                 <h1 class="text-white text-center drop-shadow">
@@ -106,6 +112,11 @@
             if(keycode == '13' || keycode == '9'){
               event.preventDefault();
               if ($('#email_id').val() && IsEmail($('#email_id').val())) {
+
+                $('#email_id').slideUp('fast', function(){
+                  $('#loading-spinner').removeClass('off-screen');
+                });
+
                 // Call ajax, to check the email
                 $.ajax({
                   type: "POST",
@@ -123,11 +134,22 @@
 
                         // Email taken, show error
                         } else {
-                          $('#email_id').after('<a class="label label-danger" href="{{ route("auth.signin") }}">This email has already been registered. If you would like to sign in, click here.</a>');
+
+                          $('#loading-spinner').addClass('off-screen');
+                          $('#email_id').slideDown('fast', function() {
+                            $('#email_id').focus();
+                          });
+
+                          $.growl.error({ 
+                            message: "This email has already been registered. If you would like to sign in, <a href=\"{{ route('auth.signin') }}\">click here.</a>",
+                            fixed: true,
+                            location: "br"
+                          });
                         }
                       },
                       error: function() {
                         // Something went wrong, check email from backend later
+                        $('#loading-spinner').addClass('off-screen');
                         $('.youremail-form').slideUp('fast', function (){
                           $('.yourpassword-form').slideDown('fast', function() {
                             $('#password_id').focus();
