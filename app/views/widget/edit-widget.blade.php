@@ -43,9 +43,9 @@
                         {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form_control', 'disabled' => 'disabled']) }}
+                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control', 'disabled' => 'disabled']) }}
                         @else
-                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form_control']) }}
+                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control']) }}
                         @endif
                       @endif
                       @if (array_key_exists('help_text', $meta))
