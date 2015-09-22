@@ -1,11 +1,11 @@
 @if ( ! $widget->premiumUserCheck())
   @include('widget.widget-premium-not-allowed', ['feature' => $widget->getSettings()['resolution'] . ' statistics'])
 @else
-  <div class="padding text-center">
+  <div class="padding text-center" id="container-{{$widget->id}}">
     <span class="text-white drop-shadow">
       @if ($widget->descriptor->category == 'google_analytics')
         {{ $widget->dataManager()->getProperty()->name }} -
-      @endif 
+      @endif
         {{ $widget->descriptor->name }}
     </span>
   </div>
@@ -63,7 +63,7 @@
       })
 
       // Bind redraw to resize event.
-      $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
+      $('#container-{{$widget->id}}').bind('resize', function(e){
         chartOptions.animation = false;
         canvas = reinsertCanvas(canvas);
         drawLineGraph(canvas, datasets, labels, name);

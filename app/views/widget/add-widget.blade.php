@@ -27,9 +27,9 @@
                 <h3 class="text-center">Select a group</h3>
 
                 <div class="list-group margin-top-sm">
-                  
+
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
-                    
+
                     <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
                       @if($group['type'] == 'service')
                         <small>
@@ -57,18 +57,18 @@
                   Can't find the service you were looking for?
                   <strong><a href="https://fruitdashboard.uservoice.com" target="_blank">Tell us</a>.</strong>
                 </div> <!-- /.alert -->
-                
+
 
               </div> <!-- /.col-md-3 -->
               <!-- / category list-group -->
 
               <!-- widget list-group -->
               <div class="col-md-4">
-                
+
                 <h3 class="text-center">Select a widget</h3>
 
                 <div class="list-group margin-top-sm not-visible">
-                  
+
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
                     @foreach($group['descriptors'] as $descriptor)
@@ -88,7 +88,7 @@
 
               <!-- widget description col -->
                 <div class="col-md-5">
-                  
+
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
                     @foreach($group['descriptors'] as $descriptor)
@@ -96,16 +96,16 @@
                       <div data-descriptor-type="widget-{{$descriptor->type}}" data-descriptor-id="{{$descriptor->id}}" class="descriptors not-visible">
                           <div class="row">
                             <div class="col-md-12">
-                              
+
                                 <h3 class="descriptor-name text-center">{{ $descriptor->name }}
                                 </h3> <!-- /.descriptor-name -->
                                 {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
                                     'class' => 'img-responsive img-rounded center-block'
                                 ))}}
-                                
+
                             </div> <!-- /.col-md-12 -->
                           </div> <!-- /.row -->
-                          
+
                           <div class="row">
                             <div class="col-md-12">
                               <p id="" class="lead margin-top-sm descriptor-description">{{ $descriptor->description }}</p>
@@ -114,14 +114,14 @@
                           </div> <!-- /.row -->
 
                       </div> <!-- /.descriptors -->
-                        
+
                     <!-- / widget description col -->
 
                     @endforeach
 
                   @endforeach
 
-                <!-- action panel -->                
+                <!-- action panel -->
                 <div class="row">
                   <div id="add-widget" class="col-md-12 not-visible">
 
@@ -151,7 +151,7 @@
 
                           <div class="form-actions pull-right">
                             <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-link">Cancel</a>
-                            
+
                             {{ Form::submit('Add' , array(
                               'id' => 'add-widget-submit-button',
                               'class' => 'btn btn-primary' )) }}
@@ -161,7 +161,7 @@
                         {{ Form::close() }}
 
                     </div> <!-- /#add-widget .col-md-12 -->
-                    
+
                     <div id="connect-service" class="col-md-12 text-center not-visible">
                       <div class="alert alert-warning" role="alert">
                         <strong>
@@ -178,18 +178,18 @@
                       </div> <!-- /.form-actions -->
 
                     </div> <!-- /#connect-service .col-md-12 -->
-               
+
                 </div> <!-- /.row -->
                 <!-- / action panel -->
 
-                </div> <!-- /.col-md-5 -->              
+                </div> <!-- /.col-md-5 -->
 
-            </div> <!-- /.row -->              
+            </div> <!-- /.row -->
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-md-12 -->
     </div> <!-- /.row -->
-  </div> <!-- /.container -->     
+  </div> <!-- /.container -->
 
 
   @stop
@@ -197,6 +197,10 @@
 
   <script type="text/javascript">
     $(document).ready(function () {
+
+      @foreach (Auth::user()->widgetSharings as $sharing)
+        alert('{{ $sharing->srcUser->name }} wants to share a {{ $sharing->widget->descriptor->name }} widget you.');
+      @endforeach
 
       var baseUrl = "/img/demonstration/";
       var ext = ".png";
@@ -239,10 +243,10 @@
 
       // Shows the relevant widget descriptors.
       function showWidgetDescription(descriptorType) {
-        
+
         $('[data-descriptor-type]').hide();
         $('[data-descriptor-type="' + descriptorType + '"]').removeClass('not-visible').show();
-        
+
         // Change the form url
         descriptorID = $('[data-descriptor-type="' + descriptorType + '"]').attr('data-descriptor-id')
         descriptorUrl = "{{ route('widget.doAdd', 'descriptorID') }}".replace('descriptorID', descriptorID);
@@ -281,7 +285,7 @@
         // If a group was clicked, filter widgets.
         if (context == "group") {
           var group = $(this).data('group');
-          
+
           filterWidgets(group);
           selectFirstWidgetFromGroup(group);
 
@@ -298,12 +302,12 @@
 
         // Add checkmark to the clicked one.
         $(this).find('.selection-icon').first().toggleClass('fa fa-check text-success pull-right');
-   
+
       });
 
       // Listen clicks on the #connect-widget-submit button.
       // Displays modal and redirects to connect service page.
-      $('#connect-widget-submit').click(function(e){     
+      $('#connect-widget-submit').click(function(e){
         e.preventDefault()
         bootbox.confirm({
           title: 'Fasten seatbelts, redirection ahead',
@@ -313,7 +317,7 @@
                 // Using from extension, redirect in new tab
                 if (window!=window.top) {
                   window.open(url,'_blank').focus();
-                  
+
                 // Using website, redirect on same tab
                 } else {
                   window.location = url;
@@ -332,7 +336,7 @@
        $('#add_to_dashboard_select > select').change(function() {
           // Get items
           inputDiv  = $('#add_new_dashboard_input');
-          
+
           // Switch items
           if ($(this).find("option:selected").val() == 0) {
             inputDiv.removeClass('hidden').fadeIn();

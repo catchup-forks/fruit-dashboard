@@ -52,7 +52,7 @@
               <div class="item">
             @endif
           @endif
-          
+
           @if($dashboard->is_locked)
           <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
             <div class="drop-shadow">
@@ -66,7 +66,7 @@
             </div>
           </div>
           @endif
-          
+
           <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
           </div> <!-- /.fill -->
 
@@ -105,6 +105,34 @@
     @endif
 
 </div> <!-- /#dashboards -->
+
+<!-- Share widget data -->
+<div class="modal fade" id="share-widget-modal" tabindex="-1" role="dialog" aria-labelledby="share-widget-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="share-widget-label">Share widget</h4>
+      </div>
+      <form id="share-widget-form" class="form-horizontal">
+        <div class="modal-body">
+            <div id="email-addresses-group" class="form-group">
+              <label for="new-dashboard" class="col-sm-5 control-label">Type the email addresses of people you want to share.</label>
+              <div class="col-sm-7">
+                <input id="email-addresses" type="text" class="form-control" />
+                <input id="widget-id" type="hidden" />
+              </div> <!-- /.col-sm-7 -->
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Share</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 @stop
 
 @section('pageScripts')
@@ -119,7 +147,7 @@
   <!-- Hopscotch scripts -->
   @include('dashboard.dashboard-hopscotch-scripts')
   <!-- /Hopscotch scripts -->
-  
+
   <!-- Widget general scripts -->
   @include('widget.widget-general-scripts')
   <!-- /Widget general scripts -->
@@ -130,6 +158,43 @@
     $('.carousel').carousel({
       interval: false // stops the auto-cycle
     })
+
+    function showShareModal(widgetId) {
+     $('#share-widget-modal').modal('show');
+     $('#share-widget-modal').on('shown.bs.modal', function (params) {
+        $("#widget-id").val(widgetId);
+        $('#email-addresses').focus()
+      });
+    }
+
+    $(document).ready(function () {
+      // Share widget submit.
+      $('#share-widget-form').submit(function() {
+        var emailAddresses = $('#email-addresses').val();
+        var widgetId = $('#widget-id').val();
+
+        if (emailAddresses.length > 0 && widgetId > 0) {
+          $.ajax({
+            type: "post",
+            data: {'email_addresses': emailAddresses},
+            url: "{{ route('widget.share', 'widget_id') }}".replace("widget_id", widgetId),
+           }).done(function () {
+            /* Ajax done. Widget shared. Resetting values. */
+            $('#email-addresses-group').removeClass('has-error');
+            $("#share-widget-modal").modal('hide');
+
+            /* Resetting values */
+            $('#email-addresses').val('');
+            $('#widget-id').val(0);
+           });
+          return
+        } else {
+          $('#email-addresses-group').addClass('has-error');
+          event.preventDefault();
+        }
+
+      });
+    });
   </script>
   <!-- /Dashboard etc scripts -->
 @append

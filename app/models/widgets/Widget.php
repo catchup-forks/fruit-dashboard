@@ -53,6 +53,9 @@ class Widget extends Eloquent
     public static function turnOffBrokenWidgets($user) {
         foreach ($user->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
+            if ($widget instanceof SharedWidget) {
+                continue;
+            }
             $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
             try {
                 $view->render();
@@ -300,8 +303,9 @@ class Widget extends Eloquent
         $this->settings = json_encode($settings);
 
         if ($commit) {
-            $this->save();
+            $this->save(array('skip_settings' => TRUE));
         }
+
     }
 
    /* -- Eloquent overridden methods -- */
@@ -326,11 +330,13 @@ class Widget extends Eloquent
         }
 
         // Saving settings by option.
-        $commit = FALSE;
-        if (is_null($this->settings)) {
-            $commit = TRUE;
+        if ( ! array_key_exists('skip_settings', $options) || $options['skip_settings'] == FALSE) {
+            $commit = FALSE;
+            if (is_null($this->settings)) {
+                $commit = TRUE;
+            }
+            $this->saveSettings(array(), $commit);
         }
-        $this->saveSettings(array(), $commit);
 
         /* Saving settings.
          * Please note, that the save won't hit the db,
