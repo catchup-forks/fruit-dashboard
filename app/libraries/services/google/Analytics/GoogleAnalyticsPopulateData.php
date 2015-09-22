@@ -111,7 +111,7 @@ class GoogleAnalyticsPopulateData
             foreach ($metrics as $metric=>$dailyData) {
                 /* Getting daily data. */
                 $currentDateMetric = array();
-                $currentDateMetric['timestamp'] = $end->addDay()->getTimestamp();
+                $currentDateMetric['timestamp'] = $end->getTimestamp();
                 foreach ($dailyData as $profile=>$value) {
                     $currentDateMetric[$profile] = $value[0];
                 }

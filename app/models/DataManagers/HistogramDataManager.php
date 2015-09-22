@@ -125,7 +125,6 @@ abstract class HistogramDataManager extends DataManager
         $histogram = array();
         $first = TRUE;
         $sampleEntries = array();
-        $previousEntryTime = null;
 
         foreach ($fullHistogram as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
@@ -141,27 +140,16 @@ abstract class HistogramDataManager extends DataManager
             }
             if ($recording) {
                 /* Frequency conditions. */
-                if ($first || $entry == $last) {
-                    array_push($sampleEntries, $entry);
+                if (isset($previousEntry)) {
+                    $previousEntryTime = Carbon::createFromTimestamp($previousEntry['timestamp']);
+                    if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
+                        /* Passing new element to the array. */
+                        $previousEntry['datetime'] = $previousEntryTime->format($dateFormat);
+                        array_push($histogram, $previousEntry);
+                    }
                 }
-                if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
-                    Log::info($sampleEntries);
-                    /* Passing new element to the array. */
-                    $newEntry = static::getAverageValues($sampleEntries);
-                    $newEntry['datetime'] = $entryTime->format($dateFormat);
-                    array_push($histogram, $newEntry);
-                    $sampleEntries = array();
-                }
-
-                /* Adding to samples. */
-                array_push($sampleEntries, $entry);
-
-                /* Saving previous time. */
-                $previousEntryTime = $entryTime;
-
-                if ($first) {
-                    $first = FALSE;
-                }
+                /* Saving previous entry. */
+                $previousEntry = $entry;
             }
 
             if (count($histogram) >= static::$entries) {
@@ -178,15 +166,12 @@ abstract class HistogramDataManager extends DataManager
      * Checks if the entry is a breakpoint in the histogram.
      * --------------------------------------------------
      * @param Carbon $entryTime
-     * @param Carbon/null $previousEntryTime
+     * @param Carbon $previousEntryTime
      * @param string $resolution
      * @return boolean
      * --------------------------------------------------
     */
     private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
-        if (is_null($previousEntryTime)) {
-            return TRUE;
-        }
         if ($resolution == 'minutely') {
             return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
         } else if ($resolution == 'hourly') {
