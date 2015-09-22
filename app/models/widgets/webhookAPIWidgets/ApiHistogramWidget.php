@@ -20,8 +20,8 @@ class ApiHistogramWidget extends MultipleHistogramWidget
    );
 
     /* The settings to setup in the setup-wizard. */
-    private static $APISetupFields = array('name');
-    private static $APICriteriaFields = array();
+    private static $APISetupFields = array('name', 'url');
+    private static $APICriteriaFields = array('url');
 
     /* -- Choice functions -- */
     public function resolution() {
@@ -67,26 +67,18 @@ class ApiHistogramWidget extends MultipleHistogramWidget
         return array_merge(parent::getCriteriaFields(), self::$APICriteriaFields);
      }
 
-     // /**
-     //  * collectData
-     //  * --------------------------------------------------
-     //  * Overrides collectData beacuse we are saving the widget
-     //  *      data elsewhere (in API controller).
-     //  * --------------------------------------------------
-     //  */
-     // public function collectData() {
-     //     return TRUE;
-     // }
-
-     // /*
-     //  * dataExists
-     //  * Checking if datamanager exists
-     //  * --------------------------------------------------
-     //  * @return boolean
-     //  * --------------------------------------------------
-     // */
-     // public function dataExists() {
-     //     return  ! (is_null($this->dataManager()));
-     // }
+    /**
+     * getWidgetApiUrl
+     * Returns the POST url for the widget
+     * --------------------------------------------------
+     * @return (string) ($url) The url
+     * --------------------------------------------------
+     */
+     public function getWidgetApiUrl() {
+        return route('api.post', 
+                    array(SiteConstants::getLatestApiVersion(),
+                          $this->user()->api_key,
+                          $this->id));
+     }
 }
 ?>

@@ -9,13 +9,13 @@ Route::group([
     ], function() {
 
     Route::any('{api_version}/{api_key}/{widgetID}', [
-        'as'     => 'api.post-data',
-        'uses'   => 'APIController@anyPostData'
+        'as'     => 'api.post',
+        'uses'   => 'APIController@postData'
     ]);
 
-    Route::any('example', [
+    Route::get('test/{widgetID}', [
         'before' => 'auth',
-        'as'     => 'api.example',
-        'uses'   => 'APIController@anyExample'
+        'as'     => 'api.test',
+        'uses'   => 'APIController@getTest'
     ]);
 });

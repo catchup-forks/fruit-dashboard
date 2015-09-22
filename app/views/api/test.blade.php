@@ -1,7 +1,7 @@
 @extends('meta.base-user')
 
   @section('pageTitle')
-    API Example
+    API Test
   @stop
 
   @section('pageStylesheet')
@@ -13,18 +13,9 @@
       <div class="row">
         <div class="col-md-12">
           <div class="panel panel-default panel-transparent">
-            <div class="panel-body text-center">
-              <h1>Your base API URL</h1>
-              <p>{{ URL::route('api.post-data', array($apiVersion, $apiKey, $widgetID)) }}</p>
-            </div> <!-- /.panel-body -->
-          </div> <!-- /.panel -->
-        </div> <!-- /.col-md-6 -->
-      </div> <!-- /.row -->
-
-      <div class="row">
-        <div class="col-md-12">
-          <div class="panel panel-default panel-transparent">
             <div class="panel-body">
+              <h2 class="text-center">Send data to your API widget</h2>
+              <br>
 
               {{ Form::open(array(
                   'id'    => 'example-post-form',
@@ -35,7 +26,7 @@
                     'class' => 'col-sm-3 control-label' )) }}
 
                   <div class="col-sm-6">
-                    {{ Form::text('url', URL::route('api.post-data', array($apiVersion, $apiKey, $widgetID)), array(
+                    {{ Form::text('url', $url, array(
                       'class' => 'form-control' )) }}
                   </div> <!-- /.col-sm-6 -->
                 </div> <!-- /.form-group -->
@@ -46,9 +37,17 @@
 
                   <div class="col-sm-6">
                     {{ Form::textarea('json', $defaultJSON, array(
-                      'class' => 'form-control' )) }}
+                      'class' => 'form-control',
+                      'rows'  => 6  )) }}
                   </div> <!-- /.col-sm-6 -->
                 </div> <!-- /.form-group -->
+
+                <div id="api-notification" class="text-center not-visible">
+                  <div class="list-group ">
+                    <h4 class="list-group-item-heading"></h4>
+                    <p class="list-group-item-text"></p>
+                  </div>
+                </div> <!-- /.api-notification -->
 
                 <div class="col-sm-12">
                   {{ Form::submit('Send data' , array(
@@ -57,22 +56,10 @@
                 </div> <!-- /.col-sm-2 -->
 
               {{ Form::close() }}
+            
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
         </div> <!-- /.col-md-12 -->
-      </div> <!-- /.row -->
-
-      <div class="row">
-        <div class="col-md-12">
-          <div class="panel panel-default panel-transparent">
-            <div class="panel-body text-center">
-              <div id="api-notification" class="list-group hidden">
-                <h4 class="list-group-item-heading"></h4>
-                <p class="list-group-item-text"></p>
-              </div>
-            </div> <!-- /.panel-body -->
-          </div> <!-- /.panel -->
-        </div> <!-- /.col-md-6 -->
       </div> <!-- /.row -->
 
     </div> <!-- /.container -->
@@ -92,6 +79,21 @@
       // Change button text while sending
       submitButton.button('loading');
 
+      // Check the JSON
+      try {
+          jQuery.parseJSON(postData.replace(/\'/g,'"'))
+      }
+      catch(err) {
+          // Add notification
+          notificationBox.find('h4').text('Error');
+          notificationBox.find('p').text("Your data cannot be parsed in JSON format.");
+          notificationBox.fadeIn();
+          // Reset button
+          submitButton.button('reset');
+
+          return false;
+      }
+
       // Call ajax function
       $.ajax({
         type: "POST",
@@ -99,21 +101,27 @@
         url: url,
              data: jQuery.parseJSON(postData.replace(/\'/g,'"')),
              success: function(data) {
-                if (data.success) {
+                if (data.status) {
+                  // Add notification
                   notificationBox.find('h4').text('Success');
-                  notificationBox.find('p').text(data.success);
-                  notificationBox.removeClass('hidden').fadeIn();
-                } else if (data.error) {
+                  notificationBox.find('p').text(data.message);
+                  notificationBox.fadeIn();
+                } else {
+                  // Add notification
                   notificationBox.find('h4').text('Error');
-                  notificationBox.find('p').text(data.error);
-                  notificationBox.removeClass('hidden').fadeIn();
+                  notificationBox.find('p').text(data.message);
+                  notificationBox.fadeIn();
                 };
 
                 // Reset button
                 submitButton.button('reset');
              },
              error: function(){
-                easyGrowl('error', "Something went wrong, we couldn't POST your data. Please try again.", 3000);
+                // Add notification
+                notificationBox.find('h4').text('Error');
+                notificationBox.find('p').text("Something went wrong, we couldn't POST your data. Please try again.");
+                notificationBox.fadeIn();
+
                 // Reset button
                 submitButton.button('reset');
              }

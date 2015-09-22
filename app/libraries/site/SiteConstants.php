@@ -36,6 +36,7 @@ class SiteConstants {
         '209, 0, 157',
     );
     private static $googleAnalyticsLaunchDate = '2005-01-01';
+    private static $apiVersions = array('1.0');
 
    /**
      * ================================================== *
@@ -322,6 +323,28 @@ class SiteConstants {
      */
     public static function getGoogleAnalyticsLaunchDate() {
         return self::$googleAnalyticsLaunchDate;
+    }
+
+    /**
+     * getApiVersions
+     * --------------------------------------------------
+     * Returns the available API versions.
+     * @return (array) ($apiVersions) apiVersions
+     * --------------------------------------------------
+     */
+    public static function getApiVersions() {
+        return self::$apiVersions;
+    }
+
+    /**
+     * getLatestApiVersion
+     * --------------------------------------------------
+     * Returns the latest API version.
+     * @return (array) ($apiVersions) apiVersions
+     * --------------------------------------------------
+     */
+    public static function getLatestApiVersion() {
+        return end(self::$apiVersions);
     }
 
 } /* SiteConstants */

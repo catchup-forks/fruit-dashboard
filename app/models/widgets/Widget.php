@@ -60,7 +60,7 @@ class Widget extends Eloquent
             try {
                 $view->render();
             } catch (Exception $e) {
-                Log::error($e);
+                Log::info($e);
                 $widget->setState('setup_required');
             }
         }
@@ -357,7 +357,7 @@ class Widget extends Eloquent
         }
         foreach ($this->getSettingsFields() as $key=>$value) {
             if ( ! array_key_exists($key, $this->getSettings())) {
-            $this->setState('setup_required');
+                $this->setState('setup_required');
             }
         }
     }
