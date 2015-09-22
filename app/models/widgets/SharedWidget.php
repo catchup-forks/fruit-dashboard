@@ -35,7 +35,7 @@ class SharedWidget extends Widget
      * --------------------------------------------------
      */
     public function getRelatedWidget() {
-        $widgetId = parent::getSettings()['related_widget'];
+        $widgetId = $this->getSettings()['related_widget'];
         $widget = Widget::find($widgetId);
         if (is_null($widget)) {
             /* Related widget does not exist. */
@@ -46,22 +46,5 @@ class SharedWidget extends Widget
         return $widget->getSpecific();
     }
 
-    /**
-     * getSettings
-     * Merging the setting of this and the related widget.
-     * --------------------------------------------------
-     * @return Widget
-     * --------------------------------------------------
-     */
-    public function getSettings() {
-        if (is_null($this->getRelatedWidget())) {
-            return parent::getSettings();
-        }
-        return array_merge(parent::getSettings(), $this->getRelatedWidget()->getSettings());
-    }
-
-    public function __call($method, $args) {
-        return $this->getRelatedWidget()->{$method}($args);
-    }
 }
 ?>
