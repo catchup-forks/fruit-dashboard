@@ -238,9 +238,11 @@ class GeneralWidgetController extends BaseController {
                 return Redirect::route('widget.setup', array($newWidget->id))
                     ->with('success', 'You successfully restored the widget.');
             }
+            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
+                ->with('success', 'You successfully restored the widget.');
         }
-        return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
-            ->with('success', 'You successfully restored the widget.');
+        return Redirect::route('dashboard.dashboard')
+            ->with('error', 'Something went wrong, we couldn\'t restore your widget.');
     }
 
     /**

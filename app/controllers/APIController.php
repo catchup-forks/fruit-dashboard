@@ -12,7 +12,7 @@ class APIController extends BaseController
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    
+
     /**
      * postData
      * --------------------------------------------------
@@ -47,7 +47,7 @@ class APIController extends BaseController
         $url = $widget->getSpecific()->dataManager()->getCriteria()['url'];
 
         /* Create default JSON string */
-        $defaultJSON = 
+        $defaultJSON =
             "{\n".
             "'timestamp':" . Carbon::now()->getTimestamp(). ", \n" .
             "'Graph One': 15, \n" .
@@ -55,7 +55,7 @@ class APIController extends BaseController
             "}";
 
         /* Render view */
-        return View::make('api.test', 
+        return View::make('api.test',
                             ['url'        => $url,
                             'defaultJSON' => $defaultJSON]);
     }
@@ -66,7 +66,7 @@ class APIController extends BaseController
      *                   PRIVATE SECTION                  *
      * ================================================== *
      */
-    
+
     /**
      * handlePostData
      * --------------------------------------------------
@@ -133,7 +133,7 @@ class APIController extends BaseController
                              'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
             }
         }
-        
+
         /* Everything is ok */
         $widget->getSpecific()->dataManager()->saveData(array(Input::all()), TRUE);
         return array('status'  => TRUE,

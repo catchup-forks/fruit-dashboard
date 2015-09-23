@@ -123,8 +123,6 @@ abstract class HistogramDataManager extends DataManager
         /* If there's range, using reader. */
         $recording = TRUE;
         $histogram = array();
-        $first = TRUE;
-        $sampleEntries = array();
 
         foreach ($fullHistogram as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
@@ -146,8 +144,20 @@ abstract class HistogramDataManager extends DataManager
                         /* Passing new element to the array. */
                         $previousEntry['datetime'] = $previousEntryTime->format($dateFormat);
                         array_push($histogram, $previousEntry);
+                        if ($entry == $last) {
+                            /* There's only one element in the dataset. */
+                            $entry['datetime'] = $entryTime->format($dateFormat);
+                            array_push($histogram, $entry);
+                        }
                     }
                 }
+
+                if ($entry == $last) {
+                    /* There's only one element in the dataset. */
+                    $entry['datetime'] = $entryTime->format($dateFormat);
+                    array_push($histogram, $entry);
+                }
+
                 /* Saving previous entry. */
                 $previousEntry = $entry;
             }
@@ -249,7 +259,7 @@ abstract class HistogramDataManager extends DataManager
      * Returning only the values of the entry,
      * excluding staticFields.
      * --------------------------------------------------
-     * @param array $entriy
+     * @param array $entry
      * @return array
      * --------------------------------------------------
      */
@@ -262,8 +272,6 @@ abstract class HistogramDataManager extends DataManager
         }
         return $values;
     }
-
-
 
     /**
      * getAverageValues (buildHistogram)
