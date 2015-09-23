@@ -74,7 +74,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      * --------------------------------------------------
      */
      public function getWidgetApiUrl() {
-        return route('api.post', 
+        return route('api.post',
                     array(SiteConstants::getLatestApiVersion(),
                           $this->user()->api_key,
                           $this->id));
@@ -89,15 +89,15 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      */
      public function save(array $options=array()) {
          /* Call parent save */
-         $widget = parent::save($options);
+         parent::save($options);
 
          /* Add URL value to settings */
-         $widget->saveSettings(array(
-            'url' => $widget->getWidgetApiUrl(),
-         ));
+         $this->saveSettings(array(
+            'url' => $this->getWidgetApiUrl(),
+         ), FALSE);
 
          /* Return */
-         return $widget;
+         return parent::save();
      }
 
 }
