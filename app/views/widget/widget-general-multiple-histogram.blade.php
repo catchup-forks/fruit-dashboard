@@ -3,10 +3,7 @@
 @else
   <div class="padding text-center" id="container-{{$widget->id}}">
     <span class="text-white drop-shadow">
-      @if ($widget->descriptor->category == 'google_analytics')
-        {{ $widget->dataManager()->getProperty()->name }} -
-      @endif
-        {{ $widget->descriptor->name }}
+        {{ $widget->getSettings()['name'] }}
     </span>
   </div>
   <div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">

@@ -3,10 +3,7 @@
 @else
   <div class="padding text-center" id="container-{{ $widget->id }}">
     <span class="text-white drop-shadow">
-      @if ($widget->descriptor->category == 'facebook')
-        {{ $widget->dataManager()->getPage()->name }} -
-      @endif
-        {{ $widget->descriptor->name }}
+        {{ $widget->getSettings()['name'] }}
     </span>
     <span class="text-white drop-shadow pull-right has-margin-horizontal" id="{{$widget->id}}-value">
     @if ($widget->state == 'active')
