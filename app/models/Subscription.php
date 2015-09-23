@@ -328,13 +328,23 @@ class Subscription extends Eloquent
             /* Create new paymentmethod with the current data */
             $paymentMethodResult = Braintree_PaymentMethod::create([
                 'customerId' => $customer->id,
-                'paymentMethodNonce' => $paymentMethodNonce
+                'paymentMethodNonce' => $paymentMethodNonce,
+                'options' => [
+                    'verifyCard' => true
+                ]
             ]);
 
-            /* Update braintree customer and payment information */
-            $this->braintree_customer_id = $customer->id;
-            $this->braintree_payment_method_token = $paymentMethodResult->paymentMethod->token;
-            $this->save();
+            /* Card verification failed */
+            if (!$paymentMethodResult->success) {
+                $verification = $paymentMethodResult->creditCardVerification;
+                $result['errors'] |= TRUE;
+                $result['messages'] .= 'Sorry, your credit card cannot be verified. ' . $verification->processorResponseText;
+            } else {
+                /* Update braintree customer and payment information */
+                $this->braintree_customer_id = $customer->id;
+                $this->braintree_payment_method_token = $paymentMethodResult->paymentMethod->token;
+                $this->save();
+            }
 
             /* Return result */
             return $result;
@@ -405,6 +415,9 @@ class Subscription extends Eloquent
                 $result['errors'] |= TRUE;
                 $result['messages'] .= $error->code . ": " . $error->message . ' ';
             }
+
+            Log::info($subscriptionResult->transaction->status);
+            Log::info($subscriptionResult->transaction->status);
         }
 
         /* Return result */
