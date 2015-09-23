@@ -83,7 +83,7 @@
                 <!-- /.Update interval select -->
                 <hr>
                   {{ Form::submit('Save', array('class' => 'btn btn-primary pull-right') ) }}
-                  <a href="/" class="btn btn-link pull-right">Cancel</a>
+                  <a href="{{ route('dashboard.dashboard', ['active' => $widget->dashboard->id]) }}" class="btn btn-link pull-right">Cancel</a>
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
