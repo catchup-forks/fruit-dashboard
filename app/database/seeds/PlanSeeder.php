@@ -28,7 +28,7 @@ class PlanSeeder extends Seeder
                 'name'              => 'Premium',
                 'interval'          => 'month',
                 'interval_count'    => 12,
-                'amount'            => 9,
+                'amount'            => $_ENV['BRAINTREE_PREMIUM_PLAN_PRICE'],
                 'braintree_plan_id' => $_ENV['BRAINTREE_PREMIUM_PLAN_ID'],
                 'description'       => 
                     '<ul class="list-group">
