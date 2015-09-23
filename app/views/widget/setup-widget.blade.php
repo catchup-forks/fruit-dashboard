@@ -23,9 +23,7 @@
                   'class' => 'form-horizontal' )) }}
 
                   @foreach ($settings as $field=>$meta)
-                    @if (array_key_exists('noedit', $meta))
-                      {{ Form::hidden($field, $widget->getWidgetApiUrl(), ['class' => 'form-control']) }}
-                    @else
+                    @if (!array_key_exists('disabled', $meta))
                       <div class="form-group">
                         {{ Form::label($field, $meta['name'], array(
                             'class' => 'col-sm-3 control-label'

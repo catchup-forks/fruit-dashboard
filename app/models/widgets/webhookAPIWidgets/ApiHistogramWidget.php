@@ -7,9 +7,8 @@ class ApiHistogramWidget extends MultipleHistogramWidget
         'url' => array(
             'name'       => 'POST url',
             'type'       => 'TEXT',
-            'validation' => 'required',
             'help_text'  => 'The widget data will be posted to this url.',
-            'noedit'     => TRUE
+            'disabled'   => TRUE
         ),
         'name' => array(
             'name'       => 'Name',
@@ -80,5 +79,26 @@ class ApiHistogramWidget extends MultipleHistogramWidget
                           $this->user()->api_key,
                           $this->id));
      }
+
+     /**
+      * Save | Override to save the URL
+      * --------------------------------------------------
+      * @param array $options
+      * @return Saves the widget
+      * --------------------------------------------------
+     */
+     public function save(array $options=array()) {
+         /* Call parent save */
+         $widget = parent::save($options);
+
+         /* Add URL value to settings */
+         $widget->saveSettings(array(
+            'url' => $widget->getWidgetApiUrl(),
+         ));
+
+         /* Return */
+         return $widget;
+     }
+
 }
 ?>
