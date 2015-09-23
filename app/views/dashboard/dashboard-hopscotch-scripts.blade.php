@@ -33,7 +33,15 @@
         placement: "left",
         yOffset: -150,
         arrowOffset: 80
-      },               
+      },
+      {
+        title: "Navigation",
+        content: "You can navigate between your dashboards by clicking the sides of the page.",
+        target: document.querySelector(".carousel-control.right"),
+        placement: "left",
+        yOffset: "center",
+        arrowOffset: "center"
+      },             
       {
         title: "Settings",
         content: "More stuff here.",
@@ -48,11 +56,18 @@
     var newTour = {};
     $.extend(true, newTour, tour);
 
+    // Check if the user has more than one dashboard
+    if ($(".carousel-control")[0] == null) {
+      // POP the widget step, if there are no widgets on the dashboard
+      newTour['steps'].splice(4,1);
+    }
+    
     // Check if the dashboard has any widget
     if ($(".item.active > .gridster > ul > li")[0] == null) {
       // POP the widget step, if there are no widgets on the dashboard
       newTour['steps'].splice(1,1);
     }
+
 
     // Start tour
     hopscotch.startTour(newTour);
