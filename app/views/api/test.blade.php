@@ -38,7 +38,7 @@
                   <div class="col-sm-6">
                     {{ Form::textarea('json', $defaultJSON, array(
                       'class' => 'form-control',
-                      'rows'  => 6  )) }}
+                      'rows'  => 5  )) }}
                   </div> <!-- /.col-sm-6 -->
                 </div> <!-- /.form-group -->
 

@@ -1,10 +1,8 @@
 <?php
 
-//md5(uniqid($your_user_login, true))
-//base64_encode 
 /**
  * --------------------------------------------------------------------------
- * APIController: Handles the Fruit Dashboard API
+ * APIController: Handles the Fruit Dashboard Widget API
  * --------------------------------------------------------------------------
  */
 class APIController extends BaseController
@@ -51,7 +49,6 @@ class APIController extends BaseController
         /* Create default JSON string */
         $defaultJSON = 
             "{\n".
-            "'date':'" . Carbon::now()->toDateString(). "', \n" .
             "'timestamp':" . Carbon::now()->getTimestamp(). ", \n" .
             "'Graph One': 15, \n" .
             "'Graph Two': 40\n" .
@@ -73,7 +70,7 @@ class APIController extends BaseController
     /**
      * handlePostData
      * --------------------------------------------------
-     * @return Saves the data to the database
+     * @return Handles the POST data (url and data check)
      * --------------------------------------------------
      */
     private function handlePostData($apiVersion, $apiKey, $widgetID) {
@@ -81,22 +78,30 @@ class APIController extends BaseController
         switch ($apiVersion) {
             case '1.0':
             default:
+                /* Get user and widget */
+                $user   = User::where('api_key', $apiKey)->first();
+                $widget = Widget::where('id', $widgetID)->first();
+
                 /* Check API key */
-                if (is_null(User::where('api_key', $apiKey)->first())) {
+                if (is_null($user)) {
                     return array('status'  => FALSE,
                                  'message' => 'Your API key is invalid.');
                 }
 
                 /* Check Widget ID */
-                if (is_null(Widget::where('id', $widgetID)->first())) {
+                if (is_null($widget)) {
                     return array('status'  => FALSE,
                                  'message' => 'Your Widget ID is invalid.');
                 }
 
-                return $this->saveWidgetData(
-                            User::where('api_key', $apiKey)->first(), 
-                            Widget::where('id', $widgetID)->first()
-                       );
+                /* Check if the widget belongs to the user */
+                if ($user->id != $widget->user()->id) {
+                    return array('status'  => FALSE,
+                                 'message' => 'Your Url is invalid (api key and widget id doesn\'t match).');
+                }
+
+                /* Save widget data */
+                return $this->saveWidgetData($widget);
                 break;
         }
     }
@@ -107,13 +112,32 @@ class APIController extends BaseController
      * @return Saves the data to the database
      * --------------------------------------------------
      */
-    private function saveWidgetData($user, $widget) {
-        /* Initialize result */
-        $result = array();
+    private function saveWidgetData($widget) {
+        /* Check if timestamp exists */
+        if (Input::get('timestamp') == null) {
+            return array('status'  => FALSE,
+                         'message' => "You must provide a 'timestamp' or a 'date' attribute for your data.");
+        } else {
+            try {
+                $date = Carbon::createFromTimeStamp(Input::get('timestamp'));
+            } catch (Exception $e) {
+                return array('status'  => FALSE,
+                             'message' => "Your 'timestamp' is not a valid timestamp.");
+            }
+        }
 
-        $result['status'] = TRUE;
-        $result['message'] = 'Your data has been successfully saved.';
+        /* Check all other data */
+        foreach (Input::except('timestamp') as $key => $value) {
+            if (!is_numeric($value)) {
+                return array('status'  => FALSE,
+                             'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
+            }
+        }
+        
+        /* Everything is ok */
+        $widget->getSpecific()->dataManager()->saveData(array(Input::all()), TRUE);
+        return array('status'  => TRUE,
+                     'message' => 'Your data has been successfully saved.');
 
-        return $result;
     }
 }
