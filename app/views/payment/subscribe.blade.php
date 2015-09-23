@@ -20,7 +20,7 @@
 
                 <div class="form-actions text-center">
                   {{ Form::submit(
-                    sprintf('Subscribe to %s plan for €%u', $plan->name, $plan->amount), 
+                    sprintf('Subscribe to %s plan for $%u', $plan->name, $plan->amount), 
                     array('class' => 'btn btn-success')) }}
                 </div> <!-- / .form-actions -->
                 

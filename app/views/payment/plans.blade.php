@@ -39,7 +39,7 @@
                 @if ($plan->isFree())
                 Free
                 @else
-                <span class="fa fa-eur"></span>
+                <span class="fa fa-usd"></span>
                 {{ $plan->amount }} / month
                 @endif
               </p>
