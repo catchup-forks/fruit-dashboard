@@ -11,6 +11,12 @@ abstract class HistogramWidget extends CronWidget
             'default'    => 'daily',
             'help_text'  => 'The resolution of the chart.'
         ),
+        'name' => array(
+            'name'       => 'Name',
+            'type'       => 'TEXT',
+            'validation' => 'required',
+            'help_text'  => 'The name of the widget.'
+        ),
     );
 
     /* -- Choice functions -- */

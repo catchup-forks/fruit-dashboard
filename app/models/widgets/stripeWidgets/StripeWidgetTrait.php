@@ -12,6 +12,17 @@ trait StripeWidgetTrait
     public function getConnectorClass() {
         return 'StripeeConnector';
     }
+
+    /**
+     * getDefaultName
+     * Returning the default name of the widget.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getDefaultName() {
+        return 'Stripe - ' . $this->descriptor->name;
+    }
 }
 
 ?>

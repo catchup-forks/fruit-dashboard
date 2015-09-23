@@ -389,7 +389,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_bounce_rate'],
             array(
-                'name'        => 'Bounce rate',
+                'name'        => 'Bounce rate chart',
                 'description' => 'The percentage of single-page session (i.e., session in which the person left your property from the first page).',
                 'type'        => 'google_analytics_bounce_rate',
                 'category'    => 'google_analytics',
@@ -405,7 +405,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_sessions'],
             array(
-                'name'        => 'Sessions',
+                'name'        => 'Sessions chart',
                 'description' => 'The total number of sessions',
                 'type'        => 'google_analytics_sessions',
                 'category'    => 'google_analytics',

@@ -10,12 +10,6 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             'help_text'  => 'The widget data will be posted to this url.',
             'disabled'   => TRUE
         ),
-        'name' => array(
-            'name'       => 'Name',
-            'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The name of the chart.'
-        ),
    );
 
     /* The settings to setup in the setup-wizard. */

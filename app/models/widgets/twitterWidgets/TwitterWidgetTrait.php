@@ -12,6 +12,17 @@ trait TwitterWidgetTrait
     public function getConnectorClass() {
         return 'TwitterConnector';
     }
+
+    /**
+     * getDefaultName
+     * Returning the default name of the widget.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getDefaultName() {
+        return 'Twitter - ' . $this->descriptor->name;
+    }
 }
 
 ?>

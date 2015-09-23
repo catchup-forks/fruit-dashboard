@@ -74,14 +74,25 @@ trait FacebookWidgetTrait
      * @throws FacebookNotConnected
      * --------------------------------------------------
      */
-    protected function getPage() {
+    public function getPage() {
         $pageId = $this->getSettings()['page'];
-        $page = $this->user()->googleAnalyticsProperties()->where('id', $pageId);
+        $page = $this->user()->facebookPages()->where('id', $pageId)->first();
         /* Invalid page in DB. */
         if (is_null($page)) {
             return $this->user()->facebookPages()->first();
         }
         return $page;
+    }
+
+    /**
+     * getDefaultName
+     * Returning the default name of the widget.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getDefaultName() {
+        return $this->getPage()->name . ' - ' . $this->descriptor->name;
     }
 }
 

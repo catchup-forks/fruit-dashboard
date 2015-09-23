@@ -73,14 +73,25 @@ trait GoogleAnalyticsWidgetTrait
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
      */
-    protected function getProperty() {
+    public function getProperty() {
         $propertyId = $this->getSettings()['property'];
-        $property = $this->user()->googleAnalyticsProperties->where('id', $propertyId);
+        $property = $this->user()->googleAnalyticsProperties()->where('id', $propertyId)->first();
         /* Invalid property in DB. */
         if (is_null($property)) {
             return $this->user()->googleAnalyticsProperties()->first();
         }
         return $property;
+    }
+
+    /**
+     * getDefaultName
+     * Returning the default name of the widget.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getDefaultName() {
+        return $this->getProperty()->name . ' - ' . $this->descriptor->name;
     }
 }
 
