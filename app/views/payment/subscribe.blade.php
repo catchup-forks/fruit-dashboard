@@ -19,16 +19,15 @@
                   <div id="payment-form"></div>
 
                 <div class="form-actions text-center">
-                  {{ Form::submit(
-                    sprintf('Subscribe to %s plan for $%u', $plan->name, $plan->amount), 
-                    array('class' => 'btn btn-success')) }}
+                  <p>Subscribe to {{ $plan->name }} plan for <i class="fa fa-{{ $plan->braintree_merchant_currency }}"></i>{{ $plan->amount }}</p>
+                  {{ Form::submit('Subscribe', array('class' => 'btn btn-success')) }}
                 </div> <!-- / .form-actions -->
                 
                 {{ Form::close() }}
                 </form>
               </div> <!-- /.panel-footer -->
               <div class="panel-footer text-center">
-                We process your payment using Braintree / Paypal.<br>
+                We process your payment using Braintree.<br>
                 You will be charged the same day every month. <br>
                 You can cancel any time.
               </div> <!-- /.panel-footer -->

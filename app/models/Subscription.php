@@ -385,6 +385,7 @@ class Subscription extends Eloquent
         /* Create Braintree subscription */
         $subscriptionResult = Braintree_Subscription::create([
           'paymentMethodToken' => $this->braintree_payment_method_token,
+          'merchantAccountId' => $newPlan->braintree_merchant_account_id,
           'planId' => $newPlan->braintree_plan_id
         ]);
 
