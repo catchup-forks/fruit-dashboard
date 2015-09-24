@@ -270,6 +270,9 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
     private static final function getEntryValues($entry) {
+        if (! is_array($entry)) {
+            return $entry;
+        }
         $values = array();
         foreach ($entry as $key=>$value) {
             if ( ! in_array($key, static::$staticFields)) {
@@ -362,11 +365,14 @@ abstract class HistogramDataManager extends DataManager
      * getEntryTime
      * returning the time from an entry  (collectData())
      * --------------------------------------------------
-     * @param array $entry
+     * @param array/float $entry
      * @return Carbon
      * --------------------------------------------------
      */
     private static final function getEntryTime($entry) {
+        if ( ! is_array($entry)) {
+            return Carbon::now();
+        }
         if (array_key_exists('timestamp', $entry)) {
             try {
                 return Carbon::createFromTimestamp($entry['timestamp']);
