@@ -63,7 +63,7 @@ class APIController extends BaseController
             "}";
 
         /* Render view */
-        return View::make('api.test',
+        return View::make('api.api-test',
                             ['url'         => $url,
                              'defaultJSON' => $defaultJSON,
                              'toDashboard' => $widget->dashboard->id]);
@@ -149,4 +149,4 @@ class APIController extends BaseController
                      'message' => 'Your data has been successfully saved.');
 
     }
-}
+} /* APIController */
