@@ -21,15 +21,14 @@
                 {{ Form::open(array(
                     'id'    => 'notifiaction-post-form',
                     'class' => 'form-horizontal' )) }}
-                    <h3 class='text-center'>{{ $notification->type }}</h3>
+                    <h3 class='text-center'>{{ ucwords($notification->type) }}</h3>
 
                     <div class="form-group">
                       {{ Form::label('address', 'Address', array(
                         'class' => 'col-sm-3 control-label' )) }}
 
                       <div class="col-sm-6">
-                        {{ Form::text('address', $notification->address, 
-                            array('class' => 'form-control')) }}                      
+                        <p class="form-control static">{{ $notification->address }}</p>                  
                       </div> <!-- /.col-sm-6 -->
 
                       <div class="col-sm-3">

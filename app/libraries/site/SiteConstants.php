@@ -23,6 +23,7 @@ class SiteConstants {
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
+    private static $skipCategoriesInNotification = array('personal');
     private static $chartJsColors = array(
         '77, 255, 121',
         '255, 121, 77',
@@ -345,6 +346,17 @@ class SiteConstants {
      */
     public static function getLatestApiVersion() {
         return end(self::$apiVersions);
+    }
+
+    /**
+     * getSkippedCategoriesInNotification
+     * --------------------------------------------------
+     * Returns the skipped categories in notifications.
+     * @return (array) ($skipCategoriesInNotification) apiVersions
+     * --------------------------------------------------
+     */
+    public static function getSkippedCategoriesInNotification() {
+        return self::$skipCategoriesInNotification;
     }
 
 } /* SiteConstants */
