@@ -147,6 +147,9 @@ body {
 .gridster ul li {
   cursor: default;
 }
+.gridster-player {
+  overflow-y: scroll;
+}
 .can-hover:hover,
 .hovered {
   background: #e6e6e6;
@@ -176,6 +179,15 @@ body {
   font-family: FontAwesome;
   color: #ffffff;
   text-shadow: 1px -1px 3px #141414;
+}
+.widget-inner {
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+}
+.reminder-text {
+  padding-top: 5px;
+  margin-right: 25px;
+  margin-left: 25px;
 }
 .quote p {
   line-height: 1em;
@@ -286,6 +298,9 @@ input.greetings-name:focus {
 .has-padding {
   padding: 5px;
 }
+.text-shadow {
+  text-shadow: 1px 1px 3px #141414;
+}
 .chart {
   margin: 5px;
   background-color: #ffffff;
@@ -304,11 +319,13 @@ input.greetings-name:focus {
 .chart-name {
   font-size: 110%;
   color: #ffffff;
+  text-shadow: 1px 1px 3px #141414;
 }
 .chart-value {
   font-weight: 800;
   font-size: 120%;
   color: #4dff79;
+  text-shadow: 1px 1px 3px #141414;
 }
 .chart-diff-data {
   position: absolute;
@@ -332,6 +349,38 @@ input.greetings-name:focus {
 .chart-diff-dimension {
   font-size: 90%;
   margin-top: -3px;
+}
+blockquote.twitter-tweet {
+  display: inline-block;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+  font-family: "Helvetica Neue", Roboto, "Segoe UI", Calibri, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 14px;
+  border-color: #eee #ddd #bbb;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  margin: 5px 20px 5px 5px;
+  padding: 4px 12px 12px 12px;
+  max-width: 468px;
+}
+blockquote.twitter-tweet p {
+  font-weight: normal;
+  line-height: 14px;
+  margin-bottom: 5px;
+}
+blockquote.twitter-tweet a {
+  color: inherit;
+  font-weight: normal;
+  text-decoration: none;
+  outline: 0 none;
+}
+blockquote.twitter-tweet a:hover,
+blockquote.twitter-tweet a:focus {
+  text-decoration: underline;
 }
 html,
 body {

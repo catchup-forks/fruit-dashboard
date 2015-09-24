@@ -109,6 +109,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
+        Log::info($groupedData);
         return array('datasets' => array_values($groupedData), 'datetimes' => $datetimes);
     }
 

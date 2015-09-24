@@ -1,3 +1,5 @@
-<div id="reminder-wrapper">
-    <h3 id="reminder-{{ $widget->id }}" class="no-margin text-white drop-shadow text-center">{{ $widget->getSettings()['text'] }}</h3>
+<div id="reminder-wrapper" class="widget-inner text-center fill">
+  <p id="reminder-{{ $widget->id }}" class="reminder-text">
+    {{ $widget->getSettings()['text'] }}
+  </p> <!-- /#reminder- -->
 </div>

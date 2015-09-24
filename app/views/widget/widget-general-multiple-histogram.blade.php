@@ -1,9 +1,40 @@
-<div class="padding text-center" id="container-{{$widget->id}}">
-  <span class="text-white drop-shadow">
-      {{ $widget->getSettings()['name'] }}
-  </span>
-</div>
-<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
+<div class="chart-data">
+  <div class="chart-name">
+    {{ $widget->getSettings()['name'] }}
+  </div> <!-- /.chart-name -->
+  
+  {{--  FOR MULTIPLE HISTOGRAM THERE IS NO SINGLE VALUE
+  <div class="chart-value">
+    @if ($widget->state == 'active')
+      {{ $widget->getLatestData()['value'] }}
+    @endif  
+  </div> <!-- /.chart-value -->
+  --}}
+
+</div> <!-- /.chart-data -->
+
+<div class="chart-diff-data text-center">
+
+  @if (array_values($widget->dataManager()->compare('days', 1))[0] >= 0)
+    <div class="chart-diff text-success">
+      <span class="fa fa-arrow-up chart-diff-icon"> </span>
+
+  @else 
+    <div class="chart-diff text-danger">
+      <span class="fa fa-arrow-down chart-diff-icon"> </span>
+
+  @endif
+
+    <span class="chart-diff-value">{{ array_values($widget->dataManager()->compare('days', 1))[0] }}</span>
+  </div> <!-- /.chart-diff -->
+
+
+  <div class="chart-diff-dimension">
+    <small>(1 day ago)</small>
+  </div> <!-- /.chart-diff-dimension -->
+</div> <!-- /.chart-diff-data -->
+
+<div id="{{ $widget->id }}-chart-container">
   <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 

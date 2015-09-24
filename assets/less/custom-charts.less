@@ -15,6 +15,10 @@
   padding: @padding;
 }
 
+.text-shadow {
+  text-shadow: 1px 1px 3px #141414;
+}
+
 .chart {
   margin: @margin/5;
   .background-white;
@@ -32,12 +36,14 @@
 .chart-name {
   font-size: 110%;
   color: @white;
+  .text-shadow;
 }
 
 .chart-value {
   font-weight: 800;
   font-size: 120%;
   color: @chart-color;
+  .text-shadow;
 }
 
 .chart-diff-data {

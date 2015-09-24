@@ -101,12 +101,12 @@ abstract class HistogramDataManager extends DataManager
     public function getHistogram($range, $resolution) {
         /* Calling proper method based on resolution. */
         switch ($resolution) {
-            case 'minutely':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
-            case 'hourly':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
-            case 'daily':   return $this->buildHistogram($range, $resolution, 'M-d'); break;
-            case 'weekly':  return $this->buildHistogram($range, $resolution, 'W'); break;
-            case 'monthly': return $this->buildHistogram($range, $resolution, 'Y-M'); break;
-            case 'yearly':  return $this->buildHistogram($range, $resolution, 'Y'); break;
+            case 'minutes':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
+            case 'hours':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
+            case 'days':   return $this->buildHistogram($range, $resolution, 'M-d'); break;
+            case 'weeks':  return $this->buildHistogram($range, $resolution, 'W'); break;
+            case 'months': return $this->buildHistogram($range, $resolution, 'Y-M'); break;
+            case 'years':  return $this->buildHistogram($range, $resolution, 'Y'); break;
             default: return $this->buildHistogram($range, $resolution, 'd'); break;
         }
     }
@@ -188,17 +188,17 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
     */
     private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
-        if ($resolution == 'minutely') {
+        if ($resolution == 'minutes') {
             return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
-        } else if ($resolution == 'hourly') {
+        } else if ($resolution == 'hours') {
             return $entryTime->format('Y-m-d h') !== $previousEntryTime->format('Y-m-d h');
-        } else if ($resolution == 'daily') {
+        } else if ($resolution == 'days') {
             return ! $entryTime->isSameDay($previousEntryTime);
-        } else if ($resolution == 'weekly') {
+        } else if ($resolution == 'weeks') {
             return $entryTime->format('Y-W') !== $previousEntryTime->format('Y-W');
-        } else if ($resolution == 'monthly') {
+        } else if ($resolution == 'months') {
             return $entryTime->format('Y-m') !== $previousEntryTime->format('Y-m');
-        } else if ($resolution == 'yearly') {
+        } else if ($resolution == 'years') {
             return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
         return FALSE;
@@ -270,6 +270,9 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
     private static final function getEntryValues($entry) {
+        if (! is_array($entry)) {
+            return $entry;
+        }
         $values = array();
         foreach ($entry as $key=>$value) {
             if ( ! in_array($key, static::$staticFields)) {
@@ -362,11 +365,14 @@ abstract class HistogramDataManager extends DataManager
      * getEntryTime
      * returning the time from an entry  (collectData())
      * --------------------------------------------------
-     * @param array $entry
+     * @param array/float $entry
      * @return Carbon
      * --------------------------------------------------
      */
     private static final function getEntryTime($entry) {
+        if ( ! is_array($entry)) {
+            return Carbon::now();
+        }
         if (array_key_exists('timestamp', $entry)) {
             try {
                 return Carbon::createFromTimestamp($entry['timestamp']);
