@@ -10,8 +10,8 @@
   @section('pageContent')
 
 
-  <div class="container vertical-center">
-    <div class="row not-visible">
+  <div class="container">
+    <div class="row not-visible margin-top">
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
@@ -31,7 +31,7 @@
                 @endif>
                   <div class="panel panel-default">
                     <div class="panel-body text-center">
-                      {{ HTML::image('img/logos/'.$service['name'].'.png', $service['name'], array('class' => 'img-responsive img-rounded')) }}
+                      {{ HTML::image('img/logos/'.$service['name'].'.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
 
                       @if(Auth::user()->isServiceConnected($service['name']))
 

@@ -1,7 +1,7 @@
 @extends('meta.base-user')
 
   @section('pageTitle')
-    Social connections
+    Web Analytics connections
   @stop
 
   @section('pageStylesheet')
@@ -10,13 +10,13 @@
   @section('pageContent')
 
 
-  <div class="container vertical-center">
-    <div class="row not-visible">
+  <div class="container">
+    <div class="row not-visible margin-top">
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
             <h1 class="text-center">
-              Connect your social accounts
+              Connect your web analytics accounts
             </h1>
             
             <div class="row margin-top">
@@ -31,7 +31,8 @@
                 @endif>
                   <div class="panel panel-default">
                     <div class="panel-body text-center">
-                      {{ HTML::image('img/logos/'.$service['name'].'.png', $service['name'], array('class' => 'img-responsive img-rounded')) }}
+                      {{-- FIXME service name contains underscore --}}
+                      {{ HTML::image('img/logos/analytics.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
 
                       @if(Auth::user()->isServiceConnected($service['name']))
 
