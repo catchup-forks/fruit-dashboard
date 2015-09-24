@@ -9,7 +9,7 @@
 
     <div class="dropdown position-tr-sm">
       <a id="{{ $widget->id }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span class="fa fa-bars drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
+        <span class="fa fa-bars drop-shadow text-white color-hovered display-hovered"></span>
       </a>
       <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="{{ $widget->id }}">
         

@@ -6,7 +6,7 @@
   Chart.defaults.global.showScale = false;
   Chart.defaults.global.showTooltips = false;
   Chart.defaults.global.responsive = false;
-  Chart.defaults.global.maintainAspectRatio = false;
+  // Chart.defaults.global.maintainAspectRatio = false;
   
   // No tooltips today.
   // Chart.defaults.global.tooltipCornerRadius = 4;
@@ -130,8 +130,8 @@
 
   // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
   function reinsertCanvas(canvas) {
-    var canvasHeight = canvas.closest('div.gridster-player').height()-2*35;
-    var canvasWidth = canvas.closest('div.gridster-player').width()-2*30;
+    var canvasHeight = canvas.closest('div.gridster-player').height()-2*10;
+    var canvasWidth = canvas.closest('div.gridster-player').width()-5-30;
 
     canvasId = canvas[0].id;
     container = $("#" + canvasId + "-container");
