@@ -37,12 +37,15 @@ class SaveWidgets extends Command {
      */
     public function fire()
     {
-        foreach (Widget::all() as $widget) {
+        foreach (Widget::all() as $generalWidget) {
             try {
-                $widget->getSpecific()->save();
+                $widget = $generalWidget->getSpecific();
+                $widget->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */
                 $widget->delete();
+            } catch (Exception $e) {
+                Log::error('Error found while running widgets:save on widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
         }
     }

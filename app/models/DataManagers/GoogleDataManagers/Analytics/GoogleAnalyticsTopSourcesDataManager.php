@@ -3,11 +3,11 @@
 class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
-    private static $start = '2005-01-01';
-    private static $end = 'today';
+    private static $defaultStart = '2005-01-01';
+    private static $defaultEnd = 'today';
+    private static $defaultMaxResults = '15';
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
-    private static $maxResults = '15';
     private static $metrics = array('sessions', 'users', 'hits');
 
 
@@ -26,7 +26,16 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         return $collector->getMetrics($this->getProperty(), $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
     }
 
+    /**
+     * collectData
+     * Creating the table in the db.
+     * --------------------------------------------------
+     * @param array $options
+     * @return array
+     * --------------------------------------------------
+     */
     public function collectData($options=array()) {
+        $options = self::createOptions($options);
         /* Collecting and transforming data.*/
         $metricsData = array();
         foreach ($this->getMetric($options['start'], $options['end'], $options['max_results']) as $metric=>$data) {
@@ -44,6 +53,14 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         }
     }
 
+    /**
+     * initTable
+     * Reinitializing the table.
+     * --------------------------------------------------
+     * @param array $options
+     * @return array
+     * --------------------------------------------------
+     */
     private function initTable() {
         /* Clearing table */
         $this->clearTable();
@@ -54,4 +71,36 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
             $this->addCol(ucwords($metric));
         }
     }
+
+    /**
+     * createOptions
+     * Returning a valid options array.
+     * --------------------------------------------------
+     * @param array $iOptions
+     * @return array
+     * --------------------------------------------------
+     */
+    private static function createOptions(array $iOptions=array()) {
+        $options = array();
+        if (array_key_exists('start', $iOptions)) {
+            $options['start'] = $iOptions['start'];
+        } else {
+            $options['start'] = self::$defaultStart;
+        }
+
+        if (array_key_exists('end', $iOptions)) {
+            $options['end'] = $iOptions['end'];
+        } else {
+            $options['end'] = self::$defaultEnd;
+        }
+
+        if (array_key_exists('max_results', $iOptions)) {
+            $options['max_results'] = $iOptions['max_results'];
+        } else {
+            $options['max_results'] = self::$defaultMaxResults;
+        }
+
+        return $options;
+    }
+
 }
