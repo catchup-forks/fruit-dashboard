@@ -14,7 +14,8 @@ class Notification extends Eloquent
         'send_time',
         'send_weekday',
         'send_day',
-        'send_month'
+        'send_month',
+        'selected_widgets'
     );
 
     /* -- No timestamps -- */
@@ -61,8 +62,6 @@ class Notification extends Eloquent
      * --------------------------------------------------
      */
     private function sendEmailNotification() {
-        Log::info('Email notification triggered');
-
         /* Build Widgets data */
         $widgetsData = $this->buildWidgetsDataForEmail();
 
@@ -110,8 +109,13 @@ class Notification extends Eloquent
 
             /* Iterate through widgets */
             foreach ($dashboard->widgets as $widget) {
-                /* Skip personal widgets */
+                /* Skip not enabled widgets */
                 if (!$widget->canSendInNotification()) {
+                    continue;
+                }
+
+                /* Skip not selected widgets */
+                if (!in_array($widget->id, json_decode($this->selected_widgets))) {
                     continue;
                 }
 

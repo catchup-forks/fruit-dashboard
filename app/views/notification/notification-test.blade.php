@@ -35,12 +35,50 @@
                         <a class='btn btn-primary' href="{{ route('notification.send', [$notification->id]) }}">Send</a>
                       </div> <!-- /.col-sm-3 -->
                     </div> <!-- /.form-group -->
-
                 {{ Form::close() }}
               @endforeach
 
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
+        </div> <!-- /.col-md-12 -->
+      </div> <!-- /.row -->
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-default panel-transparent">
+            <div class="panel-body">
+              <h2 class="text-center">Selected widgets for notifications</h2>
+              <br>
+
+              @foreach ($notifications as $notification) 
+              {{ Form::open(array(
+                  'route' => array('notification.widgets', $notification->id),
+                  'id'    => 'notification-post-form',
+                  'class' => 'form-horizontal' )) }}
+                <h3 class='text-center'>{{ ucwords($notification->type) }}</h3>
+                @foreach ($notification->user->dashboards as $dashboard)
+                  <h4>Dashboard: {{ $dashboard->name }}</h4>
+                  @foreach ($dashboard->widgets as $widget)
+                    @if ($widget->canSendInNotification())
+                      <div class="checkbox">
+                        <label>
+                          @if (in_array($widget->id, json_decode($notification->selected_widgets)))
+                            <input name="widget-{{ $widget->id }}" type="checkbox" checked> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}
+                          @else
+                            <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}
+                          @endif
+                        </label>
+                      </div>
+                    @endif
+                  @endforeach  
+                @endforeach
+                  <button type="submit" class="btn btn-default">Submit</button>
+                {{ Form::close() }}
+              @endforeach
+
+            </div> <!-- /.panel-body -->
+          </div> <!-- /.panel -->
+
         </div> <!-- /.col-md-12 -->
       </div> <!-- /.row -->
 
