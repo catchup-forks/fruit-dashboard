@@ -5,7 +5,6 @@
   @stop
 
   @section('pageContent')
-
   <div class="vertical-center">
     <div class="container">
       <div class="row">
@@ -48,7 +47,9 @@
                           {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control']) }}
                         @endif
                       @endif
-                      @if (array_key_exists('help_text', $meta))
+                      @if ($errors->first($field))
+                        <p class="text-danger">{{ $errors->first($field) }}</p>
+                      @elseif (array_key_exists('help_text', $meta))
                         <p class="text-info">{{ $meta['help_text'] }}</p>
                       @endif
                     </div> <!-- /.col-sm-6 -->

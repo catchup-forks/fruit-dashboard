@@ -38,8 +38,10 @@
                           @else
                             {{ Form::text($field, $widget->getSettings()[$field], array(
                           'class' => 'form-control' )) }}
-                          @endif
-                          @if (array_key_exists('help_text', $meta))
+                            @endif
+                          @if ($errors->first($field))
+                            <p class="text-danger">{{ $errors->first($field) }}</p>
+                          @elseif (array_key_exists('help_text', $meta))
                             <p class="text-info">{{ $meta['help_text'] }}</p>
                           @endif
                         </div> <!-- /.col-sm-7 -->

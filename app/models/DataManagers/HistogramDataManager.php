@@ -23,7 +23,7 @@ abstract class HistogramDataManager extends DataManager
      * Getting the new value based on getCurrentValue()
      * --------------------------------------------------
      */
-    public function collectData() {
+    public function collectData($options=array()) {
         /* Calculating current value */
         $newData = $this->getCurrentValue();
         $today = Carbon::now();
