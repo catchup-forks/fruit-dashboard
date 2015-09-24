@@ -305,6 +305,22 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['type' => 'twitter_mentions'],
+            array(
+                'name'        => 'Mentions',
+                'description' => 'Displays your latest mentions on twitter.',
+                'type'        => 'twitter_mentions',
+                'category'    => 'twitter',
+                'is_premium'  => FALSE,
+                'number'       => 5,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
             ['type' => 'twitter_new_followers'],
             array(
                 'name'        => 'New followers chart',
