@@ -1,13 +1,13 @@
-<div class="panel-transparent panel fill">
-  <div class="panel-body fill">
-  <table border=1 class="fill" id="table-{{ $widget->id }}">
+<div class="widget-inner">
+  <table class="table table-condensed table-bordered">
     <thead>
-      <tr>
-      @foreach (array_keys($widget->dataManager()->getHeader()) as $name)
-        <th>{{ $name }}</th>
-      @endforeach
+      <tr class="active">
+        @foreach (array_keys($widget->dataManager()->getHeader()) as $name)
+          <th>{{ $name }}</th>
+        @endforeach
       </tr>
-      <tbody>
+    </thead>
+    <tbody>
       @foreach ($widget->dataManager()->getContent() as $row)
         <tr>
         @foreach ($row as $value)
@@ -15,11 +15,9 @@
         @endforeach
         </tr>
       @endforeach
-      </tbody>
-    </thead>
+    </tbody>
   </table>
-  </div>
-</div>
+</div> <!-- /.widget-inner -->
 
 @section('widgetScripts')
 <script type="text/javascript">
