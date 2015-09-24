@@ -24,6 +24,14 @@ class SiteConstants {
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
     private static $skipCategoriesInNotification = array('personal');
+    private static $startupTypes = array(
+        'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
+        'Ecommerce'    => 'Online shops selling goods to consumers.',
+        'Enterprise'   => 'Products for large enterprise customers.',
+        'Ads/Leadgen'  => 'Some users pay you to access the premium features.',
+        'Freemium'     => 'Consumer-oriented products with freemium monetization model.',
+        'Marketplaces' => 'Products that connect sellers with buyers.'
+    );
     private static $chartJsColors = array(
         '77, 255, 121',
         '255, 121, 77',

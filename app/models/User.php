@@ -62,6 +62,71 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
+     * hasUnseenWidgetSharings
+     * --------------------------------------------------
+     * Returns whether or not the user has any pending
+     * widget sharings.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function hasUnseenWidgetSharings() {
+        $sharings = $this->widgetSharings()->where('state', 'not_seen')->get();
+        if (count($sharings) > 0) {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    /**
+     * getPendingWidgetSharings
+     * --------------------------------------------------
+     * Returns whether or not the user has any pending
+     * widget sharings.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function getPendingWidgetSharings() {
+        return $this->widgetSharings()->where('state', 'not_seen')->orWhere('state', 'seen')->get();
+    }
+
+    /**
+     * checkWidgetsIntegrity
+     * --------------------------------------------------
+     * Checking the overall integrity of the user's widgets.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function checkWidgetsIntegrity() {
+        foreach ($this->widgets as $generalWidget) {
+            $generalWidget->getSpecific()->checkIntegrity();
+        }
+    }
+
+    /**
+     * turnOffBrokenWidgets
+     * --------------------------------------------------
+     * Setting all broken widget's state to setup required.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function turnOffBrokenWidgets() {
+        foreach ($this->widgets as $generalWidget) {
+            $widget = $generalWidget->getSpecific();
+            if ($widget instanceof SharedWidget) {
+                continue;
+            }
+            $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
+            try {
+                $view->render();
+            } catch (Exception $e) {
+                Log::error($e);
+                $widget->setState('setup_required');
+            }
+        }
+    }
+
+
+    /**
      * checkOrCreateDefaultDashboard
      * --------------------------------------------------
      * Checks if the user has a default dashboard, and

@@ -29,11 +29,12 @@ class WidgetSharing extends Eloquent
      * Setting the state to accepted, and creating widget.
      * --------------------------------------------------
      * @param string $state
+     * @param int $dashboardId
      * --------------------------------------------------
     */
-    public function accept() {
+    public function accept($dashboardId) {
         $this->setState('accepted');
-        $this->createSharedWidget();
+        $this->createSharedWidget($dashboardId);
     }
 
     /**
@@ -44,7 +45,7 @@ class WidgetSharing extends Eloquent
      * --------------------------------------------------
     */
     public function reject() {
-        $this->setState('rejected.');
+        $this->setState('rejected');
     }
 
     /**
@@ -52,9 +53,10 @@ class WidgetSharing extends Eloquent
      * Creating the sharedWidgetInstance
      * --------------------------------------------------
      * @param string $state
+     * @param $dashboardId
      * --------------------------------------------------
     */
-    private function createSharedWidget() {
+    private function createSharedWidget($dashboardId) {
         /* Creating settings and instance. */
         $settings = array(
             'related_widget' => $this->widget->id,
@@ -66,7 +68,10 @@ class WidgetSharing extends Eloquent
         $originalDescriptor = $this->widget->getSpecific()->descriptor;
 
         /* Associate the widget to the dashboard */
-        $dashboard = $this->user->dashboards()->first();
+        $dashboard = Dashboard::find($dashboardId);
+        if (is_null($dashboard)) {
+            $dashboard = $this->user->dashboards()->first();
+        }
         $widget->dashboard()->associate($dashboard);
 
         /* Finding position. */

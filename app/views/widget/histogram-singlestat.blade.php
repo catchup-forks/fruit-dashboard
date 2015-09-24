@@ -34,7 +34,7 @@ Widget stats
 
   <div class="row">
     <div class="col-md-12 text-center">
-      <a href="{{ URL::route('dashboard.dashboard') }}" class="btn btn-primary">Back to your dashboard</a>
+      <a href="{{ URL::route('dashboard.dashboard') }}?active={{ $widget->dashboard->id }}" class="btn btn-primary">Back to your dashboard</a>
     </div> <!-- /.col-md-12 -->
   </div> <!-- /.row -->
 

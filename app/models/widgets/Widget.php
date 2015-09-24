@@ -24,6 +24,7 @@ class Widget extends Eloquent
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
 
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -31,41 +32,26 @@ class Widget extends Eloquent
      */
 
     /**
-     * checkUserWidgetsIntegrity
-     * Checking the overall integrity of a user's widgets.
+     * getMinRows
+     * Returning the minimum rows required for the widget.
      * --------------------------------------------------
-     * @param User $user
+     * @return int
      * --------------------------------------------------
     */
-    public static function checkUserWidgetsIntegrity($user) {
-        foreach ($user->widgets as $generalWidget) {
-            $generalWidget->getSpecific()->checkIntegrity();
-        }
+    public function getMinRows() {
+        return $this->descriptor->min_rows;
     }
 
     /**
-     * turnOffBrokenWidgets
-     * Setting all broken widget's state to setup required.
+     * getMinCols
+     * Returning the minimum rows required for the widget.
      * --------------------------------------------------
-     * @param User $user
+     * @return int
      * --------------------------------------------------
     */
-    public static function turnOffBrokenWidgets($user) {
-        foreach ($user->widgets as $generalWidget) {
-            $widget = $generalWidget->getSpecific();
-            if ($widget instanceof SharedWidget) {
-                continue;
-            }
-            $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
-            try {
-                $view->render();
-            } catch (Exception $e) {
-                Log::info($e);
-                $widget->setState('setup_required');
-            }
-        }
+    public function getMinCols() {
+        return $this->descriptor->min_cols;
     }
-
 
     /**
      * canSendInNotification

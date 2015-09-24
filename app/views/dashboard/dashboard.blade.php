@@ -106,7 +106,7 @@
 
 </div> <!-- /#dashboards -->
 
-<!-- Share widget data -->
+<!-- Share widget-->
 <div class="modal fade" id="share-widget-modal" tabindex="-1" role="dialog" aria-labelledby="share-widget-label">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -176,6 +176,9 @@
     }
 
     $(document).ready(function () {
+      @if (Auth::user()->hasUnseenWidgetSharings())
+        easyGrowl('info', 'You have unseen widget sharing notifications. You can check them out <a href="{{route('widget.add')}}" class="btn btn-xs btn-primary">here</a>.', 5000)
+      @endif
       // Share widget submit.
       $('#share-widget-form').submit(function() {
         var emailAddresses = $('#email-addresses').val();

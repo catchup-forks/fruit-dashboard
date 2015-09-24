@@ -27,6 +27,15 @@
                 <h3 class="text-center">Select a group</h3>
 
                 <div class="list-group margin-top-sm">
+                  @if (count(Auth::user()->getPendingWidgetSharings()) > 0)
+                    <a href="#shared_widgets" class="list-group-item" data-selection="group" data-group="shared_widgets" data-type="shared">
+                        <small>
+                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
+                        </small>
+                        Shared widgets
+                        <span class="selection-icon"> </span>
+                    </a>
+                  @endif
 
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
@@ -68,6 +77,14 @@
                 <h3 class="text-center">Select a widget</h3>
 
                 <div class="list-group margin-top-sm not-visible">
+                  @foreach(Auth::user()->getPendingWidgetSharings() as $sharing)
+                      <span id="descriptor-{{ $sharing->widget->descriptor->id }}" class="list-group-item" data-widget="widget-{{ $sharing->widget->descriptor->type }}" data-selection="widget" data-group="shared_widgets">
+                        {{ $sharing->widget->descriptor->name }}
+                        <a href="{{ route('widget.share.accept', $sharing->id) }}" class="btn btn-success btn-xs pull-right">Accept </a>
+                        <a href="{{ route('widget.share.reject', $sharing->id) }}" class="btn btn-danger btn-xs has-margin-horizontal-sm pull-right">Reject </a>
+                        {{-- This is the span for the selection icon --}}
+                    </span>
+                  @endforeach
 
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
@@ -198,10 +215,6 @@
   <script type="text/javascript">
     $(document).ready(function () {
 
-      @foreach (Auth::user()->widgetSharings as $sharing)
-        alert('{{ $sharing->srcUser->name }} wants to share a {{ $sharing->widget->descriptor->name }} widget you.');
-      @endforeach
-
       var baseUrl = "/img/demonstration/";
       var ext = ".png";
       var url;
@@ -277,7 +290,9 @@
       // Select or deselect list-group-items by clicking.
       $('.list-group-item').click(function(e){
         // Stop the jump to behaviour.
-        e.preventDefault();
+        if ( ! $(e.target).is('a')) {
+          e.preventDefault();
+        }
 
         // Get context (group or widget).
         var context = $(this).data('selection');

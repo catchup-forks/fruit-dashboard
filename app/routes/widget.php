@@ -92,6 +92,18 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postShareWidget'
     ]);
 
+    Route::any('share/accept/{sharingId}', [
+        'before' => 'auth',
+        'as'     => 'widget.share.accept',
+        'uses'   => 'GeneralWidgetController@anyAcceptShare'
+    ]);
+
+    Route::any('share/reject/{sharingId}', [
+        'before' => 'auth',
+        'as'     => 'widget.share.reject',
+        'uses'   => 'GeneralWidgetController@anyRejectShare'
+    ]);
+
     Route::any('to-image/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.to-image',

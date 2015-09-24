@@ -3,8 +3,8 @@
      data-col="{{ $widget->getPosition()->col }}"
      data-sizex="{{ $widget->getPosition()->size_x }}"
      data-sizey="{{ $widget->getPosition()->size_y }}"
-     data-min-sizex="{{ $widget->descriptor->min_cols }}"
-     data-min-sizey="{{ $widget->descriptor->min_rows }}"
+     data-min-sizex="{{ $widget->getMinCols() }}"
+     data-min-sizey="{{ $widget->getMinRows() }}"
      class="gridster-player can-hover">
 
     <div class="dropdown position-tr-sm">
@@ -32,12 +32,14 @@
         @endif
 
         {{-- SHARE --}}
+        @if ( ! $widget instanceof SharedWidget)
         <li>
           <a href="#" id="share-{{$widget->id}}" onclick="showShareModal({{$widget->id}})">
             <span class="fa fa-eye"> </span>
             Share widget
           </a>
         </li>
+        @endif
 
         {{-- DELETE --}}
         <li>

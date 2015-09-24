@@ -255,6 +255,10 @@ class GeneralWidgetController extends BaseController {
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
+        foreach(Auth::user()->widgetSharings()->where('state', 'not_seen')->get() as $sharing) {
+            $sharing->setState('seen');
+        }
+
         /* Rendering view */
         return View::make('widget.add-widget');
     }
@@ -394,6 +398,47 @@ class GeneralWidgetController extends BaseController {
         return View::make('widget.histogram-singlestat')
             ->with('widget', $widget);
     }
+
+    /**
+     * anyAcceptShare
+     * --------------------------------------------------
+     * @param (integer) ($sharingId) The ID of the sharing
+     * @return
+     * --------------------------------------------------
+     */
+    public function anyAcceptShare($sharingId) {
+        $sharing = $this->getWidgetSharing($sharingId);
+        if ( ! is_null($sharing)) {
+            $sharing->accept(Auth::user()->dashboards()->first()->id);
+        }
+        if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
+            return Redirect::route('dashboard.dashboard');
+        }
+        /* Everything OK, return response with 200 status code */
+        return Redirect::route('widget.add');
+    }
+
+    /**
+     * anyRejectShare
+     * --------------------------------------------------
+     * @param (integer) ($sharingId) The ID of the sharing
+     * @return
+     * --------------------------------------------------
+     */
+    public function anyRejectShare($sharingId) {
+        $sharing = $this->getWidgetSharing($sharingId);
+        if ( ! is_null($sharing)) {
+            $sharing->reject();
+        }
+
+        if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
+            return Redirect::route('dashboard.dashboard');
+        }
+
+        /* Everything OK, return response with 200 status code */
+        return Redirect::route('widget.add');
+    }
+
     /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
@@ -417,6 +462,24 @@ class GeneralWidgetController extends BaseController {
             throw new WidgetDoesNotExist("Widget not found", 1);
         }
         return $widget->getSpecific();
+    }
+
+    /**
+     * getWidgetSharing
+     * --------------------------------------------------
+     * A function to return the sharing from the ID.
+     * @param (int) ($sharingId) The ID of the sharing
+     * @returns WidgetSharing
+     * --------------------------------------------------
+     */
+    private function getWidgetSharing($sharingId) {
+        $sharing = WidgetSharing::find($sharingId);
+
+        // Widget not found.
+        if ($sharing === null) {
+            return null;
+        }
+        return $sharing;
     }
 
     /**

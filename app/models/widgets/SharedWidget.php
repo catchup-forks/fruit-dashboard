@@ -19,6 +19,28 @@ class SharedWidget extends Widget
     );
 
     /**
+     * getMinRows
+     * Returning the minimum rows required for the widget.
+     * --------------------------------------------------
+     * @return int
+     * --------------------------------------------------
+    */
+    public function getMinRows() {
+        return $this->getRelatedWidget()->descriptor->min_rows;
+    }
+
+    /**
+     * getMinCols
+     * Returning the minimum rows required for the widget.
+     * --------------------------------------------------
+     * @return int
+     * --------------------------------------------------
+    */
+    public function getMinCols() {
+        return $this->getRelatedWidget()->descriptor->min_cols;
+    }
+
+    /**
      * getSettingsFields
      * Returns the SettingsFields
      * --------------------------------------------------

@@ -27,20 +27,13 @@ class DashboardController extends BaseController
         Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Checking the user's widget data integrity */
-        Widget::checkUserWidgetsIntegrity(Auth::user());
+        Auth::user()->checkWidgetsIntegrity();
 
         /* Get active dashboard, if the url contains it */
         $parameters = array();
         $activeDashboard = Request::query('active');
         if ($activeDashboard) {
             $parameters['activeDashboard'] = $activeDashboard;
-        }
-
-        /* For now doing an auto accept on all sharings. */
-        foreach (Auth::user()->widgetSharings as $sharing) {
-            if ($sharing->state != 'accepted') {
-                $sharing->accept();
-            }
         }
 
         /* Creating view */
@@ -51,7 +44,7 @@ class DashboardController extends BaseController
             return $view->render();
         } catch (Exception $e) {
             /* Error occured trying to find the widget. */
-            Widget::turnOffBrokenWidgets(Auth::user());
+            Auth::user()->turnOffBrokenWidgets();
             /* Recreating view. */
             $view = View::make('dashboard.dashboard', $parameters);
         }

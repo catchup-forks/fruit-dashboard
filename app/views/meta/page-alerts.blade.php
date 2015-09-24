@@ -20,6 +20,10 @@ function easyGrowl(type, message, durationMS) {
         growlOptions['title'] = 'Warning!';
         $.growl.warning(growlOptions);
         break;
+    case 'info':
+        growlOptions['title'] = 'Info!';
+        $.growl(growlOptions);
+        break;
     default:
         growlOptions['title'] = 'Warning!';
         $.growl.warning(growlOptions);

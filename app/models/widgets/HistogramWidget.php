@@ -98,5 +98,22 @@ abstract class HistogramWidget extends CronWidget
         return $this->dataManager()->getHistogram($range, $resolution);
     }
 
+    /**
+     * save
+     * Adding name property if not set.
+     * --------------------------------------------------
+     * @param array $options
+     * @return null
+     * --------------------------------------------------
+    */
+    public function save(array $options=array()) {
+        parent::save($options);
+        if ( ! $this->getSettings()['name'] && $this instanceof iServiceWidget) {
+            $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
+        }
+
+        return parent::save($options);
+    }
+
 }
 ?>
