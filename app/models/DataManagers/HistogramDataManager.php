@@ -30,6 +30,11 @@ abstract class HistogramDataManager extends DataManager
         } else {
             $entry = $this->getCurrentValue();
         }
+
+        if (empty($entry)) {
+            return;
+        }
+
         $entryTime = static::getEntryTime($entry);
 
         /* Getting previous values. */
@@ -153,9 +158,7 @@ abstract class HistogramDataManager extends DataManager
                             array_push($histogram, $entry);
                         }
                     }
-                }
-
-                if ($entry == $last) {
+                } else if ($entry == $last) {
                     /* There's only one element in the dataset. */
                     $entry['datetime'] = $entryTime->format($dateFormat);
                     array_push($histogram, $entry);
@@ -338,6 +341,7 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * sortHistogram
      * Sorting the array.
      * --------------------------------------------------
      * @param boolean $asc
@@ -355,6 +359,7 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * getEntryTime
      * returning the time from an entry  (collectData())
      * --------------------------------------------------
      * @param array $entry
@@ -379,6 +384,7 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * timestampSort
      * Comparing two timestamps. (buildHistogram())
      * --------------------------------------------------
      * @param array $CseZso1
