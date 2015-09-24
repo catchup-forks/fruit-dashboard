@@ -275,8 +275,8 @@ input.greetings-name:focus {
   top: -40px;
 }
 .chart {
-  background-color: #e6e6e6;
-  background-color: rgba(230, 230, 230, 0.2125);
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
   padding: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
