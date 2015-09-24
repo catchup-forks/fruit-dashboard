@@ -30,7 +30,7 @@
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
-<div id="{{ $widget->id }}-chart-container">
+<div id="{{ $widget->id }}-chart-container" class="clickable">
   <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 
@@ -90,21 +90,21 @@
 
     // Detecting clicks and drags.
     // Redirect to single stat page on click.
-    // var isDragging = false;
-    // $('#{{ $widget->id }}-chart-container')
-    // .mousedown(function() {
-    //     isDragging = false;
-    // })
-    // .mousemove(function() {
-    //     isDragging = true;
-    //  })
-    // .mouseup(function() {
-    //     var wasDragging = isDragging;
-    //     isDragging = false;
-    //     if (!wasDragging) {
-    //       window.location = "{{ route('widget.singlestat', $widget->id) }}";
-    //     }
-    // });
+    var isDragging = false;
+    $('#{{ $widget->id }}-chart-container')
+    .mousedown(function() {
+        isDragging = false;
+    })
+    .mousemove(function() {
+        isDragging = true;
+     })
+    .mouseup(function() {
+        var wasDragging = isDragging;
+        isDragging = false;
+        if (!wasDragging) {
+          window.location = "{{ route('widget.singlestat', $widget->id) }}";
+        }
+    });
 
   });
 </script>
