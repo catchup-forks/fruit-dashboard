@@ -136,6 +136,10 @@
 @stop
 
 @section('pageScripts')
+  <!-- Gridster class -->
+  <script type="text/javascript" src="lib/gridster.js"></script>
+  <!-- /Gridster class -->
+
   <!-- Gridster scripts -->
   @include('dashboard.dashboard-gridster-scripts')
   <!-- /Gridster scripts -->
