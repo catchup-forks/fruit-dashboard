@@ -92,5 +92,10 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postShareWidget'
     ]);
 
+    Route::any('to-image/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.to-image',
+        'uses'   => 'GeneralWidgetController@anySaveWidgetToImage'
+    ]);
 
 });

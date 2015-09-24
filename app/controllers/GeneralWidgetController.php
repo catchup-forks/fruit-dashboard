@@ -536,7 +536,6 @@ class GeneralWidgetController extends BaseController {
         $widget = Widget::find($widgetID);
         $emails = Input::get('email_addresses');
         if (is_null($widget) || is_null($emails)) {
-            /* Everything OK, return response with 200 status code */
             return Response::make('Bad request.', 401);
         }
 
@@ -561,6 +560,24 @@ class GeneralWidgetController extends BaseController {
 
         /* Everything OK, return response with 200 status code */
         return Response::make('Widget shared.', 200);
+    }
+
+    /**
+     * anySaveWidgetToImage
+     * --------------------------------------------------
+     * @param (integer) ($widgetID) The ID of the widget
+     * @return Saves the widget to an image, and returns it
+     * --------------------------------------------------
+     */
+    public function anySaveWidgetToImage($widgetID) {
+        $widget = Widget::find($widgetID);
+        if (is_null($widget)) {
+            /* Widget not found */
+            return Response::make('Bad request.', 401);
+        }
+
+        $image = Image::loadView('to-image.to-image-general-layout', ['widget' => $widget->getSpecific()]);
+        return $image->download('widget.png');
     }
 
 } /* GeneralWidgetController */

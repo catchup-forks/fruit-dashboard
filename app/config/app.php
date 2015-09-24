@@ -127,6 +127,9 @@ return array(
 		// Async Message Queue
 		'Barryvdh\Queue\AsyncServiceProvider',
 
+		// Snappy (Wkhtmltopdf) wrapper
+		'Barryvdh\Snappy\ServiceProvider',
+
 	),
 
 	/*
@@ -198,6 +201,8 @@ return array(
 		'Carbon'			=> 'Carbon\Carbon',
 		'GuzzleClient'		=> 'GuzzleHttp\Client',
 		'IntercomClient'	=> 'Intercom\IntercomBasicAuthClient',
+		'PDF' 				=> 'Barryvdh\Snappy\Facades\SnappyPdf',
+		'Image' 			=> 'Barryvdh\Snappy\Facades\SnappyImage',
 	),
 
 );
