@@ -30,7 +30,7 @@
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
-<div id="{{ $widget->id }}-chart-container">
+<div id="{{ $widget->id }}-chart-container" class="clickable">
   <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 
@@ -44,27 +44,32 @@
     var name = "{{ $widget->descriptor->name }}";
 
     @if ($widget->state == 'active')
-      // Active widget.
-      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach];
-      var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
-
       // Removing the canvas and redrawing for proper sizing.
       canvas = reinsertCanvas(canvas);
 
       // Calling drawer for the first time.
-      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+      var data = {
+        'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
+        'datasets': [{
+          'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
+          'color': '{{ SiteConstants::getChartJsColors()[0] }}'
+        }]
+      }
+      //var newChart = new FDChart('{{ $widget->id }}');
+      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
+        .draw({'type': 'line'}, data);
 
-      @elseif ($widget->state == 'loading')
-        // Loading widget.
-        values = [];
-        labels = [];
-        loadWidget({{$widget->id}}, function (data) {
-          histogram = updateHistogramWidget(data, canvas, name, valueSpan);
-          values = histogram['values'];
-          labels = histogram['labels'];
-          canvas = reinsertCanvas(canvas);
-        });
-      @endif
+    @elseif ($widget->state == 'loading')
+      // Loading widget.
+      values = [];
+      labels = [];
+      loadWidget({{$widget->id}}, function (data) {
+        histogram = updateHistogramWidget(data, canvas, name, valueSpan);
+        values = histogram['values'];
+        labels = histogram['labels'];
+        canvas = reinsertCanvas(canvas);
+      });
+    @endif
 
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
@@ -90,21 +95,21 @@
 
     // Detecting clicks and drags.
     // Redirect to single stat page on click.
-    // var isDragging = false;
-    // $('#{{ $widget->id }}-chart-container')
-    // .mousedown(function() {
-    //     isDragging = false;
-    // })
-    // .mousemove(function() {
-    //     isDragging = true;
-    //  })
-    // .mouseup(function() {
-    //     var wasDragging = isDragging;
-    //     isDragging = false;
-    //     if (!wasDragging) {
-    //       window.location = "{{ route('widget.singlestat', $widget->id) }}";
-    //     }
-    // });
+    var isDragging = false;
+    $('#{{ $widget->id }}-chart-container')
+    .mousedown(function() {
+        isDragging = false;
+    })
+    .mousemove(function() {
+        isDragging = true;
+     })
+    .mouseup(function() {
+        var wasDragging = isDragging;
+        isDragging = false;
+        if (!wasDragging) {
+          window.location = "{{ route('widget.singlestat', $widget->id) }}";
+        }
+    });
 
   });
 </script>

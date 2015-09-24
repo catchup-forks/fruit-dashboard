@@ -147,9 +147,6 @@ body {
 .gridster ul li {
   cursor: default;
 }
-.gridster-player {
-  overflow-y: scroll;
-}
 .can-hover:hover,
 .hovered {
   background: #e6e6e6;
@@ -183,6 +180,11 @@ body {
 .widget-inner {
   background-color: #ffffff;
   background-color: rgba(255, 255, 255, 0.47222222);
+}
+.reminder-text {
+  padding-top: 5px;
+  margin-right: 25px;
+  margin-left: 25px;
 }
 .quote p {
   line-height: 1em;

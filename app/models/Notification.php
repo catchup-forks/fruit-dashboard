@@ -14,7 +14,8 @@ class Notification extends Eloquent
         'send_time',
         'send_weekday',
         'send_day',
-        'send_month'
+        'send_month',
+        'selected_widgets'
     );
 
     /* -- No timestamps -- */
@@ -61,17 +62,16 @@ class Notification extends Eloquent
      * --------------------------------------------------
      */
     private function sendEmailNotification() {
-        Log::info('Email notification triggered');
-
         /* Build Widgets data */
         $widgetsData = $this->buildWidgetsDataForEmail();
 
         /* Send Customer IO event */
         $tracker = new CustomerIOTracker();
         $eventData = array(
-            'en' => '<TRIGGER>SendEmailNotification2',
+            'en' => '<TRIGGER>SendSummaryEmail',
             'md' => array(
-                'widgets-data' => $widgetsData,
+                'frequency' => $this->frequency,
+                'data'      => $widgetsData,
             ),
         );
         $tracker->sendEvent($eventData);
@@ -94,47 +94,48 @@ class Notification extends Eloquent
     /**
      * buildWidgetsDataForEmail
      * --------------------------------------------------
-     * @return Sends a notification in email.
+     * @return Builds the widgets data for the eamil notification
      * --------------------------------------------------
      */
     private function buildWidgetsDataForEmail() {
-        /* Build Widgets data */
-        $widgetsData = array(
-            'dashboard-1' => array(
-                'name' => 'Marketing dashboard',
-                'widgets' => array(
-                    'widget-19' => array(
-                        'url'   => 'http://code.openark.org/forge/wp-content/uploads/2010/02/mycheckpoint-dml-chart-hourly-88-b.png',
-                        'name'  => 'Fruid Dashboard Facebook Likes',
-                        'value' => 648,
-                        'diff'  => "-9%",
-                        'diff_unit' => '1 month'
-                    ),
-                    'widget-27' => array(
-                        'url'   => 'http://code.openark.org/forge/wp-content/uploads/2010/02/mycheckpoint-dml-chart-sample-88-b.png',
-                        'name'  => 'Fruid Dashboard Twitter Followers',
-                        'value' => 199,
-                        'diff'  => "+29%",
-                        'diff_unit' => '1 day'
-                    ),
-                )
-            ),
-            'dashboard-2' => array(
-                'name' => 'Custom webhooks',
-                'widgets' => array(
-                    'widget-1' => array(
-                        'url'   => 'http://howto.wired.com/mediawiki/images/Chart4.png',
-                        'name'  => 'Custom webhook - FD users',
-                        'value' => 122,
-                        'diff'  => "+1%",
-                        'diff_unit' => '1 day'
-                    ),
-                )
-            )
-        );
+        $finalData = array();
+
+        /* Iterate through dashboards */
+        foreach ($this->user->dashboards as $dashboard) {
+            $dashboardData = array(
+                'name' => $dashboard->name,
+                'widgets' => array()
+            );
+
+            /* Iterate through widgets */
+            foreach ($dashboard->widgets as $widget) {
+                /* Skip not enabled widgets */
+                if (!$widget->canSendInNotification()) {
+                    continue;
+                }
+
+                /* Skip not selected widgets */
+                if (!in_array($widget->id, json_decode($this->selected_widgets))) {
+                    continue;
+                }
+
+                $widgetData = array(
+                    'url'   => 'http://code.openark.org/forge/wp-content/uploads/2010/02/mycheckpoint-dml-chart-hourly-88-b.png',
+                    'name'  => $widget->getSettings()['name'],
+                );
+
+                /* Append widget data to dashboard data */
+                array_push($dashboardData['widgets'], $widgetData);
+            }
+
+            /* Append dashboard data to final data if there are enabled widgets */
+            if (count($dashboardData['widgets'])) {
+                array_push($finalData, $dashboardData);
+            }
+        }
 
         /* Return in JSON */
-        return $widgetsData;
+        return $finalData;
     }
 
 }

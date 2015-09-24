@@ -50,6 +50,38 @@ class NotificationController extends BaseController
     }
 
     /**
+     * postWidgets
+     * --------------------------------------------------
+     * @param (integer) ($notificationId) The notification id
+     * @return Enables / disables widgets in the notification
+     * --------------------------------------------------
+     */
+    public function postWidgets($notificationId) {
+        /* Get the requested notification */
+        $notification = Notification::where('id', $notificationId)->where('user_id', Auth::user()->id)->first();
+
+        if ($notification == null) {
+            return Redirect::route('notification.test')->with(['error' => 'We couldn\'t change the settings of the requested notification.']);
+        }
+
+        /* Clean and save post data */
+        $selectedWidgets = array();
+        foreach (Input::all() as $key => $value) {
+            $number = str_replace('widget-', "", $key);
+            if (is_numeric($number)) {
+                array_push($selectedWidgets, $number);
+            }
+        }
+
+        /* Save selected widgets */
+        $notification->selected_widgets = json_encode($selectedWidgets);
+        $notification->save();
+
+        /* Render view */
+        return Redirect::route('notification.test')->with(['success' => 'You successfully changed your notification settings']);;
+    }
+
+    /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
      * ================================================== *

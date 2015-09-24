@@ -136,6 +136,14 @@
 @stop
 
 @section('pageScripts')
+  <!-- FDGridster class -->
+  <script type="text/javascript" src="lib/fd-gridster.js"></script>
+  <!-- /FDGridster class -->
+
+  <!-- FDChart class -->
+  <script type="text/javascript" src="lib/fd-chart.js"></script>
+  <!-- /FDChart class -->
+
   <!-- Gridster scripts -->
   @include('dashboard.dashboard-gridster-scripts')
   <!-- /Gridster scripts -->

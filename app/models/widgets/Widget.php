@@ -66,6 +66,18 @@ class Widget extends Eloquent
         }
     }
 
+
+    /**
+     * canSendInNotification
+     * --------------------------------------------------
+     * Returns whether the widget can be sent in notification or not
+     * @return (boolean) ($) true/false
+     * --------------------------------------------------
+     */
+    public function canSendInNotification() {
+        return !(in_array($this->descriptor->category, SiteConstants::getSkippedCategoriesInNotification()));
+    }
+
     /**
      * checkIntegrity
      * Checking the widgets settings integrity, and trying to render the view.
