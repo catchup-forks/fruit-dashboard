@@ -180,6 +180,10 @@ body {
   color: #ffffff;
   text-shadow: 1px -1px 3px #141414;
 }
+.widget-inner {
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+}
 .quote p {
   line-height: 1em;
   transition: all 0.2s ease-out;
