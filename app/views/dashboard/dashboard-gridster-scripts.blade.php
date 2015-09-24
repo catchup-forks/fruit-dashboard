@@ -2,7 +2,7 @@
 
 /**
  * --------------------------------------------------------------------------
- * Create Gridster instances
+ * Create FDGridster instances
  * --------------------------------------------------------------------------
  */
 // Set options
@@ -15,15 +15,15 @@ var gridsterOptions = {
   'saveUrl'       : "{{ route('widget.save-position') }}"
 };
 
-// Create Gridster objects
+// Create FDGridster objects
 @foreach (Auth::user()->dashboards as $dashboard)
-  var Gridster{{ $dashboard->id }} = new Gridster({{ $dashboard->id }});
+  var FDGridster{{ $dashboard->id }} = new FDGridster({{ $dashboard->id }});
 @endforeach
 
-// Initialize Gridster objects on DOM load
+// Initialize FDGridster objects on DOM load
 $(document).ready(function() {
   @foreach (Auth::user()->dashboards as $dashboard)
-    Gridster{{ $dashboard->id }}.initialize({{ $dashboard->is_locked }}, gridsterOptions);
+    FDGridster{{ $dashboard->id }}.initialize({{ $dashboard->is_locked }}, gridsterOptions);
   @endforeach
 });
 

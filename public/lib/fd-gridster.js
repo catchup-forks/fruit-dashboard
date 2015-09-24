@@ -1,10 +1,10 @@
 /**
- * @class Gridster
+ * @class FDGridster
  * --------------------------------------------------------------------------
  * Class function for the gridster elements
  * --------------------------------------------------------------------------
  */
-function Gridster(dashboardID) {
+function FDGridster(dashboardID) {
   // Private variables
   var namespace   = '#gridster-' + dashboardID
   var selector    = $('#gridster-' + dashboardID + ' div.gridster-container');
@@ -202,4 +202,4 @@ function Gridster(dashboardID) {
     return JSON.stringify(gridster.serialize());
   }
 
-} // Gridster
+} // FDGridster
