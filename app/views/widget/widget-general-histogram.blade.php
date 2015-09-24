@@ -48,7 +48,7 @@
           histogram = updateHistogramWidget(data, canvas, name, valueSpan);
           values = histogram['values'];
           labels = histogram['labels'];
-          canvas = $("#{{ $widget->id }}-chart");
+          canvas = reinsertCanvas(canvas);
         });
       @endif
 
@@ -69,8 +69,9 @@
 
       // Adding refresh handler.
       $("#refresh-{{$widget->id}}").click(function () {
-        refreshWidget({{ $widget->id }}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan);});
-        canvas = $("#{{ $widget->id }}-chart");
+        refreshWidget({{ $widget->id }}, function (data) {
+          updateHistogramWidget(data, canvas, name, valueSpan);
+        });
        });
 
       // Detecting clicks and drags.

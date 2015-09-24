@@ -23,8 +23,9 @@ var widget_height   = (containerHeight / numberOfRows) - (widgetMargin * 2);
 function Gridster(dashboardID) {
   // Private variables
   var namespace   = '#gridster-' + dashboardID
-  var selector    = $('#gridster-' + dashboardID + ' ul');
-  var players     = $('#gridster-' + dashboardID + ' li');
+  var selector    = $('#gridster-' + dashboardID + ' div.gridster-container');
+  var widgetSelector = 'div.gridster-player';
+  var players     = $('#gridster-' + dashboardID + ' div.gridster-player');
   var gridster    = null; 
 
   // Public functions
@@ -130,6 +131,7 @@ function Gridster(dashboardID) {
     // Build options dictionary
     defaultOptions = {
       namespace:                namespace,
+      widget_selector:          widgetSelector,
       widget_base_dimensions:   [widget_width, widget_height],
       widget_margins:           [widgetMargin, widgetMargin],
       min_cols:                 numberOfCols,
