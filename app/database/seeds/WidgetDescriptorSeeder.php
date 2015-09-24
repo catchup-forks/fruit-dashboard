@@ -338,6 +338,22 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['type' => 'facebook_engaged_users'],
+            array(
+                'name'        => 'Engaged users chart',
+                'description' => 'The number of people who engaged with your Page. Engagement includes any click or story created.',
+                'type'        => 'facebook_engaged_users',
+                'category'    => 'facebook',
+                'is_premium'  => TRUE,
+                'number'       => 1,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_likes_count'],
             array(
                 'name'        => 'Likes count',
