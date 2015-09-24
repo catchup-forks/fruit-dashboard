@@ -9,58 +9,53 @@
 
   @section('pageContent')
 
-  <div class="container">
 
-    <h1 class="text-center text-white drop-shadow">
-      Connect your financial accounts
-    </h1>
-
-    <div class="row">
+  <div class="container vertical-center">
+    <div class="row not-visible">
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
-            <div class="row">
+            <h1 class="text-center">
+              Connect your financial accounts
+            </h1>
+            
+            <div class="row margin-top">
 
-              <div class="col-md-5">
+              @foreach (SiteConstants::getServicesMetaByType('financial') as $index => $service)
 
-                <div class="list-group margin-top-sm">
+                <div 
+                @if( $index == 0)
+                  class="col-md-4 col-md-offset-2" 
+                @else 
+                  class="col-md-4" 
+                @endif>
+                  <div class="panel panel-default">
+                    <div class="panel-body text-center">
+                      {{ HTML::image('img/logos/'.$service['name'].'.png', $service['name'], array('class' => 'img-responsive img-rounded')) }}
 
-                @foreach (SiteConstants::getServicesMetaByType('financial') as $service)
-                    @if(Auth::user()->isServiceConnected($service['name']))
-                      <a href="{{ route($service['disconnect_route']) }}" class="list-group-item clearfix changes-image" data-image="widget-{{ $service['name'] }}">
-                    @else
-                      <a href="{{ route($service['connect_route']) }}" class="list-group-item clearfix changes-image connect-redirect" data-image="widget-{{ $service['name'] }}">
-                    @endif
-
-                    @if(Auth::user()->isServiceConnected($service['name']))
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span> </small>
-                    @else
-                        <small>
-                          <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
-                        </small>
-                    @endif
-                    {{ $service['display_name']}}
-                    <span class="pull-right">
                       @if(Auth::user()->isServiceConnected($service['name']))
-                        <button class="btn btn-xs btn-danger">
-                          Disconnect
-                        </button>
+
+                        <p class="text-success text-center lead margin-top">
+                          <span class="fa fa-check"> </span> Connected
+                        </p>
+                        
                       @else
-                        <button class="btn btn-xs btn-success" >
-                          Connect
-                        </button>
+
+                        <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
+
                       @endif
-                    </span>
-                  </a>
-                  @endforeach
 
-                </div> <!-- /.list-group -->
+                      <p class="text-muted margin-top">
+                        <span class="fa fa-lock"> </span>
+                        <small>Your data is encrypted and held privately.</small>
+                      </p>
+                      
+                    </div> <!-- /.panel-body -->
+                  </div> <!-- /.panel -->  
+                </div> <!-- /.col-md-4 -->
 
-              </div> <!-- /.col-md-5 -->
-              <div class="col-md-7">
-                {{ HTML::image('img/demonstration/widget-braintree.jpg', 'Braintree', array('id' => 'img-change', 'class' => 'img-responsive img-rounded')) }}
-              </div> <!-- /.col-md-7 -->
+              @endforeach
+
             </div> <!-- /.row -->
 
             <hr>
@@ -72,8 +67,6 @@
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 
-
-
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-md-10 -->
@@ -84,11 +77,12 @@
 
   @section('pageScripts')
 
-  {{-- Change image on hover --}}
   <script type="text/javascript">
     $(function(){
-      var baseUrl = "/img/demonstration/";
-      var ext = ".jpg";
+
+      setTimeout(function(){
+        $('.not-visible').fadeIn();
+      }, 1000);
 
       // Service redirection
       $('.connect-redirect').click(function(e) {
@@ -110,14 +104,8 @@
         });
       });
 
-      $('.changes-image').hover(
-        //on mouse enter
-        function() {
-          //rewrite img src and change alternate text
-          $('#img-change').attr('src', baseUrl + $(this).data('image') + ext);
-          $('#img-change').attr('alt', "The " + $(this).data('image') + " Widget.");
-        });
-    });
+    })
   </script>
+  
 
   @stop

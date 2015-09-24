@@ -147,9 +147,6 @@ body {
 .gridster ul li {
   cursor: default;
 }
-.gridster-player {
-  overflow-y: scroll;
-}
 .can-hover:hover,
 .hovered {
   background: #e6e6e6;
