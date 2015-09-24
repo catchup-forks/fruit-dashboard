@@ -286,6 +286,9 @@ input.greetings-name:focus {
 .has-padding {
   padding: 5px;
 }
+.text-shadow {
+  text-shadow: 1px 1px 3px #141414;
+}
 .chart {
   margin: 5px;
   background-color: #ffffff;
@@ -304,11 +307,13 @@ input.greetings-name:focus {
 .chart-name {
   font-size: 110%;
   color: #ffffff;
+  text-shadow: 1px 1px 3px #141414;
 }
 .chart-value {
   font-weight: 800;
   font-size: 120%;
   color: #4dff79;
+  text-shadow: 1px 1px 3px #141414;
 }
 .chart-diff-data {
   position: absolute;

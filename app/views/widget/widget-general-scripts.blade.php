@@ -149,6 +149,8 @@
       datasets: []
     };
 
+    canvas = reinsertCanvas(canvas);
+
     for (i = 0; i < datasets.length; ++i) {
       if (datasets[i]['color']) {
         color = datasets[i]['color'];
