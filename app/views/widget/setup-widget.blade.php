@@ -23,30 +23,32 @@
                   'class' => 'form-horizontal' )) }}
 
                   @foreach ($settings as $field=>$meta)
-                    @if (!array_key_exists('disabled', $meta))
-                      <div class="form-group">
-                        {{ Form::label($field, $meta['name'], array(
-                            'class' => 'col-sm-3 control-label'
-                          )) }}
-                        <div class="col-sm-7">
-                          @if ($meta['type'] == "SCHOICE")
-                            {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control']) }}
-                          @elseif ($meta['type'] == "BOOL")
-                          <!-- An amazing hack to send checkbox even if not checked -->
-                            {{ Form::hidden($field, 0)}}
-                            {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
+                    <div class="form-group">
+                      {{ Form::label($field, $meta['name'], array(
+                          'class' => 'col-sm-3 control-label'
+                        )) }}
+                      <div class="col-sm-8">
+                        @if ($meta['type'] == "SCHOICE")
+                          {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control']) }}
+                        @elseif ($meta['type'] == "BOOL")
+                        <!-- An amazing hack to send checkbox even if not checked -->
+                          {{ Form::hidden($field, 0)}}
+                          {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
+                        @else
+                          @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                            <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
                           @else
                             {{ Form::text($field, $widget->getSettings()[$field], array(
-                          'class' => 'form-control' )) }}
-                            @endif
-                          @if ($errors->first($field))
-                            <p class="text-danger">{{ $errors->first($field) }}</p>
-                          @elseif (array_key_exists('help_text', $meta))
-                            <p class="text-info">{{ $meta['help_text'] }}</p>
+                              'class' => 'form-control' )) }}
                           @endif
-                        </div> <!-- /.col-sm-7 -->
-                      </div> <!-- /.form-group -->
-                    @endif
+                        @endif
+                        @if ($errors->first($field))
+                          <p class="text-danger">{{ $errors->first($field) }}</p>
+                        @elseif (array_key_exists('help_text', $meta))
+                          <p class="text-info">{{ $meta['help_text'] }}</p>
+                        @endif
+                      </div> <!-- /.col-sm-7 -->
+                    </div> <!-- /.form-group -->
 
                   @endforeach
                   <hr>

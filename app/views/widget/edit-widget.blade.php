@@ -31,7 +31,7 @@
                     <div class="col-sm-7">
                       @if ($meta['type'] == "SCHOICE")
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control', 'disabled' => 'disabled']) }}
+                          <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
                         @else
                           {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
                         @endif
@@ -42,7 +42,7 @@
                         {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control', 'disabled' => 'disabled']) }}
+                          <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
                         @else
                           {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control']) }}
                         @endif

@@ -26,8 +26,7 @@
                     'class' => 'col-sm-3 control-label' )) }}
 
                   <div class="col-sm-6">
-                    {{ Form::text('url', $url, array(
-                      'class' => 'form-control' )) }}
+                    <p name="url" class="form-control static">{{ $url }}</p>
                   </div> <!-- /.col-sm-6 -->
                 </div> <!-- /.form-group -->
 
@@ -53,6 +52,7 @@
                   {{ Form::submit('Send data' , array(
                     'class' => 'btn btn-primary pull-right',
                     'data-loading-text' => 'Sending...' )) }}
+                    <a class="btn btn-warning pull-left" href="{{ route('dashboard.dashboard',  ['active' => $toDashboard]) }}">Back to your wiget</a>
                 </div> <!-- /.col-sm-2 -->
 
               {{ Form::close() }}
@@ -71,7 +71,7 @@
     $("#example-post-form").submit(function(e) {
       e.preventDefault();
 
-      var url = $(this).find('input[name=url]').val();
+      var url = $(this).find('p[name=url]').html();
       var postData = $(this).find('textarea[name=json]').val();
       var notificationBox = $('#api-notification');
       var submitButton = $(this).find(':submit');

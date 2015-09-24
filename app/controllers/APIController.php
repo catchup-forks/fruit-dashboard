@@ -43,6 +43,14 @@ class APIController extends BaseController
         /* Get the requested widget */
         $widget = Widget::where('id', $widgetID)->first();
 
+        /* Error handling */
+        if ($widget == null) {
+            return Redirect::route('dashboard.dashboard')->with(['error' => 'Sorry the requested widget does not exist']);
+        } 
+        if ($widget->user()->id != Auth::user()->id) {
+            return Redirect::route('dashboard.dashboard')->with(['error' => 'Sorry the requested widget does not exist']);
+        }
+
         /* Get the widget API url */
         $url = $widget->getSpecific()->dataManager()->getCriteria()['url'];
 
@@ -56,8 +64,9 @@ class APIController extends BaseController
 
         /* Render view */
         return View::make('api.test',
-                            ['url'        => $url,
-                            'defaultJSON' => $defaultJSON]);
+                            ['url'         => $url,
+                             'defaultJSON' => $defaultJSON,
+                             'toDashboard' => $widget->dashboard->id]);
     }
 
 
