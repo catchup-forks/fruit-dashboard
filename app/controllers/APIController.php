@@ -46,7 +46,7 @@ class APIController extends BaseController
         /* Error handling */
         if ($widget == null) {
             return Redirect::route('dashboard.dashboard')->with(['error' => 'Sorry the requested widget does not exist']);
-        } 
+        }
         if ($widget->user()->id != Auth::user()->id) {
             return Redirect::route('dashboard.dashboard')->with(['error' => 'Sorry the requested widget does not exist']);
         }
@@ -123,7 +123,7 @@ class APIController extends BaseController
      */
     private function saveWidgetData($widget) {
         /* Check if timestamp exists */
-        if (Input::get('timestamp') == null) {
+        if (is_null(Input::get('timestamp')) && is_null(Input::get('date'))) {
             return array('status'  => FALSE,
                          'message' => "You must provide a 'timestamp' or a 'date' attribute for your data.");
         } else {
@@ -136,7 +136,7 @@ class APIController extends BaseController
         }
 
         /* Check all other data */
-        foreach (Input::except('timestamp') as $key => $value) {
+        foreach (Input::except('timestamp', 'date') as $key => $value) {
             if (!is_numeric($value)) {
                 return array('status'  => FALSE,
                              'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
@@ -144,7 +144,7 @@ class APIController extends BaseController
         }
 
         /* Everything is ok */
-        $widget->getSpecific()->dataManager()->saveData(array(Input::all()), TRUE);
+        $widget->getSpecific()->dataManager()->collectData(array('entry' =>Input::all()));
         return array('status'  => TRUE,
                      'message' => 'Your data has been successfully saved.');
 
