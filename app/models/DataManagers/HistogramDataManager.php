@@ -25,8 +25,12 @@ abstract class HistogramDataManager extends DataManager
      */
     public function collectData($options=array()) {
         /* Calculating current value */
-        $newData = $this->getCurrentValue();
-        $today = Carbon::now();
+        if (array_key_exists('entry', $options)) {
+            $entry = $options['entry'];
+        } else {
+            $entry = $this->getCurrentValue();
+        }
+        $entryTime = static::getEntryTime($entry);
 
         /* Getting previous values. */
         $currentData = $this->getData();
@@ -37,17 +41,16 @@ abstract class HistogramDataManager extends DataManager
             $lastData = null;
         }
 
-        /* If popping the old value. */
-        if ($today->diffInSeconds($this->last_updated) >= $this->update_period) {
+        if ($entryTime->diffInMinutes($this->last_updated) >= $this->update_period) {
             /* Updating last updated. */
-            $this->last_updated = $today;
+            $this->last_updated = $entryTime;
             $this->save();
         } else if ($lastData) {
             array_pop($currentData);
         }
 
         /* Adding, saving data. */
-        array_push($currentData, $this->formatData($today, $newData));
+        array_push($currentData, $this->formatData($entryTime, static::getEntryValues($entry)));
         $this->saveData($currentData);
     }
 
@@ -352,6 +355,30 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * returning the time from an entry  (collectData())
+     * --------------------------------------------------
+     * @param array $entry
+     * @return Carbon
+     * --------------------------------------------------
+     */
+    private static final function getEntryTime($entry) {
+        if (array_key_exists('timestamp', $entry)) {
+            try {
+                return Carbon::createFromTimestamp($entry['timestamp']);
+            } catch (Exception $e) {
+                return Carbon::now();
+            }
+        } else if (array_key_exists('date', $entry)) {
+            try {
+                return Carbon::createFromFormat('Y-m-d', $entry['date']);
+            } catch (Exception $e) {
+                return Carbon::now();
+            }
+        }
+        return Carbon::now();
+    }
+
+    /**
      * Comparing two timestamps. (buildHistogram())
      * --------------------------------------------------
      * @param array $CseZso1
@@ -362,5 +389,4 @@ abstract class HistogramDataManager extends DataManager
     private static final function timestampSort($CseZso1, $CseZso2) {
         return $CseZso1['timestamp'] < $CseZso2['timestamp'];
     }
-
 }
