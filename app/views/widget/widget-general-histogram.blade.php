@@ -1,14 +1,43 @@
-<div class="padding text-center" id="container-{{ $widget->id }}">
-  <span class="text-white drop-shadow">
-      {{ $widget->getSettings()['name'] }}
-  </span>
-  <span class="text-white drop-shadow pull-right has-margin-horizontal" id="{{$widget->id}}-value">
-  @if ($widget->state == 'active')
-    {{ $widget->getLatestData()['value'] }}
+<div class="chart-data">
+  <div class="chart-name">
+    {{ $widget->getSettings()['name'] }}
+  </div> <!-- /.chart-name -->
+  <div class="chart-value">
+    @if ($widget->state == 'active')
+      {{ $widget->getLatestData()['value'] }}
+    @endif  
+  </div> <!-- /.chart-value -->
+</div> <!-- /.chart-data -->
+
+<div class="chart-diff-data text-center">
+  
+  {{-- IF THIS GETS UPDATED...
+
+  @if (diff >= 0 )
+    <div class="chart-diff text-success">
+      <span class="fa fa-arrow-up chart-diff-icon"> </span>
+
+  @else 
+    <div class="chart-diff text-danger">
+      <span class="fa fa-arrow-down chart-diff-icon"> </span>
+
   @endif
-  </span>
-</div>
-<div id="{{ $widget->id }}-chart-container" class="has-margin-horizontal">
+
+  --}}
+
+    {{-- ...REMOVE FIRST TWO LINES BELOW --}}
+    <div class="chart-diff text-success">
+      <span class="fa fa-arrow-up chart-diff-icon"> </span>
+      <span class="chart-diff-value">100%</span>
+    </div> <!-- /.chart-diff -->
+
+
+  <div class="chart-diff-dimension">
+    <small>(31 days ago)</small>
+  </div> <!-- /.chart-diff-dimension -->
+</div> <!-- /.chart-diff-data -->
+
+<div id="{{ $widget->id }}-chart-container">
   <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 
@@ -32,17 +61,17 @@
       // Calling drawer for the first time.
       drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
 
-    @elseif ($widget->state == 'loading')
-      // Loading widget.
-      values = [];
-      labels = [];
-      loadWidget({{$widget->id}}, function (data) {
-        histogram = updateHistogramWidget(data, canvas, name, valueSpan);
-        values = histogram['values'];
-        labels = histogram['labels'];
-        canvas = $("#{{ $widget->id }}-chart");
-      });
-    @endif
+      @elseif ($widget->state == 'loading')
+        // Loading widget.
+        values = [];
+        labels = [];
+        loadWidget({{$widget->id}}, function (data) {
+          histogram = updateHistogramWidget(data, canvas, name, valueSpan);
+          values = histogram['values'];
+          labels = histogram['labels'];
+          canvas = reinsertCanvas(canvas);
+        });
+      @endif
 
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
@@ -61,8 +90,9 @@
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan);});
-      canvas = $("#{{ $widget->id }}-chart");
+      refreshWidget({{ $widget->id }}, function (data) {
+        updateHistogramWidget(data, canvas, name, valueSpan);
+      });
      });
 
     // Detecting clicks and drags.

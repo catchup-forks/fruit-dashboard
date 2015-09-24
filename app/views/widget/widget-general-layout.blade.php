@@ -1,33 +1,54 @@
-<li data-id='{{ $widget->id }}'
-    data-row="{{ $widget->getPosition()->row }}"
-    data-col="{{ $widget->getPosition()->col }}"
-    data-sizex="{{ $widget->getPosition()->size_x }}"
-    data-sizey="{{ $widget->getPosition()->size_y }}"
-    data-min-sizex="{{ $widget->descriptor->min_cols }}"
-    data-min-sizey="{{ $widget->descriptor->min_rows }}"
-    class="can-hover">
+<div data-id='{{ $widget->id }}'
+     data-row="{{ $widget->getPosition()->row }}"
+     data-col="{{ $widget->getPosition()->col }}"
+     data-sizex="{{ $widget->getPosition()->size_x }}"
+     data-sizey="{{ $widget->getPosition()->size_y }}"
+     data-min-sizex="{{ $widget->descriptor->min_cols }}"
+     data-min-sizey="{{ $widget->descriptor->min_rows }}"
+     class="gridster-player can-hover">
 
-  <a class='deleteWidget' data-id='{{ $widget->id }}' data-hover="hover-unlocked" href="">
-    <span class="fa fa-times drop-shadow text-white color-hovered position-tr-sm display-hovered"></span>
-  </a>
+    <div class="dropdown position-tr-sm">
+      <a id="{{ $widget->id }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span class="fa fa-bars drop-shadow text-white color-hovered display-hovered"></span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="{{ $widget->id }}">
+        
+        {{-- EDIT --}}
+        <li>
+          <a href="{{ route('widget.edit', $widget->id) }}">
+            <span class="fa fa-cog"> </span>
+            Edit Settings
+          </a>
+        </li>
 
-  <a href="{{ route('widget.edit', $widget->id) }}" data-hover="hover-unlocked">
-    <span class="fa fa-cog drop-shadow text-white color-hovered position-bl-sm display-hovered"></span>
-  </a>
+        {{-- REFRESH --}}
+        @if ($widget instanceof iAjaxWidget)
+          <li>
+            <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">
+              <span class="fa fa-refresh"> </span> 
+              Refresh data
+            </a>
+          </li>
+        @endif
 
-  @if ($widget instanceof iAjaxWidget)
-  <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content" data-hover="hover-unlocked">
-    <span class="fa fa-refresh position-tl-sm drop-shadow text-white color-hovered display-hovered"> </span>
-  </a>
-  @endif
+        {{-- DELETE --}}
+        <li>
+          <a class='deleteWidget' data-id='{{ $widget->id }}' href="#">
+            <span class="fa fa-times"> </span>
+            Delete widget
+          </a>
+        </li>
+
+      </ul>
+    </div>
 
   <!-- Adding loading on DataWidget -->
   @if ($widget->state == 'setup_required')
       @include('widget.widget-setup-required', ['widget' => $widget,])
   @elseif ($widget instanceof SharedWidget)
     @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
-  @elseif ($widget->premiumUserCheck() === -1)
-    @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
+  {{-- @elseif ($widget->premiumUserCheck() === -1) --}}
+    {{-- @include('widget.widget-premium-not-allowed', ['feature' => 'hello']) --}}
   @else
     @if ($widget instanceof iAjaxWidget)
       @include('widget.widget-loading', ['widget' => $widget,])
@@ -46,4 +67,4 @@
     </a>
   </div>
   @endif
-</li>
+</div> <!-- /.gridster-player -->

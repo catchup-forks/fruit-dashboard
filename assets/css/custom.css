@@ -274,13 +274,64 @@ input.greetings-name:focus {
   position: relative;
   top: -40px;
 }
+.rounded {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.background-white {
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+}
+.has-padding {
+  padding: 5px;
+}
 .chart {
-  background-color: #e6e6e6;
-  background-color: rgba(230, 230, 230, 0.2125);
+  margin: 5px;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
   padding: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 5px;
+}
+.chart-data {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  padding: 5px;
+}
+.chart-name {
+  font-size: 110%;
+  color: #ffffff;
+}
+.chart-value {
+  font-weight: 800;
+  font-size: 120%;
+  color: #4dff79;
+}
+.chart-diff-data {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.chart-diff-icon {
+  position: relative;
+  top: -2px;
+}
+.chart-diff-value {
+  font-weight: 600;
+  font-size: 120%;
+}
+.chart-diff-dimension {
+  font-size: 90%;
+  margin-top: -3px;
 }
 html,
 body {

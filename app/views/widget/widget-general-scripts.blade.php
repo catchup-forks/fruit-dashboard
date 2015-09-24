@@ -3,34 +3,51 @@
   // Overriding chartjs defaults.
   Chart.defaults.global.animationSteps = 60;
   Chart.defaults.global.animationEasing = "easeOutQuart";
-  Chart.defaults.global.scaleLineColor = "rgba(179,179,179,1)";
-  Chart.defaults.global.scaleFontSize = 9;
-  Chart.defaults.global.scaleFontColor = "rgba(230,230,230,1)";
+  Chart.defaults.global.showScale = false;
+  Chart.defaults.global.showTooltips = false;
   Chart.defaults.global.responsive = false;
-  Chart.defaults.global.tooltipCornerRadius = 4;
-  Chart.defaults.global.tooltipXPadding = 5;
-  Chart.defaults.global.tooltipYPadding = 5;
-  Chart.defaults.global.tooltipCaretSize = 5;
-  Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.6)";
-  Chart.defaults.global.tooltipFontSize = 11;
+  // Chart.defaults.global.maintainAspectRatio = false;
+  
+  // No tooltips today.
+  // Chart.defaults.global.tooltipCornerRadius = 4;
+  // Chart.defaults.global.tooltipXPadding = 5;
+  // Chart.defaults.global.tooltipYPadding = 5;
+  // Chart.defaults.global.tooltipCaretSize = 5;
+  // Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.6)";
+  // Chart.defaults.global.tooltipFontSize = 11;
 
   // Open sans makes the text rendering blurry
   //Chart.defaults.global.scaleFontFamily = "'Open Sans', sans-serif";
   //Chart.defaults.global.tooltipFontFamily = "'Open Sans', sans-serif";
   // Chart.defaults.global.tooltipFontStyle = "lighter";
 
+  // No scale today.
+  //Chart.defaults.global.scaleLineColor = "rgba(179,179,179,1)";
+  //Chart.defaults.global.scaleFontSize = 9;
+  //Chart.defaults.global.scaleFontColor = "rgba(230,230,230,1)";
+
   var chartOptions = {
-     pointHitDetectionRadius : 5,
-     pointDotRadius : 2,
+     pointDot: false,
+     // pointHitDetectionRadius : 5,
+     // pointDotRadius : 2,
      bezierCurve: true,
      bezierCurveTension : 0.35,
-     scaleGridLineColor : "rgba(179,179,179,0.4)",
-     scaleGridLineWidth : 0.35,
-     tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
-     multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
+     // scaleGridLineColor : "rgba(179,179,179,0.4)",
+     // scaleGridLineWidth : 0.35,
+     // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
+     // multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
      animation: true
   };
 
+  // Call the Hamburger Menu.
+  $('.dropdown-toggle').dropdown();
+
+  // If the mouse leaves the contextual menu, close it.
+  $(".dropdown-menu").mouseleave(function(){
+        $(".dropdown").removeClass("open");
+      });
+
+  // Look for the delete menu click
   $(".deleteWidget").click(function(e) {
 
     e.preventDefault();
@@ -43,8 +60,8 @@
     var regridster
 
     // Reinitialize gridster and remove widget.
-    regridster = $('#' + gridsterID + ' ul').gridster().data('gridster');
-    regridster.remove_widget($(this).closest('li'));
+    regridster = $('#' + gridsterID + ' div.gridster-container').gridster().data('gridster');
+    regridster.remove_widget($(this).closest('div.gridster-player'));
 
 
     // Call ajax function
@@ -113,8 +130,8 @@
 
   // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
   function reinsertCanvas(canvas) {
-    canvasHeight = canvas.closest('li').height()-2*35;
-    canvasWidth = canvas.closest('li').width()-2*30;
+    var canvasHeight = canvas.closest('div.gridster-player').height()-2*10;
+    var canvasWidth = canvas.closest('div.gridster-player').width()-5-30;
 
     canvasId = canvas[0].id;
     container = $("#" + canvasId + "-container");
@@ -131,6 +148,7 @@
       labels: labels,
       datasets: []
     };
+
     for (i = 0; i < datasets.length; ++i) {
       if (datasets[i]['color']) {
         color = datasets[i]['color'];
@@ -145,9 +163,13 @@
 
     // Drawing chart.
     var chart = new Chart(ctx).Line(chartData, chartOptions);
+
+    // Setting opacity.
+    // ctx.globalAlpha = 0.75;
   }
 
   function updateHistogramWidget(data, canvas, name, valueSpan) {
+
     // Updating chart values.
     var labels = [];
     var values = [];
@@ -157,10 +179,11 @@
     }
     if (data.length > 0 && valueSpan) {
       valueSpan.html(data[data.length-1]['value']);
-      canvas = reinsertCanvas(canvas);
     }
 
+    canvas = reinsertCanvas(canvas);
     drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+
     return {'values': values, 'labels': labels};
   }
 

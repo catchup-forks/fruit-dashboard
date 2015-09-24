@@ -40,9 +40,8 @@ class SharedWidget extends Widget
         $widgetId = $this->getSettings()['related_widget'];
         $widget = Widget::find($widgetId);
         if (is_null($widget)) {
-            $this->delete();
             /* Related widget does not exist. */
-            /* Deleting widget setting sharing object state to deleted. */
+            $this->delete();
             return null;
         }
 
