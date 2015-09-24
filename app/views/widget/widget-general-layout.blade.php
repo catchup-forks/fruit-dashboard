@@ -12,7 +12,7 @@
         <span class="fa fa-bars drop-shadow text-white color-hovered display-hovered"></span>
       </a>
       <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="{{ $widget->id }}">
-        
+
         {{-- EDIT --}}
         <li>
           <a href="{{ route('widget.edit', $widget->id) }}">
@@ -25,11 +25,19 @@
         @if ($widget instanceof iAjaxWidget)
           <li>
             <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">
-              <span class="fa fa-refresh"> </span> 
+              <span class="fa fa-refresh"> </span>
               Refresh data
             </a>
           </li>
         @endif
+
+        {{-- SHARE --}}
+        <li>
+          <a href="#" id="share-{{$widget->id}}" onclick="showShareModal({{$widget->id}})">
+            <span class="fa fa-eye"> </span>
+            Share widget
+          </a>
+        </li>
 
         {{-- DELETE --}}
         <li>
@@ -61,10 +69,5 @@
       </div>
     @endif
 
-  <div class="text-center">
-    <a href="#" id="share-{{$widget->id}}" title="share widget data" data-hover="hover-unlocked" onclick="showShareModal({{$widget->id}})">
-    share
-    </a>
-  </div>
   @endif
 </div> <!-- /.gridster-player -->

@@ -8,7 +8,7 @@ abstract class HistogramWidget extends CronWidget
             'name'       => 'Resolution',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'daily',
+            'default'    => 'days',
             'help_text'  => 'The resolution of the chart.'
         ),
         'name' => array(
@@ -22,10 +22,10 @@ abstract class HistogramWidget extends CronWidget
     /* -- Choice functions -- */
     public function resolution() {
         return array(
-            'daily'   => 'Daily',
-            'weekly'  => 'Weekly',
-            'monthly' => 'Monthly',
-            'yearly'  => 'Yearly'
+            'days'   => 'Daily',
+            'weeks'  => 'Weekly',
+            'months' => 'Monthly',
+            'years'  => 'Yearly'
         );
     }
 
