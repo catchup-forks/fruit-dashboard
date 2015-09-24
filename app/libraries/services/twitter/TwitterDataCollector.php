@@ -37,12 +37,13 @@ class TwitterDataCollector
      * getMentions
      * --------------------------------------------------
      * Getting the mentions count from twitter.
-     * @return int
+     * @param $count
+     * @return stdObject
      * @throws TwitterNotConnected
      * --------------------------------------------------
     */
-    public function getMentions() {
-        return $this->connector->get('statuses/mentions_timeline');
+    public function getMentions($count) {
+        return $this->connector->get('statuses/mentions_timeline', array('count' => $count));
     }
 
     /**

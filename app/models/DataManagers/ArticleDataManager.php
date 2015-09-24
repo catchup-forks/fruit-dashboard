@@ -54,7 +54,7 @@ abstract class ArticleDataManager extends DataManager
      */
     public function addArticle($article) {
         /* Checking article validity. */
-        if ( ! self::isValidArticle($article)) {
+        if ( ! static::isValidArticle($article)) {
             return;
         }
         /* Appending article to the current ones. */
@@ -73,7 +73,7 @@ abstract class ArticleDataManager extends DataManager
      * @return boolean
      * --------------------------------------------------
      */
-    private static final function isValidArticle($article) {
+    protected static function isValidArticle($article) {
         if (array_key_exists('title', $article) && array_key_exists('text', $article)) {
             return TRUE;
         }
