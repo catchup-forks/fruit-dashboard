@@ -32,17 +32,17 @@
       // Calling drawer for the first time.
       drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
 
-    @elseif ($widget->state == 'loading')
-      // Loading widget.
-      values = [];
-      labels = [];
-      loadWidget({{$widget->id}}, function (data) {
-        histogram = updateHistogramWidget(data, canvas, name, valueSpan);
-        values = histogram['values'];
-        labels = histogram['labels'];
-        canvas = $("#{{ $widget->id }}-chart");
-      });
-    @endif
+      @elseif ($widget->state == 'loading')
+        // Loading widget.
+        values = [];
+        labels = [];
+        loadWidget({{$widget->id}}, function (data) {
+          histogram = updateHistogramWidget(data, canvas, name, valueSpan);
+          values = histogram['values'];
+          labels = histogram['labels'];
+          canvas = reinsertCanvas(canvas);
+        });
+      @endif
 
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
@@ -59,11 +59,20 @@
       drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
     });
 
+<<<<<<< HEAD
+      // Adding refresh handler.
+      $("#refresh-{{$widget->id}}").click(function () {
+        refreshWidget({{ $widget->id }}, function (data) {
+          updateHistogramWidget(data, canvas, name, valueSpan);
+        });
+       });
+=======
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) {updateHistogramWidget(data, canvas, name, valueSpan);});
       canvas = $("#{{ $widget->id }}-chart");
      });
+>>>>>>> b1540abe8720e9aac6c01c0b612547b3b99682c9
 
     // Detecting clicks and drags.
     // Redirect to single stat page on click.

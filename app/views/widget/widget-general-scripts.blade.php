@@ -31,6 +31,15 @@
      animation: true
   };
 
+  // Call the Hamburger Menu.
+  $('.dropdown-toggle').dropdown();
+
+  // If the mouse leaves the contextual menu, close it.
+  $(".dropdown-menu").mouseleave(function(){
+        $(".dropdown").removeClass("open");
+      });
+
+  // Look for the delete menu click
   $(".deleteWidget").click(function(e) {
 
     e.preventDefault();
@@ -43,8 +52,8 @@
     var regridster
 
     // Reinitialize gridster and remove widget.
-    regridster = $('#' + gridsterID + ' ul').gridster().data('gridster');
-    regridster.remove_widget($(this).closest('li'));
+    regridster = $('#' + gridsterID + ' div.gridster-container').gridster().data('gridster');
+    regridster.remove_widget($(this).closest('div.gridster-player'));
 
 
     // Call ajax function
@@ -113,8 +122,8 @@
 
   // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
   function reinsertCanvas(canvas) {
-    canvasHeight = canvas.closest('li').height()-2*35;
-    canvasWidth = canvas.closest('li').width()-2*30;
+    var canvasHeight = canvas.closest('div.gridster-player').height()-2*35;
+    var canvasWidth = canvas.closest('div.gridster-player').width()-2*30;
 
     canvasId = canvas[0].id;
     container = $("#" + canvasId + "-container");
@@ -148,6 +157,7 @@
   }
 
   function updateHistogramWidget(data, canvas, name, valueSpan) {
+
     // Updating chart values.
     var labels = [];
     var values = [];
@@ -157,10 +167,11 @@
     }
     if (data.length > 0 && valueSpan) {
       valueSpan.html(data[data.length-1]['value']);
-      canvas = reinsertCanvas(canvas);
     }
 
+    canvas = reinsertCanvas(canvas);
     drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+
     return {'values': values, 'labels': labels};
   }
 
