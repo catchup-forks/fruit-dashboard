@@ -117,31 +117,46 @@ class User extends Eloquent implements UserInterface
         $this->save();
 
         /* Create default settings for the user */
-        $settings = new Settings;
+        $settings = new Settings(array(
+            'newsletter_frequency' => 0,
+        ));
         $settings->user()->associate($this);
-        $settings->newsletter_frequency = 0;
-
-        /* Save settings */
         $settings->save();
+
+        /* Create default notifications for the user */
+        $emailNotification = new Notification(array(
+            'type' => 'email',
+            'frequency' => 'daily',
+            'address' => $this->email,
+            'send_time' => Carbon::createFromTime(7, 0, 0, 'Europe/Budapest')
+        ));
+        $emailNotification->user()->associate($this);
+        $emailNotification->save();
+
+        $slackNotification = new Notification(array(
+            'type' => 'slack',
+            'frequency' => 'daily',
+            'address' => null,
+            'send_time' => Carbon::createFromTime(7, 0, 0, 'Europe/Budapest')
+        ));
+        $slackNotification->user()->associate($this);
+        $slackNotification->save();
 
         /* Create default background for the user */
         $background = new Background;
         $background->user()->associate($this);
         $background->changeUrl();
-
-        /* Save background */
         $background->save();
 
         /* Create default subscription for the user */
         $plan = Plan::getFreePlan();
-        $subscription = new Subscription;
+        $subscription = new Subscription(array(
+            'status'       => 'active',
+            'trial_status' => 'possible',
+            'trial_start'  => null,
+        ));
         $subscription->user()->associate($this);
         $subscription->plan()->associate($plan);
-        $subscription->status = 'active';
-        $subscription->trial_status = 'possible';
-        $subscription->trial_start  = null;
-
-        /* Save subscription */
         $subscription->save();
     }
 
