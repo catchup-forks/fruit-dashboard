@@ -104,14 +104,14 @@ class GoogleAnalyticsPopulateData
 
         for ($i = self::DAYS; $i >= 0; --$i) {
             /* Creating start, end days. */
-            $start = Carbon::now()->subDays($i);
+            $start = SiteConstants::getGoogleAnalyticsLaunchDate();
             $end = Carbon::now()->subDays($i);
-            $metrics = $this->collector->getMetrics($this->property, $start->toDateString(), $end->toDateString(), array_keys($data));
+            $metrics = $this->collector->getMetrics($this->property, $start, $end->toDateString(), array_keys($data));
 
             foreach ($metrics as $metric=>$dailyData) {
                 /* Getting daily data. */
                 $currentDateMetric = array();
-                $currentDateMetric['timestamp'] = $end->addDay()->getTimestamp();
+                $currentDateMetric['timestamp'] = $end->getTimestamp();
                 foreach ($dailyData as $profile=>$value) {
                     $currentDateMetric[$profile] = $value[0];
                 }

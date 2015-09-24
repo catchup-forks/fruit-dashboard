@@ -3,22 +3,33 @@
 class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
-    private static $start = '30daysAgo';
+    private static $start = '2005-01-01';
     private static $end = 'today';
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
     private static $maxResults = '15';
     private static $metrics = array('sessions', 'users', 'hits');
 
-    private function getMetric() {
+
+    /**
+     * getMetric
+     * Calculates and returns the metric.
+     * --------------------------------------------------
+     * @param date $start
+     * @param date $end
+     * @param int $maxResults
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getMetric($start, $end, $maxResults) {
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getMetrics($this->getProperty(), self::$start, self::$end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => self::$maxResults));
+        return $collector->getMetrics($this->getProperty(), $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
     }
 
-    public function collectData() {
+    public function collectData($options=array()) {
         /* Collecting and transforming data.*/
         $metricsData = array();
-        foreach ($this->getMetric() as $metric=>$data) {
+        foreach ($this->getMetric($options['start'], $options['end'], $options['max_results']) as $metric=>$data) {
             foreach ($data as $source=>$value) {
                 $metricsData[$source][ucwords($metric)] = $value[0];
             }

@@ -8,12 +8,12 @@ class PlanSeeder extends Seeder
         Plan::updateOrCreate(
             ['name' => 'Free'], 
             array(
-                'name'              => 'Free',
-                'interval'          => 'permanent',
-                'interval_count'    => 0,
-                'amount'            => 0,
-                'braintree_plan_id' => null,
-                'description'       => 
+                'name'                          => 'Free',
+                'amount'                        => 0,
+                'braintree_plan_id'             => null,
+                'braintree_merchant_account_id' => null,
+                'braintree_merchant_currency'   => null,
+                'description'                   => 
                     '<ul class="list-group">
                       <li class="list-group-item">30 days of historical data</li>
                       <li class="list-group-item">Community support</li>
@@ -25,12 +25,12 @@ class PlanSeeder extends Seeder
         Plan::updateOrCreate(
             ['name' => 'Premium'], 
             array(
-                'name'              => 'Premium',
-                'interval'          => 'month',
-                'interval_count'    => 12,
-                'amount'            => 9,
-                'braintree_plan_id' => $_ENV['BRAINTREE_PREMIUM_PLAN_ID'],
-                'description'       => 
+                'name'                          => 'Premium',
+                'amount'                        => $_ENV['BRAINTREE_PREMIUM_PLAN_PRICE'],
+                'braintree_plan_id'             => $_ENV['BRAINTREE_PREMIUM_PLAN_ID'],
+                'braintree_merchant_account_id' => $_ENV['BRAINTREE_MERCHANT_ACCOUNT_ID'],
+                'braintree_merchant_currency'   => $_ENV['BRAINTREE_MERCHANT_CURRENCY'],
+                'description'                   => 
                     '<ul class="list-group">
                       <li class="list-group-item">Unlimited historical data</li>
                       <li class="list-group-item">Email support</li>

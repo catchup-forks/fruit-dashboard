@@ -24,7 +24,9 @@
               @foreach (Auth::user()->dashboards as $dashboard)
                 <div class="col-sm-6 col-md-4">
                   <div class="thumbnail">
+                    <a href="{{ route('dashboard.dashboard', ['active' => $dashboard->id]) }}">
                     <img src="{{ Auth::user()->background->url }}" alt="{{ $dashboard->name }}" />
+                    </a>
                     
                     <div class="modification-icons text-center drop-shadow">
                       <!-- lock dashboard icons -->

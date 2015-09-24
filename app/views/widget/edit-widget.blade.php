@@ -5,7 +5,6 @@
   @stop
 
   @section('pageContent')
-
   <div class="vertical-center">
     <div class="container">
       <div class="row">
@@ -23,33 +22,42 @@
                 $widget->id),
                 'class' => 'form-horizontal' )) }}
 
-                @if ( ! $widget instanceof SharedWidget)
                 @foreach ($widget->getSettingsFields() as $field=>$meta)
-
+                  @if ( ! array_key_exists('hidden', $meta) || $meta['hidden'] == FALSE)
                   <div class="form-group">
                     {{ Form::label($field, $meta['name'], array(
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">
                       @if ($meta['type'] == "SCHOICE")
-                        {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                          <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
+                        @else
+                          {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                        @endif
+
                       @elseif ($meta['type'] == "BOOL")
                       <!-- An amazing hack to send checkbox even if not checked -->
                         {{ Form::hidden($field, 0)}}
                         {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
-                        {{ Form::text($field, $widget->getSettings()[$field], array(
-                      'class' => 'form-control' )) }}
+                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                          <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
+                        @else
+                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                        @endif
                       @endif
-                      @if (array_key_exists('help_text', $meta))
+                      @if ($errors->first($field))
+                        <p class="text-danger">{{ $errors->first($field) }}</p>
+                      @elseif (array_key_exists('help_text', $meta))
                         <p class="text-info">{{ $meta['help_text'] }}</p>
                       @endif
                     </div> <!-- /.col-sm-6 -->
 
                   </div> <!-- /.form-group -->
+                  @endif
 
                 @endforeach
-                @endif
                 <!-- dashboard select -->
                   <div class="form-group">
                     {{ Form::label('dashboard', 'Dashboard', array(
@@ -76,7 +84,7 @@
                 <!-- /.Update interval select -->
                 <hr>
                   {{ Form::submit('Save', array('class' => 'btn btn-primary pull-right') ) }}
-                  <a href="/" class="btn btn-link pull-right">Cancel</a>
+                  <a href="{{ route('dashboard.dashboard', ['active' => $widget->dashboard->id]) }}" class="btn btn-link pull-right">Cancel</a>
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->

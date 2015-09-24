@@ -11,6 +11,12 @@ abstract class HistogramWidget extends CronWidget
             'default'    => 'daily',
             'help_text'  => 'The resolution of the chart.'
         ),
+        'name' => array(
+            'name'       => 'Name',
+            'type'       => 'TEXT',
+            'validation' => 'required',
+            'help_text'  => 'The name of the widget.'
+        ),
     );
 
     /* -- Choice functions -- */
@@ -53,18 +59,17 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function premiumUserCheck() {
-        /* Premium users can see everything. */
-        if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
-            return TRUE;
+        $passed = parent::premiumUserCheck();
+
+        if ($passed === 0) {
+            /* Further validation required. */
+            if (static::getSettingsFields()['resolution']['default'] != $this->getSettings()['resolution']) {
+                return -1;
+            }
         }
 
-        /* The resolution is set to default. */
-        if (static::getSettingsFields()['resolution']['default'] == $this->getSettings()['resolution']) {
-            return TRUE;
-        }
-
-        return FALSE;
-     }
+        return $passed;
+    }
 
     /**
      * getData

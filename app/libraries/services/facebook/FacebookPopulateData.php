@@ -60,13 +60,14 @@ class FacebookPopulateData
      */
     protected function collectData() {
         /* Getting metrics. */
-        $likesData       = $this->getLikes();
-        $impressionsData = $this->getPageImpressions();
+        $likesData        = $this->getLikes();
+        $impressionsData  = $this->getPageImpressions();
+        $engagedUsersData = $this->getEngagedUsers();
 
         /* Saving values. */
         $this->dataManagers['facebook_likes']->saveData($likesData);
         $this->dataManagers['facebook_new_likes']->saveData(HistogramDataManager::getDiff($likesData));
-        $this->dataManagers['facebook_page_impressions']->saveData($impressionsData);
+        $this->dataManagers['facebook_engaged_users']->saveData($engagedUsersData);
 
         foreach ($this->dataManagers as $manager) {
             $manager->setWidgetsState('active');
@@ -102,7 +103,7 @@ class FacebookPopulateData
             $insight, $this->page->id,
             array(
                 'since' => Carbon::now()->subDays(self::DAYS)->getTimestamp(),
-                'until' => Carbon::now()->getTimestamp()
+                'until' => Carbon::now()->getTimestamp(),
             )
         );
     }
@@ -124,6 +125,25 @@ class FacebookPopulateData
         }
 
         return $likesData;
+    }
+
+    /**
+     * Getting the data for the engaged users widget.
+     *
+     * @return array
+     */
+    private function getEngagedUsers() {
+        $dailyEngagedUsers = $this->getHistogram('page_engaged_users');
+        $engagedUsersData = array();
+        foreach ($dailyEngagedUsers[0]['values'] as $engagedUsers) {
+            $date = Carbon::createFromTimestamp(strtotime($engagedUsers['end_time']));
+            array_push($engagedUsersData, array(
+                'value'     => $engagedUsers['value'],
+                'timestamp' => $date->getTimestamp()
+            ));
+        }
+
+        return $engagedUsersData;
     }
 
     /**

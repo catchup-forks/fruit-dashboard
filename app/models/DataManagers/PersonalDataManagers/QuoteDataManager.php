@@ -19,7 +19,7 @@ class QuoteDataManager extends DataManager
      * @return None
      * --------------------------------------------------
      */
-    public function collectData() {
+    public function collectData($options=array()) {
         /* Getting the JSON from GoogleSpreadsheet. */
         $file = file_get_contents($this->getQuoteSpreadsheetUri());
         $decoded_data = json_decode($file);

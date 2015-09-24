@@ -60,7 +60,7 @@ class Widget extends Eloquent
             try {
                 $view->render();
             } catch (Exception $e) {
-                Log::error($e);
+                Log::info($e);
                 $widget->setState('setup_required');
             }
         }
@@ -275,6 +275,27 @@ class Widget extends Eloquent
     }
 
     /**
+     * premiumUserCheck
+     * Returns whether or not the settings make the widget
+     * a premium feature.
+     * --------------------------------------------------
+     * @return int 1: user is premium, -1 fails, 0 default
+     * --------------------------------------------------
+     */
+     public function premiumUserCheck() {
+        /* Premium users can see everything. */
+        if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
+            return 1;
+        }
+
+        if ($this->descriptor->is_premium) {
+            return -1;
+        }
+
+        return 0;
+     }
+
+    /**
      * saveSettings
      * Transforming settings to JSON format. (validation done by view)
      * --------------------------------------------------
@@ -357,7 +378,7 @@ class Widget extends Eloquent
         }
         foreach ($this->getSettingsFields() as $key=>$value) {
             if ( ! array_key_exists($key, $this->getSettings())) {
-            $this->setState('setup_required');
+                $this->setState('setup_required');
             }
         }
     }

@@ -1,7 +1,4 @@
 <div class="text-white drop-shadow text-center">
-  <p>
-    {{ ucfirst($feature) }} is a premium feature
-  </p>
   <a href="{{ route('widget.singlestat', $widget->id) }}">
     <img src="/img/demonstration/graph_transparent.png" class="locked center-block">
   </a>
@@ -18,13 +15,13 @@
       var containerHeight = $(this).closest('li').height();
       var containerWidth = $(this).closest('li').width();
       if (containerHeight > containerWidth) {
-        $(this).width(containerWidth-2*30);  
+        $(this).width(containerWidth-2*30);
       } else {
-        $(this).height(containerHeight-2*35);  
+        $(this).height(containerHeight-2*35);
       };
     });
   });
-    
+
   </script>
 
 @append

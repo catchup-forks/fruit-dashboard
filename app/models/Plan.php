@@ -7,12 +7,12 @@ class Plan extends Eloquent
     );
 
     protected $fillable = array(
-        'interval',
-        'interval_count',
-        'amount',
         'name',
         'description',
+        'amount',
         'braintree_plan_id',
+        'braintree_merchant_account_id',
+        'braintree_merchant_currency',
     );
 
     /* -- No timestamps -- */

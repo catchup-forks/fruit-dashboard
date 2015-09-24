@@ -87,17 +87,17 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
     */
     public function save(array $options=array()) {
-        $widget = parent::save($options);
+        parent::save($options);
 
         if ( ! isset($options['skipManager']) || $options['skipManager'] == FALSE) {
             $dataManager = $this->descriptor->getDataManager($this);
             if ( ! is_null($dataManager)) {
                 $this->data()->associate($dataManager->data);
-                $widget = parent::save($options);
+                parent::save($options);
             }
         }
 
-        return $widget;
+        return TRUE;
     }
 
     /**

@@ -23,7 +23,7 @@ abstract class HistogramDataManager extends DataManager
      * Getting the new value based on getCurrentValue()
      * --------------------------------------------------
      */
-    public function collectData() {
+    public function collectData($options=array()) {
         /* Calculating current value */
         $newData = $this->getCurrentValue();
         $today = Carbon::now();
@@ -92,7 +92,6 @@ abstract class HistogramDataManager extends DataManager
      */
     public function getHistogram($range, $resolution) {
         /* Calling proper method based on resolution. */
-        return $this->buildHistogram($range, 'minutely', 'h:i');
         switch ($resolution) {
             case 'minutely':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
             case 'hourly':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
@@ -124,9 +123,6 @@ abstract class HistogramDataManager extends DataManager
         /* If there's range, using reader. */
         $recording = TRUE;
         $histogram = array();
-        $first = TRUE;
-        $sampleEntries = array();
-        $previousEntryTime = Carbon::now();
 
         foreach ($fullHistogram as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
@@ -142,26 +138,28 @@ abstract class HistogramDataManager extends DataManager
             }
             if ($recording) {
                 /* Frequency conditions. */
-                if ($first || $entry == $last) {
-                    array_push($sampleEntries, $entry);
-                }
-                if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution) || ($entry == $last)) {
-                    /* Passing new element to the array. */
-                    $newEntry = static::getAverageValues($sampleEntries);
-                    $newEntry['datetime'] = $entryTime->format($dateFormat);
-                    array_push($histogram, $newEntry);
-                    $sampleEntries = array();
+                if (isset($previousEntry)) {
+                    $previousEntryTime = Carbon::createFromTimestamp($previousEntry['timestamp']);
+                    if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
+                        /* Passing new element to the array. */
+                        $previousEntry['datetime'] = $previousEntryTime->format($dateFormat);
+                        array_push($histogram, $previousEntry);
+                        if ($entry == $last) {
+                            /* There's only one element in the dataset. */
+                            $entry['datetime'] = $entryTime->format($dateFormat);
+                            array_push($histogram, $entry);
+                        }
+                    }
                 }
 
-                /* Adding to samples. */
-                array_push($sampleEntries, $entry);
-
-                /* Saving previous time. */
-                $previousEntryTime = $entryTime;
-
-                if ($first) {
-                    $first = FALSE;
+                if ($entry == $last) {
+                    /* There's only one element in the dataset. */
+                    $entry['datetime'] = $entryTime->format($dateFormat);
+                    array_push($histogram, $entry);
                 }
+
+                /* Saving previous entry. */
+                $previousEntry = $entry;
             }
 
             if (count($histogram) >= static::$entries) {
@@ -261,7 +259,7 @@ abstract class HistogramDataManager extends DataManager
      * Returning only the values of the entry,
      * excluding staticFields.
      * --------------------------------------------------
-     * @param array $entriy
+     * @param array $entry
      * @return array
      * --------------------------------------------------
      */
@@ -274,8 +272,6 @@ abstract class HistogramDataManager extends DataManager
         }
         return $values;
     }
-
-
 
     /**
      * getAverageValues (buildHistogram)

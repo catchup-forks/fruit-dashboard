@@ -47,6 +47,8 @@
       @include('widget.widget-setup-required', ['widget' => $widget,])
   @elseif ($widget instanceof SharedWidget)
     @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
+  @elseif ($widget->premiumUserCheck() === -1)
+    @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @else
     @if ($widget instanceof iAjaxWidget)
       @include('widget.widget-loading', ['widget' => $widget,])

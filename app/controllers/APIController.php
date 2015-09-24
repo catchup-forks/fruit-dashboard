@@ -1,82 +1,152 @@
 <?php
 
-//md5(uniqid($your_user_login, true))
-//base64_encode 
 /**
  * --------------------------------------------------------------------------
- * APIController: Handles the Fruit Dashboard API
+ * APIController: Handles the Fruit Dashboard Widget API
  * --------------------------------------------------------------------------
  */
 class APIController extends BaseController
 {
     /**
      * ================================================== *
-     *                   CLASS ATTRIBUTES                 *
-     * ================================================== *
-     */
-    private static $apiVersions = array('1.0');
-
-    /**
-     * ================================================== *
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    
+
     /**
-     * anySaveData
+     * postData
      * --------------------------------------------------
-     * @return Saves the data to the database
+     * @return Handles the incoming POST request, and checks its integrity
      * --------------------------------------------------
      */
-    public function anySaveData($apiVersion = null, $apiKey = null, $widgetID = null) {
+    public function postData($apiVersion = null, $apiKey = null, $widgetID = null) {
         /* Check API version */
-        if (!in_array($apiVersion, self::$apiVersions)) {
-            return Response::json(array('error' => 'This API version is not supported.'));
+        if (!in_array($apiVersion, SiteConstants::getApiVersions())) {
+            return Response::json(array('status'  => FALSE,
+                                        'message' => 'This API version is not supported.'));
         }
 
-        /* Return */
-        return Response::json(array('success' => 'Everything is OK.'));
+        /* Call API hadler */
+        $result = $this->handlePostData($apiVersion, $apiKey, $widgetID);
 
-        /* Try to get */
-        
-        // $authArray = json_decode(base64_decode($apiKey), true);
-        // if (!isset($authArray['wid'])) {
-        //     Log::info('API authArray decoding failed');
-        //     return;
-        // }
-        // $widgetId = $authArray['wid'];
-
-        // $inputArray = Input::all();
-
-        // if (!isset($inputArray['data'])) {
-        //     Log::info('API inputArray not valid');
-        //     return;
-        // }
-        // $time = time();
-        // foreach ($inputArray['data'] as $dataArray) {
-        //     $data = new Data;
-        //     $data->widget_id = $widgetId;
-        //     $data->data_object = json_encode(array(
-        //         'key'   => $dataArray['key'],
-        //         'value' => $dataArray['value']
-        //     ));
-        //     $data->date = date("Y-m-d", $time);
-        //     $data->timestamp = date('Y-m-d H:i:s', $time);
-        //     $data->save();
-        // }
+        /* Return based on result */
+        return Response::json($result);
     }
 
     /**
-     * anyExample
+     * getTest
      * --------------------------------------------------
      * @return Renders the example page
      * --------------------------------------------------
      */
-    public function anyExample() {
+    public function getTest($widgetID) {
+        /* Get the requested widget */
+        $widget = Widget::where('id', $widgetID)->first();
+
+        /* Error handling */
+        if ($widget == null) {
+            return Redirect::route('dashboard.dashboard')->with(['error' => 'Sorry the requested widget does not exist']);
+        } 
+        if ($widget->user()->id != Auth::user()->id) {
+            return Redirect::route('dashboard.dashboard')->with(['error' => 'Sorry the requested widget does not exist']);
+        }
+
+        /* Get the widget API url */
+        $url = $widget->getSpecific()->dataManager()->getCriteria()['url'];
+
+        /* Create default JSON string */
+        $defaultJSON =
+            "{\n".
+            "'timestamp':" . Carbon::now()->getTimestamp(). ", \n" .
+            "'Graph One': 15, \n" .
+            "'Graph Two': 40\n" .
+            "}";
+
         /* Render view */
-        return View::make('api.example', 
-                          array('apiVersion' => end(self::$apiVersions),
-                                'apiKey'     => md5(Auth::user()->id),
-                                'widgetID'   => '-WidgetID-'));
+        return View::make('api.test',
+                            ['url'         => $url,
+                             'defaultJSON' => $defaultJSON,
+                             'toDashboard' => $widget->dashboard->id]);
+    }
+
+
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
+
+    /**
+     * handlePostData
+     * --------------------------------------------------
+     * @return Handles the POST data (url and data check)
+     * --------------------------------------------------
+     */
+    private function handlePostData($apiVersion, $apiKey, $widgetID) {
+        /* Handle POST data based on the API version */
+        switch ($apiVersion) {
+            case '1.0':
+            default:
+                /* Get user and widget */
+                $user   = User::where('api_key', $apiKey)->first();
+                $widget = Widget::where('id', $widgetID)->first();
+
+                /* Check API key */
+                if (is_null($user)) {
+                    return array('status'  => FALSE,
+                                 'message' => 'Your API key is invalid.');
+                }
+
+                /* Check Widget ID */
+                if (is_null($widget)) {
+                    return array('status'  => FALSE,
+                                 'message' => 'Your Widget ID is invalid.');
+                }
+
+                /* Check if the widget belongs to the user */
+                if ($user->id != $widget->user()->id) {
+                    return array('status'  => FALSE,
+                                 'message' => 'Your Url is invalid (api key and widget id doesn\'t match).');
+                }
+
+                /* Save widget data */
+                return $this->saveWidgetData($widget);
+                break;
+        }
+    }
+
+    /**
+     * saveWidgetData
+     * --------------------------------------------------
+     * @return Saves the data to the database
+     * --------------------------------------------------
+     */
+    private function saveWidgetData($widget) {
+        /* Check if timestamp exists */
+        if (Input::get('timestamp') == null) {
+            return array('status'  => FALSE,
+                         'message' => "You must provide a 'timestamp' or a 'date' attribute for your data.");
+        } else {
+            try {
+                $date = Carbon::createFromTimeStamp(Input::get('timestamp'));
+            } catch (Exception $e) {
+                return array('status'  => FALSE,
+                             'message' => "Your 'timestamp' is not a valid timestamp.");
+            }
+        }
+
+        /* Check all other data */
+        foreach (Input::except('timestamp') as $key => $value) {
+            if (!is_numeric($value)) {
+                return array('status'  => FALSE,
+                             'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
+            }
+        }
+
+        /* Everything is ok */
+        $widget->getSpecific()->dataManager()->saveData(array(Input::all()), TRUE);
+        return array('status'  => TRUE,
+                     'message' => 'Your data has been successfully saved.');
+
     }
 }

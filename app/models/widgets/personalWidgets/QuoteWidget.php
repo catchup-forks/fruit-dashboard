@@ -7,7 +7,7 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
         'type' => array(
             'name'    => 'Type',
             'type'    => 'SCHOICE',
-            'default' => 'inspirational'
+            'default' => 'inspirational',
         ),
     );
 

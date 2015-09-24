@@ -47,7 +47,7 @@ class DataManager extends Eloquent
         return $this->data->widgets();
     }
 
-    public function collectData() {}
+    public function collectData($options=array()) {}
     public function initializeData() {}
 
     /**

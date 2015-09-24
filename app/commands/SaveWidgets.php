@@ -31,7 +31,7 @@ class SaveWidgets extends Command {
     }
 
     /**
-     * Execute the console command.
+ * Execute the console command.
      *
      * @return mixed
      */

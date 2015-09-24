@@ -23,12 +23,11 @@
                   'class' => 'form-horizontal' )) }}
 
                   @foreach ($settings as $field=>$meta)
-
                     <div class="form-group">
                       {{ Form::label($field, $meta['name'], array(
                           'class' => 'col-sm-3 control-label'
-                        ))}}
-                      <div class="col-sm-7">
+                        )) }}
+                      <div class="col-sm-8">
                         @if ($meta['type'] == "SCHOICE")
                           {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control']) }}
                         @elseif ($meta['type'] == "BOOL")
@@ -36,20 +35,25 @@
                           {{ Form::hidden($field, 0)}}
                           {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                         @else
-                          {{ Form::text($field, $widget->getSettings()[$field], array(
-                        'class' => 'form-control' )) }}
+                          @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                            <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
+                          @else
+                            {{ Form::text($field, $widget->getSettings()[$field], array(
+                              'class' => 'form-control' )) }}
+                          @endif
                         @endif
-                        @if (array_key_exists('help_text', $meta))
+                        @if ($errors->first($field))
+                          <p class="text-danger">{{ $errors->first($field) }}</p>
+                        @elseif (array_key_exists('help_text', $meta))
                           <p class="text-info">{{ $meta['help_text'] }}</p>
                         @endif
-                      </div> <!-- /.col-sm-6 -->
-
+                      </div> <!-- /.col-sm-7 -->
                     </div> <!-- /.form-group -->
 
                   @endforeach
                   <hr>
                     {{ Form::submit('Setup widget', array('class' => 'btn btn-primary pull-right') ) }}
-                    <a href="/" class="btn btn-link pull-right">Cancel</a>
+                    <a href="{{ route('dashboard.dashboard', ['active' => $widget->dashboard->id]) }}" class="btn btn-link pull-right">Cancel</a>
                 {{ Form::close() }}
               </div> <!-- /.panel-body -->
             </div> <!-- /.panel -->

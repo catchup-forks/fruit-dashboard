@@ -7,20 +7,14 @@ class ApiHistogramWidget extends MultipleHistogramWidget
         'url' => array(
             'name'       => 'POST url',
             'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The widget data will be posted to this url.'
-        ),
-        'name' => array(
-            'name'       => 'Name',
-            'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The name of the chart.'
+            'help_text'  => 'The widget data will be posted to this url.',
+            'disabled'   => TRUE
         ),
    );
 
     /* The settings to setup in the setup-wizard. */
-    private static $APISetupFields = array('name');
-    private static $APICriteriaFields = array();
+    private static $APISetupFields = array('name', 'url');
+    private static $APICriteriaFields = array('url');
 
     /* -- Choice functions -- */
     public function resolution() {
@@ -66,26 +60,39 @@ class ApiHistogramWidget extends MultipleHistogramWidget
         return array_merge(parent::getCriteriaFields(), self::$APICriteriaFields);
      }
 
-     // /**
-     //  * collectData
-     //  * --------------------------------------------------
-     //  * Overrides collectData beacuse we are saving the widget
-     //  *      data elsewhere (in API controller).
-     //  * --------------------------------------------------
-     //  */
-     // public function collectData() {
-     //     return TRUE;
-     // }
+    /**
+     * getWidgetApiUrl
+     * Returns the POST url for the widget
+     * --------------------------------------------------
+     * @return (string) ($url) The url
+     * --------------------------------------------------
+     */
+     public function getWidgetApiUrl() {
+        return route('api.post',
+                    array(SiteConstants::getLatestApiVersion(),
+                          $this->user()->api_key,
+                          $this->id));
+     }
 
-     // /*
-     //  * dataExists
-     //  * Checking if datamanager exists
-     //  * --------------------------------------------------
-     //  * @return boolean
-     //  * --------------------------------------------------
-     // */
-     // public function dataExists() {
-     //     return  ! (is_null($this->dataManager()));
-     // }
+     /**
+      * Save | Override to save the URL
+      * --------------------------------------------------
+      * @param array $options
+      * @return Saves the widget
+      * --------------------------------------------------
+     */
+     public function save(array $options=array()) {
+         /* Call parent save */
+         parent::save($options);
+
+         /* Add URL value to settings */
+         $this->saveSettings(array(
+            'url' => $this->getWidgetApiUrl(),
+         ), FALSE);
+
+         /* Return */
+         return parent::save();
+     }
+
 }
 ?>
