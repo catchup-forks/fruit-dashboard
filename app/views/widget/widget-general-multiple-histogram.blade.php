@@ -2,37 +2,8 @@
   <div class="chart-name">
     {{ $widget->getSettings()['name'] }}
   </div> <!-- /.chart-name -->
-  
-  {{--  FOR MULTIPLE HISTOGRAM THERE IS NO SINGLE VALUE
-  <div class="chart-value">
-    @if ($widget->state == 'active')
-      {{ $widget->getLatestData()['value'] }}
-    @endif  
-  </div> <!-- /.chart-value -->
-  --}}
 
 </div> <!-- /.chart-data -->
-
-<div class="chart-diff-data text-center">
-
-  @if (true)
-    <div class="chart-diff text-success">
-      <span class="fa fa-arrow-up chart-diff-icon"> </span>
-
-  @else 
-    <div class="chart-diff text-danger">
-      <span class="fa fa-arrow-down chart-diff-icon"> </span>
-
-  @endif
-
-    <span class="chart-diff-value">hello</span>
-  </div> <!-- /.chart-diff -->
-
-
-  <div class="chart-diff-dimension">
-    <small>(1 day ago)</small>
-  </div> <!-- /.chart-diff-dimension -->
-</div> <!-- /.chart-diff-data -->
 
 <div id="{{ $widget->id }}-chart-container" class="clickable">
   <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
