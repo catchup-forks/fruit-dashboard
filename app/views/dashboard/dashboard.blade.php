@@ -140,8 +140,15 @@
   <script type="text/javascript" src="lib/fd-gridster.js"></script>
   <!-- /FDGridster class -->
 
+  <!-- FDChartOptions class -->
+  <script type="text/javascript" src="lib/FDChartOptions.js"></script>
+  <script type="text/javascript">
+      globalChartOptions = new FDChartOptions('dashboard');
+  </script>
+  <!-- /FDChartOptions class -->
+
   <!-- FDChart class -->
-  <script type="text/javascript" src="lib/fd-chart.js"></script>
+  <script type="text/javascript" src="lib/FDChart.js"></script>
   <!-- /FDChart class -->
 
   <!-- Gridster scripts -->

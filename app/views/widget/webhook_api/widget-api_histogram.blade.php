@@ -1,9 +1,34 @@
 @if ($widget->dataManager()->getData() == FALSE)
-    <div class="text-white text-center drop-shadow" id="widget-loading-{{ $widget->id }}">
-        <h3>This widget is waiting for data on this url: </h3><br>
+  <div id="widget-loading-{{ $widget->id }}" class="widget-inner fill">
+    <p class="text-center">
+      This widget is waiting for data on this url:
+      <pre>
         {{ $widget->dataManager()->getUrl() }}
-        <a href="{{ route('api.test', [$widget->id]) }}">You can test it from here</a>
-    </div>
+      </pre>
+    </p> <!-- /.lead -->
+    <p class="text-center">
+      <button onclick="copyToClipboard('{{ $widget->dataManager()->getUrl() }}');" class="btn btn-sm btn-primary">Copy to clipboard</button>
+      <a href="{{ route('api.test', [$widget->id]) }}" class="btn btn-link">Test widget</a>
+    </p>
+  </div> <!-- /.widget-inner -->
 @else
     @include('widget.widget-general-multiple-histogram', ['widget' => $widget])
 @endif
+
+@section('widgetScripts')
+<script type="text/javascript">
+  
+  function copyToClipboard(url) {
+      var $temp = $("<input>");
+      $("body").append($temp);
+      $temp.val(url).select();
+      document.execCommand("copy");
+      $temp.remove();
+  }
+
+$(document).ready(function(){
+
+});
+
+</script>
+@append

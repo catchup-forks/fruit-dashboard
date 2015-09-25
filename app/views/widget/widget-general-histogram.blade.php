@@ -47,8 +47,8 @@
       // Removing the canvas and redrawing for proper sizing.
       canvas = reinsertCanvas(canvas);
 
-      // Building data object for graph.
-      var data = {
+      // Set chart data
+      var chartData = {
         'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
         'datasets': [{
           'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
@@ -56,9 +56,14 @@
         }]
       }
 
-      // Calling drawer for the first time.
-      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
-        .draw({'type': 'line'}, data);
+      // Set chart options
+      var chartOptions = {
+        'type': 'line',
+        'chartJSOptions': globalChartOptions.getLineChartOptions()
+      }
+        
+      // Draw chart
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
 
     @elseif ($widget->state == 'loading')
       // Loading widget.

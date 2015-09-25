@@ -22,8 +22,8 @@
       // Removing the canvas and redrawing for proper sizing.
       canvas = reinsertCanvas(canvas);
 
-      // Calling drawer for the first time.
-      var data = {
+      // Set chart data
+      var chartData = {
         'labels': [@foreach ($widget->getData()['datetimes'] as $histogramEntry) "{{$histogramEntry}}", @endforeach],
         'datasets': [
           @foreach ($widget->getData()['datasets'] as $dataset)
@@ -35,9 +35,15 @@
           @endforeach
         ]
       }
-      //var newChart = new FDChart('{{ $widget->id }}');
-      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
-        .draw({'type': 'line'}, data);
+
+      // Set chart options
+      var chartOptions = {
+        'type': 'line',
+        'chartJSOptions': globalChartOptions.getLineChartOptions()
+      }
+        
+      // Draw chart
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
@@ -54,41 +60,41 @@
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
       canvas = reinsertCanvas(canvas);
-
-      drawLineGraph(canvas, datasets, labels, name);
+      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
+        .draw({'type': 'line'}, data);
     })
 
     // Bind redraw to resize event.
-    $('#container-{{$widget->id}}').bind('resize', function(e){
-      chartOptions.animation = false;
+    container.bind('resize', function(e){
       canvas = reinsertCanvas(canvas);
-      drawLineGraph(canvas, datasets, labels, name);
-      chartOptions.animation = true;
+      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
+        .draw({'type': 'line'}, data);
     });
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) { updateMultipleHistogramWidget(data, canvas, name, valueSpan);});
-      canvas = $("#{{ $widget->id }}-chart");
+      refreshWidget({{ $widget->id }}, function (data) {
+        updateMultipleHistogramWidget(data, canvas, name, valueSpan);
+      });
      });
 
     // Detecting clicks and drags.
     // Redirect to single stat page on click.
-    var isDragging = false;
-    $('#{{ $widget->id }}-chart-container')
-    .mousedown(function() {
-        isDragging = false;
-    })
-    .mousemove(function() {
-        isDragging = true;
-     })
-    .mouseup(function() {
-        var wasDragging = isDragging;
-        isDragging = false;
-        if (!wasDragging) {
-          window.location = "{{ route('widget.singlestat', $widget->id) }}";
-        }
-    });
+    // var isDragging = false;
+    // container
+    //   .mousedown(function() {
+    //       isDragging = false;
+    //   })
+    //   .mousemove(function() {
+    //       isDragging = true;
+    //    })
+    //   .mouseup(function() {
+    //       var wasDragging = isDragging;
+    //       isDragging = false;
+    //       if (!wasDragging) {
+    //         window.location = "{{ route('widget.singlestat', $widget->id) }}";
+    //       }
+    //   });
 
   });
 </script>
