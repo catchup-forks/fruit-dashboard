@@ -177,9 +177,18 @@ body {
   color: #ffffff;
   text-shadow: 1px -1px 3px #141414;
 }
+.rounded {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
 .widget-inner {
   background-color: #ffffff;
   background-color: rgba(255, 255, 255, 0.47222222);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
 }
 .reminder-text {
   padding-top: 5px;

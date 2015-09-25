@@ -39,6 +39,7 @@
   //    animation: true
   // };
 
+  // HAMBURGER MENU
   // Call the Hamburger Menu.
   $('.dropdown-toggle').dropdown();
 
@@ -47,6 +48,7 @@
     $(".dropdown").removeClass("open");
   });
 
+  // DELETE WIDGET
   // Look for the delete menu click
   $(".deleteWidget").click(function(e) {
 
@@ -182,9 +184,6 @@
     if (data.length > 0 && valueSpan) {
       valueSpan.html(data[data.length-1]['value']);
     }
-
-    canvas = reinsertCanvas(canvas);
-    drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
 
     return {'values': values, 'labels': labels};
   }
