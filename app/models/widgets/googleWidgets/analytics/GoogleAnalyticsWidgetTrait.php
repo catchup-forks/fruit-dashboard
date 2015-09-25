@@ -8,7 +8,6 @@ trait GoogleAnalyticsWidgetTrait
             'name'       => 'Property',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'help_text'  => 'The widget uses this Google Analytics property (website, mobile app, etc.) for data representation.'
         )
     );
     private static $property = array('property');
