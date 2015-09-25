@@ -124,6 +124,15 @@ class TwitterConnector extends GeneralServiceConnector
             )),
             ''
         );
+
+        /* Creating twitter user */
+        $collector = new TwitterDataCollector(Auth::user());
+        $twitterUser = new TwitterUser(array(
+            'screen_name' => $collector->getUserData()->screen_name
+        ));
+        $twitterUser->user()->associate(Auth::user());
+        $twitterUser->save();
+
     }
 
     /**

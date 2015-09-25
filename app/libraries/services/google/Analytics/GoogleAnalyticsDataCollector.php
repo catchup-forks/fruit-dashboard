@@ -119,7 +119,7 @@ class GoogleAnalyticsDataCollector
                 if ($useDimensions) {
                     $metricsData = $this->buildDimensionsData($metrics, $rows, $profileName);
                 } else {
-                    $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
+                    $metricsData = $this->buildSimpleMetricsData($metrics, $rows);
                 }
             } else if( ! $useDimensions) {
                 $rows = array();
@@ -138,11 +138,10 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
     * @param array $metrics
     * @param array  $rows
-    * @param string $profileName
     * @return array
      * --------------------------------------------------
     */
-    private function buildSimpleMetricsData($metrics, $rows, $profileName) {
+    private function buildSimpleMetricsData($metrics, $rows) {
         /* Creating metrics array. */
         $metricsData = array();
         $i = 0;
@@ -175,7 +174,7 @@ class GoogleAnalyticsDataCollector
                 if ( ! array_key_exists($row[0], $metricsData[$metric])) {
                     $metricsData[$metric][$row[0]] = array();
                 }
-                array_push($metricsData[$metric][$row[0]], $row[$i]);
+                $metricsData[$metric][$row[0]] = $row[$i];
             }
             ++$i;
         }

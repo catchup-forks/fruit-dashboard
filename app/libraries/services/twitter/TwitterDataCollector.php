@@ -60,7 +60,7 @@ class TwitterDataCollector
      * @throws TwitterNotConnected
      * --------------------------------------------------
     */
-    protected function getUserData() {
+    public function getUserData() {
         return $this->connector->get("account/verify_credentials");
     }
 

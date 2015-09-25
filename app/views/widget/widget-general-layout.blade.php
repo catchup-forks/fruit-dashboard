@@ -13,6 +13,7 @@
       </a>
       <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="{{ $widget->id }}">
 
+        @if ($widget->state != 'setup_required')
         {{-- EDIT --}}
         <li>
           <a href="{{ route('widget.edit', $widget->id) }}">
@@ -39,6 +40,7 @@
             Share widget
           </a>
         </li>
+        @endif
         @endif
 
         {{-- DELETE --}}
