@@ -290,7 +290,7 @@ input.greetings-name:focus {
 }
 .background-white {
   background-color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.47222222);
+  background-color: rgba(255, 255, 255, 0.70833333);
 }
 .has-padding {
   padding: 5px;
@@ -301,7 +301,7 @@ input.greetings-name:focus {
 .chart {
   margin: 5px;
   background-color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.47222222);
+  background-color: rgba(255, 255, 255, 0.70833333);
   padding: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -321,15 +321,14 @@ input.greetings-name:focus {
 .chart-value {
   font-weight: 800;
   font-size: 120%;
-  color: #4dff79;
-  text-shadow: 1px 1px 3px #141414;
+  color: #6999d1;
 }
 .chart-diff-data {
   position: absolute;
   top: 10px;
   right: 25px;
   background-color: #ffffff;
-  background-color: rgba(255, 255, 255, 0.47222222);
+  background-color: rgba(255, 255, 255, 0.70833333);
   padding: 5px;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;

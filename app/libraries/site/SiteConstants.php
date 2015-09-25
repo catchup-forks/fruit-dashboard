@@ -33,6 +33,7 @@ class SiteConstants {
         'Marketplaces' => 'Products that connect sellers with buyers.'
     );
     private static $chartJsColors = array(
+        '105 ,153, 209',
         '77, 255, 121',
         '255, 121, 77',
         '77, 121, 255',
