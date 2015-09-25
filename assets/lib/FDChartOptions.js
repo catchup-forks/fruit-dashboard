@@ -76,7 +76,7 @@ function FDChartOptions(pageName) {
        pointDot: false,
        bezierCurve: true,
        bezierCurveTension : 0.35,
-       animation: true
+       animation: false
     };
   }
 
