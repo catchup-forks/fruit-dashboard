@@ -6,5 +6,12 @@ module.exports = {
     options: {
       nospawn: true
     }
+  },
+  copy_lib: {
+    files: ['assets/lib/*'],
+    tasks: ['copy:lib'],
+    options: {
+      nospawn: true
+    }
   }
 };
