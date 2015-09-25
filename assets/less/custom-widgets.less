@@ -1,8 +1,16 @@
 // WIDGETS
 
+.rounded {
+  -webkit-border-radius: @padding;
+  -moz-border-radius: @padding;
+  border-radius: @padding;
+}
+
 .widget-inner {
   background-color: @white;
   background-color: fade(@white, @alpha/1.8);
+  padding: @padding;
+  .rounded;
 }
 
 .reminder-text {

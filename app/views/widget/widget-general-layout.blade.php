@@ -35,7 +35,7 @@
         @if ( ! $widget instanceof SharedWidget)
         <li>
           <a href="#" id="share-{{$widget->id}}" onclick="showShareModal({{$widget->id}})">
-            <span class="fa fa-eye"> </span>
+            <span class="fa fa-share-alt"> </span>
             Share widget
           </a>
         </li>
@@ -57,7 +57,7 @@
       @include('widget.widget-setup-required', ['widget' => $widget,])
   @elseif ($widget instanceof SharedWidget)
     @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
-  {{-- @elseif ($widget->premiumUserCheck() === -1) --}}
+  @elseif ($widget->premiumUserCheck() === -1)
     {{-- @include('widget.widget-premium-not-allowed', ['feature' => 'hello']) --}}
   @else
     @if ($widget instanceof iAjaxWidget)

@@ -80,16 +80,15 @@
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
       canvas = reinsertCanvas(canvas);
-      chartOptions.animation = false;
-      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
+        .draw({'type': 'line'}, data);
     })
 
     // Bind redraw to resize event.
-    $('#container-{{$widget->id}}').bind('resize', function(e){
-      // turn off animation while redrawing
-      chartOptions.animation = false;
+    container.bind('resize', function(e){
       canvas = reinsertCanvas(canvas);
-      drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
+      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
+        .draw({'type': 'line'}, data);
     });
 
     // Adding refresh handler.
@@ -101,21 +100,21 @@
 
     // Detecting clicks and drags.
     // Redirect to single stat page on click.
-    var isDragging = false;
-    $('#{{ $widget->id }}-chart-container')
-    .mousedown(function() {
-        isDragging = false;
-    })
-    .mousemove(function() {
-        isDragging = true;
-     })
-    .mouseup(function() {
-        var wasDragging = isDragging;
-        isDragging = false;
-        if (!wasDragging) {
-          window.location = "{{ route('widget.singlestat', $widget->id) }}";
-        }
-    });
+    // var isDragging = false;
+    // container
+    //   .mousedown(function() {
+    //       isDragging = false;
+    //   })
+    //   .mousemove(function() {
+    //       isDragging = true;
+    //    })
+    //   .mouseup(function() {
+    //       var wasDragging = isDragging;
+    //       isDragging = false;
+    //       if (!wasDragging) {
+    //         window.location = "{{ route('widget.singlestat', $widget->id) }}";
+    //       }
+    //   });
 
   });
 </script>

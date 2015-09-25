@@ -81,16 +81,6 @@
       })
     }
 
-   
-    
-    // $(toAlign).css({
-    //     'position' : 'absolute',
-    //     'left' : '50%',
-    //     'top' : '50%',
-    //     'margin-left' : -$(toAlign).closest('.gridster-player').outerWidth()/2,
-    //     'margin-top' : -$(toAlign).closest('.gridster-player').outerHeight()/2
-    // });
-
   });
 </script>
 @append

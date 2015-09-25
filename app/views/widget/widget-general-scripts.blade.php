@@ -1,44 +1,6 @@
 <script type="text/javascript">
 
-  // // Overriding chartjs defaults.
-  // Chart.defaults.global.animationSteps = 60;
-  // Chart.defaults.global.animationEasing = "easeOutQuart";
-  // Chart.defaults.global.showScale = false;
-  // Chart.defaults.global.showTooltips = false;
-  // Chart.defaults.global.responsive = false;
-  // // Chart.defaults.global.maintainAspectRatio = false;
-  
-  // // No tooltips today.
-  // // Chart.defaults.global.tooltipCornerRadius = 4;
-  // // Chart.defaults.global.tooltipXPadding = 5;
-  // // Chart.defaults.global.tooltipYPadding = 5;
-  // // Chart.defaults.global.tooltipCaretSize = 5;
-  // // Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.6)";
-  // // Chart.defaults.global.tooltipFontSize = 11;
-
-  // // Open sans makes the text rendering blurry
-  // //Chart.defaults.global.scaleFontFamily = "'Open Sans', sans-serif";
-  // //Chart.defaults.global.tooltipFontFamily = "'Open Sans', sans-serif";
-  // // Chart.defaults.global.tooltipFontStyle = "lighter";
-
-  // // No scale today.
-  // //Chart.defaults.global.scaleLineColor = "rgba(179,179,179,1)";
-  // //Chart.defaults.global.scaleFontSize = 9;
-  // //Chart.defaults.global.scaleFontColor = "rgba(230,230,230,1)";
-
-  // var chartOptions = {
-  //    pointDot: false,
-  //    // pointHitDetectionRadius : 5,
-  //    // pointDotRadius : 2,
-  //    bezierCurve: true,
-  //    bezierCurveTension : 0.35,
-  //    // scaleGridLineColor : "rgba(179,179,179,0.4)",
-  //    // scaleGridLineWidth : 0.35,
-  //    // tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
-  //    // multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
-  //    animation: true
-  // };
-
+  // HAMBURGER MENU
   // Call the Hamburger Menu.
   $('.dropdown-toggle').dropdown();
 
@@ -47,6 +9,7 @@
     $(".dropdown").removeClass("open");
   });
 
+  // DELETE WIDGET
   // Look for the delete menu click
   $(".deleteWidget").click(function(e) {
 
@@ -114,20 +77,6 @@
     loadWidget(widgetId, callback);
   };
 
-  // function createDataSet(values, name, color) {
-
-  //   return {
-  //     label: name,
-  //     fillColor : "rgba(" + color + ",0.2)",
-  //     strokeColor : "rgba(" + color + ",1)",
-  //     pointColor : "rgba(" + color + ",1)",
-  //     pointStrokeColor : "#fff",
-  //     pointHighlightFill : "#fff",
-  //     pointHighlightStroke : "rgba(" + color + ",1)",
-  //     data: values
-  //   }
-  // }
-
   // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
   function reinsertCanvas(canvas) {
     var canvasHeight = canvas.closest('div.gridster-player').height()-2*10;
@@ -142,34 +91,6 @@
     return $("#" + canvasId);
   }
 
-  // function drawLineGraph(canvas, datasets, labels, name) {
-  //   // Building data.
-  //   var chartData = {
-  //     labels: labels,
-  //     datasets: []
-  //   };
-
-  //   canvas = reinsertCanvas(canvas);
-
-  //   for (i = 0; i < datasets.length; ++i) {
-  //     if (datasets[i]['color']) {
-  //       color = datasets[i]['color'];
-  //     } else {
-  //       color = '{{ SiteConstants::getChartJsColors()[0] }}';
-  //     }
-  //     chartData.datasets.push(createDataSet(datasets[i]['values'], datasets[i]['name'], color));
-  //   }
-
-  //   // Getting context.
-  //   var ctx = canvas[0].getContext("2d");
-
-  //   // Drawing chart.
-  //   var chart = new Chart(ctx).Line(chartData, chartOptions);
-
-  //   // Setting opacity.
-  //   // ctx.globalAlpha = 0.75;
-  // }
-
   function updateHistogramWidget(data, canvas, name, valueSpan) {
 
     // Updating chart values.
@@ -183,9 +104,6 @@
       valueSpan.html(data[data.length-1]['value']);
     }
 
-    canvas = reinsertCanvas(canvas);
-    drawLineGraph(canvas, [{'values': values, 'name': 'All'}], labels, name);
-
     return {'values': values, 'labels': labels};
   }
 
@@ -193,11 +111,34 @@
     if (data && data['datetimes'] == null) {
       return;
     }
-    canvas = reinsertCanvas(canvas);
-    drawLineGraph(canvas, data['datasets'], data['datetimes'], name);
+
+  }
+
+  function updateMentionsWidget(data, containerId) {
+    if (data.length === undefined) {
+      return;
+    }
+    console.log("hello");
+
+    function clearContainer() {
+      $(containerId).html('');
+    }
+
+    for (word in data['text']) {
+      console.log(word);
+    }
+
+    clearContainer();
+
   }
 
   function updateTableWidget(data, tableId) {
+
+    function clearTable() {
+      $("#" + tableId + " tbody").remove();
+      $("#" + tableId + " thead").remove();
+    }
+
     if ( ! data['content']) {
       return;
     }
@@ -226,8 +167,4 @@
 
   }
 
-  function clearTable(tableId) {
-    $("#" + tableId + " tbody").remove();
-    $("#" + tableId + " thead").remove();
-  }
 </script>

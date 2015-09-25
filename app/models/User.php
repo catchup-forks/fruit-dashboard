@@ -24,6 +24,7 @@ class User extends Eloquent implements UserInterface
         'updated_at',
         'last_activity',
         'api_key',
+        'startup_type'
     );
 
     /* -- Relations -- */
