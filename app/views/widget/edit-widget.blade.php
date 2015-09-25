@@ -29,7 +29,7 @@
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">
-                      @if ($meta['type'] == "SCHOICE")
+                        @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
                           <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
                         @else

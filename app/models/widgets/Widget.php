@@ -259,6 +259,15 @@ class Widget extends Eloquent
                 case 'FLOAT':  $validationString .= 'numeric|'; break;
                 case 'DATE':  $validationString .= 'date|'; break;
                 case 'BOOL':  $validationString .= ''; break;
+                case 'SCHOICEOPTGRP':
+                    $validValues = array();
+                    foreach ($this->$fieldName() as $optGroup) {
+                        foreach (array_keys($optGroup) as $key) {
+                            array_push($validValues, $key);
+                        }
+                    }
+                    $validationString .= 'in:' . implode(',', $validValues)."|";
+                    break;
                 default:;
             }
 

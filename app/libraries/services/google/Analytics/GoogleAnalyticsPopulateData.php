@@ -20,6 +20,13 @@ class GoogleAnalyticsPopulateData
     private $property = null;
 
     /**
+     * The google analytics property.
+     *
+     * @var string
+     */
+    private $profileId = null;
+
+    /**
      * The dataManagers.
      *
      * @var array
@@ -40,7 +47,8 @@ class GoogleAnalyticsPopulateData
         $this->user = User::find($data['user_id']);
         $this->collector = new GoogleAnalyticsDataCollector($this->user);
         $this->criteria = $data['criteria'];
-        $this->property = $this->user->googleAnalyticsProperties()->where('id', $data['criteria']['property'])->first();
+        $this->property = $this->user->googleAnalyticsProperties()->where('id', $this->criteria['property'])->first();
+        $this->profileId = $this->criteria['profile'];
         $this->dataManagers = $this->getManagers();
         $this->collectData();
         $job->delete();
@@ -104,15 +112,13 @@ class GoogleAnalyticsPopulateData
             /* Creating start, end days. */
             $start = SiteConstants::getGoogleAnalyticsLaunchDate();
             $end = Carbon::now()->subDays($i);
-            $metrics = $this->collector->getMetrics($this->property, $start, $end->toDateString(), array_keys($data));
+            $metrics = $this->collector->getMetrics($this->property, $this->profileId, $start, $end->toDateString(), array_keys($data));
 
-            foreach ($metrics as $metric=>$dailyData) {
+            foreach ($metrics as $metric=>$value) {
                 /* Getting daily data. */
                 $currentDateMetric = array();
                 $currentDateMetric['timestamp'] = $end->getTimestamp();
-                foreach ($dailyData as $profile=>$value) {
-                    $currentDateMetric[$profile] = $value[0];
-                }
+                $currentDateMetric['value'] = $value;
 
                 /* Adding value. */
                 array_push($data[$metric], $currentDateMetric);

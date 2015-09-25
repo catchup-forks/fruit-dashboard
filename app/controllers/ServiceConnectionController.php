@@ -467,8 +467,15 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
+            $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $propertyId = array_keys($properties)[0];
-            $settings = array('property' => $propertyId);
+            $property = Auth::user()->googleAnalyticsProperties()->where('id', $propertyId)->first();
+            $profile = $collector->getProfiles($property)[0];
+            $settings = array(
+                'profile'  => $profile->id,
+                'property' => $propertyId,
+            );
+
             $connector = new GoogleAnalyticsConnector(Auth::user());
             $connector->createDataManagers($settings);
 
@@ -505,13 +512,21 @@ class ServiceConnectionController extends BaseController
 
         foreach (Input::get('properties') as $id) {
             /* Creating data managers. */
+            $collector = new GoogleAnalyticsDataCollector(Auth::user());
+            $property = Auth::user()->googleAnalyticsProperties()->where('id', $id)->first();
+            $profile = $collector->getProfiles($property)[0];
+            $settings = array(
+                'profile'  => $profile->id,
+                'property' => $id,
+            );
+
             $connector = new GoogleAnalyticsConnector(Auth::user());
-            $connector->createDataManagers(array('property' => $id));
+            $connector->createDataManagers($settings);
 
             $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
-                Auth::user(), array('property' => $id)
+                Auth::user(), $settings
             );
-            $dashboardCreator->create($properties[$id]);
+            $dashboardCreator->create($property->name);
         }
 
         $message = 'Connection successful.';

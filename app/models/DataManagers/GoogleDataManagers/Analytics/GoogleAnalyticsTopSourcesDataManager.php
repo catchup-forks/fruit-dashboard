@@ -23,7 +23,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      */
     private function getMetric($start, $end, $maxResults) {
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getMetrics($this->getProperty(), $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
+        return $collector->getMetrics($this->getProperty(), $this->getCriteria()['property'], $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
     }
 
     /**

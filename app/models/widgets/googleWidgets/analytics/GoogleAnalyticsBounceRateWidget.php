@@ -1,5 +1,5 @@
 <?php
-class GoogleAnalyticsBounceRateWidget extends MultipleHistogramWidget implements iServiceWidget
+class GoogleAnalyticsBounceRateWidget extends HistogramWidget implements iServiceWidget
 {
     use GoogleAnalyticsWidgetTrait;
 }
