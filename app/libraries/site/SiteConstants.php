@@ -275,10 +275,16 @@ class SiteConstants {
      * --------------------------------------------------
      */
     public static function getAllGroupsMeta() {
-        return array_merge(
-                self::getCustomGroupsMeta(),
-                self::getAllServicesMeta()
+        /* Get groups */
+        $allgroups = array_merge(
+            self::getCustomGroupsMeta(),
+            self::getAllServicesMeta()
         );
+        /* Sort by name */
+        usort($allgroups, function ($a, $b) { return $b['display_name'] < $a['display_name']; });
+
+        /* Return */
+        return $allgroups;
     }
 
     /**
