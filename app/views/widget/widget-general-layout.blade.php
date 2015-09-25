@@ -58,7 +58,7 @@
   @elseif ($widget instanceof SharedWidget)
     @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
   @elseif ($widget->premiumUserCheck() === -1)
-    {{-- @include('widget.widget-premium-not-allowed', ['feature' => 'hello']) --}}
+     @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @else
     @if ($widget instanceof iAjaxWidget)
       @include('widget.widget-loading', ['widget' => $widget,])
@@ -67,7 +67,7 @@
 
     @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
     <!-- Adding loading on DataWidget -->
-    @if ($widget instanceof CronWidget)
+    @if ($widget instanceof iAjaxWidget)
       </div>
     @endif
 
