@@ -47,7 +47,7 @@ class Dashboard extends Eloquent
             }
         }
         /* No match, default positioning. */
-        return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col": 1,"row": 1}';
+        return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col": 11,"row": 11}';
     }
 
     /**

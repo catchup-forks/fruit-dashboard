@@ -313,10 +313,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'    => 'twitter',
                 'is_premium'  => FALSE,
                 'number'       => 5,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 4
+                'min_cols'     => 4,
+                'min_rows'     => 4,
+                'default_cols' => 5,
+                'default_rows' => 8
             )
         );
 

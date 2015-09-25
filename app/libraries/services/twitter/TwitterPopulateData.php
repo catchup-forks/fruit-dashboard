@@ -30,12 +30,12 @@ class TwitterPopulateData
      * Populating the widgets with data.
      */
     protected function collectData() {
-        $followersDataManager       = $this->dataManagers['twitter_followers'];
-        $newFollowersDataManager    = $this->dataManagers['twitter_new_followers'];
-
-        /* Getting metrics. */
-        $followersDataManager->collectData();
-        $newFollowersDataManager->collectData();
+        $this->dataManagers['twitter_followers']->initializeData();
+        $this->dataManagers['twitter_new_followers']->initializeData();
+        $this->dataManagers['twitter_mentions']->initializeData();
+        foreach ($this->dataManagers as $manager) {
+            $manager->setWidgetsState('active');
+        }
     }
 
     /**

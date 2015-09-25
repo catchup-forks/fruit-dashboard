@@ -5,10 +5,16 @@ class TwitterMentionsDataManager extends ArticleDataManager
     /**
      * collectData
      * Creating data for the widget.
+     * @param array $options.
      */
     public function collectData($options=array()) {
+        if (array_key_exists('count', $options)) {
+            $count = $options['count'];
+        } else {
+            $count = 5;
+        }
         $this->clearData();
-        foreach ($this->getMentions($options['count']) as $mention) {
+        foreach ($this->getMentions($count) as $mention) {
             $article = array(
                 'title'    => '@' . $mention->user->screen_name,
                 'text'     => $mention->text,
