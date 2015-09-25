@@ -13,6 +13,21 @@ class AddNameSettingToHistogramWidgets extends Migration {
      */
     public function up()
     {
+        /* Creating TwitterUser connections to users */
+        foreach (User::all() as $user) {
+            if ( ! $user->isServiceConnected('twitter')) {
+                continue;
+            }
+            try {
+                $connector = new TwitterConnector($user);
+                $connector->createTwitterUser();
+                Log::info("Created profile for user #". $user->id);
+            } catch (Exception $e) {
+                Log::error('Error found while trying to a twitter user for user #' . $user->id . '. message: ' . $e->getMessage());
+
+            }
+        }
+
         foreach (Widget::all() as $generalWidget) {
             try {
                 $widget = $generalWidget->getSpecific();
