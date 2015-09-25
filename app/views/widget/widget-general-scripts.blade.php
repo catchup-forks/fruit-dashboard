@@ -7,7 +7,7 @@
   // Chart.defaults.global.showTooltips = false;
   // Chart.defaults.global.responsive = false;
   // // Chart.defaults.global.maintainAspectRatio = false;
-  
+
   // // No tooltips today.
   // // Chart.defaults.global.tooltipCornerRadius = 4;
   // // Chart.defaults.global.tooltipXPadding = 5;
@@ -197,7 +197,31 @@
     drawLineGraph(canvas, data['datasets'], data['datetimes'], name);
   }
 
+  function updateMentionsWidget(data, containerId) {
+    if (data.length === undefined) {
+      return;
+    }
+    console.log("hello");
+
+    function clearContainer() {
+      $(containerId).html('');
+    }
+
+    for (word in data['text']) {
+      console.log(word);
+    }
+
+    clearContainer();
+
+  }
+
   function updateTableWidget(data, tableId) {
+
+    function clearTable() {
+      $("#" + tableId + " tbody").remove();
+      $("#" + tableId + " thead").remove();
+    }
+
     if ( ! data['content']) {
       return;
     }
@@ -226,8 +250,4 @@
 
   }
 
-  function clearTable(tableId) {
-    $("#" + tableId + " tbody").remove();
-    $("#" + tableId + " thead").remove();
-  }
 </script>

@@ -1,4 +1,4 @@
-<div class="twitter-mentions">
+<div class="twitter-mentions" id="mentions-{{ $widget->id }}">
   {{-- for each mention --}}
   @foreach ($widget->getData() as $tweet)
   <blockquote class="twitter-tweet">
@@ -26,7 +26,8 @@
   $(document).ready(function(){
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) {
-        console.log(data);
+        console.log('callback');
+        updateMentionsWidget(data, 'mentions-{{ $widget->id }}');
      });
    });
   });

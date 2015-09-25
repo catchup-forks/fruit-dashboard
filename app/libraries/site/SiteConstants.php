@@ -133,6 +133,18 @@ class SiteConstants {
     }
 
     /**
+     * getStartupTypes:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (integer) ($startupTypes) startupTypes
+     * --------------------------------------------------
+     */
+    public static function getStartupTypes() {
+        return self::$startupTypes;
+    }
+
+
+    /**
      * getTrialPeriodInDays:
      * --------------------------------------------------
      * Returns the trial period in days.
