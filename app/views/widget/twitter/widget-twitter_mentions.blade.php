@@ -26,7 +26,7 @@
   $(document).ready(function(){
     $("#refresh-{{$widget->id}}").click(function () {
       refreshWidget({{ $widget->id }}, function (data) {
-        console.log('callback');
+        console.log(data);
         updateMentionsWidget(data, 'mentions-{{ $widget->id }}');
      });
    });
