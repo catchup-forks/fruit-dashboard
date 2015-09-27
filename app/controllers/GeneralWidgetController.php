@@ -106,7 +106,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Adding update_period on CronWidget */
         if ($widget instanceof CronWidget) {
-            $widget->dataManager()->setUpdatePeriod(Input::get('update_period'));
+            $widget->setUpdatePeriod(Input::get('update_period'));
         }
 
         /* Track event | EDIT WIDGET */

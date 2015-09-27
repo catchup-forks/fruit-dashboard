@@ -20,17 +20,18 @@
     </div> <!-- /.chart-data -->
 
     <div class="chart-diff-data text-center">
+      @if ( ! $widget instanceof MultipleHistogramWidget)
+        @if ($widget->getDiff()['value'] >= 0)
+          <div class="chart-diff text-success">
+            <span class="fa fa-arrow-up chart-diff-icon"> </span>
+        @else
+          <div class="chart-diff text-danger">
+            <span class="fa fa-arrow-down chart-diff-icon"> </span>
+        @endif
 
-      @if (array_values($widget->dataManager()->compare($widget->getSettings()['resolution'], 1))[0] >= 0)
-        <div class="chart-diff text-success">
-          <span class="fa fa-arrow-up chart-diff-icon"> </span>
-      @else
-        <div class="chart-diff text-danger">
-          <span class="fa fa-arrow-down chart-diff-icon"> </span>
+          <span class="chart-diff-value">{{ $widget->getDiff()['value'] }}</span>
+        </div> <!-- /.chart-diff -->
       @endif
-
-        <span class="chart-diff-value">{{ array_values($widget->dataManager()->compare($widget->getSettings()['resolution'], 1))[0] }}</span>
-      </div> <!-- /.chart-diff -->
 
       <div class="chart-diff-dimension">
         <small>(1 {{ $widget->getSettings()['resolution'] }} ago)</small>

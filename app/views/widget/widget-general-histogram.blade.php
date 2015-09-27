@@ -11,7 +11,7 @@
 
 <div class="chart-diff-data text-center">
 
-  @if (array_values($widget->dataManager()->compare($widget->getSettings()['resolution'], 1))[0] >= 0)
+  @if ($widget->getDiff()['value'] >= 0)
     <div class="chart-diff text-success">
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
 
@@ -21,7 +21,7 @@
 
   @endif
 
-    <span class="chart-diff-value">{{ array_values($widget->dataManager()->compare($widget->getSettings()['resolution'], 1))[0] }}</span>
+    <span class="chart-diff-value">{{ $widget->getDiff()['value'] }}</span>
   </div> <!-- /.chart-diff -->
 
 
@@ -61,7 +61,7 @@
         'type': 'line',
         'chartJSOptions': globalChartOptions.getLineChartOptions()
       }
-        
+
       // Draw chart
       new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
 

@@ -163,35 +163,17 @@ class Widget extends Eloquent
     }
 
     /**
-     * hasValidCriteria
-     * Checking if the widget has valid criteria
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-    */
-    public function hasValidCriteria() {
-        $criteriaFields = static::getCriteriaFields();
-        if (empty($criteriaFields)) {
-            return TRUE;
-        }
-        $criteria = $this->getCriteria();
-        foreach ($criteriaFields as $setting) {
-            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
-                return FALSE;
-        }
-        return TRUE;
-    }
-
-    /**
      * setState
      * Setting a widget's state.
      * --------------------------------------------------
      * @param string $state
      * --------------------------------------------------
     */
-    public function setState($state) {
+    public function setState($state, $commit=TRUE) {
         $this->state = $state;
-        $this->save();
+        if ($commit) {
+            $this->save();
+        }
     }
 
     /**

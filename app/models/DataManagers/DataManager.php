@@ -163,8 +163,49 @@ class DataManager extends Eloquent
      public function setWidgetsState($state) {
         foreach ($this->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
-            $widget->state = $state;
+            $widget->setState($state, FALSE);
             $widget->save(array('skipManager' => TRUE));
         }
      }
+
+    /**
+     * checkIntegrity
+     * Checking the dataManager integrity.
+    */
+    public function checkIntegrity() {
+        $data = $this->data->raw_value;
+        if ($data == 'loading') {
+            /* Populating is underway */
+            $this->setWidgetsState('loading');
+        } else if (is_null(json_decode($data)) || ! $this->hasValidScheme()) {
+            /* No json in data, this is a problem. */
+            $this->initializeData();
+            $this->setWidgetsState('active');
+        } else {
+            $this->setWidgetsState('active');
+        }
+    }
+
+    /**
+     * hasValidScheme
+     * Checking if the scheme is valid in the data.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    public function hasValidScheme() {
+        $scheme = $this->getDataScheme();
+        $dataScheme = json_decode($this->data->raw_value, 1);
+        if ( ! is_array($dataScheme)) {
+            return FALSE;
+        }
+        /* Iterating through the keys */
+        foreach ($scheme as $key) {
+            if ( ! array_key_exists($key, $dataScheme)) {
+                return FALSE;
+            }
+        }
+        return TRUE;
+    }
+
 }

@@ -105,6 +105,19 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
+     * checkDataManagersIntegrity
+     * --------------------------------------------------
+     * Checking the overall integrity of the user's data managers.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function checkDataManagersIntegrity() {
+        foreach ($this->dataManagers as $generalDataManager) {
+            $generalDataManager->getSpecific()->checkIntegrity();
+        }
+    }
+
+    /**
      * turnOffBrokenWidgets
      * --------------------------------------------------
      * Setting all broken widget's state to setup required.
@@ -118,8 +131,8 @@ class User extends Eloquent implements UserInterface
                 continue;
             }
             $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
-            try {
                 $view->render();
+            try {
             } catch (Exception $e) {
                 Log::error($e);
                 $widget->setState('setup_required');

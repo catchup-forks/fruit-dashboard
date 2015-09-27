@@ -41,28 +41,6 @@ class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidg
     }
 
     /**
-     * Refreshing the widget data.
-     * --------------------------------------------------
-     * @return string
-     * --------------------------------------------------
-    */
-    public function refreshWidget() {
-        $this->state = 'loading';
-        $this->save();
-
-        /* Refreshing widget data. */
-        $this->dataManager()->collectData(array(
-            'start'       => $this->getSettings()['range_start'],
-            'end'         => $this->getSettings()['range_end'],
-            'max_results' => $this->getSettings()['max_results'],
-        ));
-
-        /* Faling back to active. */
-        $this->state = 'active';
-        $this->save();
-    }
-
-    /**
      * premiumUserCheck
      * Returns whether or not the resolution is a premium feature.
      * --------------------------------------------------
@@ -81,6 +59,26 @@ class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidg
         }
 
         return $passed;
+    }
+
+    /**
+     * updateData
+     * Refreshing the widget data.
+     * --------------------------------------------------
+     * @param array options
+     * @return string
+     * --------------------------------------------------
+    */
+    public function updateData(array $options=array()) {
+        if (empty($options)) {
+            $this->dataManager->collectData(array(
+                'start'       => $this->getSettings()['range_start'],
+                'end'         => $this->getSettings()['range_end'],
+                'max_results' => $this->getSettings()['max_results'],
+            ));
+        } else {
+            $this->dataManager()->collectData($options);
+        }
     }
 }
 ?>

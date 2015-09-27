@@ -2,13 +2,13 @@
   <table class="table table-condensed table-bordered">
     <thead>
       <tr class="active">
-        @foreach (array_keys($widget->dataManager()->getHeader()) as $name)
+        @foreach (array_keys($widget->getHeader()) as $name)
           <th>{{ $name }}</th>
         @endforeach
       </tr>
     </thead>
     <tbody>
-      @foreach ($widget->dataManager()->getContent() as $row)
+      @foreach ($widget->getContent() as $row)
         <tr>
         @foreach ($row as $value)
           <td>{{ $value }}</td>

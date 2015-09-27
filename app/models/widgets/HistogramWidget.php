@@ -30,17 +30,6 @@ abstract class HistogramWidget extends CronWidget
     }
 
     /**
-     * getLatestData
-     * Returning the last data in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
-     */
-     public function getLatestData() {
-        return $this->data->manager->getSpecific()->getLatestData();
-     }
-
-    /**
      * getSettingsFields
      * Returns the SettingsFields
      * --------------------------------------------------
@@ -72,6 +61,17 @@ abstract class HistogramWidget extends CronWidget
     }
 
     /**
+     * getDiff
+     * Comparing the current value to some historical.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getDiff() {
+        return $this->dataManager()->compare($this->getSettings()['resolution'], 1);
+    }
+
+    /**
      * getData
      * Returning the histogram.
      * --------------------------------------------------
@@ -97,6 +97,17 @@ abstract class HistogramWidget extends CronWidget
 
         return $this->dataManager()->getHistogram($range, $resolution);
     }
+
+    /**
+     * getLatestData
+     * Returning the last data in the histogram.
+     * --------------------------------------------------
+     * @return float
+     * --------------------------------------------------
+     */
+     public function getLatestData() {
+        return $this->dataManager()->getLatestData();
+     }
 
     /**
      * save

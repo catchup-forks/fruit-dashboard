@@ -3,11 +3,11 @@
     <p class="text-center">
       This widget is waiting for data on this url:
       <pre>
-        {{ $widget->dataManager()->getUrl() }}
+        {{ $widget->getSettings()['url'] }}
       </pre>
     </p> <!-- /.lead -->
     <p class="text-center">
-      <button onclick="copyToClipboard('{{ $widget->dataManager()->getUrl() }}');" class="btn btn-sm btn-primary">Copy to clipboard</button>
+      <button onclick="copyToClipboard('{{ $widget->getSettings()['url'] }}');" class="btn btn-sm btn-primary">Copy to clipboard</button>
       <a href="{{ route('api.test', [$widget->id]) }}" class="btn btn-link">Test widget</a>
     </p>
   </div> <!-- /.widget-inner -->
@@ -17,7 +17,7 @@
 
 @section('widgetScripts')
 <script type="text/javascript">
-  
+
   function copyToClipboard(url) {
       var $temp = $("<input>");
       $("body").append($temp);

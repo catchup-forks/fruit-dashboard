@@ -22,12 +22,14 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-
         $time = microtime(true);
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
-        /* Checking the user's widget data integrity */
+        /* Checking the user's data managers integrity */
+        Auth::user()->checkDataManagersIntegrity();
+
+        /* Checking the user's widgets integrity */
         Auth::user()->checkWidgetsIntegrity();
 
         /* Get active dashboard, if the url contains it */

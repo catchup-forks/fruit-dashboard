@@ -41,7 +41,8 @@ class APIController extends BaseController
      */
     public function getTest($widgetID) {
         /* Get the requested widget */
-        $widget = Widget::where('id', $widgetID)->first();
+        $generalWidget = Widget::find($widgetID);
+        $widget = $generalWidget->getSpecific();
 
         /* Error handling */
         if ($widget == null) {
@@ -52,7 +53,7 @@ class APIController extends BaseController
         }
 
         /* Get the widget API url */
-        $url = $widget->getSpecific()->dataManager()->getCriteria()['url'];
+        $url = $widget->getSettings()['url'];
 
         /* Create default JSON string */
         $defaultJSON =
@@ -144,7 +145,7 @@ class APIController extends BaseController
         }
 
         /* Everything is ok */
-        $widget->getSpecific()->dataManager()->collectData(array('entry' =>Input::all()));
+        $widget->getSpecific()->updateData(array('entry' =>Input::all()));
         return array('status'  => TRUE,
                      'message' => 'Your data has been successfully saved.');
 
