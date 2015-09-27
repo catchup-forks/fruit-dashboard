@@ -54,8 +54,8 @@ function FDChartOptions(pageName) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsDashboard() {
-    Chart.defaults.global.animationSteps  = 60;
-    Chart.defaults.global.animationEasing = "easeOutQuart";
+    //Chart.defaults.global.animationSteps  = 60;
+    //Chart.defaults.global.animationEasing = "easeOutQuart";
     Chart.defaults.global.showScale       = false;
     Chart.defaults.global.showTooltips    = false;
     Chart.defaults.global.responsive      = false;
@@ -76,7 +76,7 @@ function FDChartOptions(pageName) {
        pointDot: false,
        bezierCurve: true,
        bezierCurveTension : 0.35,
-       animation: true
+       animation: false
     };
   }
 

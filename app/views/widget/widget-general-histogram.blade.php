@@ -80,15 +80,13 @@
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
       canvas = reinsertCanvas(canvas);
-      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
-        .draw({'type': 'line'}, data);
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
     })
 
     // Bind redraw to resize event.
     container.bind('resize', function(e){
       canvas = reinsertCanvas(canvas);
-      new FDChart({'widgetID': '{{ $widget->id }}', 'page':'dashboard'})
-        .draw({'type': 'line'}, data);
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
     });
 
     // Adding refresh handler.
