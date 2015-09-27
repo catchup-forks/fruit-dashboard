@@ -114,11 +114,11 @@ abstract class HistogramDataManager extends DataManager
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
             /* Range conditions */
             if ( ! is_null($range)) {
-                if (($entryTime < $range['stop']) && !$recording) {
-                    /* Reached the end of the period -> start recording. */
+                if (($entryTime >= $range['start']) && !$recording) {
+                    /* Reached the start of the period -> start recording. */
                     $recording = TRUE;
-                } else if (($entryTime < $range['start']) && $recording) {
-                    /* Reached the start of the period -> stop recording. */
+                } else if (($entryTime <= $range['end']) && $recording) {
+                    /* Reached the end of the period -> stop recording. */
                     return array_reverse($histogram);
                 }
             }

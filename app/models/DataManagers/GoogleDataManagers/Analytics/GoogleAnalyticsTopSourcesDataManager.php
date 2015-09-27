@@ -3,9 +3,12 @@
 class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
-    private static $defaultStart = '2005-01-01';
-    private static $defaultEnd = 'today';
-    private static $defaultMaxResults = '5';
+
+    private static $defaultOptions = array(
+        'start'       => '2005-01-01',
+        'end'         => 'today',
+        'max_results' => 5
+    );
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
     private static $metrics = array('sessions', 'users', 'hits');
@@ -82,25 +85,27 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      */
     private static function createOptions(array $iOptions=array()) {
         $options = array();
-        if (array_key_exists('start', $iOptions)) {
-            $options['start'] = $iOptions['start'];
-        } else {
-            $options['start'] = self::$defaultStart;
+        foreach (array_keys(self::$defaultOptions) as $key) {
+            $options[$key] = self::getOption($iOptions, $key);
         }
-
-        if (array_key_exists('end', $iOptions)) {
-            $options['end'] = $iOptions['end'];
-        } else {
-            $options['end'] = self::$defaultEnd;
-        }
-
-        if (array_key_exists('max_results', $iOptions)) {
-            $options['max_results'] = $iOptions['max_results'];
-        } else {
-            $options['max_results'] = self::$defaultMaxResults;
-        }
-
         return $options;
     }
+
+    /**
+     * getOption
+     * Returning either default, or provided option.
+     * --------------------------------------------------
+     * @param array $options
+     * @param string $key
+     * --------------------------------------------------
+     */
+    private static function getOption(array $options, $key) {
+        if ( ! array_key_exists($key, self::$defaultOptions)) {
+            /* Option not necessary. */
+            return null;
+        }
+        return array_key_exists($key, $options) ? $options[$key] : self::$defaultOptions[$key];
+    }
+
 
 }

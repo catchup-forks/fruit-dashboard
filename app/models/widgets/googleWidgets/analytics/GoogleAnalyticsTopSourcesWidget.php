@@ -56,7 +56,7 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
         if ($passed === 0) {
             /* Further validation required. */
             $start = Carbon::createFromFormat('Y-m-d', $this->getSettings()['range_start']);
-            if (Carbon::now()->diffInDays($start) > 30) {
+            if (Carbon::now()->diffInDays($start) > 31) {
                 return -1;
             }
         }
