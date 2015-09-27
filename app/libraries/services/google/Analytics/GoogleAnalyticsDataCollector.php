@@ -90,6 +90,7 @@ class GoogleAnalyticsDataCollector
      * Retrieving specific metrics for the selected property.
      * --------------------------------------------------
      * @param GoogleAnalyticsProperty $property
+     * @param int $profileId
      * @param string $start
      * @param string $end
      * @param array $metrics
@@ -97,12 +98,16 @@ class GoogleAnalyticsDataCollector
      * @return array
      * --------------------------------------------------
      */
-    public function getMetrics($property, $start, $end, $metrics, $optParams=array()) {
+    public function getMetrics($property, $profileId, $start, $end, $metrics, $optParams=array()) {
         $useDimensions = array_key_exists('dimensions', $optParams);
         $metricsData = array();
 
         /* Iterating through the profiles. */
         foreach ($this->getProfiles($property) as $profile) {
+            if ($profile->id != $profileId) {
+                continue;
+            }
+
             /* Retrieving results from API */
             $results = $this->analytics->data_ga->get(
                'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
@@ -114,7 +119,7 @@ class GoogleAnalyticsDataCollector
                 if ($useDimensions) {
                     $metricsData = $this->buildDimensionsData($metrics, $rows, $profileName);
                 } else {
-                    $metricsData = $this->buildSimpleMetricsData($metrics, $rows, $profileName);
+                    $metricsData = $this->buildSimpleMetricsData($metrics, $rows);
                 }
             } else if( ! $useDimensions) {
                 $rows = array();
@@ -133,24 +138,15 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
     * @param array $metrics
     * @param array  $rows
-    * @param string $profileName
     * @return array
      * --------------------------------------------------
     */
-    private function buildSimpleMetricsData($metrics, $rows, $profileName) {
+    private function buildSimpleMetricsData($metrics, $rows) {
         /* Creating metrics array. */
         $metricsData = array();
-        foreach ($metrics as $metric) {
-            $metricsData[$metric] = array();
-        }
-
         $i = 0;
-
         foreach ($metrics as $metric) {
-            if ( ! array_key_exists($profileName, $metricsData[$metric])) {
-                $metricsData[$metric][$profileName] = array();
-            }
-            array_push($metricsData[$metric][$profileName], $rows[0][$i++]);
+            $metricsData[$metric] = $rows[0][$i++];
         }
         return $metricsData;
     }
@@ -178,7 +174,7 @@ class GoogleAnalyticsDataCollector
                 if ( ! array_key_exists($row[0], $metricsData[$metric])) {
                     $metricsData[$metric][$row[0]] = array();
                 }
-                array_push($metricsData[$metric][$row[0]], $row[$i]);
+                $metricsData[$metric][$row[0]] = $row[$i];
             }
             ++$i;
         }
@@ -190,11 +186,12 @@ class GoogleAnalyticsDataCollector
      * Returning the number of sessions.
      * --------------------------------------------------
      * @param GoogleAnalyticsProperty $property
+     * @param $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getAvgSessionDuration($property) {
-        return $this->getMetrics($property, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('avgSessionDuration'))['avgSessionDuration'];
+    public function getAvgSessionDuration($property, $profileId) {
+        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('avgSessionDuration'))['avgSessionDuration'];
    }
 
 
@@ -203,11 +200,12 @@ class GoogleAnalyticsDataCollector
      * Returning the number of sessions.
      * --------------------------------------------------
      * @param GoogleAnalyticsProperty $property
+     * @param $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getSessions($property) {
-        return $this->getMetrics($property, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('sessions'))['sessions'];
+    public function getSessions($property, $profileId) {
+        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('sessions'))['sessions'];
    }
 
     /**
@@ -215,11 +213,12 @@ class GoogleAnalyticsDataCollector
      * Returning the percentage of boucne rate.
      * --------------------------------------------------
      * @param GoogleAnalyticsProperty $property
+     * @param $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getBounceRate($property) {
-        return $this->getMetrics($property, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('bounceRate'))['bounceRate'];
+    public function getBounceRate($property, $profileId) {
+        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('bounceRate'))['bounceRate'];
    }
 
     /**
@@ -229,7 +228,7 @@ class GoogleAnalyticsDataCollector
      * @return array
      * --------------------------------------------------
      */
-    private function getProfiles($property) {
+    public function getProfiles($property) {
         return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->id)->getItems();
    }
 } /* GoogleAnalyticsDataCollector */

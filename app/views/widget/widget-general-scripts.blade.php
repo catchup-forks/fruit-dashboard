@@ -132,14 +132,13 @@
 
   }
 
+  function clearTable(tableId) {
+    $("#" + tableId + " tbody").remove();
+    $("#" + tableId + " thead").remove();
+  }
+
   function updateTableWidget(data, tableId) {
-
-    function clearTable() {
-      $("#" + tableId + " tbody").remove();
-      $("#" + tableId + " thead").remove();
-    }
-
-    if ( ! data['content']) {
+    if ( data.length == undefined) {
       return;
     }
 

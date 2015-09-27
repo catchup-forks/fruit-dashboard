@@ -13,6 +13,7 @@
       </a>
       <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="{{ $widget->id }}">
 
+        @if ($widget->state != 'setup_required')
         {{-- EDIT --}}
         <li>
           <a href="{{ route('widget.edit', $widget->id) }}">
@@ -40,6 +41,7 @@
           </a>
         </li>
         @endif
+        @endif
 
         {{-- DELETE --}}
         <li>
@@ -58,7 +60,7 @@
   @elseif ($widget instanceof SharedWidget)
     @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
   @elseif ($widget->premiumUserCheck() === -1)
-    {{-- @include('widget.widget-premium-not-allowed', ['feature' => 'hello']) --}}
+     @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @else
     @if ($widget instanceof iAjaxWidget)
       @include('widget.widget-loading', ['widget' => $widget,])
@@ -67,7 +69,7 @@
 
     @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
     <!-- Adding loading on DataWidget -->
-    @if ($widget instanceof CronWidget)
+    @if ($widget instanceof iAjaxWidget)
       </div>
     @endif
 

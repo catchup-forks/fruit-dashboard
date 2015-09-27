@@ -21,6 +21,8 @@ trait GoogleAnalyticsDataManagerTrait
      * --------------------------------------------------
     */
     protected function flatData($insightData) {
+        return $insightData;
+
         $newData = array();
         foreach ($insightData as $name=>$dataAsArray) {
             $newData[$name] = $dataAsArray[0];

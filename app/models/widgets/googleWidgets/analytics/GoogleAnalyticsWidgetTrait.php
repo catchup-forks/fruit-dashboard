@@ -3,14 +3,35 @@
 trait GoogleAnalyticsWidgetTrait
 {
     /* -- Settings -- */
-    private static $propertySettings = array(
-        'property' => array(
-            'name'       => 'Property',
-            'type'       => 'SCHOICE',
+    private static $profileSettings = array(
+        'profile' => array(
+            'name'       => 'Profile',
+            'type'       => 'SCHOICEOPTGRP',
             'validation' => 'required',
-        )
+        ),
+        'property' => array(
+            'name'      => 'Property',
+            'type'      => 'TEXT',
+            'hidden'    => TRUE
+        ),
     );
-    private static $property = array('property');
+    private static $profile = array('profile');
+    private static $profileProperty = array('profile', 'property');
+
+    /* Choices functions */
+    public function profile() {
+        $properties = array();
+        $collector = new GoogleAnalyticsDataCollector($this->user());
+        foreach ($this->user()->googleAnalyticsProperties as $property) {
+            $profiles = array();
+            foreach ($collector->getProfiles($property) as $profile) {
+                $profiles[$profile->id] = $profile->name;
+            }
+            $properties[$property->name] = $profiles;
+        }
+        return $properties;
+    }
+
 
     /**
      * getConnectorClass
@@ -31,7 +52,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$propertySettings);
+        return array_merge(parent::getSettingsFields(), self::$profileSettings);
     }
 
     /**
@@ -42,7 +63,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getSetupFields() {
-        return array_merge(parent::getSetupFields(), self::$property);
+        return array_merge(parent::getSetupFields(), self::$profile);
     }
 
     /**
@@ -53,16 +74,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-        return array_merge(parent::getSetupFields(), self::$property);
-    }
-
-    /* Choices functions */
-    public function property() {
-        $properties = array();
-        foreach ($this->user()->googleAnalyticsProperties as $property) {
-            $properties[$property->id] = $property->name;
-        }
-        return $properties;
+        return array_merge(parent::getSetupFields(), self::$profileProperty);
     }
 
     /**
@@ -92,6 +104,33 @@ trait GoogleAnalyticsWidgetTrait
     public function getDefaultName() {
         return $this->getProperty()->name . ' - ' . $this->descriptor->name;
     }
+
+     /**
+      * Save | Override hidden setting.
+      * --------------------------------------------------
+      * @param array $options
+      * @return Saves the widget
+      * --------------------------------------------------
+     */
+     public function save(array $options=array()) {
+         /* Call parent save */
+         parent::save($options);
+
+        $collector = new GoogleAnalyticsDataCollector($this->user());
+        foreach ($this->user()->googleAnalyticsProperties as $property) {
+            $profiles = array();
+            foreach ($collector->getProfiles($property) as $profile) {
+                if ($profile->id == $this->getSettings()['profile']) {
+                    $this->saveSettings(array('property' => $property->id), FALSE);
+                    return parent::save();
+                }
+            }
+        }
+
+         /* Return */
+         return parent::save();
+     }
+
 }
 
 ?>

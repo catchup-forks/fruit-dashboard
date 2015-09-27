@@ -37,7 +37,7 @@ class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidg
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$propertySettings, self::$rangeSettings);
+        return array_merge(parent::getSettingsFields(), self::$profileSettings, self::$rangeSettings);
     }
 
     /**

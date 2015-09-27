@@ -28,7 +28,7 @@
                           'class' => 'col-sm-3 control-label'
                         )) }}
                       <div class="col-sm-8">
-                        @if ($meta['type'] == "SCHOICE")
+                        @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
                           {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control']) }}
                         @elseif ($meta['type'] == "BOOL")
                         <!-- An amazing hack to send checkbox even if not checked -->

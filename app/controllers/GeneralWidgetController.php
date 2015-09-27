@@ -28,6 +28,10 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
 
+        if ($widget->state == 'setup_required') {
+            return Redirect::route('widget.reset', $widget->id);
+        }
+
         /* Creating selectable dashboards */
         $dashboards = array();
         foreach (Auth::user()->dashboards as $dashboard) {

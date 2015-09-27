@@ -21,7 +21,7 @@ trait TwitterWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return 'Twitter - ' . $this->descriptor->name;
+        return '@' . $this->user()->twitterUsers()->first()->screen_name . ' - ' . $this->descriptor->name;
     }
 }
 

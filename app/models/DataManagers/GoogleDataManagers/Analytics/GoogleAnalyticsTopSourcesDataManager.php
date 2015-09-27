@@ -5,7 +5,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
     use GoogleAnalyticsDataManagerTrait;
     private static $defaultStart = '2005-01-01';
     private static $defaultEnd = 'today';
-    private static $defaultMaxResults = '15';
+    private static $defaultMaxResults = '5';
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
     private static $metrics = array('sessions', 'users', 'hits');
@@ -23,7 +23,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      */
     private function getMetric($start, $end, $maxResults) {
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getMetrics($this->getProperty(), $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
+        return $collector->getMetrics($this->getProperty(), $this->getCriteria()['profile'], $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
     }
 
     /**
@@ -40,7 +40,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         $metricsData = array();
         foreach ($this->getMetric($options['start'], $options['end'], $options['max_results']) as $metric=>$data) {
             foreach ($data as $source=>$value) {
-                $metricsData[$source][ucwords($metric)] = $value[0];
+                $metricsData[$source][ucwords($metric)] = $value;
             }
         }
 
