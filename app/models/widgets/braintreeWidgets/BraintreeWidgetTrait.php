@@ -2,6 +2,7 @@
 
 trait BraintreeWidgetTrait
 {
+
     /**
      * getConnectorClass
      * --------------------------------------------------

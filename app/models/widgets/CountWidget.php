@@ -2,6 +2,7 @@
 
 abstract class CountWidget extends Widget implements iAjaxWidget
 {
+    use NumericWidgetTrait;
     protected static $histogramDescriptor = '';
 
     /* -- Settings -- */

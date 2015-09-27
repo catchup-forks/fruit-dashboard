@@ -4,7 +4,7 @@
   </div> <!-- /.chart-name -->
   <div class="chart-value">
     @if ($widget->state == 'active')
-      {{ $widget->getLatestData()['value'] }}
+      {{ Utilities::formatNumber($widget->getLatestData()['value'], $widget->getFormat()) }}
     @endif
   </div> <!-- /.chart-value -->
 </div> <!-- /.chart-data -->
@@ -21,7 +21,7 @@
 
   @endif
 
-    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff()['value']) }}</span>
+    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff()['value'], $widget->getFormat()) }}</span>
   </div> <!-- /.chart-diff -->
 
 

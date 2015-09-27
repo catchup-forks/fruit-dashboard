@@ -30,7 +30,7 @@
     .
   ">
   <h3 class="text-white drop-shadow truncate">
-    {{ Utilities::formatNumber(array_values($widget->getCurrentValue()['latest'])[0]) }}
+    {{ Utilities::formatNumber(array_values($widget->getCurrentValue()['latest'])[0], $widget->getFormat()) }}
 
     @if (array_values($widget->getCurrentValue()['diff'])[0] >= 0)
       <small class="text-success">
@@ -40,7 +40,7 @@
         <span class="fa fa-arrow-down"> </span>
     @endif
 
-      {{ abs(Utilities::formatNumber(array_values($widget->getCurrentValue()['diff'])[0])) }}
+      {{ abs(Utilities::formatNumber(array_values($widget->getCurrentValue()['diff'])[0], $widget->getFormat())) }}
     </small>
   </h3>
   <p class="text-white drop-shadow">

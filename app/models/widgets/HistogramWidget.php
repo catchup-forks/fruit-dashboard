@@ -2,6 +2,8 @@
 
 abstract class HistogramWidget extends CronWidget
 {
+    use NumericWidgetTrait;
+
     /* -- Settings -- */
     private static $resolutionSettings = array(
         'resolution' => array(
