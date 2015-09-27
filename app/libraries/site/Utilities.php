@@ -36,13 +36,13 @@ class Utilities {
      * @return string
      * --------------------------------------------------
     */
-    public static function formatNumber($input, $currency=FALSE) {
+    public static function formatNumber($input, $decimals=2, $currency=FALSE) {
         if ( ! is_numeric($input)) {
             return null;
         }
         $prefix = $currency ? '' : '$';
         if (is_float($input)) {
-            return $prefix . number_format($input, 2);
+            return $prefix . number_format($input, $decimals);
         }
         return $prefix . number_format($input, 0);
     }
