@@ -14,6 +14,7 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
     public function initializeData() {
+        $this->saveData(array());
         $this->collectData();
     }
 
@@ -37,7 +38,11 @@ abstract class HistogramDataManager extends DataManager
 
         /* Saving data only every 15 minutes. */
         $currentData = $this->getData();
-        if (count($currentData) > 0) {
+
+        if ( ! is_array($currentData) && $this->data->raw_value != 'loading') {
+            /* Initializing data. */
+            $this->initializeData();
+        } else if (count($currentData) > 0) {
             if (Carbon::createFromTimestamp(end($currentData)['timestamp'])->diffInMinutes(Carbon::now()) < 15) {
                 array_pop($currentData);
             }

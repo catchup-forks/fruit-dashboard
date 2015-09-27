@@ -26,7 +26,7 @@ class WidgetDescriptor extends Eloquent
      * --------------------------------------------------
     */
     public function getClassName() {
-        return SiteConstants::underscoreToCamelCase($this->type) . 'Widget';
+        return Utilities::underscoreToCamelCase($this->type) . 'Widget';
     }
 
     /**

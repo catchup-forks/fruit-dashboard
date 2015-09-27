@@ -44,7 +44,7 @@ abstract class GeneralAutoDashboardCreator {
 
     public function create($dashboard_name=null) {
 
-        $this->createDashboard(is_null($dashboard_name) ? SiteConstants::underscoreToCamelCase(static::$service, FALSE) : $dashboard_name);
+        $this->createDashboard(is_null($dashboard_name) ? Utilities::underscoreToCamelCase(static::$service, FALSE) : $dashboard_name);
         $this->createWidgets();
     }
 

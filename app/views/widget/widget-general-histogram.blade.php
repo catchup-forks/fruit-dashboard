@@ -21,7 +21,7 @@
 
   @endif
 
-    <span class="chart-diff-value">{{ $widget->getDiff()['value'] }}</span>
+    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff()['value']) }}</span>
   </div> <!-- /.chart-diff -->
 
 
