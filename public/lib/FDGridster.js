@@ -5,6 +5,9 @@
  * --------------------------------------------------------------------------
  */
 function FDGridster(gridsterOptions, widgetsData) {
+ /* -------------------------------------------------------------------------- *
+  *                                 ATTRIBUTES                                 *
+  * -------------------------------------------------------------------------- */
   // Private variables
   var namespace = '#gridster-' + gridsterOptions.dashboardId
   
@@ -23,6 +26,10 @@ function FDGridster(gridsterOptions, widgetsData) {
   this.build      = build;
   this.lockGrid   = lockGrid;
   this.unlockGrid = unlockGrid;
+
+  /* -------------------------------------------------------------------------- *
+   *                                 FUNCTIONS                                  *
+   * -------------------------------------------------------------------------- */
 
   /**
    * @function build
@@ -72,6 +79,47 @@ function FDGridster(gridsterOptions, widgetsData) {
     };
 
     // Return
+    return this;
+  }
+
+  /**
+   * @function deleteWidget
+   * --------------------------------------------------------------------------
+   * Removes a widget from the grid
+   * @param {integer} widgetId | The id of the widget
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function deleteWidget(widgetId) {
+    var widget = null;
+
+    // Remove the FDWidget object
+    for (var i = widgets.length - 1; i >= 0; i--) {
+      if (widgetId == widgets[i].id) {
+        widget = widgets.splice(i, 1)[0].widget;
+        break;
+      };
+    };
+
+    console.log(widget);
+    // Remove element from the gridster
+    gridster.remove_widget(widget.getSelector());
+
+    // Signal deletion to server
+    $.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: widget.getDeleteUrl(),
+      data: null,
+      success: function(data) {
+        easyGrowl('success', "You successfully deleted the widget", 3000);
+      },
+      error: function(){
+        easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
+      }
+    });
+
+    // return
     return this;
   }
 
@@ -233,5 +281,19 @@ function FDGridster(gridsterOptions, widgetsData) {
   function serializePositioning() {
     return JSON.stringify(gridster.serialize());
   }
+
+  /* -------------------------------------------------------------------------- *
+   *                                   EVENTS                                   *
+   * -------------------------------------------------------------------------- */
+
+  /**
+   * @event $(".deleteWidget").click
+   * --------------------------------------------------------------------------
+   * 
+   * --------------------------------------------------------------------------
+   */
+  $(".deleteWidget-" + gridsterOptions.dashboardId).click(function(e) {
+    deleteWidget($(this).attr("data-id"));
+  });
 
 } // FDGridster

@@ -21,6 +21,8 @@ function FDWidget(widgetOptions) {
   this.send    = send;
   this.load    = load;
   this.refresh = refresh;
+  this.getSelector  = getSelector;
+  this.getDeleteUrl = getDeleteUrl;
 
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
@@ -36,6 +38,28 @@ function FDWidget(widgetOptions) {
   function size() {
     return {'width': $(selector).width(),
             'height': $(selector).height()};
+  }
+
+  /**
+   * @function getSelector
+   * --------------------------------------------------------------------------
+   * Returns the widget HTML selector
+   * @return {string} selector | The widget selector
+   * --------------------------------------------------------------------------
+   */
+  function getSelector() {
+    return selector;
+  }
+
+  /**
+   * @function getDeleteUrl
+   * --------------------------------------------------------------------------
+   * Returns the server-side deletion url
+   * @return {string} deleteUrl | The url
+   * --------------------------------------------------------------------------
+   */
+  function getDeleteUrl() {
+    return options.deleteUrl;
   }
 
   /**
@@ -143,3 +167,17 @@ function FDWidget(widgetOptions) {
 
 } // FDWidget
 
+/* -------------------------------------------------------------------------- *
+ *                         WIDGET RELATED INITIALIZERS                        *
+ * -------------------------------------------------------------------------- */
+ // Call the Hamburger Menu.
+ $('.dropdown-toggle').dropdown();
+
+
+ /* -------------------------------------------------------------------------- *
+  *                          WIDGET RELATED EVENTS                             *
+  * -------------------------------------------------------------------------- */
+ // If the mouse leaves the hamburger menu, close it.
+ $(".dropdown-menu").mouseleave(function(){
+   $(".dropdown").removeClass("open");
+ });

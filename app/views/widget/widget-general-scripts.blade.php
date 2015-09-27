@@ -1,46 +1,46 @@
 <script type="text/javascript">
 
-  // HAMBURGER MENU
-  // Call the Hamburger Menu.
-  $('.dropdown-toggle').dropdown();
+  // // HAMBURGER MENU
+  // // Call the Hamburger Menu.
+  // $('.dropdown-toggle').dropdown();
 
-  // If the mouse leaves the contextual menu, close it.
-  $(".dropdown-menu").mouseleave(function(){
-    $(".dropdown").removeClass("open");
-  });
+  // // If the mouse leaves the contextual menu, close it.
+  // $(".dropdown-menu").mouseleave(function(){
+  //   $(".dropdown").removeClass("open");
+  // });
 
   // DELETE WIDGET
   // Look for the delete menu click
-  $(".deleteWidget").click(function(e) {
+  // $(".deleteWidget").click(function(e) {
 
-    e.preventDefault();
+  //   e.preventDefault();
 
-    // initialize url
-    var url = "{{ route('widget.delete', 'widgetID') }}".replace('widgetID', $(this).attr("data-id"))
+  //   // initialize url
+  //   var url = "{{ route('widget.delete', 'widgetID') }}".replace('widgetID', $(this).attr("data-id"))
 
-    // Look for the actual gridster dashboard instance.
-    var gridsterID = $(this).closest('.gridster').attr('id');
-    var regridster
+  //   // Look for the actual gridster dashboard instance.
+  //   var gridsterID = $(this).closest('.gridster').attr('id');
+  //   var regridster
 
-    // Reinitialize gridster and remove widget.
-    regridster = $('#' + gridsterID + ' div.gridster-container').gridster().data('gridster');
-    regridster.remove_widget($(this).closest('div.gridster-player'));
+  //   // Reinitialize gridster and remove widget.
+  //   regridster = $('#' + gridsterID + ' div.gridster-container').gridster().data('gridster');
+  //   regridster.remove_widget($(this).closest('div.gridster-player'));
 
 
-    // Call ajax function
-    $.ajax({
-      type: "POST",
-      dataType: 'json',
-      url: url,
-           data: null,
-           success: function(data) {
-              easyGrowl('success', "You successfully deleted the widget", 3000);
-           },
-           error: function(){
-              easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
-           }
-    });
-  });
+  //   // Call ajax function
+  //   $.ajax({
+  //     type: "POST",
+  //     dataType: 'json',
+  //     url: url,
+  //          data: null,
+  //          success: function(data) {
+  //             easyGrowl('success', "You successfully deleted the widget", 3000);
+  //          },
+  //          error: function(){
+  //             easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
+  //          }
+  //   });
+  // });
 
   // function sendAjax(postData, widgetId, callback) {
   //   $.ajax({
