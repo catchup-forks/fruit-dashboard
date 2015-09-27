@@ -140,6 +140,10 @@
   <script type="text/javascript" src="lib/FDGridster.js"></script>
   <!-- /FDGridster class -->
 
+  <!-- FDWidget class -->
+  <script type="text/javascript" src="lib/FDWidget.js"></script>
+  <!-- /FDWidget class -->
+
   <!-- FDChartOptions class -->
   <script type="text/javascript" src="lib/FDChartOptions.js"></script>
   <script type="text/javascript">

@@ -1,7 +1,7 @@
 /**
  * @class FDChart
  * --------------------------------------------------------------------------
- * Class function for the gridster elements
+ * Class function for the charts
  * --------------------------------------------------------------------------
  */
 function FDChart(widgetID) {
@@ -41,10 +41,10 @@ function FDChart(widgetID) {
    * --------------------------------------------------------------------------
    */
   function draw(chartData, options) {
-    switch(options['type']) {
+    switch(options.type) {
       case 'line':
       default:
-          drawLineChart(chartData, options['chartJSOptions']);
+          drawLineChart(chartData, options.chartJSOptions);
           break;
     }
 
@@ -63,15 +63,15 @@ function FDChart(widgetID) {
    */
   function drawLineChart(data, options) {
     // Build data.
-    var rawDatasets = data['datasets'];
+    var rawDatasets = data.datasets;
     var transformedData = {
-      labels: data['labels'],
+      labels: data.labels,
       datasets: []
     };
 
     // Transform and push the datasets
     for (i = 0; i < rawDatasets.length; ++i) {
-      transformedData.datasets.push(createDataSet(rawDatasets[i]['values'], rawDatasets[i]['name'], rawDatasets[i]['color']));
+      transformedData.datasets.push(createDataSet(rawDatasets[i].values, rawDatasets[i].name, rawDatasets[i].color));
     }
 
     // Draw chart.

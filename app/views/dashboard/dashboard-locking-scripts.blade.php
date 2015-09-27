@@ -77,7 +77,7 @@ function changeLockIcon(id, direction) {
  */
 function changeGridster(id, direction) {
   // Initialize variables
-  var gridster = window['Gridster' + id];
+  var gridster = window['FDGridster' + id];
 
   if (direction) { 
     gridster.lockGrid();
