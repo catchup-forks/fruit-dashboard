@@ -137,7 +137,7 @@
 
 @section('pageScripts')
   <!-- FDGridster class -->
-  <script type="text/javascript" src="lib/fd-gridster.js"></script>
+  <script type="text/javascript" src="lib/FDGridster.js"></script>
   <!-- /FDGridster class -->
 
   <!-- FDChartOptions class -->
