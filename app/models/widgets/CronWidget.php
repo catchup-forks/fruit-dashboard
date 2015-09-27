@@ -134,32 +134,9 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        if ( ! $this->hasValidCriteria()) {
-            $this->setState('setup_required');
-        } else if ( ! $this->dataExists()) {
+        if ( ! $this->dataExists()) {
             $this->save();
         }
     }
-
-    /**
-     * hasValidCriteria
-     * Checking if the widget has valid criteria
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-    */
-    public function hasValidCriteria() {
-        $criteriaFields = static::getCriteriaFields();
-        if (empty($criteriaFields)) {
-            return TRUE;
-        }
-        $criteria = $this->getCriteria();
-        foreach ($criteriaFields as $setting) {
-            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == '')
-                return FALSE;
-        }
-        return TRUE;
-    }
-
 
 }

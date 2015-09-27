@@ -26,8 +26,25 @@ abstract class HistogramDataManager extends DataManager
     public function collectData($options=array()) {
         /* Getting the entry */
         $entry = array_key_exists('entry', $options) ? $options['entry'] : $this->getCurrentValue();
-        /* Appending to list. */
-        $this->appendEntry($entry);
+
+        /* Getting db ready entry and entryTime */
+        $entryTime = static::getEntryTime($entry);
+        $dbEntry = $this->formatData($entryTime, static::getEntryValues($entry));
+
+        if (is_null($dbEntry)) {
+            return;
+        }
+
+        /* Saving data only every 15 minutes. */
+        $currentData = $this->getData();
+        if (count($currentData) > 0) {
+            if (Carbon::createFromTimestamp(end($currentData)['timestamp'])->diffInMinutes(Carbon::now()) < 15) {
+                array_pop($currentData);
+            }
+        }
+
+        array_push($currentData, $dbEntry);
+        $this->saveData($currentData);
     }
 
     /**
@@ -236,28 +253,6 @@ abstract class HistogramDataManager extends DataManager
 
         /* No values found using last one */
         return $this->getEntryValues($latestData);
-    }
-
-    /**
-     * appendEntry
-     * Appends an entry to the dataset.
-     * --------------------------------------------------
-     * @param $entry
-     * --------------------------------------------------
-     */
-    protected function appendEntry(array $entry) {
-        if (empty($entry)) {
-            return;
-        }
-        $entryTime = static::getEntryTime($entry);
-
-        /* Getting the db ready object. */
-        $dbEntry = $this->formatData($entryTime, static::getEntryValues($entry));
-        if (is_null($dbEntry)) {
-            return;
-        }
-        array_push($currentData, $dbEntry);
-        $this->saveData($currentData);
     }
 
     /**

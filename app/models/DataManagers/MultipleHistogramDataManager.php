@@ -88,10 +88,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @param array $range
      * @param string $resolution
      * @param string $dateFormat
+     * @param int length
      * @return array
      * --------------------------------------------------
      */
-    public function buildHistogram($range, $resolution, $dateFormat='Y-m-d') {
+    public function buildHistogram($range, $resolution, $length, $dateFormat='Y-m-d') {
         $groupedData = array();
         $datetimes = array();
         $i = 0;
@@ -102,7 +103,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 'values' => array()
             );
         }
-        foreach (parent::buildHistogram($range, $resolution, $dateFormat) as $oneValues) {
+        foreach (parent::buildHistogram($range, $resolution, $length, $dateFormat) as $oneValues) {
             array_push($datetimes, $oneValues['datetime']);
             foreach ($oneValues as $dataId => $value) {
                 if ( ! in_array($dataId, static::$staticFields)) {
