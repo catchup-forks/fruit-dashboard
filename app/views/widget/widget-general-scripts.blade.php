@@ -42,40 +42,40 @@
     });
   });
 
-  function sendAjax(postData, widgetId, callback) {
-    $.ajax({
-    type: "POST",
-    data: postData,
-    url: "{{ route('widget.ajax-handler', 'widgetID') }}".replace("widgetID", widgetId)
-    }).done(function( data ) {
-      callback(data);
-    });
-  }
+  // function sendAjax(postData, widgetId, callback) {
+  //   $.ajax({
+  //   type: "POST",
+  //   data: postData,
+  //   url: "{{ route('widget.ajax-handler', 'widgetID') }}".replace("widgetID", widgetId)
+  //   }).done(function( data ) {
+  //     callback(data);
+  //   });
+  // }
 
-  function loadWidget(widgetId, callback) {
-    var done = false;
-    function pollState() {
-      sendAjax({'state_query': true}, widgetId, function (data) {
-        if (data['ready']) {
-          $("#widget-loading-" + widgetId).hide();
-          $("#widget-wrapper-" + widgetId).show();
-          done = true;
-          callback(data['data']);
-        }
-        if ( ! done ) {
-          setTimeout(pollState, 1000);
-        }
-      });
-    }
-    pollState();
-  };
+  // function loadWidget(widgetId, callback) {
+  //   var done = false;
+  //   function pollState() {
+  //     sendAjax({'state_query': true}, widgetId, function (data) {
+  //       if (data['ready']) {
+  //         $("#widget-loading-" + widgetId).hide();
+  //         $("#widget-wrapper-" + widgetId).show();
+  //         done = true;
+  //         callback(data['data']);
+  //       }
+  //       if ( ! done ) {
+  //         setTimeout(pollState, 1000);
+  //       }
+  //     });
+  //   }
+  //   pollState();
+  // };
 
-  function refreshWidget(widgetId, callback) {
-    $("#widget-wrapper-" + widgetId).hide();
-    $("#widget-loading-" + widgetId).show();
-    sendAjax({'refresh_data': true}, widgetId, callback);
-    loadWidget(widgetId, callback);
-  };
+  // function refreshWidget(widgetId, callback) {
+  //   $("#widget-wrapper-" + widgetId).hide();
+  //   $("#widget-loading-" + widgetId).show();
+  //   sendAjax({'refresh_data': true}, widgetId, callback);
+  //   loadWidget(widgetId, callback);
+  // };
 
   // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
   function reinsertCanvas(canvas) {

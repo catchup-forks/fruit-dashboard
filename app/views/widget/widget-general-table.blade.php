@@ -23,10 +23,10 @@
 <script type="text/javascript">
   $(document).ready(function(){
     // Adding refresh handler.
-    $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) {
-        updateTableWidget(data, 'table-{{$widget->id}}');
-     });
+    // $("#refresh-{{$widget->id}}").click(function () {
+    //   refreshWidget({{ $widget->id }}, function (data) {
+    //     updateTableWidget(data, 'table-{{$widget->id}}');
+    //  });
    });
   });
 </script>

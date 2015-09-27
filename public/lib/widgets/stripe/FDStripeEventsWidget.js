@@ -4,7 +4,12 @@
  * Class function for the StripeEvents Widget
  * --------------------------------------------------------------------------
  */
-function FDStripeEventsWidget() {
+function FDStripeEventsWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,7 +18,7 @@ function FDStripeEventsWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
 

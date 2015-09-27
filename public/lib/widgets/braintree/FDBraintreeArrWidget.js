@@ -4,7 +4,12 @@
  * Class function for the BraintreeArr Widget
  * --------------------------------------------------------------------------
  */
-function FDBraintreeArrWidget() {
+function FDBraintreeArrWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,7 +18,7 @@ function FDBraintreeArrWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
 

@@ -4,7 +4,12 @@
  * Class function for the TwitterNewFollowers Widget
  * --------------------------------------------------------------------------
  */
-function FDTwitterNewFollowersWidget() {
+function FDTwitterNewFollowersWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,7 +18,7 @@ function FDTwitterNewFollowersWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
 

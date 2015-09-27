@@ -9,10 +9,12 @@ function FDWidget(widgetOptions) {
    *                                 ATTRIBUTES                                 *
    * -------------------------------------------------------------------------- */
   var options         = widgetOptions;
-  var specific        = new window['FD' + options.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget'];
+  var widgetClass     = 'FD' + options.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
+  var specific        = new window[widgetClass](options);
   var selector        = '.gridster-player[data-id='+ options.id +']';
-  var wrapperSelector = '#widget-loading-' + options.id;
-  var loadingSelector = '#widget-wrapper-' + options.id;
+  var wrapperSelector = '#widget-wrapper-' + options.id;
+  var loadingSelector = '#widget-loading-' + options.id;
+  var refreshSelector = '#refresh-' + options.id;
 
   // Public functions
   this.size    = size;
@@ -41,7 +43,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    * Sends an ajax request to save the widget data
    * @param {json} data | the POST data
-   * @param {function} callback | the callback function
+   * @param {function} callback | The executable function after the post
    * @return {executes the callback function}
    * --------------------------------------------------------------------------
    */
@@ -59,13 +61,12 @@ function FDWidget(widgetOptions) {
    * @function load
    * --------------------------------------------------------------------------
    * Loads the widget
-   * @param {function} callback | the callback function
-   * @return {executes the callback function}
+   * @return {loads the widget}
    * --------------------------------------------------------------------------
    */
-  function load(widgetId, callback) {
+  function load() {
     var done = false;
-    
+
     // Poll the state until the data is ready
     function pollState() {
       send({'state_query': true}, function (data) {
@@ -73,7 +74,9 @@ function FDWidget(widgetOptions) {
           $(loadingSelector).hide();
           $(wrapperSelector).show();
           done = true;
-          callback(data['data']);
+          specific.refresh(data['data']);
+        } else if (data['error']) {
+          done = true;
         }
         if (!done) {
           setTimeout(pollState, 1000);
@@ -87,15 +90,19 @@ function FDWidget(widgetOptions) {
    * @function refresh
    * --------------------------------------------------------------------------
    * Refreshes the widget
-   * @param {function} callback | the callback function
    * @return {executes the callback function}
    * --------------------------------------------------------------------------
    */
-  function refresh(callback) {
+  function refresh() {
+    // Show loading state
     $(wrapperSelector).hide();
     $(loadingSelector).show();
-    send({'refresh_data': true}, callback);
-    load(callback);
+    
+    // Send refresh data token
+    send({'refresh_data': true}, function(){});
+
+    // Poll widget state, and load if finished
+    load();
   };
 
   /* -------------------------------------------------------------------------- *
@@ -115,12 +122,23 @@ function FDWidget(widgetOptions) {
   /**
    * @event $(selector).resize
    * --------------------------------------------------------------------------
-   * Class function for the widgets
+   * 
    * --------------------------------------------------------------------------
    */
   $(selector).resize(function() {
     //console.log(size());
   });
+
+  /**
+   * @event $(refreshSelector).click
+   * --------------------------------------------------------------------------
+   * Handles the refresh widget event
+   * --------------------------------------------------------------------------
+   */
+   $(refreshSelector).click(function (e) {
+    e.preventDefault();
+    refresh();
+   });
 
 
 } // FDWidget

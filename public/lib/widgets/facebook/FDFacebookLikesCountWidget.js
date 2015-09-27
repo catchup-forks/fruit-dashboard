@@ -4,7 +4,12 @@
  * Class function for the FacebookLikesCount Widget
  * --------------------------------------------------------------------------
  */
-function FDFacebookLikesCountWidget() {
+function FDFacebookLikesCountWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,7 +18,7 @@ function FDFacebookLikesCountWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
 

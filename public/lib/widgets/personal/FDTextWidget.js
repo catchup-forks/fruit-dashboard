@@ -4,7 +4,12 @@
  * Class function for the Text Widget
  * --------------------------------------------------------------------------
  */
-function FDTextWidget() {
+function FDTextWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,8 +18,8 @@ function FDTextWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
-
+  
 } // FDTextWidget

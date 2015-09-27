@@ -4,7 +4,12 @@
  * Class function for the Note Widget
  * --------------------------------------------------------------------------
  */
-function FDNoteWidget() {
+function FDNoteWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,8 +18,8 @@ function FDNoteWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
-
+  
 } // FDNoteWidget

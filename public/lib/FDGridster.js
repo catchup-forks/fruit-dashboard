@@ -32,9 +32,13 @@ function FDGridster(gridsterOptions, widgetsData) {
    * --------------------------------------------------------------------------
    */
   function build() {
-    // Build options
+    // Build widgets
     for (var i = widgetsData.length - 1; i >= 0; i--) {
+      // Initialize widget
       var widget = new FDWidget(widgetsData[i]);
+      // Load widget
+      widget.load();
+      // Add to widgets array
       widgets.push({'id': widgetsData[i].id, 'widget': widget});
     };
         

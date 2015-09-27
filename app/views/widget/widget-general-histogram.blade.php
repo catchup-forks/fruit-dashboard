@@ -67,14 +67,14 @@
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
-      values = [];
-      labels = [];
-      loadWidget({{$widget->id}}, function (data) {
-        histogram = updateHistogramWidget(data, canvas, name, valueSpan);
-        values = histogram['values'];
-        labels = histogram['labels'];
-        canvas = reinsertCanvas(canvas);
-      });
+      // values = [];
+      // labels = [];
+      // loadWidget({{$widget->id}}, function (data) {
+      //   histogram = updateHistogramWidget(data, canvas, name, valueSpan);
+      //   values = histogram['values'];
+      //   labels = histogram['labels'];
+      //   canvas = reinsertCanvas(canvas);
+      // });
     @endif
 
     // Calling drawer every time carousel is changed.
@@ -91,9 +91,9 @@
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) {
-        updateHistogramWidget(data, canvas, name, valueSpan);
-      });
+      // refreshWidget({{ $widget->id }}, function (data) {
+      //   updateHistogramWidget(data, canvas, name, valueSpan);
+      // });
      });
 
     // Detecting clicks and drags.

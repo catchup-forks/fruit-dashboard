@@ -4,7 +4,12 @@
  * Class function for the BraintreeArpu Widget
  * --------------------------------------------------------------------------
  */
-function FDBraintreeArpuWidget() {
+function FDBraintreeArpuWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,7 +18,7 @@ function FDBraintreeArpuWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
 

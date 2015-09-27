@@ -4,7 +4,12 @@
  * Class function for the FacebookEngagedUsers Widget
  * --------------------------------------------------------------------------
  */
-function FDFacebookEngagedUsersWidget() {
+function FDFacebookEngagedUsersWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,7 +18,7 @@ function FDFacebookEngagedUsersWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
 

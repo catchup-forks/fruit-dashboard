@@ -4,7 +4,12 @@
  * Class function for the GoogleAnalyticsSessionsCount Widget
  * --------------------------------------------------------------------------
  */
-function FDGoogleAnalyticsSessionsCountWidget() {
+function FDGoogleAnalyticsSessionsCountWidget(widgetOptions) {
+  // Private variables
+  var options = widgetOptions;
+  
+  // Public functions
+  this.refresh = refresh;
 
   /**
    * @function refresh
@@ -13,8 +18,8 @@ function FDGoogleAnalyticsSessionsCountWidget() {
    * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function refresh() {
+  function refresh(data) {
     return this;
   }
-
+  
 } // FDGoogleAnalyticsSessionsCountWidget

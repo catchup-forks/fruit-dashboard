@@ -57,30 +57,30 @@
 
 @section('widgetScripts')
 <script type="text/javascript">
-  $(function() {
+  // $(function() {
     
-    $('#refresh-{{$widget->id}}').click(function () {
-      refreshWidget({{ $widget->id }}, function (data) {
-        $('#{{$widget->id}}-value').html(data.value);
-      })
-    });
+  //   $('#refresh-{{$widget->id}}').click(function () {
+  //     refreshWidget({{ $widget->id }}, function (data) {
+  //       $('#{{$widget->id}}-value').html(data.value);
+  //     })
+  //   });
 
-    var toAlign = '#count-{{ $widget->id }}';
-    var containerElement = '.gridster-player';
+  //   var toAlign = '#count-{{ $widget->id }}';
+  //   var containerElement = '.gridster-player';
 
-    verticalAlign(toAlign, containerElement);
+  //   verticalAlign(toAlign, containerElement);
 
-    // Bind redraw to resize event.
-    $(toAlign).bind('resize', function(e){
-      verticalAlign(toAlign, containerElement);
-    });
+  //   // Bind redraw to resize event.
+  //   $(toAlign).bind('resize', function(e){
+  //     verticalAlign(toAlign, containerElement);
+  //   });
 
-    function verticalAlign(target, measure) {
-      $(target).css({
-        'margin-top': $(target).closest(measure).outerHeight()/2-$(target).height()/2
-      })
-    }
+  //   function verticalAlign(target, measure) {
+  //     $(target).css({
+  //       'margin-top': $(target).closest(measure).outerHeight()/2-$(target).height()/2
+  //     })
+  //   }
 
-  });
+  // });
 </script>
 @append
