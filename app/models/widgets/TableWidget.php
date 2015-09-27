@@ -12,6 +12,7 @@ abstract class TableWidget extends CronWidget
     public function getHeader() {
         return $this->dataManager()->getHeader();
     }
+
     /**
      * getContent
      * Returning the table articles.

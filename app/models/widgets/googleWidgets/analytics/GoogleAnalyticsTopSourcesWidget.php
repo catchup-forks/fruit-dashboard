@@ -1,6 +1,6 @@
 <?php
 
-class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidget
+class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWidget
 {
     /* -- Settings -- */
     private static $rangeSettings = array(
