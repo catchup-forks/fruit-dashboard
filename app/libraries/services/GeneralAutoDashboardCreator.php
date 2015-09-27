@@ -81,8 +81,7 @@ abstract class GeneralAutoDashboardCreator {
 
                 /* Checking if the data is already available. */
                 if ( ! is_null($widget->data) && $widget->data->raw_value != 'loading') {
-                    $widget->state = 'active';
-                    $widget->save();
+                    $widget->setState('active');
                 }
             }
         }

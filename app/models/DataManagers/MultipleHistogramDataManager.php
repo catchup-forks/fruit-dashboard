@@ -32,6 +32,9 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }
+            if ( ! is_numeric($value)) {
+                return null;
+            }
             $decodedData[$dataSets[$key]] = $value;
         }
 
@@ -141,7 +144,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return string (json)
      * --------------------------------------------------
      */
-    public static final function transformData(array $histogramData) {
+    private static final function transformData(array $histogramData) {
         $dbData = array(
             'datasets' => array(),
             'data'     => array()

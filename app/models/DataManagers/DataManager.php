@@ -111,7 +111,6 @@ class DataManager extends Eloquent
         $manager->initializeData();
 
         return $manager;
-
     }
 
     public function getSpecific() {

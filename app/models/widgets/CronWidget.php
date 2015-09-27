@@ -47,15 +47,10 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
     */
     public function refreshWidget() {
-        $this->state = 'loading';
-        $this->save();
-
-        /* Refreshing widget data. */
+        /* Setting to loading, and waiting for the collector to finish. */
+        $this->setState('loading');
         $this->updateData();
-
-        /* Faling back to active. */
-        $this->state = 'active';
-        $this->save();
+        $this->setState('active');
     }
 
     /**

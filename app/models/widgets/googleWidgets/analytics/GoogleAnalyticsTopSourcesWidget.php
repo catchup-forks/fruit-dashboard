@@ -9,14 +9,12 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
             'type'       => 'DATE',
             'validation' => 'required',
             'help_text'  => 'The start of the collection period. (YYYY-mm-dd)',
-            'default'    => '2015-01-01'
         ),
         'range_end' => array(
             'name'       => 'End range',
             'type'       => 'DATE',
             'validation' => 'required',
             'help_text'  => 'The end of the collection period. (YYYY-mm-dd)',
-            'default'    => '2015-12-31'
         ),
         'max_results' => array(
             'name'       => 'Number of sources.',
@@ -37,7 +35,12 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$profileSettings, self::$rangeSettings);
+        /* Updating range setting with the static loader. */
+        $rangeSettings = self::$rangeSettings;
+        $rangeSettings['range_start']['default'] = Carbon::now()->subDays(30)->toDateString();
+        $rangeSettings['range_end']['default'] = Carbon::now()->toDateString();
+
+        return array_merge(parent::getSettingsFields(), self::$profileSettings, $rangeSettings);
     }
 
     /**

@@ -3,7 +3,7 @@
 /* This class is responsible for histogram data collection. */
 abstract class HistogramDataManager extends DataManager
 {
-    protected static $entries = 15;
+    protected static $defaultEntries = 15;
     protected static $staticFields = array('date', 'timestamp');
     abstract public function getCurrentValue();
 
@@ -24,39 +24,10 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
     public function collectData($options=array()) {
-        /* Calculating current value */
-        if (array_key_exists('entry', $options)) {
-            $entry = $options['entry'];
-        } else {
-            $entry = $this->getCurrentValue();
-        }
-
-        if (empty($entry)) {
-            return;
-        }
-
-        $entryTime = static::getEntryTime($entry);
-
-        /* Getting previous values. */
-        $currentData = $this->getData();
-        if ( ! empty($currentData)) {
-            $lastData = end($currentData);
-        } else {
-            $currentData = array();
-            $lastData = null;
-        }
-
-        if ($entryTime->diffInMinutes($this->last_updated) >= $this->update_period) {
-            /* Updating last updated. */
-            $this->last_updated = $entryTime;
-            $this->save();
-        } else if ($lastData) {
-            array_pop($currentData);
-        }
-
-        /* Adding, saving data. */
-        array_push($currentData, $this->formatData($entryTime, static::getEntryValues($entry)));
-        $this->saveData($currentData);
+        /* Getting the entry */
+        $entry = array_key_exists('entry', $options) ? $options['entry'] : $this->getCurrentValue();
+        /* Appending to list. */
+        $this->appendEntry($entry);
     }
 
     /**
@@ -69,6 +40,9 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
      protected function formatData($date, $data) {
+        if ( ! is_numeric($data)) {
+            return null;
+        }
         return array('value' => $data, 'timestamp' => $date->getTimestamp());
      }
 
@@ -95,19 +69,22 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      * @param array $range
      * @param string $resolution
+     * @param int ilength
      * @return array
      * --------------------------------------------------
      */
-    public function getHistogram($range, $resolution) {
+    public function getHistogram($range, $resolution, $ilength=null) {
+        $length = is_null($ilength) ? static::$defaultEntries : $ilength;
+
         /* Calling proper method based on resolution. */
         switch ($resolution) {
-            case 'minutes':  return $this->buildHistogram($range, $resolution, 'h:i'); break;
-            case 'hours':  return $this->buildHistogram($range, $resolution, 'M-d h'); break;
-            case 'days':   return $this->buildHistogram($range, $resolution, 'M-d'); break;
-            case 'weeks':  return $this->buildHistogram($range, $resolution, 'W'); break;
-            case 'months': return $this->buildHistogram($range, $resolution, 'Y-M'); break;
-            case 'years':  return $this->buildHistogram($range, $resolution, 'Y'); break;
-            default: return $this->buildHistogram($range, $resolution, 'd'); break;
+            case 'minutes':  return $this->buildHistogram($range, $resolution, $length, 'h:i'); break;
+            case 'hours':  return $this->buildHistogram($range, $resolution, $length, 'M-d h'); break;
+            case 'days':   return $this->buildHistogram($range, $resolution, $length, 'M-d'); break;
+            case 'weeks':  return $this->buildHistogram($range, $resolution, $length, 'W'); break;
+            case 'months': return $this->buildHistogram($range, $resolution, $length, 'Y-M'); break;
+            case 'years':  return $this->buildHistogram($range, $resolution, $length, 'Y'); break;
+            default: return $this->buildHistogram($range, $resolution, $length, 'd'); break;
         }
     }
 
@@ -117,11 +94,12 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      * @param array $range
      * @param string $resolution
+     * @param int $length
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogram($range, $resolution, $dateFormat='Y-m-d') {
+    protected function buildHistogram($range, $resolution, $length, $dateFormat='Y-m-d') {
         /* Getting recorded histogram sorted by timestamp. */
         $fullHistogram = $this->sortHistogram();
         if ( ! is_null($fullHistogram)) {
@@ -168,7 +146,7 @@ abstract class HistogramDataManager extends DataManager
                 $previousEntry = $entry;
             }
 
-            if (count($histogram) >= static::$entries) {
+            if (count($histogram) >= $length) {
                 /* Enough data. */
                 return array_reverse($histogram);
             }
@@ -261,6 +239,46 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * appendEntry
+     * Appends an entry to the dataset.
+     * --------------------------------------------------
+     * @param $entry
+     * --------------------------------------------------
+     */
+    protected function appendEntry(array $entry) {
+        if (empty($entry)) {
+            return;
+        }
+        $entryTime = static::getEntryTime($entry);
+
+        /* Getting the db ready object. */
+        $dbEntry = $this->formatData($entryTime, static::getEntryValues($entry));
+        if (is_null($dbEntry)) {
+            return;
+        }
+        array_push($currentData, $dbEntry);
+        $this->saveData($currentData);
+    }
+
+    /**
+     * sortHistogram
+     * Sorting the array.
+     * --------------------------------------------------
+     * @param boolean $asc
+     * @return array
+     * --------------------------------------------------
+     */
+    private function sortHistogram($asc=TRUE) {
+        $fullHistogram = $this->getData();
+        if ($fullHistogram != null) {
+            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
+        } else {
+            $fullHistogram = array();
+        }
+        return $asc ? $fullHistogram : array_reverse($fullHistogram);
+    }
+
+    /**
      * getEntryValues (buildHistogram)
      * Returning only the values of the entry,
      * excluding staticFields.
@@ -283,14 +301,14 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * getAverageValues (buildHistogram)
+     * OBSOLETE getAverageValues (buildHistogram)
      * Merging multiple entries into one, by avereging the values.
      * --------------------------------------------------
      * @param array $entries
      * @return array ($entry)
      * --------------------------------------------------
      */
-    private static final function getAverageValues($entries) {
+    private static final function _getAverageValues($entries) {
         $finalEntry = array();
         /* Summarizing all data into one array. */
         foreach ($entries as $entry) {
@@ -341,24 +359,6 @@ abstract class HistogramDataManager extends DataManager
             return $entryTime->diffInYears($now) == $multiplier;
         }
         return FALSE;
-    }
-
-    /**
-     * sortHistogram
-     * Sorting the array.
-     * --------------------------------------------------
-     * @param boolean $asc
-     * @return array
-     * --------------------------------------------------
-     */
-    private function sortHistogram($asc=TRUE) {
-        $fullHistogram = $this->getData();
-        if ($fullHistogram != null) {
-            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
-        } else {
-            $fullHistogram = array();
-        }
-        return $asc ? $fullHistogram : array_reverse($fullHistogram);
     }
 
     /**

@@ -36,6 +36,46 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * getSelectStartupType
+     * Renders the startup-type template.
+     * --------------------------------------------------
+     * @return Response
+     * --------------------------------------------------
+     */
+    public function getSelectStartupType() {
+        return View::make('signup-wizard.select-startup-type');
+    }
+
+    /**
+     * postSelectStartupType
+     * Saves the selected choice.
+     * --------------------------------------------------
+     * @return Response
+     * --------------------------------------------------
+     */
+    public function postSelectStartupType() {
+        $rules = array(
+            'startup_type' => 'required|in:' . implode(',', array_keys(SiteConstants::getStartupTypes())),
+        );
+
+        /* Run validation rules on the inputs */
+        $validator = Validator::make(Input::all(), $rules);
+
+        if ($validator->fails()) {
+            /* Fail. */
+            return Redirect::back();
+        }
+
+        /* Success */
+        $user = Auth::user();
+        $user->startup_type = Input::get('startup_type');
+        $user->save();
+
+        return Redirect::route('signup-wizard.financial-connections')->with('success', 'Startup type saved');
+
+    }
+
+    /**
      * postAuthentication
      * --------------------------------------------------
      * @return Saves the user authentication data

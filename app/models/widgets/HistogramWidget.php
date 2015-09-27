@@ -17,6 +17,13 @@ abstract class HistogramWidget extends CronWidget
             'validation' => 'required',
             'help_text'  => 'The name of the widget.'
         ),
+        'length' => array(
+            'name'       => 'Length',
+            'type'       => 'INT|min:5|max:15',
+            'validation' => 'required',
+            'default'    => 15,
+            'help_text'  => 'The number of data points on your histogram.'
+        ),
     );
 
     /* -- Choice functions -- */
@@ -95,7 +102,7 @@ abstract class HistogramWidget extends CronWidget
             $resolution = $this->getSettings()['resolution'];
         }
 
-        return $this->dataManager()->getHistogram($range, $resolution);
+        return $this->dataManager()->getHistogram($range, $resolution, $this->getSettings()['length']);
     }
 
     /**
