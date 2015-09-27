@@ -151,6 +151,12 @@
   </script>
   <!-- /FDChartOptions class -->
 
+  <!-- FD<>Widget classes -->
+  @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
+    <script type="text/javascript" src="lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js"></script>
+  @endforeach
+  <!-- /FD<>Widget classes -->
+
   <!-- FDChart class -->
   <script type="text/javascript" src="lib/FDChart.js"></script>
   <!-- /FDChart class -->

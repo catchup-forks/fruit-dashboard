@@ -37,9 +37,7 @@ function FDGridster(gridsterOptions, widgetsData) {
       var widget = new FDWidget(widgetsData[i]);
       widgets.push({'id': widgetsData[i].id, 'widget': widget});
     };
-
-    console.log(widgets);
-    
+        
     // return
     return this;
   }

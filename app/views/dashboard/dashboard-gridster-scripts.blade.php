@@ -25,9 +25,10 @@ var gridsterGlobalOptions = {
   );
   var widgetsData{{ $dashboard->id }} = [
     @foreach ($dashboard->widgets as $widget)
-      {'id':    '{{ $widget->id }}',
-       'type':  '{{ $widget->descriptor->type }}',
-       'state': '{{ $widget->state }}'},
+      {'id':      '{{ $widget->id }}',
+       'type':    '{{ $widget->descriptor->type }}',
+       'state':   '{{ $widget->state }}',
+       'postUrl': '{{ route("widget.ajax-handler", $widget->id) }}'},
     @endforeach
   ];
   var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }}, widgetsData{{ $dashboard->id }});
