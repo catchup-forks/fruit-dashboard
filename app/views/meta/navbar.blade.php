@@ -9,7 +9,7 @@
 
 <!-- add new widget button -->
 <div class="position-bl drop-shadow z-top">
-  <a href="{{ URL::route('widget.add') }}" alt="New widget" title="New widget">
+  <a href="{{ URL::route('widget.add') }}" alt="New widget" title="Add new widget" data-toggle="tooltip" data-placement="right">
     <span class="fa fa-plus-circle fa-2x fa-inverse color-hovered"></span>
   </a>
 </div>
@@ -18,7 +18,7 @@
 <!-- dropdown menu icon -->
 <div class="btn-group position-tr z-top cursor-pointer">
 
-    <span class="dropdown-icon fa fa-2x fa-cog fa-inverse color-hovered drop-shadow" alt="Settings" title="Settings" data-toggle="dropdown" aria-expanded="true"></span>
+    <span class="dropdown-icon fa fa-2x fa-cog fa-inverse color-hovered drop-shadow" alt="Settings" data-toggle="dropdown" aria-expanded="true"></span>
 
     <!-- dropdown menu elements -->
     <ul class="dropdown-menu pull-right" role="menu">
