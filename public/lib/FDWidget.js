@@ -21,8 +21,8 @@ function FDWidget(widgetOptions) {
   this.send    = send;
   this.load    = load;
   this.refresh = refresh;
+  this.remove  = remove;
   this.getSelector  = getSelector;
-  this.getDeleteUrl = getDeleteUrl;
 
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
@@ -49,17 +49,6 @@ function FDWidget(widgetOptions) {
    */
   function getSelector() {
     return selector;
-  }
-
-  /**
-   * @function getDeleteUrl
-   * --------------------------------------------------------------------------
-   * Returns the server-side deletion url
-   * @return {string} deleteUrl | The url
-   * --------------------------------------------------------------------------
-   */
-  function getDeleteUrl() {
-    return options.deleteUrl;
   }
 
   /**
@@ -128,6 +117,28 @@ function FDWidget(widgetOptions) {
     // Poll widget state, and load if finished
     load();
   };
+
+  /**
+   * @function remove
+   * --------------------------------------------------------------------------
+   * Sends the deletion signal to the server
+   * @return {null}
+   * --------------------------------------------------------------------------
+   */
+  function remove() {
+    // Call ajax
+    $.ajax({
+      type: "POST",
+      data: null,
+      url: options.deleteUrl,
+      success: function(data) {
+        easyGrowl('success', "You successfully deleted the widget", 3000);
+      },
+      error: function(){
+        easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
+      }
+    });
+  }
 
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *

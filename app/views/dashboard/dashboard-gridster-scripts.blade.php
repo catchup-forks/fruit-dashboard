@@ -32,14 +32,13 @@ var gridsterGlobalOptions = {
        'deleteUrl': '{{ route("widget.delete", $widget->id) }}'},
     @endforeach
   ];
-  var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }}, widgetsData{{ $dashboard->id }});
+  var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }});
 @endforeach
 
 // Initialize FDGridster objects on DOM load
 $(document).ready(function() {
   @foreach (Auth::user()->dashboards as $dashboard)
-    FDGridster{{ $dashboard->id }}.init();
-    FDGridster{{ $dashboard->id }}.build();
+    FDGridster{{ $dashboard->id }}.init().build(widgetsData{{ $dashboard->id }});
   @endforeach
 });
 

@@ -4,7 +4,7 @@
  * Class function for the gridster elements
  * --------------------------------------------------------------------------
  */
-function FDGridster(gridsterOptions, widgetsData) {
+function FDGridster(gridsterOptions) {
  /* -------------------------------------------------------------------------- *
   *                                 ATTRIBUTES                                 *
   * -------------------------------------------------------------------------- */
@@ -17,7 +17,6 @@ function FDGridster(gridsterOptions, widgetsData) {
   var gridster         = null;
   
   // Widgets related
-  var widgetsData     = widgetsData;
   var widgetsSelector = namespace + 'div.gridster-player';
   var widgets         = [];
 
@@ -38,7 +37,7 @@ function FDGridster(gridsterOptions, widgetsData) {
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function build() {
+  function build(widgetsData) {
     // Build widgets
     for (var i = widgetsData.length - 1; i >= 0; i--) {
       // Initialize widget
@@ -101,23 +100,13 @@ function FDGridster(gridsterOptions, widgetsData) {
       };
     };
 
-    console.log(widget);
-    // Remove element from the gridster
-    gridster.remove_widget(widget.getSelector());
+    if (widget != null) {
+      // Remove element from the gridster
+      gridster.remove_widget(widget.getSelector());
 
-    // Signal deletion to server
-    $.ajax({
-      type: "POST",
-      dataType: 'json',
-      url: widget.getDeleteUrl(),
-      data: null,
-      success: function(data) {
-        easyGrowl('success', "You successfully deleted the widget", 3000);
-      },
-      error: function(){
-        easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
-      }
-    });
+      // Delete widget
+      widget.remove()
+    };
 
     // return
     return this;
