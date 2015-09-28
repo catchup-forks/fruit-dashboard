@@ -14,6 +14,14 @@
   </a>
 </div>
 
+@if (Request::is('dashboard'))
+    <!-- dashboard lock icon -->
+    <div id="dashboard-lock" class="position-br drop-shadow z-top" alt="Dashboard lock" title="" data-toggle="tooltip" data-placement="left" data-dashboard-id="" data-lock-direction="">
+        <span class="fa fa-unlock-alt fa-2x fa-inverse color-hovered"> </span>
+    </div>
+    <!-- /dashboard lock icon -->
+@endif
+
 
 <!-- dropdown menu icon -->
 <div class="btn-group position-tr z-top cursor-pointer">
@@ -67,6 +75,7 @@
     </ul>
 
 </div> <!-- /.btn-group -->
+
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])

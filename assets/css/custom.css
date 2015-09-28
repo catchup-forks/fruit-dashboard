@@ -46,6 +46,11 @@ body {
   top: 5px;
   left: 5px;
 }
+.position-br {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+}
 .position-br-lg {
   position: fixed;
   bottom: 12.5px;
