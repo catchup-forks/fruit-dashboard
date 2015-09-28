@@ -141,14 +141,14 @@
   <!-- /FDGridster class -->
 
   <!-- FDChartOptions class -->
-  <script type="text/javascript" src="lib/FDChartOptions.js"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
   <script type="text/javascript">
       globalChartOptions = new FDChartOptions('dashboard');
   </script>
   <!-- /FDChartOptions class -->
 
   <!-- FDChart class -->
-  <script type="text/javascript" src="lib/FDChart.js"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
   <!-- /FDChart class -->
 
   <!-- Gridster scripts -->
