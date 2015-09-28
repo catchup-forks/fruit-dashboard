@@ -16,7 +16,7 @@
     @endforeach
     </p>
     — {{ $tweet['name'] }} (
-      <a href="https://twitter.com/{{ ltrim({{ $tweet['title'] }}, '@') }}" target="_blank">{{ $tweet['title'] }}
+      <a href="https://twitter.com/{{ ltrim( $tweet['title'], '@') }}" target="_blank">{{ $tweet['title'] }}
       </a>
 )
     <a href="https://twitter.com/Interior/status/{{ $tweet['id'] }}" target="_blank">{{ $tweet['created'] }}</a>
