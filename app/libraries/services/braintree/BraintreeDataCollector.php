@@ -14,9 +14,13 @@ class BraintreeDataCollector
     private $connector;
 
     /* -- Constructor -- */
-    function __construct($user) {
+    function __construct($user, $connector=null) {
         $this->user = $user;
-        $this->connector = new BraintreeConnector($this->user);
+        if (is_null($connector)) {
+            $this->connector = new BraintreeConnector($user);
+        } else {
+            $this->connector = $connector;
+        }
         $this->connector->connect();
     }
 
@@ -40,7 +44,7 @@ class BraintreeDataCollector
             $braintreePlans = Braintree_Plan::all();
         } catch (Exception $e) {
             // Something went wrong.
-            return;
+            throw new ServiceException("Braintree connection error.", 1);
         }
 
         // Getting the plans.
@@ -94,7 +98,7 @@ class BraintreeDataCollector
             );
         } catch (Exception $e) {
             // Something went wrong.
-            return;
+            throw new ServiceException("Braintree connection error.", 1);
         }
 
         foreach ($braintreeSubscriptions as $subscription) {

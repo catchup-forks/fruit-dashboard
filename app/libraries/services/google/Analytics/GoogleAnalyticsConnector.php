@@ -37,7 +37,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
      */
     public function saveTokens(array $parameters=array()) {
         parent::saveTokens($parameters);
-        $collector = new GoogleAnalyticsDataCollector($this->user);
+        $collector = new GoogleAnalyticsDataCollector($this->user, $this);
         $collector->saveProperties();
     }
 
@@ -49,7 +49,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function populateData($criteria) {
+    protected function populateData($criteria) {
         Queue::push('GoogleAnalyticsPopulateData', array(
             'user_id'  => $this->user->id,
             'criteria' => $criteria

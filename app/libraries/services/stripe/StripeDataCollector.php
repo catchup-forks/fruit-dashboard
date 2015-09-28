@@ -14,10 +14,14 @@ class StripeDataCollector
     private $connector;
 
     /* -- Constructor -- */
-    function __construct($user) {
+    function __construct($user, $connector=null) {
         $this->user = $user;
-        $this->connector = new StripeConnector($user);
-        $this->connector->connect();
+        if (is_null($connector)) {
+            $this->connector = new StripeConnector($user);
+            $this->connector->connect();
+        } else {
+            $this->connector = $connector;
+        }
     }
 
     /**

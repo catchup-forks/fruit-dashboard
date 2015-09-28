@@ -170,6 +170,9 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function setState($state, $commit=TRUE) {
+        if ($this->state == $state) {
+            return;
+        }
         $this->state = $state;
         if ($commit) {
             $this->save();

@@ -31,7 +31,7 @@ class BraintreeConnector extends GeneralServiceConnector
      * @return authFields
      * --------------------------------------------------
      */
-    public function getAuthFields() {
+    public static function getAuthFields() {
         return static::$authFields;
     }
 
@@ -46,7 +46,7 @@ class BraintreeConnector extends GeneralServiceConnector
         // Populating access_token array.
         $credentials = array();
         foreach ($parameters as $key=>$value) {
-            if (in_array($key, $this->getAuthFields())) {
+            if (in_array($key, self::getAuthFields())) {
                 $credentials[$key] = $value;
             }
         }
@@ -98,7 +98,7 @@ class BraintreeConnector extends GeneralServiceConnector
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function populateData($criteria) {
+    protected function populateData($criteria) {
         Queue::push('BraintreePopulateData', array(
             'user_id' => $this->user->id
         ));
