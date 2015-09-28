@@ -225,4 +225,14 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         $this->data->save();
     }
 
+    /**
+     * hasData
+     * Returns whether or not there's data in the histogram.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function hasData() {
+        return $this->dataManager()->getData() != FALSE;
+    }
 }
