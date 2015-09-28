@@ -4,10 +4,10 @@
   <blockquote class="twitter-tweet">
     <p>
     @foreach (explode(' ', $tweet['text']) as $word)
-      @if (strlen($word) > 0 && $word[0] == '@')
+      @if (strlen($word) > 0 && strpos($word, '@') === 0)
         <a href="https://twitter.com/{{ ltrim($word, '@') }}">{{$word}}</a>
-      @elseif (strlen($word) > 0 && $word[0] == '#')
-        <a href="https://twitter.com/hashtag/{{ ltrim($word, '@') }}">{{$word}}</a>
+      @elseif (strlen($word) > 0 && strpos($word, '#') === 0)
+        <a href="https://twitter.com/hashtag/{{ ltrim($word, '#') }}">{{$word}}</a>
       @elseif (strpos($word, 'http://') === 0 || strpos($word, 'https://') === 0)
         <a href="{{$word}}}}">{{$word}}</a>
       @else
@@ -30,6 +30,23 @@
         updateMentionsWidget(data, 'mentions-{{ $widget->id }}');
      });
    });
+    // Detecting clicks and drags.
+    // Redirect to single stat page on click.
+     var isDragging = false;
+     $('a').
+       .mousedown(function() {
+           isDragging = false;
+       })
+       .mousemove(function() {
+           isDragging = true;
+        })
+       .mouseup(function(e) {
+           var wasDragging = isDragging;
+           isDragging = false;
+           if (wasDragging) {
+            e.preventDefault();
+           }
+       });
   });
 </script>
 @append
