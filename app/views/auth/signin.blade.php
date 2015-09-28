@@ -6,7 +6,7 @@
 
 @section('pageContent')
 
-<body style="background: url({{ Background::dailyBackgroundURL() }}) no-repeat center center fixed">
+<body style="background: url({{ Background::getBaseUrl() }}) no-repeat center center fixed">
 
 <div class="vertical-center">
   <div class="container">
@@ -20,7 +20,7 @@
             </h1>
             <p class="lead text-center">
               The new tab for your startup.
-            </p>  
+            </p>
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-md-6 -->
@@ -36,7 +36,7 @@
             </h3>
           </div> <!-- /.panel-heading -->
           <div class="panel-body">
-            
+
             <!-- Form -->
             {{ Form::open(array('route' => 'auth.signin', 'id' => 'signin-form_id' )) }}
 
@@ -58,8 +58,13 @@
               {{ Form::close() }}
 
             </form>
-
             <!-- /Form -->
+
+            <a href="{{ route('signup-wizard.facebook-login') }}">
+              <button class="btn btn-primary">
+                 <span class="fa fa-facebook"> | </span> Login with facebook
+              </button>
+            </a>
 
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->

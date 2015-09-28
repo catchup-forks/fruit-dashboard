@@ -13,5 +13,7 @@
 
 Artisan::add(new CheckTrialExpiry);
 Artisan::add(new CollectData);
+Artisan::add(new ConnectionCleanup);
 Artisan::add(new SaveWidgets);
 Artisan::add(new MigrateExternal);
+Artisan::add(new BackgroundChange);

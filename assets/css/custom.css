@@ -3,7 +3,7 @@ body {
   height: 100%;
 }
 .fill-height {
-  height: 100%;
+  height: 90%;
   overflow-y: hidden;
 }
 .vertical-center {
@@ -14,8 +14,7 @@ body {
   align-items: center;
 }
 .valign-middle {
-  display: flex;
-  align-items: center;
+  vertical-align: middle;
 }
 .position-bl {
   position: fixed;
@@ -47,12 +46,16 @@ body {
   top: 5px;
   left: 5px;
 }
-.position-br {
+.position-br-lg {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  bottom: 12.5px;
+  right: 75px;
 }
-.has-margin-vertical-sm {
+.has-margin-horizontal {
+  margin-left: 25px;
+  margin-right: 25px;
+}
+.has-margin-horizontal-sm {
   margin-left: 5px;
   margin-right: 5px;
 }
@@ -71,11 +74,18 @@ body {
 .margin-top-sm {
   margin-top: 12.5px;
 }
+.padding {
+  padding: 5px;
+}
 .not-visible {
   display: none;
 }
+.off-screen {
+  position: absolute;
+  left: -9999px;
+}
 .z-top {
-  z-index: 9999;
+  z-index: 99999;
 }
 .drop-shadow {
   text-shadow: 1px 1px 3px #141414;
@@ -118,19 +128,26 @@ body {
   /* Fallback */
   background: rgba(255, 255, 255, 0.85);
 }
+.add-new {
+  font-size: 120%;
+  line-height: 200px;
+  border: dashed 2px grey;
+  border-radius: 4px;
+  color: grey;
+}
 .gridster {
   position: absolute;
   padding: 0;
   top: 0;
-  left: 9.5%;
-  right: 9.5%;
+  left: 5%;
+  right: 5%;
   margin-bottom: 25px;
+  overflow-x: hidden;
 }
 .gridster ul li {
-  list-style: none;
   cursor: default;
 }
-.gridster ul li:hover,
+.can-hover:hover,
 .hovered {
   background: #e6e6e6;
   /* Fallback */
@@ -141,6 +158,42 @@ body {
 }
 .gs-w:hover span.display-hovered {
   display: inline-block;
+}
+.gs-resize-handle,
+.gs-resize-handle-both {
+  bottom: -1px;
+  right: -1px;
+  background-image: none;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+.gs-resize-handle:before {
+  content: "\f065";
+  font-size: 75%;
+  font-family: FontAwesome;
+  color: #ffffff;
+  text-shadow: 1px -1px 3px #141414;
+}
+.rounded {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.widget-inner {
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.reminder-text {
+  padding-top: 5px;
+  margin-right: 25px;
+  margin-left: 25px;
 }
 .quote p {
   line-height: 1em;
@@ -233,5 +286,110 @@ input.greetings-name:focus {
   -o-background-size: cover;
 }
 .carousel-control {
-  width: 9.5%;
+  width: 5%;
+}
+.modification-icons {
+  position: relative;
+  top: -40px;
+}
+.rounded {
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.background-white {
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.70833333);
+}
+.has-padding {
+  padding: 5px;
+}
+.text-shadow {
+  text-shadow: 1px 1px 3px #141414;
+}
+.chart {
+  margin: 5px;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.70833333);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.chart-data {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  padding: 5px;
+}
+.chart-name {
+  font-size: 110%;
+  color: #ffffff;
+  text-shadow: 1px 1px 3px #141414;
+}
+.chart-value {
+  font-weight: 800;
+  font-size: 120%;
+  color: #6999d1;
+}
+.chart-diff-data {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.70833333);
+  padding: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.chart-diff-icon {
+  position: relative;
+  top: -2px;
+}
+.chart-diff-value {
+  font-weight: 600;
+  font-size: 120%;
+}
+.chart-diff-dimension {
+  font-size: 90%;
+  margin-top: -3px;
+}
+blockquote.twitter-tweet {
+  display: inline-block;
+  background-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.47222222);
+  font-family: "Helvetica Neue", Roboto, "Segoe UI", Calibri, sans-serif;
+  font-size: 11px;
+  font-weight: bold;
+  line-height: 14px;
+  border-color: #eee #ddd #bbb;
+  border-radius: 5px;
+  border-style: solid;
+  border-width: 1px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  margin: 5px 20px 5px 5px;
+  padding: 4px 12px 12px 12px;
+  max-width: 468px;
+}
+blockquote.twitter-tweet p {
+  font-weight: normal;
+  line-height: 14px;
+  margin-bottom: 5px;
+}
+blockquote.twitter-tweet a {
+  color: inherit;
+  font-weight: normal;
+  text-decoration: none;
+  outline: 0 none;
+}
+blockquote.twitter-tweet a:hover,
+blockquote.twitter-tweet a:focus {
+  text-decoration: underline;
+}
+html,
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  background-color: #333333;
 }

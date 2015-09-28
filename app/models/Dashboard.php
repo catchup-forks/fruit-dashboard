@@ -6,7 +6,9 @@ class Dashboard extends Eloquent
     protected $fillable = array(
         'name',
         'background',
-        'number'
+        'number',
+        'is_locked',
+        'is_default'
     );
     public $timestamps = FALSE;
 
@@ -20,10 +22,11 @@ class Dashboard extends Eloquent
      * --------------------------------------------------
      * @param $desiredX The desired cols.
      * @param $desiredY The desired rows.
+     * @param $widget The editable widget.
      * @return array of the x,y position.
      * --------------------------------------------------
     */
-    public function getNextAvailablePosition($desiredX, $desiredY) {
+    public function getNextAvailablePosition($desiredX, $desiredY, $widget=null) {
         /* Iterating through the grid to find a fit. */
         for ($i = 1; $i <= SiteConstants::getGridNumberOfRows(); ++$i) {
             for ($j = 1; $j <= SiteConstants::getGridNumberOfCols(); ++$j) {
@@ -34,37 +37,47 @@ class Dashboard extends Eloquent
                     'endX'   => $j + $desiredX,
                     'endY'   => $i + $desiredY
                 );
-                if ($this->fits($rectangle)) {
-                    return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": ' . $j . ', "row": ' . $i . '}';
+                /* Respecting the grid size */
+                if ( ! $this->inGrid($rectangle)) {
+                    continue;
+                }
+                if ($this->fits($rectangle, $widget)) {
+                    return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col":' . $j . ', "row": '. $i .'}';
                 }
             }
         }
         /* No match, default positioning. */
-        return '{"size_x": ' . $desiredX . ', "size_y": ' . $desiredY. ', "col": 0 , "row": 0 }';
+        return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col": 11,"row": 11}';
     }
 
     /**
      * fits
      * Determines, whether or not, the widget fits into the position.
      * --------------------------------------------------
-     * @param $rectangle Array of the widget's desired position.
-     * @return array of the x,y position.
+     * @param $rectangle Array
+     * @param $skipWidget The widget to avoid conflicts with.
+     * @return bool
      * --------------------------------------------------
     */
-    private function fits($rectangle) {
+    private function fits($rectangle, $skipWidget=null) {
         /* Looking for an overlap. */
         foreach ($this->widgets as $widget) {
 
             if ($widget->state == 'hidden') {
                 continue;
             }
+            if ( ! is_null($skipWidget) && ($widget->id == $skipWidget->id)) {
+                continue;
+            }
 
             $pos = $widget->getPosition();
+            $xEnd = $pos->col + $pos->size_x;
+            $yEnd = $pos->row + $pos->size_y;
 
             $x1Overlap = ($pos->col < $rectangle['endX']);
-            $x2Overlap = (($pos->col + $pos->size_x) > $rectangle['startX']);
+            $x2Overlap = (($xEnd) > $rectangle['startX']);
             $y1Overlap = ($pos->row < $rectangle['endY']);
-            $y2Overlap = (($pos->row + $pos->size_y) > $rectangle['startY']);
+            $y2Overlap = (($yEnd) > $rectangle['startY']);
 
             if ($x1Overlap && $x2Overlap && $y1Overlap && $y2Overlap) {
                 return FALSE;
@@ -74,6 +87,23 @@ class Dashboard extends Eloquent
         return TRUE;
     }
 
+    /**
+     * inGrid
+     * Determines, if the rectangle is in the grid.
+     * --------------------------------------------------
+     * @param $rectangle Array
+     * @return bool
+     * --------------------------------------------------
+    */
+    private function inGrid($rectangle) {
+        if ($rectangle['endX'] > SiteConstants::getGridNumberOfCols()) {
+            return FALSE;
+        }
+        if ($rectangle['endY'] > SiteConstants::getGridNumberOfRows()) {
+            return FALSE;
+        }
+        return TRUE;
+    }
 }
 
 ?>

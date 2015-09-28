@@ -1,0 +1,463 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>FruitDashboard widgets/services documentation</title>
+  </head>
+  <body>
+    <h1>Content</h1>
+    <ol>
+      <li><a href="#introduction">Introduction</a></li>
+      <li><a href="#widget_descriptors">Widget descriptors</a></li>
+      <li><a href="#widgets">Widgets</a>
+        <ol>
+          <li><a href="#iajax_widget">Ajax Widget interface</a></li>
+          <li><a href="#data_widgets">Data widgets</a></li>
+          <li><a href="#webhook_widgets">Webhook widgets</a>
+          <li><a href="#cron_widgets">Cron widgets</a>
+            <ol>
+              <li><a href="#histogram_widgets">Histogram widgets</a>
+              <li><a href="#multiple_histogram_widgets">Multiple histogram widgets</a>
+            </ol>
+          </li>
+        </ol>
+      </li>
+      <li><a href="#data_managers">Data managers</a>
+        <li><a href="#histogram_data_managers">Histogram data managers</a></li>
+        <li><a href="#multiple_histogram_data_managers">Multiple histogram data managers</a></li>
+      </li>
+      <li><a href="#services">Services</a>
+        <ol>
+          <li><a href="#connectors">Connectors</a></li>
+          <li><a href="#data_collectors">Data collectors</a></li>
+          <li><a href="#calculators">Calculators</a></li>
+          <li><a href="#auto_dashboard">Auto dashboard</a></li>
+        </ol>
+      </li>
+    </ol>
+
+    <h1 id="introduction">Introduction</h1>
+    <p>
+      This document is intended to provide information about Fruit Dashboard's, internal structure of models, such as widgets, services, datamanagers.
+    </p>
+
+    <h1 id="widget_descriptors">Widget descriptors</h1>
+    <p>
+      These objects live in the database, are created by the seeder, and they contain meta data about widgets.
+      <br>
+      Attributes:
+      <table>
+        <thead>
+          <th>Attribute</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Name</td>
+            <td>The name of the widgets. (Shown on the site)</td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td>A brief description about the widgets.</td>
+          </tr>
+          <tr>
+            <td>Type</td>
+            <td>The type of the widgets (must be unique with underscores). Please not that the class loader will use this name when you try to access the specific widget object. This means for example, if you have a descriptor with type 'digital_clock' your widget class definition should be DigitalClock.</td>
+          </tr>
+          <tr>
+            <td>Category</td>
+            <td>The category the widgets are grouped in. On service based widgets please keep in mind, that the category should match the service name. (best practice to define as consants)</td>
+          </tr>
+          <tr>
+            <td>Min/max, default cols/rows</td>
+            <td>Widgets position constants</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      Relations:
+      <table>
+        <thead>
+          <th>Related model</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Widgets</td>
+            <td>A descriptor has many widgets.</td>
+          </tr>
+          <tr>
+            <td>DataManagers</td>
+            <td>A descriptor has many datamanagers.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      Interface:
+      <table>
+        <thead>
+          <th>Function name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>getClassName()</td>
+            <td>Gettting a widget's name by the descriptor. (for datamanagers use str_replace)
+</td>
+          </tr>
+          <tr>
+            <td>getTemplateName()</td>
+            <td>Returning the widget's template name.</td>
+          </tr>
+          <tr>
+            <td>getDataManager($widget)</td>
+            <td>Returning the correspondig dataManager for the widget if exists, or creating a DataManager if not.</td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+
+    <h1 id="widgets">Widgets</h1>
+    <p>
+      Widget entitites are related to specific users, they appear on the dashboard, has interaction with the user.
+      <br>
+      Attributes:
+      <table>
+        <thead>
+          <th>Attribute</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>State</td>
+            <td>The widget's current state, currently available values ('active', 'loading', 'setup_required')</td>
+          </tr>
+          <tr>
+            <td>Settings</td>
+            <td>The widget's settings, stored as JSON. (specified in static $settingsFields variable).</td>
+          </tr>
+          <tr>
+            <td>Position</td>
+            <td>The widget's position on the dashboard.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      Relations:
+      <table>
+        <thead>
+          <th>Related model</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>User</td>
+            <td>The user has many widgets.</td>
+          </tr>
+          <tr>
+            <td>Dashboard</td>
+            <td>A widget belongs to one dashboard.</td>
+          </tr>
+          <tr>
+            <td>Descriptor</td>
+            <td>The widget has one descriptor.</td>
+          </tr>
+          <tr>
+            <td>Data</td>
+            <td>The widget belongs to one or zero data.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      Interface:
+      <table>
+        <thead>
+          <th>Function name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>checkUserWidgetsIntegrity($user) (static)</td>
+            <td>Checking the overall integrity of a user's widgets.
+</td>
+          </tr>
+          <tr>
+            <td>checkIntegrity()</td>
+            <td>Checking the widgets overall integrity.</td>
+          </tr>
+          <tr>
+            <td>getSettingsFields()</td>
+            <td>Returning the settings meta.</td>
+          </tr>
+          <tr>
+            <td>getSetupFields()</td>
+            <td>Returning the setup meta.</td>
+          </tr>
+          <tr>
+            <td>getPosition()</td>
+            <td>Returning the json decoded position of the widget.</td>
+          </tr>
+          <tr>
+            <td>getSettings()</td>
+            <td>Returning the json decoded settings of the widget.</td>
+          </tr>
+          <tr>
+            <td>getSpecific()</td>
+            <td>Returning the specific widget object from a general widget, used in collections.</td>
+          </tr>
+          <tr>
+            <td>setState($state)</td>
+            <td>Setting a widget's state.</td>
+          </tr>
+          <tr>
+            <td>setPosition(array $decodedPosition)</td>
+            <td>Setting a widget's position.</td>
+          </tr>
+          <tr>
+            <td>getSettingsValidationArray(array $fields)</td>
+            <td>Returning the widget's validationArray used by Laravel Validator.</td>
+          </tr>
+          <tr>
+            <td>save(array $options=array())</td>
+            <td>Eloquent overriden method.</td>
+          </tr>
+          <tr>
+            <td>saveSettings(array $inputSettings, $commit=TRUE)</td>
+            <td>Setting a widget's settings, if commit is set save() will be called.</td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+
+    <h2 id="data_widgets">Data widgets</h2>
+    <p>
+      Data widgets are the ones that have a Data objects assigned.
+      <br>
+       Interface:
+      <table>
+        <thead>
+          <th>Function name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>getData()</td>
+            <td>Json decoding the data from DB.</td>
+          </tr>
+          <tr>
+            <td>checkIntegrity()</td>
+            <td>Added data integrity check.</td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+
+    <h2 id="cron_widgets">Cron widgets</h2>
+    <p>
+      A widget that is being updated periodically, should extend the CronWidget class. These widgets must have DataManagers through their data in order to work properly.
+      <br>
+       Interface:
+      <table>
+        <thead>
+          <th>Function name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>getCriteria()</td>
+            <td>Returning the widget's criteria from DB.</td>
+          </tr>
+          <tr>
+            <td>getData($postData=null)</td>
+            <td>The blade templates should collect the data through this function, in this case we're passing the job to the datamanager.</td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+
+    <h3 id="histgram_widgets">Histogram widgets</h3>
+    <p>
+      These widgets, have specific settings, and are responsible drawing line charts. (more in dataManagers)
+    </p>
+
+    <h3 id="multiple_histgram_widgets">Multiple histogram widgets</h3>
+    <p>
+      These widgets, have specific settings, and are responsible drawing line charts. (more in dataManagers)
+    </p>
+
+    <h1 id="data_managers">Data managers</h1>
+    <p>
+      These entities are responsible for collecting data in the background, and for all interaction with data, that are being requested by CronWidgets.
+      <br>
+      Attributes:
+      <table>
+        <thead>
+          <th>Attribute</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Settings criteria</td>
+            <td>These settings distinguish the same types of widgets from each other (looks just like widget settings).</td>
+          </tr>
+          <tr>
+            <td>Update period</td>
+            <td>How often should the data be updated</td>
+          </tr>
+          <tr>
+            <td>Last updated</td>
+            <td>When was the last collection.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      Relations:
+      <table>
+        <thead>
+          <th>Related model</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Widgets</td>
+            <td>A manager has many widgets.</td>
+          </tr>
+          <tr>
+            <td>Data</td>
+            <td>A manager belongs to one data.</td>
+          </tr>
+          <tr>
+            <td>User</td>
+            <td>A manager belongs to one user.</td>
+          </tr>
+        </tbody>
+      </table>
+      <br>
+      Interface:
+      <table>
+        <thead>
+          <th>Function name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>collectData()</td>
+            <td>This function is called by the artisan command CollectData, and by the refresh button on the widget.</td>
+          </tr>
+          <tr>
+            <td>initializeData()</td>
+            <td>If there is no data, this function intializes the data for the first time.</td>
+          </tr>
+          <tr>
+            <td>getDataScheme()</td>
+            <td>Returning an empty data layout.</td>
+          </tr>
+          <tr>
+            <td>getSpecific()</td>
+            <td>Same as in the widget.</td>
+          </tr>
+          <tr>
+            <td>getCriteria()</td>
+            <td>Same as in the widget.</td>
+          </tr>
+          <tr>
+            <td>getData()</td>
+            <td>Returning the dataset as array.</td>
+          </tr>
+          <tr>
+            <td>setWidgetState($state)</td>
+            <td>Setting all widget's state to $state.</td>
+          </tr>
+          <tr>
+            <td>saveData($data)</td>
+            <td>Saving data to db accordingly.</td>
+          </tr>
+          <tr>
+            <td>setUpdatePeriod()</td>
+            <td>Setting the manager's update period.</td>
+          </tr>
+          <tr>
+            <td>createManagerFromWidget($widget) static</td>
+            <td>Creating a new DataManager from a widget instance.</td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+
+    <h2 id="histogram_data_managers">Histogram data managers</h2>
+    <p>
+      These entitites are responsible for the data collection, data representation of histogram widgets.
+      <br>
+      Interface:
+      <table>
+        <thead>
+          <th>Function name</th>
+          <th>Description</th>
+        </thead>
+        <tbody>
+          <tr>
+            <td>getLatestData()</td>
+            <td>Returning the last data from the dataset.</td>
+          </tr>
+          <tr>
+            <td>getHistogram($range, $frequency)</td>
+            <td>This function creates the data for the widget by calling buildhistogram with custom parameters.</td>
+          </tr>
+          <tr>
+            <td>getDiff($data, $dataName='value') static</td>
+            <td>Creates and returns the differentiated dataset on data.</td>
+          </tr>
+          <tr>
+            <td>getAverageValues($entries) static</td>
+            <td>Returning the average values on $entries.</td>
+          </tr>
+        </tbody>
+      </table>
+    </p>
+
+    <h2 id="multiple_histogram_data_managers">Multiple histogram data managers</h2>
+    <p>
+      Some functions of the Histogram are overloaded here.
+    </p>
+
+    <h1 id="services">Services</h1>
+    <p>
+      The software's main power is that it communicates with various services, preferebly using Oauth2 where available.
+      At the time the following servies are connected:<br>
+      <ul>
+        <li>Braintree</li>
+        <li>Facebook</li>
+        <li>Google analyitcs</li>
+        <li>Stripe</li>
+        <li>Twitter</li>
+      </ul>
+      To connect a service you need to do the following. <br>
+      <ol>
+        <li>Create routes.</li>
+        <li>Create connect/disconnect controllers.</li>
+        <li>Create ServiceConnector (inherited from GeneralServiceConnector)</li>
+        <li>Create ServiceDataCollector</li>
+      </ol>
+
+    </p>
+
+    <h2 id="connectors">Connectors</h2>
+    <p>
+      Each service should have a specific connector, that is inherited from GeneralServiceConnector, which does many things already, including, automatically deleting all related widgets, data, datamanagers on disconnect, on connect initializing all datamanagers, contains shorthands for creatin a connection etc.
+    </p>
+
+    <h2 id="data_collectors">Data collectors</h2>
+    <p>
+      This is not mandatory, but a good practice to keep things organized. Connection related stuff to Connector, Data gathering calculation here. Usually you will need a Connector object as a variable here.
+    </p>
+
+    <h2 id="calculators">Calculators</h2>
+    <p>
+      Same as above, if there are a lot of calculations, they should be done in a specific class.
+    </p>
+
+    <h2 id="auto_dashboard">Auto dashboard</h2>
+    <p>
+      This is really easy, create your own autodashboard using GeneralAutoDashboardCreator, add your late static binding, for the following: $position, $service, call the autodashboard->create() in the connect controller and you are done. Your data managers, dashboards will be created automatically.
+    </p>
+  </body>
+</html>

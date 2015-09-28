@@ -21,7 +21,6 @@
               <ul class="list-group">
                 <li class="list-group-item">You host your software</li>
                 <li class="list-group-item">Access and customize each functionality</li>
-                <li class="list-group-item">Community support</li>
               </ul>
               <p><small>Fork us on </small><span class="fa fa-github"></span><small> GitHub, and create your own instance.</small></p>
             </div> <!-- /.panel-body -->
@@ -37,27 +36,27 @@
               @endif
               <h1>{{ $plan->name }}</h1>
               <p class="lead">
-                @if ($plan->amount == 0)
+                @if ($plan->isFree())
                 Free
                 @else
-                <span class="fa fa-eur"></span>
+                <span class="fa fa-{{ $plan->braintree_merchant_currency }}"></span>
                 {{ $plan->amount }} / month
                 @endif
               </p>
               {{ $plan->description }}
               @if ($plan->isFree())
-                @if (Auth::user()->subscription->getTrialInfo()['enabled'])
-                  @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
+                @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
+                  @if (Auth::user()->subscription->getSubscriptionInfo()['TS'] == 'active')
                     <p>
                       Your trial ends in 
                       <strong>
-                        {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
+                        {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }} day(s)
                       </strong>
-                      <small class="text-muted">on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}.</small>
+                      <small class="text-muted">on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}.</small>
                     </p>
                   @else
                     <p>
-                      Your trial has ended on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
+                      Your trial has ended on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
                     </p>
                   @endif
                 @endif

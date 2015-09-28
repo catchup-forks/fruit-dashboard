@@ -1,0 +1,22 @@
+{
+	"name": "Fruit Dashboard - DEV",
+	"version": "0.1",
+	"description": "[DEBUGGING] Fruit Dashboard.",
+	"manifest_version": 2,
+  "browser_action": {
+    "default_icon": {                    
+      "19": "icon19x19.png",           
+      "38": "icon38x38.png"            
+      },
+    "default_title": "Fruit Dashboard - DEV"
+  },
+  "background": {
+    "scripts": ["icon.js"]
+  },
+	"icons": { "16": "icon16x16.png",
+           "48": "icon48x48.png",
+          "128": "icon128x128.png" },
+	"chrome_url_overrides" : {
+	    "newtab": "dashboard.html"
+  }
+}

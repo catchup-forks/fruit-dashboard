@@ -23,34 +23,45 @@ Route::group([
         'uses'   => 'SignupWizardController@postAuthentication',
     ]);
 
-    Route::get('personal-widgets', [
+    Route::get('select-startup-type', [
         'before' => 'auth',
-        'as'     => 'signup-wizard.personal-widgets',
-        'uses'   => 'SignupWizardController@getPersonalWidgets'
+        'as'     => 'signup-wizard.select-startup-type',
+        'uses'   => 'SignupWizardController@getSelectStartupType'
     ]);
 
-    Route::post('personal-widgets', [
+    Route::post('select-startup-type', [
         'before' => 'auth',
-        'as'     => 'signup-wizard.personal-widgets',
-        'uses'   => 'SignupWizardController@postPersonalWidgets'
+        'as'     => 'signup-wizard.select-startup-type',
+        'uses'   => 'SignupWizardController@postSelectStartupType'
     ]);
 
-    Route::get('financial-connections', [
-        'before' => 'auth',
-        'as'     => 'signup-wizard.financial-connections',
-        'uses'   => 'SignupWizardController@getFinancialConnections'
-    ]);
-
-    Route::post('financial-connections', [
+    Route::any('financial-connections', [
         'before' => 'auth',
         'as'     => 'signup-wizard.financial-connections',
-        'uses'   => 'SignupWizardController@postFinancialConnections'
+        'uses'   => 'SignupWizardController@anyFinancialConnections'
     ]);
 
-    Route::get('social-connections', [
+    Route::any('social-connections', [
         'before' => 'auth',
         'as'     => 'signup-wizard.social-connections',
-        'uses'   => 'SignupWizardController@getSocialConnections'
+        'uses'   => 'SignupWizardController@anySocialConnections'
     ]);
+
+    Route::any('web-analytics-connections', [
+        'before' => 'auth',
+        'as'     => 'signup-wizard.web-analytics-connections',
+        'uses'   => 'SignupWizardController@anyWebAnalyticsConnections'
+    ]);
+
+    Route::any('personal-widgets', [
+        'before' => 'auth',
+        'as'     => 'signup-wizard.personal-widgets',
+        'uses'   => 'SignupWizardController@anyPersonalWidgets'
+    ]);
+
+    Route::any('facebook/login', array(
+        'as'     => 'signup-wizard.facebook-login',
+        'uses'   => 'SignupWizardController@anyFacebookLogin'
+    ));
 
 });

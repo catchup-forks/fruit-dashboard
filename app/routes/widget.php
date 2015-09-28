@@ -32,16 +32,22 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postSetupWidget'
     ]);
 
+    Route::any('reset/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.reset',
+        'uses'   => 'GeneralWidgetController@anyResetWidget'
+    ]);
+
     Route::any('delete/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.delete',
         'uses'   => 'GeneralWidgetController@anyDeleteWidget'
     ]);
 
-    Route::any('add', [
+    Route::get('add', [
         'before' => 'auth',
         'as'     => 'widget.add',
-        'uses'   => 'GeneralWidgetController@anyAddWidget'
+        'uses'   => 'GeneralWidgetController@getAddWidget'
     ]);
 
     Route::post('add/{descriptorID}', [
@@ -56,13 +62,13 @@ Route::group([
         'uses'  => 'GeneralWidgetController@getSinglestat',
     ]);
 
-    Route::any('{widgetID}/pin-to-dashboard/{frequency}', [
+    Route::any('{widgetID}/pin-to-dashboard/{resolution}', [
         'before' => 'auth',
         'as'    => 'widget.pin-to-dashboard',
         'uses'  => 'GeneralWidgetController@anyPinToDashboard',
     ]);
 
-    Route::post('save-position/{userID}', [
+    Route::post('save-position', [
         'before' => 'auth',
         'as'    => 'widget.save-position',
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
@@ -78,6 +84,30 @@ Route::group([
         'before' => 'auth',
         'as'    => 'widget.ajax-handler',
         'uses'  => 'GeneralWidgetController@ajaxHandler',
+    ]);
+
+    Route::post('share/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.share',
+        'uses'   => 'GeneralWidgetController@postShareWidget'
+    ]);
+
+    Route::any('share/accept/{sharingId}', [
+        'before' => 'auth',
+        'as'     => 'widget.share.accept',
+        'uses'   => 'GeneralWidgetController@anyAcceptShare'
+    ]);
+
+    Route::any('share/reject/{sharingId}', [
+        'before' => 'auth',
+        'as'     => 'widget.share.reject',
+        'uses'   => 'GeneralWidgetController@anyRejectShare'
+    ]);
+
+    Route::any('to-image/{widgetID}', [
+        'before' => 'auth',
+        'as'     => 'widget.to-image',
+        'uses'   => 'GeneralWidgetController@anySaveWidgetToImage'
     ]);
 
 });

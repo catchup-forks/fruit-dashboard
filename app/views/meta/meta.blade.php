@@ -16,27 +16,14 @@
     </title>
 
     @section('tracking')
-      <!-- Google Analytics -->
-      @include('tracking.google-analytics')
-      <!-- /Google Analytics -->
-
-      <!-- Intercom IO -->
-      @include('tracking.intercom-io')
-      <!-- /Intercom IO -->
-
-      <!-- Mixpanel -->
-      @include('tracking.mixpanel')
-      <!-- /Mixpanel -->
-
-      <!-- Global event tracker -->
-      @include('tracking.global-event-tracker')
-      <!-- /Global event tracker -->
+      @if(GlobalTracker::isTrackingEnabled())
+        @include('tracking.global-event-tracker')
+      @endif
     @show
 
     @section('stylesheet')
       <!-- Fonts -->
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
-      <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
       <!-- /Fonts -->
 
       <!-- Bootstrap CSS -->
@@ -54,6 +41,10 @@
       <!-- Growl CSS -->
       {{ HTML::style('css/jquery.growl.css') }}
       <!-- /Growl CSS-->
+
+      <!-- Hopscotch CSS -->
+      {{ HTML::style('css/hopscotch.min.css') }}
+      <!-- /Hopscotch CSS-->
 
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
@@ -80,13 +71,15 @@
     <!-- Base scripts -->
     {{ HTML::script('js/jquery.min.js'); }}
     {{ HTML::script('js/bootstrap.min.js'); }}
-    {{ HTML::script('js/jquery.gridster.with-extras-CUSTOM.js'); }}
+    {{ HTML::script('js/jquery.gridster.min.js'); }}
     {{ HTML::script('js/underscore-min.js'); }}
     {{ HTML::script('js/jquery.ba-resize.min.js'); }}
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
     {{ HTML::script('js/jquery.growl.js'); }}
     {{ HTML::script('js/Chart.js'); }}
-    {{ HTML::script('https://cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js') }}
+    {{ HTML::script('js/jstz.min.js') }}
+    {{ HTML::script('js/hopscotch.min.js') }}
+    {{ HTML::script('js/bootbox.min.js') }}
     <!-- /Base scripts -->
 
     <!-- Page specific modals -->

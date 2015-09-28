@@ -1,0 +1,71 @@
+// CHARTS
+
+.rounded {
+  -webkit-border-radius: @padding;
+  -moz-border-radius: @padding;
+  border-radius: @padding;
+}
+
+.background-white {
+  background-color: @white;
+  background-color: fade(@white, @alpha/1.2);
+}
+
+.has-padding {
+  padding: @padding;
+}
+
+.text-shadow {
+  text-shadow: 1px 1px 3px #141414;
+}
+
+.chart {
+  margin: @margin/5;
+  .background-white;
+  .has-padding;
+  .rounded;
+}
+
+.chart-data {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  .has-padding;
+}
+
+.chart-name {
+  font-size: 110%;
+  color: @white;
+  .text-shadow;
+}
+
+.chart-value {
+  font-weight: 800;
+  font-size: 120%;
+  color: @chart-color;
+  //.text-shadow;
+}
+
+.chart-diff-data {
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  .background-white;
+  .has-padding;
+  .rounded;
+}
+
+.chart-diff-icon {
+  position: relative;
+  top: -2px;
+}
+
+.chart-diff-value {
+  font-weight: 600;
+  font-size: 120%;
+}
+
+.chart-diff-dimension {
+  font-size: 90%;
+  margin-top: -3px;
+}

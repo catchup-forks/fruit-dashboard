@@ -1,0 +1,10 @@
+<h1>Fruit Dashboard {{ event.frequency }} summary</h1>
+<div>
+    {% for dashboard in event.data %}
+        <h3>{{ dashboard[1].name }}</h3>
+        {% for widget in dashboard[1].widgets %}
+            {{ widget[1].name }}<br>
+            <span><img src="{{ widget[1].url }}"></img></span><br>
+        {% endfor %}
+    {% endfor %}
+</div>

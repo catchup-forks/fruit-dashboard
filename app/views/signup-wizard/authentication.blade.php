@@ -10,7 +10,7 @@
 
     @section('pageContent')
 
-    <body style="background: url({{ Background::dailyBackgroundURL() }}) no-repeat center center fixed">
+    <body style="background: url({{ Background::getBaseUrl() }}) no-repeat center center fixed">
 
     <div class="vertical-center">
         <div class="container">
@@ -44,8 +44,14 @@
                 <div class="form-group">
                     {{ Form::text('email', Input::old('email'), array('autocomplete' => 'off', 'autocorrect' => 'off', 'class' => 'form-control input-lg text-white drop-shadow text-center greetings-name', 'id' => 'email_id')) }}
                 </div>
-            </div>
 
+                  <h1 id="loading-spinner" class="text-center text-white drop-shadow off-screen">
+                    <i class="fa fa-circle-o-notch fa-spin"></i>
+                  </h1> <!-- /#loading-spinner -->
+
+
+            </div>
+  
             <!-- password -->
             <div class="yourpassword-form not-visible">
                 <h1 class="text-white text-center drop-shadow">
@@ -91,12 +97,7 @@
                       });
                     });      
                 } else {
-                    $.growl.warning({
-                      message: "Please enter your name.",
-                      size: "large",
-                      duration: 5000,
-                      location: "br"
-                    });
+                  easyGrowl('warning', "Please enter your name.", 5000);
                 }
             }    
           });
@@ -111,20 +112,54 @@
             if(keycode == '13' || keycode == '9'){
               event.preventDefault();
               if ($('#email_id').val() && IsEmail($('#email_id').val())) {
-                
-                $('.youremail-form').slideUp('fast', function (){
-                  $('.yourpassword-form').slideDown('fast', function() {
-                    $('#password_id').focus();
+
+                $('#email_id').slideUp('fast', function(){
+                  $('#loading-spinner').removeClass('off-screen');
+                });
+
+                // Call ajax, to check the email
+                $.ajax({
+                  type: "POST",
+                  dataType: 'json',
+                  url: "{{ route('auth.check-email') }}",
+                      data: JSON.stringify({'email': $('#email_id').val()}),
+                      success: function(data) {
+                        // Email is unique, proceed
+                        if(data['email-taken'] == false) {
+                          $('.youremail-form').slideUp('fast', function (){
+                            $('.yourpassword-form').slideDown('fast', function() {
+                              $('#password_id').focus();
+                            });
+                          }); 
+
+                        // Email taken, show error
+                        } else {
+
+                          $('#loading-spinner').addClass('off-screen');
+                          $('#email_id').slideDown('fast', function() {
+                            $('#email_id').focus();
+                          });
+
+                          $.growl.error({ 
+                            message: "This email has already been registered. If you would like to sign in, <a href=\"{{ route('auth.signin') }}\">click here.</a>",
+                            fixed: true,
+                            location: "br"
+                          });
+                        }
+                      },
+                      error: function() {
+                        // Something went wrong, check email from backend later
+                        $('#loading-spinner').addClass('off-screen');
+                        $('.youremail-form').slideUp('fast', function (){
+                          $('.yourpassword-form').slideDown('fast', function() {
+                            $('#password_id').focus();
+                          });
+                        });
+                      }
                   });
-                });
-                  
+                                  
               } else {
-                $.growl.warning({
-                  message: "Please enter a valid email address.",
-                  size: "large",
-                  duration: 5000,
-                  location: "br"
-                });
+                easyGrowl('warning', "Please enter a valid email address.", 5000);
               }
               
             }    
@@ -142,14 +177,7 @@
                 $('#signup-form-id').submit();
                   
               } else {
-                
-                $.growl.warning({
-                  message: "Your password should be at least 4 characters.",
-                  size: "large",
-                  duration: 5000,
-                  location: "br"
-                });
-              
+                easyGrowl('warning', "Your password should be at least 4 characters long.", 5000);
               }
             }
             });

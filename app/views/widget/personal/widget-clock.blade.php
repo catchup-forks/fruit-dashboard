@@ -1,14 +1,14 @@
 @if ($widget->getSettings()['clock_type'] == 'digital')
 
-	<div id="digital-clock">
-    <h3 id="digitTime" class="no-margin-top has-margin-vertical-sm text-white drop-shadow text-center truncate">{{ $widget['currentTime'] }}
+	<div>
+    <h3 id="digital-time-{{ $widget->id }}" class="no-margin-top has-margin-vertical-sm text-white drop-shadow text-center truncate">{{ $widget['currentTime'] }}
     </h3>    
-  </div> <!-- /#digital-clock -->
+  </div>
   
 
 @else
 
-  <canvas id="analog-clock"></canvas>
+  <canvas id="analog-clock-{{ $widget->id }}"></canvas>
 
 @endif
 
@@ -26,7 +26,7 @@
         var m = today.getMinutes();
         m = checkTime(m);
         h = checkTime(h);
-        $('#digitTime').html(h + ':' + m);
+        $('#digital-time-{{ $widget->id }}').html(h + ':' + m);
         var t = setTimeout(function(){startTime()},500);
       }
 
@@ -37,24 +37,24 @@
 
       startTime();
 
-      $('#digitTime').hide();
+      $('#digital-time-{{ $widget->id }}').hide();
       
       // fit the clock on page load
-      $('#digitTime').fitText(0.3, {
+      $('#digital-time-{{ $widget->id }}').fitText(0.3, {
         'minFontSize': 35
       });
 
       // bind fittext to a resize event
-      $('#digitTime').bind('resize', function(e){
-        $('#digitTime').fitText(0.3, {
+      $('#digital-time-{{ $widget->id }}').bind('resize', function(e){
+        $('#digital-time-{{ $widget->id }}').fitText(0.3, {
           'minFontSize': 35
         });
       });
 
-      $('#digitTime').fadeIn(2000);  
+      $('#digital-time-{{ $widget->id }}').fadeIn(2000);  
 
   @else
-    var canvas = document.getElementById("analog-clock");
+    var canvas = document.getElementById("analog-clock-{{ $widget->id }}");
     var ctx = canvas.getContext("2d");
     var radius = canvas.height / 2;
     ctx.translate(radius, radius);

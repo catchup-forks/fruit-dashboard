@@ -5,7 +5,7 @@
 * BraintreeConnector:
 *       Wrapper functions for Braintree connection
 * Usage:
-*       Connect the user by calling getTokens()
+*       Connect the user by calling saveTokens()
 *       with validated input.
 *       If the user has an access_token, use the connect() method.
 * --------------------------------------------------------------------------
@@ -39,23 +39,19 @@ class BraintreeConnector extends GeneralServiceConnector
      * Creating an access token.
      * --------------------------------------------------
      * Creating an 'access_token'
-     * @param array $credentials
+     * @param array $parameters
      * --------------------------------------------------
      */
-    public function getTokens($input) {
+    public function saveTokens(array $parameters=array()) {
         // Populating access_token array.
         $credentials = array();
-        foreach ($input as $key=>$value) {
+        foreach ($parameters as $key=>$value) {
             if (in_array($key, $this->getAuthFields())) {
-                Log::info($key . " " . $value);
                 $credentials[$key] = $value;
             }
         }
 
-        $this->createConenction(json_encode($credentials), '');
-
-        /* Creating custom dashboard in the background. */
-        Queue::push('BraintreeAutoDashboardCreator', array('user_id' => Auth::user()->id));
+        $this->createConnection(json_encode($credentials), '');
     }
 
     /**
@@ -93,6 +89,19 @@ class BraintreeConnector extends GeneralServiceConnector
             BraintreeSubscription::where('plan_id', $braintreePlan->id)->delete();
             $braintreePlan->delete();
         }
+    }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    public function populateData($criteria) {
+        Queue::push('BraintreePopulateData', array(
+            'user_id' => $this->user->id
+        ));
     }
 
 } /* BraintreeConnector */

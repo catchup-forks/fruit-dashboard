@@ -12,7 +12,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 *
 *       // For connecting the user
 *       $twitterConnector = new TwitterConnector($user);
-*       $twitterConnector->getTokens($token_ours, $token_request, $token_secret, $verifier);
+*       $twitterConnector->saveTokens($token_ours, $token_request, $token_secret, $verifier);
 *       $connector->connect();
 * --------------------------------------------------------------------------
 */
@@ -41,7 +41,7 @@ class TwitterConnector extends GeneralServiceConnector
             $_ENV['TWITTER_CONSUMER_SECRET']
         );
         /* Getting a request token. */
-        $requestToken = $connection->oauth('oauth/request_token', array('oauth_callback' => $_ENV['TWITTER_OAUTH_CALLBACK']));
+        $requestToken = $connection->oauth('oauth/request_token', array('oauth_callback' => route('service.twitter.connect')));
 
         /* Return URI */
         return array(
@@ -80,26 +80,24 @@ class TwitterConnector extends GeneralServiceConnector
     }
 
     /**
-     * getTokens
+     * saveTokens
      * --------------------------------------------------
      * Retrieving the access tokens, OAUTH.
-     * @param string $tokenOurs
-     * @param string $tokenRequest
-     * @param string $tokenSecret
-     * @param string $verifier
+     * @param array $parameters
      * @return None
      * @throws TwitterConnectFailed
      * --------------------------------------------------
      */
-    public function getTokens($tokenOurs, $tokenRequest, $tokenSecret, $verifier) {
+    public function saveTokens(array $parameters=array()) {
+        $tokenOurs = $parameters['token_ours'];
 
         /* Oauth ready. */
         $requestToken = [];
         $requestToken['oauth_token'] = $tokenOurs;
-        $requestToken['oauth_token_secret'] = $tokenSecret;
+        $requestToken['oauth_token_secret'] = $parameters['token_secret'];
 
         /* Checking validation. */
-        if ($tokenOurs !== $tokenRequest) {
+        if ($tokenOurs !== $parameters['token_request']) {
             throw new TwitterConnectFailed("Error Processing Request", 1);
         }
 
@@ -114,7 +112,7 @@ class TwitterConnector extends GeneralServiceConnector
         /* Retreiving access token. */
         try {
             $accessToken = $connection->oauth(
-               "oauth/access_token", array("oauth_verifier" => $verifier));
+               "oauth/access_token", array("oauth_verifier" => $parameters['verifier']));
         } catch (Abraham\TwitterOAuth\TwitterOAuthException $e) {
             throw new TwitterConnectFailed($e->getMessage(), 1);
         }
@@ -126,7 +124,38 @@ class TwitterConnector extends GeneralServiceConnector
             )),
             ''
         );
+
+        /* Creating twitter user */
+        $this->createTwitterUser();
     }
 
+    /**
+     * createTwitterUser
+     * --------------------------------------------------
+     * Creating the initial twitter user.
+     * --------------------------------------------------
+     */
+    public function createTwitterUser() {
+        $collector = new TwitterDataCollector($this->user);
+        $twitterUser = new TwitterUser(array(
+            'screen_name' => $collector->getUserData()->screen_name
+        ));
+        $twitterUser->user()->associate($this->user);
+        $twitterUser->save();
+    }
+
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    public function populateData($criteria) {
+        Queue::push('TwitterPopulateData', array(
+            'user_id' => $this->user->id
+        ));
+    }
 
 } /* TwitterConnector */

@@ -3,17 +3,30 @@
 @alpha:                     85%;
 @darken:                    25%;
 @white:                     #fff;
+@chart-color:               rgb(105 ,153, 209);
 @panel-bg:                  #fff;
-@gridster-bg:               #E6E6E6;
+@gridster-bg:               rgb(230,230,230);
+@padding:                   5px;
 @margin:                    25px;
-@carousel-control-width:    9.5%;
+@carousel-control-width:    5%;
 
 // IMPORTS
 @import "custom-positioning.less";
 @import "custom-design.less";
 @import "custom-panels.less";
-@import "custom-gridster-and-widgets.less";
+@import "custom-gridster.less";
+@import "custom-widgets.less";
 @import "custom-quote.less";
 @import "custom-signup-wizard.less";
 @import "custom-ribbon.less";
 @import "custom-dashboard.less";
+@import "custom-manage-dashboards.less";
+@import "custom-charts.less";
+@import "custom-twitter.less";
+
+// PAGE
+html, body {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+  background-color: rgba(51,51,51,1);
+}

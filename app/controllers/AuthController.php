@@ -94,4 +94,29 @@ class AuthController extends BaseController
         return Redirect::route('dashboard.dashboard')->with('success', 'Good bye.');
     }
 
+    /**
+     * postCheckExistingEmail
+     * --------------------------------------------------
+     * @return Ajax call, to check the provided email address
+     *      if it exists in the database or not.
+     * --------------------------------------------------
+     */
+    public function postCheckExistingEmail()
+    {
+        /* Initialize status */
+        $status = TRUE;
+
+        $checkedEmail = Input::json()->get('email');
+        $existingUser = User::where('email', $checkedEmail)->count();
+
+        /* Return (AJAX CALL) */
+        if (Request::ajax()) {
+            if ($existingUser) {
+                return Response::json(array('email-taken' => true));
+            } else {
+                return Response::json(array('email-taken' => false));
+            }
+        }
+    }
+
 } /* AuthController */

@@ -14,13 +14,40 @@ class SiteConstants {
     /* -- Class properties -- */
     private static $gridNumberOfCols  = 12;
     private static $gridNumberOfRows  = 12;
+    private static $widgetMargin      = 5;
     private static $morningStartsAt   = 5;
     private static $afternoonStartsAt = 13;
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
-    private static $financialServices = array('braintree', 'stripe');
-    private static $socialServices    = array('google_analytics', 'google_calendar', 'facebook', 'twitter');
+    private static $financialServices    = array('braintree', 'stripe');
+    private static $socialServices       = array('facebook', 'twitter');
+    private static $webAnalyticsServices = array('google_analytics');
+    private static $skipCategoriesInNotification = array('personal');
+    private static $startupTypes = array(
+        'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
+        'Ecommerce'    => 'Online shops selling goods to consumers.',
+        'Enterprise'   => 'Products for large enterprise customers.',
+        'Ads/Leadgen'  => 'Some users pay you to access the premium features.',
+        'Freemium'     => 'Consumer-oriented products with freemium monetization model.',
+        'Marketplaces' => 'Products that connect sellers with buyers.'
+    );
+    private static $chartJsColors = array(
+        '105 ,153, 209',
+        '77, 255, 121',
+        '255, 121, 77',
+        '77, 121, 255',
+        '255, 77, 121',
+        '210, 255, 77',
+        '0, 209, 52',
+        '121, 77, 255',
+        '255, 210, 77',
+        '77, 255, 210',
+        '209, 0, 157',
+    );
+    private static $googleAnalyticsLaunchDate = '2005-01-01';
+    private static $apiVersions = array('1.0');
+
    /**
      * ================================================== *
      *               PUBLIC STATIC SECTION                *
@@ -39,6 +66,17 @@ class SiteConstants {
     }
 
     /**
+     * getChartJsColors:
+     * --------------------------------------------------
+     * Returning colors for chartJS
+     * @return (array) ($chartJsColors) chartJsColors
+     * --------------------------------------------------
+     */
+    public static function getChartJsColors() {
+        return self::$chartJsColors;
+    }
+
+    /**
      * getGridNumberOfRows:
      * --------------------------------------------------
      * Returns the number of grid X axis slots.
@@ -47,6 +85,17 @@ class SiteConstants {
      */
     public static function getGridNumberOfRows() {
         return self::$gridNumberOfRows;
+    }
+
+    /**
+     * getWidgetMargin:
+     * --------------------------------------------------
+     * Returns the general widget margin.
+     * @return (integer) ($widgetMargin) widgetMargin
+     * --------------------------------------------------
+     */
+    public static function getWidgetMargin() {
+        return self::$widgetMargin;
     }
 
     /**
@@ -84,6 +133,18 @@ class SiteConstants {
     }
 
     /**
+     * getStartupTypes:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (integer) ($startupTypes) startupTypes
+     * --------------------------------------------------
+     */
+    public static function getStartupTypes() {
+        return self::$startupTypes;
+    }
+
+
+    /**
      * getTrialPeriodInDays:
      * --------------------------------------------------
      * Returns the trial period in days.
@@ -108,33 +169,18 @@ class SiteConstants {
     }
 
     /**
-     * getFinancialServices:
+     * getServices
      * --------------------------------------------------
-     * Returns the financial services.
-     * @return (array) ($financialServices)
-     * --------------------------------------------------
-     */
-    public static function getFinancialServices() {
-        $services = array();
-        foreach (self::$financialServices as $service) {
-            array_push($services, self::getServiceMeta($service));
-        }
-        return $services;
-    }
-
-    /**
-     * getSocialServices:
-     * --------------------------------------------------
-     * Returns the social services.
-     * @return (array) ($socialServices)
+     * Returns all the services.
+     * @return (array) ($services)
      * --------------------------------------------------
      */
-    public static function getSocialServices() {
-        $services = array();
-        foreach (self::$socialServices as $service) {
-            array_push($services, self::getServiceMeta($service));
-        }
-        return $services;
+    public static function getServices() {
+        return array_merge(
+                self::$socialServices,
+                self::$financialServices,
+                self::$webAnalyticsServices
+        );
     }
 
     /**
@@ -148,11 +194,182 @@ class SiteConstants {
     private static function getServiceMeta($service) {
         return array(
             'name'             => $service,
-            'display_name'     => ucfirst(str_replace('_', ' ', $service)),
+            'display_name'     => Utilities::underscoreToCamelCase($service, TRUE),
+            'type'             => 'service',
             'disconnect_route' => 'service.' . $service . '.disconnect',
             'connect_route'    => 'service.' . $service . '.connect',
         );
     }
 
+    /**
+     * getCustomGroupsMeta:
+     * --------------------------------------------------
+     * Returns the custom groups (not services).
+     * @return (array) ($customGroups)
+     * --------------------------------------------------
+     */
+    public static function getCustomGroupsMeta() {
+        /* Create custom groups */
+        $customGroups = array(
+            array(
+                'name'              => 'personal',
+                'display_name'      => 'Personal',
+                'type'              => 'custom',
+                'disconnect_route'  => null,
+                'connect_route'     => null
+            ),
+            array(
+                'name'              => 'webhook_api',
+                'display_name'      => 'API / Webhook',
+                'type'              => 'custom',
+                'disconnect_route'  => null,
+                'connect_route'     => null
+            ),
+        );
+
+        /* Return */
+        return $customGroups;
+    }
+
+    /**
+     * getServicesMetaByType
+     * --------------------------------------------------
+     * Returns the meta data from a selected service group.
+     * @param  (string) ($groupname)
+     * @return (array) ($financialServices)
+     * --------------------------------------------------
+     */
+    public static function getServicesMetaByType($group) {
+        /* Initialize variables */
+        $services = array();
+        $groupServices = array();
+
+        /* Get the requested services */
+        if      ($group == 'financial')     { $groupServices = self::$financialServices; }
+        else if ($group == 'social')        { $groupServices = self::$socialServices; }
+        else if ($group == 'webAnalytics')  { $groupServices = self::$webAnalyticsServices; }
+
+        /* Build meta array */
+        foreach ($groupServices as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+
+        /* Return */
+        return $services;
+    }
+
+    /**
+     * getAllServicesMeta:
+     * --------------------------------------------------
+     * Returns all the meta information from the services
+     *      and custom groups.
+     * @return (array) ()
+     * --------------------------------------------------
+     */
+    public static function getAllServicesMeta() {
+        /* Initialize variables */
+        $services = array();
+
+        /* Build meta array */
+        foreach (self::getServices() as $service) {
+            array_push($services, self::getServiceMeta($service));
+        }
+
+        /* Return */
+        return $services;
+    }
+
+    /**
+     * getAllGroupsMeta
+     * --------------------------------------------------
+     * Returns all the meta information from the services
+     *      and custom groups.
+     * @return (array) ()
+     * --------------------------------------------------
+     */
+    public static function getAllGroupsMeta() {
+        /* Get groups */
+        $allgroups = array_merge(
+            self::getCustomGroupsMeta(),
+            self::getAllServicesMeta()
+        );
+        /* Sort by name */
+        usort($allgroups, function ($a, $b) { return $b['display_name'] < $a['display_name']; });
+
+        /* Return */
+        return $allgroups;
+    }
+
+    /**
+     * getWidgetDescriptorGroups:
+     * --------------------------------------------------
+     * Returns all widgetDescriptor groups.
+     * @return (array) ($DescriptorGroups)
+     * --------------------------------------------------
+     */
+    public static function getWidgetDescriptorGroups() {
+        /* Initialize variables */
+        $groups = array();
+
+        /* Build the group array */
+        foreach (self::getAllGroupsMeta() as $group) {
+            /* Create array */
+            array_push($groups, array(
+                'name'              => $group['name'],
+                'display_name'      => $group['display_name'],
+                'type'              => $group['type'],
+                'connect_route'     => $group['connect_route'],
+                'disconnect_route'  => $group['disconnect_route'],
+                'descriptors'       => WidgetDescriptor::where('category', $group['name'])
+                                                            ->orderBy('name', 'asc')->get()
+            ));
+        }
+        /* Return */
+        return $groups;
+    }
+
+    /**
+     * getGoogleAnalyticsLaunchDate:
+     * --------------------------------------------------
+     * Returns the date google analytics service was launched.
+     * @return (integer) ($googleAnalyticsLaunchDate)
+     * --------------------------------------------------
+     */
+    public static function getGoogleAnalyticsLaunchDate() {
+        return self::$googleAnalyticsLaunchDate;
+    }
+
+    /**
+     * getApiVersions
+     * --------------------------------------------------
+     * Returns the available API versions.
+     * @return (array) ($apiVersions) apiVersions
+     * --------------------------------------------------
+     */
+    public static function getApiVersions() {
+        return self::$apiVersions;
+    }
+
+    /**
+     * getLatestApiVersion
+     * --------------------------------------------------
+     * Returns the latest API version.
+     * @return (array) ($apiVersions) apiVersions
+     * --------------------------------------------------
+     */
+    public static function getLatestApiVersion() {
+        return end(self::$apiVersions);
+    }
+
+    /**
+     * getSkippedCategoriesInNotification
+     * --------------------------------------------------
+     * Returns the skipped categories in notifications.
+     * @return (array) ($skipCategoriesInNotification) apiVersions
+     * --------------------------------------------------
+     */
+    public static function getSkippedCategoriesInNotification() {
+        return self::$skipCategoriesInNotification;
+    }
 
 } /* SiteConstants */

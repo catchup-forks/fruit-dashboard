@@ -1,6 +1,6 @@
 <div class="panel-transparent">
   Events:<br>
-  <div class="panel-body" id="events-holder">
+  <div class="panel-body" id="events-holder-{{ $widget->id }}">
   </div>
 </div>
 
@@ -38,7 +38,7 @@
             case 'charge.failed': labelClass='danger'; break;
           }
 
-          $('#events-holder').append(
+          $('#events-holder-{{ $widget->id }}').append(
             '<div><span class="label label-' + labelClass + ' label-as-badge">' + labelName + '</span> ' + htmlData + '</div>'
             );
           console.log(events[i]);
@@ -48,7 +48,6 @@
     }
 
     $("#refresh-{{$widget->id}}").click(function () {
-      console.log("loading");
       updateWidget();
     });
   });

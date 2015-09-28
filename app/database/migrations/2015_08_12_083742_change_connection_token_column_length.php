@@ -12,7 +12,7 @@ class ChangeConnectionTokenColumnLength extends Migration {
 	 */
 	public function up()
 	{
-		DB::statement('alter table connections modify access_token varchar(255)');
+		DB::statement('ALTER TABLE `connections` MODIFY `access_token` VARCHAR(255)');
 		//
 	}
 
@@ -23,7 +23,7 @@ class ChangeConnectionTokenColumnLength extends Migration {
 	 */
 	public function down()
 	{
-		DB::statement('alter table connections modify access_token varchar(127)');
+		DB::statement('ALTER TABLE `connections` MODIFY `access_token` VARCHAR(127)');
 	}
 
 }

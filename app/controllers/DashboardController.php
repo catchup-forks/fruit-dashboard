@@ -22,13 +22,37 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
+        $time = microtime(true);
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
+
+        /* Checking the user's data managers integrity */
+        Auth::user()->checkDataManagersIntegrity();
+
+        /* Checking the user's widgets integrity */
+        Auth::user()->checkWidgetsIntegrity();
+
+        /* Get active dashboard, if the url contains it */
+        $parameters = array();
+        $activeDashboard = Request::query('active');
+        if ($activeDashboard) {
+            $parameters['activeDashboard'] = $activeDashboard;
         }
 
-        /* Render the page */
-        return View::make('dashboard.dashboard');
+        /* Creating view */
+        $view = View::make('dashboard.dashboard', $parameters);
+
+        try {
+            /* Trying to render the view. */
+            return $view->render();
+        } catch (Exception $e) {
+            /* Error occured trying to find the widget. */
+            Auth::user()->turnOffBrokenWidgets();
+            /* Recreating view. */
+            $view = View::make('dashboard.dashboard', $parameters);
+        }
+        return $view;
+
     }
 
     /**
@@ -38,10 +62,8 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function getManageDashboards() {
-        /* Detect if the user has no dashboard, and redirect */
-        if (!Auth::user()->dashboards()->count()) {
-            return Redirect::route('signup-wizard.personal-widgets');
-        }
+        /* Check the default dashboard and create if not exists */
+        Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Render the page */
         return View::make('dashboard.manage-dashboards');
@@ -54,10 +76,20 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDeleteDashboard($dashboardId) {
+        /* Get the dashboard */
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
             return Response::json(FALSE);
         }
+
+        /* Track event | DELETE DASHBOARD */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Dashboard deleted',
+            'el' => $dashboard->name)
+        );
+
+        /* Delete the dashboard*/
         $dashboard->delete();
 
         /* Return. */
@@ -76,7 +108,7 @@ class DashboardController extends BaseController
             return Response::json(FALSE);
         }
 
-        $dashboard->locked = TRUE;
+        $dashboard->is_locked = TRUE;
         $dashboard->save();
 
         /* Return. */
@@ -95,7 +127,33 @@ class DashboardController extends BaseController
             return Response::json(FALSE);
         }
 
-        $dashboard->locked = FALSE;
+        $dashboard->is_locked = FALSE;
+        $dashboard->save();
+
+        /* Return. */
+        return Response::json(TRUE);
+    }
+
+    /**
+     * anyMakeDefault
+     * --------------------------------------------------
+     * @return Makes a dashboard the default one.
+     * --------------------------------------------------
+     */
+    public function anyMakeDefault($dashboardId) {
+        // Make is_default false for all dashboards
+        foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
+            Log::info($oldDashboard->id);
+            $oldDashboard->is_default = FALSE;
+            $oldDashboard->save();
+        }
+
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(FALSE);
+        }
+
+        $dashboard->is_default = TRUE;
         $dashboard->save();
 
         /* Return. */
@@ -143,6 +201,13 @@ class DashboardController extends BaseController
         $dashboard->user()->associate(Auth::user());
         $dashboard->save();
 
+        /* Track event | ADD DASHBOARD */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Dashboard added',
+            'el' => $dashboard->name)
+        );
+
         /* Return. */
         return Response::json(TRUE);
     }
@@ -159,13 +224,19 @@ class DashboardController extends BaseController
             array_push($dashboards, array(
                 'id'        => $dashboard->id,
                 'name'      => $dashboard->name,
-                'locked'    => $dashboard->locked,
+                'is_locked' => $dashboard->is_locked,
             ));
         }
 
         /* Return. */
         return Response::json($dashboards);
     }
+
+    /**
+     * ================================================== *
+     *                   PRIVATE SECTION                  *
+     * ================================================== *
+     */
 
     /**
      * getDashboard
@@ -183,4 +254,5 @@ class DashboardController extends BaseController
         }
         return $dashboard;
     }
+
 } /* DashboardController */

@@ -1,3 +1,5 @@
-<div class="text-white text-center drop-shadow quote @if ($widget->state != 'loading') not-visible @endif" id="widget-loading-{{ $widget->id }}">
-  Loading....
-</div>
+<div class="widget-inner fill @if ($widget->state != 'loading') not-visible @endif" id="widget-loading-{{ $widget->id }}">
+  <p class="lead text-center">
+    <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
+  </p>
+</div> <!-- /.widget-inner -->

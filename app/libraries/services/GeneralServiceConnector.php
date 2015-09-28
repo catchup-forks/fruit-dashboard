@@ -19,6 +19,8 @@ abstract class GeneralServiceConnector
     }
 
     abstract public function connect();
+    abstract public function saveTokens(array $parameters);
+    abstract public function populateData($criteria);
 
     /**
      * disconnect
@@ -28,28 +30,25 @@ abstract class GeneralServiceConnector
      */
     public function disconnect() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
+        if ( ! $this->user->isServiceConnected(static::$service)) {
             throw new ServiceNotConnected(static::$service . ' service is not connected.', 1);
         }
         /* Deleting connection */
         $this->user->connections()->where('service', static::$service)->delete();
 
-        /* Deleting all widgets, plans, subscribtions */
-        foreach ($this->user->widgets() as $widget) {
+        /* Deleting all widgets*/
+        foreach ($this->user->widgets as $widget) {
             if ($widget->descriptor->category == static::$service) {
-
-                /* Saving data while it is accessible. */
-                $dataID = 0;
-                if (!is_null($widget->data)) {
-                    $dataID = $widget->data->id;
-                }
-
                 $widget->delete();
-
-                /* Deleting data if it was present. */
-                if ($dataID > 0) {
-                    Data::find($dataID)->delete();
-                }
+            }
+        }
+        /* Deleting all DataManagers */
+        foreach ($this->user->dataManagers as $dataManager) {
+            if ($dataManager->descriptor->category == static::$service) {
+                /* Saving data while it is accessible. */
+                $dataID = $dataManager->data->id;
+                $dataManager->delete();
+                Data::find($dataID)->delete();
             }
         }
     }
@@ -64,7 +63,7 @@ abstract class GeneralServiceConnector
      */
     protected function getConnection() {
         /* Check valid connection */
-        if (!$this->user->isServiceConnected(static::$service)) {
+        if ( ! $this->user->isServiceConnected(static::$service)) {
             throw new ServiceNotConnected(static::$service . ' service is not connected.', 1);
         }
         $connection = $this->user->connections()
@@ -94,5 +93,51 @@ abstract class GeneralServiceConnector
         $connection->save();
         return $connection;
     }
+
+    /**
+     * Creating the dataManagers.
+     * --------------------------------------------------
+     * @param array $criteria
+     * @return array
+     * --------------------------------------------------
+     */
+    public function createDataManagers(array $criteria=array()) {
+        $dataManagers = array();
+        foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
+            /* Creating widget instance. */
+            $className = $descriptor->getDMClassName();
+
+            /* No manager class found */
+            if ( ! class_exists($className)) {
+                continue;
+            }
+
+            /* Deleting previous managers, if any. */
+           $settingsCriteria = json_encode($criteria);
+           $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->delete();
+
+            /* Creating data */
+            $data = Data::create(array('raw_value' => 'loading'));
+
+            /* Creating DataManager instance */
+            $dataManager = new $className(array(
+                'settings_criteria' => json_encode($criteria),
+                'last_updated'      => Carbon::now()
+            ));
+            $dataManager->descriptor()->associate($descriptor);
+            $dataManager->user()->associate($this->user);
+
+            /* Assigning data */
+            $dataManager->data()->associate($data);
+            $dataManager->save();
+
+            array_push($dataManagers, $dataManager);
+        }
+
+        $this->populateData($criteria);
+
+        return $dataManagers;
+    }
+
 
 } /* GeneralServiceConnector */

@@ -1,53 +1,119 @@
-<div class="text-center">
-  <span class="text-white drop-shadow">
-      {{ $widget->descriptor->name }}
-  </span>
-  <span class="text-white drop-shadow pull-right" id="{{$widget->descriptor->type}}-value">
-    ${{ $widget->getLatestData()['value'] }}
-  </span>
-</div>
-<div id="{{ $widget->descriptor->type }}-chart-container">
-  <canvas id="{{$widget->descriptor->type}}-chart"></canvas>
-</div>
-<div class="text-center drop-shadow text-white">
-    Click
-   <a href="{{ route('widget.singlestat', $widget->id) }}">here </a> for more details.
+<div class="chart-data">
+  <div class="chart-name">
+    {{ $widget->getSettings()['name'] }}
+  </div> <!-- /.chart-name -->
+  <div class="chart-value">
+    @if ($widget->state == 'active')
+      {{ Utilities::formatNumber($widget->getLatestData()['value'], $widget->getFormat()) }}
+    @endif
+  </div> <!-- /.chart-value -->
+</div> <!-- /.chart-data -->
+
+<div class="chart-diff-data text-center">
+
+  @if ($widget->getDiff()['value'] >= 0)
+    <div class="chart-diff text-success">
+      <span class="fa fa-arrow-up chart-diff-icon"> </span>
+
+  @else
+    <div class="chart-diff text-danger">
+      <span class="fa fa-arrow-down chart-diff-icon"> </span>
+
+  @endif
+
+    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff()['value'], $widget->getFormat()) }}</span>
+  </div> <!-- /.chart-diff -->
+
+
+  <div class="chart-diff-dimension">
+    <small>(a {{ rtrim($widget->getSettings()['resolution'], 's') }} ago)</small>
+  </div> <!-- /.chart-diff-dimension -->
+</div> <!-- /.chart-diff-data -->
+
+<div id="{{ $widget->id }}-chart-container" class="clickable">
+  <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
 </div>
 
 @section('widgetScripts')
 <script type="text/javascript">
   $(document).ready(function(){
     // Default values.
-    var canvas = $("#{{ $widget->descriptor->type }}-chart");
-    var valueSpan = $("#{{ $widget->descriptor->type }}-value");
+    var canvas = $("#{{ $widget->id }}-chart");
+    var container = $('#{{ $widget->id }}-chart-container');
+    var valueSpan = $("#{{ $widget->id }}-value");
     var name = "{{ $widget->descriptor->name }}";
 
     @if ($widget->state == 'active')
-      // Active widget.
-      var labels =  [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['date']}}", @endforeach];
-      var values = [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach];
+      // Removing the canvas and redrawing for proper sizing.
+      canvas = reinsertCanvas(canvas);
 
-      // Calling drawer.
-       drawLineGraph(canvas, values, labels, name, 3000);
-    @endif
+      // Set chart data
+      var chartData = {
+        'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
+        'datasets': [{
+          'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
+          'color': '{{ SiteConstants::getChartJsColors()[0] }}'
+        }]
+      }
 
-    @if ($widget->state == 'loading')
+      // Set chart options
+      var chartOptions = {
+        'type': 'line',
+        'chartJSOptions': globalChartOptions.getLineChartOptions()
+      }
+
+      // Draw chart
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
+
+    @elseif ($widget->state == 'loading')
       // Loading widget.
-      loadWidget({{$widget->id}}, function (data) {updateChartWidget(data, canvas, name, valueSpan); });
+      values = [];
+      labels = [];
+      loadWidget({{$widget->id}}, function (data) {
+        histogram = updateHistogramWidget(data, canvas, name, valueSpan);
+        values = histogram['values'];
+        labels = histogram['labels'];
+        canvas = reinsertCanvas(canvas);
+      });
     @endif
+
+    // Calling drawer every time carousel is changed.
+    $('.carousel').on('slid.bs.carousel', function () {
+      canvas = reinsertCanvas(canvas);
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
+    })
 
     // Bind redraw to resize event.
-    $('#widget-wrapper-{{$widget->id}}').bind('resize', function(e){
-        drawLineGraph(canvas, values, labels, name, 0);
+    container.bind('resize', function(e){
+      canvas = reinsertCanvas(canvas);
+      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
     });
 
     // Adding refresh handler.
     $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) { updateChartWidget(data, canvas, name, valueSpan);});
+      refreshWidget({{ $widget->id }}, function (data) {
+        updateHistogramWidget(data, canvas, name, valueSpan);
+      });
      });
 
+    // Detecting clicks and drags.
+    // Redirect to single stat page on click.
+    // var isDragging = false;
+    // container
+    //   .mousedown(function() {
+    //       isDragging = false;
+    //   })
+    //   .mousemove(function() {
+    //       isDragging = true;
+    //    })
+    //   .mouseup(function() {
+    //       var wasDragging = isDragging;
+    //       isDragging = false;
+    //       if (!wasDragging) {
+    //         window.location = "{{ route('widget.singlestat', $widget->id) }}";
+    //       }
+    //   });
+
   });
-
 </script>
-
 @append

@@ -105,7 +105,7 @@
               {{-- General settings - Background --}}
               {{-- START --}}
               {{ Form::open(array(
-                  'data-setting-name' => 'background',
+                  'data-setting-name' => 'background-enabled',
                   'class' => 'form-horizontal settings-form' )) }}
 
                 <div class="form-group">
@@ -115,9 +115,9 @@
 
                   <div class="col-sm-6">
 
-                    {{ Form::select('background',
+                    {{ Form::select('background-enabled',
                        array('1' => 'Yes', '0' => 'No'),
-                       Auth::user()->settings->background_enabled,
+                       Auth::user()->background->is_enabled,
                        array('class' => 'form-control' )); }}
 
                   </div> <!-- /.col-sm-6 -->
@@ -130,10 +130,37 @@
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
+              
+              {{ Form::close() }}
+              {{-- END --}}
+              {{-- General settings - Background enabled --}}
+
+              {{-- General settings - Background change --}}
+              {{-- START --}}
+              {{ Form::open(array(
+                  'data-setting-name' => 'background-change',
+                  'class' => 'form-horizontal settings-form' )) }}
+
+                <div class="form-group">
+                  <label for="changeBackground" class="col-sm-3 control-label">
+                    Background picture
+                  </label>
+                  <div class="col-sm-6">
+                    <p class="form-control-static">
+                      Change the current background picture
+                      {{ Form::hidden('background-change'); }}
+                    </p>
+                  </div> <!-- /.col-sm-6 -->
+                  <div class="col-sm-2">
+                    {{ Form::submit('Modify' , array(
+                      'class' => 'btn btn-primary',
+                      'data-loading-text' => 'Saving...' )) }}
+                  </div> <!-- /.col-sm-2 -->
+                </div> <!-- /.form-group -->
 
               {{ Form::close() }}
               {{-- END --}}
-              {{-- General settings - Background --}}
+              {{-- General settings - Background change --}}
 
             </div> <!-- /.panel-body -->
           </div> <!-- /.panel -->
@@ -167,7 +194,7 @@
                         </p>
                       </div> <!-- /.col-sm-6 -->
                       <div class="col-sm-2">
-                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Change</a>
+                        <a href="{{ route('payment.plans') }}" class="btn btn-primary">Modify</a>
                       </div> <!-- /.col-sm-2 -->
                     </div> <!-- /.form-group -->
                   </form>
@@ -175,18 +202,18 @@
               </div> <!-- /.row -->
               <div class="row">
                 <div class="col-md-12 text-center">
-                  @if (Auth::user()->subscription->getTrialInfo()['enabled'])
-                    @if (Auth::user()->subscription->getTrialInfo()['daysRemaining'] > 0)
+                  @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
+                    @if (Auth::user()->subscription->getSubscriptionInfo()['TS'] == 'active')
                       <p>
                         Your trial ends in
                         <strong>
-                          {{ Auth::user()->subscription->getTrialInfo()['daysRemaining'] }} day(s)
+                          {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }} day(s)
                         </strong>
-                        <small class="text-muted">on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}.</small>
+                        <small class="text-muted">on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}.</small>
                       </p>
                     @else
                       <p>
-                        Your trial has ended on {{ Auth::user()->subscription->getTrialInfo()['endDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
+                        Your trial has ended on {{ Auth::user()->subscription->getSubscriptionInfo()['trialEndDate']->format('Y-m-d')  }}. Change your plan to use the premium features.
                       </p>
                     @endif
                   @endif
@@ -215,14 +242,13 @@
               {{-- Manage connection settings --}}
               {{-- START --}}
               <div class="list-group margin-top-sm">
-               @foreach (array_merge(SiteConstants::getFinancialServices(), SiteConstants::getSocialServices()) as $service)
-                  <a href="
+                @foreach (SiteConstants::getAllServicesMeta() as $service)
                     @if(Auth::user()->isServiceConnected($service['name']))
-                      {{ route($service['disconnect_route']) }}
+                      <a href="{{ route($service['disconnect_route']) }}" class="list-group-item clearfix changes-image" data-image="widget-{{$service['name']}}">
                     @else
-                      {{ route($service['connect_route']) }}
+                      <a href="{{ route($service['connect_route']) }}" class="list-group-item clearfix changes-image connect-redirect" data-image="widget-{{$service['name']}}">
                     @endif
-                  " class="list-group-item clearfix changes-image" data-image="widget-{{$service['name']}}">
+
                     @if(Auth::user()->isServiceConnected($service['name']))
                         <small>
                           <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive."></span>
@@ -232,6 +258,7 @@
                           <span class="fa fa-circle text-danger" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
                         </small>
                     @endif
+
                     {{ $service['display_name'] }}
                     <span class="pull-right">
                     @if(Auth::user()->isServiceConnected($service['name']))
@@ -269,6 +296,26 @@
 
   @section('pageScripts')
     <script type="text/javascript">
+      // Service redirection
+      $('.connect-redirect').click(function(e) {
+        var url = $(this).attr('href');
+        e.preventDefault();
+        bootbox.confirm({
+          title: 'Fasten seatbelts, redirection ahead',
+          message: 'To connect the service, we will redirect you to their site. Are you sure?',
+          // On clicking OK redirect to fruit dashboard add widget page.
+          callback: function(result) {
+            if (result) {
+              if (window!=window.top) {
+                window.open(url, '_blank');
+              } else {
+                window.location = url;
+              }
+            }
+          }
+        });
+      });
+
       $(".settings-form").submit(function(e) {
         e.preventDefault();
 
@@ -288,41 +335,22 @@
                data: form.serialize(),
                success: function(data) {
                   if (data.success) {
-                    $.growl.notice({
-                      title: "Success!",
-                      message: data.success,
-                      size: "large",
-                      duration: 3000,
-                      location: "br"
-                    });
+                    easyGrowl('success', data.success, 3000);
                   } else if (data.error) {
-                    $.growl.error({
-                      title: "Error!",
-                      message: data.error,
-                      size: "large",
-                      duration: 3000,
-                      location: "br"
-                    });
+                    easyGrowl('error', data.error, 3000);
                   };
 
                   // Reset button
                   form.find(':submit').button('reset');
 
                   // Reload page on certain changes
-                  if (setting == 'background') {
+                  if (setting.indexOf('background') > -1) {
                     location.reload();
                   };
 
                },
                error: function(){
-                  $.growl.error({
-                    title: "Error!",
-                    message: "Something went wrong, we couldn't edit your settings. Please try again.",
-                    size: "large",
-                    duration: 3000,
-                    location: "br"
-                  });
-
+                  easyGrowl('error', "Something went wrong, we couldn't edit your settings. Please try again.", 3000);
                   // Reset button
                   form.find(':submit').button('reset');
                }

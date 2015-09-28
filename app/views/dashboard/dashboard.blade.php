@@ -1,171 +1,219 @@
 @extends('meta.base-user')
 
-  @section('pageTitle')
-    Dashboard
-  @stop
+@section('pageTitle')
+  Dashboard
+@stop
 
-  @section('pageStylesheet')
-  @stop
+@section('pageStylesheet')
+@stop
 
-  @section('pageContent')
+@section('pageContent')
 
-  <div id="dashboards" class="carousel slide">
+<div id="dashboards" class="carousel slide">
 
-      {{-- Include navigation dots for each dashboard. --}}
-      <ol class="carousel-indicators">
+    {{-- Include navigation dots for each dashboard. --}}
+    <ol class="carousel-indicators">
 
-        @foreach (Auth::user()->dashboards as $dashboard)
+      @foreach (Auth::user()->dashboards as $index => $dashboard)
+        {{-- Set active dashboard. Get from backend or make the default --}}
+        @if (isset($activeDashboard))
+          @if ($dashboard->id == $activeDashboard)
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow active"></li>
+          @else
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow"></li>
+          @endif
+        @else
+          @if($dashboard->is_default)
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow active"></li>
+          @else
+            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow"></li>
+          @endif
+        @endif
+      @endforeach
 
-          <li data-target="#dashboards" data-slide-to="{{ $dashboard->number }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow @if($dashboard->number == 0) active @endif"></li>
+    </ol>
 
-        @endforeach
+    {{-- Make a wrapper for dashboards --}}
+    <div class="carousel-inner">
 
-      </ol>
+      @foreach (Auth::user()->dashboards as $dashboard)
 
-      {{-- Make a wrapper for dashboards --}}
-      <div class="carousel-inner">
+          {{-- Set active dashboard. Get from backend or make the default --}}
+          @if (isset($activeDashboard))
+            @if ($dashboard->id == $activeDashboard)
+              <div class="item active">
+            @else
+              <div class="item">
+            @endif
+          @else
+            @if($dashboard->is_default)
+              <div class="item active">
+            @else
+              <div class="item">
+            @endif
+          @endif
 
-        @foreach (Auth::user()->dashboards as $dashboard)
+          @if($dashboard->is_locked)
+          <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
+            <div class="drop-shadow">
+              <span class="fa fa-lock"></span>
+            </div>
+          </div>
+          @else
+          <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+            <div class="drop-shadow">
+              <span class="fa fa-unlock-alt"></span>
+            </div>
+          </div>
+          @endif
 
-          <div class="item @if($dashboard->number == 0) active @endif">
+          <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
+          </div> <!-- /.fill -->
 
-            <div class="fill" style="background-image:url({{ Background::dailyBackgroundURL() }});">
-            </div> <!-- /.fill -->
+          {{-- Here comes the dashboard content --}}
+          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible">
 
-            {{-- Here comes the dashboard content --}}
-            <div id="gridster-{{ $dashboard->number }}" class="gridster grid-base fill-height">
+            {{-- Generate all the widgdets --}}
+            <div class="gridster-container">
 
-              {{-- Generate all the widgdets --}}
-              <ul>
+              @foreach ($dashboard->widgets as $widget)
 
-                @foreach ($dashboard->widgets as $widget)
+                @if ($widget->state != 'hidden')
+                  @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
+                @endif
 
-                  @if ($widget->state != 'hidden')
-                    @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
-                  @endif
+              @endforeach
 
-                @endforeach
+            </div> <!-- /.gridster-container -->
 
-              </ul>
+          </div> <!-- /.gridster -->
 
-            </div> <!-- /.gridster -->
+        </div> <!-- /.item -->
 
-          </div> <!-- /.item -->
+      @endforeach
 
-        @endforeach
+    </div> <!-- /.carousel-inner -->
 
-      </div> <!-- /.carousel-inner -->
+    @if (Auth::user()->dashboards->count() > 1)
+    {{-- Set the navigational controls on sides. --}}
+    <a class="left carousel-control" href="#dashboards" data-slide="prev">
+        <span class="icon-prev"></span>
+    </a>
+    <a class="right carousel-control" href="#dashboards" data-slide="next">
+        <span class="icon-next"></span>
+    </a>
+    @endif
 
-      @if (count(Auth::user()->dashboards) > 1)
-      {{-- Set the navigational controls on sides. --}}
-      <a class="left carousel-control" href="#dashboards" data-slide="prev">
-          <span class="icon-prev"></span>
-      </a>
-      <a class="right carousel-control" href="#dashboards" data-slide="next">
-          <span class="icon-next"></span>
-      </a>
-      @endif
+</div> <!-- /#dashboards -->
 
-  </div> <!-- /#dashboards -->
+<!-- Share widget-->
+<div class="modal fade" id="share-widget-modal" tabindex="-1" role="dialog" aria-labelledby="share-widget-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="share-widget-label">Share widget</h4>
+      </div>
+      <form id="share-widget-form" class="form-horizontal">
+        <div class="modal-body">
+            <div id="email-addresses-group" class="form-group">
+              <label for="new-dashboard" class="col-sm-5 control-label">Type the email addresses of people you want to share.</label>
+              <div class="col-sm-7">
+                <input id="email-addresses" type="text" class="form-control" />
+                <input id="widget-id" type="hidden" />
+              </div> <!-- /.col-sm-7 -->
+            </div> <!-- /.form-group -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Share</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 
+@stop
 
+@section('pageScripts')
+  <!-- FDGridster class -->
+  <script type="text/javascript" src="lib/FDGridster.js"></script>
+  <!-- /FDGridster class -->
 
-  @stop
-
-  @section('pageScripts')
-
-  {{-- Initialize the tooltip for the Navigational Dots --}}
+  <!-- FDChartOptions class -->
+  <script type="text/javascript" src="lib/FDChartOptions.js"></script>
   <script type="text/javascript">
-      $(function () {
-        $('[data-toggle="tooltip"]').tooltip({
-          html: true
-        })
-      })
+      globalChartOptions = new FDChartOptions('dashboard');
   </script>
+  <!-- /FDChartOptions class -->
 
-  <script>
-  $('.carousel').carousel({
-      interval: false //stops the auto-cycle
-  })
-  </script>
+  <!-- FDChart class -->
+  <script type="text/javascript" src="lib/FDChart.js"></script>
+  <!-- /FDChart class -->
 
+  <!-- Gridster scripts -->
+  @include('dashboard.dashboard-gridster-scripts')
+  <!-- /Gridster scripts -->
 
+  <!-- Dashboard locking scripts -->
+  @include('dashboard.dashboard-locking-scripts')
+  <!-- /Dashboard locking scripts -->
+
+  <!-- Hopscotch scripts -->
+  @include('dashboard.dashboard-hopscotch-scripts')
+  <!-- /Hopscotch scripts -->
+
+  <!-- Widget general scripts -->
   @include('widget.widget-general-scripts')
+  <!-- /Widget general scripts -->
 
+  <!-- Dashboard etc scripts -->
   <script type="text/javascript">
+    // Initialize Carousel
+    $('.carousel').carousel({
+      interval: false // stops the auto-cycle
+    })
 
-    // Gridster builds the interactive dashboard.
-    @foreach (Auth::user()->dashboards as $dashboard)
+    function showShareModal(widgetId) {
+     $('#share-widget-modal').modal('show');
+     $('#share-widget-modal').on('shown.bs.modal', function (params) {
+        $("#widget-id").val(widgetId);
+        $('#email-addresses').focus()
+      });
+    }
 
-      $(function(){
+    $(document).ready(function () {
+      @if (Auth::user()->hasUnseenWidgetSharings())
+        easyGrowl('info', 'You have unseen widget sharing notifications. You can check them out <a href="{{route('widget.add')}}" class="btn btn-xs btn-primary">here</a>.', 5000)
+      @endif
+      // Share widget submit.
+      $('#share-widget-form').submit(function() {
+        var emailAddresses = $('#email-addresses').val();
+        var widgetId = $('#widget-id').val();
 
-        var gridster{{ $dashboard->number }};
-        var players = $('#gridster-{{ $dashboard->number }} li');
-        var positioning = [];
-        var containerWidth = $('.grid-base').width();
-        var containerHeight = $('.grid-base').height();
-        var numberOfCols = {{ SiteConstants::getGridNumberOfCols() }};
-        var numberOfRows = {{ SiteConstants::getGridNumberOfRows() }};
-        var margin = 5;
-        var widget_width = (containerWidth / numberOfCols) - (margin * 2);
-        var widget_height = (containerHeight / numberOfRows) - (margin * 2);
+        if (emailAddresses.length > 0 && widgetId > 0) {
+          $.ajax({
+            type: "post",
+            data: {'email_addresses': emailAddresses},
+            url: "{{ route('widget.share', 'widget_id') }}".replace("widget_id", widgetId),
+           }).done(function () {
+            /* Ajax done. Widget shared. Resetting values. */
+            $('#email-addresses-group').removeClass('has-error');
+            $("#share-widget-modal").modal('hide');
 
-       gridster{{ $dashboard->number }} = $('#gridster-{{ $dashboard->number }} ul').gridster({
-         namespace: '#gridster-{{ $dashboard->number }}',
-         widget_base_dimensions: [widget_width, widget_height],
-         widget_margins: [margin, margin],
-         min_cols: numberOfCols,
-         min_rows: numberOfRows,
-         snap_up: false,
-         serialize_params: function ($w, wgd) {
-           return {
-             id: $w.data().id,
-             col: wgd.col,
-             row: wgd.row,
-             size_x: wgd.size_x,
-             size_y: wgd.size_y,
-           };
-         },
-         resize: {
-           enabled: true,
-           start: function() {
-            players.toggleClass('hovered');
-           },
-           stop: function(e, ui, $widget) {
-            positioning = gridster{{ $dashboard->number }}.serialize();
-            positioning = JSON.stringify(positioning);
-            $.ajax({
-              type: "POST",
-              data: {'positioning': positioning},
-              url: "{{ route('widget.save-position', Auth::user()->id) }}"
-             });
-            players.toggleClass('hovered');
-           }
-         },
-         draggable: {
-          start: function() {
-            players.toggleClass('hovered');
-          },
-          stop: function(e, ui, $widget) {
-            positioning = gridster{{ $dashboard->number }}.serialize();
-            positioning = JSON.stringify(positioning);
-            $.ajax({
-              type: "POST",
-              data: {'positioning': positioning},
-              url: "{{ route('widget.save-position', Auth::user()->id) }}"
-            });
-            players.toggleClass('hovered');
-           }
-         }
-       }).data('gridster');
+            /* Resetting values */
+            $('#email-addresses').val('');
+            $('#widget-id').val(0);
+           });
+          return
+        } else {
+          $('#email-addresses-group').addClass('has-error');
+          event.preventDefault();
+        }
 
+      });
     });
-
-    @endforeach
-
-    $('.gridster.not-visible').fadeIn(500);
-
   </script>
-
-  @append
+  <!-- /Dashboard etc scripts -->
+@append
 
