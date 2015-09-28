@@ -103,14 +103,21 @@ function FDWidget(widgetOptions) {
     // Show loading state
     $(wrapperSelector).hide();
     $(loadingSelector).show();
-
-    console.log('FDWidget.refresh | ' + options.id + ' | ');
-
     // Send refresh data token
     send({'refresh_data': true}, function(){});
-
     // Poll widget state, and load if finished
     load();
+  };
+
+  /**
+   * @function reinit
+   * --------------------------------------------------------------------------
+   * Reinitilaizes the widget
+   * @return {executes the function}
+   * --------------------------------------------------------------------------
+   */
+  function reinit() {
+    specific.init();
   };
 
   /**
@@ -138,15 +145,16 @@ function FDWidget(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
    * -------------------------------------------------------------------------- */
-
+   
   /**
-   * @event $(document).ready
+   * @event $(refreshSelector).click
    * --------------------------------------------------------------------------
-   * 
+   * Handles the refresh widget event
    * --------------------------------------------------------------------------
    */
-  $(document).ready(function() {
-    //console.log(size());
+  $(refreshSelector).click(function (e) {
+    e.preventDefault();
+    refresh();
   });
 
   /**
@@ -156,20 +164,18 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   $(selector).resize(function() {
-    //console.log(size());
+    reinit();
   });
 
   /**
-   * @event $(refreshSelector).click
+   * @event $('.carousel').on('slid.bs.carousel')
    * --------------------------------------------------------------------------
-   * Handles the refresh widget event
+   * Refreshes the widget on carousel slid 
    * --------------------------------------------------------------------------
    */
-   $(refreshSelector).click(function (e) {
-    e.preventDefault();
-    refresh();
-   });
-
+  $('.carousel').on('slid.bs.carousel', function () {
+    reinit();
+  })
 
 } // FDWidget
 

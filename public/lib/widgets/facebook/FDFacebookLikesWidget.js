@@ -13,6 +13,7 @@ function FDFacebookLikesWidget(widgetOptions) {
   var chart   = new FDChart(widgetOptions);
 
   // Public functions
+  this.init    = init;
   this.refresh = refresh;
 
   // AutoLoad
@@ -31,7 +32,8 @@ function FDFacebookLikesWidget(widgetOptions) {
     */
    function init() {
      // Draw the chart
-     chart.draw(null, 'line');
+     chart.updateData(window['chartData' + options.id]);
+     chart.draw('line');
      return this;
    }
 
@@ -44,9 +46,8 @@ function FDFacebookLikesWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function refresh(data) {
-    // redraw the canvas
-    console.log('FDFacebookLikesWidget.refresh');
-    chart.draw(data, 'line');
+    chart.updateData(data);
+    chart.draw('line');
     return this;
   }
 

@@ -58,18 +58,12 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function reinsert() {
-    console.log('FDCanvas.reinsert');
-
     // Get the widget size
     canvasSize = size();
-    console.log('new FDCanvas.size | w:' + canvasSize.width + ' h:' + canvasSize.height);
     // Delete current canvas
     $(containerSelector).empty();
     // Add new canvas
     $(containerSelector).append('<canvas id=chart-' + widgetOptions.id + ' class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
-    console.log($(containerSelector))
-    console.log();
-
     // Return
     return this;
   }

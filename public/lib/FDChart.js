@@ -9,10 +9,93 @@ function FDChart(widgetOptions) {
   var options = widgetOptions;
   var canvas  = new FDCanvas(widgetOptions);
   var chartOptions = new FDChartOptions(widgetOptions.page)
-  var chartData = window['chartData' + options.id];
+  var chartData = null;
   
   // Public functions
-  this.draw = draw;
+  this.draw       = draw;
+  this.updateData = updateData;
+
+  /**
+   * @function updateData
+   * --------------------------------------------------------------------------
+   * Updates the chart data
+   * @param {dictionary} data | the chart data
+   * @return {this} 
+   * --------------------------------------------------------------------------
+   */
+  function updateData(data) {
+    // Transform and store new data
+    transformData(data);
+    // return
+    return this;
+  }
+
+  /**
+   * @function transformData
+   * --------------------------------------------------------------------------
+   * Transforms the data to ChartJS format
+   * @param {dictionary} rawData | the chart data
+   * @return {this} stores the transformed data
+   * --------------------------------------------------------------------------
+   */
+  function transformData(rawData) {
+    var processedData = {
+      labels  : [],
+      datasets: [
+        {
+          values: [],
+          name:   widgetOptions.name,
+          color: '105 ,153, 209'
+        }
+      ],
+    };
+
+    // Transform raw db data (rawData->processedData)
+    if (!("datasets" in rawData)) {
+      for (i = 0; i < rawData.length; ++i) {
+        processedData.labels.push(rawData[i]['datetime']);
+        processedData.datasets[0].values.push(rawData[i]['value']);
+      }
+    } else {
+      processedData = rawData;
+    }
+
+    // Transform processedData (processedData->transformedData)
+    var transformedData = {
+      labels  : processedData.labels,
+      datasets: [],
+    };
+
+    for (i = 0; i < processedData.datasets.length; ++i) {
+      transformedData.datasets.push(createDataSet(processedData.datasets[i].values, processedData.datasets[i].name, processedData.datasets[i].color));
+    }
+
+    // Store new data
+    chartData = transformedData;
+
+    // Return
+    return this;
+  }
+
+  /**
+   * @function createDataSet
+   * --------------------------------------------------------------------------
+   * Creates a dataset for the chart
+   * @return {dictionary} the generated dataset
+   * --------------------------------------------------------------------------
+   */
+  function createDataSet(values, name, color) {
+    return {
+      label: name,
+      fillColor : "rgba(" + color + ",0.2)",
+      strokeColor : "rgba(" + color + ",1)",
+      pointColor : "rgba(" + color + ",1)",
+      pointStrokeColor : "#fff",
+      pointHighlightFill : "#fff",
+      pointHighlightStroke : "rgba(" + color + ",1)",
+      data: values
+    }
+  }
 
   /**
    * @function draw
@@ -49,39 +132,12 @@ function FDChart(widgetOptions) {
    */
   function drawLineChart(data, options) {
     // Build data.
-    var rawDatasets = data.datasets;
-    var transformedData = {
-      labels: data.labels,
-      datasets: []
-    };
-
-    // Transform and push the datasets
-    for (i = 0; i < rawDatasets.length; ++i) {
-      transformedData.datasets.push(createDataSet(rawDatasets[i].values, rawDatasets[i].name, rawDatasets[i].color));
-    }
+    console.log(data);
 
     // Draw chart.
-    new Chart(canvas.get2dContext()).Line(transformedData, options);
+    new Chart(canvas.get2dContext()).Line(data, options);
   }
 
-  /**
-   * @function createDataSet
-   * --------------------------------------------------------------------------
-   * Creates a dataset for the chart
-   * @return {dictionary} the generated dataset
-   * --------------------------------------------------------------------------
-   */
-  function createDataSet(values, name, color) {
-    return {
-      label: name,
-      fillColor : "rgba(" + color + ",0.2)",
-      strokeColor : "rgba(" + color + ",1)",
-      pointColor : "rgba(" + color + ",1)",
-      pointStrokeColor : "#fff",
-      pointHighlightFill : "#fff",
-      pointHighlightStroke : "rgba(" + color + ",1)",
-      data: values
-    }
-  }
+
 
 } // FDChart

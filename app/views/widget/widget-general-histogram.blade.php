@@ -45,26 +45,27 @@
     }]
   }
 </script>
+
 <script type="text/javascript">
   $(document).ready(function(){
     // Default values.
-    var canvas = $("#chart-{{ $widget->id }}");
+    //var canvas = $("#chart-{{ $widget->id }}");
     var container = $('#{{ $widget->id }}-chart-container');
-    var valueSpan = $("#{{ $widget->id }}-value");
-    var name = "{{ $widget->descriptor->name }}";
+    //var valueSpan = $("#{{ $widget->id }}-value");
+    //var name = "{{ $widget->descriptor->name }}";
 
     @if ($widget->state == 'active')
       // Removing the canvas and redrawing for proper sizing.
-      canvas = reinsertCanvas(canvas);
+      // canvas = reinsertCanvas(canvas);
 
-      // Set chart data
-      var chartData = {
-        'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
-        'datasets': [{
-          'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
-          'color': '{{ SiteConstants::getChartJsColors()[0] }}'
-        }]
-      }
+      // // Set chart data
+      // var chartData = {
+      //   'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
+      //   'datasets': [{
+      //     'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
+      //     'color': '{{ SiteConstants::getChartJsColors()[0] }}'
+      //   }]
+      // }
 
       // Set chart options
       // var chartOptions = {

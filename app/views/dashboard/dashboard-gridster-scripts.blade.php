@@ -26,6 +26,7 @@ var gridsterGlobalOptions = {
   var widgetsData{{ $dashboard->id }} = [
     @foreach ($dashboard->widgets as $widget)
       {'id':        '{{ $widget->id }}',
+       'name':      '{{ $widget->name }}',
        'type':      '{{ $widget->descriptor->type }}',
        'state':     '{{ $widget->state }}',
        'postUrl':   '{{ route("widget.ajax-handler", $widget->id) }}',

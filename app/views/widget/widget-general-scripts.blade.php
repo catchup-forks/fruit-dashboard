@@ -78,18 +78,18 @@
   // };
 
   // Function reinsertCanvas empties the container and reinserts a canvas. If measure is true then it updates the sizing variables.
-  function reinsertCanvas(canvas) {
-    var canvasHeight = canvas.closest('div.gridster-player').height()-2*10;
-    var canvasWidth = canvas.closest('div.gridster-player').width()-5-30;
+  // function reinsertCanvas(canvas) {
+  //   var canvasHeight = canvas.closest('div.gridster-player').height()-2*10;
+  //   var canvasWidth = canvas.closest('div.gridster-player').width()-5-30;
 
-    canvasId = canvas[0].id;
-    container = $("#" + canvasId + "-container");
+  //   canvasId = canvas[0].id;
+  //   container = $("#" + canvasId + "-container");
 
-    container.empty();
-    container.append('<canvas id=\"' + canvasId + '\" class=\"chart chart-line\" height=\"' + canvasHeight +'\" width=\"' + canvasWidth + '\"></canvas>');
+  //   container.empty();
+  //   container.append('<canvas id=\"' + canvasId + '\" class=\"chart chart-line\" height=\"' + canvasHeight +'\" width=\"' + canvasWidth + '\"></canvas>');
 
-    return $("#" + canvasId);
-  }
+  //   return $("#" + canvasId);
+  // }
 
   function updateHistogramWidget(data, canvas, name, valueSpan) {
 
