@@ -30,15 +30,25 @@
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
-<div id="{{ $widget->id }}-chart-container" class="clickable">
-  <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
+<div id="chart-container-{{ $widget->id }}" class="clickable">
+  <canvas id="chart-{{ $widget->id }}" class="chart chart-line"></canvas>
 </div>
 
 @section('widgetScripts')
 <script type="text/javascript">
+  // Set chart data
+  var chartData{{ $widget->id }} = {
+    'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
+    'datasets': [{
+      'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
+      'color': '{{ SiteConstants::getChartJsColors()[0] }}'
+    }]
+  }
+</script>
+<script type="text/javascript">
   $(document).ready(function(){
     // Default values.
-    var canvas = $("#{{ $widget->id }}-chart");
+    var canvas = $("#chart-{{ $widget->id }}");
     var container = $('#{{ $widget->id }}-chart-container');
     var valueSpan = $("#{{ $widget->id }}-value");
     var name = "{{ $widget->descriptor->name }}";
@@ -57,13 +67,13 @@
       }
 
       // Set chart options
-      var chartOptions = {
-        'type': 'line',
-        'chartJSOptions': globalChartOptions.getLineChartOptions()
-      }
+      // var chartOptions = {
+      //   'type': 'line',
+      //   'chartJSOptions': globalChartOptions.getLineChartOptions()
+      // }
         
       // Draw chart
-      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
+      //new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
 
     @elseif ($widget->state == 'loading')
       // Loading widget.
@@ -79,14 +89,14 @@
 
     // Calling drawer every time carousel is changed.
     $('.carousel').on('slid.bs.carousel', function () {
-      canvas = reinsertCanvas(canvas);
-      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
+      //canvas = reinsertCanvas(canvas);
+      //new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
     })
 
     // Bind redraw to resize event.
     container.bind('resize', function(e){
-      canvas = reinsertCanvas(canvas);
-      new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
+      //canvas = reinsertCanvas(canvas);
+      //new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
     });
 
     // Adding refresh handler.

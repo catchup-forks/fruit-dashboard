@@ -147,7 +147,7 @@
   <!-- FDChartOptions class -->
   <script type="text/javascript" src="lib/FDChartOptions.js"></script>
   <script type="text/javascript">
-      globalChartOptions = new FDChartOptions('dashboard');
+      new FDChartOptions('dashboard').init();
   </script>
   <!-- /FDChartOptions class -->
 
@@ -156,6 +156,10 @@
     <script type="text/javascript" src="lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js"></script>
   @endforeach
   <!-- /FD<>Widget classes -->
+
+  <!-- FDCanvas class -->
+  <script type="text/javascript" src="lib/FDCanvas.js"></script>
+  <!-- /FDCanvas class -->
 
   <!-- FDChart class -->
   <script type="text/javascript" src="lib/FDChart.js"></script>

@@ -5,11 +5,36 @@
  * --------------------------------------------------------------------------
  */
 function FDFacebookLikesWidget(widgetOptions) {
+  /* -------------------------------------------------------------------------- *
+   *                                 ATTRIBUTES                                 *
+   * -------------------------------------------------------------------------- */
   // Private variables
   var options = widgetOptions;
-  
+  var chart   = new FDChart(widgetOptions);
+
   // Public functions
   this.refresh = refresh;
+
+  // AutoLoad
+  init();
+
+  /* -------------------------------------------------------------------------- *
+   *                                 FUNCTIONS                                  *
+   * -------------------------------------------------------------------------- */
+  
+  /**
+    * @function init
+    * Automatically initializes the widget
+    * --------------------------------------------------------------------------
+    * @return {this} 
+    * --------------------------------------------------------------------------
+    */
+   function init() {
+     // Draw the chart
+     chart.draw(null, 'line');
+     return this;
+   }
+
 
   /**
    * @function refresh
@@ -19,7 +44,15 @@ function FDFacebookLikesWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function refresh(data) {
+    // redraw the canvas
+    console.log('FDFacebookLikesWidget.refresh');
+    chart.draw(data, 'line');
     return this;
   }
+
+  /* -------------------------------------------------------------------------- *
+   *                                   EVENTS                                   *
+   * -------------------------------------------------------------------------- */
+
 
 } // FDFacebookLikesWidget

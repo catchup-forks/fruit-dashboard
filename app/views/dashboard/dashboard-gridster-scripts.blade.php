@@ -29,7 +29,8 @@ var gridsterGlobalOptions = {
        'type':      '{{ $widget->descriptor->type }}',
        'state':     '{{ $widget->state }}',
        'postUrl':   '{{ route("widget.ajax-handler", $widget->id) }}',
-       'deleteUrl': '{{ route("widget.delete", $widget->id) }}'},
+       'deleteUrl': '{{ route("widget.delete", $widget->id) }}',
+       'page':      'dashboard'},
     @endforeach
   ];
   var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }});

@@ -4,47 +4,33 @@
  * Class function for the charts
  * --------------------------------------------------------------------------
  */
-function FDChart(widgetID) {
+function FDChart(widgetOptions) {
   // Private variables
-  var canvas = $('#' + widgetID + '-chart')[0];
-
+  var options = widgetOptions;
+  var canvas  = new FDCanvas(widgetOptions);
+  var chartOptions = new FDChartOptions(widgetOptions.page)
+  var chartData = window['chartData' + options.id];
+  
   // Public functions
   this.draw = draw;
-
-  /**
-   * @function createDataSet
-   * --------------------------------------------------------------------------
-   * Creates a dataset for the chart
-   * @return {dictionary} the generated dataset
-   * --------------------------------------------------------------------------
-   */
-  function createDataSet(values, name, color) {
-    return {
-      label: name,
-      fillColor : "rgba(" + color + ",0.2)",
-      strokeColor : "rgba(" + color + ",1)",
-      pointColor : "rgba(" + color + ",1)",
-      pointStrokeColor : "#fff",
-      pointHighlightFill : "#fff",
-      pointHighlightStroke : "rgba(" + color + ",1)",
-      data: values
-    }
-  }
 
   /**
    * @function draw
    * --------------------------------------------------------------------------
    * Draws the chart
-   * @param {dictionary} chartData | The chart data
-   * @param {dictionary} options   | the options for the chart
+   * @param {string} type | the chart type
    * @return {true} 
    * --------------------------------------------------------------------------
    */
-  function draw(chartData, options) {
-    switch(options.type) {
+  function draw(type) {
+    // Reinsert canvas
+    canvas.reinsert();
+
+    // Draw chart
+    switch(type) {
       case 'line':
       default:
-          drawLineChart(chartData, options.chartJSOptions);
+          drawLineChart(chartData, chartOptions.getLineChartOptions());
           break;
     }
 
@@ -75,7 +61,27 @@ function FDChart(widgetID) {
     }
 
     // Draw chart.
-    new Chart(canvas.getContext("2d")).Line(transformedData, options);
+    new Chart(canvas.get2dContext()).Line(transformedData, options);
+  }
+
+  /**
+   * @function createDataSet
+   * --------------------------------------------------------------------------
+   * Creates a dataset for the chart
+   * @return {dictionary} the generated dataset
+   * --------------------------------------------------------------------------
+   */
+  function createDataSet(values, name, color) {
+    return {
+      label: name,
+      fillColor : "rgba(" + color + ",0.2)",
+      strokeColor : "rgba(" + color + ",1)",
+      pointColor : "rgba(" + color + ",1)",
+      pointStrokeColor : "#fff",
+      pointHighlightFill : "#fff",
+      pointHighlightStroke : "rgba(" + color + ",1)",
+      data: values
+    }
   }
 
 } // FDChart

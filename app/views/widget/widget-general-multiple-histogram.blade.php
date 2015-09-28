@@ -13,7 +13,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     // Default values.
-    var canvas = $("#{{ $widget->id }}-chart");
+    var canvas = $("#chart-{{ $widget->id }}");
     var container = $('#{{ $widget->id }}-chart-container');
     var valueSpan = $("#{{ $widget->id }}-value");
     var name = "{{ $widget->descriptor->name }}";

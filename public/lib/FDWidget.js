@@ -17,7 +17,6 @@ function FDWidget(widgetOptions) {
   var refreshSelector = '#refresh-' + options.id;
 
   // Public functions
-  this.size    = size;
   this.send    = send;
   this.load    = load;
   this.refresh = refresh;
@@ -27,18 +26,6 @@ function FDWidget(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
    * -------------------------------------------------------------------------- */
-
-  /**
-   * @function size
-   * --------------------------------------------------------------------------
-   * Returns the widget actual size in pixels
-   * @return {dictionary} size | The widget size in pixels
-   * --------------------------------------------------------------------------
-   */
-  function size() {
-    return {'width': $(selector).width(),
-            'height': $(selector).height()};
-  }
 
   /**
    * @function getSelector
@@ -61,6 +48,9 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function send(data, callback) {
+    console.log('FDWidget.send | ' + options.id + ' | ');
+    console.log(data);
+
     $.ajax({
       type: "POST",
       data: data,
@@ -79,10 +69,13 @@ function FDWidget(widgetOptions) {
    */
   function load() {
     var done = false;
+    console.log('FDWidget.load | ' + options.id + ' | ');
 
     // Poll the state until the data is ready
     function pollState() {
       send({'state_query': true}, function (data) {
+        console.log('FDWidget.load/dataarrived | ' + options.id + ' | ');
+
         if (data['ready']) {
           $(loadingSelector).hide();
           $(wrapperSelector).show();
@@ -110,7 +103,9 @@ function FDWidget(widgetOptions) {
     // Show loading state
     $(wrapperSelector).hide();
     $(loadingSelector).show();
-    
+
+    console.log('FDWidget.refresh | ' + options.id + ' | ');
+
     // Send refresh data token
     send({'refresh_data': true}, function(){});
 
