@@ -387,6 +387,13 @@ blockquote.twitter-tweet a:hover,
 blockquote.twitter-tweet a:focus {
   text-decoration: underline;
 }
+.canvas-auto {
+  width: 100%;
+  max-height: 400px;
+}
+.center-pills {
+  display: inline-block;
+}
 body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
