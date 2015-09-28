@@ -36,4 +36,4 @@ Fruit Dashboard is a Chrome dashboard solution for startup companies.
   - ```alias fdserve='cd /var/www/fruit-dashboard/;sh serve;'```
   - ```alias fdlog='cd /var/www/fruit-dashboard/app/storage/logs/; tail -f $(ls -t * | head -1);'```
 
-**...aaaaaand you are done. :)**
+**...aaaaaand you are done. :)**# fruitdashboard-api

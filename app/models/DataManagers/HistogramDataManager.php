@@ -37,8 +37,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Saving data only every 15 minutes. */
-        $currentData = $this->sortHistogram();
-        Log::info($currentData);
+        $currentData = $this->sortHistogram(FALSE);
 
         if ( ! is_array($currentData) && $this->data->raw_value != 'loading') {
             /* Initializing data. */

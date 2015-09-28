@@ -27,7 +27,7 @@
 
 
   <div class="chart-diff-dimension">
-    <small>(1 {{ $widget->getSettings()['resolution'] }} ago)</small>
+    <small>(a {{ rtrim($widget->getSettings()['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
@@ -67,7 +67,7 @@
         'type': 'line',
         'chartJSOptions': globalChartOptions.getLineChartOptions()
       }
-        
+
       // Draw chart
       new FDChart('{{ $widget->id }}').draw(chartData, chartOptions);
 

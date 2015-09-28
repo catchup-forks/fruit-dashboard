@@ -105,7 +105,7 @@ function changeGridster(id, direction) {
   // Initialize variables
   var gridster = window['FDGridster' + id];
 
-  if (direction) { 
+  if (direction) {
     gridster.lockGrid();
   } else {
     gridster.unlockGrid();

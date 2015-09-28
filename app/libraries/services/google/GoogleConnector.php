@@ -100,7 +100,9 @@ abstract class GoogleConnector extends GeneralServiceConnector
 
         /* Fetching new access token */
         $this->client->refreshToken($connection->refresh_token);
-        $connection->access_token = $this->client->getAccessToken();
+        $accessToken = json_decode($this->client->getAccessToken(), 1);
+        $accessToken['refresh_token'] = $connection->refresh_token;
+        $connection->access_token = json_encode($accessToken);
         $connection->save();
     }
 
@@ -120,13 +122,15 @@ abstract class GoogleConnector extends GeneralServiceConnector
             /* Disconnecting service if the token is invalid. */
             $this->disconnect();
         }
-
-        if (($token['created'] + $token['expires_in']) < Carbon::now()->timestamp) {
-            $this->refreshToken();
-            $connection = $this->getConnection();
+        try {
+            if (($token['created'] + $token['expires_in']) < Carbon::now()->timestamp) {
+                $this->refreshToken();
+                $connection = $this->getConnection();
+            }
+            $this->client->setAccessToken($connection->access_token);
+        } catch (Exception $e) {
+            $this->disconnect();
         }
-
-        $this->client->setAccessToken($connection->access_token);
     }
 
     /**
