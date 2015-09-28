@@ -5,55 +5,9 @@
  * --------------------------------------------------------------------------
  */
 function FDFacebookLikesWidget(widgetOptions) {
-  /* -------------------------------------------------------------------------- *
-   *                                 ATTRIBUTES                                 *
-   * -------------------------------------------------------------------------- */
-  // Private variables
-  var options = widgetOptions;
-  var chart   = new FDChart(widgetOptions);
+  // Call parent constructor
+  FDHistogramWidget.call(this, widgetOptions);
+};
 
-  // Public functions
-  this.init    = init;
-  this.refresh = refresh;
-
-  // AutoLoad
-  init();
-
-  /* -------------------------------------------------------------------------- *
-   *                                 FUNCTIONS                                  *
-   * -------------------------------------------------------------------------- */
-  
-  /**
-    * @function init
-    * Automatically initializes the widget
-    * --------------------------------------------------------------------------
-    * @return {this} 
-    * --------------------------------------------------------------------------
-    */
-   function init() {
-     // Draw the chart
-     chart.updateData(window['chartData' + options.id]);
-     chart.draw('line');
-     return this;
-   }
-
-
-  /**
-   * @function refresh
-   * Handles the specific refresh procedure to the widget
-   * --------------------------------------------------------------------------
-   * @return {this} 
-   * --------------------------------------------------------------------------
-   */
-  function refresh(data) {
-    chart.updateData(data);
-    chart.draw('line');
-    return this;
-  }
-
-  /* -------------------------------------------------------------------------- *
-   *                                   EVENTS                                   *
-   * -------------------------------------------------------------------------- */
-
-
-} // FDFacebookLikesWidget
+FDFacebookLikesWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDFacebookLikesWidget.prototype.constructor = FDFacebookLikesWidget;

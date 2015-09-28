@@ -10,6 +10,7 @@ function FDWidget(widgetOptions) {
    * -------------------------------------------------------------------------- */
   var options         = widgetOptions;
   var widgetClass     = 'FD' + options.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
+  console.log(window[widgetClass]);
   var specific        = new window[widgetClass](options);
   var selector        = '.gridster-player[data-id='+ options.id +']';
   var wrapperSelector = '#widget-wrapper-' + options.id;

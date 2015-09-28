@@ -91,21 +91,21 @@
   //   return $("#" + canvasId);
   // }
 
-  function updateHistogramWidget(data, canvas, name, valueSpan) {
+  // function updateHistogramWidget(data, canvas, name, valueSpan) {
 
-    // Updating chart values.
-    var labels = [];
-    var values = [];
-    for (i = 0; i < data.length; ++i) {
-      labels.push(data[i]['datetime']);
-      values.push(data[i]['value']);
-    }
-    if (data.length > 0 && valueSpan) {
-      valueSpan.html(data[data.length-1]['value']);
-    }
+  //   // Updating chart values.
+  //   var labels = [];
+  //   var values = [];
+  //   for (i = 0; i < data.length; ++i) {
+  //     labels.push(data[i]['datetime']);
+  //     values.push(data[i]['value']);
+  //   }
+  //   if (data.length > 0 && valueSpan) {
+  //     valueSpan.html(data[data.length-1]['value']);
+  //   }
 
-    return {'values': values, 'labels': labels};
-  }
+  //   return {'values': values, 'labels': labels};
+  // }
 
   function updateMultipleHistogramWidget(data, canvas, name) {
     if (data && data['datetimes'] == null) {

@@ -154,6 +154,7 @@
   <!-- FD<>Widget classes -->
   @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
     <script type="text/javascript" src="lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js"></script>
+    <script type="text/javascript" src="lib/widgets/FDHistogramWidget.js"></script>
   @endforeach
   <!-- /FD<>Widget classes -->
 
