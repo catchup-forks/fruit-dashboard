@@ -37,13 +37,14 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Saving data only every 15 minutes. */
-        $currentData = $this->getData();
+        $currentData = $this->sortHistogram();
+        Log::info($currentData);
 
         if ( ! is_array($currentData) && $this->data->raw_value != 'loading') {
             /* Initializing data. */
             $this->initializeData();
         } else if (count($currentData) > 0) {
-            if (Carbon::createFromTimestamp(end($currentData)['timestamp'])->diffInMinutes(Carbon::now()) < 15) {
+            if (Carbon::createFromTimestamp(end($currentData)['timestamp'])->diffInMinutes($entryTime) < 15) {
                 array_pop($currentData);
             }
         }
@@ -270,7 +271,7 @@ abstract class HistogramDataManager extends DataManager
      */
     private function sortHistogram($asc=TRUE) {
         $fullHistogram = $this->getData();
-        if ($fullHistogram != null) {
+        if (is_array($fullHistogram)) {
             usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
         } else {
             $fullHistogram = array();
