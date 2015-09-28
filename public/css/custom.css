@@ -387,9 +387,14 @@ blockquote.twitter-tweet a:hover,
 blockquote.twitter-tweet a:focus {
   text-decoration: underline;
 }
-html,
 body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   background-color: #333333;
+}
+.body-background {
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }

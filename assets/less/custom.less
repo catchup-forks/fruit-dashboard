@@ -11,6 +11,7 @@
 @carousel-control-width:    5%;
 
 // IMPORTS
+
 @import "custom-positioning.less";
 @import "custom-design.less";
 @import "custom-panels.less";
@@ -24,9 +25,17 @@
 @import "custom-charts.less";
 @import "custom-twitter.less";
 
-// PAGE
-html, body {
+// HTML, BODY
+
+body {
   font-family: 'Open Sans', sans-serif;
   font-weight: 300;
   background-color: rgba(51,51,51,1);
+}
+
+.body-background {
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
 }
