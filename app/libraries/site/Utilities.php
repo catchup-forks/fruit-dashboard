@@ -39,5 +39,4 @@ class Utilities {
     public static function formatNumber($input, $format='%d') {
         return sprintf($format, $input);
     }
-
 }
