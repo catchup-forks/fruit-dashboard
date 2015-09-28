@@ -194,7 +194,7 @@ class SiteConstants {
     private static function getServiceMeta($service) {
         return array(
             'name'             => $service,
-            'display_name'     => self::underscoreToCamelCase($service, TRUE),
+            'display_name'     => Utilities::underscoreToCamelCase($service, TRUE),
             'type'             => 'service',
             'disconnect_route' => 'service.' . $service . '.disconnect',
             'connect_route'    => 'service.' . $service . '.connect',
@@ -326,20 +326,6 @@ class SiteConstants {
         }
         /* Return */
         return $groups;
-    }
-
-    /**
-     * underscoreToCamelCase
-     * Returning a string in CamelCase.
-     * --------------------------------------------------
-     * @param string $input
-     * @param boolean $keepSpace
-     * @return string
-     * --------------------------------------------------
-    */
-    public static function underscoreToCamelCase($input, $keepSpace=FALSE) {
-        $output = ucwords(str_replace('_',' ', $input));
-        return $keepSpace ? $output : str_replace(' ', '', $output);
     }
 
     /**

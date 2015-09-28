@@ -2,6 +2,7 @@
 
 abstract class CountWidget extends Widget implements iAjaxWidget
 {
+    use NumericWidgetTrait;
     protected static $histogramDescriptor = '';
 
     /* -- Settings -- */
@@ -36,10 +37,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        if ( ! $this->hasValidCriteria()) {
-            $this->setState('setup_required');
-            return null;
-        }
         if (is_null($this->getDataManager()) && $this instanceof iServiceWidget) {
             $connectorClass = $this->getConnectorClass();
             $connector = new $connectorClass($this->user());

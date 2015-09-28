@@ -1,14 +1,14 @@
-@if ($widget->dataManager()->getData() == FALSE)
+@if ($widget->hasData() == FALSE)
   <div id="widget-loading-{{ $widget->id }}" class="widget-inner fill">
     <p class="text-center">
+      <h4 class="text-center">widget id: {{ $widget->id }}</h4>
       This widget is waiting for data on this url:
       <pre>
-        {{ $widget->dataManager()->getUrl() }}
+        {{ $widget->getSettings()['url'] }}
       </pre>
     </p> <!-- /.lead -->
     <p class="text-center">
-      <button onclick="copyToClipboard('{{ $widget->dataManager()->getUrl() }}');" class="btn btn-sm btn-primary">Copy to clipboard</button>
-      <a href="{{ route('api.test', [$widget->id]) }}" class="btn btn-link">Test widget</a>
+      <button onclick="copyToClipboard('{{ $widget->getSettings()['url'] }}');" class="btn btn-sm btn-primary">Copy to clipboard</button>
     </p>
   </div> <!-- /.widget-inner -->
 @else
@@ -17,7 +17,7 @@
 
 @section('widgetScripts')
 <script type="text/javascript">
-  
+
   function copyToClipboard(url) {
       var $temp = $("<input>");
       $("body").append($temp);

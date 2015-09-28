@@ -30,7 +30,7 @@
     .
   ">
   <h3 class="text-white drop-shadow truncate">
-    {{ array_values($widget->getCurrentValue()['latest'])[0] }}
+    {{ Utilities::formatNumber(array_values($widget->getCurrentValue()['latest'])[0], $widget->getFormat()) }}
 
     @if (array_values($widget->getCurrentValue()['diff'])[0] >= 0)
       <small class="text-success">
@@ -40,7 +40,7 @@
         <span class="fa fa-arrow-down"> </span>
     @endif
 
-      {{ abs(array_values($widget->getCurrentValue()['diff'])[0]) }}
+      {{ abs(Utilities::formatNumber(array_values($widget->getCurrentValue()['diff'])[0], $widget->getFormat())) }}
     </small>
   </h3>
   <p class="text-white drop-shadow">
@@ -49,38 +49,11 @@
     @elseif ($widget->descriptor->category == 'google_analytics')
     {{ $widget->getDataManager()->getProperty()->name }}
     @elseif ($widget->descriptor->category == 'twitter')
-    {{ SiteConstants::underscoreToCamelCase($widget->descriptor->category, TRUE) }} {{ $metric }}
+    {{ Utilities::underscoreToCamelCase($widget->descriptor->category, TRUE) }} {{ $metric }}
     @endif
   </p>
 </div>
 
 
 @section('widgetScripts')
-<script type="text/javascript">
-  // $(function() {
-    
-  //   $('#refresh-{{$widget->id}}').click(function () {
-  //     refreshWidget({{ $widget->id }}, function (data) {
-  //       $('#{{$widget->id}}-value').html(data.value);
-  //     })
-  //   });
-
-  //   var toAlign = '#count-{{ $widget->id }}';
-  //   var containerElement = '.gridster-player';
-
-  //   verticalAlign(toAlign, containerElement);
-
-  //   // Bind redraw to resize event.
-  //   $(toAlign).bind('resize', function(e){
-  //     verticalAlign(toAlign, containerElement);
-  //   });
-
-  //   function verticalAlign(target, measure) {
-  //     $(target).css({
-  //       'margin-top': $(target).closest(measure).outerHeight()/2-$(target).height()/2
-  //     })
-  //   }
-
-  // });
-</script>
 @append

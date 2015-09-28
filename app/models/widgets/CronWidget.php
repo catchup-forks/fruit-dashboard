@@ -3,25 +3,12 @@
 /* All classes that have interaction with data. */
 abstract class CronWidget extends Widget implements iAjaxWidget
 {
-
     /* Custom relation. */
-    public function dataManager() {
+    protected function dataManager() {
         if (is_null($this->data->manager)) {
             return null;
         }
         return $this->data->manager->getSpecific();
-    }
-
-    /**
-     * checkIntegrity
-     * adding data integrity check.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-    */
-    public function checkIntegrity() {
-        parent::checkIntegrity();
-        $this->checkDataIntegrity();
     }
 
     /**
@@ -53,29 +40,17 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     }
 
     /**
+     * refreshWidget
      * Refreshing the widget data.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
     */
     public function refreshWidget() {
-        $this->state = 'loading';
-        $this->save();
-
-        /* Refreshing widget data. */
-        $this->dataManager()->collectData();
-
-        /* Faling back to active. */
-        $this->state = 'active';
-        $this->save();
-    }
-
-    /**
-     * getData
-     * Passing the job to the DataManager
-     */
-    public function getData($postData=null) {
-        return $this->dataManager()->getData();
+        /* Setting to loading, and waiting for the collector to finish. */
+        $this->setState('loading');
+        $this->updateData();
+        $this->setState('active');
     }
 
     /**
@@ -100,32 +75,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         return TRUE;
     }
 
-    /**
-     * checkDataIntegrity
-     * Checking the DataIntegrity of widgets.
-    */
-    public function checkDataIntegrity() {
-        if ( ! $this->hasValidCriteria()) {
-                $this->setState('setup_required');
-        } else if ( ! $this->dataExists()) {
-            /* No data/datamanager is assigned */
-            $this->save();
-            if ( ! $this->dataExists()) {
-                /* Still not working */
-                $this->setState('setup_required');
-            }
-        } else if ($this->data->raw_value == 'loading') {
-            /* Populating is underway */
-            $this->setState('loading');
-        } else if (is_null(json_decode($this->data->raw_value)) || ! $this->hasValidScheme()) {
-            /* No json in data, this is a problem. */
-            $this->dataManager()->initializeData();
-        } else if ($this->state == 'loading') {
-            /* Everything looks good, but is stuck in loading. */
-            $this->setState('active');
-        }
-    }
-
     /*
      * dataExists
      * Checking if data/manager exists
@@ -133,30 +82,61 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * @return boolean
      * --------------------------------------------------
     */
-    public function dataExists() {
+    protected function dataExists() {
         return  ! (is_null($this->data) || is_null($this->dataManager()));
     }
 
     /**
-     * hasValidScheme
-     * Checking if the scheme is valid in the data.
+     * updateData
+     * Refreshing the widget data.
      * --------------------------------------------------
-     * @return boolean
+     * @param array options
+     * @return string
      * --------------------------------------------------
     */
-    public function hasValidScheme() {
-        $scheme = $this->dataManager()->getDataScheme();
-        $dataScheme = json_decode($this->data->raw_value, 1);
-        if ( ! is_array($dataScheme)) {
-            return FALSE;
+    public function updateData(array $options=array()) {
+        $this->dataManager()->collectData($options);
+    }
+
+    /**
+     * setUpdatePeriod
+     * Setting the data collection period.
+     * --------------------------------------------------
+     * @param int interval
+     * --------------------------------------------------
+    */
+    public function setUpdatePeriod($interval) {
+        $this->dataManager()->setUpdatePeriod($interval);
+    }
+
+    /**
+     * getUpdatePeriod
+     * Setting the data collection period.
+     * --------------------------------------------------
+     * @return int
+     * --------------------------------------------------
+    */
+    public function getUpdatePeriod() {
+        return $this->dataManager()->update_period;
+    }
+
+    /**
+     * getData
+     * Passing the job to the DataManager
+     */
+    public function getData($postData=null) {
+        return $this->dataManager()->getData();
+    }
+
+    /**
+     * checkIntegrity
+     * adding data integrity check.
+    */
+    public function checkIntegrity() {
+        parent::checkIntegrity();
+        if ( ! $this->dataExists()) {
+            $this->save();
         }
-        /* Iterating through the keys */
-        foreach ($scheme as $key) {
-            if ( ! array_key_exists($key, $dataScheme)) {
-                return FALSE;
-            }
-        }
-        return TRUE;
     }
 
 }

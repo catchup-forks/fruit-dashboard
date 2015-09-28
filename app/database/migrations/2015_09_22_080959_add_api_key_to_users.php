@@ -19,6 +19,7 @@ class AddApiKeyToUsers extends Migration {
 
         foreach (User::all() as $user) {
             $user->api_key = md5(str_random(32));
+            $user->save();
         }
     }
 

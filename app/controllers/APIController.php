@@ -41,7 +41,8 @@ class APIController extends BaseController
      */
     public function getTest($widgetID) {
         /* Get the requested widget */
-        $widget = Widget::where('id', $widgetID)->first();
+        $generalWidget = Widget::find($widgetID);
+        $widget = $generalWidget->getSpecific();
 
         /* Error handling */
         if ($widget == null) {
@@ -52,7 +53,7 @@ class APIController extends BaseController
         }
 
         /* Get the widget API url */
-        $url = $widget->getSpecific()->dataManager()->getCriteria()['url'];
+        $url = $widget->getSettings()['url'];
 
         /* Create default JSON string */
         $defaultJSON =
@@ -89,7 +90,7 @@ class APIController extends BaseController
             default:
                 /* Get user and widget */
                 $user   = User::where('api_key', $apiKey)->first();
-                $widget = Widget::where('id', $widgetID)->first();
+                $widget = Widget::find($widgetID);
 
                 /* Check API key */
                 if (is_null($user)) {
@@ -126,25 +127,41 @@ class APIController extends BaseController
         if (is_null(Input::get('timestamp')) && is_null(Input::get('date'))) {
             return array('status'  => FALSE,
                          'message' => "You must provide a 'timestamp' or a 'date' attribute for your data.");
-        } else {
+        } else if (Input::get('timestamp')) {
             try {
                 $date = Carbon::createFromTimeStamp(Input::get('timestamp'));
             } catch (Exception $e) {
                 return array('status'  => FALSE,
                              'message' => "Your 'timestamp' is not a valid timestamp.");
             }
-        }
-
-        /* Check all other data */
-        foreach (Input::except('timestamp', 'date') as $key => $value) {
-            if (!is_numeric($value)) {
+        } else if (Input::get('date')) {
+            try {
+                $date = Carbon::parse(Input::get('date'));
+            } catch (Exception $e) {
                 return array('status'  => FALSE,
-                             'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
+                             'message' => "Your 'date' is not a valid date.");
             }
         }
 
+
+        /* Check all other data */
+        $hasData = FALSE;
+        foreach (Input::except('timestamp', 'date') as $key => $value) {
+            if ( ! is_numeric($value)) {
+                return array('status'  => FALSE,
+                             'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
+            } else if ( ! $hasData) {
+                $hasData = TRUE;
+            }
+        }
+
+        if ( ! $hasData) {
+            return array('status'  => FALSE,
+                         'message' => "You have to provide at least one dataset.");
+        }
+
         /* Everything is ok */
-        $widget->getSpecific()->dataManager()->collectData(array('entry' =>Input::all()));
+        $widget->getSpecific()->updateData(array('entry' =>Input::all()));
         return array('status'  => TRUE,
                      'message' => 'Your data has been successfully saved.');
 

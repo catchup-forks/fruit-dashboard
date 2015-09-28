@@ -163,35 +163,17 @@ class Widget extends Eloquent
     }
 
     /**
-     * hasValidCriteria
-     * Checking if the widget has valid criteria
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-    */
-    public function hasValidCriteria() {
-        $criteriaFields = static::getCriteriaFields();
-        if (empty($criteriaFields)) {
-            return TRUE;
-        }
-        $criteria = $this->getCriteria();
-        foreach ($criteriaFields as $setting) {
-            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == FALSE)
-                return FALSE;
-        }
-        return TRUE;
-    }
-
-    /**
      * setState
      * Setting a widget's state.
      * --------------------------------------------------
      * @param string $state
      * --------------------------------------------------
     */
-    public function setState($state) {
+    public function setState($state, $commit=TRUE) {
         $this->state = $state;
-        $this->save();
+        if ($commit) {
+            $this->save();
+        }
     }
 
     /**
@@ -337,6 +319,28 @@ class Widget extends Eloquent
 
     }
 
+    /**
+     * hasValidCriteria
+     * Checking if the widget has valid criteria
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+    */
+    public function hasValidCriteria() {
+        $criteriaFields = static::getCriteriaFields();
+        if (empty($criteriaFields)) {
+            return TRUE;
+        }
+
+        $criteria = $this->getCriteria();
+        foreach ($criteriaFields as $setting) {
+            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == '')
+                return FALSE;
+        }
+        return TRUE;
+    }
+
+
    /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
@@ -381,7 +385,10 @@ class Widget extends Eloquent
     protected function checkSettingsIntegrity() {
         if (is_null($this->getSettings())) {
             $this->setState('setup_required');
-            return ;
+            return;
+        } else if ( ! $this->hasValidCriteria()) {
+            $this->setState('setup_required');
+            return;
         }
         foreach ($this->getSettingsFields() as $key=>$value) {
             if ( ! array_key_exists($key, $this->getSettings())) {
@@ -389,12 +396,6 @@ class Widget extends Eloquent
             }
         }
     }
-
-    /**
-     * ================================================== *
-     *                  PROTECTED SECTION                 *
-     * ================================================== *
-    */
 
     /**
      * getType
@@ -411,6 +412,7 @@ class Widget extends Eloquent
         /* Removing _widget */
         return str_replace('_widget', '', $lowercase);
     }
+
 }
 
 ?>

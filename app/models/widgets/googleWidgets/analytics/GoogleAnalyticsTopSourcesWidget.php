@@ -1,6 +1,6 @@
 <?php
 
-class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidget
+class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWidget
 {
     /* -- Settings -- */
     private static $rangeSettings = array(
@@ -9,14 +9,12 @@ class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidg
             'type'       => 'DATE',
             'validation' => 'required',
             'help_text'  => 'The start of the collection period. (YYYY-mm-dd)',
-            'default'    => '2015-01-01'
         ),
         'range_end' => array(
             'name'       => 'End range',
             'type'       => 'DATE',
             'validation' => 'required',
             'help_text'  => 'The end of the collection period. (YYYY-mm-dd)',
-            'default'    => '2015-12-31'
         ),
         'max_results' => array(
             'name'       => 'Number of sources.',
@@ -37,29 +35,12 @@ class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidg
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$profileSettings, self::$rangeSettings);
-    }
+        /* Updating range setting with the static loader. */
+        $rangeSettings = self::$rangeSettings;
+        $rangeSettings['range_start']['default'] = Carbon::now()->subDays(30)->toDateString();
+        $rangeSettings['range_end']['default'] = Carbon::now()->toDateString();
 
-    /**
-     * Refreshing the widget data.
-     * --------------------------------------------------
-     * @return string
-     * --------------------------------------------------
-    */
-    public function refreshWidget() {
-        $this->state = 'loading';
-        $this->save();
-
-        /* Refreshing widget data. */
-        $this->dataManager()->collectData(array(
-            'start'       => $this->getSettings()['range_start'],
-            'end'         => $this->getSettings()['range_end'],
-            'max_results' => $this->getSettings()['max_results'],
-        ));
-
-        /* Faling back to active. */
-        $this->state = 'active';
-        $this->save();
+        return array_merge(parent::getSettingsFields(), self::$profileSettings, $rangeSettings);
     }
 
     /**
@@ -75,12 +56,32 @@ class GoogleAnalyticsTopSourcesWidget extends CronWidget implements iServiceWidg
         if ($passed === 0) {
             /* Further validation required. */
             $start = Carbon::createFromFormat('Y-m-d', $this->getSettings()['range_start']);
-            if (Carbon::now()->diffInDays($start) > 30) {
+            if (Carbon::now()->diffInDays($start) > 31) {
                 return -1;
             }
         }
 
         return $passed;
+    }
+
+    /**
+     * updateData
+     * Refreshing the widget data.
+     * --------------------------------------------------
+     * @param array options
+     * @return string
+     * --------------------------------------------------
+    */
+    public function updateData(array $options=array()) {
+        if (empty($options)) {
+            $this->dataManager->collectData(array(
+                'start'       => $this->getSettings()['range_start'],
+                'end'         => $this->getSettings()['range_end'],
+                'max_results' => $this->getSettings()['max_results'],
+            ));
+        } else {
+            $this->dataManager()->collectData($options);
+        }
     }
 }
 ?>

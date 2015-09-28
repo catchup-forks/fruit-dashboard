@@ -38,6 +38,7 @@ class ChangeGoogleAnalyticsWidgetsToSingleHistogram extends Migration {
 
                 $dataManager->data->raw_value = json_encode($newData);
                 $dataManager->data->save();
+                Log::info("Transformed data #" . $dataManager->data->id . " from multiple to single histogram.");
 
             } catch (Exception $e) {
                 Log::error('Error found while running migration: ' . get_class($this) . ' on DataManager #' . $dataManager->id . '. message: ' . $e->getMessage());

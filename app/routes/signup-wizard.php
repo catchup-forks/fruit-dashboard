@@ -23,6 +23,18 @@ Route::group([
         'uses'   => 'SignupWizardController@postAuthentication',
     ]);
 
+    Route::get('select-startup-type', [
+        'before' => 'auth',
+        'as'     => 'signup-wizard.select-startup-type',
+        'uses'   => 'SignupWizardController@getSelectStartupType'
+    ]);
+
+    Route::post('select-startup-type', [
+        'before' => 'auth',
+        'as'     => 'signup-wizard.select-startup-type',
+        'uses'   => 'SignupWizardController@postSelectStartupType'
+    ]);
+
     Route::any('financial-connections', [
         'before' => 'auth',
         'as'     => 'signup-wizard.financial-connections',

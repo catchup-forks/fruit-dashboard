@@ -76,7 +76,7 @@
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">
-                      {{ Form::text('update_period', $widget->dataManager()->update_period, ['class' => 'form-control']) }}
+                      {{ Form::text('update_period', $widget->getUpdatePeriod(), ['class' => 'form-control']) }}
                       <p class="text-info">The number of minutes the widget data will be updated automatically. (min. 30)</p>
                     </div>
                   </div>

@@ -131,9 +131,6 @@ function FDChart(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function drawLineChart(data, options) {
-    // Build data.
-    console.log(data);
-
     // Draw chart.
     new Chart(canvas.get2dContext()).Line(data, options);
   }

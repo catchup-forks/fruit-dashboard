@@ -10,7 +10,6 @@ function FDWidget(widgetOptions) {
    * -------------------------------------------------------------------------- */
   var options         = widgetOptions;
   var widgetClass     = 'FD' + options.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
-  console.log(window[widgetClass]);
   var specific        = new window[widgetClass](options);
   var selector        = '.gridster-player[data-id='+ options.id +']';
   var wrapperSelector = '#widget-wrapper-' + options.id;
@@ -49,9 +48,6 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function send(data, callback) {
-    console.log('FDWidget.send | ' + options.id + ' | ');
-    console.log(data);
-
     $.ajax({
       type: "POST",
       data: data,
@@ -70,13 +66,10 @@ function FDWidget(widgetOptions) {
    */
   function load() {
     var done = false;
-    console.log('FDWidget.load | ' + options.id + ' | ');
 
     // Poll the state until the data is ready
     function pollState() {
       send({'state_query': true}, function (data) {
-        console.log('FDWidget.load/dataarrived | ' + options.id + ' | ');
-
         if (data['ready']) {
           $(loadingSelector).hide();
           $(wrapperSelector).show();

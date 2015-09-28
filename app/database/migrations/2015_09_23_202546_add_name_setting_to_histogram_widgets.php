@@ -15,13 +15,14 @@ class AddNameSettingToHistogramWidgets extends Migration {
     {
         /* Creating TwitterUser connections to users */
         foreach (User::all() as $user) {
-            if ( ! $user->isServiceConnected('twitter')) {
+            if ( ! $user->isServiceConnected('twitter') || ! is_null(TwitterUser::where('user_id', $user->id)->first())) {
+                /* Not connected to twitter, or already has a profile. */
                 continue;
             }
             try {
                 $connector = new TwitterConnector($user);
                 $connector->createTwitterUser();
-                Log::info("Created profile for user #". $user->id);
+                Log::info("Created twitter profile for user #". $user->id);
             } catch (Exception $e) {
                 Log::error('Error found while trying to a twitter user for user #' . $user->id . '. message: ' . $e->getMessage());
 

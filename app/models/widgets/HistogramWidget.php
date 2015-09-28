@@ -2,6 +2,8 @@
 
 abstract class HistogramWidget extends CronWidget
 {
+    use NumericWidgetTrait;
+
     /* -- Settings -- */
     private static $resolutionSettings = array(
         'resolution' => array(
@@ -17,6 +19,13 @@ abstract class HistogramWidget extends CronWidget
             'validation' => 'required',
             'help_text'  => 'The name of the widget.'
         ),
+        'length' => array(
+            'name'       => 'Length',
+            'type'       => 'INT|min:5|max:15',
+            'validation' => 'required',
+            'default'    => 15,
+            'help_text'  => 'The number of data points on your histogram.'
+        ),
     );
 
     /* -- Choice functions -- */
@@ -28,17 +37,6 @@ abstract class HistogramWidget extends CronWidget
             'years'  => 'Yearly'
         );
     }
-
-    /**
-     * getLatestData
-     * Returning the last data in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
-     */
-     public function getLatestData() {
-        return $this->data->manager->getSpecific()->getLatestData();
-     }
 
     /**
      * getSettingsFields
@@ -72,6 +70,17 @@ abstract class HistogramWidget extends CronWidget
     }
 
     /**
+     * getDiff
+     * Comparing the current value to some historical.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getDiff() {
+        return $this->dataManager()->compare($this->getSettings()['resolution'], 1);
+    }
+
+    /**
      * getData
      * Returning the histogram.
      * --------------------------------------------------
@@ -95,8 +104,19 @@ abstract class HistogramWidget extends CronWidget
             $resolution = $this->getSettings()['resolution'];
         }
 
-        return $this->dataManager()->getHistogram($range, $resolution);
+        return $this->dataManager()->getHistogram($range, $resolution, $this->getSettings()['length']);
     }
+
+    /**
+     * getLatestData
+     * Returning the last data in the histogram.
+     * --------------------------------------------------
+     * @return float
+     * --------------------------------------------------
+     */
+     public function getLatestData() {
+        return $this->dataManager()->getLatestData();
+     }
 
     /**
      * save
@@ -115,5 +135,15 @@ abstract class HistogramWidget extends CronWidget
         return parent::save($options);
     }
 
+    /**
+     * hasData
+     * Returns whether or not there's data in the histogram.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function hasData() {
+        return $this->dataManager()->getData() != FALSE;
+    }
 }
 ?>

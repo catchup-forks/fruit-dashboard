@@ -44,7 +44,7 @@ abstract class GeneralAutoDashboardCreator {
 
     public function create($dashboard_name=null) {
 
-        $this->createDashboard(is_null($dashboard_name) ? SiteConstants::underscoreToCamelCase(static::$service, FALSE) : $dashboard_name);
+        $this->createDashboard(is_null($dashboard_name) ? Utilities::underscoreToCamelCase(static::$service, FALSE) : $dashboard_name);
         $this->createWidgets();
     }
 
@@ -80,9 +80,8 @@ abstract class GeneralAutoDashboardCreator {
                 $widget->saveSettings($this->widgetSettings);
 
                 /* Checking if the data is already available. */
-                if ($widget->data->raw_value != 'loading') {
-                    $widget->state = 'active';
-                    $widget->save();
+                if ( ! is_null($widget->data) && $widget->data->raw_value != 'loading') {
+                    $widget->setState('active');
                 }
             }
         }

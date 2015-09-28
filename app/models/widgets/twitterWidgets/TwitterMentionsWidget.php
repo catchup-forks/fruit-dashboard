@@ -26,23 +26,19 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
     }
 
     /**
+     * updateData
      * Refreshing the widget data.
      * --------------------------------------------------
+     * @param array options
      * @return string
      * --------------------------------------------------
     */
-    public function refreshWidget() {
-        $this->state = 'loading';
-        $this->save();
-
-        /* Refreshing widget data. */
-        $this->dataManager()->collectData(array(
-            'count' => $this->getSettings()['count'],
-        ));
-
-        /* Faling back to active. */
-        $this->state = 'active';
-        $this->save();
+    public function updateData(array $options=array()) {
+        if (empty($options)) {
+            $this->dataManager()->collectData(array('count' => $this->getSettings()['count']));
+        } else {
+            $this->dataManager()->collectData($options);
+        }
     }
 }
 ?>

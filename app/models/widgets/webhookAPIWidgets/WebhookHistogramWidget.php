@@ -18,13 +18,8 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
 
     /* -- Choice functions -- */
     public function resolution() {
-        return array(
-            'hourly'  => 'Hourly',
-            'daily'   => 'Daily',
-            'weekly'  => 'Weekly',
-            'monthly' => 'Monthly',
-            'yearly'  => 'Yearly'
-        );
+        $hourly = array('hours' => 'Hourly');
+        return array_merge($hourly, parent::resolution());
     }
 
     /**
