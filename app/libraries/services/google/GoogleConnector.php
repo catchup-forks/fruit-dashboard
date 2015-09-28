@@ -100,7 +100,9 @@ abstract class GoogleConnector extends GeneralServiceConnector
 
         /* Fetching new access token */
         $this->client->refreshToken($connection->refresh_token);
-        $connection->access_token = $this->client->getAccessToken();
+        $accessToken = json_decode($this->client->getAccessToken(), 1);
+        $accessToken['refresh_token'] = $connection->refresh_token;
+        $connection->access_token = json_encode($accessToken);
         $connection->save();
     }
 
