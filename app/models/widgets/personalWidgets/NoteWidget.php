@@ -19,6 +19,8 @@ class NoteWidget extends DataWidget implements iAjaxWidget
         $this->data->raw_value = json_encode(array('text' => $postData['text']));
         $this->data->save();
     }
+
+    public function refreshWidget() {}
 }
 
 ?>
