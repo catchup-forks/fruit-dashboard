@@ -187,7 +187,7 @@ class StripeDataCollector
             }
             $hasMore = $currentData['has_more'];
             if ($depth++ > 20) {
-                Log::warning('Reached limit of iterations on stripe customer collection. ' . $currentData);
+                Log::warning('Reached limit of iterations on stripe customer collection. ');
                 $hasMore = FALSE;
             }
             $startingAfter = end($currentData['data'])['id'];
@@ -242,7 +242,7 @@ class StripeDataCollector
             }
             $hasMore = $currentData['has_more'];
             if ($depth++ > 20) {
-                Log::warning('Reached limit of iterations on stripe event collection. ' . $currentData);
+                Log::warning('Reached limit of iterations on stripe event collection. ');
                 $hasMore = FALSE;
             }
             if (!is_null($currentData['data'])) {
