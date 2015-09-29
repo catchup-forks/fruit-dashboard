@@ -1,12 +1,14 @@
 <script type="text/javascript">
+// Set initial lock state
+setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, false);
 
 /**
- * @listens | element(s): $('.lock-icon') | event:click
+ * @listens | element(s): $('#dashboard-lock') | event:click
  * --------------------------------------------------------------------------
  * Triggers the dashboard lock functions on click event
  * --------------------------------------------------------------------------
  */
-$('.lock-icon').click(function() {
+$('#dashboard-lock').click(function() {
   // Get the dashboard
   dashboardID = $(this).attr("data-dashboard-id");
   direction   = $(this).attr("data-lock-direction") == 'lock' ? true : false;
@@ -19,6 +21,57 @@ $('.lock-icon').click(function() {
 });
 
 /**
+ * @function setDashboardLock
+ * --------------------------------------------------------------------------
+ * Sets the lock parameters for a given dashboard
+ * @param  {number} id | The ID of the dashboard.
+ * @param  {boolean} direction | true on lock, false on unlock
+ * @param  {boolean} showTooltips | show on true
+ * @return {null} None
+ * --------------------------------------------------------------------------
+ */
+function setDashboardLock(id, direction, showTooltips) {
+  showTooltips = typeof showTooltips !== 'undefined' ? showTooltips : true;
+  var lock = $('#dashboard-lock');
+  var options = {
+    'class-false' : 'fa fa-unlock-alt fa-2x fa-inverse color-hovered',
+    'class-true' : 'fa fa-lock fa-2x fa-inverse color-hovered',
+    'tooltip-false' : 'This dashboard is unlocked. Click to lock.',
+    'tooltip-true' : 'This dashboard is locked. Click to unlock.',
+    'lock-direction-false' : 'lock',
+    'lock-direction-true' : 'unlock' 
+  };
+
+  if (direction) {
+    // Set the lock icon
+    lock.children('span').attr('class', options['class-true']);
+    // Set the tooltip text
+    lock.attr('title', options['tooltip-true']);
+    // Set the lock direction
+    lock.attr('data-lock-direction', options['lock-direction-true']);
+
+  } else {
+    // Set the lock icon
+    lock.children('span').attr('class', options['class-false']);
+    // Set the tooltip text
+    lock.attr('title', options['tooltip-false']);
+    // Set the lock direction
+    lock.attr('data-lock-direction', options['lock-direction-false']);
+  };
+
+  if (showTooltips) {
+    // Reinitialize tooltip
+    lock.tooltip('fixTitle').tooltip('show');  
+  }
+  
+  // Set the Dashboard ID
+  lock.attr('data-dashboard-id', id);
+
+}
+
+
+
+/**
  * @function toggleDashboardLock
  * --------------------------------------------------------------------------
  * Toggles the lock option for the given dashboard
@@ -29,7 +82,7 @@ $('.lock-icon').click(function() {
  */
 function toggleDashboardLock(id, direction) {
   // Change lock icon
-  changeLockIcon(id, direction);
+  setDashboardLock(id, direction);
 
   // Change gridster
   changeGridster(id, direction);
@@ -38,33 +91,6 @@ function toggleDashboardLock(id, direction) {
   callLockToggleAjax(id, direction);
 }
 
-
-/**
- * @function changeLockIcon
- * --------------------------------------------------------------------------
- * Changes the lock icon for a dsahboard based on the direction
- * @param  {number} id | The ID of the dashboard.
- * @param  {boolean} direction | true on lock, false on unlock
- * @return {null} None
- * --------------------------------------------------------------------------
- */
-function changeLockIcon(id, direction) {
-  // Initialize variables
-  selector = $(".lock-icon[data-dashboard-id='" + id + "']");
-
-  // Change the icon
-  if (direction) {
-    selector.attr('data-lock-direction', 'unlock');
-    selector.attr('title', 'This dashboard is locked. Click to unlock.');
-    selector.tooltip('fixTitle').tooltip('show');
-    selector.find('span').removeClass('fa-unlock-alt').addClass('fa-lock');
-  } else {
-    selector.attr('data-lock-direction', 'lock');
-    selector.attr('title', 'This dashboard is unlocked. Click to lock.');
-    selector.tooltip('fixTitle').tooltip('show');
-    selector.find('span').removeClass('fa-lock').addClass('fa-unlock-alt');
-  };
-}
 
 /**
  * @function changeGridster
@@ -120,7 +146,7 @@ function callLockToggleAjax(id, direction) {
         error: function() {
           easyGrowl('error', errormsg, 3000);
           // Revert the process
-          changeLockIcon(id, !direction);
+          setDashboardLock(id, !direction);
           changeGridster(id, !direction);
         }
     });

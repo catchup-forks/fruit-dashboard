@@ -144,7 +144,7 @@ class FacebookConnector extends GeneralServiceConnector
             $this->createConnection($helper->getAccessToken(), '');
         }
 
-        $collector = new FacebookDataCollector($this->user);
+        $collector = new FacebookDataCollector($this->user, $this);
         $collector->savePages();
 
     }
@@ -215,7 +215,7 @@ class FacebookConnector extends GeneralServiceConnector
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function populateData($criteria) {
+    protected function populateData($criteria) {
         Queue::push('FacebookPopulateData', array(
             'user_id'  => $this->user->id,
             'criteria' => $criteria

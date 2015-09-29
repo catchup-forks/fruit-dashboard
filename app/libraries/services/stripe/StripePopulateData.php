@@ -44,18 +44,21 @@ class StripePopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
+        $time = microtime(TRUE);
+        Log::info("Starting Stripe data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->calculator = new StripeCalculator($this->user);
         $this->events = $this->calculator->getCollector()->getEvents();
         $this->filterEvents();
         $this->dataManagers = $this->getManagers();
-        $this->collectData();
+        $this->populateData();
+        Log::info("Stripe data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
         $job->delete();
     }
 
     /**
      * Populating the widgets with data.
      */
-    protected function collectData() {
+    protected function populateData() {
         /* Creating data for the last DAYS days. */
         $metrics = $this->getMetrics();
 

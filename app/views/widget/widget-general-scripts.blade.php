@@ -118,14 +118,12 @@
     if (data.length === undefined) {
       return;
     }
-    console.log("hello");
 
     function clearContainer() {
       $(containerId).html('');
     }
 
     for (word in data['text']) {
-      console.log(word);
     }
 
     clearContainer();

@@ -21,11 +21,10 @@ class ServiceConnectionController extends BaseController
      */
     public function getBraintreeConnect() {
         $this->saveReferer();
-        $braintreeConnector = new BraintreeConnector(Auth::user());
 
         /* Render the page */
         return View::make('service.braintree.connect')
-            ->with('authFields', $braintreeConnector->getAuthFields());
+            ->with('authFields', BraintreeConnector::getAuthFields());
     }
 
     /**
@@ -328,8 +327,6 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectFacebookPages() {
         /* Getting a user's facebook pages for multiple select. */
-        $dataCollector = new FacebookDataCollector(Auth::user());
-
         $pages = array();
         foreach (Auth::user()->facebookPages as $page) {
             $pages[$page->id] = $page->name;
@@ -373,7 +370,6 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'Please select at least one of the pages.');
         }
 
-        $dataCollector = new FacebookDataCollector(Auth::user());
         $pages = array();
         foreach (Auth::user()->facebookPages as $page) {
             $pages[$page->id] = $page->name;
@@ -388,10 +384,6 @@ class ServiceConnectionController extends BaseController
                 Auth::user(), array('page' => $id)
             );
             $dashboardCreator->create($pages[$id]);
-        }
-
-        /* Creating dashboards if necessary. */
-        foreach (Auth::user()->facebookPages as $page) {
         }
 
         return Redirect::to($this->getReferer())
@@ -456,7 +448,6 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectGoogleAnalyticsProperties() {
         /* Getting a user's google analytics properties for multiple select. */
-        $dataCollector = new GoogleAnalyticsDataCollector(Auth::user());
         $properties = array();
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;
@@ -467,10 +458,11 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
-            $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $propertyId = array_keys($properties)[0];
             $property = Auth::user()->googleAnalyticsProperties()->where('id', $propertyId)->first();
+            $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $profile = $collector->getProfiles($property)[0];
+
             $settings = array(
                 'profile'  => $profile->id,
                 'property' => $propertyId,
@@ -504,7 +496,6 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'Please select at least one of the properties.');
         }
 
-        $dataCollector = new GoogleAnalyticsDataCollector(Auth::user());
         $properties = array();
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;

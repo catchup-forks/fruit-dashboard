@@ -31,10 +31,12 @@ class GoogleAnalyticsDataCollector
     private $analytics;
 
     /* -- Constructor -- */
-    function __construct($user) {
+    function __construct($user, $connector=null) {
         $this->user = $user;
-        $connector = new GoogleAnalyticsConnector($user);
-        $connector->connect();
+        if (is_null($connector)) {
+            $connector = new GoogleAnalyticsConnector($user);
+            $connector->connect();
+        }
         $this->client = $connector->getClient();
         $this->analytics = new Google_Service_Analytics($this->client);
     }
@@ -109,8 +111,13 @@ class GoogleAnalyticsDataCollector
             }
 
             /* Retrieving results from API */
-            $results = $this->analytics->data_ga->get(
-               'ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
+            try {
+                $results = $this->analytics->data_ga->get('ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
+            } catch (Exception $e) {
+                Log::error($e->getMessage);
+                throw new ServiceException("Google connection error.", 1);
+            }
+
             $rows = $results->getRows();
             $profileName = $results->getProfileInfo()->getProfileName();
 
@@ -229,6 +236,11 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      */
     public function getProfiles($property) {
-        return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->id)->getItems();
+        try {
+            return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->id)->getItems();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Google connection error.", 1);
+        }
    }
 } /* GoogleAnalyticsDataCollector */
