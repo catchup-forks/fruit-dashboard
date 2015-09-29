@@ -74,7 +74,7 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->dataManager->collectData(array(
+            $this->dataManager()->collectData(array(
                 'start'       => $this->getSettings()['range_start'],
                 'end'         => $this->getSettings()['range_end'],
                 'max_results' => $this->getSettings()['max_results'],

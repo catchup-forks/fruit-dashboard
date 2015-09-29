@@ -48,7 +48,10 @@ class DataManager extends Eloquent
     }
 
     public function collectData($options=array())  {}
-    public function initializeData() {}
+    public function initializeData() {
+        $this->saveData(array());
+        $this->collectData();
+    }
 
     /**
      * getDataScheme

@@ -147,7 +147,13 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         }
         if (isset($postData['refresh_data']) && $postData['refresh_data']) {
             /* Refresh signal */
-            $this->refreshWidget();
+            try {
+                $this->refreshWidget();
+            } catch (ServiceException $e) {
+                Log::error($e->getMessage);
+                return array('status'  => FALSE,
+                             'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
+            }
         }
     }
 

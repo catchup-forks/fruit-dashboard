@@ -3,10 +3,6 @@
 /* This class is responsible for table widgets data collection. */
 abstract class TableDataManager extends DataManager
 {
-    public function initializeData() {
-        $this->collectData();
-    }
-
     /**
      * getHeader
      * Returns the header from data.
@@ -218,14 +214,14 @@ abstract class TableDataManager extends DataManager
     }
 
     /**
-     * saveheader
+     * saveHeader
      * Saving header.
      * --------------------------------------------------
      * @param array $header
      * @param boolean $commit
      * --------------------------------------------------
      */
-    public function saveheader($header, $commit=TRUE) {
+    public function saveHeader($header, $commit=TRUE) {
         $content = $this->getContent();
         $this->data->raw_value = json_encode(array(
             'header'  => $header,
@@ -246,9 +242,12 @@ abstract class TableDataManager extends DataManager
      * --------------------------------------------------
      */
     public function saveData($data) {
+        if ( ! array_key_exists('header', $data) || ! array_key_exists('content', $data)) {
+            $this->collectData();
+            return;
+        }
         $this->saveHeader($data['header']);
-        $this->saveContent($data['content'], FALSE);
-        $this->data->save();
+        $this->saveContent($data['content']);
     }
 
     /**
