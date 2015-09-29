@@ -110,7 +110,7 @@
           var wasDragging = isDragging;
           isDragging = false;
           if (!wasDragging) {
-            window.location = "{{ route('widget.singlestat', $widget->id) }}";
+            //window.location = "{{ route('widget.singlestat', $widget->id) }}";
           }
       });
 
