@@ -4,7 +4,10 @@
  * Class function for the gridster elements
  * --------------------------------------------------------------------------
  */
-function FDGridster(gridsterOptions, widgetsData) {
+function FDGridster(gridsterOptions) {
+ /* -------------------------------------------------------------------------- *
+  *                                 ATTRIBUTES                                 *
+  * -------------------------------------------------------------------------- */
   // Private variables
   var namespace = '#gridster-' + gridsterOptions.dashboardId
   
@@ -14,7 +17,6 @@ function FDGridster(gridsterOptions, widgetsData) {
   var gridster         = null;
   
   // Widgets related
-  var widgetsData     = widgetsData;
   var widgetsSelector = namespace + 'div.gridster-player';
   var widgets         = [];
 
@@ -24,6 +26,10 @@ function FDGridster(gridsterOptions, widgetsData) {
   this.lockGrid   = lockGrid;
   this.unlockGrid = unlockGrid;
 
+  /* -------------------------------------------------------------------------- *
+   *                                 FUNCTIONS                                  *
+   * -------------------------------------------------------------------------- */
+
   /**
    * @function build
    * --------------------------------------------------------------------------
@@ -31,15 +37,19 @@ function FDGridster(gridsterOptions, widgetsData) {
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function build() {
-    // Build options
+  function build(widgetsData) {
+    // Build widgets
     for (var i = widgetsData.length - 1; i >= 0; i--) {
+      // Initialize widget
       var widget = new FDWidget(widgetsData[i]);
+      // Poll state from js if the wiget is loading
+      if (widgetsData[i].state == 'loading') {
+        widget.load();
+      };
+      // Add to widgets array
       widgets.push({'id': widgetsData[i].id, 'widget': widget});
     };
-
-    console.log(widgets);
-    
+        
     // return
     return this;
   }
@@ -70,6 +80,37 @@ function FDGridster(gridsterOptions, widgetsData) {
     };
 
     // Return
+    return this;
+  }
+
+  /**
+   * @function deleteWidget
+   * --------------------------------------------------------------------------
+   * Removes a widget from the grid
+   * @param {integer} widgetId | The id of the widget
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function deleteWidget(widgetId) {
+    var widget = null;
+
+    // Remove the FDWidget object
+    for (var i = widgets.length - 1; i >= 0; i--) {
+      if (widgetId == widgets[i].id) {
+        widget = widgets.splice(i, 1)[0].widget;
+        break;
+      };
+    };
+
+    if (widget != null) {
+      // Remove element from the gridster
+      gridster.remove_widget(widget.getSelector());
+
+      // Delete widget
+      widget.remove()
+    };
+
+    // return
     return this;
   }
 
@@ -231,5 +272,19 @@ function FDGridster(gridsterOptions, widgetsData) {
   function serializePositioning() {
     return JSON.stringify(gridster.serialize());
   }
+
+  /* -------------------------------------------------------------------------- *
+   *                                   EVENTS                                   *
+   * -------------------------------------------------------------------------- */
+
+  /**
+   * @event $(".deleteWidget").click
+   * --------------------------------------------------------------------------
+   * 
+   * --------------------------------------------------------------------------
+   */
+  $(".deleteWidget-" + gridsterOptions.dashboardId).click(function(e) {
+    deleteWidget($(this).attr("data-id"));
+  });
 
 } // FDGridster
