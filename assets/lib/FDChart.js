@@ -1,15 +1,93 @@
 /**
  * @class FDChart
  * --------------------------------------------------------------------------
- * Class function for the gridster elements
+ * Class function for the charts
  * --------------------------------------------------------------------------
  */
-function FDChart(widgetID) {
+function FDChart(widgetOptions) {
   // Private variables
-  var canvas = $('#' + widgetID + '-chart')[0];
-
+  var options = widgetOptions;
+  var canvas  = new FDCanvas(widgetOptions);
+  var chartOptions = new FDChartOptions(widgetOptions.page)
+  var widgetData = null;
+  
   // Public functions
-  this.draw = draw;
+  this.draw       = draw;
+  this.updateData = updateData;
+
+  /**
+   * @function updateData
+   * --------------------------------------------------------------------------
+   * Updates the chart data
+   * @param {dictionary} data | the chart data
+   * @return {this} 
+   * --------------------------------------------------------------------------
+   */
+  function updateData(data) {
+    // Transform and store new data
+    transformData(data);
+    // return
+    return this;
+  }
+
+  /**
+   * @function transformData
+   * --------------------------------------------------------------------------
+   * Transforms the data to ChartJS format
+   * @param {dictionary} rawData | the chart data
+   * @return {this} stores the transformed data
+   * --------------------------------------------------------------------------
+   */
+  function transformData(rawData) {
+    var processedData = {
+      labels  : [],
+      datasets: [
+        {
+          values: [],
+          name:   widgetOptions.name,
+          color: '105 ,153, 209'
+        }
+      ],
+    };
+
+    // Transform raw db data (rawData->processedData)
+    if (!("datasets" in rawData)) {
+      for (i = 0; i < rawData.length; ++i) {
+        processedData.labels.push(rawData[i]['datetime']);
+        processedData.datasets[0].values.push(rawData[i]['value']);
+      }
+    } else {
+      processedData = rawData;
+    }
+
+    // Transform processedData (processedData->transformedData)
+    var transformedData = {
+      labels  : processedData.labels,
+      datasets: [],
+    };
+
+    for (i = 0; i < processedData.datasets.length; ++i) {
+      transformedData.datasets.push(createDataSet(processedData.datasets[i].values, processedData.datasets[i].name, processedData.datasets[i].color));
+    }
+
+    // Store new data
+    widgetData = transformedData;
+
+    // Return
+    return this;
+  }
+
+  /**
+   * @function clear
+   * --------------------------------------------------------------------------
+   * Clears the previous chart
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function clear() {
+    // Reinsert canvas
+    canvas.reinsert();
+  }
 
   /**
    * @function createDataSet
@@ -35,47 +113,24 @@ function FDChart(widgetID) {
    * @function draw
    * --------------------------------------------------------------------------
    * Draws the chart
-   * @param {dictionary} chartData | The chart data
-   * @param {dictionary} options   | the options for the chart
-   * @return {true} 
+   * @param {string} type | the chart type
+   * @return {this} 
    * --------------------------------------------------------------------------
    */
-  function draw(chartData, options) {
-    switch(options['type']) {
+  function draw(type) {
+    // Clear the existing chart
+    clear();
+
+    // Draw chart
+    switch(type) {
       case 'line':
       default:
-          drawLineChart(chartData, options['chartJSOptions']);
+          new Chart(canvas.get2dContext()).Line(widgetData, chartOptions.getLineChartOptions())
           break;
     }
 
     // return
-    return true;
-  }
-
-  /**
-   * @function drawLineChart
-   * --------------------------------------------------------------------------
-   * Draws a line chart
-   * @param {dictionary} data | The chart data
-   * @param {dictionary} options | The chart options
-   * @return {true} 
-   * --------------------------------------------------------------------------
-   */
-  function drawLineChart(data, options) {
-    // Build data.
-    var rawDatasets = data['datasets'];
-    var transformedData = {
-      labels: data['labels'],
-      datasets: []
-    };
-
-    // Transform and push the datasets
-    for (i = 0; i < rawDatasets.length; ++i) {
-      transformedData.datasets.push(createDataSet(rawDatasets[i]['values'], rawDatasets[i]['name'], rawDatasets[i]['color']));
-    }
-
-    // Draw chart.
-    new Chart(canvas.getContext("2d")).Line(transformedData, options);
+    return this;
   }
 
 } // FDChart

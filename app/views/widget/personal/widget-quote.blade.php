@@ -10,23 +10,4 @@
 </div>
 
 @section('widgetScripts')
-
-<script type="text/javascript">
-  function updateWidget(data) {
-    $("#quote-{{ $widget->id }}").html(data['quote']);
-    $("#author-{{ $widget->id }}").html(data['author']);
-  }
-
-  $(document).ready(function() {
-    @if((Carbon::now()->timestamp - $widget->data->updated_at->timestamp) / 60 > $widget->getUpdatePeriod())
-      refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
-    @endif
-
-     $("#refresh-{{$widget->id}}").click(function (e) {
-      e.preventDefault();
-      refreshWidget({{ $widget->id }}, function (data) { updateWidget(data);});
-     });
-   });
- </script>
-
 @append
