@@ -110,7 +110,7 @@ Widget stats
           'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
            @foreach ($widget->getData()['datasets'] as $dataset)
             'datasets': [{
-              'values': [@foreach ($dataset as $value) {{$value[0]}}, @endforeach],
+              'values': [{{ implode(',', $dataset['values']) }}],
               'color': '{{ $dataset['color'] }}'
             }]
            @endforeach

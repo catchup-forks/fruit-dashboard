@@ -7,7 +7,7 @@
       @if ( ! $widget->hasCumulative())
       {{ Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat()) }}
       @else
-      {{ Utilities::formatNumber($widget->getDiff($widget->getSettings()['length'])['value'], $widget->getFormat()) }}
+      {{ Utilities::formatNumber($widget->getDiff($widget->getSettings()['length']), $widget->getFormat()) }}
       @endif
     @endif
   </div> <!-- /.chart-value -->
@@ -15,14 +15,14 @@
 
 <div class="chart-diff-data text-center">
 
-  @if ($widget->getDiff()['value'] >= 0)
+  @if ($widget->getDiff() >= 0)
     <div class="chart-diff text-success">
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
   @else
     <div class="chart-diff text-danger">
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
-    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff()['value'], $widget->getFormat()) }}</span>
+    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff(), $widget->getFormat()) }}</span>
   </div> <!-- /.chart-diff -->
 
 

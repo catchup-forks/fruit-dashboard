@@ -12,7 +12,7 @@
 
 <div class="chart-diff-data text-center">
 
-  @if (array_values($widget->getDiff())[0] >= 0)
+  @if ($widget->getDiff() >= 0)
     <div class="chart-diff text-success">
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
 
@@ -22,7 +22,7 @@
 
   @endif
 
-    <span class="chart-diff-value">{{array_values($widget->getDiff())[0]}}</span>
+    <span class="chart-diff-value">{{$widget->getDiff()}}</span>
   </div> <!-- /.chart-diff -->
 
 
@@ -39,7 +39,7 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget->id }} = {
-    'labels': [@foreach ($widget->getData()['datetimes'] as $histogramEntry) "{{$histogramEntry}}", @endforeach],
+    'labels': [@foreach ($widget->getData()['datetimes'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
       @foreach ($widget->getData()['datasets'] as $dataset)
         {

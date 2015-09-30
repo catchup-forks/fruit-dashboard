@@ -48,11 +48,11 @@
             {{-- 6 months ago --}}
             {{-- 12 weeks ago --}}
             {{-- 30 days ago --}}
-            <h3>70</h3>
+            <h3>{{ $widget->getHistory(30, 'days')['value'] }}</h3>
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
               {{-- compared to current value in percent --}}
-              1200%
+              {{ $widget->getHistory(30, 'days')['percent'] }}
             </div> <!-- /.text-success -->
             <p><small>30 days ago</small></p>
           </div> <!-- /.panel-body -->
@@ -65,11 +65,11 @@
             {{-- 3 months ago --}}
             {{-- 4 weeks ago --}}
             {{-- 7 days ago --}}
-            <h3>2999</h3>
+            <h3>{{ $widget->getHistory(7, 'days')['value'] }}</h3>
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
               {{-- compared to current value in percent --}}
-              120%
+              {{ $widget->getHistory(7, 'days')['percent'] }}
             </div> <!-- /.text-success -->
             <p><small>7 days ago</small></p>
           </div> <!-- /.panel-body -->
@@ -82,10 +82,10 @@
             {{-- 1 month ago --}}
             {{-- 1 week ago --}}
             {{-- 1 day ago --}}
-            <h3>3876</h3>
+            <h3>{{ $widget->getHistory(1, 'days')['value'] }}</h3>
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
-              13%
+              {{ $widget->getHistory(1, 'days')['percent'] }}
             </div> <!-- /.text-success -->
             <p><small>1 day ago</small></p>
           </div> <!-- /.panel-body -->
@@ -94,7 +94,7 @@
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            <h3 class="text-primary">5760</h3>
+            <h3 class="text-primary">{{ array_values($widget->getLatestValues())[0] }}</h3>
             <div class="text-success">
               <span class="fa fa-check"> </span>
             </div> <!-- /.text-success -->
