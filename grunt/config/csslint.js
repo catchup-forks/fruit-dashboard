@@ -3,6 +3,6 @@ module.exports = {
       options: {
         import: 2
       },
-      src: ['assets/**/*.css']
+      src: ['<%= pkg.dirs.developement.css %>/*.css']
     }
 }

@@ -1,14 +1,14 @@
 module.exports = {
   // less --> css --> lint --> copy
   process_less: {
-    files: ['assets/*/*.less'],
+    files: ['<%= pkg.dirs.developement.less %>/*.less'],
     tasks: ['compile-less'],
     options: {
       nospawn: true
     }
   },
   copy_lib: {
-    files: ['assets/lib/*'],
+    files: ['<%= pkg.dirs.developement.lib %>/*'],
     tasks: ['copy:lib'],
     options: {
       nospawn: true

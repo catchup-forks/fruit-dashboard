@@ -10,7 +10,22 @@
     "type": "git",
     "url": "git+https://github.com/tryfruit/fruit-dashboard.git"
   },
-  "author": "ABF informatika",
+  "author": {
+    "name": "ABF informatika",
+    "website": "http://tryfruit.com"
+  },
+  "dirs": {
+    "developement": {
+      "css": "assets/css",
+      "less": "assets/less",
+      "lib": "assets/lib"
+    },
+    "public": {
+      "css": "public/css",
+      "lib": "public/lib"
+    },
+    "chrome": "external/chrome-extension"
+  },
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/tryfruit/fruit-dashboard/issues"
@@ -23,8 +38,10 @@
     "grunt-contrib-compress": "^0.13.0",
     "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-csslint": "^0.4.0",
+    "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-less": "^1.0.1",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-filerev": "^2.3.1",
     "jit-grunt": "^0.9.1",
     "load-grunt-config": "^0.17.2",
     "load-grunt-tasks": "^3.2.0",
