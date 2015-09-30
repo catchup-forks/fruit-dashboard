@@ -16,7 +16,6 @@ class ClockWidget extends Widget
     public function clock_type() {
         return array(
             'digital' => 'digital',
-            'analog'  => 'analogue'
         );
     }
 

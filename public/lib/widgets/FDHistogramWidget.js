@@ -27,7 +27,19 @@ var FDHistogramWidget = function(widgetOptions) {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.init = function() {
-   this.chart.updateData(window['chartData' + this.options.id]);
+   this.chart.updateData(window['widgetData' + this.options.id]);
+   this.chart.draw('line');
+   return this;
+};
+
+/**
+  * @function reinit
+  * Reinitializes the widget
+  * --------------------------------------------------------------------------
+  * @return {this} 
+  * --------------------------------------------------------------------------
+  */
+FDHistogramWidget.prototype.reinit = function() {
    this.chart.draw('line');
    return this;
 };

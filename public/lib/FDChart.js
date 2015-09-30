@@ -9,7 +9,7 @@ function FDChart(widgetOptions) {
   var options = widgetOptions;
   var canvas  = new FDCanvas(widgetOptions);
   var chartOptions = new FDChartOptions(widgetOptions.page)
-  var chartData = null;
+  var widgetData = null;
   
   // Public functions
   this.draw       = draw;
@@ -71,7 +71,7 @@ function FDChart(widgetOptions) {
     }
 
     // Store new data
-    chartData = transformedData;
+    widgetData = transformedData;
 
     // Return
     return this;
@@ -125,7 +125,7 @@ function FDChart(widgetOptions) {
     switch(type) {
       case 'line':
       default:
-          new Chart(canvas.get2dContext()).Line(chartData, chartOptions.getLineChartOptions())
+          new Chart(canvas.get2dContext()).Line(widgetData, chartOptions.getLineChartOptions())
           break;
     }
 

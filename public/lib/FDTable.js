@@ -8,7 +8,7 @@ function FDTable(widgetOptions) {
   // Private variables
   var options   = widgetOptions;
   var selector = '#widget-wrapper-' + widgetOptions.id + ' table';
-  var tableData = null;
+  var widgetData = null;
   
   // Public functions
   this.draw       = draw;
@@ -67,7 +67,7 @@ function FDTable(widgetOptions) {
     }
 
     // Store new data
-    tableData = transformedData;
+    widgetData = transformedData;
 
     // Return
     return this;
@@ -98,8 +98,8 @@ function FDTable(widgetOptions) {
     clear();
 
     // Draw table
-    $(selector).append(tableData.header);
-    $(selector).append(tableData.content);
+    $(selector).append(widgetData.header);
+    $(selector).append(widgetData.content);
 
     // return
     return true;

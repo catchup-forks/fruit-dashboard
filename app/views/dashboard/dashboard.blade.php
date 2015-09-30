@@ -136,6 +136,7 @@
   <!-- /FDGeneral* classes -->
 
   <!-- FDAbstractWidget* classes -->
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDGeneralWidget.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js') }}"></script>
   <!-- /FDAbstractWidget* classes -->

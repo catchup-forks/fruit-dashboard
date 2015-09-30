@@ -125,7 +125,7 @@ function FDWidget(widgetOptions) {
    */
   function reinit() {
     if (logging) { console.log('ReInitializing widget #' + options.id); }
-    specific.init();
+    specific.reinit();
     if (logging) { console.log('...done | ReInitializing widget #' + options.id); }
   };
 

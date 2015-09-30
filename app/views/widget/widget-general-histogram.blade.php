@@ -37,7 +37,7 @@
 @section('widgetScripts')
 <script type="text/javascript">
   // Set chart data
-  var chartData{{ $widget->id }} = {
+  var widgetData{{ $widget->id }} = {
     'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
     'datasets': [{
       'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
