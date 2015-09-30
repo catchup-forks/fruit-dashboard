@@ -15,7 +15,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
 
     /**
      * disconnect
-     * disconnecting the user from google-analytics.
+     * disconnecting the user from google analytics.
      * --------------------------------------------------
      * @throws ServiceNotConnected
      * --------------------------------------------------

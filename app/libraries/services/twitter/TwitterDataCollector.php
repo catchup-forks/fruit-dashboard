@@ -79,7 +79,7 @@ class TwitterDataCollector
         try {
             return $this->twitter->get($url, $parameters);
         } catch (Exception $e) {
-            Log::error($e->getMessage);
+            Log::error($e->getMessage());
             throw new ServiceException("Twitter connection error.", 1);
         }
 

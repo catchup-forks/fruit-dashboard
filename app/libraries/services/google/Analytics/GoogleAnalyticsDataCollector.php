@@ -66,7 +66,6 @@ class GoogleAnalyticsDataCollector
      * Saves a user's google analytics properties.
      */
     public function saveProperties() {
-        $this->user->googleAnalyticsProperties()->delete();
         foreach ($this->getAccountIds() as $accountId) {
             $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($accountId);
             $items = $ga_properties->getItems();
@@ -79,9 +78,17 @@ class GoogleAnalyticsDataCollector
                     'id'         => $item->getId(),
                     'name'       => $item->getName(),
                     'account_id' => $accountId
-                )); $property->user()->associate($this->user);
-                $property->save();
+                ));
+                $property->user()->associate($this->user);
                 array_push($properties, $property);
+            }
+        }
+
+        if (count($properties) > 0) {
+            /* Only refreshing if we have results. */
+            $this->user->googleAnalyticsProperties()->delete();
+            foreach ($properties as $property) {
+                $property->save();
             }
         }
         return $properties;
@@ -114,7 +121,7 @@ class GoogleAnalyticsDataCollector
             try {
                 $results = $this->analytics->data_ga->get('ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
             } catch (Exception $e) {
-                Log::error($e->getMessage);
+                Log::error($e->getMessage());
                 throw new ServiceException("Google connection error.", 1);
             }
 

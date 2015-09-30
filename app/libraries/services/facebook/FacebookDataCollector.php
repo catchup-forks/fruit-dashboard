@@ -75,7 +75,6 @@ class FacebookDataCollector
      * --------------------------------------------------
      */
     public function savePages() {
-        $this->user->facebookPages()->delete();
         $userId = $this->getUserID();
         if (is_null($userId)) {
             return;
@@ -95,9 +94,17 @@ class FacebookDataCollector
                 'name' => $graphNode['name']
             ));
             $page->user()->associate($this->user);
-            $page->save();
             array_push($pages, $page);
         }
+
+        if (count($pages) > 0) {
+            /* Only refreshing if we have results. */
+            $this->user->facebookPages()->delete();
+            foreach ($pages as $page) {
+                $page->save();
+            }
+        }
+
         return $pages;
     }
 

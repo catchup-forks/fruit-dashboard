@@ -83,5 +83,20 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
             $this->dataManager()->collectData($options);
         }
     }
+
+    /**
+     * save
+     * Calling refreshWidget
+     * --------------------------------------------------
+     * @param array options
+     * @return string
+     * --------------------------------------------------
+    */
+    public function save(array $options=array()) {
+        parent::save($options);
+        $this->refreshWidget();
+    }
+
+
 }
 ?>

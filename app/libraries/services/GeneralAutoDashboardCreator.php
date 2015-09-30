@@ -69,7 +69,6 @@ abstract class GeneralAutoDashboardCreator {
             if (array_key_exists($descriptor->type, static::$widgets)) {
                 $widgetType = $descriptor->type;
                 $widgetMeta = static::$widgets[$widgetType];
-                Log::info($widgetMeta);
 
                 /* Creating widget instance. */
                 $className = $descriptor->getClassName();

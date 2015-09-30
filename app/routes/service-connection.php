@@ -65,26 +65,21 @@ Route::group([
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsDisconnect'
     ]);
 
-    Route::any('google_calendar/connect', [
+    Route::any('google_analytics/refresh-properties', [
         'before' => 'auth',
-        'as'     => 'service.google_calendar.connect',
-        'uses'   => 'ServiceConnectionController@anyGoogleCalendarConnect'
-    ]);
-    Route::any('google_calendar/disconnect', [
-        'before' => 'auth',
-        'as'     => 'service.google_calendar.disconnect',
-        'uses'   => 'ServiceConnectionController@anyGoogleCalendarDisconnect'
+        'as'     => 'service.google_analytics.refresh-properties',
+        'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsRefreshProperties'
     ]);
 
-    Route::get('google-analytics/select-properties', array(
+    Route::get('google_analytics/select-properties', array(
         'before' => 'auth',
-        'as'     => 'service.google-analytics.select-properties',
+        'as'     => 'service.google_analytics.select-properties',
         'uses'   => 'ServiceConnectionController@getSelectGoogleAnalyticsProperties'
     ));
 
-    Route::post('google-analytics/select-properties', array(
+    Route::post('google_analytics/select-properties', array(
         'before' => 'auth',
-        'as'     => 'service.google-analytics.select-properties',
+        'as'     => 'service.google_analytics.select-properties',
         'uses'   => 'ServiceConnectionController@postSelectGoogleAnalyticsProperties'
     ));
 
@@ -113,5 +108,11 @@ Route::group([
         'as'     => 'service.facebook.select-pages',
         'uses'   => 'ServiceConnectionController@postSelectFacebookPages'
     ));
+
+    Route::any('facebook/refresh-pages', [
+        'before' => 'auth',
+        'as'     => 'service.facebook.refresh-pages',
+        'uses'   => 'ServiceConnectionController@anyFacebookRefreshPages'
+    ]);
 
 });

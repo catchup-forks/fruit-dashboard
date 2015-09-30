@@ -150,7 +150,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             try {
                 $this->refreshWidget();
             } catch (ServiceException $e) {
-                Log::error($e->getMessage);
+                Log::error($e->getMessage());
                 return array('status'  => FALSE,
                              'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
             }
