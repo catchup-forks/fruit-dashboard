@@ -1,15 +1,13 @@
 /**
- * @class FDChart
+ * @class FDTable
  * --------------------------------------------------------------------------
- * Class function for the charts
+ * Class function for the tables
  * --------------------------------------------------------------------------
  */
-function FDChart(widgetOptions) {
+function FDTable(widgetOptions) {
   // Private variables
-  var options = widgetOptions;
-  var canvas  = new FDCanvas(widgetOptions);
-  var chartOptions = new FDChartOptions(widgetOptions.page)
-  var chartData = null;
+  var options   = widgetOptions;
+  var tableData = null;
   
   // Public functions
   this.draw       = draw;
@@ -18,8 +16,8 @@ function FDChart(widgetOptions) {
   /**
    * @function updateData
    * --------------------------------------------------------------------------
-   * Updates the chart data
-   * @param {dictionary} data | the chart data
+   * Updates the table data
+   * @param {dictionary} data | the table data
    * @return {this} 
    * --------------------------------------------------------------------------
    */
@@ -33,70 +31,54 @@ function FDChart(widgetOptions) {
   /**
    * @function transformData
    * --------------------------------------------------------------------------
-   * Transforms the data to ChartJS format
-   * @param {dictionary} rawData | the chart data
+   * Transforms the data to HTML Table format
+   * @param {dictionary} rawData | the table data
    * @return {this} stores the transformed data
    * --------------------------------------------------------------------------
    */
   function transformData(rawData) {
-    var processedData = {
-      labels  : [],
-      datasets: [
-        {
-          values: [],
-          name:   widgetOptions.name,
-          color: '105 ,153, 209'
-        }
-      ],
-    };
-
-    // Transform raw db data (rawData->processedData)
-    if (!("datasets" in rawData)) {
-      for (i = 0; i < rawData.length; ++i) {
-        processedData.labels.push(rawData[i]['datetime']);
-        processedData.datasets[0].values.push(rawData[i]['value']);
-      }
-    } else {
-      processedData = rawData;
+    if (rawData.length == undefined) {
+      return this;
     }
 
-    // Transform processedData (processedData->transformedData)
-    var transformedData = {
-      labels  : processedData.labels,
-      datasets: [],
-    };
 
-    for (i = 0; i < processedData.datasets.length; ++i) {
-      transformedData.datasets.push(createDataSet(processedData.datasets[i].values, processedData.datasets[i].name, processedData.datasets[i].color));
-    }
+
+    //   // Adding header
+    //   var header = '<thead>';
+    //   for (var name in data['header']) {
+    //     header += '<th>' + name + '</th>';
+    //   }
+    //   header += '</thead>';
+    //   $("#" + tableId).append(header);
+
+    //   // Adding content
+    //   var content = '<tbody>';
+    //   for (var row=0; row < data['content'].length; row++) {
+    //     content += '<tr>';
+    //     for (var key in data['content'][row]) {
+    //       content += '<td>' + data['content'][row][key] + '</td>';
+    //     }
+    //     content += '</tr>';
+    //   }
+    //     content += '</tbody>';
+    //   $("#" + tableId).append(content);
 
     // Store new data
-    chartData = transformedData;
+    tableData = transformedData;
 
     // Return
     return this;
   }
 
+    //   clearTable(tableId);
   /**
    * @function clear
-   * --------------------------------------------------------------------------
-   * Clears the previous chart
-   * @return {this}
-   * --------------------------------------------------------------------------
-   */
-  function clear() {
-    // Reinsert canvas
-    canvas.reinsert();
-  }
-
-  /**
-   * @function createDataSet
    * --------------------------------------------------------------------------
    * Creates a dataset for the chart
    * @return {dictionary} the generated dataset
    * --------------------------------------------------------------------------
    */
-  function createDataSet(values, name, color) {
+  function clear(values, name, color) {
     return {
       label: name,
       fillColor : "rgba(" + color + ",0.2)",
@@ -114,23 +96,39 @@ function FDChart(widgetOptions) {
    * --------------------------------------------------------------------------
    * Draws the chart
    * @param {string} type | the chart type
-   * @return {this} 
+   * @return {true} 
    * --------------------------------------------------------------------------
    */
   function draw(type) {
-    // Clear the existing chart
+    // Clear the existing table
     clear();
 
     // Draw chart
     switch(type) {
       case 'line':
       default:
-          new Chart(canvas.get2dContext()).Line(chartData, chartOptions.getLineChartOptions())
+          drawLineChart(chartData, chartOptions.getLineChartOptions());
           break;
     }
 
     // return
-    return this;
+    return true;
   }
 
-} // FDChart
+  /**
+   * @function drawLineChart
+   * --------------------------------------------------------------------------
+   * Draws a line chart
+   * @param {dictionary} data | The chart data
+   * @param {dictionary} options | The chart options
+   * @return {true} 
+   * --------------------------------------------------------------------------
+   */
+  function drawLineChart(data, options) {
+    // Draw chart.
+    new Chart(canvas.get2dContext()).Line(data, options);
+  }
+
+
+
+} // FDTable

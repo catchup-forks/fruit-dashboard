@@ -19,6 +19,23 @@ function FDTwitterMentionsWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function refresh(data) {
+    // function updateMentionsWidget(data, containerId) {
+    //   if (data.length === undefined) {
+    //     return;
+    //   }
+    //   console.log("hello");
+
+    //   function clearContainer() {
+    //     $(containerId).html('');
+    //   }
+
+    //   for (word in data['text']) {
+    //     console.log(word);
+    //   }
+
+    //   clearContainer();
+
+    // }
     return this;
   }
 

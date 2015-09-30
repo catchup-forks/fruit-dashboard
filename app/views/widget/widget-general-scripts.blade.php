@@ -107,63 +107,62 @@
   //   return {'values': values, 'labels': labels};
   // }
 
-  function updateMultipleHistogramWidget(data, canvas, name) {
-    if (data && data['datetimes'] == null) {
-      return;
-    }
+  // function updateMultipleHistogramWidget(data, canvas, name) {
+  //   if (data && data['datetimes'] == null) {
+  //     return;
+  //   }
+  // }
 
-  }
+  // function updateMentionsWidget(data, containerId) {
+  //   if (data.length === undefined) {
+  //     return;
+  //   }
+  //   console.log("hello");
 
-  function updateMentionsWidget(data, containerId) {
-    if (data.length === undefined) {
-      return;
-    }
-    console.log("hello");
+  //   function clearContainer() {
+  //     $(containerId).html('');
+  //   }
 
-    function clearContainer() {
-      $(containerId).html('');
-    }
+  //   for (word in data['text']) {
+  //     console.log(word);
+  //   }
 
-    for (word in data['text']) {
-      console.log(word);
-    }
+  //   clearContainer();
 
-    clearContainer();
+  // }
 
-  }
+  // function clearTable(tableId) {
+  //   $("#" + tableId + " tbody").remove();
+  //   $("#" + tableId + " thead").remove();
+  // }
 
-  function clearTable(tableId) {
-    $("#" + tableId + " tbody").remove();
-    $("#" + tableId + " thead").remove();
-  }
+  // function updateTableWidget(data, tableId) {
+  //   if ( data.length == undefined) {
+  //     return;
+  //   }
 
-  function updateTableWidget(data, tableId) {
-    if ( data.length == undefined) {
-      return;
-    }
+  //   clearTable(tableId);
 
-    clearTable(tableId);
+  //   // Adding header
+  //   var header = '<thead>';
+  //   for (var name in data['header']) {
+  //     header += '<th>' + name + '</th>';
+  //   }
+  //   header += '</thead>';
+  //   $("#" + tableId).append(header);
 
-    // Adding header
-    var header = '<thead>';
-    for (var name in data['header']) {
-      header += '<th>' + name + '</th>';
-    }
-    header += '</thead>';
-    $("#" + tableId).append(header);
+  //   // Adding content
+  //   var content = '<tbody>';
+  //   for (var row=0; row < data['content'].length; row++) {
+  //     content += '<tr>';
+  //     for (var key in data['content'][row]) {
+  //       content += '<td>' + data['content'][row][key] + '</td>';
+  //     }
+  //     content += '</tr>';
+  //   }
+  //     content += '</tbody>';
+  //   $("#" + tableId).append(content);
 
-    // Adding content
-    var content = '<tbody>';
-    for (var row=0; row < data['content'].length; row++) {
-      content += '<tr>';
-      for (var key in data['content'][row]) {
-        content += '<td>' + data['content'][row][key] + '</td>';
-      }
-      content += '</tr>';
-    }
-      content += '</tbody>';
-    $("#" + tableId).append(content);
-
-  }
+  // }
 
 </script>

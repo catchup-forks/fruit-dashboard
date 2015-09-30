@@ -136,35 +136,25 @@
 @stop
 
 @section('pageScripts')
-  <!-- FDGridster class -->
+  <!-- FDGeneral* classes -->
   <script type="text/javascript" src="lib/FDGridster.js"></script>
-  <!-- /FDGridster class -->
-
-  <!-- FDWidget class -->
   <script type="text/javascript" src="lib/FDWidget.js"></script>
-  <!-- /FDWidget class -->
-
-  <!-- FDChartOptions class -->
+  <script type="text/javascript" src="lib/FDCanvas.js"></script>
+  <script type="text/javascript" src="lib/FDChart.js"></script>
   <script type="text/javascript" src="lib/FDChartOptions.js"></script>
-  <script type="text/javascript">
-      new FDChartOptions('dashboard').init();
-  </script>
-  <!-- /FDChartOptions class -->
+  <script type="text/javascript" src="lib/FDTable.js"></script>
+  <!-- /FDGeneral* classes -->
 
-  <!-- FD<>Widget classes -->
+  <!-- FDAbstractWidget* classes -->
+  <script type="text/javascript" src="lib/widgets/FDHistogramWidget.js"></script>
+  <script type="text/javascript" src="lib/widgets/FDTableWidget.js"></script>
+  <!-- /FDAbstractWidget* classes -->
+
+  <!-- FDWidget* classes -->
   @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
     <script type="text/javascript" src="lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js"></script>
-    <script type="text/javascript" src="lib/widgets/FDHistogramWidget.js"></script>
   @endforeach
-  <!-- /FD<>Widget classes -->
-
-  <!-- FDCanvas class -->
-  <script type="text/javascript" src="lib/FDCanvas.js"></script>
-  <!-- /FDCanvas class -->
-
-  <!-- FDChart class -->
-  <script type="text/javascript" src="lib/FDChart.js"></script>
-  <!-- /FDChart class -->
+  <!-- /FDWidget* classes -->
 
   <!-- Gridster scripts -->
   @include('dashboard.dashboard-gridster-scripts')
@@ -181,6 +171,12 @@
   <!-- Widget general scripts -->
   @include('widget.widget-general-scripts')
   <!-- /Widget general scripts -->
+
+  <!-- Init FDChartOptions -->
+  <script type="text/javascript">
+      new FDChartOptions('dashboard').init();
+  </script>
+  <!-- /Init FDChartOptions -->
 
   <!-- Dashboard etc scripts -->
   <script type="text/javascript">
