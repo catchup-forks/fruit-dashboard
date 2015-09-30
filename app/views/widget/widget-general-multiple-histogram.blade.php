@@ -50,22 +50,5 @@
       @endforeach
     ]
   }
-    // // Detecting clicks and drags.
-    // // Redirect to single stat page on click.
-    // var isDragging = false;
-    // container
-    //   .mousedown(function() {
-    //       isDragging = false;
-    //   })
-    //   .mousemove(function() {
-    //       isDragging = true;
-    //    })
-    //   .mouseup(function() {
-    //       var wasDragging = isDragging;
-    //       isDragging = false;
-    //       if (!wasDragging) {
-    //         window.location = "{{ route('widget.singlestat', $widget->id) }}";
-    //       }
-    //   });
 </script>
 @append

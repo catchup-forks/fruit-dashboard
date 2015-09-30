@@ -68,4 +68,41 @@ function FDCanvas(widgetOptions) {
     return this;
   }
 
+  /* -------------------------------------------------------------------------- *
+   *                                  EVENTS                                    *
+   * -------------------------------------------------------------------------- */
+  /**
+   * @event $(containerSelector).mousedown
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  $(containerSelector).mousedown(function() {
+    isDragging = false;
+  })
+
+  /**
+   * @event $(containerSelector).mousemove
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  $(containerSelector).mousemove(function() {
+    isDragging = true;
+  })
+
+  /**
+   * @event $(containerSelector).mouseup
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  $(containerSelector).mouseup(function() {
+    var wasDragging = isDragging;
+    if (!wasDragging) {
+      window.location = widgetOptions.singleStatUrl;
+    }
+    isDragging = false;
+  })
+  
 } // FDCanvas

@@ -25,13 +25,14 @@ var gridsterGlobalOptions = {
   );
   var widgetsData{{ $dashboard->id }} = [
     @foreach ($dashboard->widgets as $widget)
-      {'id':        '{{ $widget->id }}',
-       'name':      '{{ $widget->name }}',
-       'type':      '{{ $widget->descriptor->type }}',
-       'state':     '{{ $widget->state }}',
-       'postUrl':   '{{ route("widget.ajax-handler", $widget->id) }}',
-       'deleteUrl': '{{ route("widget.delete", $widget->id) }}',
-       'page':      'dashboard'},
+      {'id':            '{{ $widget->id }}',
+       'name':          '{{ $widget->name }}',
+       'type':          '{{ $widget->descriptor->type }}',
+       'state':         '{{ $widget->state }}',
+       'postUrl':       '{{ route("widget.ajax-handler", $widget->id) }}',
+       'deleteUrl':     '{{ route("widget.delete", $widget->id) }}',
+       'singleStatUrl': '{{ route("widget.singlestat", $widget->id) }}',
+       'page':          'dashboard'},
     @endforeach
   ];
   var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }});
