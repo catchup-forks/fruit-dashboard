@@ -39,11 +39,13 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget->id }} = {
-    'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
-    'datasets': [{
-      'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
-      'color': '{{ SiteConstants::getChartJsColors()[0] }}'
-    }]
+    'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+     @foreach ($widget->getData()['datasets'] as $dataset)
+      'datasets': [{
+        'values': [@foreach ($dataset as $value) {{$value[0]}}, @endforeach],
+        'color': '{{ $dataset['color'] }}'
+      }]
+     @endforeach
   }
 
   // // Detecting clicks and drags.

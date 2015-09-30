@@ -10,7 +10,7 @@ function FDChart(widgetOptions) {
   var canvas  = new FDCanvas(widgetOptions);
   var chartOptions = new FDChartOptions(widgetOptions.page)
   var widgetData = null;
-  
+
   // Public functions
   this.draw       = draw;
   this.updateData = updateData;
@@ -20,7 +20,7 @@ function FDChart(widgetOptions) {
    * --------------------------------------------------------------------------
    * Updates the chart data
    * @param {dictionary} data | the chart data
-   * @return {this} 
+   * @return {this}
    * --------------------------------------------------------------------------
    */
   function updateData(data) {
@@ -114,7 +114,7 @@ function FDChart(widgetOptions) {
    * --------------------------------------------------------------------------
    * Draws the chart
    * @param {string} type | the chart type
-   * @return {this} 
+   * @return {this}
    * --------------------------------------------------------------------------
    */
   function draw(type) {
