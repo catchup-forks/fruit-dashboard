@@ -208,7 +208,7 @@ class StripeConnector extends GeneralServiceConnector
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function populateData($criteria) {
+    protected function populateData($criteria) {
         Queue::push('StripePopulateData', array(
             'user_id' => $this->user->id
         ));

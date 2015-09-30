@@ -20,7 +20,7 @@ abstract class GeneralServiceConnector
 
     abstract public function connect();
     abstract public function saveTokens(array $parameters);
-    abstract public function populateData($criteria);
+    abstract protected function populateData($criteria);
 
     /**
      * disconnect
@@ -45,7 +45,7 @@ abstract class GeneralServiceConnector
         /* Deleting all DataManagers */
         foreach ($this->user->dataManagers as $dataManager) {
             if ($dataManager->descriptor->category == static::$service) {
-                /* Saving data while it is accessible. */
+                /* Saving data id while it is accessible. */
                 $dataID = $dataManager->data->id;
                 $dataManager->delete();
                 Data::find($dataID)->delete();

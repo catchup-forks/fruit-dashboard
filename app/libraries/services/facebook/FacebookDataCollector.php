@@ -39,9 +39,11 @@ class FacebookDataCollector
 
 
     /* -- Constructor -- */
-    function __construct($user) {
+    function __construct($user, $connector=null) {
         $this->user = $user;
-        $connector = new FacebookConnector($user);
+        if (is_null($connector)) {
+            $connector = new FacebookConnector($user);
+        }
         $this->accessToken = $connector->connect();
         $this->fb = $connector->getFB();
         $this->app = $this->fb->getApp();
@@ -80,11 +82,10 @@ class FacebookDataCollector
         }
         try {
             $response = $this->fb->get('/' . $userId . '/accounts', $this->accessToken);
-        } catch (FacebookResponseException $e) {
-            return;
-        } catch (FacebookSDKException $e) {
-            return;
+        } catch (Exception $e) {
+            throw new ServiceException("Error Processing Request", 1);
         }
+
         /* Deleting previous pages. */
         $this->user->facebookPages()->delete();
         $pages = array();
@@ -158,8 +159,13 @@ class FacebookDataCollector
         foreach ($params as $key=>$value) {
             $paramstr .= '&' . $key . '='. $value;
         }
-        $response =  $this->fb->get('/' . $pageId . '/insights/' . $insight . $paramstr , $this->accessToken);
-        return $response->getDecodedBody()['data'];
+        try {
+            $response =  $this->fb->get('/' . $pageId . '/insights/' . $insight . $paramstr , $this->accessToken);
+            return $response->getDecodedBody()['data'];
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Facebook connection error.", 1);
+        }
     }
 
 } /* FacebookDataCollector */

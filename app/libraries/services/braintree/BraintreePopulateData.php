@@ -38,18 +38,21 @@ class BraintreePopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
+        $time = microtime(TRUE);
+        Log::info("Starting Braintree data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->calculator = new BraintreeCalculator($this->user);
         $this->subscriptions = $this->calculator->getCollector()->getAllSubscriptions();
         $this->filterSubscriptions();
         $this->dataManagers = $this->getManagers();
-        $this->collectData();
+        $this->populateData();
+        Log::info("Braintree data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
         $job->delete();
     }
 
     /**
      * Populating the widgets with data.
      */
-    protected function collectData() {
+    protected function populateData() {
         /* Creating data for the last 30 days. */
         $metrics = $this->getMetrics();
 

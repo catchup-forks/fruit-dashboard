@@ -53,25 +53,15 @@
             @endif
           @endif
 
-          @if($dashboard->is_locked)
-          <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is locked. Click to unlock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
-            <div class="drop-shadow">
-              <span class="fa fa-lock"></span>
-            </div>
-          </div>
-          @else
-          <div class="lock-icon position-br-lg z-top fa-inverse color-hovered" data-toggle="tooltip" data-placement="left" title="This dashboard is unlocked. Click to lock." data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
-            <div class="drop-shadow">
-              <span class="fa fa-unlock-alt"></span>
-            </div>
-          </div>
-          @endif
-
           <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
           </div> <!-- /.fill -->
 
           {{-- Here comes the dashboard content --}}
-          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible">
+          @if($dashboard->is_locked)
+          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+          @else
+          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
+          @endif  
 
             {{-- Generate all the widgdets --}}
             <div class="gridster-container">
@@ -137,22 +127,22 @@
 
 @section('pageScripts')
   <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="lib/FDGridster.js"></script>
-  <script type="text/javascript" src="lib/FDWidget.js"></script>
-  <script type="text/javascript" src="lib/FDCanvas.js"></script>
-  <script type="text/javascript" src="lib/FDChart.js"></script>
-  <script type="text/javascript" src="lib/FDChartOptions.js"></script>
-  <script type="text/javascript" src="lib/FDTable.js"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDGridster.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDWidget.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDTable.js')"></script>
   <!-- /FDGeneral* classes -->
 
   <!-- FDAbstractWidget* classes -->
-  <script type="text/javascript" src="lib/widgets/FDHistogramWidget.js"></script>
-  <script type="text/javascript" src="lib/widgets/FDTableWidget.js"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js')"></script>
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
   @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
-    <script type="text/javascript" src="lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js"></script>
+    <script type="text/javascript" src="{{ URL::asset('lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js')"></script>
   @endforeach
   <!-- /FDWidget* classes -->
 
@@ -184,6 +174,12 @@
     $('.carousel').carousel({
       interval: false // stops the auto-cycle
     })
+
+    // Change the dashboard-lock on dashboard change
+    $('.carousel').on('slid.bs.carousel', function () {
+      setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, false);
+    })
+
 
     function showShareModal(widgetId) {
      $('#share-widget-modal').modal('show');

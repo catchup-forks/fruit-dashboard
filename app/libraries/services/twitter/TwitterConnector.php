@@ -135,8 +135,8 @@ class TwitterConnector extends GeneralServiceConnector
      * Creating the initial twitter user.
      * --------------------------------------------------
      */
-    public function createTwitterUser() {
-        $collector = new TwitterDataCollector($this->user);
+    protected function createTwitterUser() {
+        $collector = new TwitterDataCollector($this->user, $this);
         $twitterUser = new TwitterUser(array(
             'screen_name' => $collector->getUserData()->screen_name
         ));
@@ -152,7 +152,7 @@ class TwitterConnector extends GeneralServiceConnector
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function populateData($criteria) {
+    protected function populateData($criteria) {
         Queue::push('TwitterPopulateData', array(
             'user_id' => $this->user->id
         ));

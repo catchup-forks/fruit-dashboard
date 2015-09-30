@@ -29,14 +29,19 @@ class CollectData extends Command {
     public function fire()
     {
         /* Iterating through the managers. */
+        Log::info("Data collection started at " . Carbon::now()->toDateTimeString());
+        $time = microtime(TRUE);
+        $errors = 0;
         foreach (DataManager::all() as $manager) {
             if (Carbon::now()->diffInMinutes($manager->last_updated) >= $manager->update_period) {
                 try {
                     $manager->getSpecific()->collectData();
                 } catch (Exception $e) {
-                    Log::error($e);
+                    $errors++;
+                    Log::error('Error found while collecting data on manager #' . $manager->id . '. message: ' . $e->getMessage());
                 }
             }
         }
+        Log::info('Data collection finished with ' . $errors . ' errors. It took ' . ( microtime(TRUE) - $time) . ' seconds to run.');
     }
 }
