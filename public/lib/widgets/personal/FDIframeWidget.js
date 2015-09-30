@@ -1,25 +1,19 @@
 /**
  * @class FDIframeWidget
  * --------------------------------------------------------------------------
- * Class function for the Iframe Widget
+ * Class function for the IframeWidget
  * --------------------------------------------------------------------------
  */
-function FDIframeWidget(widgetOptions) {
-  // Private variables
-  var options = widgetOptions;
-  
-  // Public functions
-  this.refresh = refresh;
+var FDIframeWidget = function(widgetOptions) {
+ // Call parent constructor
+ FDGeneralWidget.call(this, widgetOptions)
+ 
+ // Plus attributes
+ this.widgetData = null;
 
-  /**
-   * @function refresh
-   * Handles the specific refresh procedure to the widget
-   * --------------------------------------------------------------------------
-   * @return {this} 
-   * --------------------------------------------------------------------------
-   */
-  function refresh(data) {
-    return this;
-  }
+ // Automatically initialize
+ this.init();
+};
 
-} // FDIframeWidget
+FDIframeWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDIframeWidget.prototype.constructor = FDIframeWidget;

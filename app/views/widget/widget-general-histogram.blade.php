@@ -42,7 +42,7 @@
     'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
      @foreach ($widget->getData()['datasets'] as $dataset)
       'datasets': [{
-        'values': [@foreach ($dataset as $value) {{$value[0]}}, @endforeach],
+        'values': [@foreach ($dataset['values'] as $value) {{$value}}, @endforeach],
         'color': '{{ $dataset['color'] }}'
       }]
      @endforeach

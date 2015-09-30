@@ -4,11 +4,9 @@
 </div>
 
 @section('widgetScripts')
- <!-- script for clock -->
- <script type="text/javascript">
+<script type="text/javascript">
   var widgetData{{ $widget->id }} = {
-    'type': "{{ $widget->getSettings()['clock_type'] }}"
+    type: "{{ $widget->getSettings()['clock_type'] }}"
   }
- </script>
- <!-- /script for clock -->
+</script>
 @append

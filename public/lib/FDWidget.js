@@ -60,6 +60,7 @@ function FDWidget(widgetOptions) {
       url: options.postUrl,
     }).done(function(data) {
         if (logging) { console.log('...response arrived | Sending data for widget #' + options.id); }
+        if (logging) { console.log(data); }
         callback(data);
         if (logging) { console.log('...callback executed | Sending data for widget #' + options.id); }
     });

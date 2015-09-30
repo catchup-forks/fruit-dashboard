@@ -51,13 +51,15 @@ function FDChart(widgetOptions) {
     };
 
     // Transform raw db data (rawData->processedData)
-    if (!("datasets" in rawData)) {
+    if (rawData == undefined) {
+      processedData = rawData;
+    } else if ("datasets" in rawData) {
+      processedData = rawData;
+    } else {
       for (i = 0; i < rawData.length; ++i) {
         processedData.labels.push(rawData[i]['datetime']);
         processedData.datasets[0].values.push(rawData[i]['value']);
       }
-    } else {
-      processedData = rawData;
     }
 
     // Transform processedData (processedData->transformedData)
