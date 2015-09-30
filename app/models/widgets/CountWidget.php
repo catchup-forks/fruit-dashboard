@@ -120,7 +120,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             return array();
         }
         $settings = $this->getSettings();
-        return array('latest' => $manager->getLatestData(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
+        return array('latest' => $manager->getLatestValues(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
     }
 
     /**

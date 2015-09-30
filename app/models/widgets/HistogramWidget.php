@@ -132,14 +132,14 @@ abstract class HistogramWidget extends CronWidget
 
 
     /**
-     * getLatestData
-     * Returning the last data in the histogram.
+     * getLatestValues
+     * Returning the last values in the histogram.
      * --------------------------------------------------
      * @return float
      * --------------------------------------------------
      */
-     public function getLatestData() {
-        return $this->dataManager()->getLatestData();
+     public function getLatestValues() {
+        return $this->dataManager()->getLatestValues();
      }
 
     /**

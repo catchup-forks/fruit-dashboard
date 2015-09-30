@@ -18,8 +18,8 @@ abstract class HistogramDataManager extends DataManager
         $entry = array_key_exists('entry', $options) ? $options['entry'] : $this->getCurrentValue();
 
         /* Getting db ready entry and entryTime */
-        $entryTime = static::getEntryTime($entry);
-        $dbEntry = $this->formatData($entryTime, static::getEntryValues($entry));
+        $entryTime = self::getEntryTime($entry);
+        $dbEntry = $this->formatData($entryTime, self::getEntryValues($entry));
 
         if (is_null($dbEntry)) {
             return;
@@ -64,14 +64,25 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     public function getLatestData() {
-        $histogram = $this->getData();
+     protected function getLatestData() {
+        $histogram = $this->sortHistogram(FALSE);
         /* Handle empty data */
         if ($histogram == null) {
             return array();
         } else {
-            return $this->getEntryValues(end($histogram));
+            return end($histogram);
         }
+     }
+
+    /**
+     * getLatestValues
+     * Returning the last values in the histogram.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     public function getLatestValues() {
+        return self::getEntryValues($this->getLatestData());
      }
 
     /**
@@ -90,14 +101,14 @@ abstract class HistogramDataManager extends DataManager
 
         /* Calling proper method based on resolution. */
         switch ($resolution) {
-            case 'minutes':  return $this->getChartJSData($range, $resolution, $length, $diff, 'h:i'); break;
-            case 'hours':  return $this->getChartJSData($range, $resolution, $length, $diff, 'M-d h'); break;
-            case 'days':   return $this->getChartJSData($range, $resolution, $length, $diff, 'M-d'); break;
-            case 'weeks':  return $this->getChartJSData($range, $resolution, $length, $diff, 'W'); break;
-            case 'months': return $this->getChartJSData($range, $resolution, $length, $diff, 'Y-M'); break;
-            case 'years':  return $this->getChartJSData($range, $resolution, $length, $diff, 'Y'); break;
-            default: return $this->getChartJSData($range, $resolution, $length, $diff, 'd'); break;
+            case 'hours':  $dateFormat = 'M-d h'; break;
+            case 'days':   $dateFormat = 'M-d'; break;
+            case 'weeks':  $dateFormat = 'Y-W'; break;
+            case 'months': $dateFormat = 'Y-M'; break;
+            case 'years':  $dateFormat = 'Y'; break;
+            default:       $dateFormat = 'Y-m-d'; break;
         }
+        return $this->getChartJSData($range, $resolution, $length, $diff, $dateFormat);
     }
 
     /**
@@ -106,21 +117,25 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      * @param array $range
      * @param string $resolution
-     * @param bool $diff
      * @param int length
+     * @param bool $diff
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat='Y-m-d') {
+    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat) {
         $datetimes = array();
         $dataSet = array(
             'color'  => SiteConstants::getChartJsColors()[0],
             'values' => array()
         );
-        foreach (self::buildHistogram($range, $resolution, $length, $diff, $dateFormat) as $oneValues) {
-            array_push($datetimes, $oneValues['datetime']);
-            array_push($dataSet['values'], $oneValues['value']);
+        $histogram = $this->buildHistogram($range, $resolution, $length);
+        if ($diff) {
+            $histogram = self::getDiff($histogram);
+        }
+        foreach ($histogram as $entry) {
+            array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
+            array_push($dataSet['values'], $entry['value']);
         }
         return array('datasets' => array($dataSet), 'labels' => $datetimes);
     }
@@ -133,24 +148,15 @@ abstract class HistogramDataManager extends DataManager
      * @param array $range
      * @param string $resolution
      * @param int $length
-     * @param bool $diff
-     * @param string $dateFormat
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogram($range, $resolution, $length, $diff, $dateFormat='Y-m-d') {
-        /* Getting recorded histogram sorted by timestamp. */
-        $fullHistogram = $this->sortHistogram();
-        if ( ! is_null($fullHistogram)) {
-            $last = end($fullHistogram);
-        }
-
-        /* If there's range, using reader. */
+    protected function buildHistogram($range, $resolution, $length) {
         $recording = TRUE;
         $histogram = array();
-
-        foreach ($fullHistogram as $entry) {
+        foreach ($this->sortHistogram() as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
+
             /* Range conditions */
             if ( ! is_null($range)) {
                 if (($entryTime >= $range['start']) && !$recording) {
@@ -161,43 +167,33 @@ abstract class HistogramDataManager extends DataManager
                     break;
                 }
             }
-            if ($recording) {
-                /* Frequency conditions. */
-                if (isset($previousEntry)) {
-                    $previousEntryTime = Carbon::createFromTimestamp($previousEntry['timestamp']);
-                    if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
-                        /* Passing new element to the array. */
-                        $previousEntry['datetime'] = $previousEntryTime->format($dateFormat);
-                        array_push($histogram, $previousEntry);
 
-                        if ($entry == $last) {
-                            /* There's only one element in the dataset. */
-                            $entry['datetime'] = $entryTime->format($dateFormat);
-                            array_push($histogram, $entry);
-                        }
+            if ($recording) {
+                $push = FALSE;
+                if ( ! isset($previousEntryTime)) {
+                    /* First element always makes it to the final histogram. */
+                    $push = TRUE;
+                } else {
+                    if (static::isBreakPoint($entryTime, $previousEntryTime, $resolution)) {
+                        $push = TRUE;
                     }
-                } else if ($entry == $last) {
-                    /* There's only one element in the dataset. */
-                    $entry['datetime'] = $entryTime->format($dateFormat);
+                }
+
+                if ($push) {
                     array_push($histogram, $entry);
                 }
 
-                /* Saving previous entry. */
-                $previousEntry = $entry;
-            }
+                if (count($histogram) >= $length) {
+                    /* Enough data. */
+                    break;
+                }
 
-            if (count($histogram) >= $length) {
-                /* Enough data. */
-                break;
+                /* Saving previous entry time. */
+                $previousEntryTime = $entryTime;
             }
         }
 
-        $histogram = array_reverse($histogram);
-        /* Transforming the data */
-        if ($diff) {
-            return self::getDiff($histogram);
-        }
-        return $histogram;
+        return array_reverse($histogram);
     }
 
     /**
@@ -262,15 +258,16 @@ abstract class HistogramDataManager extends DataManager
      */
     public function compare($period, $multiplier=1) {
         $latestData = $this->getLatestData();
+        $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
 
         foreach ($this->sortHistogram() as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
 
             /* Checking for a match. */
-            if (static::matchesTime($entryTime, $period, $multiplier)) {
+            if (static::matchesTime($referenceTime, $entryTime, $period, $multiplier)) {
                 /* Creating an arrays that will hold the values. */
                 $values = array();
-                foreach ($this->getEntryValues($entry) as $dataId=>$value) {
+                foreach (self::getEntryValues($entry) as $dataId=>$value) {
                     if (array_key_exists($dataId, $latestData)) {
                         $values[$dataId] = $latestData[$dataId] - $value;
                     }
@@ -280,7 +277,7 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* No values found using last one */
-        return $this->getEntryValues($latestData);
+        return self::getEntryValues($latestData);
     }
 
     /**
@@ -302,7 +299,7 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * getEntryValues (buildHistogram)
+     * getEntryValues
      * Returning only the values of the entry,
      * excluding staticFields.
      * --------------------------------------------------
@@ -310,7 +307,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    private static final function getEntryValues($entry) {
+    protected static final function getEntryValues($entry) {
         if (! is_array($entry)) {
             return $entry;
         }
@@ -358,28 +355,27 @@ abstract class HistogramDataManager extends DataManager
     /**
      * matchesTime (compare())
      * Checks if the datetime should be used in compare.
-     * (Carbon extension)
      * --------------------------------------------------
+     * @param Carbon $referenceTime
      * @param Carbon $entryTime
      * @param string $period
      * @param integer $multiplier
      * @return boolean
      * --------------------------------------------------
     */
-    private static function matchesTime($entryTime, $period, $multiplier) {
-        $now = Carbon::now();
+    private static function matchesTime($referenceTime, $entryTime, $period, $multiplier) {
         if ($period == 'minutes') {
-            return $entryTime->diffInMinutes($now) == $multiplier;
+            return $entryTime->diffInMinutes($referenceTime) == $multiplier;
         } else if ($period == 'hours') {
-            return $entryTime->diffInHours($now) == $multiplier;
+            return $entryTime->diffInHours($referenceTime) == $multiplier;
         } else if ($period == 'days') {
-            return $entryTime->diffInDays($now) == $multiplier;
+            return $entryTime->diffInDays($referenceTime) == $multiplier;
         } else if ($period == 'weeks') {
-            return $entryTime->diffInWeeks($now) == $multiplier;
+            return $entryTime->diffInWeeks($referenceTime) == $multiplier;
         } else if ($period == 'months') {
-            return $entryTime->diffInMonths($now) == $multiplier;
+            return $entryTime->diffInMonths($referenceTime) == $multiplier;
         } else if ($period == 'years') {
-            return $entryTime->diffInYears($now) == $multiplier;
+            return $entryTime->diffInYears($referenceTime) == $multiplier;
         }
         return FALSE;
     }

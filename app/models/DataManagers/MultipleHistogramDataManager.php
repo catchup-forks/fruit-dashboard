@@ -93,7 +93,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat='Y-m-d') {
+    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat) {
         $groupedData = array();
         $datetimes = array();
         $i = 0;
@@ -104,13 +104,15 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 'values' => array()
             );
         }
-        foreach (parent::buildHistogram($range, $resolution, $length, $dateFormat) as $oneValues) {
-            array_push($datetimes, $oneValues['datetime']);
-            foreach ($oneValues as $dataId => $value) {
-                if ( ! in_array($dataId, static::$staticFields)) {
-                    if (array_key_exists($dataId, $groupedData)) {
-                        array_push($groupedData[$dataId]['values'], $value);
-                    }
+        $histogram = $this->buildHistogram($range, $resolution, $length);
+        if ($diff) {
+            $histogram = self::getDiff($histogram);
+        }
+        foreach ($histogram as $entry) {
+            array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
+            foreach (self::getEntryValues($entry) as $dataId => $value) {
+                if (array_key_exists($dataId, $groupedData)) {
+                    array_push($groupedData[$dataId]['values'], $value);
                 }
             }
         }

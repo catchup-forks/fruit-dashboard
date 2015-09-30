@@ -4,7 +4,7 @@
   </div> <!-- /.chart-name -->
   <div class="chart-value">
     @if ($widget->state == 'active')
-      {{ Utilities::formatNumber(array_values($widget->getLatestData())[0], $widget->getFormat()) }}
+      {{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}
     @endif
   </div> <!-- /.chart-value -->
 
@@ -50,7 +50,7 @@
 
       // Set chart data
       var chartData = {
-        'labels': [@foreach ($widget->getData()['datetimes'] as $histogramEntry) "{{$histogramEntry}}", @endforeach],
+        'labels': [@foreach ($widget->getData()['labels'] as $histogramEntry) "{{$histogramEntry}}", @endforeach],
         'datasets': [
           @foreach ($widget->getData()['datasets'] as $dataset)
             {
