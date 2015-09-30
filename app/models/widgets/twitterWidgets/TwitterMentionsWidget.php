@@ -40,5 +40,21 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
             $this->dataManager()->collectData($options);
         }
     }
+
+    /**
+     * save
+     * Calling refreshWidget
+     * --------------------------------------------------
+     * @param array options
+     * @return string
+     * --------------------------------------------------
+    */
+    public function save(array $options=array()) {
+        $oldSettings = $this->getRawSettings();
+        parent::save($options);
+        if ($oldSettings != $this->getSettings()) {
+            $this->updateData();
+        }
+    }
 }
 ?>

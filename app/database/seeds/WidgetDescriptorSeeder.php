@@ -23,24 +23,22 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        if (!App::environment('production')) {
-            /* Webhook / API widgets | CHART */
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'api_histogram'],
-                array(
-                    'name'         => 'API chart',
-                    'description'  => 'Building a simple line chart from your data, which you can post to our server any time.',
-                    'type'         => 'api_histogram',
-                    'category'     => 'webhook_api',
-                    'is_premium'   => FALSE,
-                    'number'       => 1,
-                    'min_cols'     => 3,
-                    'min_rows'     => 3,
-                    'default_cols' => 3,
-                    'default_rows' => 4
-                )
-            );
-        } /* !App::environment('production')*/
+        /* Webhook / API widgets | CHART */
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'api_histogram'],
+            array(
+                'name'         => 'API chart',
+                'description'  => 'Building a simple line chart from your data, which you can post to our server any time.',
+                'type'         => 'api_histogram',
+                'category'     => 'webhook_api',
+                'is_premium'   => FALSE,
+                'number'       => 1,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
 
         /* Personal widgets */
         WidgetDescriptor::updateOrCreate(
@@ -320,22 +318,6 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'twitter_new_followers'],
-            array(
-                'name'        => 'New followers chart',
-                'description' => 'New followers chart',
-                'type'        => 'twitter_new_followers',
-                'category'    => 'twitter',
-                'is_premium'  => FALSE,
-                'number'       => 3,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 4
-            )
-        );
-
         /* Social widgets | FACEBOOK */
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_likes'],
@@ -382,22 +364,6 @@ class WidgetDescriptorSeeder extends Seeder
                 'min_rows'     => 2,
                 'default_cols' => 2,
                 'default_rows' => 2
-            )
-        );
-
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'facebook_new_likes'],
-            array(
-                'name'         => 'New likes chart',
-                'description'  => 'The total number of people who have liked your Page daily.',
-                'type'         => 'facebook_new_likes',
-                'category'     => 'facebook',
-                'is_premium'   => FALSE,
-                'number'       => 2,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 4
             )
         );
 
@@ -482,37 +448,35 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        if (!App::environment('production')) {
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'shared'],
-                array(
-                    'name'        => 'Shared widget',
-                    'description' => '',
-                    'type'        => 'shared',
-                    'category'    => 'hidden',
-                    'is_premium'  => FALSE,
-                    'min_cols'     => 1,
-                    'min_rows'     => 1,
-                    'default_cols' => 1,
-                    'default_rows' => 1
-                )
-            );
-            WidgetDescriptor::updateOrCreate(
-                ['type' => 'google_analytics_top_sources'],
-                array(
-                    'name'        => 'Top sources',
-                    'description' => '',
-                    'type'        => 'google_analytics_top_sources',
-                    'category'    => 'google_analytics',
-                    'is_premium'  => FALSE,
-                    'number'       => 3,
-                    'min_cols'     => 3,
-                    'min_rows'     => 3,
-                    'default_cols' => 6,
-                    'default_rows' => 6
-                )
-            );
-        } /* !App::environment('production')*/
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'shared'],
+            array(
+                'name'        => 'Shared widget',
+                'description' => '',
+                'type'        => 'shared',
+                'category'    => 'hidden',
+                'is_premium'  => FALSE,
+                'min_cols'     => 1,
+                'min_rows'     => 1,
+                'default_cols' => 1,
+                'default_rows' => 1
+            )
+        );
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_top_sources'],
+            array(
+                'name'        => 'Top sources',
+                'description' => '',
+                'type'        => 'google_analytics_top_sources',
+                'category'    => 'google_analytics',
+                'is_premium'  => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
 
         /* Send message to console */
         Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated');

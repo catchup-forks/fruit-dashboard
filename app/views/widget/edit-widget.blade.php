@@ -23,17 +23,19 @@
                 'class' => 'form-horizontal' )) }}
 
                 @foreach ($widget->getSettingsFields() as $field=>$meta)
-                  @if ( ! array_key_exists('hidden', $meta) || $meta['hidden'] == FALSE)
+                  @if ( $widget->isSettingVisible($field))
                   <div class="form-group">
                     {{ Form::label($field, $meta['name'], array(
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">
-                        @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
-                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
-                        @else
-                          {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                      @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
+                        @if (count($widget->$field()) != 1)
+                          @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                            <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
+                          @else
+                            {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                          @endif
                         @endif
 
                       @elseif ($meta['type'] == "BOOL")

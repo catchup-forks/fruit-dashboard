@@ -74,7 +74,7 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->dataManager->collectData(array(
+            $this->dataManager()->collectData(array(
                 'start'       => $this->getSettings()['range_start'],
                 'end'         => $this->getSettings()['range_end'],
                 'max_results' => $this->getSettings()['max_results'],
@@ -83,5 +83,22 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
             $this->dataManager()->collectData($options);
         }
     }
+
+    /**
+     * save
+     * Calling refreshWidget
+     * --------------------------------------------------
+     * @param array options
+     * @return string
+     * --------------------------------------------------
+    */
+    public function save(array $options=array()) {
+        $oldSettings = $this->getRawSettings();
+        parent::save($options);
+        if ($oldSettings != $this->getSettings()) {
+            $this->updateData();
+        }
+    }
+
 }
 ?>

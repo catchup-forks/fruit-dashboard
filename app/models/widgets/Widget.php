@@ -120,11 +120,23 @@ class Widget extends Eloquent
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------
-     * @return mixed
+     * @return array
      * --------------------------------------------------
     */
     public function getSettings() {
         return json_decode($this->settings, 1);
+    }
+
+    /**
+     * getRawSettings
+     * Returns the DB value of the settings.
+     * Useful, when need to access settings before save.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function getRawSettings() {
+        return Widget::find($this->id)->getSettings();
     }
 
     /**
@@ -170,10 +182,41 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function setState($state, $commit=TRUE) {
+        if ($this->state == $state) {
+            return;
+        }
         $this->state = $state;
         if ($commit) {
             $this->save();
         }
+    }
+
+    /**
+     * isSettingVisible
+     * Checking if the given field is visible.
+     * --------------------------------------------------
+     * @param string $fieldName
+     * @return bool
+     * --------------------------------------------------
+    */
+    public function isSettingVisible($fieldName) {
+        $meta = $this->getSettingsFields();
+        if ( ! array_key_exists($fieldName, $meta)) {
+            /* Key doesn't exist. Don't even try to render it. */
+            return FALSE;
+        }
+        $fieldMeta = $meta[$fieldName];
+        if (array_key_exists('hidden', $fieldMeta) && $fieldMeta['hidden'] == TRUE) {
+            return FALSE;
+        }
+
+        /* Don't show singleChoice if there's only one value */
+        if (($fieldMeta['type'] == 'SCHOICE' || $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
+             count($this->$fieldName()) == 1) {
+            return FALSE;
+        }
+
+        return TRUE;
     }
 
     /**
@@ -224,7 +267,7 @@ class Widget extends Eloquent
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
             // Not validating fields that are not present.
-            if (!in_array($fieldName, $fields)) {
+            if (!in_array($fieldName, $fields) || ! $this->isSettingVisible($fieldName)) {
                 continue;
             }
             $validationString = '';

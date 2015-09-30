@@ -134,7 +134,7 @@ class User extends Eloquent implements UserInterface
             try {
                 $view->render();
             } catch (Exception $e) {
-                Log::error($e);
+                Log::error($e->getMessage());
                 $widget->setState('setup_required');
             }
         }

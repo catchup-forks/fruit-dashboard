@@ -45,12 +45,15 @@ class FacebookPopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
+        $time = microtime(TRUE);
+        Log::info("Starting Facebook data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->collector = new FacebookDataCollector($this->user);
 
         $this->criteria = $data['criteria'];
         $this->page = $this->user->facebookPages()->where('id', $data['criteria']['page'])->first();
         $this->dataManagers = $this->getManagers();
-        $this->collectData();
+        $this->populateData();
+        Log::info("Facebook data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
 
         $job->delete();
     }
@@ -58,7 +61,7 @@ class FacebookPopulateData
     /**
      * Populating the widgets with data.
      */
-    protected function collectData() {
+    protected function populateData() {
         /* Getting metrics. */
         $likesData        = $this->getLikes();
         $impressionsData  = $this->getPageImpressions();
@@ -66,7 +69,6 @@ class FacebookPopulateData
 
         /* Saving values. */
         $this->dataManagers['facebook_likes']->saveData($likesData);
-        $this->dataManagers['facebook_new_likes']->saveData(HistogramDataManager::getDiff($likesData));
         $this->dataManagers['facebook_page_impressions']->saveData($impressionsData);
         $this->dataManagers['facebook_engaged_users']->saveData($engagedUsersData);
 

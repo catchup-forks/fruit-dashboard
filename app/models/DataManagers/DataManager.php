@@ -48,7 +48,10 @@ class DataManager extends Eloquent
     }
 
     public function collectData($options=array())  {}
-    public function initializeData() {}
+    public function initializeData() {
+        $this->saveData(array());
+        $this->collectData();
+    }
 
     /**
      * getDataScheme
@@ -162,8 +165,7 @@ class DataManager extends Eloquent
      public function setWidgetsState($state) {
         foreach ($this->widgets as $generalWidget) {
             $widget = $generalWidget->getSpecific();
-            $widget->setState($state, FALSE);
-            $widget->save(array('skipManager' => TRUE));
+            $widget->setState($state);
         }
      }
 
@@ -207,4 +209,15 @@ class DataManager extends Eloquent
         return TRUE;
     }
 
+    /**
+     * Delete
+     * Deleting the data as well.
+     */
+     public function delete() {
+        $data_id = $this->data->id;
+        $this->widgets()->delete();
+        $result = parent::delete();
+        Data::find($data_id)->delete();
+        return $result;
+    }
 }

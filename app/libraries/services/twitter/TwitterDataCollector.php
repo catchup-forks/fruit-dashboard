@@ -11,13 +11,15 @@ class TwitterDataCollector
 {
     /* -- Class properties -- */
     private $user;
-    private $connector;
+    private $twitter;
 
     /* -- Constructor -- */
-    function __construct($user) {
+    function __construct($user, $connector=null) {
         $this->user = $user;
-        $connector = new TwitterConnector($user);
-        $this->connector = $connector->connect();
+        if (is_null($connector)) {
+            $connector = new TwitterConnector($user);
+        }
+        $this->twitter = $connector->connect();
     }
 
     /**
@@ -43,7 +45,7 @@ class TwitterDataCollector
      * --------------------------------------------------
     */
     public function getMentions($count) {
-        return $this->connector->get('statuses/mentions_timeline', array('count' => $count));
+        return $this->twitterGet('statuses/mentions_timeline', array('count' => $count));
     }
 
     /**
@@ -55,13 +57,32 @@ class TwitterDataCollector
     /**
      * getUserData
      * --------------------------------------------------
-     * Getting the User's data from the connector.
+     * Getting the User's data from twitter.
      * @return object
      * @throws TwitterNotConnected
      * --------------------------------------------------
     */
     public function getUserData() {
-        return $this->connector->get("account/verify_credentials");
+        return $this->twitterGet("account/verify_credentials");
+    }
+
+    /**
+     * twitterGet
+     * --------------------------------------------------
+     * Sending get request to twitter.
+     * @param string $url
+     * @return object
+     * @throws ServiceException
+     * --------------------------------------------------
+    */
+    private function twitterGet($url, array $parameters=array()) {
+        try {
+            return $this->twitter->get($url, $parameters);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Twitter connection error.", 1);
+        }
+
     }
 
 } /* TwitterDataColector */

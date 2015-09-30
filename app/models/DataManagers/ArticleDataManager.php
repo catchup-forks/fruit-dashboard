@@ -4,14 +4,6 @@
 abstract class ArticleDataManager extends DataManager
 {
     /**
-     * initializeData
-     * Sets the widget data to initial values.
-     */
-    public function initializeData() {
-        $this->collectData();
-    }
-
-    /**
      * getArticles
      * Returns the articles from data.
      * --------------------------------------------------

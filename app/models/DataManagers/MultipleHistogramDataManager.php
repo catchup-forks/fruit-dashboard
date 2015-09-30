@@ -82,17 +82,18 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     }
 
     /**
-     * buildHistogram
+     * getChartJSData
      * Returning template ready grouped dataset.
      * --------------------------------------------------
      * @param array $range
      * @param string $resolution
-     * @param string $dateFormat
+     * @param bool $diff
      * @param int length
+     * @param string $dateFormat
      * @return array
      * --------------------------------------------------
      */
-    public function buildHistogram($range, $resolution, $length, $dateFormat='Y-m-d') {
+    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat='Y-m-d') {
         $groupedData = array();
         $datetimes = array();
         $i = 0;
@@ -113,7 +114,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
-        return array('datasets' => array_values($groupedData), 'datetimes' => $datetimes);
+        return array('datasets' => array_values($groupedData), 'labels' => $datetimes);
     }
 
     /**

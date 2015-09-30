@@ -45,19 +45,22 @@ class GoogleAnalyticsPopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
+        $time = microtime(TRUE);
+        Log::info("Starting Google Analytics data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->collector = new GoogleAnalyticsDataCollector($this->user);
         $this->criteria = $data['criteria'];
         $this->property = $this->user->googleAnalyticsProperties()->where('id', $this->criteria['property'])->first();
         $this->profileId = $this->criteria['profile'];
         $this->dataManagers = $this->getManagers();
-        $this->collectData();
+        $this->populateData();
+        Log::info("Google Analytics data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
         $job->delete();
     }
 
     /**
      * Populating the widgets with data.
      */
-    protected function collectData() {
+    protected function populateData() {
         $data = $this->collectAllData();
 
         /* Getting metrics. */

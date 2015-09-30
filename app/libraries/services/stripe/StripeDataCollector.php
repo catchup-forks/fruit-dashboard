@@ -14,10 +14,14 @@ class StripeDataCollector
     private $connector;
 
     /* -- Constructor -- */
-    function __construct($user) {
+    function __construct($user, $connector=null) {
         $this->user = $user;
-        $this->connector = new StripeConnector($user);
-        $this->connector->connect();
+        if (is_null($connector)) {
+            $this->connector = new StripeConnector($user);
+            $this->connector->connect();
+        } else {
+            $this->connector = $connector;
+        }
     }
 
     /**
@@ -160,6 +164,7 @@ class StripeDataCollector
         $decodedData = array();
         $hasMore = TRUE;
         $startingAfter = null;
+        $depth = 0;
 
         while ($hasMore) {
             try {
@@ -181,6 +186,10 @@ class StripeDataCollector
                 $this->getNewAccessToken();
             }
             $hasMore = $currentData['has_more'];
+            if ($depth++ > 20) {
+                Log::warning('Reached limit of iterations on stripe customer collection. ');
+                $hasMore = FALSE;
+            }
             $startingAfter = end($currentData['data'])['id'];
         }
 
@@ -208,6 +217,7 @@ class StripeDataCollector
         $decodedData = array();
         $hasMore = TRUE;
         $startingAfter = null;
+        $depth = 0;
 
         while ($hasMore) {
             try {
@@ -231,6 +241,10 @@ class StripeDataCollector
                 $this->getNewAccessToken();
             }
             $hasMore = $currentData['has_more'];
+            if ($depth++ > 20) {
+                Log::warning('Reached limit of iterations on stripe event collection. ');
+                $hasMore = FALSE;
+            }
             if (!is_null($currentData['data'])) {
                 $startingAfter = end($currentData['data'])['id'];
             }

@@ -21,11 +21,10 @@ class ServiceConnectionController extends BaseController
      */
     public function getBraintreeConnect() {
         $this->saveReferer();
-        $braintreeConnector = new BraintreeConnector(Auth::user());
 
         /* Render the page */
         return View::make('service.braintree.connect')
-            ->with('authFields', $braintreeConnector->getAuthFields());
+            ->with('authFields', BraintreeConnector::getAuthFields());
     }
 
     /**
@@ -87,7 +86,7 @@ class ServiceConnectionController extends BaseController
     }
 
     /**
-     * anyDisconnectBraintree
+     * anyBraintreeDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's braintree connection.
      * --------------------------------------------------
@@ -195,7 +194,8 @@ class ServiceConnectionController extends BaseController
      }
 
     /**
-     * anyDisconnectTwitter * --------------------------------------------------
+     * anyTwitterDisconnect
+     * --------------------------------------------------
      * @return Deletes the logged in user's twitter connection.
      * --------------------------------------------------
      */
@@ -328,8 +328,6 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectFacebookPages() {
         /* Getting a user's facebook pages for multiple select. */
-        $dataCollector = new FacebookDataCollector(Auth::user());
-
         $pages = array();
         foreach (Auth::user()->facebookPages as $page) {
             $pages[$page->id] = $page->name;
@@ -373,7 +371,6 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'Please select at least one of the pages.');
         }
 
-        $dataCollector = new FacebookDataCollector(Auth::user());
         $pages = array();
         foreach (Auth::user()->facebookPages as $page) {
             $pages[$page->id] = $page->name;
@@ -390,12 +387,26 @@ class ServiceConnectionController extends BaseController
             $dashboardCreator->create($pages[$id]);
         }
 
-        /* Creating dashboards if necessary. */
-        foreach (Auth::user()->facebookPages as $page) {
-        }
-
         return Redirect::to($this->getReferer())
             ->with('success', 'Connection successful.');
+    }
+    /**
+
+     * anyFacebookRefreshPages
+     * --------------------------------------------------
+     * @return Refreshes a user's facebook pages.
+     * --------------------------------------------------
+     */
+    public function anyFacebookRefreshPages() {
+        /* Try to disconnect */
+        try {
+            $collector = new FacebookDataCollector(Auth::user());
+            $collector->savePages();
+
+        } catch (ServiceNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::back();
     }
 
     /**
@@ -413,13 +424,13 @@ class ServiceConnectionController extends BaseController
     public function anyGoogleAnalyticsConnect() {
         $route = null;
         if (Session::pull('createDashboard')) {
-            $route = 'service.google-analytics.select-properties';
+            $route = 'service.google_analytics.select-properties';
         }
         return $this->connectGoogle("GoogleAnalyticsConnector", $route);
      }
 
     /**
-     * anyDisconnectGoogle
+     * anyGoogleAnalyticsDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's GA connection.
      * --------------------------------------------------
@@ -429,7 +440,7 @@ class ServiceConnectionController extends BaseController
     }
 
     /**
-     * anyGoogleCalendarConnectanyGoogleConnect
+     * anyGoogleCalendarConnect
      * --------------------------------------------------
      * @return connects a user to GA.
      * --------------------------------------------------
@@ -439,7 +450,7 @@ class ServiceConnectionController extends BaseController
      }
 
     /**
-     * anyDisconnectGoogle
+     * anyGoogleCalendarDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's GA connection.
      * --------------------------------------------------
@@ -456,7 +467,6 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectGoogleAnalyticsProperties() {
         /* Getting a user's google analytics properties for multiple select. */
-        $dataCollector = new GoogleAnalyticsDataCollector(Auth::user());
         $properties = array();
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;
@@ -467,10 +477,11 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         } else if (count($properties) == 1) {
-            $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $propertyId = array_keys($properties)[0];
             $property = Auth::user()->googleAnalyticsProperties()->where('id', $propertyId)->first();
+            $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $profile = $collector->getProfiles($property)[0];
+
             $settings = array(
                 'profile'  => $profile->id,
                 'property' => $propertyId,
@@ -488,7 +499,7 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer());
         }
 
-        return View::make('service.google-analytics.select-properties')
+        return View::make('service.google_analytics.select-properties')
             ->with('properties', $properties);
     }
 
@@ -504,7 +515,6 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'Please select at least one of the properties.');
         }
 
-        $dataCollector = new GoogleAnalyticsDataCollector(Auth::user());
         $properties = array();
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $properties[$property->id] = $property->name;
@@ -534,6 +544,25 @@ class ServiceConnectionController extends BaseController
         return Redirect::to($this->getReferer())
             ->with('success', $message);
     }
+
+    /**
+     * anyGoogleAnalyticsRefreshProperties
+     * --------------------------------------------------
+     * @return Refreshes a user's google analytics properties.
+     * --------------------------------------------------
+     */
+    public function anyGoogleAnalyticsRefreshProperties() {
+        /* Try to disconnect */
+        try {
+            $collector = new GoogleAnalyticsDataCollector(Auth::user());
+            $collector->saveProperties();
+
+        } catch (ServiceNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::back();
+    }
+
     /**
      * ================================================== *
      *                       STRIPE                       *
@@ -599,7 +628,7 @@ class ServiceConnectionController extends BaseController
         return Redirect::to(StripeConnector::getStripeConnectURI(route('service.stripe.connect')));
      }
     /**
-     * anyDisconnectStripe
+     * anyStripeDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's stripe connection.
      * --------------------------------------------------

@@ -17,3 +17,5 @@ Artisan::add(new ConnectionCleanup);
 Artisan::add(new SaveWidgets);
 Artisan::add(new MigrateExternal);
 Artisan::add(new BackgroundChange);
+Artisan::add(new FacebookRefreshPages);
+Artisan::add(new GoogleAnalyticsRefreshProperties);

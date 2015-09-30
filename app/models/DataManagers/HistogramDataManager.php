@@ -8,17 +8,6 @@ abstract class HistogramDataManager extends DataManager
     abstract public function getCurrentValue();
 
     /**
-     * initializeData
-     * --------------------------------------------------
-     * First time population of the data.
-     * --------------------------------------------------
-     */
-    public function initializeData() {
-        $this->saveData(array());
-        $this->collectData();
-    }
-
-    /**
      * collectData
      * --------------------------------------------------
      * Getting the new value based on getCurrentValue()
@@ -92,23 +81,50 @@ abstract class HistogramDataManager extends DataManager
      * @param array $range
      * @param string $resolution
      * @param int ilength
+     * @param bool diff
      * @return array
      * --------------------------------------------------
      */
-    public function getHistogram($range, $resolution, $ilength=null) {
+    public function getHistogram($range, $resolution, $ilength=null, $diff=FALSE) {
         $length = is_null($ilength) ? static::$defaultEntries : $ilength;
 
         /* Calling proper method based on resolution. */
         switch ($resolution) {
-            case 'minutes':  return $this->buildHistogram($range, $resolution, $length, 'h:i'); break;
-            case 'hours':  return $this->buildHistogram($range, $resolution, $length, 'M-d h'); break;
-            case 'days':   return $this->buildHistogram($range, $resolution, $length, 'M-d'); break;
-            case 'weeks':  return $this->buildHistogram($range, $resolution, $length, 'W'); break;
-            case 'months': return $this->buildHistogram($range, $resolution, $length, 'Y-M'); break;
-            case 'years':  return $this->buildHistogram($range, $resolution, $length, 'Y'); break;
-            default: return $this->buildHistogram($range, $resolution, $length, 'd'); break;
+            case 'minutes':  return $this->getChartJSData($range, $resolution, $length, $diff, 'h:i'); break;
+            case 'hours':  return $this->getChartJSData($range, $resolution, $length, $diff, 'M-d h'); break;
+            case 'days':   return $this->getChartJSData($range, $resolution, $length, $diff, 'M-d'); break;
+            case 'weeks':  return $this->getChartJSData($range, $resolution, $length, $diff, 'W'); break;
+            case 'months': return $this->getChartJSData($range, $resolution, $length, $diff, 'Y-M'); break;
+            case 'years':  return $this->getChartJSData($range, $resolution, $length, $diff, 'Y'); break;
+            default: return $this->getChartJSData($range, $resolution, $length, $diff, 'd'); break;
         }
     }
+
+    /**
+     * getChartJSData
+     * Returning template ready grouped dataset.
+     * --------------------------------------------------
+     * @param array $range
+     * @param string $resolution
+     * @param bool $diff
+     * @param int length
+     * @param string $dateFormat
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat='Y-m-d') {
+        $datetimes = array();
+        $dataSet = array(
+            'color'  => SiteConstants::getChartJsColors()[0],
+            'values' => array()
+        );
+        foreach (self::buildHistogram($range, $resolution, $length, $diff, $dateFormat) as $oneValues) {
+            array_push($datetimes, $oneValues['datetime']);
+            array_push($dataSet['values'], $oneValues['value']);
+        }
+        return array('datasets' => array($dataSet), 'labels' => $datetimes);
+    }
+
 
     /**
      * buildHistogram
@@ -117,11 +133,12 @@ abstract class HistogramDataManager extends DataManager
      * @param array $range
      * @param string $resolution
      * @param int $length
+     * @param bool $diff
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogram($range, $resolution, $length, $dateFormat='Y-m-d') {
+    protected function buildHistogram($range, $resolution, $length, $diff, $dateFormat='Y-m-d') {
         /* Getting recorded histogram sorted by timestamp. */
         $fullHistogram = $this->sortHistogram();
         if ( ! is_null($fullHistogram)) {
@@ -141,7 +158,7 @@ abstract class HistogramDataManager extends DataManager
                     $recording = TRUE;
                 } else if (($entryTime <= $range['end']) && $recording) {
                     /* Reached the end of the period -> stop recording. */
-                    return array_reverse($histogram);
+                    break;
                 }
             }
             if ($recording) {
@@ -152,6 +169,7 @@ abstract class HistogramDataManager extends DataManager
                         /* Passing new element to the array. */
                         $previousEntry['datetime'] = $previousEntryTime->format($dateFormat);
                         array_push($histogram, $previousEntry);
+
                         if ($entry == $last) {
                             /* There's only one element in the dataset. */
                             $entry['datetime'] = $entryTime->format($dateFormat);
@@ -170,11 +188,16 @@ abstract class HistogramDataManager extends DataManager
 
             if (count($histogram) >= $length) {
                 /* Enough data. */
-                return array_reverse($histogram);
+                break;
             }
         }
 
-        return array_reverse($histogram);
+        $histogram = array_reverse($histogram);
+        /* Transforming the data */
+        if ($diff) {
+            return self::getDiff($histogram);
+        }
+        return $histogram;
     }
 
     /**
