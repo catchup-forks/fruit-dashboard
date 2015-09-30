@@ -114,11 +114,41 @@ abstract class HistogramWidget extends CronWidget
      * Comparing the current value to some historical.
      * --------------------------------------------------
      * @param int $multiplier
+     * @param string $resolution
      * @return array
      * --------------------------------------------------
      */
-    public function getDiff($multiplier=1) {
-        return $this->dataManager()->compare($this->getSettings()['resolution'], $multiplier);
+    public function getDiff($multiplier=1, $resolution=null) {
+        if (is_null($resolution)) {
+            $resolution = $this->getSettings()['resolution'];
+        }
+        return array_values($this->dataManager()->compare($resolution, $multiplier))[0];
+    }
+
+    /**
+     * getHistory
+     * Returning the historical data compared to the latest.
+     * --------------------------------------------------
+     * @param int $multiplier
+     * @param string $resolution
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getHistory($multiplier=1, $resolution=null) {
+        $currentValue = array_values($this->getLatestValues())[0];
+        if (is_null($resolution)) {
+            $resolution = $this->getSettings()['resolution'];
+        }
+        $value = $currentValue - $this->getDiff($multiplier, $resolution);
+        try {
+            $percent = sprintf('%.2f%%', ($currentValue / $value - 1) * 100 . '%');
+        } catch (Exception $e) {
+            $percent = 'inf';
+        }
+        return array(
+            'value'   => $value,
+            'percent' => $percent
+        );
     }
 
     /**

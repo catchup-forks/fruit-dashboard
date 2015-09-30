@@ -32,8 +32,10 @@ class CollectData extends Command {
         Log::info("Data collection started at " . Carbon::now()->toDateTimeString());
         $time = microtime(TRUE);
         $errors = 0;
+        $i = 0;
         foreach (DataManager::all() as $manager) {
             if (Carbon::now()->diffInMinutes($manager->last_updated) >= $manager->update_period) {
+                $i++;
                 try {
                     $manager->getSpecific()->collectData();
                 } catch (Exception $e) {
@@ -42,6 +44,6 @@ class CollectData extends Command {
                 }
             }
         }
-        Log::info('Data collection finished with ' . $errors . ' errors. It took ' . ( microtime(TRUE) - $time) . ' seconds to run.');
+        Log::info('Data collection finished with ' . $errors . ' errors (of ' . $i . ') It took ' . ( microtime(TRUE) - $time) . ' seconds to run.');
     }
 }
