@@ -120,11 +120,23 @@ class Widget extends Eloquent
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------
-     * @return mixed
+     * @return array
      * --------------------------------------------------
     */
     public function getSettings() {
         return json_decode($this->settings, 1);
+    }
+
+    /**
+     * getRawSettings
+     * Returns the DB value of the settings.
+     * Useful, when need to access settings before save.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function getRawSettings() {
+        return Widget::find($this->id)->getSettings();
     }
 
     /**

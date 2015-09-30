@@ -93,10 +93,12 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
      * --------------------------------------------------
     */
     public function save(array $options=array()) {
+        $oldSettings = $this->getRawSettings();
         parent::save($options);
-        $this->refreshWidget();
+        if ($oldSettings != $this->getSettings()) {
+            $this->updateData();
+        }
     }
-
 
 }
 ?>
