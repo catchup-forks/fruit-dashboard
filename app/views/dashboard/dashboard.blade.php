@@ -159,10 +159,6 @@
   @include('dashboard.dashboard-hopscotch-scripts')
   <!-- /Hopscotch scripts -->
 
-  <!-- Widget general scripts -->
-  @include('widget.widget-general-scripts')
-  <!-- /Widget general scripts -->
-
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
       new FDChartOptions('dashboard').init();
