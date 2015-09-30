@@ -68,6 +68,28 @@ abstract class HistogramWidget extends CronWidget
      }
 
     /**
+     * hasCumulative
+     * Returns whether or not the chart has cumulative option.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+     public function hasCumulative() {
+        return static::$cumulative;
+     }
+
+    /**
+     * isDifferentiated
+     * Returns whether or not the chart is differentiated.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+     public function isDifferentiated() {
+        return (static::$cumulative && $this->getSettings()['type'] == 'diff');
+     }
+
+    /**
      * premiumUserCheck
      * Returns whether or not the resolution is a premium feature.
      * --------------------------------------------------
@@ -125,7 +147,7 @@ abstract class HistogramWidget extends CronWidget
         return $this->dataManager()->getHistogram(
             $range, $resolution,
             $this->getSettings()['length'],
-            (static::$cumulative && $this->getSettings()['type'] == 'diff')
+            $this->isDifferentiated()
         );
     }
 

@@ -13,7 +13,7 @@ Widget stats
     <div class="col-md-10 col-md-offset-1">
       <div class="panel panel-default panel-transparent">
         <div class="panel-body">
-          
+
           <h1 class="text-center">
             {{ $widget->descriptor->name }}
           </h1> <!-- /.text-center -->
@@ -28,7 +28,7 @@ Widget stats
                 @endforeach
               </ul>
             </div> <!-- /.col-md-12 -->
-            
+
 
             <!-- Tab panes -->
               <div class="tab-content">
@@ -60,7 +60,7 @@ Widget stats
         </div> <!-- /.panel-body -->
       </div> <!-- /.panel -->
     </div> <!-- /.col-md-10 -->
-    
+
   </div> <!-- /.row -->
 
 
@@ -91,7 +91,7 @@ Widget stats
 
       $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         var targetCanvas = $(e.target).data('resolution') + '-chart';
-        
+
         // REINSERT CANVAS HERE
 
         // Draw chart
@@ -107,11 +107,13 @@ Widget stats
         var name = "{{ $widget->descriptor->name }}";
 
         var chartData = {
-          'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
-          'datasets': [{
-            'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
-            'color': '{{ SiteConstants::getChartJsColors()[0] }}'
-          }]
+          'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+           @foreach ($widget->getData()['datasets'] as $dataset)
+            'datasets': [{
+              'values': [@foreach ($dataset as $value) {{$value[0]}}, @endforeach],
+              'color': '{{ $dataset['color'] }}'
+            }]
+           @endforeach
         }
 
         // Set chart options
