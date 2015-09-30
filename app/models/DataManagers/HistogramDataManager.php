@@ -152,17 +152,17 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
     */
     protected function buildHistogram($range, $resolution, $length) {
-        $recording = TRUE;
+        $recording = is_null($range) ? TRUE : FALSE;
         $histogram = array();
         foreach ($this->sortHistogram() as $entry) {
             $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
 
             /* Range conditions */
             if ( ! is_null($range)) {
-                if (($entryTime >= $range['start']) && !$recording) {
+                if (($entryTime <= $range['end']) && !$recording) {
                     /* Reached the start of the period -> start recording. */
                     $recording = TRUE;
-                } else if (($entryTime <= $range['end']) && $recording) {
+                } else if (($entryTime <= $range['start']) && $recording) {
                     /* Reached the end of the period -> stop recording. */
                     break;
                 }
