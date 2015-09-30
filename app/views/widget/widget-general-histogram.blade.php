@@ -4,7 +4,7 @@
   </div> <!-- /.chart-name -->
   <div class="chart-value">
     @if ($widget->state == 'active')
-      {{ Utilities::formatNumber($widget->getLatestData()['value'], $widget->getFormat()) }}
+      {{ Utilities::formatNumber($widget->getDiff($widget->getSettings()['length'])['value'], $widget->getFormat()) }}
     @endif
   </div> <!-- /.chart-value -->
 </div> <!-- /.chart-data -->
@@ -49,9 +49,9 @@
 
       // Set chart data
       var chartData = {
-        'labels': [@foreach ($widget->getData() as $histogramEntry) "{{$histogramEntry['datetime']}}", @endforeach],
+        'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [{
-          'values': [@foreach ($widget->getData() as $histogramEntry) {{$histogramEntry['value']}}, @endforeach],
+          'values': [@foreach ($widget->getData()['datasets'][0]['values'] as $value) {{ $value }}, @endforeach],
           'color': '{{ SiteConstants::getChartJsColors()[0] }}'
         }]
       }
@@ -110,7 +110,7 @@
           var wasDragging = isDragging;
           isDragging = false;
           if (!wasDragging) {
-            //window.location = "{{ route('widget.singlestat', $widget->id) }}";
+            window.location = "{{ route('widget.singlestat', $widget->id) }}";
           }
       });
 

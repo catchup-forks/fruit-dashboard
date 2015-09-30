@@ -180,6 +180,34 @@ class Widget extends Eloquent
     }
 
     /**
+     * isSettingVisible
+     * Checking if the given field is visible.
+     * --------------------------------------------------
+     * @param string $fieldName
+     * @return bool
+     * --------------------------------------------------
+    */
+    public function isSettingVisible($fieldName) {
+        $meta = $this->getSettingsFields();
+        if ( ! array_key_exists($fieldName, $meta)) {
+            /* Key doesn't exist. Don't even try to render it. */
+            return FALSE;
+        }
+        $fieldMeta = $meta[$fieldName];
+        if (array_key_exists('hidden', $fieldMeta) && $fieldMeta['hidden'] == TRUE) {
+            return FALSE;
+        }
+
+        /* Don't show singleChoice if there's only one value */
+        if (($fieldMeta['type'] == 'SCHOICE' || $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
+             count($this->$fieldName()) == 1) {
+            return FALSE;
+        }
+
+        return TRUE;
+    }
+
+    /**
      * setPosition
      * Setting the position of the model.
      * --------------------------------------------------
@@ -227,7 +255,7 @@ class Widget extends Eloquent
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
             // Not validating fields that are not present.
-            if (!in_array($fieldName, $fields)) {
+            if (!in_array($fieldName, $fields) || ! $this->isSettingVisible($fieldName)) {
                 continue;
             }
             $validationString = '';

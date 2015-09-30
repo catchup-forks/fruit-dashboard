@@ -209,4 +209,15 @@ class DataManager extends Eloquent
         return TRUE;
     }
 
+    /**
+     * Delete
+     * Deleting the data as well.
+     */
+     public function delete() {
+        $data_id = $this->data->id;
+        $this->widgets()->delete();
+        $result = parent::delete();
+        Data::find($data_id)->delete();
+        return $result;
+    }
 }

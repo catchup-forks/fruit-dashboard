@@ -6,7 +6,7 @@ abstract class GeneralAutoDashboardCreator {
      *
      * @var array
      */
-    protected static $positioning = array();
+    protected static $widgets = array();
 
     /**
      * The service we're using.
@@ -34,12 +34,12 @@ abstract class GeneralAutoDashboardCreator {
      *
      * @var array
      */
-    protected $widgetSettings = null;
+    protected $globalWidgetSettings = null;
 
     function __construct($user, $widgetSettings=array()) {
         /* Getting the user */
         $this->user = $user;
-        $this->widgetSettings = $widgetSettings;
+        $this->globalWidgetSettings = $widgetSettings;
     }
 
     public function create($dashboard_name=null) {
@@ -52,7 +52,6 @@ abstract class GeneralAutoDashboardCreator {
      * Creating a dashboard.
      */
     protected function createDashboard($dashboard_name) {
-        /* Creating dashboard. */
         $this->dashboard = new Dashboard(array(
             'name'       => $dashboard_name . ' dashboard',
             'background' => TRUE,
@@ -67,17 +66,27 @@ abstract class GeneralAutoDashboardCreator {
      */
     protected function createWidgets() {
         foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
-            if (array_key_exists($descriptor->type, static::$positioning)) {
+            if (array_key_exists($descriptor->type, static::$widgets)) {
+                $widgetType = $descriptor->type;
+                $widgetMeta = static::$widgets[$widgetType];
+                Log::info($widgetMeta);
+
                 /* Creating widget instance. */
                 $className = $descriptor->getClassName();
-                $widget = new $className(array(
-                    'position' => static::$positioning[$descriptor->type],
-                    'state'    => 'loading'
-                ));
-                $widget->dashboard()->associate($this->dashboard);
+                $widget = new $className(array('state' => 'loading'));
+                $widget->position = $this->getWidgetPosition(
+                    $descriptor,
+                    $this->dashboard,
+                    $widgetMeta
+                );
 
                 /* Saving widget settings. */
-                $widget->saveSettings($this->widgetSettings);
+                $widget->dashboard()->associate($this->dashboard);
+                $settings = $this->globalWidgetSettings;
+                if (array_key_exists('settings', $widgetMeta)) {
+                    $settings = array_merge($settings, $widgetMeta['settings']);
+                }
+                $widget->saveSettings($settings);
 
                 /* Checking if the data is already available. */
                 if ( ! is_null($widget->data) && $widget->data->raw_value != 'loading') {
@@ -85,5 +94,22 @@ abstract class GeneralAutoDashboardCreator {
                 }
             }
         }
+    }
+    /**
+     * getWidgetPosition
+     * Getting the widget position.
+     * --------------------------------------------------
+     * @param WidgetDescriptor $descriptor
+     * @param Dashboard $dashboard
+     * @param array $widgetMeta
+     * @returns Position
+     * --------------------------------------------------
+     */
+    protected function getWidgetPosition($descriptor, $dashboard, $widgetMeta) {
+        if (array_key_exists('position', $widgetMeta)) {
+            return $widgetMeta['position'];
+        }
+        /* Position not provided, calculating for ourselves. */
+        return $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
     }
 }

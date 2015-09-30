@@ -69,7 +69,6 @@ class FacebookPopulateData
 
         /* Saving values. */
         $this->dataManagers['facebook_likes']->saveData($likesData);
-        $this->dataManagers['facebook_new_likes']->saveData(HistogramDataManager::getDiff($likesData));
         $this->dataManagers['facebook_page_impressions']->saveData($impressionsData);
         $this->dataManagers['facebook_engaged_users']->saveData($engagedUsersData);
 

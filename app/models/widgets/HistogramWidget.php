@@ -4,6 +4,8 @@ abstract class HistogramWidget extends CronWidget
 {
     use NumericWidgetTrait;
 
+    protected static $cumulative = FALSE;
+
     /* -- Settings -- */
     private static $resolutionSettings = array(
         'resolution' => array(
@@ -26,6 +28,13 @@ abstract class HistogramWidget extends CronWidget
             'default'    => 15,
             'help_text'  => 'The number of data points on your histogram.'
         ),
+        'type' => array(
+            'name'       => 'Histogram type',
+            'type'       => 'SCHOICE',
+            'validation' => 'required',
+            'default'    => 'diff',
+            'help_text'  => 'The type of your chart.'
+        ),
     );
 
     /* -- Choice functions -- */
@@ -36,6 +45,15 @@ abstract class HistogramWidget extends CronWidget
             'months' => 'Monthly',
             'years'  => 'Yearly'
         );
+    }
+
+    /* -- Choice functions -- */
+    public function type() {
+        $types = array('diff' => 'Differentiated');
+        if (static::$cumulative) {
+            $types['sum'] = 'Cumulative';
+        }
+        return $types;
     }
 
     /**
@@ -73,11 +91,12 @@ abstract class HistogramWidget extends CronWidget
      * getDiff
      * Comparing the current value to some historical.
      * --------------------------------------------------
+     * @param int $multiplier
      * @return array
      * --------------------------------------------------
      */
-    public function getDiff() {
-        return $this->dataManager()->compare($this->getSettings()['resolution'], 1);
+    public function getDiff($multiplier=1) {
+        return $this->dataManager()->compare($this->getSettings()['resolution'], $multiplier);
     }
 
     /**
@@ -97,15 +116,20 @@ abstract class HistogramWidget extends CronWidget
             $range = null;
         }
 
-        /* Looking for forced resolution. */
         if (isset($postData['resolution'])) {
             $resolution = $postData['resolution'];
         } else {
             $resolution = $this->getSettings()['resolution'];
         }
 
-        return $this->dataManager()->getHistogram($range, $resolution, $this->getSettings()['length']);
+        return $this->dataManager()->getHistogram(
+            $range, $resolution,
+            $this->getSettings()['length'],
+            (static::$cumulative && $this->getSettings()['type'] == 'diff')
+        );
     }
+
+
 
     /**
      * getLatestData
