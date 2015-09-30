@@ -15,10 +15,11 @@
 
 <div class="chart-diff-data text-center">
 
-  <div class="chart-diff text-@if($widget->isValueGood($widget->getDiff()))success@elsedanger@endif">
   @if ($widget->getDiff() >= 0)
+    <div class="chart-diff text-success">
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
   @else
+    <div class="chart-diff text-danger">
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
     <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff(), $widget->getFormat()) }}</span>

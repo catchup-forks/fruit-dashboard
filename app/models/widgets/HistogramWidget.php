@@ -168,10 +168,10 @@ abstract class HistogramWidget extends CronWidget
             $range = null;
         }
 
-        $range = array(
+        /*h$range = array(
             'start' => Carbon::createFromFormat('Y-m-d', '2015-09-04'),
             'end'   => Carbon::createFromFormat('Y-m-d', '2015-09-17')
-        );
+        );*/
 
         if (isset($postData['resolution'])) {
             $resolution = $postData['resolution'];
