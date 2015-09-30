@@ -1,33 +1,14 @@
 <div class="widget-inner">
   <table class="table table-condensed table-bordered">
-    <thead>
-      <tr class="active">
-        @foreach (array_keys($widget->getHeader()) as $name)
-          <th>{{ $name }}</th>
-        @endforeach
-      </tr>
-    </thead>
-    <tbody>
-      @foreach ($widget->getContent() as $row)
-        <tr>
-        @foreach ($row as $value)
-          <td>{{ $value }}</td>
-        @endforeach
-        </tr>
-      @endforeach
-    </tbody>
   </table>
 </div> <!-- /.widget-inner -->
 
 @section('widgetScripts')
 <script type="text/javascript">
-  $(document).ready(function(){
-    // Adding refresh handler.
-    $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) {
-        updateTableWidget(data, 'table-{{$widget->id}}');
-     });
-   });
-  });
+  // Set chart data
+  var widgetData{{ $widget->id }} = {
+    'header': [@foreach ($widget->getHeader() as $key => $num)'{{ $key }}',@endforeach],
+    'content': [@foreach ($widget->getContent() as $row)[@foreach ($row as $value)'{{ $value }}',@endforeach],@endforeach]
+  }
 </script>
 @append

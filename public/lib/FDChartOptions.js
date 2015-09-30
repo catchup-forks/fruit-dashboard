@@ -9,19 +9,17 @@ function FDChartOptions(pageName) {
   var page = pageName;
   
   // Public functions
+  this.init = init;
   this.getLineChartOptions = getLineChartOptions;
 
-  // Initialize automatically
-  initialize();
-
   /**
-   * @function initialize
+   * @function init
    * --------------------------------------------------------------------------
    * Initializes the FDChartOptions object
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function initialize() {
+  function init() {
     if (page == 'dashboard') {
       setDefaultOptionsDashboard();
     } else if (page == 'singleStat') {
