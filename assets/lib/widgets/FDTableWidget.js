@@ -40,7 +40,7 @@ FDTableWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDTableWidget.prototype.reinit = function() {
-   this.table.draw();
+   // No need to redraw, table is responsive
    return this;
 };
 
