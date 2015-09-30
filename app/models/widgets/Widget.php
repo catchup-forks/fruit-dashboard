@@ -136,6 +136,10 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     protected function getRawSettings() {
+        $widget = Widget::find($this->id);
+        if (is_null($widget)) {
+            return array();
+        }
         return Widget::find($this->id)->getSettings();
     }
 

@@ -39,15 +39,15 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget->id }} = {
-    'labels': [@foreach ($widget->getData()['datetimes'] as $datetime) "{{$datetime}}", @endforeach],
+    'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
-      @foreach ($widget->getData()['datasets'] as $dataset)
-        {
+    @foreach ($widget->getData()['datasets'] as $dataset)
+      {
           'values' : [{{ implode(',', $dataset['values']) }}],
           'name' : "{{ $dataset['name'] }}",
           'color': "{{ $dataset['color'] }}"
-        },
-      @endforeach
+      },
+    @endforeach
     ]
   }
 </script>

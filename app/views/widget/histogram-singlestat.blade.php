@@ -108,12 +108,14 @@ Widget stats
 
         var chartData = {
           'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+          'datasets': [
            @foreach ($widget->getData()['datasets'] as $dataset)
-            'datasets': [{
+             {
               'values': [{{ implode(',', $dataset['values']) }}],
               'color': '{{ $dataset['color'] }}'
-            }]
+             },
            @endforeach
+           ]
         }
 
         // Set chart options
