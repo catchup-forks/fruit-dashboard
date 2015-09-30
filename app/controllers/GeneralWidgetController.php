@@ -398,9 +398,18 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
 
+        /* Calculating values for rendering. */
+        $values = array();
+        foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
+            $values[$resolution] = array();
+            foreach ($multipliers as $multiplier) {
+                $values[$resolution][$multiplier] = $widget->getHistory($multiplier, $resolution);
+            }
+        }
         /* Rendering view. */
         return View::make('widget.histogram-singlestat')
-            ->with('widget', $widget);
+            ->with('widget', $widget)
+            ->with('values', $values);
     }
 
     /**

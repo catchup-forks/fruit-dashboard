@@ -48,11 +48,16 @@
             {{-- 6 months ago --}}
             {{-- 12 weeks ago --}}
             {{-- 30 days ago --}}
-            <h3>{{ $widget->getHistory(30, 'days')['value'] }}</h3>
+            <h3>{{ $values['days'][30]['value'] }}</h3>
+            @if ($values['days'][30]['percent'] >= 0)
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
+            @else
+            <div class="text-danger">
+              <span class="fa fa-arrow-down"> </span>
+            @endif
               {{-- compared to current value in percent --}}
-              {{ $widget->getHistory(30, 'days')['percent'] }}
+              {{ Utilities::formatNumber($values['days'][30]['percent'], '%.2f%%') }}
             </div> <!-- /.text-success -->
             <p><small>30 days ago</small></p>
           </div> <!-- /.panel-body -->
@@ -65,11 +70,16 @@
             {{-- 3 months ago --}}
             {{-- 4 weeks ago --}}
             {{-- 7 days ago --}}
-            <h3>{{ $widget->getHistory(7, 'days')['value'] }}</h3>
+            <h3>{{ $values['days'][7]['value'] }}</h3>
+            @if ($values['days'][7]['percent'] >= 0)
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
+            @else
+            <div class="text-danger">
+              <span class="fa fa-arrow-down"> </span>
+            @endif
               {{-- compared to current value in percent --}}
-              {{ $widget->getHistory(7, 'days')['percent'] }}
+              {{ Utilities::formatNumber($values['days'][7]['percent'], '%.2f%%') }}
             </div> <!-- /.text-success -->
             <p><small>7 days ago</small></p>
           </div> <!-- /.panel-body -->
@@ -82,10 +92,15 @@
             {{-- 1 month ago --}}
             {{-- 1 week ago --}}
             {{-- 1 day ago --}}
-            <h3>{{ $widget->getHistory(1, 'days')['value'] }}</h3>
+            <h3>{{ $values['days'][1]['value'] }}</h3>
+            @if ($values['days'][1]['percent'] >= 0)
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
-              {{ $widget->getHistory(1, 'days')['percent'] }}
+            @else
+            <div class="text-danger">
+              <span class="fa fa-arrow-down"> </span>
+            @endif
+              {{ Utilities::formatNumber($values['days'][1]['percent'], '%.2f%%') }}
             </div> <!-- /.text-success -->
             <p><small>1 day ago</small></p>
           </div> <!-- /.panel-body -->

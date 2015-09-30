@@ -24,6 +24,13 @@ class SiteConstants {
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
     private static $skipCategoriesInNotification = array('personal');
+    private static $singleStatHistoryDiffs = array(
+        'days'   => array(30, 7, 1),
+        'weeks'  => array(12, 4, 1),
+        'months' => array(6, 3, 1),
+        'years'  => array(5, 3, 1),
+    );
+
     private static $startupTypes = array(
         'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
         'Ecommerce'    => 'Online shops selling goods to consumers.',
@@ -63,17 +70,6 @@ class SiteConstants {
      */
     public static function getGridNumberOfCols() {
         return self::$gridNumberOfCols;
-    }
-
-    /**
-     * getChartJsColors:
-     * --------------------------------------------------
-     * Returning colors for chartJS
-     * @return (array) ($chartJsColors) chartJsColors
-     * --------------------------------------------------
-     */
-    public static function getChartJsColors() {
-        return self::$chartJsColors;
     }
 
     /**
@@ -130,6 +126,28 @@ class SiteConstants {
         } else {
             return 'night';
         }
+    }
+
+    /**
+     * getChartJsColors:
+     * --------------------------------------------------
+     * Returning colors for chartJS
+     * @return (array) ($chartJsColors) chartJsColors
+     * --------------------------------------------------
+     */
+    public static function getChartJsColors() {
+        return self::$chartJsColors;
+    }
+
+    /**
+     * getSingleStatHistoryDiffs:
+     * --------------------------------------------------
+     * Returning the single stat diffs
+     * @return (array) ($singleStatHistoryDiffs)
+     * --------------------------------------------------
+     */
+    public static function getSingleStatHistoryDiffs() {
+        return self::$singleStatHistoryDiffs;
     }
 
     /**

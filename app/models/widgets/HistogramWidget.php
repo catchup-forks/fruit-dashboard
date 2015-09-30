@@ -141,7 +141,7 @@ abstract class HistogramWidget extends CronWidget
         }
         $value = $currentValue - $this->getDiff($multiplier, $resolution);
         try {
-            $percent = sprintf('%.2f%%', ($currentValue / $value - 1) * 100 . '%');
+            $percent = ($currentValue / $value - 1) * 100;
         } catch (Exception $e) {
             $percent = 'inf';
         }
