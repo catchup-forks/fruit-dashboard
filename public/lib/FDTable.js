@@ -7,6 +7,7 @@
 function FDTable(widgetOptions) {
   // Private variables
   var options   = widgetOptions;
+  var selector = '#widget-wrapper-' + widgetOptions.id + ' table';
   var tableData = null;
   
   // Public functions
@@ -37,31 +38,33 @@ function FDTable(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function transformData(rawData) {
-    if (rawData.length == undefined) {
-      return this;
+    transformedData = {
+      header: '',
+      content: ''
     }
 
+    // Error handling
+    if (rawData == undefined) {} 
+    else if (!('header' in rawData)) {} 
+    else {
+      // Adding header
+      transformedData.header = '<thead>';
+      for (var i = 0; i < rawData.header.length; i++) {
+        transformedData.header += '<th>' + rawData.header[i] + '</th>';
+      };
+      transformedData.header += '</thead>';
 
-
-    //   // Adding header
-    //   var header = '<thead>';
-    //   for (var name in data['header']) {
-    //     header += '<th>' + name + '</th>';
-    //   }
-    //   header += '</thead>';
-    //   $("#" + tableId).append(header);
-
-    //   // Adding content
-    //   var content = '<tbody>';
-    //   for (var row=0; row < data['content'].length; row++) {
-    //     content += '<tr>';
-    //     for (var key in data['content'][row]) {
-    //       content += '<td>' + data['content'][row][key] + '</td>';
-    //     }
-    //     content += '</tr>';
-    //   }
-    //     content += '</tbody>';
-    //   $("#" + tableId).append(content);
+      // Adding content
+      transformedData.content = '<tbody>';
+      for (var row=0; row < rawData.content.length; row++) {
+        transformedData.content += '<tr>';
+        for (var key in rawData.content[row]) {
+          transformedData.content += '<td>' + rawData.content[row][key] + '</td>';
+        }
+        transformedData.content += '</tr>';
+      }
+        transformedData.content += '</tbody>';
+    }
 
     // Store new data
     tableData = transformedData;
@@ -70,25 +73,16 @@ function FDTable(widgetOptions) {
     return this;
   }
 
-    //   clearTable(tableId);
   /**
    * @function clear
    * --------------------------------------------------------------------------
-   * Creates a dataset for the chart
-   * @return {dictionary} the generated dataset
+   * Clears the previous table
+   * @return {this}
    * --------------------------------------------------------------------------
    */
-  function clear(values, name, color) {
-    return {
-      label: name,
-      fillColor : "rgba(" + color + ",0.2)",
-      strokeColor : "rgba(" + color + ",1)",
-      pointColor : "rgba(" + color + ",1)",
-      pointStrokeColor : "#fff",
-      pointHighlightFill : "#fff",
-      pointHighlightStroke : "rgba(" + color + ",1)",
-      data: values
-    }
+  function clear() {
+    $(selector + " thead").remove();
+    $(selector + " tbody").remove();
   }
 
   /**
@@ -103,32 +97,12 @@ function FDTable(widgetOptions) {
     // Clear the existing table
     clear();
 
-    // Draw chart
-    switch(type) {
-      case 'line':
-      default:
-          drawLineChart(chartData, chartOptions.getLineChartOptions());
-          break;
-    }
+    // Draw table
+    $(selector).append(tableData.header);
+    $(selector).append(tableData.content);
 
     // return
     return true;
   }
-
-  /**
-   * @function drawLineChart
-   * --------------------------------------------------------------------------
-   * Draws a line chart
-   * @param {dictionary} data | The chart data
-   * @param {dictionary} options | The chart options
-   * @return {true} 
-   * --------------------------------------------------------------------------
-   */
-  function drawLineChart(data, options) {
-    // Draw chart.
-    new Chart(canvas.get2dContext()).Line(data, options);
-  }
-
-
 
 } // FDTable

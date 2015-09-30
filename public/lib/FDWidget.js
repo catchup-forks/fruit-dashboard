@@ -16,6 +16,9 @@ function FDWidget(widgetOptions) {
   var loadingSelector = '#widget-loading-' + options.id;
   var refreshSelector = '#refresh-' + options.id;
 
+  // For debugging
+  var logging = false;
+
   // Public functions
   this.send    = send;
   this.load    = load;
@@ -48,13 +51,19 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function send(data, callback) {
+    if (logging) { console.log('Sending data for widget #' + options.id); }
+    if (logging) { console.log(data); }
+
     $.ajax({
       type: "POST",
       data: data,
       url: options.postUrl,
     }).done(function(data) {
+        if (logging) { console.log('...response arrived | Sending data for widget #' + options.id); }
         callback(data);
+        if (logging) { console.log('...callback executed | Sending data for widget #' + options.id); }
     });
+    if (logging) { console.log('...done | Sending data for widget #' + options.id); }
   }
 
   /**
@@ -65,6 +74,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function load() {
+    if (logging) { console.log('Loading data for widget #' + options.id); }
     var done = false;
 
     // Poll the state until the data is ready
@@ -84,6 +94,7 @@ function FDWidget(widgetOptions) {
       });
     }
     pollState();
+    if (logging) { console.log('...done | Loading data for widget #' + options.id); }
   };
 
   /**
@@ -94,6 +105,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function refresh() {
+    if (logging) { console.log('Refreshing data for widget #' + options.id); }
     // Show loading state
     $(wrapperSelector).hide();
     $(loadingSelector).show();
@@ -101,6 +113,7 @@ function FDWidget(widgetOptions) {
     send({'refresh_data': true}, function(){});
     // Poll widget state, and load if finished
     load();
+    if (logging) { console.log('...done | Refreshing data for widget #' + options.id); }
   };
 
   /**
@@ -111,7 +124,9 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function reinit() {
+    if (logging) { console.log('ReInitializing widget #' + options.id); }
     specific.init();
+    if (logging) { console.log('...done | ReInitializing widget #' + options.id); }
   };
 
   /**
@@ -122,6 +137,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function remove() {
+    if (logging) { console.log('Removing widget #' + options.id); }
     // Call ajax
     $.ajax({
       type: "POST",
@@ -134,6 +150,7 @@ function FDWidget(widgetOptions) {
         easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
       }
     });
+    if (logging) { console.log('...done | Removing widget #' + options.id); }
   }
 
   /* -------------------------------------------------------------------------- *

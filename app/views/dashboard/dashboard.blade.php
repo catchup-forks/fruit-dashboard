@@ -127,22 +127,22 @@
 
 @section('pageScripts')
   <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDGridster.js')"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDWidget.js')"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js')"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js')"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js')"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDTable.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDGridster.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDWidget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDTable.js') }}"></script>
   <!-- /FDGeneral* classes -->
 
   <!-- FDAbstractWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js')"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js')"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js') }}"></script>
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
   @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
-    <script type="text/javascript" src="{{ URL::asset('lib/widgets/{{ $descriptor->category }}/FD{{ str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))) }}Widget.js')"></script>
+    <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))).'Widget.js') }}"></script>
   @endforeach
   <!-- /FDWidget* classes -->
 
