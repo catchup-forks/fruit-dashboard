@@ -48,7 +48,7 @@
             {{-- 6 months ago --}}
             {{-- 12 weeks ago --}}
             {{-- 30 days ago --}}
-            <h3>{{ $values['days'][30]['value'] }}</h3>
+            <h3>{{ Utilities::formatNumber($values['days'][30]['value'], $widget->getFormat()) }}</h3>
             @if ($values['days'][30]['percent'] >= 0)
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
@@ -70,7 +70,7 @@
             {{-- 3 months ago --}}
             {{-- 4 weeks ago --}}
             {{-- 7 days ago --}}
-            <h3>{{ $values['days'][7]['value'] }}</h3>
+            <h3>{{ Utilities::formatNumber($values['days'][7]['value'], $widget->getFormat()) }}</h3>
             @if ($values['days'][7]['percent'] >= 0)
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
@@ -92,7 +92,7 @@
             {{-- 1 month ago --}}
             {{-- 1 week ago --}}
             {{-- 1 day ago --}}
-            <h3>{{ $values['days'][1]['value'] }}</h3>
+            <h3>{{ Utilities::formatNumber($values['days'][1]['value'], $widget->getFormat()) }}</h3>
             @if ($values['days'][1]['percent'] >= 0)
             <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
@@ -109,7 +109,7 @@
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            <h3 class="text-primary">{{ array_values($widget->getLatestValues())[0] }}</h3>
+            <h3 class="text-primary">{{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}</h3>
             <div class="text-success">
               <span class="fa fa-check"> </span>
             </div> <!-- /.text-success -->

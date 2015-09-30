@@ -42,39 +42,6 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * formatData
-     * Returning the last data in the histogram.
-     * --------------------------------------------------
-     * @param Carbon $date
-     * @param mixed $data
-     * @return array
-     * --------------------------------------------------
-     */
-     protected function formatData($date, $data) {
-        if ( ! is_numeric($data)) {
-            return null;
-        }
-        return array('value' => $data, 'timestamp' => $date->getTimestamp());
-     }
-
-    /**
-     * getLatestData
-     * Returning the last data in the histogram.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-     protected function getLatestData() {
-        $histogram = $this->sortHistogram(FALSE);
-        /* Handle empty data */
-        if ($histogram == null) {
-            return array();
-        } else {
-            return end($histogram);
-        }
-     }
-
-    /**
      * getLatestValues
      * Returning the last values in the histogram.
      * --------------------------------------------------
@@ -87,7 +54,7 @@ abstract class HistogramDataManager extends DataManager
 
     /**
      * getHistogram
-     * Returning the histogram.
+     * Returning the histogram, in chartJS ready format.
      * --------------------------------------------------
      * @param array $range
      * @param string $resolution
@@ -109,6 +76,39 @@ abstract class HistogramDataManager extends DataManager
             default:       $dateFormat = 'Y-m-d'; break;
         }
         return $this->getChartJSData($range, $resolution, $length, $diff, $dateFormat);
+    }
+
+    /**
+     * compare
+     * Comparing the current value respect to period.
+     * --------------------------------------------------
+     * @param string $period
+     * @param int $multiplier
+     * @return array
+     * --------------------------------------------------
+     */
+    public function compare($period, $multiplier=1) {
+        $latestData = $this->getLatestData();
+        $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
+
+        foreach ($this->sortHistogram() as $entry) {
+            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
+
+            /* Checking for a match. */
+            if (static::matchesTime($referenceTime, $entryTime, $period, $multiplier)) {
+                /* Creating an arrays that will hold the values. */
+                $values = array();
+                foreach (self::getEntryValues($entry) as $dataId=>$value) {
+                    if (array_key_exists($dataId, $latestData)) {
+                        $values[$dataId] = $latestData[$dataId] - $value;
+                    }
+                }
+                return $values;
+            }
+        }
+
+        /* No values found using last one */
+        return self::getEntryValues($latestData);
     }
 
     /**
@@ -197,33 +197,6 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * isBreakPoint
-     * Checks if the entry is a breakpoint in the histogram.
-     * --------------------------------------------------
-     * @param Carbon $entryTime
-     * @param Carbon $previousEntryTime
-     * @param string $resolution
-     * @return boolean
-     * --------------------------------------------------
-    */
-    private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
-        if ($resolution == 'minutes') {
-            return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
-        } else if ($resolution == 'hours') {
-            return $entryTime->format('Y-m-d h') !== $previousEntryTime->format('Y-m-d h');
-        } else if ($resolution == 'days') {
-            return ! $entryTime->isSameDay($previousEntryTime);
-        } else if ($resolution == 'weeks') {
-            return $entryTime->format('Y-W') !== $previousEntryTime->format('Y-W');
-        } else if ($resolution == 'months') {
-            return $entryTime->format('Y-m') !== $previousEntryTime->format('Y-m');
-        } else if ($resolution == 'years') {
-            return $entryTime->format('Y') !== $previousEntryTime->format('Y');
-        }
-        return FALSE;
-    }
-
-    /**
      * getDiff
      * Returning the differentiated values of an array.
      * --------------------------------------------------
@@ -231,7 +204,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    public static final function getDiff(array $data, $dataName='value') {
+    protected static function getDiff(array $data, $dataName='value') {
         $differentiatedArray = array();
         foreach ($data as $entry) {
             /* Copying entry. */
@@ -248,39 +221,6 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * compare
-     * Comparing the current value respect to period.
-     * --------------------------------------------------
-     * @param string $period
-     * @param int $multiplier
-     * @return array
-     * --------------------------------------------------
-     */
-    public function compare($period, $multiplier=1) {
-        $latestData = $this->getLatestData();
-        $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
-
-        foreach ($this->sortHistogram() as $entry) {
-            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
-
-            /* Checking for a match. */
-            if (static::matchesTime($referenceTime, $entryTime, $period, $multiplier)) {
-                /* Creating an arrays that will hold the values. */
-                $values = array();
-                foreach (self::getEntryValues($entry) as $dataId=>$value) {
-                    if (array_key_exists($dataId, $latestData)) {
-                        $values[$dataId] = $latestData[$dataId] - $value;
-                    }
-                }
-                return $values;
-            }
-        }
-
-        /* No values found using last one */
-        return self::getEntryValues($latestData);
-    }
-
-    /**
      * sortHistogram
      * Sorting the array.
      * --------------------------------------------------
@@ -288,7 +228,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    private function sortHistogram($asc=TRUE) {
+    protected function sortHistogram($asc=TRUE) {
         $fullHistogram = $this->getData();
         if (is_array($fullHistogram)) {
             usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
@@ -297,6 +237,40 @@ abstract class HistogramDataManager extends DataManager
         }
         return $asc ? $fullHistogram : array_reverse($fullHistogram);
     }
+
+    /**
+     * formatData
+     * Returning the last data in the histogram.
+     * --------------------------------------------------
+     * @param Carbon $date
+     * @param mixed $data
+     * @return array
+     * --------------------------------------------------
+     */
+     protected function formatData($date, $data) {
+        if ( ! is_numeric($data)) {
+            return null;
+        }
+        return array('value' => $data, 'timestamp' => $date->getTimestamp());
+     }
+
+    /**
+     * getLatestData
+     * Returning the last data in the histogram.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+     protected function getLatestData() {
+        $histogram = $this->sortHistogram(FALSE);
+        /* Handle empty data */
+        if ($histogram == null) {
+            return array();
+        } else {
+            return end($histogram);
+        }
+     }
+
 
     /**
      * getEntryValues
@@ -321,35 +295,30 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * OBSOLETE getAverageValues (buildHistogram)
-     * Merging multiple entries into one, by avereging the values.
+     * isBreakPoint
+     * Checks if the entry is a breakpoint in the histogram.
      * --------------------------------------------------
-     * @param array $entries
-     * @return array ($entry)
+     * @param Carbon $entryTime
+     * @param Carbon $previousEntryTime
+     * @param string $resolution
+     * @return boolean
      * --------------------------------------------------
-     */
-    private static final function _getAverageValues($entries) {
-        $finalEntry = array();
-        /* Summarizing all data into one array. */
-        foreach ($entries as $entry) {
-            foreach ($entry as $key=>$value) {
-                if ( ! in_array($key, static::$staticFields)) {
-                    if ( ! array_key_exists($key, $finalEntry)) {
-                        $finalEntry[$key] = $value;
-                    } else {
-                        $finalEntry[$key] += $value;
-                    }
-                }
-            }
+    */
+    private static function isBreakPoint($entryTime, $previousEntryTime, $resolution) {
+        if ($resolution == 'minutes') {
+            return $entryTime->format('Y-m-d h:i') !== $previousEntryTime->format('Y-m-d h:i');
+        } else if ($resolution == 'hours') {
+            return $entryTime->format('Y-m-d h') !== $previousEntryTime->format('Y-m-d h');
+        } else if ($resolution == 'days') {
+            return ! $entryTime->isSameDay($previousEntryTime);
+        } else if ($resolution == 'weeks') {
+            return $entryTime->format('Y-W') !== $previousEntryTime->format('Y-W');
+        } else if ($resolution == 'months') {
+            return $entryTime->format('Y-m') !== $previousEntryTime->format('Y-m');
+        } else if ($resolution == 'years') {
+            return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
-
-        /* Averaging the values */
-        if (count($entries) > 0) {
-            foreach (array_keys($finalEntry) as $key) {
-               $finalEntry[$key] /= count($entries);
-            }
-        }
-        return $finalEntry;
+        return FALSE;
     }
 
     /**
@@ -388,7 +357,7 @@ abstract class HistogramDataManager extends DataManager
      * @return Carbon
      * --------------------------------------------------
      */
-    private static final function getEntryTime($entry) {
+    private static function getEntryTime($entry) {
         if ( ! is_array($entry)) {
             return Carbon::now();
         }
@@ -417,7 +386,7 @@ abstract class HistogramDataManager extends DataManager
      * @return boolean
      * --------------------------------------------------
      */
-    private static final function timestampSort($CseZso1, $CseZso2) {
+    private static function timestampSort($CseZso1, $CseZso2) {
         return $CseZso1['timestamp'] < $CseZso2['timestamp'];
     }
 }
