@@ -70,7 +70,7 @@ class GoogleAnalyticsDataCollector
             $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($accountId);
             $items = $ga_properties->getItems();
             if (count($items) <= 0) {
-                return null;
+                continue;
             }
             $properties = array();
             foreach ($items as $item) {

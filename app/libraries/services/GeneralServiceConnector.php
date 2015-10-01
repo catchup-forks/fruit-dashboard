@@ -125,7 +125,7 @@ abstract class GeneralServiceConnector
             array_push($dataManagers, $dataManager);
         }
 
-        //$this->populateData($criteria);
+        $this->populateData($criteria);
 
         return $dataManagers;
     }
