@@ -72,7 +72,6 @@ class WidgetDescriptor extends Eloquent
             }
 
             /* Creating a manager. */
-            Log::warning("User #" . $widget->user()->id . " didn't have a " . $this->type . " datamanager.");
             return DataManager::createManagerFromWidget($widget);
        }
         return null;

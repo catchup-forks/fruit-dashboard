@@ -393,14 +393,20 @@ class SiteConstants {
     }
 
     /**
-     * getFacebookPopulateDataDays
+     * getServicePopulationPeriod
      * --------------------------------------------------
      * Returns how many days back should the populator go.
      * @return (int) ($facebookPopulateDataDays)
      * --------------------------------------------------
      */
-    public static function getFacebookPopulateDataDays() {
-        return self::$facebookPopulateDataDays;
+    public static function getServicePopulationPeriod() {
+        return array(
+            'facebook'         => 60,
+            'google_analytics' => 30,
+            'twitter'          => null,
+            'stripe'           => 30,
+            'braintree'        => 30,
+        );
     }
 
     /**

@@ -141,7 +141,7 @@ class FacebookDataCollector
         return $this->getInsight(
             $insight, $pageId,
             array(
-                'since' => Carbon::now()->subDays(SiteConstants::getFacebookPopulateDataDays())->getTimestamp(),
+                'since' => Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['facebook'])->getTimestamp(),
                 'until' => Carbon::now()->getTimestamp(),
             )
         );
