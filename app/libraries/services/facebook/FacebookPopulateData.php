@@ -2,9 +2,6 @@
 
 class FacebookPopulateData
 {
-    /* -- Class properties -- */
-    const DAYS = 60;
-
     /**
      * The facebook collector object.
      *
@@ -96,7 +93,7 @@ class FacebookPopulateData
     }
 
     /**
-     * Getting the last DAYS entries for a specific insight
+     * Getting the last entries for a specific insight
      *
      * @param string $insight
      * @return array
@@ -105,7 +102,7 @@ class FacebookPopulateData
         return $this->collector->getInsight(
             $insight, $this->page->id,
             array(
-                'since' => Carbon::now()->subDays(self::DAYS)->getTimestamp(),
+                'since' => Carbon::now()->subDays(SiteConstants::getFacebookPopulateDataDays())->getTimestamp(),
                 'until' => Carbon::now()->getTimestamp(),
             )
         );

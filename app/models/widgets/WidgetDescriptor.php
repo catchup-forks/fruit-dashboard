@@ -71,20 +71,9 @@ class WidgetDescriptor extends Eloquent
                 }
             }
 
-            /* No manager found */
-            if ($widget instanceof iServiceWidget && $firstRun) {
-                /* It's a service widget. */
-                /* Creating all related managers. */
-                $connectorClass = $widget->getConnectorClass();
-                $connector = new $connectorClass($widget->user());
-                $connector->createDataManagers($widget->getCriteria());
-
-                /* Calling getManager again, there should be a match now. */
-                return $this->getDataManager($widget, FALSE);
-            } else {
-                /* Creating a manager. */
-                return DataManager::createManagerFromWidget($widget);
-            }
+            /* Creating a manager. */
+            Log::warning("User #" . $widget->user()->id . " didn't have a " . $this->type . " datamanager.");
+            return DataManager::createManagerFromWidget($widget);
        }
         return null;
     }

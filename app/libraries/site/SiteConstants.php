@@ -52,6 +52,7 @@ class SiteConstants {
         '77, 255, 210',
         '209, 0, 157',
     );
+    private static $facebookPopulateDataDays = 60;
     private static $googleAnalyticsLaunchDate = '2005-01-01';
     private static $apiVersions = array('1.0');
 
@@ -389,6 +390,17 @@ class SiteConstants {
      */
     public static function cleanupPolicy($entryTime) {
         return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+    }
+
+    /**
+     * getFacebookPopulateDataDays
+     * --------------------------------------------------
+     * Returns how many days back should the populator go.
+     * @return (int) ($facebookPopulateDataDays)
+     * --------------------------------------------------
+     */
+    public static function getFacebookPopulateDataDays() {
+        return self::$facebookPopulateDataDays;
     }
 
     /**
