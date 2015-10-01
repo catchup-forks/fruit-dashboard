@@ -1,10 +1,4 @@
 <script type="text/javascript">
-
-/**
- * --------------------------------------------------------------------------
- * Create FDGridster instances
- * --------------------------------------------------------------------------
- */
 // Set options
 var gridsterGlobalOptions = {
   'numberOfCols'  : {{ SiteConstants::getGridNumberOfCols() }},
@@ -20,19 +14,34 @@ var gridsterGlobalOptions = {
 @foreach (Auth::user()->dashboards as $dashboard)
   var gridsterOptions{{ $dashboard->id }} = $.extend({},
      gridsterGlobalOptions,
-     {'dashboardId': '{{ $dashboard->id }}',
-      'isLocked':    {{ $dashboard->is_locked }}}
+     {id:        '{{ $dashboard->id }}',
+      isLocked:  {{ $dashboard->is_locked }},
+      namespace: '#gridster-{{ $dashboard->id }}'}
   );
   var widgetsData{{ $dashboard->id }} = [
     @foreach ($dashboard->widgets as $widget)
-      {'id':            '{{ $widget->id }}',
-       'name':          '{{ $widget->name }}',
-       'type':          '{{ $widget->descriptor->type }}',
-       'state':         '{{ $widget->state }}',
-       'postUrl':       '{{ route("widget.ajax-handler", $widget->id) }}',
-       'deleteUrl':     '{{ route("widget.delete", $widget->id) }}',
-       'singleStatUrl': '{{ route("widget.singlestat", $widget->id) }}',
-       'page':          'dashboard'},
+      {
+        general: {
+          id:    '{{ $widget->id }}',
+          name:  '{{ $widget->name }}',
+          type:  '{{ $widget->descriptor->type }}',
+          state: '{{ $widget->state }}',
+        },
+        urls: {
+          postUrl:   '{{ route("widget.ajax-handler", $widget->id) }}',
+          deleteUrl: '{{ route("widget.delete", $widget->id) }}',
+          statUrl:   '{{ route("widget.singlestat", $widget->id) }}',
+        },
+        selectors: {
+          widget:  '[data-id={{ $widget->id }}]',
+          wrapper: '#widget-wrapper-{{ $widget->id }}',
+          loading: '#widget-loading-{{ $widget->id }}',
+          refresh: '#widget-refresh-{{ $widget->id }}',
+        },
+        data: {
+          page: 'dashboard',
+        }
+      },
     @endforeach
   ];
   var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }});

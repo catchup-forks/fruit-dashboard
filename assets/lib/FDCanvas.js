@@ -10,11 +10,10 @@ function FDCanvas(widgetOptions) {
   * -------------------------------------------------------------------------- */
   // Private variables
   var options = widgetOptions;
-  var containerSelector = '#chart-container-' + widgetOptions.id;
-  var isDragging = false;
+  var containerSelector = '#chart-container-' + options.general.id;
 
   /* FIXME. THIS NEEDS TO BE PASSED AS AN ARGUMENT OR OPTION */
-  var globalselector = '.gridster-player[data-id='+ options.id +']';
+  var globalselector = '.gridster-widget[data-id='+ options.general.id +']';
 
   // Public functions
   this.reinsert     = reinsert;
@@ -72,37 +71,38 @@ function FDCanvas(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                                  EVENTS                                    *
    * -------------------------------------------------------------------------- */
-   /**
-    * @event $(containerSelector).mousedown
-    * --------------------------------------------------------------------------
-    * Checks the click/drag moves
-    * --------------------------------------------------------------------------
-    */
-    $(containerSelector).mousedown(function() {
-      isDragging = false;
-    })
+  /**
+   * @event $(containerSelector).mousedown
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  $(containerSelector).mousedown(function() {
+    isDragging = false;
+  })
 
-    /**
-     * @event $(containerSelector).mousemove
-     * --------------------------------------------------------------------------
-     * Checks the click/drag moves
-     * --------------------------------------------------------------------------
-     */
-     $(containerSelector).mousemove(function() {
-       isDragging = true;
-     })
+  /**
+   * @event $(containerSelector).mousemove
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  $(containerSelector).mousemove(function() {
+    isDragging = true;
+  })
 
-     /**
-      * @event $(containerSelector).mouseup
-      * --------------------------------------------------------------------------
-      * Checks the click/drag moves
-      * --------------------------------------------------------------------------
-      */
-      $(containerSelector).mouseup(function() {
-        var wasDragging = isDragging;
-        if (!wasDragging) {
-          window.location = widgetOptions.singleStatUrl;
-        }
-        isDragging = false;
-      })
+  /**
+   * @event $(containerSelector).mouseup
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  $(containerSelector).mouseup(function() {
+    var wasDragging = isDragging;
+    if (!wasDragging) {
+      window.location = widgetOptions.singleStatUrl;
+    }
+    isDragging = false;
+  })
+
 } // FDCanvas

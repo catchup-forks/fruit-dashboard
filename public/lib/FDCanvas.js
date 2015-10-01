@@ -10,10 +10,10 @@ function FDCanvas(widgetOptions) {
   * -------------------------------------------------------------------------- */
   // Private variables
   var options = widgetOptions;
-  var containerSelector = '#chart-container-' + widgetOptions.id;
+  var containerSelector = '#chart-container-' + options.general.id;
 
   /* FIXME. THIS NEEDS TO BE PASSED AS AN ARGUMENT OR OPTION */
-  var globalselector = '.gridster-player[data-id='+ options.id +']';
+  var globalselector = '.gridster-widget[data-id='+ options.general.id +']';
 
   // Public functions
   this.reinsert     = reinsert;
@@ -104,5 +104,5 @@ function FDCanvas(widgetOptions) {
     }
     isDragging = false;
   })
-  
+
 } // FDCanvas

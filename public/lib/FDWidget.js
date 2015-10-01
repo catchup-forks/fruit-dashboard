@@ -9,12 +9,9 @@ function FDWidget(widgetOptions) {
    *                                 ATTRIBUTES                                 *
    * -------------------------------------------------------------------------- */
   var options         = widgetOptions;
-  var widgetClass     = 'FD' + options.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
+  var widgetClass     = 'FD' + options.general.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
   var specific        = new window[widgetClass](options);
-  var selector        = '.gridster-player[data-id='+ options.id +']';
-  var wrapperSelector = '#widget-wrapper-' + options.id;
-  var loadingSelector = '#widget-loading-' + options.id;
-  var refreshSelector = '#refresh-' + options.id;
+  var widgetSelector  = options.selectors.global + options.selectors.widget;
 
   // For debugging
   var logging = false;
@@ -38,7 +35,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function getSelector() {
-    return selector;
+    return widgetSelector;
   }
 
   /**
@@ -82,8 +79,8 @@ function FDWidget(widgetOptions) {
     function pollState() {
       send({'state_query': true}, function (data) {
         if (data['ready']) {
-          $(loadingSelector).hide();
-          $(wrapperSelector).show();
+          $(options.selectors.loading).hide();
+          $(options.selectors.wrapper).show();
           done = true;
           specific.refresh(data['data']);
         } else if (data['error']) {
@@ -108,8 +105,8 @@ function FDWidget(widgetOptions) {
   function refresh() {
     if (logging) { console.log('Refreshing data for widget #' + options.id); }
     // Show loading state
-    $(wrapperSelector).hide();
-    $(loadingSelector).show();
+    $(options.selectors.wrapper).hide();
+    $(options.selectors.loading).show();
     // Send refresh data token
     send({'refresh_data': true}, function(){});
     // Poll widget state, and load if finished
@@ -159,12 +156,12 @@ function FDWidget(widgetOptions) {
    * -------------------------------------------------------------------------- */
    
   /**
-   * @event $(refreshSelector).click
+   * @event $(options.selectors.refresh).click
    * --------------------------------------------------------------------------
    * Handles the refresh widget event
    * --------------------------------------------------------------------------
    */
-  $(refreshSelector).click(function (e) {
+  $(options.selectors.refresh).click(function (e) {
     e.preventDefault();
     refresh();
   });
@@ -175,7 +172,7 @@ function FDWidget(widgetOptions) {
    * 
    * --------------------------------------------------------------------------
    */
-  $(selector).resize(function() {
+  $(widgetSelector).resize(function() {
     reinit();
   });
 

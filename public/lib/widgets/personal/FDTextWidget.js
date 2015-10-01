@@ -9,8 +9,8 @@ var FDTextWidget = function(widgetOptions) {
  FDGeneralWidget.call(this, widgetOptions)
  
  // Plus attributes
- this.digitalSelector = '#digital-clock-' + widgetOptions.id;
- this.analogueSelector = '#analogue-clock-' + widgetOptions.id;
+ this.digitalSelector = '#digital-clock-' + this.options.general.id;
+ this.analogueSelector = '#analogue-clock-' + this.options.general.id;
  this.widgetData = null;
 
  // Automatically initialize

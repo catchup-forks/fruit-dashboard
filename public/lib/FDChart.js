@@ -7,8 +7,8 @@
 function FDChart(widgetOptions) {
   // Private variables
   var options = widgetOptions;
-  var canvas  = new FDCanvas(widgetOptions);
-  var chartOptions = new FDChartOptions(widgetOptions.page)
+  var canvas  = new FDCanvas(options);
+  var chartOptions = new FDChartOptions(options.data.page)
   var widgetData = null;
 
   // Public functions
@@ -44,7 +44,7 @@ function FDChart(widgetOptions) {
       datasets: [
         {
           values: [],
-          name:   widgetOptions.name,
+          name:   options.general.name,
           color: '105 ,153, 209'
         }
       ],

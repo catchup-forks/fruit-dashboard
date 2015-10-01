@@ -4,22 +4,18 @@
  * Class function for the Text Widget
  * --------------------------------------------------------------------------
  */
-function FDTextWidget(widgetOptions) {
-  // Private variables
-  var options = widgetOptions;
-  
-  // Public functions
-  this.refresh = refresh;
+var FDTextWidget = function(widgetOptions) {
+ // Call parent constructor
+ FDGeneralWidget.call(this, widgetOptions)
+ 
+ // Plus attributes
+ this.digitalSelector = '#digital-clock-' + this.options.general.id;
+ this.analogueSelector = '#analogue-clock-' + this.options.general.id;
+ this.widgetData = null;
 
-  /**
-   * @function refresh
-   * Handles the specific refresh procedure to the widget
-   * --------------------------------------------------------------------------
-   * @return {this} 
-   * --------------------------------------------------------------------------
-   */
-  function refresh(data) {
-    return this;
-  }
-  
-} // FDTextWidget
+ // Automatically initialize
+ this.init();
+};
+
+FDTextWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDTextWidget.prototype.constructor = FDTextWidget;

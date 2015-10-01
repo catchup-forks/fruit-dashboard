@@ -9,7 +9,7 @@ var FDTableWidget = function(widgetOptions) {
    *                                 ATTRIBUTES                                 *
    * -------------------------------------------------------------------------- */
   this.options = widgetOptions;
-  this.table   = new FDTable(widgetOptions);
+  this.table   = new FDTable(this.options);
 
   // AutoLoad
   this.init();
@@ -27,7 +27,7 @@ var FDTableWidget = function(widgetOptions) {
   * --------------------------------------------------------------------------
   */
 FDTableWidget.prototype.init = function() {
-   this.table.updateData(window['widgetData' + this.options.id]);
+   this.table.updateData(window['widgetData' + this.options.general.id]);
    this.table.draw();
    return this;
 };

@@ -9,7 +9,7 @@ var FDHistogramWidget = function(widgetOptions) {
    *                                 ATTRIBUTES                                 *
    * -------------------------------------------------------------------------- */
   this.options = widgetOptions;
-  this.chart   = new FDChart(widgetOptions);
+  this.chart   = new FDChart(this.options);
 
   // AutoLoad
   this.init();
@@ -27,7 +27,7 @@ var FDHistogramWidget = function(widgetOptions) {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.init = function() {
-   this.chart.updateData(window['widgetData' + this.options.id]);
+   this.chart.updateData(window['widgetData' + this.options.general.id]);
    this.chart.draw('line');
    return this;
 };

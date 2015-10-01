@@ -8,17 +8,17 @@ function FDGridster(gridsterOptions) {
  /* -------------------------------------------------------------------------- *
   *                                 ATTRIBUTES                                 *
   * -------------------------------------------------------------------------- */
-  // Private variables
-  var namespace = '#gridster-' + gridsterOptions.dashboardId
+  // Global
+  var options  = gridsterOptions;
   
   // Gridster related
-  var gridsterOptions  = gridsterOptions;
-  var gridsterSelector = namespace + ' div.gridster-container';
+  var gridsterSelector = options.namespace + ' div.gridster-container';
   var gridster         = null;
   
   // Widgets related
-  var widgetsSelector = namespace + 'div.gridster-player';
-  var widgets         = [];
+  var widgetsSelector   = options.namespace + ' div.gridster-widget';
+  var hoverableSelector = options.namespace + ' *[data-hover="hover-unlocked"]';
+  var widgets           = [];
 
   // Public functions
   this.init       = init;
@@ -37,17 +37,19 @@ function FDGridster(gridsterOptions) {
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function build(widgetsData) {
+  function build(widgetsOptions) {
     // Build widgets
-    for (var i = widgetsData.length - 1; i >= 0; i--) {
+    for (var i = widgetsOptions.length - 1; i >= 0; i--) {
+      // Add parent selector to options
+      widgetsOptions[i].selectors.global = widgetsSelector;
       // Initialize widget
-      var widget = new FDWidget(widgetsData[i]);
+      var widget = new FDWidget(widgetsOptions[i]);
       // Poll state from js if the wiget is loading
-      if (widgetsData[i].state == 'loading') {
+      if (widgetsOptions[i].state == 'loading') {
         widget.load();
       };
       // Add to widgets array
-      widgets.push({'id': widgetsData[i].id, 'widget': widget});
+      widgets.push({'id': widgetsOptions[i].id, 'widget': widget});
     };
         
     // return
@@ -64,18 +66,18 @@ function FDGridster(gridsterOptions) {
    */
   function init() {
     // Build options
-    options = $.extend({}, 
-                  getDefaultOptions(gridsterOptions),
-                  {resize:    getResizeOptions(gridsterOptions)}, 
-                  {draggable: getDraggingOptions(gridsterOptions)}
+    gridOptions = $.extend({}, 
+                  getDefaultOptions(),
+                  {resize:    getResizeOptions()}, 
+                  {draggable: getDraggingOptions()}
               );
     
     // Create gridster.js object and lock / unlock
-    if (gridsterOptions.isLocked) {
-      gridster = $(gridsterSelector).gridster(options).data('gridster').disable();
+    if (options.isLocked) {
+      gridster = $(gridsterSelector).gridster(gridOptions).data('gridster').disable();
       lockGrid();
     } else {
-      gridster = $(gridsterSelector).gridster(options).data('gridster');
+      gridster = $(gridsterSelector).gridster(gridOptions).data('gridster');
       unlockGrid();
     };
 
@@ -122,15 +124,13 @@ function FDGridster(gridsterOptions) {
    * --------------------------------------------------------------------------
    */
   function handleHover(isLocked) {
-    var hoverableElements = $(namespace + " *[data-hover='hover-unlocked']");
-
     if (isLocked) {
-      $.each(hoverableElements, function(){
+      $.each($(hoverableSelector), function(){
         $(this).children(":first").css('display', 'none');
       });
       $(widgetsSelector).removeClass('can-hover');
     } else {
-      $.each(hoverableElements, function(){
+      $.each($(hoverableSelector), function(){
         $(this).children(":first").css('display', '');
       });
       $(widgetsSelector).addClass('can-hover');
@@ -149,10 +149,8 @@ function FDGridster(gridsterOptions) {
   function lockGrid() {
       // Disable resize
       gridster.disable_resize();
-           
       // Disable gridster movement
       gridster.disable();
-
       // Hide hoverable elements.
       handleHover(true);
   }
@@ -167,10 +165,8 @@ function FDGridster(gridsterOptions) {
   function unlockGrid() {
       // Enable resize
       gridster.enable_resize();
-
       // Enable gridster movement
       gridster.enable();
-
       // Show hoverable elements.
       handleHover(false);
   }
@@ -182,11 +178,11 @@ function FDGridster(gridsterOptions) {
    * @return {dictionary} defaultOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getDefaultOptions(options) {
+  function getDefaultOptions() {
     // Build options dictionary
     defaultOptions = {
-      namespace:                namespace,
-      widget_selector:          widgetsSelector.replace(namespace,''),
+      namespace:                options.namespace,
+      widget_selector:          widgetsSelector.replace(options.namespace + ' ',''),
       widget_base_dimensions:   [options.widget_width, options.widget_height],
       widget_margins:           [options.widgetMargin, options.widgetMargin],
       min_cols:                 options.numberOfCols,
@@ -214,7 +210,7 @@ function FDGridster(gridsterOptions) {
    * @return {dictionary} resizeOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getResizeOptions(options) {
+  function getResizeOptions() {
     // Build options dictionary
     resizeOptions = {
       enabled: true,
@@ -242,7 +238,7 @@ function FDGridster(gridsterOptions) {
    * @return {dictionary} draggingOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getDraggingOptions(options) {
+  function getDraggingOptions() {
     // Build options dictionary
     draggingOptions = {
       start: function() {
@@ -283,7 +279,7 @@ function FDGridster(gridsterOptions) {
    * 
    * --------------------------------------------------------------------------
    */
-  $(".deleteWidget-" + gridsterOptions.dashboardId).click(function(e) {
+  $(".deleteWidget-" + options.id).click(function(e) {
     deleteWidget($(this).attr("data-id"));
   });
 

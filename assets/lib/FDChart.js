@@ -7,10 +7,10 @@
 function FDChart(widgetOptions) {
   // Private variables
   var options = widgetOptions;
-  var canvas  = new FDCanvas(widgetOptions);
-  var chartOptions = new FDChartOptions(widgetOptions.page)
+  var canvas  = new FDCanvas(options);
+  var chartOptions = new FDChartOptions(options.data.page)
   var widgetData = null;
-  
+
   // Public functions
   this.draw       = draw;
   this.updateData = updateData;
@@ -20,7 +20,7 @@ function FDChart(widgetOptions) {
    * --------------------------------------------------------------------------
    * Updates the chart data
    * @param {dictionary} data | the chart data
-   * @return {this} 
+   * @return {this}
    * --------------------------------------------------------------------------
    */
   function updateData(data) {
@@ -44,20 +44,22 @@ function FDChart(widgetOptions) {
       datasets: [
         {
           values: [],
-          name:   widgetOptions.name,
+          name:   options.general.name,
           color: '105 ,153, 209'
         }
       ],
     };
 
     // Transform raw db data (rawData->processedData)
-    if (!("datasets" in rawData)) {
+    if (rawData == undefined) {
+      processedData = rawData;
+    } else if ("datasets" in rawData) {
+      processedData = rawData;
+    } else {
       for (i = 0; i < rawData.length; ++i) {
         processedData.labels.push(rawData[i]['datetime']);
         processedData.datasets[0].values.push(rawData[i]['value']);
       }
-    } else {
-      processedData = rawData;
     }
 
     // Transform processedData (processedData->transformedData)
@@ -114,7 +116,7 @@ function FDChart(widgetOptions) {
    * --------------------------------------------------------------------------
    * Draws the chart
    * @param {string} type | the chart type
-   * @return {this} 
+   * @return {this}
    * --------------------------------------------------------------------------
    */
   function draw(type) {
