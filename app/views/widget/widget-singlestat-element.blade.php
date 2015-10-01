@@ -49,11 +49,10 @@
             {{-- 12 weeks ago --}}
             {{-- 30 days ago --}}
             <h3>{{ Utilities::formatNumber($values['days'][30]['value'], $widget->getFormat()) }}</h3>
+            <div class="@if ($values['days'][30]['success']) text-success @else text-danger @endif">
             @if ($values['days'][30]['percent'] >= 0)
-            <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
             @else
-            <div class="text-danger">
               <span class="fa fa-arrow-down"> </span>
             @endif
               {{-- compared to current value in percent --}}
@@ -71,11 +70,10 @@
             {{-- 4 weeks ago --}}
             {{-- 7 days ago --}}
             <h3>{{ Utilities::formatNumber($values['days'][7]['value'], $widget->getFormat()) }}</h3>
+            <div class="@if ($values['days'][7]['success']) text-success @else text-danger @endif">
             @if ($values['days'][7]['percent'] >= 0)
-            <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
             @else
-            <div class="text-danger">
               <span class="fa fa-arrow-down"> </span>
             @endif
               {{-- compared to current value in percent --}}
@@ -93,11 +91,10 @@
             {{-- 1 week ago --}}
             {{-- 1 day ago --}}
             <h3>{{ Utilities::formatNumber($values['days'][1]['value'], $widget->getFormat()) }}</h3>
+            <div class="@if ($values['days'][1]['success']) text-success @else text-danger @endif">
             @if ($values['days'][1]['percent'] >= 0)
-            <div class="text-success">
               <span class="fa fa-arrow-up"> </span>
             @else
-            <div class="text-danger">
               <span class="fa fa-arrow-down"> </span>
             @endif
               {{ Utilities::formatNumber($values['days'][1]['percent'], '%.2f%%') }}
