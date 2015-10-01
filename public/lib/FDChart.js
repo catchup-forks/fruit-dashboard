@@ -6,8 +6,9 @@
  */
 function FDChart(widgetOptions) {
   // Private variables
-  var canvas       = new FDCanvas(widgetOptions.selector);
-  var chartOptions = new FDChartOptions(widgetOptions.page)
+  var options      = widgetOptions;
+  var canvas       = new FDCanvas(options);
+  var chartOptions = new FDChartOptions(options)
 
   // Public functions
   this.draw = draw;
@@ -28,8 +29,9 @@ function FDChart(widgetOptions) {
     switch(type) {
       case 'line':
       default:
-          if (canvas.get2dContext()) {
-            new Chart(canvas.get2dContext()).Line(
+          var canvasContext = canvas.get2dContext();
+          if (canvasContext) {
+            new Chart(canvasContext).Line(
               chartOptions.transformLineChartDatasets(data), 
               chartOptions.getLineChartOptions())
           };

@@ -27,6 +27,13 @@ var gridsterGlobalOptions = {
           type:  '{{ $widget->descriptor->type }}',
           state: '{{ $widget->state }}',
         },
+        features: {
+          resize:  true,
+          reload:  true,
+          refresh: true,
+          remove:  true,
+          drag:    true,
+        },
         urls: {
           postUrl:   '{{ route("widget.ajax-handler", $widget->id) }}',
           deleteUrl: '{{ route("widget.delete", $widget->id) }}',

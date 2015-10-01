@@ -12,7 +12,9 @@ var FDHistogramWidget = function(widgetOptions) {
   this.widgetData = null;
   this.chart      = new FDChart({
                           selector: this.options.selectors.gridster + this.options.selectors.widget,
-                          page: this.options.data.page
+                          page:     this.options.data.page,
+                          urls:     this.options.urls,
+                          features: this.options.features,
                     });
 
   // AutoLoad

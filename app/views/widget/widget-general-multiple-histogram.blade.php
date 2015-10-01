@@ -32,7 +32,7 @@
 </div> <!-- /.chart-diff-data -->
 
 <div id="{{ $widget->id }}-chart-container" class="clickable">
-  <canvas id="{{$widget->id}}-chart" class="chart chart-line"></canvas>
+  <canvas class="chart chart-line"></canvas>
 </div>
 
 @section('widgetScripts')

@@ -4,13 +4,14 @@
  * Class function for the canvas
  * --------------------------------------------------------------------------
  */
-function FDCanvas(selector) {
+function FDCanvas(widgetOptions) {
  /* -------------------------------------------------------------------------- *
   *                                 ATTRIBUTES                                 *
   * -------------------------------------------------------------------------- */
   // Private variables
-  var widgetSelector = selector;
-  var containerSelector = selector + ' [id^=chart-container]';
+  var options           = widgetOptions;
+  var widgetSelector    = options.selector;
+  var containerSelector = options.selector + ' [id^=chart-container]';
 
   // Public functions
   this.reinsert     = reinsert;
@@ -65,7 +66,12 @@ function FDCanvas(selector) {
     // Delete current canvas
     $(containerSelector).empty();
     // Add new canvas
-    $(containerSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    if (options.page == 'dashboard') {
+      $(containerSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    } else if (options.page == 'singlestat') {
+      $(containerSelector).append('<canvas class="img-responsive canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    };
+
     // Return
     return this;
   }
@@ -79,9 +85,11 @@ function FDCanvas(selector) {
    * Checks the click/drag moves
    * --------------------------------------------------------------------------
    */
-  $(containerSelector).mousedown(function() {
-    isDragging = false;
-  })
+  if (options.features.drag) {
+    $(containerSelector).mousedown(function() {
+      isDragging = false;
+    })
+  };
 
   /**
    * @event $(containerSelector).mousemove
@@ -89,9 +97,11 @@ function FDCanvas(selector) {
    * Checks the click/drag moves
    * --------------------------------------------------------------------------
    */
-  $(containerSelector).mousemove(function() {
-    isDragging = true;
-  })
+  if (options.features.drag) {
+    $(containerSelector).mousemove(function() {
+      isDragging = true;
+    })
+  };
 
   /**
    * @event $(containerSelector).mouseup
@@ -99,12 +109,14 @@ function FDCanvas(selector) {
    * Checks the click/drag moves
    * --------------------------------------------------------------------------
    */
-  $(containerSelector).mouseup(function() {
-    var wasDragging = isDragging;
-    if (!wasDragging) {
-      window.location = widgetOptions.singleStatUrl;
-    }
-    isDragging = false;
-  })
+  if (options.features.drag) {
+    $(containerSelector).mouseup(function() {
+      var wasDragging = isDragging;
+      if (!wasDragging) {
+        window.location = options.urls.statUrl;
+      }
+      isDragging = false;
+    })
+  };
 
 } // FDCanvas

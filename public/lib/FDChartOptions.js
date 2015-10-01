@@ -4,9 +4,9 @@
  * Class function to set the global chart options
  * --------------------------------------------------------------------------
  */
-function FDChartOptions(pageName) {
+function FDChartOptions(widgetOptions) {
   // Private variables
-  var page = pageName;
+  var page = widgetOptions.page;
   
   // Public functions
   this.init = init;
@@ -55,7 +55,7 @@ function FDChartOptions(pageName) {
   function transformLineChartDatasets(data) {
     if (page == 'dashboard') {
       return transformLineChartDatasetsDashboard(data);
-    } else if (page == 'singleStat') {
+    } else if (page == 'singlestat') {
       // FIXME
       return transformLineChartDatasetsDashboard(data);
     }

@@ -161,7 +161,7 @@
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
-      new FDChartOptions('dashboard').init();
+      new FDChartOptions({page: 'dashboard'}).init();
   </script>
   <!-- /Init FDChartOptions -->
 
