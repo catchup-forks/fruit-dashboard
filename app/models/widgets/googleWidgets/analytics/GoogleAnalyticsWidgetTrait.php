@@ -113,8 +113,8 @@ trait GoogleAnalyticsWidgetTrait
       * --------------------------------------------------
      */
      public function save(array $options=array()) {
-         /* Call parent save */
-         parent::save($options);
+        /* Call parent save */
+        parent::save($options);
 
         $collector = new GoogleAnalyticsDataCollector($this->user());
         foreach ($this->user()->googleAnalyticsProperties as $property) {

@@ -1,4 +1,5 @@
 <div class="widget-inner">
+  <h4 class="drop-shadow text-white no-margin-top">{{ $title }}</h4>
   <table class="table table-condensed table-bordered">
   </table>
 </div> <!-- /.widget-inner -->

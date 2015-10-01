@@ -98,6 +98,9 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
         if ($oldSettings != $this->getSettings()) {
             $this->updateData();
         }
+        if ($this->getSettings()['name'] == FALSE) {
+            $this->saveSettings(array('name' => $this->getDefaultName()));
+        }
     }
 
 }

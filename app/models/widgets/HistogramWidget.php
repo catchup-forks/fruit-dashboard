@@ -8,7 +8,7 @@ abstract class HistogramWidget extends CronWidget
     protected static $isHigherGood = TRUE;
 
     /* -- Settings -- */
-    private static $resolutionSettings = array(
+    private static $histogramSettings = array(
         'resolution' => array(
             'name'       => 'Resolution',
             'type'       => 'SCHOICE',
@@ -65,7 +65,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$resolutionSettings);
+        return array_merge(parent::getSettingsFields(), self::$histogramSettings);
      }
 
     /**
