@@ -66,13 +66,13 @@ class GoogleAnalyticsDataCollector
      * Saves a user's google analytics properties.
      */
     public function saveProperties() {
+        $properties = array();
         foreach ($this->getAccountIds() as $accountId) {
             $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($accountId);
             $items = $ga_properties->getItems();
             if (count($items) <= 0) {
                 continue;
             }
-            $properties = array();
             foreach ($items as $item) {
                 $property = new GoogleAnalyticsProperty(array(
                     'id'         => $item->getId(),
