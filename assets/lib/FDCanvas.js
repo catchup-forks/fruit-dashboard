@@ -4,21 +4,16 @@
  * Class function for the canvas
  * --------------------------------------------------------------------------
  */
-function FDCanvas(widgetOptions) {
+function FDCanvas(selector) {
  /* -------------------------------------------------------------------------- *
   *                                 ATTRIBUTES                                 *
   * -------------------------------------------------------------------------- */
   // Private variables
-  var options = widgetOptions;
-  var containerSelector = '#chart-container-' + options.general.id;
-
-  /* FIXME. THIS NEEDS TO BE PASSED AS AN ARGUMENT OR OPTION */
-  var globalselector = '.gridster-widget[data-id='+ options.general.id +']';
+  var widgetSelector = selector;
+  var containerSelector = selector + ' [id^=chart-container]';
 
   // Public functions
   this.reinsert     = reinsert;
-  /* FIXME SIZE IS ONLY FOR LOGGING */
-  this.size         = size;
   this.get2dContext = get2dContext;
 
   /* -------------------------------------------------------------------------- *
@@ -33,9 +28,12 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function size() {
-    /*FIXME MARGINS*/
-    return {'width': $(globalselector).first().width()-20,
-            'height': $(globalselector).first().height()-35};
+    // Set margins
+    var widthMargin = 20;
+    var heigthMargin = 35;
+    // Return
+    return {'width': $(widgetSelector).first().width()-widthMargin,
+            'height': $(widgetSelector).first().height()-heigthMargin};
   }
 
   /**
@@ -46,7 +44,11 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function get2dContext() {
-    return $(containerSelector).find('canvas')[0].getContext("2d");
+    if ($(containerSelector).find('canvas').length) {
+      return $(containerSelector).find('canvas')[0].getContext("2d");
+    } else {
+      return false;
+    };
   }
 
   /**
@@ -63,7 +65,7 @@ function FDCanvas(widgetOptions) {
     // Delete current canvas
     $(containerSelector).empty();
     // Add new canvas
-    $(containerSelector).append('<canvas id=chart-' + widgetOptions.id + ' class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    $(containerSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     // Return
     return this;
   }

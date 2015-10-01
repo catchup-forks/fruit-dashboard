@@ -11,6 +11,7 @@ function FDChartOptions(pageName) {
   // Public functions
   this.init = init;
   this.getLineChartOptions = getLineChartOptions;
+  this.transformLineChartDatasets = transformLineChartDatasets;
 
   /**
    * @function init
@@ -41,6 +42,22 @@ function FDChartOptions(pageName) {
       return getLineChartOptionsDashboard();
     } else if (page == 'singleStat') {
       return getLineChartOptionsSingleStat();
+    }
+  }
+
+  /**
+   * @function transformLineChartDatasets
+   * --------------------------------------------------------------------------
+   * Returns the options for a line chart based on the page
+   * @return {dictionary} chartOptions | the chart options
+   * --------------------------------------------------------------------------
+   */
+  function transformLineChartDatasets(data) {
+    if (page == 'dashboard') {
+      return transformLineChartDatasetsDashboard(data);
+    } else if (page == 'singleStat') {
+      // FIXME
+      return transformLineChartDatasetsDashboard(data);
     }
   }
 
@@ -76,6 +93,47 @@ function FDChartOptions(pageName) {
        bezierCurveTension : 0.35,
        animation: false
     };
+  }
+
+  /**
+   * @function transformLineChartDatasetsDashboard
+   * --------------------------------------------------------------------------
+   * Creates a dataset for the chart
+   * @param {dictionary} data | The chart data
+   * @return {dictionary} the generated dataset
+   * --------------------------------------------------------------------------
+   */
+  function transformLineChartDatasetsDashboard(data) {
+    var transformedData = {
+      labels  : data.labels,
+      datasets: [],
+    };
+
+    for (i = 0; i < data.datasets.length; ++i) {
+      transformedData.datasets.push(
+          transform(
+            data.datasets[i].values, 
+            data.datasets[i].name, 
+            data.datasets[i].color
+          )
+      );
+    }
+
+    // Return
+    return transformedData;
+
+    function transform(values, name, color) {
+      return {
+        label: name,
+        fillColor : "rgba(" + color + ", 0.2)",
+        strokeColor : "rgba(" + color + ", 1)",
+        pointColor : "rgba(" + color + ", 1)",
+        pointStrokeColor : "#fff",
+        pointHighlightFill : "#fff",
+        pointHighlightStroke : "rgba(" + color + ", 1)",
+        data: values
+      }
+    }
   }
 
   /**

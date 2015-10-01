@@ -40,6 +40,7 @@ var gridsterGlobalOptions = {
         },
         data: {
           page: 'dashboard',
+          init: 'widgetData{{ $widget->id }}',
         }
       },
     @endforeach

@@ -21,10 +21,10 @@ function FDGridster(gridsterOptions) {
   var widgets           = [];
 
   // Public functions
-  this.init       = init;
-  this.build      = build;
-  this.lockGrid   = lockGrid;
-  this.unlockGrid = unlockGrid;
+  this.init   = init;
+  this.build  = build;
+  this.lock   = lock;
+  this.unlock = unlock;
 
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
@@ -41,7 +41,7 @@ function FDGridster(gridsterOptions) {
     // Build widgets
     for (var i = widgetsOptions.length - 1; i >= 0; i--) {
       // Add parent selector to options
-      widgetsOptions[i].selectors.global = widgetsSelector;
+      widgetsOptions[i].selectors.gridster = widgetsSelector;
       // Initialize widget
       var widget = new FDWidget(widgetsOptions[i]);
       // Poll state from js if the wiget is loading
@@ -75,10 +75,10 @@ function FDGridster(gridsterOptions) {
     // Create gridster.js object and lock / unlock
     if (options.isLocked) {
       gridster = $(gridsterSelector).gridster(gridOptions).data('gridster').disable();
-      lockGrid();
+      lock();
     } else {
       gridster = $(gridsterSelector).gridster(gridOptions).data('gridster');
-      unlockGrid();
+      unlock();
     };
 
     // Return
@@ -140,13 +140,13 @@ function FDGridster(gridsterOptions) {
 
 
   /**
-   * @function lockGrid
+   * @function lock
    * --------------------------------------------------------------------------
    * Locks the actual gridster object
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function lockGrid() {
+  function lock() {
       // Disable resize
       gridster.disable_resize();
       // Disable gridster movement
@@ -156,13 +156,13 @@ function FDGridster(gridsterOptions) {
   }
 
   /**
-   * @function unlockGrid
+   * @function unlock
    * --------------------------------------------------------------------------
    * Unlocks the actual gridster object
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function unlockGrid() {
+  function unlock() {
       // Enable resize
       gridster.enable_resize();
       // Enable gridster movement
