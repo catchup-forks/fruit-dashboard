@@ -112,19 +112,39 @@ class FacebookDataCollector
      * getInsightCurrentValue
      * Returning the current value of an insight.
      * --------------------------------------------------
-     * @param FacebookPage $page
+     * @param int $page
      * @param string $insight
      * @param string $period
      * @return numeric
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getInsightCurrentValue($page, $insight, $period) {
+    public function getInsightCurrentValue($pageId, $insight, $period) {
         $insightData = $this->getInsight(
-            $insight, $page,
+            $insight, $pageId,
             array('period' => $period)
         );
         return end($insightData[0]['values'])['value'];
+    }
+
+    /**
+     * getPopulateHistogram
+     * Returning histogram values for connector back.
+     * --------------------------------------------------
+     * @param int $pageId
+     * @param string $insight
+     * @return array
+     * @throws FacebookNotConnected
+     * --------------------------------------------------
+    */
+    public function getPopulateHistogram($pageId, $insight) {
+        return $this->getInsight(
+            $insight, $pageId,
+            array(
+                'since' => Carbon::now()->subDays(SiteConstants::getFacebookPopulateDataDays())->getTimestamp(),
+                'until' => Carbon::now()->getTimestamp(),
+            )
+        );
     }
 
     /**
@@ -138,7 +158,7 @@ class FacebookDataCollector
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getInsight($insight, $pageId, $params=array()) {
+    private function getInsight($insight, $pageId, $params=array()) {
         $paramstr = '?';
         foreach ($params as $key=>$value) {
             $paramstr .= '&' . $key . '='. $value;

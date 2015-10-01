@@ -3,8 +3,6 @@
 class GoogleAnalyticsPopulateData
 {
     /* -- Class properties -- */
-    const DAYS = 30;
-
     /**
      * The google analytics collector object.
      *

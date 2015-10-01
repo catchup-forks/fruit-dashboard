@@ -20,7 +20,7 @@ trait FacebookHistogramDataManagerTrait
     public function initializeData() {
         try {
             $data = array();
-            foreach ($this->getFirstValues()[0]['values'] as $dailyData) {
+            foreach ($this->getCollector()->getPopulateHistogram($this->getPage()->id, static::$insight)[0]['values'] as $dailyData) {
                 $date = Carbon::createFromTimestamp(strtotime($dailyData['end_time']));
                 array_push($data, array(
                     'value'     => $dailyData['value'],
@@ -46,20 +46,5 @@ trait FacebookHistogramDataManagerTrait
         return $collector;
     }
 
-    /**
-     * Getting the last DAYS entries for a specific insight
-     *
-     * @param string $insight
-     * @return array
-     */
-    private function getFirstValues() {
-        return $this->getCollector()->getInsight(
-            static::$insight, $this->getPage()->id,
-            array(
-                'since' => Carbon::now()->subDays(SiteConstants::getFacebookPopulateDataDays())->getTimestamp(),
-                'until' => Carbon::now()->getTimestamp(),
-            )
-        );
-    }
 }
 ?>
