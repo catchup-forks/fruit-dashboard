@@ -19,3 +19,4 @@ Artisan::add(new MigrateExternal);
 Artisan::add(new BackgroundChange);
 Artisan::add(new FacebookRefreshPages);
 Artisan::add(new GoogleAnalyticsRefreshProperties);
+Artisan::add(new CleanupData);
