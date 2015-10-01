@@ -4,10 +4,11 @@ abstract class HistogramWidget extends CronWidget
 {
     use NumericWidgetTrait;
 
-    protected static $cumulative = FALSE;
+    protected static $cumulative   = FALSE;
+    protected static $isHigherGood = TRUE;
 
     /* -- Settings -- */
-    private static $resolutionSettings = array(
+    private static $histogramSettings = array(
         'resolution' => array(
             'name'       => 'Resolution',
             'type'       => 'SCHOICE',
@@ -64,7 +65,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$resolutionSettings);
+        return array_merge(parent::getSettingsFields(), self::$histogramSettings);
      }
 
     /**
@@ -87,6 +88,21 @@ abstract class HistogramWidget extends CronWidget
      */
      public function isDifferentiated() {
         return (static::$cumulative && $this->getSettings()['type'] == 'diff');
+     }
+
+    /**
+     * isGreen
+     * Returns whether or not the diff is considered
+     * good in the histogram
+     * --------------------------------------------------
+     * @param int $multiplier
+     * @param string $resolution
+     * @return boolean
+     * --------------------------------------------------
+     */
+     public function isSuccess($multiplier=1, $resolution=null) {
+        $value = $this->getDiff($multiplier, $resolution);
+        return  ($value < 0) xor static::$isHigherGood;
      }
 
     /**
@@ -147,7 +163,8 @@ abstract class HistogramWidget extends CronWidget
         }
         return array(
             'value'   => $value,
-            'percent' => $percent
+            'percent' => $percent,
+            'success' => $this->isSuccess($multiplier, $resolution)
         );
     }
 
@@ -168,7 +185,7 @@ abstract class HistogramWidget extends CronWidget
             $range = null;
         }
 
-        /*h$range = array(
+        /*$range = array(
             'start' => Carbon::createFromFormat('Y-m-d', '2015-09-04'),
             'end'   => Carbon::createFromFormat('Y-m-d', '2015-09-17')
         );*/

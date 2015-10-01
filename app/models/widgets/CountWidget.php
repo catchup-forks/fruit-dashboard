@@ -37,11 +37,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        if (is_null($this->getDataManager()) && $this instanceof iServiceWidget) {
-            $connectorClass = $this->getConnectorClass();
-            $connector = new $connectorClass($this->user());
-            $connector->createDataManagers($this->getCriteria());
-        }
         if ($this->getDataManager()->data->raw_value == 'loading') {
             $this->setState('loading');
         } else if ($this->state != 'setup_required') {
@@ -103,6 +98,16 @@ abstract class CountWidget extends Widget implements iAjaxWidget
                 return $manager;
             }
         }
+
+        /* No manager found. */
+        if ($this->hasValidCriteria()) {
+            return DataManager::createManager(
+                $this->user(),
+                $descriptor,
+                $this->getCriteria()
+            );
+        }
+
         return null;
     }
 

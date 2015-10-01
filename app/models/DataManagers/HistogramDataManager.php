@@ -42,6 +42,49 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * cleanupData
+     * Removing hourly data if more than a week passed.
+     * --------------------------------------------------
+     * WARNING THIS FUNCTION DELETES DATA FROM THE DATASET
+     * ALL HOURLY DATA THAT IS OVER TWO WEEKS OLD WILL BE
+     *            D  E  S  T  R  O  Y  E  E  D
+     * @return int number of deletions.
+     * --------------------------------------------------
+     */
+     public function cleanupData() {
+        $lastKept = null;
+        $newData = array();
+        $deleted = 0;
+        foreach ($this->sortHistogram() as $entry) {
+            /* Getting the time. */
+            $entryTime = self::getEntryTime($entry);
+
+            /* Checking the diff. */
+            if (SiteConstants::cleanupPolicy($entryTime)) {
+                /* Less is fresher than 2 weeks. */
+                array_push($newData, $entry);
+                continue;
+            }
+
+            if (is_null($lastKept) || ! $lastKept->isSameDay($entryTime)) {
+                /* Keeping this data. (latest on the day) */
+                $lastKept = $entryTime;
+                array_push($newData, $entry);
+            } else {
+                $deleted++;
+            }
+        }
+
+        /* Just making sure all went fine, and not deleting everything. */
+        if (count($newData) > 0) {
+            /* Overwriting the data, just to be nice sorting it ascending. */
+            $this->saveData(array_reverse($newData));
+        }
+
+        return $deleted;
+     }
+
+    /**
      * getLatestValues
      * Returning the last values in the histogram.
      * --------------------------------------------------
@@ -92,10 +135,8 @@ abstract class HistogramDataManager extends DataManager
         $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
 
         foreach ($this->sortHistogram() as $entry) {
-            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
-
             /* Checking for a match. */
-            if (static::matchesTime($referenceTime, $entryTime, $period, $multiplier)) {
+            if (static::matchesTime($referenceTime, self::getEntryTime($entry), $period, $multiplier)) {
                 /* Creating an arrays that will hold the values. */
                 $values = array();
                 foreach (self::getEntryValues($entry) as $dataId=>$value) {
@@ -155,8 +196,7 @@ abstract class HistogramDataManager extends DataManager
         $recording = is_null($range) ? TRUE : FALSE;
         $histogram = array();
         foreach ($this->sortHistogram() as $entry) {
-            $entryTime = Carbon::createFromTimestamp($entry['timestamp']);
-
+            $entryTime = self::getEntryTime($entry);
             /* Range conditions */
             if ( ! is_null($range)) {
                 if (($entryTime <= $range['end']) && !$recording) {
@@ -224,18 +264,18 @@ abstract class HistogramDataManager extends DataManager
      * sortHistogram
      * Sorting the array.
      * --------------------------------------------------
-     * @param boolean $asc
+     * @param boolean $desc
      * @return array
      * --------------------------------------------------
      */
-    protected function sortHistogram($asc=TRUE) {
+    protected function sortHistogram($desc=TRUE) {
         $fullHistogram = $this->getData();
         if (is_array($fullHistogram)) {
             usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
         } else {
             $fullHistogram = array();
         }
-        return $asc ? $fullHistogram : array_reverse($fullHistogram);
+        return $desc ? $fullHistogram : array_reverse($fullHistogram);
     }
 
     /**
@@ -351,7 +391,7 @@ abstract class HistogramDataManager extends DataManager
 
     /**
      * getEntryTime
-     * returning the time from an entry  (collectData())
+     * returning the time from an entry
      * --------------------------------------------------
      * @param array/float $entry
      * @return Carbon

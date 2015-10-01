@@ -92,16 +92,36 @@ class DataManager extends Eloquent
         }
 
         /* Creating manager. */
+        return self::createManager(
+            $widget->user(),
+            $widget->descriptor,
+            $widget->getCriteria(),
+            $widget->data
+        );
+    }
+
+    /**
+     * createManager
+     * Creating a manager with criteria
+     * --------------------------------------------------
+     * @param User $user
+     * @param WidgetDescriptor $descriptor
+     * @param array $criteria
+     * @param Data $data
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function createManager($user, $descriptor, array $criteria=array(), $data=null) {
         $generalManager = new DataManager(array(
-            'settings_criteria' => json_encode($widget->getCriteria()),
+            'settings_criteria' => json_encode($criteria),
             'last_updated'      => Carbon::now()
         ));
-        $generalManager->user()->associate($widget->user());
-        $generalManager->descriptor()->associate($widget->descriptor);
+        $generalManager->user()->associate($user);
+        $generalManager->descriptor()->associate($descriptor);
 
         /* Creating/assigning data. */
-        if (isset($widget->data)) {
-            $generalManager->data()->associate($widget->data);
+        if (isset($data)) {
+            $generalManager->data()->associate($data);
         } else {
             $data = Data::create(array('raw_value' => '[]'));
             $generalManager->data()->associate($data);
