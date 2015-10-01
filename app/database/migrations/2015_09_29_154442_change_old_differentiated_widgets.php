@@ -44,7 +44,7 @@ class ChangeOldDifferentiatedWidgets extends Migration {
                     Log::info("Linked widget #" . $widget->id . " data to cumulative.");
                 }
 
-            } catch (ServiceException $e) {
+            } catch (Exception $e) {
                 Log::error('Error found while running migration: ' . get_class($this) . ' on widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
         }
