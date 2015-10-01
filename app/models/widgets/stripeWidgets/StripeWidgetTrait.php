@@ -10,7 +10,7 @@ trait StripeWidgetTrait
      * --------------------------------------------------
      */
     public function getConnectorClass() {
-        return 'StripeeConnector';
+        return 'StripeConnector';
     }
 
     /**
