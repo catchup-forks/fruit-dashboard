@@ -380,6 +380,18 @@ class SiteConstants {
     }
 
     /**
+     * cleanupPolicy
+     * --------------------------------------------------
+     * Returns whether or not to delete the hourly data.
+     * @param $entryTime
+     * @return boolean: TRUE->keep FALSE->delete
+     * --------------------------------------------------
+     */
+    public static function cleanupPolicy($entryTime) {
+        return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+    }
+
+    /**
      * getSkippedCategoriesInNotification
      * --------------------------------------------------
      * Returns the skipped categories in notifications.

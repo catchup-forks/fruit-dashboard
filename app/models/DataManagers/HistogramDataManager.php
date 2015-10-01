@@ -60,7 +60,7 @@ abstract class HistogramDataManager extends DataManager
             $entryTime = self::getEntryTime($entry);
 
             /* Checking the diff. */
-            if ($entryTime->diffInWeeks(Carbon::now(), FALSE) < 2) {
+            if (SiteConstants::cleanupPolicy($entryTime)) {
                 /* Less is fresher than 2 weeks. */
                 array_push($newData, $entry);
                 continue;
