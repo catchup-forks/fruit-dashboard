@@ -106,9 +106,9 @@ function changeGridster(id, direction) {
   var gridster = window['FDGridster' + id];
 
   if (direction) {
-    gridster.lockGrid();
+    gridster.lock();
   } else {
-    gridster.unlockGrid();
+    gridster.unlock();
   };
 }
 

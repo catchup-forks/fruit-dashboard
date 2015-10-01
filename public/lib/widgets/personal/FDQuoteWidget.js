@@ -9,8 +9,8 @@
  FDGeneralWidget.call(this, widgetOptions)
  
  // Plus attributes
- this.quoteSelector  = '#quote-' + this.options.id;
- this.authorSelector = '#author-' + this.options.id;
+ this.quoteSelector  = '#quote-' + this.options.general.id;
+ this.authorSelector = '#author-' + this.options.general.id;
  this.widgetData = null;
 
  // Automatically initialize
@@ -34,7 +34,7 @@ FDQuoteWidget.prototype.init = function() {
   // Call parent init
   FDGeneralWidget.prototype.init.call(this);
   // Update data
-  this.updateData(window['widgetData' + this.options.id]);
+  this.updateData(window['widgetData' + this.options.general.id]);
   // Draw with refresh call
   this.draw();  
 }

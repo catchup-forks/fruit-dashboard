@@ -5,7 +5,7 @@
      data-sizey="{{ $widget->getPosition()->size_y }}"
      data-min-sizex="{{ $widget->getMinCols() }}"
      data-min-sizey="{{ $widget->getMinRows() }}"
-     class="gridster-player can-hover">
+     class="gridster-widget can-hover">
 
     <div class="dropdown position-tr-sm">
       <a id="{{ $widget->id }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,7 +25,7 @@
         {{-- REFRESH --}}
         @if ($widget instanceof iAjaxWidget)
           <li>
-            <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">
+            <a href="#" id="widget-refresh-{{$widget->id}}" title="refresh widget content">
               <span class="fa fa-refresh"> </span>
               Refresh data
             </a>
@@ -74,4 +74,4 @@
     @endif
 
   @endif
-</div> <!-- /.gridster-player -->
+</div> <!-- /.gridster-widget -->

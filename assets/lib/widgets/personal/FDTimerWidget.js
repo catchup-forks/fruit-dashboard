@@ -4,22 +4,18 @@
  * Class function for the Timer Widget
  * --------------------------------------------------------------------------
  */
-function FDTimerWidget(widgetOptions) {
-  // Private variables
-  var options = widgetOptions;
-  
-  // Public functions
-  this.refresh = refresh;
+var FDTimerWidget = function(widgetOptions) {
+ // Call parent constructor
+ FDGeneralWidget.call(this, widgetOptions)
+ 
+ // Plus attributes
+ this.digitalSelector = '#digital-clock-' + this.options.general.id;
+ this.analogueSelector = '#analogue-clock-' + this.options.general.id;
+ this.widgetData = null;
 
-  /**
-   * @function refresh
-   * Handles the specific refresh procedure to the widget
-   * --------------------------------------------------------------------------
-   * @return {this} 
-   * --------------------------------------------------------------------------
-   */
-  function refresh(data) {
-    return this;
-  }
+ // Automatically initialize
+ this.init();
+};
 
-} // FDTimerWidget
+FDTimerWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDTimerWidget.prototype.constructor = FDTimerWidget;

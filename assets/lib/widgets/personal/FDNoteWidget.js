@@ -1,25 +1,19 @@
 /**
  * @class FDNoteWidget
  * --------------------------------------------------------------------------
- * Class function for the Note Widget
+ * Class function for the NoteWidget
  * --------------------------------------------------------------------------
  */
-function FDNoteWidget(widgetOptions) {
-  // Private variables
-  var options = widgetOptions;
-  
-  // Public functions
-  this.refresh = refresh;
+var FDNoteWidget = function(widgetOptions) {
+ // Call parent constructor
+ FDGeneralWidget.call(this, widgetOptions)
+ 
+ // Plus attributes
+ this.widgetData = null;
 
-  /**
-   * @function refresh
-   * Handles the specific refresh procedure to the widget
-   * --------------------------------------------------------------------------
-   * @return {this} 
-   * --------------------------------------------------------------------------
-   */
-  function refresh(data) {
-    return this;
-  }
-  
-} // FDNoteWidget
+ // Automatically initialize
+ this.init();
+};
+
+FDNoteWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDNoteWidget.prototype.constructor = FDNoteWidget;

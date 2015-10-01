@@ -9,17 +9,12 @@ function FDCanvas(widgetOptions) {
   *                                 ATTRIBUTES                                 *
   * -------------------------------------------------------------------------- */
   // Private variables
-  var options = widgetOptions;
-  var containerSelector = '#chart-container-' + widgetOptions.id;
-  var isDragging = false;
-
-  /* FIXME. THIS NEEDS TO BE PASSED AS AN ARGUMENT OR OPTION */
-  var globalselector = '.gridster-player[data-id='+ options.id +']';
+  var options           = widgetOptions;
+  var widgetSelector    = options.selector;
+  var containerSelector = options.selector + ' [id^=chart-container]';
 
   // Public functions
   this.reinsert     = reinsert;
-  /* FIXME SIZE IS ONLY FOR LOGGING */
-  this.size         = size;
   this.get2dContext = get2dContext;
 
   /* -------------------------------------------------------------------------- *
@@ -34,9 +29,12 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function size() {
-    /*FIXME MARGINS*/
-    return {'width': $(globalselector).first().width()-20,
-            'height': $(globalselector).first().height()-35};
+    // Set margins
+    var widthMargin = 20;
+    var heigthMargin = 35;
+    // Return
+    return {'width': $(widgetSelector).first().width()-widthMargin,
+            'height': $(widgetSelector).first().height()-heigthMargin};
   }
 
   /**
@@ -47,7 +45,11 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function get2dContext() {
-    return $(containerSelector).find('canvas')[0].getContext("2d");
+    if ($(containerSelector).find('canvas').length) {
+      return $(containerSelector).find('canvas')[0].getContext("2d");
+    } else {
+      return false;
+    };
   }
 
   /**
@@ -64,7 +66,12 @@ function FDCanvas(widgetOptions) {
     // Delete current canvas
     $(containerSelector).empty();
     // Add new canvas
-    $(containerSelector).append('<canvas id=chart-' + widgetOptions.id + ' class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    if (options.page == 'dashboard') {
+      $(containerSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    } else if (options.page == 'singlestat') {
+      $(containerSelector).append('<canvas class="img-responsive canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    };
+
     // Return
     return this;
   }
@@ -72,37 +79,44 @@ function FDCanvas(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                                  EVENTS                                    *
    * -------------------------------------------------------------------------- */
-   /**
-    * @event $(containerSelector).mousedown
-    * --------------------------------------------------------------------------
-    * Checks the click/drag moves
-    * --------------------------------------------------------------------------
-    */
+  /**
+   * @event $(containerSelector).mousedown
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  if (options.features.drag) {
     $(containerSelector).mousedown(function() {
       isDragging = false;
     })
+  };
 
-    /**
-     * @event $(containerSelector).mousemove
-     * --------------------------------------------------------------------------
-     * Checks the click/drag moves
-     * --------------------------------------------------------------------------
-     */
-     $(containerSelector).mousemove(function() {
-       isDragging = true;
-     })
+  /**
+   * @event $(containerSelector).mousemove
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  if (options.features.drag) {
+    $(containerSelector).mousemove(function() {
+      isDragging = true;
+    })
+  };
 
-     /**
-      * @event $(containerSelector).mouseup
-      * --------------------------------------------------------------------------
-      * Checks the click/drag moves
-      * --------------------------------------------------------------------------
-      */
-      $(containerSelector).mouseup(function() {
-        var wasDragging = isDragging;
-        if (!wasDragging) {
-          window.location = widgetOptions.singleStatUrl;
-        }
-        isDragging = false;
-      })
+  /**
+   * @event $(containerSelector).mouseup
+   * --------------------------------------------------------------------------
+   * Checks the click/drag moves
+   * --------------------------------------------------------------------------
+   */
+  if (options.features.drag) {
+    $(containerSelector).mouseup(function() {
+      var wasDragging = isDragging;
+      if (!wasDragging) {
+        window.location = options.urls.statUrl;
+      }
+      isDragging = false;
+    })
+  };
+
 } // FDCanvas

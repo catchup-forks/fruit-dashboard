@@ -1,44 +1,46 @@
-<div class="chart-container">
-  <div class="panel fill panel-default panel-transparent">
-    <div class="panel-heading">
-      <h3 class="panel-title">
-        @if (($widget->getSettings()['resolution'] == $resolution) && ($widget->state != 'hidden'))
-        <span
-         class="drop-shadow z-top pull-right"
-         data-toggle="tooltip"
-         data-placement="left"
-         title="This chart is currently pinned to the dashboard">
-         <span class="label label-success label-as-badge valign-middle">
-          <span class="icon fa fa-tag">
-          </span>
-          </span>
+<div class="panel fill panel-default panel-transparent">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      @if (($widget->getSettings()['resolution'] == $resolution) && ($widget->state != 'hidden'))
+      <span
+       class="drop-shadow z-top pull-right"
+       data-toggle="tooltip"
+       data-placement="left"
+       title="This chart is currently pinned to the dashboard">
+       <span class="label label-success label-as-badge valign-middle">
+        <span class="icon fa fa-tag">
         </span>
-        @else
-        <a href="{{ route('widget.pin-to-dashboard', array($widget->id, $resolution)) }}"
-         class="drop-shadow z-top no-underline pull-right"
-         data-toggle="tooltip"
-         data-placement="left"
-         title="Pin this chart to the dashboard">
-         <span class="label label-info label-as-badge valign-middle">
-           <span class="icon fa fa-thumb-tack">
-           </span>
+        </span>
+      </span>
+      @else
+      <a href="{{ route('widget.pin-to-dashboard', array($widget->id, $resolution)) }}"
+       class="drop-shadow z-top no-underline pull-right"
+       data-toggle="tooltip"
+       data-placement="left"
+       title="Pin this chart to the dashboard">
+       <span class="label label-info label-as-badge valign-middle">
+         <span class="icon fa fa-thumb-tack">
          </span>
-        </a>
-        @endif
-        {{ $value }} statistics
-      </h3>
+       </span>
+      </a>
+      @endif
+      {{ $value }} statistics
+    </h3>
+  </div> <!-- /.panel-heading -->
+
+  <div class="panel-body no-padding" id="chart-{{ $resolution }}">
+    <div id="chart-container">
+      <canvas class="img-responsive canvas-auto"></canvas>
     </div>
+  </div> <!-- /.panel-body -->
 
-    <div class="panel-body no-padding"  id="{{ $resolution }}-chart-container">
-      <canvas id="{{ $resolution }}-chart" class='img-responsive canvas-auto' width="300" height="300"></canvas>
-    </div> <!-- /.panel-body -->
+</div> <!-- /.panel -->
 
-  </div> <!-- /.panel -->
-</div> <!-- /.chart-container -->
 <div class="panel fill panel-default panel-transparent">
   <div class="panel-heading">
     <h3 class="panel-title">{{ $value }} data history</h3>
-  </div>
+  </div> <!-- /.panel-heading -->
+  
   <div class="panel-body">
     <div class="row">
       <div class="col-sm-3">

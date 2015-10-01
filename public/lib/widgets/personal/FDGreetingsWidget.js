@@ -9,7 +9,7 @@ var FDGreetingsWidget = function(widgetOptions) {
  FDGeneralWidget.call(this, widgetOptions)
  
  // Plus attributes
- this.containerSelector = '#greeting-' + this.options.id;
+ this.containerSelector = '#greeting-' + this.options.general.id;
  this.greetingSelector = '.greeting';
  this.widgetData = null;
 
@@ -34,7 +34,7 @@ FDGreetingsWidget.prototype.init = function() {
   // Call parent init
   FDGeneralWidget.prototype.init.call(this);
   // Update data
-  this.updateData(window['widgetData' + this.options.id]);
+  this.updateData(window['widgetData' + this.options.general.id]);
   // Draw with refresh call
   this.draw();  
 }

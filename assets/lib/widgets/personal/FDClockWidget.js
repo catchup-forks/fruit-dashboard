@@ -9,8 +9,8 @@ var FDClockWidget = function(widgetOptions) {
  FDGeneralWidget.call(this, widgetOptions)
  
  // Plus attributes
- this.digitalSelector = '#digital-clock-' + widgetOptions.id;
- this.analogueSelector = '#analogue-clock-' + widgetOptions.id;
+ this.digitalSelector = '#digital-clock-' + this.options.general.id;
+ this.analogueSelector = '#analogue-clock-' + this.options.general.id;
  this.widgetData = null;
 
  // Automatically initialize
@@ -34,7 +34,7 @@ FDClockWidget.prototype.init = function() {
   // Call parent init
   FDGeneralWidget.prototype.init.call(this);
   // Update data
-  this.updateData(window['widgetData' + this.options.id]);
+  this.updateData(window['widgetData' + this.options.general.id]);
   // Draw with refresh call
   this.draw(refresh=true);  
 }
