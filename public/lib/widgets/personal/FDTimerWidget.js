@@ -7,11 +7,6 @@
 var FDTimerWidget = function(widgetOptions) {
  // Call parent constructor
  FDGeneralWidget.call(this, widgetOptions)
- 
- // Plus attributes
- this.digitalSelector = '#digital-clock-' + this.options.general.id;
- this.analogueSelector = '#analogue-clock-' + this.options.general.id;
- this.widgetData = null;
 
  // Automatically initialize
  this.init();
@@ -19,3 +14,14 @@ var FDTimerWidget = function(widgetOptions) {
 
 FDTimerWidget.prototype = Object.create(FDGeneralWidget.prototype);
 FDTimerWidget.prototype.constructor = FDTimerWidget;
+
+/**
+ * @function draw
+ * Draws the widget
+ * --------------------------------------------------------------------------
+ * @return {this} 
+ * --------------------------------------------------------------------------
+ */
+FDTimerWidget.prototype.draw = function(data) {
+  return this;
+}

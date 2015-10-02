@@ -14,3 +14,14 @@ var FDFacebookLikesCountWidget = function(widgetOptions) {
 
 FDFacebookLikesCountWidget.prototype = Object.create(FDGeneralWidget.prototype);
 FDFacebookLikesCountWidget.prototype.constructor = FDFacebookLikesCountWidget;
+
+/**
+ * @function draw
+ * Draws the widget
+ * --------------------------------------------------------------------------
+ * @return {this} 
+ * --------------------------------------------------------------------------
+ */
+FDFacebookLikesCountWidget.prototype.draw = function(data) {
+  return this;
+}

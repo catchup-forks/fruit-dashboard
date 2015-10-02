@@ -15,3 +15,13 @@ var FDTwitterFollowersCountWidget = function(widgetOptions) {
 FDTwitterFollowersCountWidget.prototype = Object.create(FDGeneralWidget.prototype);
 FDTwitterFollowersCountWidget.prototype.constructor = FDTwitterFollowersCountWidget;
 
+/**
+ * @function draw
+ * Draws the widget
+ * --------------------------------------------------------------------------
+ * @return {this} 
+ * --------------------------------------------------------------------------
+ */
+FDTwitterFollowersCountWidget.prototype.draw = function(data) {
+  return this;
+}

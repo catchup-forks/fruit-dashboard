@@ -15,6 +15,17 @@ this.init();
 FDTwitterMentionsWidget.prototype = Object.create(FDGeneralWidget.prototype);
 FDTwitterMentionsWidget.prototype.constructor = FDTwitterMentionsWidget;
 
+/**
+ * @function draw
+ * Draws the widget
+ * --------------------------------------------------------------------------
+ * @return {this} 
+ * --------------------------------------------------------------------------
+ */
+FDTwitterMentionsWidget.prototype.draw = function(data) {
+  return this;
+}
+
 // function FDTwitterMentionsWidget(widgetOptions) {
 //   // Private variables
 //   var options = widgetOptions;

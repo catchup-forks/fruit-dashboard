@@ -8,12 +8,20 @@ var FDIframeWidget = function(widgetOptions) {
  // Call parent constructor
  FDGeneralWidget.call(this, widgetOptions)
  
- // Plus attributes
- this.widgetData = null;
-
  // Automatically initialize
  this.init();
 };
 
 FDIframeWidget.prototype = Object.create(FDGeneralWidget.prototype);
 FDIframeWidget.prototype.constructor = FDIframeWidget;
+
+/**
+ * @function draw
+ * Draws the widget
+ * --------------------------------------------------------------------------
+ * @return {this} 
+ * --------------------------------------------------------------------------
+ */
+FDIframeWidget.prototype.draw = function(data) {
+  return this;
+}
