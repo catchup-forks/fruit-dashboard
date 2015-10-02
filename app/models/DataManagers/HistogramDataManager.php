@@ -88,11 +88,12 @@ abstract class HistogramDataManager extends DataManager
      * getLatestValues
      * Returning the last values in the histogram.
      * --------------------------------------------------
+     * @param boolean $diff
      * @return array
      * --------------------------------------------------
      */
-     public function getLatestValues() {
-        return self::getEntryValues($this->getLatestData());
+     public function getLatestValues($diff) {
+        return self::getEntryValues($this->getLatestData($diff));
      }
 
     /**
@@ -127,14 +128,19 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      * @param string $period
      * @param int $multiplier
+     * @param boolean $diff
      * @return array
      * --------------------------------------------------
      */
-    public function compare($period, $multiplier=1) {
-        $latestData = $this->getLatestData();
+    public function compare($period, $multiplier=1, $diff=FALSE) {
+        $latestData = $this->getLatestData($diff);
         $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
+        $histogram = $this->sortHistogram();
+        if ($diff) {
+            $histogram = self::getDiff($histogram);
+        }
 
-        foreach ($this->sortHistogram() as $entry) {
+        foreach ($histogram as $entry) {
             /* Checking for a match. */
             if (static::matchesTime($referenceTime, self::getEntryTime($entry), $period, $multiplier)) {
                 /* Creating an arrays that will hold the values. */
@@ -299,11 +305,15 @@ abstract class HistogramDataManager extends DataManager
      * getLatestData
      * Returning the last data in the histogram.
      * --------------------------------------------------
+     * @param boolean $diff
      * @return array
      * --------------------------------------------------
      */
-     protected function getLatestData() {
+     protected function getLatestData($diff=FALSE) {
         $histogram = $this->sortHistogram(FALSE);
+        if ($diff) {
+            $histogram = self::getDiff($histogram);
+        }
         /* Handle empty data */
         if ($histogram == null) {
             return array();
