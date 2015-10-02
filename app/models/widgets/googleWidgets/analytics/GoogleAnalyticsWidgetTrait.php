@@ -116,7 +116,8 @@ trait GoogleAnalyticsWidgetTrait
         /* Call parent save */
         parent::save($options);
 
-        if ($this->getSettings()['name'] == FALSE) {
+        $settings = $this->getSettings();
+        if ( ! array_key_exists('name', $settings) || $settings['name'] == FALSE) {
             $this->saveSettings(array('name' => $this->getDefaultName()));
         }
 
