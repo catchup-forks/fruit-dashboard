@@ -92,7 +92,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     public function getLatestValues($diff) {
+     public function getLatestValues($diff=FALSE) {
         return self::getEntryValues($this->getLatestData($diff));
      }
 

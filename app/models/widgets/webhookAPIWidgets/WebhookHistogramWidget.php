@@ -16,11 +16,11 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
     private static $webhookSetupFields = array('name', 'url');
     private static $webhookCriteriaFields = array('url');
 
-    /* -- Choice functions -- */
+    /* -- Choice functions --
     public function resolution() {
         $hourly = array('hours' => 'Hourly');
         return array_merge($hourly, parent::resolution());
-    }
+    }*/
 
     /**
      * getSettingsFields
