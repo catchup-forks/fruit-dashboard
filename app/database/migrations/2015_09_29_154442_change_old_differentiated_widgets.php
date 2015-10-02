@@ -39,7 +39,6 @@ class ChangeOldDifferentiatedWidgets extends Migration {
                         $widget->delete();
                         continue;
                     }
-                    $old_manager = $widget->data->manager;
                     $widget->descriptor()->associate($descriptor);
                     $widget->saveSettings(array('type' => 'diff'));
                     Log::info("Linked widget #" . $widget->id . " data to cumulative.");

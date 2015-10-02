@@ -40,6 +40,11 @@ class SaveWidgets extends Command {
         foreach (Widget::all() as $generalWidget) {
             try {
                 $widget = $generalWidget->getSpecific();
+                if (is_null($widget->dashboard)) {
+                    Log::warning("Deletet widget #" . $widget->id . " due to a broken dashboard connection.");
+                    $widget->delete();
+                    continue;
+                }
                 $widget->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */

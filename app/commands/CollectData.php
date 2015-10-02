@@ -35,6 +35,9 @@ class CollectData extends Command {
         $i = 0;
         foreach (DataManager::all() as $manager) {
             if (Carbon::now()->diffInMinutes($manager->last_updated) >= $manager->update_period) {
+                if ($manager->id != 1131) {
+                    continue;
+                }
                 $i++;
                 try {
                     $manager->getSpecific()->collectData();
