@@ -448,6 +448,23 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_sessions_per_user'],
+            array(
+                'name'         => 'Sessions per users',
+                'description'  => 'The total number of sessions divided by the total number of users.',
+                'type'         => 'google_analytics_sessions_per_user',
+                'category'     => 'google_analytics',
+                'is_premium'   => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
         WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
             array(

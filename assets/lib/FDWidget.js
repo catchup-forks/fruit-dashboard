@@ -155,7 +155,7 @@ function FDWidget(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
    * -------------------------------------------------------------------------- */
-   
+
   /**
    * @event $(options.selectors.refresh).click
    * --------------------------------------------------------------------------
@@ -170,7 +170,7 @@ function FDWidget(widgetOptions) {
   /**
    * @event $(selector).resize
    * --------------------------------------------------------------------------
-   * 
+   *
    * --------------------------------------------------------------------------
    */
   $(widgetSelector).resize(function() {
@@ -180,7 +180,7 @@ function FDWidget(widgetOptions) {
   /**
    * @event $('.carousel').on('slid.bs.carousel')
    * --------------------------------------------------------------------------
-   * Refreshes the widget on carousel slid 
+   * Refreshes the widget on carousel slid
    * --------------------------------------------------------------------------
    */
   $('.carousel').on('slid.bs.carousel', function () {
