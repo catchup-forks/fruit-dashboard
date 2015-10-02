@@ -116,6 +116,7 @@ class GoogleAnalyticsDataCollector
             if ($profile->id != $profileId) {
                 continue;
             }
+
             /* Retrieving results from API */
             try {
                 $results = $this->analytics->data_ga->get('ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
@@ -142,7 +143,6 @@ class GoogleAnalyticsDataCollector
                 $metricsData = $this->buildSimpleMetricsData($metrics, array($rows), $profileName);
             }
         }
-
         return $metricsData;
     }
 
