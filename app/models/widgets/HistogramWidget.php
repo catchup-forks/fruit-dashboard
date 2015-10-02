@@ -95,13 +95,11 @@ abstract class HistogramWidget extends CronWidget
      * Returns whether or not the diff is considered
      * good in the histogram
      * --------------------------------------------------
-     * @param int $multiplier
-     * @param string $resolution
+     * @param numeric $value
      * @return boolean
      * --------------------------------------------------
      */
-     public function isSuccess($multiplier=1, $resolution=null) {
-        $value = $this->getDiff($multiplier, $resolution);
+     public function isSuccess($value) {
         return  ($value < 0) xor static::$isHigherGood;
      }
 
@@ -138,7 +136,7 @@ abstract class HistogramWidget extends CronWidget
         if (is_null($resolution)) {
             $resolution = $this->getSettings()['resolution'];
         }
-        return array_values($this->dataManager()->compare($resolution, $multiplier))[0];
+        return array_values($this->dataManager()->compare($resolution, $multiplier, $this->isDifferentiated()))[0];
     }
 
     /**
@@ -164,7 +162,7 @@ abstract class HistogramWidget extends CronWidget
         return array(
             'value'   => $value,
             'percent' => $percent,
-            'success' => $this->isSuccess($multiplier, $resolution)
+            'success' => $this->isSuccess($value)
         );
     }
 
@@ -213,7 +211,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function getLatestValues() {
-        return $this->dataManager()->getLatestValues();
+        return $this->dataManager()->getLatestValues($this->isDifferentiated());
      }
 
     /**

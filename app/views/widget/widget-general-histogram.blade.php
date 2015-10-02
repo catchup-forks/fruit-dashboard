@@ -15,7 +15,7 @@
 
 <div class="chart-diff-data text-center">
 
-  <div class="chart-diff @if($widget->isSuccess()) text-success @else text-danger @endif">
+  <div class="chart-diff @if($widget->isSuccess($widget->getDiff())) text-success @else text-danger @endif">
   @if ($widget->getDiff() >= 0)
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
   @else
