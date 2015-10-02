@@ -15,7 +15,7 @@ Widget stats
         <div class="panel-body">
 
           <h1 class="text-center">
-            {{ $widget->getSettings()['name'] }}
+            {{ $widget->descriptor->name }}
           </h1> <!-- /.text-center -->
 
           <div class="row">
@@ -84,7 +84,7 @@ Widget stats
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
-      new FDChartOptions({page: 'singlestat'}).init();
+      new FDChartOptions({data:{page: 'singlestat'}}).init();
   </script>
   <!-- /Init FDChartOptions -->
 
@@ -102,8 +102,8 @@ Widget stats
           },
           urls: {},
           selectors: {
-            gridster: '',
-            widget:   '#chart-{{ $resolution }}',
+            widget: '#panel-{{ $resolution }}',
+            graph:  '#chart-{{ $resolution }}'
           },
           data: {
             page: 'singlestat',
@@ -117,6 +117,7 @@ Widget stats
         @foreach ($widget->getData()['datasets'] as $dataset)
           {
               'values' : [{{ implode(',', $dataset['values']) }}],
+              'name':  "{{ $dataset['name'] }}",
               'color': "{{ $dataset['color'] }}"
           },
         @endforeach
@@ -127,7 +128,7 @@ Widget stats
     $(document).ready(function () {
       // Show first tab
       $('.nav-pills a:first').tab('show');
-
+      
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
         FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->descriptor->type)}}Widget'](widgetOptions{{ $resolution }});
