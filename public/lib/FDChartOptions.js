@@ -88,7 +88,8 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsDashboard() {
     return {
-       pointDot: false,
+       pointDot: true,
+       pointDotRadius : 1.2,
        bezierCurve: true,
        bezierCurveTension : 0.35,
        animation: false

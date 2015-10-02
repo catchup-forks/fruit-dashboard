@@ -38,12 +38,12 @@ Widget stats
                     @if (!Auth::user()->subscription->getSubscriptionInfo()['PE'])
                       {{-- Allow the default chart, disable others --}}
                       @if ($resolution != $widget->getSettingsFields()['resolution']['default'])
-                        @include('widget.widget-singlestat-premium-feature-needed')
+                        @include('widget.singlestat-premium-feature-needed')
                       @else
-                        @include('widget.widget-singlestat-element')
+                        @include('widget.singlestat-element')
                       @endif
                     @else
-                      @include('widget.widget-singlestat-element')
+                      @include('widget.singlestat-element')
                     @endif
                   </div> <!-- /.col-md-12 -->
                 @endforeach
@@ -80,7 +80,7 @@ Widget stats
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->descriptor->category.'/FD'. str_replace(' ', '', ucwords(str_replace('_',' ', $widget->descriptor->type))).'Widget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->descriptor->category.'/FD'. Utilities::underscoreToCamelCase($widget->descriptor->type).'Widget.js') }}"></script>
   <!-- /FDWidget* classes -->
 
   <!-- Init FDChartOptions -->
@@ -130,14 +130,14 @@ Widget stats
     @endforeach
 
     $(document).ready(function () {
+      // Show first tab
+      $('.nav-pills a:first').tab('show');
+      
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
         FDWidget{{ $resolution }} = new FDWidget(widgetOptions{{ $resolution }});
       @endforeach
-      // Show first tab
-      // FIXME needed because canvas size is 0 initially
-      $('.nav-pills a:last').tab('show');
-      $('.nav-pills a:first').tab('show');
+
       // Show graph on change
       $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
         window['FDWidget' + $(e.target).data('resolution')].reinit();

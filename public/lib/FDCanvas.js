@@ -30,8 +30,14 @@ function FDCanvas(widgetOptions) {
    */
   function size() {
     // Set margins
-    var widthMargin = 20;
-    var heigthMargin = 35;
+    if (options.page = 'dashboard') {
+      widthMargin = 20;
+      heigthMargin = 35;
+    } else if (options.page = 'singlestat') {
+      widthMargin = 0;
+      heigthMargin = 0;
+    };
+
     // Return
     return {'width': $(widgetSelector).first().width()-widthMargin,
             'height': $(widgetSelector).first().height()-heigthMargin};

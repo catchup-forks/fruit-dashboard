@@ -407,7 +407,7 @@ class GeneralWidgetController extends BaseController {
             }
         }
         /* Rendering view. */
-        return View::make('widget.histogram-singlestat')
+        return View::make('singlestat.singlestat')
             ->with('widget', $widget)
             ->with('values', $values);
     }

@@ -143,7 +143,7 @@
 
   <!-- FDWidget* classes -->
   @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
-    <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. str_replace(' ', '', ucwords(str_replace('_',' ', $descriptor->type))).'Widget.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. Utilities::underscoreToCamelCase($descriptor->type).'Widget.js') }}"></script>
   @endforeach
   <!-- /FDWidget* classes -->
 
