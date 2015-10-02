@@ -28,10 +28,6 @@ var gridsterGlobalOptions = {
           state: '{{ $widget->state }}',
         },
         features: {
-          resize:  true,
-          reload:  true,
-          refresh: true,
-          remove:  true,
           drag:    true,
         },
         urls: {

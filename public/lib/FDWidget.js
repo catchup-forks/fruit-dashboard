@@ -104,17 +104,15 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function refresh() {
-    if (options.features.refresh) {
-      if (logging) { console.log('Refreshing data for widget #' + options.general.id); }
-      // Show loading state
-      $(options.selectors.wrapper).hide();
-      $(options.selectors.loading).show();
-      // Send refresh data token
-      send({'refresh_data': true}, function(){});
-      // Poll widget state, and load if finished
-      load();
-      if (logging) { console.log('...done | Refreshing data for widget #' + options.general.id); }
-    }
+    if (logging) { console.log('Refreshing data for widget #' + options.general.id); }
+    // Show loading state
+    $(options.selectors.wrapper).hide();
+    $(options.selectors.loading).show();
+    // Send refresh data token
+    send({'refresh_data': true}, function(){});
+    // Poll widget state, and load if finished
+    load();
+    if (logging) { console.log('...done | Refreshing data for widget #' + options.general.id); }
   };
 
   /**
@@ -138,22 +136,20 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function remove() {
-    if (options.features.remove) {
-      if (logging) { console.log('Removing widget #' + options.general.id); }
-      // Call ajax
-      $.ajax({
-        type: "POST",
-        data: null,
-        url: options.urls.deleteUrl,
-        success: function(data) {
-          easyGrowl('success', "You successfully deleted the widget", 3000);
-        },
-        error: function(){
-          easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
-        }
-      });
-      if (logging) { console.log('...done | Removing widget #' + options.general.id); }
-    };
+    if (logging) { console.log('Removing widget #' + options.general.id); }
+    // Call ajax
+    $.ajax({
+      type: "POST",
+      data: null,
+      url: options.urls.deleteUrl,
+      success: function(data) {
+        easyGrowl('success', "You successfully deleted the widget", 3000);
+      },
+      error: function(){
+        easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
+      }
+    });
+    if (logging) { console.log('...done | Removing widget #' + options.general.id); }
   }
 
   /* -------------------------------------------------------------------------- *
@@ -166,12 +162,10 @@ function FDWidget(widgetOptions) {
    * Handles the refresh widget event
    * --------------------------------------------------------------------------
    */
-  if (options.features.refresh) {
-    $(options.selectors.refresh).click(function (e) {
-      e.preventDefault();
-      refresh();
-    });
-  };
+  $(options.selectors.refresh).click(function (e) {
+    e.preventDefault();
+    refresh();
+  });
 
   /**
    * @event $(selector).resize
@@ -179,11 +173,9 @@ function FDWidget(widgetOptions) {
    * 
    * --------------------------------------------------------------------------
    */
-  if (options.features.resize) {
-    $(widgetSelector).resize(function() {
-      reinit();
-    });
-  }
+  $(widgetSelector).resize(function() {
+    reinit();
+  });
 
   /**
    * @event $('.carousel').on('slid.bs.carousel')
@@ -191,11 +183,9 @@ function FDWidget(widgetOptions) {
    * Refreshes the widget on carousel slid 
    * --------------------------------------------------------------------------
    */
-  if (options.features.reload) {
-    $('.carousel').on('slid.bs.carousel', function () {
-      reinit();
-    })
-  }
+  $('.carousel').on('slid.bs.carousel', function () {
+    reinit();
+  })
 
 } // FDWidget
 

@@ -69,7 +69,6 @@ Widget stats
   @section('pageScripts')
 
   <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDWidget.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
@@ -80,7 +79,7 @@ Widget stats
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->descriptor->category.'/FD'. str_replace(' ', '', ucwords(str_replace('_',' ', $widget->descriptor->type))).'Widget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->descriptor->category.'/FD'. Utilities::underscoreToCamelCase($widget->descriptor->type).'Widget.js') }}"></script>
   <!-- /FDWidget* classes -->
 
   <!-- Init FDChartOptions -->
@@ -99,10 +98,6 @@ Widget stats
             state: '{{ $widget->state }}',
           },
           features: {
-            resize:  false,
-            reload:  false,
-            refresh: false,
-            remove:  false,
             drag:    false,
           },
           urls: {},
@@ -135,7 +130,7 @@ Widget stats
       
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
-        FDWidget{{ $resolution }} = new FDWidget(widgetOptions{{ $resolution }});
+        FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->descriptor->type)}}Widget'](widgetOptions{{ $resolution }});
       @endforeach
 
       // Show graph on change
