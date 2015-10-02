@@ -42,6 +42,13 @@ abstract class GeneralServiceConnector
                 $dataManager->delete();
             }
         }
+
+        /* Deleting all widgets*/
+        foreach ($this->user->widgets as $widget) {
+            if ($widget->descriptor->category == static::$service) {
+                $widget->delete();
+            }
+        }
     }
 
     /**

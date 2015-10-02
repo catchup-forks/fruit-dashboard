@@ -116,6 +116,11 @@ trait GoogleAnalyticsWidgetTrait
         /* Call parent save */
         parent::save($options);
 
+        $settings = $this->getSettings();
+        if ( ! array_key_exists('name', $settings) || $settings['name'] == FALSE) {
+            $this->saveSettings(array('name' => $this->getDefaultName()));
+        }
+
         $collector = new GoogleAnalyticsDataCollector($this->user());
         foreach ($this->user()->googleAnalyticsProperties as $property) {
             $profiles = array();

@@ -85,21 +85,18 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
     }
 
     /**
-     * save
-     * Calling refreshWidget
+     * saveSettings
+     * Collecting new data on change.
      * --------------------------------------------------
-     * @param array options
-     * @return string
+     * @param array $inputSettings
+     * @param boolean $commit
      * --------------------------------------------------
     */
-    public function save(array $options=array()) {
-        $oldSettings = $this->getRawSettings();
-        parent::save($options);
-        if ($oldSettings != $this->getSettings()) {
+    public function saveSettings(array $inputSettings, $commit=TRUE) {
+        $oldSettings = $this->getSettings();
+        parent::saveSettings($inputSettings, $commit);
+        if ($this->getSettings() != $oldSettings) {
             $this->updateData();
-        }
-        if ($this->getSettings()['name'] == FALSE) {
-            $this->saveSettings(array('name' => $this->getDefaultName()));
         }
     }
 

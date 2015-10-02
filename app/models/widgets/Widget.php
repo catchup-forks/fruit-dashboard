@@ -128,22 +128,6 @@ class Widget extends Eloquent
     }
 
     /**
-     * getRawSettings
-     * Returns the DB value of the settings.
-     * Useful, when need to access settings before save.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-    */
-    protected function getRawSettings() {
-        $widget = Widget::find($this->id);
-        if (is_null($widget)) {
-            return array();
-        }
-        return Widget::find($this->id)->getSettings();
-    }
-
-    /**
      * getSpecific
      * Getting the correct widget from a general widget,
      * --------------------------------------------------
@@ -378,7 +362,6 @@ class Widget extends Eloquent
         if (empty($criteriaFields)) {
             return TRUE;
         }
-
         $criteria = $this->getCriteria();
         foreach ($criteriaFields as $setting) {
             if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == '')
