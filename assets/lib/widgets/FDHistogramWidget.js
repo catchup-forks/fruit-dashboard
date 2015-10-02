@@ -10,12 +10,7 @@ var FDHistogramWidget = function(widgetOptions) {
    * -------------------------------------------------------------------------- */
   this.options    = widgetOptions;
   this.widgetData = null;
-  this.chart      = new FDChart({
-                          selector: this.options.selectors.gridster + this.options.selectors.widget,
-                          page:     this.options.data.page,
-                          urls:     this.options.urls,
-                          features: this.options.features,
-                    });
+  this.chart      = new FDChart(this.options);
 
   // AutoLoad
   this.init();
@@ -72,32 +67,7 @@ FDHistogramWidget.prototype.refresh = function(data) {
  * --------------------------------------------------------------------------
  */
 FDHistogramWidget.prototype.updateData = function(rawData) {
-  var processedData = {
-    labels  : [],
-    datasets: [
-      {
-        values: [],
-        name:   this.options.general.name,
-        color: '105 ,153, 209'
-      }
-    ],
-  };
-
-  // Transform raw db data (rawData->processedData)
-  if (rawData == undefined) {
-    processedData = rawData;
-  } else if ("datasets" in rawData) {
-    processedData = rawData;
-  } else {
-    for (i = 0; i < rawData.length; ++i) {
-      processedData.labels.push(rawData[i]['datetime']);
-      processedData.datasets[0].values.push(rawData[i]['value']);
-    }
-  }
-
-  this.widgetData = processedData;
-
-  // Return
+  this.widgetData = rawData;
   return this;
 }
 

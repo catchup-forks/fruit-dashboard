@@ -43,6 +43,7 @@
     @foreach ($widget->getData()['datasets'] as $dataset)
       {
           'values' : [{{ implode(',', $dataset['values']) }}],
+          'name' : "{{ $dataset['name'] }}",
           'color': "{{ $dataset['color'] }}"
       },
     @endforeach

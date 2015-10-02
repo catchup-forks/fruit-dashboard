@@ -13,12 +13,16 @@ var gridsterGlobalOptions = {
 // Create FDGridster objects
 @foreach (Auth::user()->dashboards as $dashboard)
   var gridsterOptions{{ $dashboard->id }} = $.extend({},
-     gridsterGlobalOptions,
-     {id:        '{{ $dashboard->id }}',
+    gridsterGlobalOptions,
+    {
+      id:        '{{ $dashboard->id }}',
       isLocked:  {{ $dashboard->is_locked }},
-      namespace: '#gridster-{{ $dashboard->id }}'}
+      namespace: '#gridster-{{ $dashboard->id }}',
+      gridsterSelector: 'div.gridster-container',
+      widgetsSelector:  'div.gridster-widget',
+    }
   );
-  var widgetsData{{ $dashboard->id }} = [
+  var widgetsOptions{{ $dashboard->id }} = [
     @foreach ($dashboard->widgets as $widget)
       {
         general: {
@@ -40,6 +44,7 @@ var gridsterGlobalOptions = {
           wrapper: '#widget-wrapper-{{ $widget->id }}',
           loading: '#widget-loading-{{ $widget->id }}',
           refresh: '#widget-refresh-{{ $widget->id }}',
+          graph:   '[id^=chart-container]',
         },
         data: {
           page: 'dashboard',
@@ -54,7 +59,7 @@ var gridsterGlobalOptions = {
 // Initialize FDGridster objects on DOM load
 $(document).ready(function() {
   @foreach (Auth::user()->dashboards as $dashboard)
-    FDGridster{{ $dashboard->id }}.init().build(widgetsData{{ $dashboard->id }});
+    FDGridster{{ $dashboard->id }}.init().build(widgetsOptions{{ $dashboard->id }});
   @endforeach
 });
 
