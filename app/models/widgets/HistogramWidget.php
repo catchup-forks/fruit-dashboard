@@ -162,7 +162,7 @@ abstract class HistogramWidget extends CronWidget
         return array(
             'value'   => $value,
             'percent' => $percent,
-            'success' => $this->isSuccess($value)
+            'success' => $this->isSuccess($percent)
         );
     }
 
