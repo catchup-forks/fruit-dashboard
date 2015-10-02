@@ -52,7 +52,7 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
     public function saveSettings(array $inputSettings, $commit=TRUE) {
         $oldSettings = $this->getSettings();
         parent::saveSettings($inputSettings, $commit);
-        if ($this->getSettings() != $oldSettings) {
+        if ($this->getSettings() != $oldSettings && $this->dataExists()) {
             $this->updateData();
         }
     }
