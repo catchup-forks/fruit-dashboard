@@ -45,6 +45,7 @@ class SaveWidgets extends Command {
                     $widget->delete();
                     continue;
                 }
+                Log::info("Saving widget #" . $widget->id . " (" . $widget->descriptor->type . ")");
                 $widget->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */
