@@ -84,7 +84,7 @@ Widget stats
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
-      new FDChartOptions({page: 'singlestat'}).init();
+      new FDChartOptions({data:{page: 'singlestat'}}).init();
   </script>
   <!-- /Init FDChartOptions -->
 
@@ -102,8 +102,8 @@ Widget stats
           },
           urls: {},
           selectors: {
-            gridster: '',
-            widget:   '#chart-{{ $resolution }}',
+            widget: '#panel-{{ $resolution }}',
+            graph:  '#chart-{{ $resolution }}'
           },
           data: {
             page: 'singlestat',
@@ -117,6 +117,7 @@ Widget stats
         @foreach ($widget->getData()['datasets'] as $dataset)
           {
               'values' : [{{ implode(',', $dataset['values']) }}],
+              'name':  "{{ $dataset['name'] }}",
               'color': "{{ $dataset['color'] }}"
           },
         @endforeach

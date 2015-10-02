@@ -10,15 +10,10 @@ function FDGridster(gridsterOptions) {
   * -------------------------------------------------------------------------- */
   // Global
   var options  = gridsterOptions;
-  
   // Gridster related
-  var gridsterSelector = options.namespace + ' div.gridster-container';
-  var gridster         = null;
-  
+  var gridster = null;
   // Widgets related
-  var widgetsSelector   = options.namespace + ' div.gridster-widget';
-  var hoverableSelector = options.namespace + ' *[data-hover="hover-unlocked"]';
-  var widgets           = [];
+  var widgets  = [];
 
   // Public functions
   this.init   = init;
@@ -40,8 +35,11 @@ function FDGridster(gridsterOptions) {
   function build(widgetsOptions) {
     // Build widgets
     for (var i = widgetsOptions.length - 1; i >= 0; i--) {
-      // Add parent selector to options
-      widgetsOptions[i].selectors.gridster = widgetsSelector;
+      // Add parent selector to widget selector
+      widgetsOptions[i].selectors.widget = 
+        options.namespace + ' ' +
+        options.widgetsSelector + 
+        widgetsOptions[i].selectors.widget;
       // Initialize widget
       var widget = new FDWidget(widgetsOptions[i]);
       // Poll state from js if the wiget is loading
@@ -74,10 +72,10 @@ function FDGridster(gridsterOptions) {
     
     // Create gridster.js object and lock / unlock
     if (options.isLocked) {
-      gridster = $(gridsterSelector).gridster(gridOptions).data('gridster').disable();
+      gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster').disable();
       lock();
     } else {
-      gridster = $(gridsterSelector).gridster(gridOptions).data('gridster');
+      gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
       unlock();
     };
 
@@ -124,16 +122,17 @@ function FDGridster(gridsterOptions) {
    * --------------------------------------------------------------------------
    */
   function handleHover(isLocked) {
+    var hoverableSelector = options.namespace + ' *[data-hover="hover-unlocked"]';
     if (isLocked) {
       $.each($(hoverableSelector), function(){
         $(this).children(":first").css('display', 'none');
       });
-      $(widgetsSelector).removeClass('can-hover');
+      $(options.widgetsSelector).removeClass('can-hover');
     } else {
       $.each($(hoverableSelector), function(){
         $(this).children(":first").css('display', '');
       });
-      $(widgetsSelector).addClass('can-hover');
+      $(options.widgetsSelector).addClass('can-hover');
     };
     
   }
@@ -182,7 +181,7 @@ function FDGridster(gridsterOptions) {
     // Build options dictionary
     defaultOptions = {
       namespace:                options.namespace,
-      widget_selector:          widgetsSelector.replace(options.namespace + ' ',''),
+      widget_selector:          options.widgetsSelector,
       widget_base_dimensions:   [options.widget_width, options.widget_height],
       widget_margins:           [options.widgetMargin, options.widgetMargin],
       min_cols:                 options.numberOfCols,
@@ -215,7 +214,7 @@ function FDGridster(gridsterOptions) {
     resizeOptions = {
       enabled: true,
       start: function() {
-        $(widgetsSelector).toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
       },
       stop: function(e, ui, $widget) {
         $.ajax({
@@ -223,7 +222,7 @@ function FDGridster(gridsterOptions) {
           data: {'positioning': serializePositioning()},
           url: options.saveUrl
          });
-        $(widgetsSelector).toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
       }
     }
 
@@ -242,7 +241,7 @@ function FDGridster(gridsterOptions) {
     // Build options dictionary
     draggingOptions = {
       start: function() {
-        $(widgetsSelector).toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
       },
       stop: function(e, ui, $widget) {
         $.ajax({
@@ -250,7 +249,7 @@ function FDGridster(gridsterOptions) {
           data: {'positioning': serializePositioning()},
           url: options.saveUrl
         });
-        $(widgetsSelector).toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
        }
     }
 

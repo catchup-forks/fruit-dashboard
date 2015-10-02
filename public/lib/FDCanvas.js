@@ -9,9 +9,9 @@ function FDCanvas(widgetOptions) {
   *                                 ATTRIBUTES                                 *
   * -------------------------------------------------------------------------- */
   // Private variables
-  var options           = widgetOptions;
-  var widgetSelector    = options.selector;
-  var containerSelector = options.selector + ' [id^=chart-container]';
+  var options        = widgetOptions;
+  var widgetSelector = options.selectors.widget;
+  var graphSelector  = options.selectors.widget + ' ' + options.selectors.graph;
 
   // Public functions
   this.reinsert     = reinsert;
@@ -30,10 +30,10 @@ function FDCanvas(widgetOptions) {
    */
   function size() {
     // Set margins
-    if (options.page = 'dashboard') {
+    if (options.data.page = 'dashboard') {
       widthMargin = 20;
       heigthMargin = 35;
-    } else if (options.page = 'singlestat') {
+    } else if (options.data.page = 'singlestat') {
       widthMargin = 0;
       heigthMargin = 0;
     };
@@ -51,8 +51,8 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function get2dContext() {
-    if ($(containerSelector).find('canvas').length) {
-      return $(containerSelector).find('canvas')[0].getContext("2d");
+    if ($(graphSelector).find('canvas').length) {
+      return $(graphSelector).find('canvas')[0].getContext("2d");
     } else {
       return false;
     };
@@ -70,12 +70,12 @@ function FDCanvas(widgetOptions) {
     // Get the widget size
     canvasSize = size();
     // Delete current canvas
-    $(containerSelector).empty();
+    $(graphSelector).empty();
     // Add new canvas
-    if (options.page == 'dashboard') {
-      $(containerSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
-    } else if (options.page == 'singlestat') {
-      $(containerSelector).append('<canvas class="img-responsive canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    if (options.data.page == 'dashboard') {
+      $(graphSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+    } else if (options.data.page == 'singlestat') {
+      $(graphSelector).append('<canvas class="img-responsive canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     };
 
     // Return
@@ -86,37 +86,37 @@ function FDCanvas(widgetOptions) {
    *                                  EVENTS                                    *
    * -------------------------------------------------------------------------- */
   /**
-   * @event $(containerSelector).mousedown
+   * @event $(graphSelector).mousedown
    * --------------------------------------------------------------------------
    * Checks the click/drag moves
    * --------------------------------------------------------------------------
    */
   if (options.features.drag) {
-    $(containerSelector).mousedown(function() {
+    $(graphSelector).mousedown(function() {
       isDragging = false;
     })
   };
 
   /**
-   * @event $(containerSelector).mousemove
+   * @event $(graphSelector).mousemove
    * --------------------------------------------------------------------------
    * Checks the click/drag moves
    * --------------------------------------------------------------------------
    */
   if (options.features.drag) {
-    $(containerSelector).mousemove(function() {
+    $(graphSelector).mousemove(function() {
       isDragging = true;
     })
   };
 
   /**
-   * @event $(containerSelector).mouseup
+   * @event $(graphSelector).mouseup
    * --------------------------------------------------------------------------
    * Checks the click/drag moves
    * --------------------------------------------------------------------------
    */
   if (options.features.drag) {
-    $(containerSelector).mouseup(function() {
+    $(graphSelector).mouseup(function() {
       var wasDragging = isDragging;
       if (!wasDragging) {
         window.location = options.urls.statUrl;

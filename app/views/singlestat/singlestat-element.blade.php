@@ -1,4 +1,4 @@
-<div class="panel fill panel-default panel-transparent">
+<div id="panel-{{ $resolution }}" class="panel fill panel-default panel-transparent" style="height:400px">
   <div class="panel-heading">
     <h3 class="panel-title">
       @if (($widget->getSettings()['resolution'] == $resolution) && ($widget->state != 'hidden'))

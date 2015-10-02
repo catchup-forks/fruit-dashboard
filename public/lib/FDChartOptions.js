@@ -6,7 +6,7 @@
  */
 function FDChartOptions(widgetOptions) {
   // Private variables
-  var page = widgetOptions.page;
+  var page = widgetOptions.data.page;
   
   // Public functions
   this.init = init;

@@ -9,7 +9,7 @@ function FDWidget(widgetOptions) {
    *                                 ATTRIBUTES                                 *
    * -------------------------------------------------------------------------- */
   var options         = widgetOptions;
-  var widgetSelector  = options.selectors.gridster + options.selectors.widget;
+  var widgetSelector  = options.selectors.widget;
   var widgetClass     = 'FD' + options.general.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
   var specific        = new window[widgetClass](options);
 

@@ -6,7 +6,7 @@
  */
 function FDChartOptions(widgetOptions) {
   // Private variables
-  var page = widgetOptions.page;
+  var page = widgetOptions.data.page;
   
   // Public functions
   this.init = init;
@@ -88,7 +88,8 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsDashboard() {
     return {
-       pointDot: false,
+       pointDot: true,
+       pointDotRadius : 1.2,
        bezierCurve: true,
        bezierCurveTension : 0.35,
        animation: false
