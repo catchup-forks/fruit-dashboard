@@ -208,6 +208,18 @@ class GoogleAnalyticsDataCollector
         return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('avgSessionDuration'))['avgSessionDuration'];
    }
 
+    /**
+     * getSessionsPerUser
+     * Returning the number of sessions per user.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @param $profileId
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getSessionsPerUser($property, $profileId) {
+        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('sessionsPerUser'))['sessionsPerUser'];
+   }
 
     /**
      * getSessions

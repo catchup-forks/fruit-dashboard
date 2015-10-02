@@ -34,10 +34,9 @@ trait GoogleAnalyticsHistogramDataManagerTrait
      * @return FacebookDataCollector
      * --------------------------------------------------
      */
-    private function getCollector() {
+    protected function getCollector() {
         $collector = new GoogleAnalyticsDataCollector($this->user);
         return $collector;
     }
-
 }
 ?>
