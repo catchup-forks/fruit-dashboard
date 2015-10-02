@@ -16,11 +16,11 @@ class ApiHistogramWidget extends MultipleHistogramWidget
     private static $APISetupFields = array('name', 'url');
     private static $APICriteriaFields = array('url');
 
-    /* -- Choice functions -- */
+    /* -- Choice functions --
     public function resolution() {
         $hourly = array('hours' => 'Hourly');
         return array_merge($hourly, parent::resolution());
-    }
+    }*/
 
     /**
      * getSettingsFields
