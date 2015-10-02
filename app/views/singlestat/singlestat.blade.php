@@ -15,7 +15,7 @@ Widget stats
         <div class="panel-body">
 
           <h1 class="text-center">
-            {{ $widget->descriptor->name }}
+            {{ $widget->getSettings()['name'] }}
           </h1> <!-- /.text-center -->
 
           <div class="row">
@@ -128,7 +128,7 @@ Widget stats
     $(document).ready(function () {
       // Show first tab
       $('.nav-pills a:first').tab('show');
-      
+
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
         FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->descriptor->type)}}Widget'](widgetOptions{{ $resolution }});
