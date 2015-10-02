@@ -4,22 +4,14 @@
  * Class function for the TwitterFollowersCount Widget
  * --------------------------------------------------------------------------
  */
-function FDTwitterFollowersCountWidget(widgetOptions) {
-  // Private variables
-  var options = widgetOptions;
-  
-  // Public functions
-  this.refresh = refresh;
+var FDTwitterFollowersCountWidget = function(widgetOptions) {
+ // Call parent constructor
+ FDGeneralWidget.call(this, widgetOptions)
+ 
+ // Automatically initialize
+ this.init();
+};
 
-  /**
-   * @function refresh
-   * Handles the specific refresh procedure to the widget
-   * --------------------------------------------------------------------------
-   * @return {this} 
-   * --------------------------------------------------------------------------
-   */
-  function refresh(data) {
-    return this;
-  }
+FDTwitterFollowersCountWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDTwitterFollowersCountWidget.prototype.constructor = FDTwitterFollowersCountWidget;
 
-} // FDTwitterFollowersCountWidget
