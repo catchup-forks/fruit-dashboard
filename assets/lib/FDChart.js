@@ -1,81 +1,57 @@
 /**
  * @class FDChart
  * --------------------------------------------------------------------------
- * Class function for the gridster elements
+ * Class function for the charts
  * --------------------------------------------------------------------------
  */
-function FDChart(widgetID) {
+function FDChart(widgetOptions) {
   // Private variables
-  var canvas = $('#' + widgetID + '-chart')[0];
+  var options      = widgetOptions;
+  var canvas       = new FDCanvas(options);
+  var chartOptions = new FDChartOptions(options)
 
   // Public functions
   this.draw = draw;
 
   /**
-   * @function createDataSet
-   * --------------------------------------------------------------------------
-   * Creates a dataset for the chart
-   * @return {dictionary} the generated dataset
-   * --------------------------------------------------------------------------
-   */
-  function createDataSet(values, name, color) {
-    return {
-      label: name,
-      fillColor : "rgba(" + color + ",0.2)",
-      strokeColor : "rgba(" + color + ",1)",
-      pointColor : "rgba(" + color + ",1)",
-      pointStrokeColor : "#fff",
-      pointHighlightFill : "#fff",
-      pointHighlightStroke : "rgba(" + color + ",1)",
-      data: values
-    }
-  }
-
-  /**
    * @function draw
    * --------------------------------------------------------------------------
    * Draws the chart
-   * @param {dictionary} chartData | The chart data
-   * @param {dictionary} options   | the options for the chart
-   * @return {true} 
+   * @param {string} type | the chart type
+   * @return {this}
    * --------------------------------------------------------------------------
    */
-  function draw(chartData, options) {
-    switch(options['type']) {
+  function draw(type, data) {
+    // Clear the existing chart
+    clear();
+
+    // Draw chart
+    switch(type) {
       case 'line':
       default:
-          drawLineChart(chartData, options['chartJSOptions']);
+          var canvasContext = canvas.get2dContext();
+          if (canvasContext) {
+            new Chart(canvasContext).Line(
+              chartOptions.transformLineChartDatasets(data), 
+              chartOptions.getLineChartOptions())
+          };
           break;
     }
 
     // return
-    return true;
+    return this;
   }
 
   /**
-   * @function drawLineChart
+   * @function clear
    * --------------------------------------------------------------------------
-   * Draws a line chart
-   * @param {dictionary} data | The chart data
-   * @param {dictionary} options | The chart options
-   * @return {true} 
+   * Clears the previous chart
+   * @return {this}
    * --------------------------------------------------------------------------
    */
-  function drawLineChart(data, options) {
-    // Build data.
-    var rawDatasets = data['datasets'];
-    var transformedData = {
-      labels: data['labels'],
-      datasets: []
-    };
-
-    // Transform and push the datasets
-    for (i = 0; i < rawDatasets.length; ++i) {
-      transformedData.datasets.push(createDataSet(rawDatasets[i]['values'], rawDatasets[i]['name'], rawDatasets[i]['color']));
-    }
-
-    // Draw chart.
-    new Chart(canvas.getContext("2d")).Line(transformedData, options);
+  function clear() {
+    // Reinsert canvas
+    canvas.reinsert();
   }
 
 } // FDChart

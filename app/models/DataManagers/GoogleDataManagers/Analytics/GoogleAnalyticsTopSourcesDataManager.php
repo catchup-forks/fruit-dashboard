@@ -11,7 +11,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
     );
     private static $dimensions = 'source';
     private static $sortBy = '-ga:sessions';
-    private static $metrics = array('sessions', 'users', 'hits');
+    private static $metrics = array('sessions', 'users');
 
 
     /**
@@ -52,7 +52,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 
         /* Inserting rows. */
         foreach ($metricsData as $metric=>$row) {
-            $this->insert(array_merge(array('Metric' => $metric), $row));
+            $this->insert(array_merge(array('Source' => $metric), $row));
         }
     }
 
@@ -69,7 +69,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         $this->clearTable();
 
         /* Adding cols. */
-        $this->addCol('Metric');
+        $this->addCol('Source');
         foreach (self::$metrics as $metric) {
             $this->addCol(ucwords($metric));
         }

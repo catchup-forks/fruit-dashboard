@@ -86,7 +86,7 @@ class ServiceConnectionController extends BaseController
     }
 
     /**
-     * anyDisconnectBraintree
+     * anyBraintreeDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's braintree connection.
      * --------------------------------------------------
@@ -194,7 +194,8 @@ class ServiceConnectionController extends BaseController
      }
 
     /**
-     * anyDisconnectTwitter * --------------------------------------------------
+     * anyTwitterDisconnect
+     * --------------------------------------------------
      * @return Deletes the logged in user's twitter connection.
      * --------------------------------------------------
      */
@@ -389,6 +390,24 @@ class ServiceConnectionController extends BaseController
         return Redirect::to($this->getReferer())
             ->with('success', 'Connection successful.');
     }
+    /**
+
+     * anyFacebookRefreshPages
+     * --------------------------------------------------
+     * @return Refreshes a user's facebook pages.
+     * --------------------------------------------------
+     */
+    public function anyFacebookRefreshPages() {
+        /* Try to disconnect */
+        try {
+            $collector = new FacebookDataCollector(Auth::user());
+            $collector->savePages();
+
+        } catch (ServiceNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::back();
+    }
 
     /**
      * ================================================== *
@@ -405,13 +424,13 @@ class ServiceConnectionController extends BaseController
     public function anyGoogleAnalyticsConnect() {
         $route = null;
         if (Session::pull('createDashboard')) {
-            $route = 'service.google-analytics.select-properties';
+            $route = 'service.google_analytics.select-properties';
         }
         return $this->connectGoogle("GoogleAnalyticsConnector", $route);
      }
 
     /**
-     * anyDisconnectGoogle
+     * anyGoogleAnalyticsDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's GA connection.
      * --------------------------------------------------
@@ -421,7 +440,7 @@ class ServiceConnectionController extends BaseController
     }
 
     /**
-     * anyGoogleCalendarConnectanyGoogleConnect
+     * anyGoogleCalendarConnect
      * --------------------------------------------------
      * @return connects a user to GA.
      * --------------------------------------------------
@@ -431,7 +450,7 @@ class ServiceConnectionController extends BaseController
      }
 
     /**
-     * anyDisconnectGoogle
+     * anyGoogleCalendarDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's GA connection.
      * --------------------------------------------------
@@ -480,7 +499,7 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer());
         }
 
-        return View::make('service.google-analytics.select-properties')
+        return View::make('service.google_analytics.select-properties')
             ->with('properties', $properties);
     }
 
@@ -525,6 +544,25 @@ class ServiceConnectionController extends BaseController
         return Redirect::to($this->getReferer())
             ->with('success', $message);
     }
+
+    /**
+     * anyGoogleAnalyticsRefreshProperties
+     * --------------------------------------------------
+     * @return Refreshes a user's google analytics properties.
+     * --------------------------------------------------
+     */
+    public function anyGoogleAnalyticsRefreshProperties() {
+        /* Try to disconnect */
+        try {
+            $collector = new GoogleAnalyticsDataCollector(Auth::user());
+            $collector->saveProperties();
+
+        } catch (ServiceNotConnected $e) {}
+
+        /* Redirect */
+        return Redirect::back();
+    }
+
     /**
      * ================================================== *
      *                       STRIPE                       *
@@ -590,7 +628,7 @@ class ServiceConnectionController extends BaseController
         return Redirect::to(StripeConnector::getStripeConnectURI(route('service.stripe.connect')));
      }
     /**
-     * anyDisconnectStripe
+     * anyStripeDisconnect
      * --------------------------------------------------
      * @return Deletes the logged in user's stripe connection.
      * --------------------------------------------------

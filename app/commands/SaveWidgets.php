@@ -40,12 +40,18 @@ class SaveWidgets extends Command {
         foreach (Widget::all() as $generalWidget) {
             try {
                 $widget = $generalWidget->getSpecific();
+                if (is_null($widget->dashboard)) {
+                    Log::warning("Deleted widget #" . $widget->id . " due to a broken dashboard connection.");
+                    $widget->delete();
+                    continue;
+                }
+                Log::info("Saving widget #" . $widget->id . " (" . $widget->descriptor->type . ")");
                 $widget->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */
                 $widget->delete();
             } catch (Exception $e) {
-                Log::error('Error found while running widgets:save on widget #' . $widget->id . '. message: ' . $e->getMessage());
+                Log::error('Error found while running ' . get_class($this) . ' on widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
         }
     }

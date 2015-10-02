@@ -4,43 +4,113 @@
  * Class function for the gridster elements
  * --------------------------------------------------------------------------
  */
-function FDGridster(dashboardID) {
-  // Private variables
-  var namespace   = '#gridster-' + dashboardID
-  var selector    = $('#gridster-' + dashboardID + ' div.gridster-container');
-  var widgetSelector = 'div.gridster-player';
-  var players     = $('#gridster-' + dashboardID + ' div.gridster-player');
-  var gridster    = null; 
+function FDGridster(gridsterOptions) {
+ /* -------------------------------------------------------------------------- *
+  *                                 ATTRIBUTES                                 *
+  * -------------------------------------------------------------------------- */
+  // Global
+  var options  = gridsterOptions;
+  // Gridster related
+  var gridster = null;
+  // Widgets related
+  var widgets  = [];
 
   // Public functions
-  this.initialize = initialize;
-  this.lockGrid   = lockGrid;
-  this.unlockGrid = unlockGrid;
+  this.init   = init;
+  this.build  = build;
+  this.lock   = lock;
+  this.unlock = unlock;
+
+  /* -------------------------------------------------------------------------- *
+   *                                 FUNCTIONS                                  *
+   * -------------------------------------------------------------------------- */
 
   /**
-   * @function initialize
+   * @function build
    * --------------------------------------------------------------------------
-   * Initializes a gridster JS object
-   * @param {boolean} isLocked | true if the grid is locked, false if it isn't
-   * @return {gridster.js element} gridster | The initializes gridster.js element
+   * Builds the widget objects from the widget data
+   * @return {this}
    * --------------------------------------------------------------------------
    */
-  function initialize(isLocked, options) {
+  function build(widgetsOptions) {
+    // Build widgets
+    for (var i = widgetsOptions.length - 1; i >= 0; i--) {
+      // Add parent selector to widget selector
+      widgetsOptions[i].selectors.widget = 
+        options.namespace + ' ' +
+        options.widgetsSelector + 
+        widgetsOptions[i].selectors.widget;
+      // Initialize widget
+      var widget = new FDWidget(widgetsOptions[i]);
+      // Poll state from js if the wiget is loading
+      if (widgetsOptions[i].state == 'loading') {
+        widget.load();
+      };
+      // Add to widgets array
+      widgets.push({'id': widgetsOptions[i].general.id, 'widget': widget});
+    };
+        
+    // return
+    return this;
+  }
+
+
+  /**
+   * @function init
+   * --------------------------------------------------------------------------
+   * Initializes a gridster JS object
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function init() {
     // Build options
-    options = $.extend({}, 
-                  getDefaultOptions(options),
-                  {resize:    getResizeOptions(options)}, 
-                  {draggable: getDraggingOptions(options)}
+    gridOptions = $.extend({}, 
+                  getDefaultOptions(),
+                  {resize:    getResizeOptions()}, 
+                  {draggable: getDraggingOptions()}
               );
     
     // Create gridster.js object and lock / unlock
-    if (isLocked) {
-      gridster = selector.gridster(options).data('gridster').disable();
-      lockGrid();
+    if (options.isLocked) {
+      gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster').disable();
+      lock();
     } else {
-      gridster = selector.gridster(options).data('gridster');
-      unlockGrid();
+      gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
+      unlock();
     };
+
+    // Return
+    return this;
+  }
+
+  /**
+   * @function deleteWidget
+   * --------------------------------------------------------------------------
+   * Removes a widget from the grid
+   * @param {integer} widgetId | The id of the widget
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function deleteWidget(widgetId) {
+    var widget = null;
+
+    // Remove the FDWidget object
+    for (var i = widgets.length - 1; i >= 0; i--) {
+      if (widgetId == widgets[i].id) {
+        widget = widgets.splice(i, 1)[0].widget;
+        break;
+      };
+    };
+
+    if (widget != null) {
+      // Remove element from the gridster
+      gridster.remove_widget(widget.getSelector());
+      // Delete widget
+      widget.remove()
+    };
+
+    // return
+    return this;
   }
 
   /**
@@ -51,55 +121,50 @@ function FDGridster(dashboardID) {
    * --------------------------------------------------------------------------
    */
   function handleHover(isLocked) {
-    var hoverableElements = $(namespace + " *[data-hover='hover-unlocked']");
-
+    var hoverableSelector = options.namespace + ' *[data-hover="hover-unlocked"]';
     if (isLocked) {
-      $.each(hoverableElements, function(){
+      $.each($(hoverableSelector), function(){
         $(this).children(":first").css('display', 'none');
       });
-      players.removeClass('can-hover');
+      $(options.widgetsSelector).removeClass('can-hover');
     } else {
-      $.each(hoverableElements, function(){
+      $.each($(hoverableSelector), function(){
         $(this).children(":first").css('display', '');
       });
-      players.addClass('can-hover');
+      $(options.widgetsSelector).addClass('can-hover');
     };
     
   }
 
 
   /**
-   * @function lockGrid
+   * @function lock
    * --------------------------------------------------------------------------
    * Locks the actual gridster object
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function lockGrid() {
+  function lock() {
       // Disable resize
       gridster.disable_resize();
-           
       // Disable gridster movement
       gridster.disable();
-
       // Hide hoverable elements.
       handleHover(true);
   }
 
   /**
-   * @function unlockGrid
+   * @function unlock
    * --------------------------------------------------------------------------
    * Unlocks the actual gridster object
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function unlockGrid() {
+  function unlock() {
       // Enable resize
       gridster.enable_resize();
-
       // Enable gridster movement
       gridster.enable();
-
       // Show hoverable elements.
       handleHover(false);
   }
@@ -111,15 +176,15 @@ function FDGridster(dashboardID) {
    * @return {dictionary} defaultOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getDefaultOptions(options) {
+  function getDefaultOptions() {
     // Build options dictionary
     defaultOptions = {
-      namespace:                namespace,
-      widget_selector:          widgetSelector,
-      widget_base_dimensions:   [options['widget_width'], options['widget_height']],
-      widget_margins:           [options['widgetMargin'], options['widgetMargin']],
-      min_cols:                 options['numberOfCols'],
-      min_rows:                 options['numberOfRows'],
+      namespace:                options.namespace,
+      widget_selector:          options.widgetsSelector,
+      widget_base_dimensions:   [options.widget_width, options.widget_height],
+      widget_margins:           [options.widgetMargin, options.widgetMargin],
+      min_cols:                 options.numberOfCols,
+      min_rows:                 options.numberOfRows,
       snap_up:                  false,
       serialize_params: function ($w, wgd) {
         return {
@@ -143,20 +208,20 @@ function FDGridster(dashboardID) {
    * @return {dictionary} resizeOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getResizeOptions(options) {
+  function getResizeOptions() {
     // Build options dictionary
     resizeOptions = {
       enabled: true,
       start: function() {
-        players.toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
       },
       stop: function(e, ui, $widget) {
         $.ajax({
           type: "POST",
           data: {'positioning': serializePositioning()},
-          url: options['saveUrl']
+          url: options.saveUrl
          });
-        players.toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
       }
     }
 
@@ -171,19 +236,19 @@ function FDGridster(dashboardID) {
    * @return {dictionary} draggingOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getDraggingOptions(options) {
+  function getDraggingOptions() {
     // Build options dictionary
     draggingOptions = {
       start: function() {
-        players.toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
       },
       stop: function(e, ui, $widget) {
         $.ajax({
           type: "POST",
           data: {'positioning': serializePositioning()},
-          url: options['saveUrl']
+          url: options.saveUrl
         });
-        players.toggleClass('hovered');
+        $(options.widgetsSelector).toggleClass('hovered');
        }
     }
 
@@ -201,5 +266,19 @@ function FDGridster(dashboardID) {
   function serializePositioning() {
     return JSON.stringify(gridster.serialize());
   }
+
+  /* -------------------------------------------------------------------------- *
+   *                                   EVENTS                                   *
+   * -------------------------------------------------------------------------- */
+
+  /**
+   * @event $(".widget-delete").click
+   * --------------------------------------------------------------------------
+   * 
+   * --------------------------------------------------------------------------
+   */
+  $(".widget-delete").click(function(e) {
+    deleteWidget($(this).attr("data-id"));
+  });
 
 } // FDGridster

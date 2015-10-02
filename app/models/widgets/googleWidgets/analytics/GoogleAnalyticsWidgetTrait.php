@@ -113,8 +113,12 @@ trait GoogleAnalyticsWidgetTrait
       * --------------------------------------------------
      */
      public function save(array $options=array()) {
-         /* Call parent save */
-         parent::save($options);
+        /* Call parent save */
+        parent::save($options);
+        $settings = $this->getSettings();
+        if ( ! array_key_exists('name', $settings) || $settings['name'] == FALSE) {
+            $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
+        }
 
         $collector = new GoogleAnalyticsDataCollector($this->user());
         foreach ($this->user()->googleAnalyticsProperties as $property) {

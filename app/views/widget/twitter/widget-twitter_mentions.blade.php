@@ -26,13 +26,13 @@
 </div>
 @section('widgetScripts')
 <script type="text/javascript">
-  $(document).ready(function(){
-    $("#refresh-{{$widget->id}}").click(function () {
-      refreshWidget({{ $widget->id }}, function (data) {
-        console.log(data);
-        updateMentionsWidget(data, 'mentions-{{ $widget->id }}');
-     });
-   });
-  });
+  // $(document).ready(function(){
+  //   $("#refresh-{{$widget->id}}").click(function () {
+  //     refreshWidget({{ $widget->id }}, function (data) {
+  //       console.log(data);
+  //       updateMentionsWidget(data, 'mentions-{{ $widget->id }}');
+  //    });
+  //  });
+  // });
 </script>
 @append

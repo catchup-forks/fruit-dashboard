@@ -36,19 +36,17 @@ abstract class GeneralServiceConnector
         /* Deleting connection */
         $this->user->connections()->where('service', static::$service)->delete();
 
+        /* Deleting all DataManagers */
+        foreach ($this->user->dataManagers as $dataManager) {
+            if ($dataManager->descriptor->category == static::$service) {
+                $dataManager->delete();
+            }
+        }
+
         /* Deleting all widgets*/
         foreach ($this->user->widgets as $widget) {
             if ($widget->descriptor->category == static::$service) {
                 $widget->delete();
-            }
-        }
-        /* Deleting all DataManagers */
-        foreach ($this->user->dataManagers as $dataManager) {
-            if ($dataManager->descriptor->category == static::$service) {
-                /* Saving data id while it is accessible. */
-                $dataID = $dataManager->data->id;
-                $dataManager->delete();
-                Data::find($dataID)->delete();
             }
         }
     }
@@ -138,6 +136,5 @@ abstract class GeneralServiceConnector
 
         return $dataManagers;
     }
-
 
 } /* GeneralServiceConnector */

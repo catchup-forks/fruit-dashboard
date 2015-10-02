@@ -2,9 +2,6 @@
 
 class FacebookPopulateData
 {
-    /* -- Class properties -- */
-    const DAYS = 60;
-
     /**
      * The facebook collector object.
      *
@@ -69,7 +66,6 @@ class FacebookPopulateData
 
         /* Saving values. */
         $this->dataManagers['facebook_likes']->saveData($likesData);
-        $this->dataManagers['facebook_new_likes']->saveData(HistogramDataManager::getDiff($likesData));
         $this->dataManagers['facebook_page_impressions']->saveData($impressionsData);
         $this->dataManagers['facebook_engaged_users']->saveData($engagedUsersData);
 
@@ -97,28 +93,12 @@ class FacebookPopulateData
     }
 
     /**
-     * Getting the last DAYS entries for a specific insight
-     *
-     * @param string $insight
-     * @return array
-     */
-    private function getHistogram($insight) {
-        return $this->collector->getInsight(
-            $insight, $this->page->id,
-            array(
-                'since' => Carbon::now()->subDays(self::DAYS)->getTimestamp(),
-                'until' => Carbon::now()->getTimestamp(),
-            )
-        );
-    }
-
-    /**
      * Getting the data for the likes widget.
      *
      * @return array
      */
     private function getLikes() {
-        $dailyLikes = $this->getHistogram('page_fans');
+        $dailyLikes = $this->collector->getPopulateHistogram($this->page->id, 'page_fans');
         $likesData = array();
         foreach ($dailyLikes[0]['values'] as $likes) {
             $date = Carbon::createFromTimestamp(strtotime($likes['end_time']));
@@ -137,7 +117,7 @@ class FacebookPopulateData
      * @return array
      */
     private function getEngagedUsers() {
-        $dailyEngagedUsers = $this->getHistogram('page_engaged_users');
+        $dailyEngagedUsers = $this->collector->getPopulateHistogram($this->page->id, 'page_engaged_users');
         $engagedUsersData = array();
         foreach ($dailyEngagedUsers[0]['values'] as $engagedUsers) {
             $date = Carbon::createFromTimestamp(strtotime($engagedUsers['end_time']));
@@ -156,7 +136,7 @@ class FacebookPopulateData
      * @return array
      */
     private function getPageImpressions() {
-        $dailyImpressions = $this->getHistogram('page_impressions_unique');
+        $dailyImpressions = $this->collector->getPopulateHistogram($this->page->id, 'page_impressions_unique');
         $pageImpressionsData = array();
         foreach ($dailyImpressions[0]['values'] as $impressions) {
             $date = Carbon::createFromTimestamp(strtotime($impressions['end_time']));

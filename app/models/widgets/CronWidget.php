@@ -5,7 +5,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
 {
     /* Custom relation. */
     protected function dataManager() {
-        if (is_null($this->data->manager)) {
+        if ( ! $this->dataExists()) {
             return null;
         }
         return $this->data->manager->getSpecific();
@@ -38,7 +38,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             try {
                 $this->refreshWidget();
             } catch (ServiceException $e) {
-                Log::error($e->getMessage);
+                Log::error($e->getMessage());
                 return array('status'  => FALSE,
                              'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
             }
@@ -89,7 +89,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
     */
     protected function dataExists() {
-        return  ! (is_null($this->data) || is_null($this->dataManager()));
+        return  ! (is_null($this->data) || is_null($this->data->manager));
     }
 
     /**

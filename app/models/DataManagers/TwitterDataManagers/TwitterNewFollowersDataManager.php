@@ -5,7 +5,7 @@ class TwitterNewFollowersDataManager extends HistogramDataManager
     public function getCurrentValue() {
         $collector = new TwitterDataCollector($this->user);
         /* Getting previous last data. */
-        $lastData = $this->getFollowersManager()->getLatestData();
+        $lastData = $this->getFollowersManager()->getLatestValues();
         if (is_null($lastData)) {
             return $collector->getFollowersCount();
         }

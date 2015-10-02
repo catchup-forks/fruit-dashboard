@@ -5,7 +5,7 @@
      data-sizey="{{ $widget->getPosition()->size_y }}"
      data-min-sizex="{{ $widget->getMinCols() }}"
      data-min-sizey="{{ $widget->getMinRows() }}"
-     class="gridster-player can-hover">
+     class="gridster-widget can-hover">
 
     <div class="dropdown position-tr-sm">
       <a id="{{ $widget->id }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,14 +25,14 @@
         {{-- REFRESH --}}
         @if ($widget instanceof iAjaxWidget)
           <li>
-            <a href="#" id="refresh-{{$widget->id}}" title="refresh widget content">
+            <a href="#" id="widget-refresh-{{$widget->id}}" title="refresh widget content">
               <span class="fa fa-refresh"> </span>
               Refresh data
             </a>
           </li>
         @endif
 
-        {{-- SHARE --}}
+        {{-- SHARE
         @if ( ! $widget instanceof SharedWidget)
         <li>
           <a href="#" id="share-{{$widget->id}}" onclick="showShareModal({{$widget->id}})">
@@ -40,12 +40,12 @@
             Share widget
           </a>
         </li>
-        @endif
+        @endif --}}
         @endif
 
         {{-- DELETE --}}
         <li>
-          <a class='deleteWidget' data-id='{{ $widget->id }}' href="#">
+          <a href="#" class="widget-delete" data-id='{{ $widget->id }}' >
             <span class="fa fa-times"> </span>
             Delete widget
           </a>
@@ -74,4 +74,4 @@
     @endif
 
   @endif
-</div> <!-- /.gridster-player -->
+</div> <!-- /.gridster-widget -->

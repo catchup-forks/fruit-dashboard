@@ -24,6 +24,13 @@ class SiteConstants {
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
     private static $skipCategoriesInNotification = array('personal');
+    private static $singleStatHistoryDiffs = array(
+        'days'   => array(30, 7, 1),
+        'weeks'  => array(12, 4, 1),
+        'months' => array(6, 3, 1),
+        'years'  => array(5, 3, 1),
+    );
+
     private static $startupTypes = array(
         'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
         'Ecommerce'    => 'Online shops selling goods to consumers.',
@@ -45,6 +52,7 @@ class SiteConstants {
         '77, 255, 210',
         '209, 0, 157',
     );
+    private static $facebookPopulateDataDays = 60;
     private static $googleAnalyticsLaunchDate = '2005-01-01';
     private static $apiVersions = array('1.0');
 
@@ -63,17 +71,6 @@ class SiteConstants {
      */
     public static function getGridNumberOfCols() {
         return self::$gridNumberOfCols;
-    }
-
-    /**
-     * getChartJsColors:
-     * --------------------------------------------------
-     * Returning colors for chartJS
-     * @return (array) ($chartJsColors) chartJsColors
-     * --------------------------------------------------
-     */
-    public static function getChartJsColors() {
-        return self::$chartJsColors;
     }
 
     /**
@@ -130,6 +127,28 @@ class SiteConstants {
         } else {
             return 'night';
         }
+    }
+
+    /**
+     * getChartJsColors:
+     * --------------------------------------------------
+     * Returning colors for chartJS
+     * @return (array) ($chartJsColors) chartJsColors
+     * --------------------------------------------------
+     */
+    public static function getChartJsColors() {
+        return self::$chartJsColors;
+    }
+
+    /**
+     * getSingleStatHistoryDiffs:
+     * --------------------------------------------------
+     * Returning the single stat diffs
+     * @return (array) ($singleStatHistoryDiffs)
+     * --------------------------------------------------
+     */
+    public static function getSingleStatHistoryDiffs() {
+        return self::$singleStatHistoryDiffs;
     }
 
     /**
@@ -359,6 +378,35 @@ class SiteConstants {
      */
     public static function getLatestApiVersion() {
         return end(self::$apiVersions);
+    }
+
+    /**
+     * cleanupPolicy
+     * --------------------------------------------------
+     * Returns whether or not to delete the hourly data.
+     * @param $entryTime
+     * @return boolean: TRUE->keep FALSE->delete
+     * --------------------------------------------------
+     */
+    public static function cleanupPolicy($entryTime) {
+        return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+    }
+
+    /**
+     * getServicePopulationPeriod
+     * --------------------------------------------------
+     * Returns how many days back should the populator go.
+     * @return (int) ($facebookPopulateDataDays)
+     * --------------------------------------------------
+     */
+    public static function getServicePopulationPeriod() {
+        return array(
+            'facebook'         => 60,
+            'google_analytics' => 30,
+            'twitter'          => null,
+            'stripe'           => 30,
+            'braintree'        => 30,
+        );
     }
 
     /**

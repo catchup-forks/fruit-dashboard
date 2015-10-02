@@ -4,24 +4,23 @@
  * Class function to set the global chart options
  * --------------------------------------------------------------------------
  */
-function FDChartOptions(pageName) {
+function FDChartOptions(widgetOptions) {
   // Private variables
-  var page = pageName;
+  var page = widgetOptions.data.page;
   
   // Public functions
+  this.init = init;
   this.getLineChartOptions = getLineChartOptions;
-
-  // Initialize automatically
-  initialize();
+  this.transformLineChartDatasets = transformLineChartDatasets;
 
   /**
-   * @function initialize
+   * @function init
    * --------------------------------------------------------------------------
    * Initializes the FDChartOptions object
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function initialize() {
+  function init() {
     if (page == 'dashboard') {
       setDefaultOptionsDashboard();
     } else if (page == 'singleStat') {
@@ -43,6 +42,22 @@ function FDChartOptions(pageName) {
       return getLineChartOptionsDashboard();
     } else if (page == 'singleStat') {
       return getLineChartOptionsSingleStat();
+    }
+  }
+
+  /**
+   * @function transformLineChartDatasets
+   * --------------------------------------------------------------------------
+   * Returns the options for a line chart based on the page
+   * @return {dictionary} chartOptions | the chart options
+   * --------------------------------------------------------------------------
+   */
+  function transformLineChartDatasets(data) {
+    if (page == 'dashboard') {
+      return transformLineChartDatasetsDashboard(data);
+    } else if (page == 'singlestat') {
+      // FIXME
+      return transformLineChartDatasetsDashboard(data);
     }
   }
 
@@ -73,11 +88,53 @@ function FDChartOptions(pageName) {
    */
   function getLineChartOptionsDashboard() {
     return {
-       pointDot: false,
+       pointDot: true,
+       pointDotRadius : 1.2,
        bezierCurve: true,
        bezierCurveTension : 0.35,
        animation: false
     };
+  }
+
+  /**
+   * @function transformLineChartDatasetsDashboard
+   * --------------------------------------------------------------------------
+   * Creates a dataset for the chart
+   * @param {dictionary} data | The chart data
+   * @return {dictionary} the generated dataset
+   * --------------------------------------------------------------------------
+   */
+  function transformLineChartDatasetsDashboard(data) {
+    var transformedData = {
+      labels  : data.labels,
+      datasets: [],
+    };
+
+    for (i = 0; i < data.datasets.length; ++i) {
+      transformedData.datasets.push(
+          transform(
+            data.datasets[i].values, 
+            data.datasets[i].name, 
+            data.datasets[i].color
+          )
+      );
+    }
+
+    // Return
+    return transformedData;
+
+    function transform(values, name, color) {
+      return {
+        label: name,
+        fillColor : "rgba(" + color + ", 0.2)",
+        strokeColor : "rgba(" + color + ", 1)",
+        pointColor : "rgba(" + color + ", 1)",
+        pointStrokeColor : "#fff",
+        pointHighlightFill : "#fff",
+        pointHighlightStroke : "rgba(" + color + ", 1)",
+        data: values
+      }
+    }
   }
 
   /**

@@ -37,11 +37,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        if (is_null($this->getDataManager()) && $this instanceof iServiceWidget) {
-            $connectorClass = $this->getConnectorClass();
-            $connector = new $connectorClass($this->user());
-            $connector->createDataManagers($this->getCriteria());
-        }
         if ($this->getDataManager()->data->raw_value == 'loading') {
             $this->setState('loading');
         } else if ($this->state != 'setup_required') {
@@ -103,6 +98,16 @@ abstract class CountWidget extends Widget implements iAjaxWidget
                 return $manager;
             }
         }
+
+        /* No manager found. */
+        if ($this->hasValidCriteria()) {
+            return DataManager::createManager(
+                $this->user(),
+                $descriptor,
+                $this->getCriteria()
+            );
+        }
+
         return null;
     }
 
@@ -120,7 +125,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             return array();
         }
         $settings = $this->getSettings();
-        return array('latest' => $manager->getLatestData(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
+        return array('latest' => $manager->getLatestValues(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
     }
 
     /**
@@ -150,7 +155,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             try {
                 $this->refreshWidget();
             } catch (ServiceException $e) {
-                Log::error($e->getMessage);
+                Log::error($e->getMessage());
                 return array('status'  => FALSE,
                              'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
             }

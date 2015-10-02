@@ -35,7 +35,7 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        /* Updating range setting with the static loader. */
+        /* Updating range settings in the static loader. */
         $rangeSettings = self::$rangeSettings;
         $rangeSettings['range_start']['default'] = Carbon::now()->subDays(30)->toDateString();
         $rangeSettings['range_end']['default'] = Carbon::now()->toDateString();
@@ -83,5 +83,22 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
             $this->dataManager()->collectData($options);
         }
     }
+
+    /**
+     * saveSettings
+     * Collecting new data on change.
+     * --------------------------------------------------
+     * @param array $inputSettings
+     * @param boolean $commit
+     * --------------------------------------------------
+    */
+    public function saveSettings(array $inputSettings, $commit=TRUE) {
+        $oldSettings = $this->getSettings();
+        parent::saveSettings($inputSettings, $commit);
+        if ($this->getSettings() != $oldSettings) {
+            $this->updateData();
+        }
+    }
+
 }
 ?>

@@ -2,9 +2,6 @@
 
 class GoogleAnalyticsPopulateData
 {
-    /* -- Class properties -- */
-    const DAYS = 30;
-
     /**
      * The google analytics collector object.
      *
@@ -111,7 +108,7 @@ class GoogleAnalyticsPopulateData
             'avgSessionDuration' => array()
         );
 
-        for ($i = self::DAYS; $i >= 0; --$i) {
+        for ($i = SiteConstants::getServicePopulationPeriod()['google_analytics']; $i >= 0; --$i) {
             /* Creating start, end days. */
             $start = SiteConstants::getGoogleAnalyticsLaunchDate();
             $end = Carbon::now()->subDays($i);

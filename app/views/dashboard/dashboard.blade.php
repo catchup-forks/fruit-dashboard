@@ -126,20 +126,26 @@
 @stop
 
 @section('pageScripts')
-  <!-- FDGridster class -->
-  <script type="text/javascript" src="lib/FDGridster.js"></script>
-  <!-- /FDGridster class -->
-
-  <!-- FDChartOptions class -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
-  <script type="text/javascript">
-      globalChartOptions = new FDChartOptions('dashboard');
-  </script>
-  <!-- /FDChartOptions class -->
-
-  <!-- FDChart class -->
+  <!-- FDGeneral* classes -->
+  <script type="text/javascript" src="{{ URL::asset('lib/FDGridster.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDWidget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
-  <!-- /FDChart class -->
+  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/FDTable.js') }}"></script>
+  <!-- /FDGeneral* classes -->
+
+  <!-- FDAbstractWidget* classes -->
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDGeneralWidget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js') }}"></script>
+  <!-- /FDAbstractWidget* classes -->
+
+  <!-- FDWidget* classes -->
+  @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
+    <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. Utilities::underscoreToCamelCase($descriptor->type).'Widget.js') }}"></script>
+  @endforeach
+  <!-- /FDWidget* classes -->
 
   <!-- Gridster scripts -->
   @include('dashboard.dashboard-gridster-scripts')
@@ -153,9 +159,11 @@
   @include('dashboard.dashboard-hopscotch-scripts')
   <!-- /Hopscotch scripts -->
 
-  <!-- Widget general scripts -->
-  @include('widget.widget-general-scripts')
-  <!-- /Widget general scripts -->
+  <!-- Init FDChartOptions -->
+  <script type="text/javascript">
+      new FDChartOptions({data:{page: 'dashboard'}}).init();
+  </script>
+  <!-- /Init FDChartOptions -->
 
   <!-- Dashboard etc scripts -->
   <script type="text/javascript">

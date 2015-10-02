@@ -130,7 +130,7 @@
 
                   </div> <!-- /.col-sm-2 -->
                 </div> <!-- /.form-group -->
-              
+
               {{ Form::close() }}
               {{-- END --}}
               {{-- General settings - Background enabled --}}
