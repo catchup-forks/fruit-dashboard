@@ -48,6 +48,13 @@ class DataManager extends Eloquent
     }
 
     public function collectData($options=array())  {}
+    public function asyncInit($job, $data) {
+        Log::info("async collection");
+        $this->initializeData();
+        $job->delete();
+        Log::info("finished");
+    }
+
     public function initializeData() {
         $this->saveData(array());
         $this->collectData();
@@ -123,7 +130,7 @@ class DataManager extends Eloquent
         if (isset($data)) {
             $generalManager->data()->associate($data);
         } else {
-            $data = Data::create(array('raw_value' => '[]'));
+            $data = Data::create(array('raw_value' => 'loading'));
             $generalManager->data()->associate($data);
         }
 

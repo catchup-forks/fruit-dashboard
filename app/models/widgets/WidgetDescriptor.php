@@ -70,7 +70,6 @@ class WidgetDescriptor extends Eloquent
                     return $manager;
                 }
             }
-
             /* Creating a manager. */
             return DataManager::createManagerFromWidget($widget);
        }
