@@ -33,7 +33,7 @@ class ApiHistogramDataManager extends MultipleHistogramDataManager
      * --------------------------------------------------
      */
     public function initializeData() {
-        $this->saveData(array());
+        $this->saveData(array(), TRUE);
     }
 }
 ?>
