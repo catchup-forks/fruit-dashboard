@@ -11,7 +11,6 @@ var FDClockWidget = function(widgetOptions) {
  // Plus attributes
  this.digitalSelector = '#digital-clock-' + this.options.general.id;
  this.analogueSelector = '#analogue-clock-' + this.options.general.id;
- this.widgetData = null;
 
  // Automatically initialize
  this.init();
@@ -31,11 +30,7 @@ FDClockWidget.prototype.constructor = FDClockWidget;
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.init = function() {
-  // Call parent init
-  FDGeneralWidget.prototype.init.call(this);
-  // Update data
   this.updateData(window['widgetData' + this.options.general.id]);
-  // Draw with refresh call
   this.draw(refresh=true);  
 }
 
@@ -47,25 +42,7 @@ FDClockWidget.prototype.init = function() {
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
-  // Call parent init
-  FDGeneralWidget.prototype.reinit.call(this);
-  // Draw without refresh call
   this.draw(refresh=false);  
-}
-
-/**
- * @function updateData
- * --------------------------------------------------------------------------
- * Updates the table data
- * @param {dictionary} data | the table data
- * @return {this} 
- * --------------------------------------------------------------------------
- */
-FDClockWidget.prototype.updateData = function(data) {
-  // Store new data
-  this.widgetData = data;
-  // return
-  return this;
 }
 
 /**
