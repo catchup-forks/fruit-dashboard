@@ -5,7 +5,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
 {
     /* Custom relation. */
     protected function dataManager() {
-        if (is_null($this->data->manager)) {
+        if ( ! $this->dataExists()) {
             return null;
         }
         return $this->data->manager->getSpecific();
@@ -89,7 +89,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
      * --------------------------------------------------
     */
     protected function dataExists() {
-        return  ! (is_null($this->data) || is_null($this->dataManager()));
+        return  ! (is_null($this->data) || is_null($this->data->manager));
     }
 
     /**

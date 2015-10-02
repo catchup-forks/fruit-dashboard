@@ -109,45 +109,42 @@ class FacebookDataCollector
     }
 
     /**
-     * getTotalLikes
-     * Getting the total likes count from twitter.
+     * getInsightCurrentValue
+     * Returning the current value of an insight.
      * --------------------------------------------------
-     * @param page
-     * @return int
+     * @param int $page
+     * @param string $insight
+     * @param string $period
+     * @return numeric
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getTotalLikes($page) {
-        $insightData = $this->getInsight('page_fans', $page)[0];
-        return end($insightData['values'])['value'];
+    public function getInsightCurrentValue($pageId, $insight, $period) {
+        $insightData = $this->getInsight(
+            $insight, $pageId,
+            array('period' => $period)
+        );
+        return end($insightData[0]['values'])['value'];
     }
 
     /**
-     * getEngagedUsers
-     * Getting the number of engaged users.
+     * getPopulateHistogram
+     * Returning histogram values for connector back.
      * --------------------------------------------------
-     * @param page
-     * @return int
+     * @param int $pageId
+     * @param string $insight
+     * @return array
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getEngagedUsers($page) {
-        $insightData = $this->getInsight('page_engaged_users', $page, array('period' => 'day'))[0];
-        return end($insightData['values'])['value'];
-    }
-
-    /**
-     * getPageImpressions
-     * Getting the number of page impressions.
-     * --------------------------------------------------
-     * @param page
-     * @return int
-     * @throws FacebookNotConnected
-     * --------------------------------------------------
-    */
-    public function getPageImpressions($page) {
-        $insightData = $this->getInsight('page_impressions_unique', $page)[0];
-        return end($insightData['values'])['value'];
+    public function getPopulateHistogram($pageId, $insight) {
+        return $this->getInsight(
+            $insight, $pageId,
+            array(
+                'since' => Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['facebook'])->getTimestamp(),
+                'until' => Carbon::now()->getTimestamp(),
+            )
+        );
     }
 
     /**
@@ -161,7 +158,7 @@ class FacebookDataCollector
      * @throws FacebookNotConnected
      * --------------------------------------------------
     */
-    public function getInsight($insight, $pageId, $params=array()) {
+    private function getInsight($insight, $pageId, $params=array()) {
         $paramstr = '?';
         foreach ($params as $key=>$value) {
             $paramstr .= '&' . $key . '='. $value;

@@ -224,7 +224,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getBounceRate
-     * Returning the percentage of boucne rate.
+     * Returning the percentage of bounce rate.
      * --------------------------------------------------
      * @param GoogleAnalyticsProperty $property
      * @param $profileId

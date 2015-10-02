@@ -2,11 +2,8 @@
 
 class FacebookEngagedUsersDataManager extends HistogramDataManager
 {
-    use FacebookDataManagerTrait;
-    public function getCurrentValue() {
-        /* Getting the page from settings. */
-        $facebookCollector = new FacebookDataCollector($this->user);
-        return $facebookCollector->getEngagedUsers($this->getPage()->id);
-    }
+    use FacebookHistogramDataManagerTrait;
+    protected static $insight = 'page_engaged_users';
+    protected static $period  = 'day';
 }
 ?>

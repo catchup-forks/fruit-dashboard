@@ -168,6 +168,7 @@ abstract class HistogramDataManager extends DataManager
         $datetimes = array();
         $dataSet = array(
             'color'  => SiteConstants::getChartJsColors()[0],
+            'name'   => '',
             'values' => array()
         );
         $histogram = $this->buildHistogram($range, $resolution, $length);

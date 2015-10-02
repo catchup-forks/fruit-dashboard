@@ -2,7 +2,8 @@
 
 class GoogleAnalyticsAvgSessionDurationDataManager extends HistogramDataManager
 {
-    use GoogleAnalyticsDataManagerTrait;
+    use GoogleAnalyticsHistogramDataManagerTrait;
+    protected static $metric = 'avgSessionDuration';
     public function getCurrentValue() {
         /* Getting the profile from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);

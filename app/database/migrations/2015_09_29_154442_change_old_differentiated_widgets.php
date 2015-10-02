@@ -12,11 +12,15 @@ class ChangeOldDifferentiatedWidgets extends Migration {
      */
     public function up()
     {
+        $deletableDescriptors = array(
+            WidgetDescriptor::where('type', 'facebook_new_likes')->first(),
+            WidgetDescriptor::where('type', 'twitter_new_followers')->first(),
+        );
         foreach (Widget::all() as $generalWidget) {
             try {
                 $widget = $generalWidget->getSpecific();
                 $descriptor = null;
-                if ( ! $widget instanceof HistogramWidget) {
+                if ( ! $widget instanceof HistogramWidget || ! in_array($widget->descriptor, $deletableDescriptors)) {
                     /* Not a histogram widget. */
                     continue;
                 }
@@ -38,15 +42,27 @@ class ChangeOldDifferentiatedWidgets extends Migration {
                     $old_manager = $widget->data->manager;
                     $widget->descriptor()->associate($descriptor);
                     $widget->saveSettings(array('type' => 'diff'));
-                    if ( ! is_null($old_manager)) {
-                        $old_manager->delete();
-                    }
                     Log::info("Linked widget #" . $widget->id . " data to cumulative.");
                 }
 
-            } catch (ServiceException $e) {
+            } catch (Exception $e) {
                 Log::error('Error found while running migration: ' . get_class($this) . ' on widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
+        }
+        /* Deleting all dataManagers. */
+        foreach (DataManager::all() as $generalDataManager) {
+            try {
+                $dataManager = $generalDataManager->getSpecific();
+                if (in_array($dataManager->descriptor, $deletableDescriptors)) {
+                    $dataManager->delete();
+                }
+            } catch (Exception $e) {
+                Log::error('Error found while running migration: ' . get_class($this) . ' on datamanager #' . $generalDataManager->id . '. message: ' . $e->getMessage());
+            }
+        }
+        /* Deleting descriptors. */
+        foreach ($deletableDescriptors as $descriptor) {
+            $descriptor->delete();
         }
     }
 
