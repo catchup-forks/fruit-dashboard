@@ -448,7 +448,7 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        /*
+
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_sessions_per_user'],
             array(
@@ -463,7 +463,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'default_cols' => 3,
                 'default_rows' => 4
             )
-        );*/
+        );
 
         WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
