@@ -45,7 +45,7 @@
 
         {{-- DELETE --}}
         <li>
-          <a class='deleteWidget-{{ $dashboard->id }}' data-id='{{ $widget->id }}' href="#">
+          <a href="#" class="widget-delete" data-id='{{ $widget->id }}' >
             <span class="fa fa-times"> </span>
             Delete widget
           </a>

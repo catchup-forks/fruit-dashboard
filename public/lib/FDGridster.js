@@ -47,7 +47,7 @@ function FDGridster(gridsterOptions) {
         widget.load();
       };
       // Add to widgets array
-      widgets.push({'id': widgetsOptions[i].id, 'widget': widget});
+      widgets.push({'id': widgetsOptions[i].general.id, 'widget': widget});
     };
         
     // return
@@ -105,7 +105,6 @@ function FDGridster(gridsterOptions) {
     if (widget != null) {
       // Remove element from the gridster
       gridster.remove_widget(widget.getSelector());
-
       // Delete widget
       widget.remove()
     };
@@ -273,12 +272,12 @@ function FDGridster(gridsterOptions) {
    * -------------------------------------------------------------------------- */
 
   /**
-   * @event $(".deleteWidget").click
+   * @event $(".widget-delete").click
    * --------------------------------------------------------------------------
    * 
    * --------------------------------------------------------------------------
    */
-  $(".deleteWidget-" + options.id).click(function(e) {
+  $(".widget-delete").click(function(e) {
     deleteWidget($(this).attr("data-id"));
   });
 
