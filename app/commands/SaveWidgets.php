@@ -41,7 +41,7 @@ class SaveWidgets extends Command {
             try {
                 $widget = $generalWidget->getSpecific();
                 if (is_null($widget->dashboard)) {
-                    Log::warning("Deletet widget #" . $widget->id . " due to a broken dashboard connection.");
+                    Log::warning("Deleted widget #" . $widget->id . " due to a broken dashboard connection.");
                     $widget->delete();
                     continue;
                 }
@@ -50,7 +50,7 @@ class SaveWidgets extends Command {
                 /* Deleting widget if the descriptor does not exist. */
                 $widget->delete();
             } catch (Exception $e) {
-                Log::error('Error found while running widgets:save on widget #' . $widget->id . '. message: ' . $e->getMessage());
+                Log::error('Error found while running ' . get_class($this) . ' on widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
         }
     }
