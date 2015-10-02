@@ -95,7 +95,7 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
     public function saveSettings(array $inputSettings, $commit=TRUE) {
         $oldSettings = $this->getSettings();
         parent::saveSettings($inputSettings, $commit);
-        if ($this->getSettings() != $oldSettings) {
+        if ($this->getSettings() != $oldSettings && $this->dataExists()) {
             $this->updateData();
         }
     }
