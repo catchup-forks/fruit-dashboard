@@ -32,7 +32,7 @@
           </li>
         @endif
 
-        {{-- SHARE --}}
+        {{-- SHARE
         @if ( ! $widget instanceof SharedWidget)
         <li>
           <a href="#" id="share-{{$widget->id}}" onclick="showShareModal({{$widget->id}})">
@@ -40,7 +40,7 @@
             Share widget
           </a>
         </li>
-        @endif
+        @endif --}}
         @endif
 
         {{-- DELETE --}}
