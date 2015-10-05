@@ -25,10 +25,10 @@ class SiteConstants {
     private static $webAnalyticsServices = array('google_analytics');
     private static $skipCategoriesInNotification = array('personal');
     private static $singleStatHistoryDiffs = array(
-        'days'   => array(30, 7, 1),
-        'weeks'  => array(12, 4, 1),
-        'months' => array(6, 3, 1),
-        'years'  => array(5, 3, 1),
+        'days'   => array(1, 7, 30),
+        'weeks'  => array(1, 4, 12),
+        'months' => array(1, 3, 6),
+        'years'  => array(1, 3, 5),
     );
 
     private static $startupTypes = array(

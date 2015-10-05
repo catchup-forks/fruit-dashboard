@@ -61,7 +61,9 @@ class ChangeOldDifferentiatedWidgets extends Migration {
         }
         /* Deleting descriptors. */
         foreach ($deletableDescriptors as $descriptor) {
-            $descriptor->delete();
+            if ($descriptor) {
+                $descriptor->delete();
+            }
         }
     }
 
