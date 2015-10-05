@@ -67,8 +67,9 @@ abstract class HistogramWidget extends CronWidget
      */
      public function setupDataManager(array $options=array()) {
         $dm = $this->dataManager();
-        $dm->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $this->getSettings()['resolution']);
-        $dm->setLength(array_key_exists('length', $options) ? $options['length'] : $this->getSettings()['length']);
+        $settings = $this->getSettings();
+        $dm->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);
+        $dm->setLength(array_key_exists('length', $options) ? $options['length'] : $settings['length']);
         $dm->setRange(array_key_exists('range', $options) ? $options['range'] : array());
         $dm->setDiff(array_key_exists('diff', $options) ? $options['diff'] : $this->isDifferentiated());
         return $dm;
