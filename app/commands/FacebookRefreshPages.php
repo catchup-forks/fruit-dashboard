@@ -32,8 +32,12 @@ class FacebookRefreshPages extends Command {
                 /* Facebook not connected. */
                 continue;
             }
-            $collector = new FacebookDataCollector($user);
-            $collector->savePages();
+            try {
+                $collector = new FacebookDataCollector($user);
+                $collector->savePages();
+            } catch (Exception $e) {
+                Log::error('Error found while running ' . get_class($this) . ' on user #' . $user->id . '. message: ' . $e->getMessage());
+            }
         }
     }
 
