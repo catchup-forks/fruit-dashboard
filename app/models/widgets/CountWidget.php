@@ -87,31 +87,13 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     public function getDataManager() {
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::where('type', static::$histogramDescriptor)->first();
+
         if (is_null($descriptor)) {
             throw new DescriptorDoesNotExist("The descriptor for " . static::$histogramDescriptor . " does not exist", 1);
         }
 
-        $managers = $this->user()->dataManagers()->where(
-            'descriptor_id', $descriptor->id)->get();
-
-        foreach ($managers as $generalManager) {
-            $manager = $generalManager->getSpecific();
-            if ($manager->getCriteria() == $this->getCriteria() && $manager instanceof HistogramDataManager) {
-                /* Found a match. */
-                return $manager;
-            }
-        }
-
-        /* No manager found. */
-        if ($this->hasValidCriteria()) {
-            return DataManager::createManager(
-                $this->user(),
-                $descriptor,
-                $this->getCriteria()
-            );
-        }
-
-        return null;
+        /* Calling the DM retriever on the specific descriptor. */
+        return $descriptor->getDataManager($this)->getSpecific();
     }
 
     /**

@@ -208,18 +208,4 @@ class FacebookConnector extends GeneralServiceConnector
         FacebookPage::where('user_id', $this->user->id)->delete();
     }
 
-    /**
-     * populateData
-     * --------------------------------------------------
-     * Collecting the initial data from the service.
-     * @param array $criteria
-     * --------------------------------------------------
-     */
-    protected function populateData($criteria) {
-        Queue::push('FacebookPopulateData', array(
-            'user_id'  => $this->user->id,
-            'criteria' => $criteria
-        ));
-    }
-
 } /* FacebookConnector */

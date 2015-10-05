@@ -120,7 +120,7 @@ class DataManager extends Eloquent
         $generalManager->descriptor()->associate($descriptor);
 
         /* Creating/assigning data. */
-        if (isset($data)) {
+        if ( ! is_null($data)) {
             $generalManager->data()->associate($data);
         } else {
             $data = Data::create(array('raw_value' => 'loading'));
