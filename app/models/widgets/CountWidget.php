@@ -37,7 +37,10 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        if ($this->getDataManager()->data->raw_value == 'loading') {
+        if ( ! $this->hasValidCriteria()) {
+            $this->setState('setup_required');
+        }
+        else if ($this->getDataManager()->data->raw_value == 'loading') {
             $this->setState('loading');
         } else if ($this->state != 'setup_required') {
             $this->setState('active');
