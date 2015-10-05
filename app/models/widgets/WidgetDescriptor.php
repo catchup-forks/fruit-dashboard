@@ -56,6 +56,7 @@ class WidgetDescriptor extends Eloquent
      * Returning the corresponding DataManager object.
      * --------------------------------------------------
      * @param Widget $widget
+     * @param bool firstRun
      * @return DataManager
      * --------------------------------------------------
     */

@@ -146,9 +146,12 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             if ($this->state == 'loading') {
                 return array('ready' => FALSE);
             } else if($this->state == 'active') {
+                $view = View::make($this->descriptor->getTemplateName())
+                    ->with('widget', $this);
                 return array(
                     'ready' => TRUE,
-                    'data'  => $this->getCurrentValue($postData)
+                    'data'  => $this->getCurrentValue($postData),
+                    'html'  => $view->render()
                 );
             } else {
                 return array('ready' => FALSE);

@@ -122,11 +122,12 @@ abstract class GeneralServiceConnector
                 'settings_criteria' => json_encode($criteria),
                 'last_updated'      => Carbon::now()
             ));
+
+            /* Assigning foreign values */
             $dataManager->descriptor()->associate($descriptor);
             $dataManager->user()->associate($this->user);
-
-            /* Assigning data */
             $dataManager->data()->associate($data);
+
             $dataManager->save();
 
             array_push($dataManagers, $dataManager);

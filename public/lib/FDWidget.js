@@ -80,6 +80,7 @@ function FDWidget(widgetOptions) {
     function pollState() {
       send({'state_query': true}, function (data) {
         if (data['ready']) {
+          $(options.selectors.wrapper).html(data['html']);
           $(options.selectors.loading).hide();
           $(options.selectors.wrapper).show();
           done = true;

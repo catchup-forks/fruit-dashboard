@@ -50,7 +50,7 @@ class FacebookPopulateData
         $this->page = $this->user->facebookPages()->where('id', $data['criteria']['page'])->first();
         $this->dataManagers = $this->getManagers();
         $this->populateData();
-        Log::info("Facebook data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
+        Log::info("Facebook data collection finished and it took " . (microtime(TRUE) - $time) . " seconds to run.");
 
         $job->delete();
     }

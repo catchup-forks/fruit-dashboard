@@ -395,6 +395,27 @@ abstract class HistogramDataManager extends DataManager
         return $differentiatedArray;
     }
 
+    /**
+     * getEntryValues
+     * Returning only the values of the entry,
+     * excluding staticFields.
+     * --------------------------------------------------
+     * @param array $entry
+     * @return array
+     * --------------------------------------------------
+     */
+    protected static final function getEntryValues($entry) {
+        if (! is_array($entry)) {
+            return $entry;
+        }
+        $values = array();
+        foreach ($entry as $key=>$value) {
+            if ( ! in_array($key, static::$staticFields)) {
+                $values[$key] = $value;
+            }
+        }
+        return $values;
+    }
 
     /**
      * getEntryTime

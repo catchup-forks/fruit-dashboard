@@ -48,13 +48,6 @@ class DataManager extends Eloquent
     }
 
     public function collectData($options=array())  {}
-    public function asyncInit($job, $data) {
-        Log::info("async collection");
-        $this->initializeData();
-        $job->delete();
-        Log::info("finished");
-    }
-
     public function initializeData() {
         $this->saveData(array());
         $this->collectData();
