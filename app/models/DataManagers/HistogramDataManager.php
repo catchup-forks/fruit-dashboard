@@ -292,30 +292,6 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * getDiff
-     * Returning the differentiated values of an array.
-     * --------------------------------------------------
-     * @param array $data
-     * @return array
-     * --------------------------------------------------
-     */
-    protected static function getDiff(array $data, $dataName='value') {
-        $differentiatedArray = array();
-        foreach ($data as $entry) {
-            /* Copying entry. */
-            $diffEntry = $entry;
-            $diffValue = 0;
-            if (isset($lastValue)) {
-                $diffValue = $entry[$dataName] - $lastValue;
-            }
-            $diffEntry[$dataName] = $diffValue;
-            array_push($differentiatedArray, $diffEntry);
-            $lastValue = $entry[$dataName];
-        }
-        return $differentiatedArray;
-    }
-
-    /**
      * sortHistogram
      * Sorting the array.
      * --------------------------------------------------
@@ -369,29 +345,6 @@ abstract class HistogramDataManager extends DataManager
         }
      }
 
-
-    /**
-     * getEntryValues
-     * Returning only the values of the entry,
-     * excluding staticFields.
-     * --------------------------------------------------
-     * @param array $entry
-     * @return array
-     * --------------------------------------------------
-     */
-    protected static final function getEntryValues($entry) {
-        if (! is_array($entry)) {
-            return $entry;
-        }
-        $values = array();
-        foreach ($entry as $key=>$value) {
-            if ( ! in_array($key, static::$staticFields)) {
-                $values[$key] = $value;
-            }
-        }
-        return $values;
-    }
-
     /**
      * isBreakPoint
      * Checks if the entry is a breakpoint in the histogram.
@@ -419,6 +372,31 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * getDiff
+     * Returning the differentiated values of an array.
+     * --------------------------------------------------
+     * @param array $data
+     * @return array
+     * --------------------------------------------------
+     */
+    protected static function getDiff(array $data, $dataName='value') {
+        $differentiatedArray = array();
+        foreach ($data as $entry) {
+            /* Copying entry. */
+            $diffEntry = $entry;
+            $diffValue = 0;
+            if (isset($lastValue)) {
+                $diffValue = $entry[$dataName] - $lastValue;
+            }
+            $diffEntry[$dataName] = $diffValue;
+            array_push($differentiatedArray, $diffEntry);
+            $lastValue = $entry[$dataName];
+        }
+        return $differentiatedArray;
+    }
+
+
+    /**
      * getEntryTime
      * returning the time from an entry
      * --------------------------------------------------
@@ -426,7 +404,7 @@ abstract class HistogramDataManager extends DataManager
      * @return Carbon
      * --------------------------------------------------
      */
-    private static function getEntryTime($entry) {
+    protected static function getEntryTime($entry) {
         if ( ! is_array($entry)) {
             return Carbon::now();
         }

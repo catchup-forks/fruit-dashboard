@@ -18,7 +18,7 @@ class MetricsController extends BaseController
     /**
      * getUserCount
      * --------------------------------------------------
-     * @return Returns the number of users 
+     * @return Returns the number of users
      *          by different dimensions in json
      * --------------------------------------------------
      */
@@ -63,7 +63,7 @@ class MetricsController extends BaseController
     /**
      * getVanityCount
      * --------------------------------------------------
-     * @return Returns the vanity number(s) 
+     * @return Returns the vanity number(s)
      *          by different dimensions in json
      * --------------------------------------------------
      */
@@ -80,11 +80,9 @@ class MetricsController extends BaseController
         /* Get number of datapoints */
         $numberOfDataPoints = 0;
         foreach (User::all() as $user) {
-            foreach ($user->widgets as $widget) {
-                try {
-                    $numberOfDataPoints += count($widget->getSpecific()->getData());
-                } catch (Exception $e) {
-                    continue;
+            foreach ($user->dataManagers as $dataManager) {
+                if ($dataManager instanceof HistogramDataManager) {
+                    $numberOfDataPoints += count($dataManager->getSpecific()->getData());
                 }
             }
         }
