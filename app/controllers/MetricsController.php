@@ -80,9 +80,10 @@ class MetricsController extends BaseController
         /* Get number of datapoints */
         $numberOfDataPoints = 0;
         foreach (User::all() as $user) {
-            foreach ($user->dataManagers as $dataManager) {
+            foreach ($user->dataManagers as $generalDataManager) {
+                $dataManager = $generalDataManager->getSpecific();
                 if ($dataManager instanceof HistogramDataManager) {
-                    $numberOfDataPoints += count($dataManager->getSpecific()->getData());
+                    $numberOfDataPoints += count($dataManager->getData());
                 }
             }
         }
