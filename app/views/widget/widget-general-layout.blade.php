@@ -67,7 +67,6 @@
       <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
     @endif
     @if ($widget->state != 'loading')
-      woo
       @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
     @endif
     <!-- Adding loading on DataWidget -->
