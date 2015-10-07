@@ -43,6 +43,7 @@ class User extends Eloquent implements UserInterface
     public function facebookPages() { return $this->hasMany('FacebookPage'); }
     public function twitterUsers() { return $this->hasMany('TwitterUser'); }
     public function googleAnalyticsProperties() { return $this->hasMany('GoogleAnalyticsProperty'); }
+    public function googleAnalyticsProfiles() { return $this->hasManyThrough('GoogleAnalyticsProfile', 'GoogleAnalyticsProperty', 'user_id', 'property_id'); }
 
     /* -- Custom relations. -- */
     public function widgets() { return $this->hasManyThrough('Widget', 'Dashboard'); }

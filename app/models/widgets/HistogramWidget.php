@@ -19,8 +19,8 @@ abstract class HistogramWidget extends CronWidget
         'name' => array(
             'name'       => 'Name',
             'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The name of the widget.'
+            'help_text'  => 'The name of the widget.',
+            'disabled'   => TRUE
         ),
         'length' => array(
             'name'       => 'Length',
@@ -249,7 +249,7 @@ abstract class HistogramWidget extends CronWidget
     */
     public function save(array $options=array()) {
         parent::save($options);
-        if ( ! $this->getSettings()['name'] && $this instanceof iServiceWidget) {
+        if ($this instanceof iServiceWidget) {
             $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
         }
 

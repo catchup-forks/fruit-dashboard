@@ -4,6 +4,12 @@ trait FacebookWidgetTrait
 {
     /* -- Settings -- */
     private static $pageSettings = array(
+        'name' => array(
+            'name'       => 'Name',
+            'type'       => 'TEXT',
+            'validation' => 'required',
+            'disabled'   => TRUE
+        ),
         'page' => array(
             'name'       => 'Page',
             'type'       => 'SCHOICE',

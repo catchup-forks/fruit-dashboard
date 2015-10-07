@@ -11,7 +11,7 @@
 
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Select your Google Analytics properties
+      Select your Google Analytics profiles
     </h1> <!-- /.text-center -->
 
     <div class="row">
@@ -26,13 +26,13 @@
 
               <div class="row">
 
-                {{ Form::label('properties', 'Google property', array(
+                {{ Form::label('properties', 'Google Analytics profile', array(
                   'class' => 'col-sm-3 control-label'
                 ))}}
 
                 <div class="col-sm-6">
 
-                  {{ Form::select('properties[]', $properties, null, array(
+                  {{ Form::select('profiles[]', $profiles, null, array(
                       'class' => 'form-control'
                     ))}}
 

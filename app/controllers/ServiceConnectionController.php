@@ -467,40 +467,22 @@ class ServiceConnectionController extends BaseController
      */
     public function getSelectGoogleAnalyticsProperties() {
         /* Getting a user's google analytics properties for multiple select. */
-        $properties = array();
+        $profiles = array();
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
-            $properties[$property->id] = $property->name;
+            $profiles[$property->name] = array();
+            foreach ($property->profiles as $profile) {
+                $profiles[$property->name][$profile->profile_id] = $profile->name;
+            }
         }
 
         /* If only one auto create and redirect. */
-        if (count($properties) == 0) {
+        if (count($profiles) == 0) {
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
-        } else if (count($properties) == 1) {
-            $propertyId = array_keys($properties)[0];
-            $property = Auth::user()->googleAnalyticsProperties()->where('id', $propertyId)->first();
-            $collector = new GoogleAnalyticsDataCollector(Auth::user());
-            $profile = $collector->getProfiles($property)[0];
-
-            $settings = array(
-                'profile'  => $profile->id,
-                'property' => $propertyId,
-            );
-
-            $connector = new GoogleAnalyticsConnector(Auth::user());
-            $connector->createDataManagers($settings);
-
-            /* Creating dashboard automatically. */
-            $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
-                Auth::user(), $settings
-            );
-            $dashboardCreator->create($properties[$propertyId]);
-
-            return Redirect::to($this->getReferer());
         }
 
         return View::make('service.google_analytics.select-properties')
-            ->with('properties', $properties);
+            ->with('profiles', $profiles);
     }
 
     /**
@@ -510,33 +492,26 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     public function postSelectGoogleAnalyticsProperties() {
-        if (count(Input::get('properties')) == 0) {
+        if (count(Input::get('profiles')) == 0) {
             return Redirect::back()
                 ->with('error', 'Please select at least one of the properties.');
         }
 
-        $properties = array();
-        foreach (Auth::user()->googleAnalyticsProperties as $property) {
-            $properties[$property->id] = $property->name;
-        }
-
-        foreach (Input::get('properties') as $id) {
+        foreach (Input::get('profiles') as $id) {
+            if ($id == FALSE) {
+                continue;
+            }
             /* Creating data managers. */
             $collector = new GoogleAnalyticsDataCollector(Auth::user());
-            $property = Auth::user()->googleAnalyticsProperties()->where('id', $id)->first();
-            $profile = $collector->getProfiles($property)[0];
-            $settings = array(
-                'profile'  => $profile->id,
-                'property' => $id,
-            );
+            $settings = array('profile' => $id);
 
             $connector = new GoogleAnalyticsConnector(Auth::user());
-            $connector->createDataManagers($settings);
+            //$connector->createDataManagers($settings);
 
             $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
                 Auth::user(), $settings
             );
-            $dashboardCreator->create($property->name);
+            $dashboardCreator->create(Auth::user()->googleAnalyticsProfiles()->where('profile_id', $id)->first()->name);
         }
 
         $message = 'Connection successful.';
