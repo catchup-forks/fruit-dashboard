@@ -52,6 +52,11 @@ class SiteConstants {
         '77, 255, 210',
         '209, 0, 157',
     );
+    private static $slackColors = array(
+        '#BADA55',
+        '#ABCDE',
+        '#FFBB66',
+    );
     private static $facebookPopulateDataDays = 60;
     private static $googleAnalyticsLaunchDate = '2005-01-01';
     private static $apiVersions = array('1.0');
@@ -138,6 +143,31 @@ class SiteConstants {
      */
     public static function getChartJsColors() {
         return self::$chartJsColors;
+    }
+
+    /**
+     * getSlackColors:
+     * --------------------------------------------------
+     * Returning colors for slack
+     * @return (array) ($slackColors) slackColors
+     * --------------------------------------------------
+     */
+    public static function getSlackColors() {
+        return self::$slackColors;
+    }
+
+    /**
+     * getSlackColor:
+     * --------------------------------------------------
+     * Returning the corresponging color
+     * @param int $i
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSlackColor($i) {
+        if (is_int($i)) {
+            return self::$slackColors[($i) % count(self::$slackColors)];
+        }
     }
 
     /**
