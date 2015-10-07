@@ -249,7 +249,7 @@ abstract class HistogramWidget extends CronWidget
     */
     public function save(array $options=array()) {
         parent::save($options);
-        if ($this instanceof iServiceWidget) {
+        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
             $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
         }
 
