@@ -1,8 +1,8 @@
 <div class="chart-data">
-  <div class="chart-name">
+  <div class="chart-name larger-text">
     {{ $widget->getSettings()['name'] }}
   </div> <!-- /.chart-name -->
-  <div class="chart-value">
+  <div class="chart-value larger-text">
     @if ($widget->state == 'active')
       @if ( ! $widget->hasCumulative())
       {{ Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat()) }}
@@ -21,11 +21,11 @@
   @else
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
-    <span class="chart-diff-value">{{ Utilities::formatNumber($widget->getDiff(), $widget->getFormat()) }}</span>
+    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget->getDiff(), $widget->getFormat()) }}</span>
   </div> <!-- /.chart-diff -->
 
 
-  <div class="chart-diff-dimension">
+  <div class="chart-diff-dimension smaller-text">
     <small>(a {{ rtrim($widget->getSettings()['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->

@@ -1,8 +1,8 @@
 <div class="chart-data">
-  <div class="chart-name">
+  <div class="chart-name larger-text">
     {{ $widget->getSettings()['name'] }}
   </div> <!-- /.chart-name -->
-  <div class="chart-value">
+  <div class="chart-value larger-text">
     @if ($widget->state == 'active')
       {{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}
     @endif
@@ -22,11 +22,11 @@
 
   @endif
 
-    <span class="chart-diff-value">{{$widget->getDiff()}}</span>
+    <span class="chart-diff-value larger-text">{{$widget->getDiff()}}</span>
   </div> <!-- /.chart-diff -->
 
 
-  <div class="chart-diff-dimension">
+  <div class="chart-diff-dimension smaller-text">
     <small>(a {{ rtrim($widget->getSettings()['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->

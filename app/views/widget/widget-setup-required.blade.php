@@ -1,5 +1,5 @@
 <div class="widget-inner fill" id="widget-loading-{{ $widget->id }}">
-  <div class="widget-heading">
+  <div class="widget-heading larger-text">
     {{ucwords(str_replace("_", " ", $widget->descriptor->type))}}
   </div> <!-- /.widget-heading -->
   <p class="lead text-center">

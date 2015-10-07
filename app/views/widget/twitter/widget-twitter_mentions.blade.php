@@ -1,6 +1,6 @@
 <div class="twitter-mentions" id="mentions-{{ $widget->id }}">
   
-  <div class="widget-heading">
+  <div class="widget-heading larger-text">
     <i class="fa fa-twitter"> </i>
     Twitter Mentions  
   </div> <!-- /.widget-heading -->
