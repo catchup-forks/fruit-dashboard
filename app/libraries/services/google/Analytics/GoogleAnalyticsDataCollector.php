@@ -68,16 +68,19 @@ class GoogleAnalyticsDataCollector
     public function saveProperties() {
         $properties = array();
         foreach ($this->getAccountIds() as $accountId) {
+            /* Gathering data from google */
             $ga_properties = $this->analytics->management_webproperties->listManagementWebproperties($accountId);
             $items = $ga_properties->getItems();
             if (count($items) <= 0) {
                 continue;
             }
             foreach ($items as $item) {
+                /* Saving properties */
+                $propertyId = $item->getId();
                 $property = new GoogleAnalyticsProperty(array(
-                    'id'         => $item->getId(),
-                    'name'       => $item->getName(),
-                    'account_id' => $accountId
+                    'name'        => $item->getName(),
+                    'account_id'  => $accountId,
+                    'property_id' => $propertyId
                 ));
                 $property->user()->associate($this->user);
                 array_push($properties, $property);
@@ -87,8 +90,18 @@ class GoogleAnalyticsDataCollector
         if (count($properties) > 0) {
             /* Only refreshing if we have results. */
             $this->user->googleAnalyticsProperties()->delete();
+            $this->user->googleAnalyticsProfiles()->delete();
             foreach ($properties as $property) {
                 $property->save();
+                /* Saving profiles */
+                foreach ($this->getProfiles($property) as $profile) {
+                    $profile = new GoogleAnalyticsProfile(array(
+                        'profile_id' => $profile->id,
+                        'name'       => $profile->name,
+                    ));
+                    $profile->property()->associate($property);
+                    $profile->save();
+                }
             }
         }
         return $properties;
@@ -256,7 +269,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getProfiles($property) {
         try {
-            return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->id)->getItems();
+            return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->property_id)->getItems();
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw new ServiceException("Google connection error.", 1);

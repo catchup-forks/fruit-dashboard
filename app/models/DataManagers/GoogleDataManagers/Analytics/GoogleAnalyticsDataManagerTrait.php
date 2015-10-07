@@ -10,7 +10,14 @@ trait GoogleAnalyticsDataManagerTrait
      * --------------------------------------------------
     */
     public function getProperty() {
-        return GoogleAnalyticsProperty::find($this->getCriteria()['property']);
+        $profileId = $this->getCriteria()['profile'];
+        $profile = $this->user->googleAnalyticsProfiles()->where('profile_id', $profileId)->first();
+        /* Invalid profile in DB. */
+        if (is_null($profile)) {
+            return null;
+        }
+        $property = $this->user->googleAnalyticsProperties()->where('property_id', $profile->property_id)->first();
+        return $property;
     }
 
     /**
