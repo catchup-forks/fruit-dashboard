@@ -174,12 +174,14 @@ class Notification extends Eloquent
                 /* Widget not found */
                 continue;
             }
+
+            /* Preparing data. */
             $widget = $generalWidget->getSpecific();
             $widgetData = array(
                 'color' => SiteConstants::getSlackColor($i)
             );
+
             if ($widget instanceof HistogramWidget) {
-                /* Adding widgetData to attachments. */
                 $widgetData = array_merge(
                     $widgetData,
                     $this->buildHistogramWidgetDataForSlack($widget)
@@ -189,9 +191,11 @@ class Notification extends Eloquent
                 continue;
             }
 
+            /* Appending data as an attachment. */
             array_push($attachments, $widgetData);
         }
 
+        /* Merging attachments with constants. */
         return array_merge(
             self::$slackConsts,
             array('attachments' => $attachments)
