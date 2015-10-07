@@ -1,4 +1,10 @@
 <div class="twitter-mentions" id="mentions-{{ $widget->id }}">
+  
+  <div class="widget-heading">
+    <i class="fa fa-twitter"> </i>
+    Twitter Mentions  
+  </div> <!-- /.widget-heading -->
+
   {{-- for each mention --}}
   @foreach ($widget->getData() as $tweet)
   <blockquote class="twitter-tweet">
