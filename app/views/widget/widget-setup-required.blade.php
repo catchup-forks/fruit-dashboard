@@ -1,7 +1,7 @@
 <div class="widget-inner fill" id="widget-loading-{{ $widget->id }}">
-  <div class="chart-name">
+  <div class="widget-heading">
     {{ucwords(str_replace("_", " ", $widget->descriptor->type))}}
-  </div> <!-- /.chart-name -->
+  </div> <!-- /.widget-heading -->
   <p class="lead text-center">
     This widget is broken :(
   </p>
