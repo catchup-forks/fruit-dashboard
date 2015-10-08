@@ -43,7 +43,7 @@ function FDGridster(gridsterOptions) {
       // Initialize widget
       var widget = new FDWidget(widgetsOptions[i]);
       // Poll state from js if the wiget is loading
-      if (widgetsOptions[i].state == 'loading') {
+      if (widgetsOptions[i].general.state == 'loading') {
         widget.load();
       };
       // Add to widgets array
