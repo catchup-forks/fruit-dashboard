@@ -35,8 +35,8 @@ function setDashboardLock(id, direction, fixTooltips) {
   fixTooltips = typeof fixTooltips !== 'undefined' ? fixTooltips : true;
   var lock = $('#dashboard-lock');
   var options = {
-    'class-false' : 'fa fa-unlock-alt fa-2x fa-inverse color-hovered',
-    'class-true' : 'fa fa-lock fa-2x fa-inverse color-hovered',
+    'class-false' : 'fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered',
+    'class-true' : 'fa fa-fw fa-lock fa-2x fa-inverse color-hovered',
     'tooltip-false' : 'This dashboard is unlocked. Click to lock.',
     'tooltip-true' : 'This dashboard is locked. Click to unlock.',
     'lock-direction-false' : 'lock',
