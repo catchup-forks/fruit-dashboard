@@ -49,6 +49,9 @@ function FDGridster(gridsterOptions) {
       // Add to widgets array
       widgets.push({'id': widgetsOptions[i].general.id, 'widget': widget});
     };
+
+    // Look for off-screen widgets on dashboard.
+    getOverflow(widgetsOptions);
         
     // return
     return this;
@@ -265,6 +268,35 @@ function FDGridster(gridsterOptions) {
    */
   function serializePositioning() {
     return JSON.stringify(gridster.serialize());
+  }
+
+  /**
+   * @function getOverflow
+   * --------------------------------------------------------------------------
+   * Displays a growl notification if there are off-screen widgets
+   * @param {array} widgetsOptions | The options array for the widgets of a dashboard
+   * @return this
+   * --------------------------------------------------------------------------
+   */
+  function getOverflow(widgetsOptions) {
+    var lowestRow = 0;
+
+    for (var i = widgetsOptions.length - 1; i >= 0; i--) {
+
+      var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey);
+
+      if (localRowMax > lowestRow) {
+        lowestRow = localRowMax;
+      }
+
+    };
+
+    if (lowestRow > options.numberOfRows) {
+      var msg = "There is a off-screen widget on your dashboard: " + options.name + ".";
+      easyGrowl('warning', msg, 10000);
+    };
+    
+    return this;
   }
 
   /* -------------------------------------------------------------------------- *
