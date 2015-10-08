@@ -280,15 +280,12 @@ function FDGridster(gridsterOptions) {
    */
   function getOverflow(widgetsOptions) {
     var lowestRow = 0;
-
+   
     for (var i = widgetsOptions.length - 1; i >= 0; i--) {
-
-      var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey);
-
+      var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey) - 1;
       if (localRowMax > lowestRow) {
         lowestRow = localRowMax;
       }
-
     };
 
     if (lowestRow > options.numberOfRows) {
