@@ -11,8 +11,8 @@ var gridsterGlobalOptions = {
 };
 
 // Create FDGridster objects
-@foreach (Auth::user()->dashboards as $dashboard)
-  var gridsterOptions{{ $dashboard->id }} = $.extend({},
+@foreach ($dashboards as $dashboard_id=>$dashboard)
+  var gridsterOptions{{ $dashboard_id }} = $.extend({},
     gridsterGlobalOptions,
     {
       id:        '{{ $dashboard->id }}',
@@ -23,44 +23,13 @@ var gridsterGlobalOptions = {
       widgetsSelector:  'div.gridster-widget',
     }
   );
-  var widgetsOptions{{ $dashboard->id }} = [
-    @foreach ($dashboard->widgets as $widget)
-      {
-        general: {
-          id:    '{{ $widget->id }}',
-          name:  '{{ $widget->name }}',
-          type:  '{{ $widget->descriptor->type }}',
-          state: '{{ $widget->state }}',
-          row: '{{ $widget->getPosition()->row}}',
-          col: '{{ $widget->getPosition()->col}}',
-          sizex: '{{ $widget->getPosition()->size_x}}',
-          sizey: '{{ $widget->getPosition()->size_y}}'
-        },
-        features: {
-          drag:    true,
-        },
-        urls: {
-          postUrl:   '{{ route("widget.ajax-handler", $widget->id) }}',
-          deleteUrl: '{{ route("widget.delete", $widget->id) }}',
-          statUrl:   '{{ route("widget.singlestat", $widget->id) }}',
-        },
-        selectors: {
-          widget:  '[data-id={{ $widget->id }}]',
-          wrapper: '#widget-wrapper-{{ $widget->id }}',
-          loading: '#widget-loading-{{ $widget->id }}',
-          refresh: '#widget-refresh-{{ $widget->id }}',
-          graph:   '[id^=chart-container]',
-        },
-        data: {
-          page: 'dashboard',
-          init: 'widgetData{{ $widget->id }}',
-        }
-      },
-    @endforeach
+  var widgetsOptions{{ $dashboard_id }} = [
+    @foreach ($dashboard['widgets'] as $widget) {{ json_encode($widget['meta']) }}, @endforeach
   ];
   
   var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }});
 @endforeach
+
 
 // Initialize FDGridster objects on DOM load
 $(document).ready(function() {

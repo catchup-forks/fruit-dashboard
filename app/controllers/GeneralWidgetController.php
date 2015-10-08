@@ -413,6 +413,27 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * anyAddNotify
+     * --------------------------------------------------
+     * @param (integer) ($widgetId) The ID of the widget
+     * @return
+     * --------------------------------------------------
+     */
+    public function anyAddNotify($sharingId) {
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof HistogramWidget) {
+                throw new WidgetDoesNotExist("This widget does not support notifications yet.", 1);
+            }
+        } catch (WidgetDoesNotExist $e) {
+            return Response::make($e->getMessage(), 401);
+        }
+
+        /* Everything OK, return response with 200 status code */
+        return Response::make("Added to notifications", 200);
+    }
+
+    /**
      * anyAcceptShare
      * --------------------------------------------------
      * @param (integer) ($sharingId) The ID of the sharing
@@ -469,6 +490,11 @@ class GeneralWidgetController extends BaseController {
      */
     private function getWidget($widgetID) {
         $widget = Widget::find($widgetID);
+
+        /* User cross check. */
+        if ($widget->user() != Auth::user() && ! Auth::user()->widgetSharings()->where('widget_id', $widgetID)->first()) {
+            throw new WidgetDoesNotExist("You do not own this widget, nor is it shared with you.", 1);
+        }
 
         // Widget not found.
         if ($widget === null) {
@@ -652,8 +678,12 @@ class GeneralWidgetController extends BaseController {
             return Response::make('Bad request.', 401);
         }
 
-        $image = Image::loadView('to-image.to-image-general-layout', ['widget' => $widget->getSpecific()]);
-        return $image->download('widget.png');
+        File::put(public_path().'test.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget->getSpecific())));
+        return View::make('to-image.to-image-general-histogram', array('widget' => $widget->getSpecific()));
+
+
+        //$image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget->getSpecific()]);
+        //return $image->download('widget.png');
     }
 
 } /* GeneralWidgetController */

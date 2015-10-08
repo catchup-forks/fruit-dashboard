@@ -117,6 +117,45 @@ class Widget extends Eloquent
     }
 
     /**
+     * getTemplateMeta
+     * Returning data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateMeta() {
+        $position = $this->getPosition();
+        return array(
+            'general' => array(
+                'id'    => $this->id,
+                'type'  => $this->descriptor->type,
+                'state' => $this->state,
+                'row'   => $position->row,
+                'col'   => $position->col,
+                'sizex' => $position->size_x,
+                'sizey' => $position->size_y
+            ),
+            'features' => array(
+                'drag' => true
+            ),
+            'urls' => array(
+              'deleteUrl' => route('widget.delete', $this->id),
+              'postUrl'   => route('widget.ajax-handler', $this->id) // AjaxWidgeTrait
+            ),
+            'selectors' => array(
+                'widget'  => '[data-id=' . $this->id . ']',
+                'wrapper' => '#widget-wrapper-' . $this->id,
+                'loading' => '#widget-loading-' . $this->id,
+                'refresh' => '#widget-refresh-' . $this->id,
+            ),
+            'data' => array(
+                'page' => 'dashboard',
+                'init' => 'widgetData' . $this->id
+            )
+        );
+    }
+
+    /**
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------

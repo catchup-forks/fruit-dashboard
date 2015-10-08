@@ -12,7 +12,7 @@ class CreateGoogleAnalyticsProfilesTable extends Migration {
      */
     public function up() {
         Schema::create('google_analytics_profiles',function($table) {
-            $table->string('id', 127);
+            $table->string('profile_id', 127);
 
             $table->integer('property_id')->unsigned();
             $table->foreign('property_id')
@@ -24,8 +24,14 @@ class CreateGoogleAnalyticsProfilesTable extends Migration {
 
         foreach (User::all() as $user) {
             if ($user->isServiceConnected('google_analytics')) {
-                $gadc = new GoogleAnalyticsDataCollector($user);
-                $gadc->saveProperties();
+                try {
+                    $gadc = new GoogleAnalyticsDataCollector($user);
+                    $gadc->saveProperties();
+                    Log::info("Updated Google analytics profiles of user #" . $user->id);
+                } catch (Exception $e) {
+                    Log::error('Error found while running migration: ' . get_class($this) . ' on user #' . $user->id . '. message: ' . $e->getMessage());
+
+                }
             }
         }
     }

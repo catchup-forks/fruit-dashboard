@@ -109,6 +109,21 @@ abstract class HistogramWidget extends CronWidget
      }
 
     /**
+     * getTemplateMeta
+     * Returning data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateMeta() {
+        $meta = parent::getTemplateMeta();
+        $meta['general']['name'] = $this->getSettings()['name'];
+        $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
+        $meta['selectors']['graph'] = '[id^=chart-container]';
+        return $meta;
+    }
+
+    /**
      * isGreen
      * Returns whether or not the diff is considered
      * good in the histogram

@@ -61,7 +61,7 @@
           <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
           @else
           <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
-          @endif  
+          @endif
 
             {{-- Generate all the widgdets --}}
             <div class="gridster-container">
@@ -142,7 +142,7 @@
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
-  @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
+  @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor)
     <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. Utilities::underscoreToCamelCase($descriptor->type).'Widget.js') }}"></script>
   @endforeach
   <!-- /FDWidget* classes -->
