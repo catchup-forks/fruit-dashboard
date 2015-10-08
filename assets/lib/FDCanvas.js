@@ -63,7 +63,7 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    * Reinserts the canvas with the provided size
    * @param {dictionary} size | The width and height of the new canvas
-   * @return {this} 
+   * @return {this}
    * --------------------------------------------------------------------------
    */
   function reinsert() {

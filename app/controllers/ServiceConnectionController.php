@@ -82,7 +82,7 @@ class ServiceConnectionController extends BaseController
 
         /* Render the page */
         return Redirect::to($this->getReferer())
-            ->with('success', 'Your dashboard is being created in the background.');
+            ->with('success', 'Braintree connection successful.');
     }
 
     /**

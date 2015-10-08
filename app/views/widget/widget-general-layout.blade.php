@@ -32,7 +32,7 @@
           </li>
         @endif
 
-        {{-- SHARE
+        {{-- SHARE --}}
         @if ( ! $widget instanceof SharedWidget)
         <li>
           <a href="#" id="share-{{$widget->id}}" onclick="showShareModal({{$widget->id}})">
@@ -40,7 +40,7 @@
             Share widget
           </a>
         </li>
-        @endif --}}
+        @endif
         @endif
 
         {{-- DELETE --}}
@@ -58,7 +58,9 @@
   @if ($widget->state == 'setup_required')
       @include('widget.widget-setup-required', ['widget' => $widget,])
   @elseif ($widget instanceof SharedWidget)
+      <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->getRelatedWidget()->id}}">
     @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
+    </div>
   @elseif ($widget->premiumUserCheck() === -1)
      @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @else
