@@ -30,12 +30,12 @@ function FDCanvas(widgetOptions) {
    */
   function size() {
     // Set margins
-    if (options.data.page = 'dashboard') {
+    if (options.data.page == 'dashboard') {
       widthMargin = 35;
       heightMargin = 20;
-    } else if (options.data.page = 'singlestat') {
+    } else if (options.data.page == 'singlestat') {
       widthMargin = 0;
-      heightMargin = 0;
+      heightMargin = 20;
     };
 
     // Return
