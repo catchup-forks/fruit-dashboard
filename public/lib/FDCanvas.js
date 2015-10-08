@@ -31,16 +31,16 @@ function FDCanvas(widgetOptions) {
   function size() {
     // Set margins
     if (options.data.page = 'dashboard') {
-      widthMargin = 20;
-      heigthMargin = 35;
+      widthMargin = 35;
+      heightMargin = 20;
     } else if (options.data.page = 'singlestat') {
       widthMargin = 0;
-      heigthMargin = 0;
+      heightMargin = 0;
     };
 
     // Return
     return {'width': $(widgetSelector).first().width()-widthMargin,
-            'height': $(widgetSelector).first().height()-heigthMargin};
+            'height': $(widgetSelector).first().height()-heightMargin};
   }
 
   /**

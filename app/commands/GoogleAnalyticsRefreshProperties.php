@@ -29,11 +29,15 @@ class GoogleAnalyticsRefreshProperties extends Command {
     {
         foreach (User::all() as $user) {
             if ( ! $user->isServiceConnected('google_analytics')) {
-                /* Facebook not connected. */
+                /* GA not connected. */
                 continue;
             }
-            $collector = new GoogleAnalyticsDataCollector($user);
-            $collector->saveProperties();
+            try {
+                $collector = new GoogleAnalyticsDataCollector($user);
+                $collector->saveProperties();
+            } catch (Exception $e) {
+                Log::error('Error found while running ' . get_class($this) . ' on user #' . $user->id . '. message: ' . $e->getMessage());
+            }
         }
     }
 

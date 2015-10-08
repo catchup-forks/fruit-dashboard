@@ -37,7 +37,10 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-        if ($this->getDataManager()->data->raw_value == 'loading') {
+        if ( ! $this->hasValidCriteria()) {
+            $this->setState('setup_required');
+        }
+        else if ($this->getDataManager()->data->raw_value == 'loading') {
             $this->setState('loading');
         } else if ($this->state != 'setup_required') {
             $this->setState('active');
@@ -84,31 +87,13 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     public function getDataManager() {
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::where('type', static::$histogramDescriptor)->first();
+
         if (is_null($descriptor)) {
             throw new DescriptorDoesNotExist("The descriptor for " . static::$histogramDescriptor . " does not exist", 1);
         }
 
-        $managers = $this->user()->dataManagers()->where(
-            'descriptor_id', $descriptor->id)->get();
-
-        foreach ($managers as $generalManager) {
-            $manager = $generalManager->getSpecific();
-            if ($manager->getCriteria() == $this->getCriteria() && $manager instanceof HistogramDataManager) {
-                /* Found a match. */
-                return $manager;
-            }
-        }
-
-        /* No manager found. */
-        if ($this->hasValidCriteria()) {
-            return DataManager::createManager(
-                $this->user(),
-                $descriptor,
-                $this->getCriteria()
-            );
-        }
-
-        return null;
+        /* Calling the DM retriever on the specific descriptor. */
+        return $descriptor->getDataManager($this)->getSpecific();
     }
 
     /**
@@ -125,7 +110,11 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             return array();
         }
         $settings = $this->getSettings();
-        return array('latest' => $manager->getLatestValues(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
+        $manager->setResolution($settings['period']);
+        $manager->setLength($settings['multiplier'] + 1);
+        return array(
+            'latest' => $manager->getLatestValues(),
+            'diff'   => $manager->compare());
     }
 
     /**
@@ -142,9 +131,12 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             if ($this->state == 'loading') {
                 return array('ready' => FALSE);
             } else if($this->state == 'active') {
+                $view = View::make($this->descriptor->getTemplateName())
+                    ->with('widget', $this);
                 return array(
                     'ready' => TRUE,
-                    'data'  => $this->getCurrentValue($postData)
+                    'data'  => $this->getCurrentValue($postData),
+                    'html'  => $view->render()
                 );
             } else {
                 return array('ready' => FALSE);

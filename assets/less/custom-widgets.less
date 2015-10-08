@@ -8,9 +8,17 @@
 
 .widget-inner {
   background-color: @white;
-  background-color: fade(@white, @alpha/1.8);
+  background-color: fade(@white, @alpha);
   padding: @padding;
+  margin-right: @margin*0.8;
   .rounded;
+}
+
+.widget-heading {
+  text-align: center;
+  padding: 0 @padding @padding @padding;
+  color: @white;
+  text-shadow: 1px 1px 3px #141414;
 }
 
 .reminder-text {

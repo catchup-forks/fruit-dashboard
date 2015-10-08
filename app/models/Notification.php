@@ -2,6 +2,12 @@
 
 class Notification extends Eloquent
 {
+    private static $slackConsts = array(
+        'text'        => "Here are some info about your startup that will make you happy.",
+        'username'    => "FruitDashboard",
+        'icon_emoji' => ':apple:',
+    );
+
     /* -- Fields -- */
     protected $guarded = array(
     );
@@ -19,7 +25,7 @@ class Notification extends Eloquent
     );
 
     /* -- No timestamps -- */
-    public $timestamps = false; 
+    public $timestamps = false;
 
     /* -- Relations -- */
     public function user() { return $this->belongsTo('User'); }
@@ -83,12 +89,27 @@ class Notification extends Eloquent
     /**
      * sendSlackNotification
      * --------------------------------------------------
-     * @return Sends a notification to slack.
+     * @return boolean
      * --------------------------------------------------
      */
     private function sendSlackNotification() {
-        /* Return */
-        return TRUE;
+        /* Initializing cURL */
+        $ch = curl_init($this->address);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+
+        /* Populating POST data */
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
+            $this->buildWidgetsDataForSlack()
+        ));
+
+        /* Sending request. */
+        $success = curl_exec($ch);
+
+        /* Cleanup and return. */
+        curl_close($ch);
+        return $success;
+
     }
 
     /**
@@ -138,4 +159,80 @@ class Notification extends Eloquent
         return $finalData;
     }
 
+    /**
+     * buildWidgetsDataForSlack
+     * --------------------------------------------------
+     * @return Builds the widgets data for the slack notification
+     * --------------------------------------------------
+     */
+    private function buildWidgetsDataForSlack() {
+        $attachments = array();
+        /* Iterating throurh the widgets. */
+        foreach ($this->getSelectedWidgets() as $i=>$widgetId) {
+            $generalWidget = Widget::find($widgetId);
+            if (is_null($generalWidget)) {
+                /* Widget not found */
+                continue;
+            }
+
+            /* Preparing data. */
+            $widget = $generalWidget->getSpecific();
+            $widgetData = array(
+                'color' => SiteConstants::getSlackColor($i)
+            );
+
+            if ($widget instanceof HistogramWidget) {
+                $widgetData = array_merge(
+                    $widgetData,
+                    $this->buildHistogramWidgetDataForSlack($widget)
+                );
+            } else {
+                /* Right now we support only histogram widgets. */
+                continue;
+            }
+
+            /* Appending data as an attachment. */
+            array_push($attachments, $widgetData);
+        }
+
+        /* Merging attachments with constants. */
+        return array_merge(
+            self::$slackConsts,
+            array('attachments' => $attachments)
+        );
+    }
+
+    /**
+     * getSelectedWidgets
+     * Returns an array of the selected widgets.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getSelectedWidgets() {
+        if (is_array($this->selected_widgets)) {
+            return $this->selected_widgets;
+        } else if (is_string($this->selected_widgets)) {
+            $decoded = json_decode($this->selected_widgets);
+            if (is_array($decoded)) {
+                return $decoded;
+            }
+        }
+        return array();
+    }
+
+    /**
+     * buildHistogramWidgetDataForSlack
+     * --------------------------------------------------
+     * @param Widget $widget
+     * @return Builds the widget data for histogram widgets.
+     * --------------------------------------------------
+     */
+    private function buildHistogramWidgetDataForSlack($widget) {
+        return array(
+            'title'     => $widget->getSettings()['name'],
+            'text'      => 'Your latest values: ' . Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat())
+            //'image_url' => 'http://orig14.deviantart.net/1fb5/f/2012/154/2/e/random_candy_bg_twitter__by_sleazyicons-d526c6j.gif'
+        );
+    }
 }

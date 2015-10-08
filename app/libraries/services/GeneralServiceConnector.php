@@ -20,7 +20,6 @@ abstract class GeneralServiceConnector
 
     abstract public function connect();
     abstract public function saveTokens(array $parameters);
-    abstract protected function populateData($criteria);
 
     /**
      * disconnect
@@ -110,9 +109,14 @@ abstract class GeneralServiceConnector
                 continue;
             }
 
-            /* Deleting previous managers, if any. */
-           $settingsCriteria = json_encode($criteria);
-           $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->delete();
+            /* Detecting previous managers. */
+            $settingsCriteria = json_encode($criteria);
+            $manager = $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->first();
+            if ( ! is_null($manager)) {
+                /* Manager found, keeping leaving it alone. */
+                array_push($dataManagers, $manager->getSpecific());
+                continue;
+            }
 
             /* Creating data */
             $data = Data::create(array('raw_value' => 'loading'));
@@ -122,11 +126,12 @@ abstract class GeneralServiceConnector
                 'settings_criteria' => json_encode($criteria),
                 'last_updated'      => Carbon::now()
             ));
+
+            /* Assigning foreign values */
             $dataManager->descriptor()->associate($descriptor);
             $dataManager->user()->associate($this->user);
-
-            /* Assigning data */
             $dataManager->data()->associate($data);
+
             $dataManager->save();
 
             array_push($dataManagers, $dataManager);
@@ -135,6 +140,21 @@ abstract class GeneralServiceConnector
         $this->populateData($criteria);
 
         return $dataManagers;
+    }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    protected function populateData($criteria) {
+        Queue::push('DataPopulator', array(
+            'user_id'  => $this->user->id,
+            'criteria' => $criteria,
+            'service'  => static::$service
+        ));
     }
 
 } /* GeneralServiceConnector */

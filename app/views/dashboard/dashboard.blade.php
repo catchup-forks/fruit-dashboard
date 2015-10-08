@@ -174,7 +174,7 @@
 
     // Change the dashboard-lock on dashboard change
     $('.carousel').on('slid.bs.carousel', function () {
-      setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, false);
+      setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, true);
     })
 
 

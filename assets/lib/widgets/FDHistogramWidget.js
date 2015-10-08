@@ -24,7 +24,7 @@ var FDHistogramWidget = function(widgetOptions) {
   * @function init
   * Automatically initializes the widget
   * --------------------------------------------------------------------------
-  * @return {this} 
+  * @return {this}
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.init = function() {
@@ -37,7 +37,7 @@ FDHistogramWidget.prototype.init = function() {
   * @function reinit
   * Reinitializes the widget
   * --------------------------------------------------------------------------
-  * @return {this} 
+  * @return {this}
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.reinit = function() {
@@ -49,7 +49,7 @@ FDHistogramWidget.prototype.reinit = function() {
  * @function refresh
  * Handles the specific refresh procedure to the widget
  * --------------------------------------------------------------------------
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDHistogramWidget.prototype.refresh = function(data) {

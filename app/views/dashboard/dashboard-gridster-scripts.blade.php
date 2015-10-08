@@ -30,6 +30,10 @@ var gridsterGlobalOptions = {
           name:  '{{ $widget->name }}',
           type:  '{{ $widget->descriptor->type }}',
           state: '{{ $widget->state }}',
+          row: '{{ $widget->getPosition()->row}}',
+          col: '{{ $widget->getPosition()->col}}',
+          sizex: '{{ $widget->getPosition()->size_x}}',
+          sizey: '{{ $widget->getPosition()->size_y}}'
         },
         features: {
           drag:    true,
@@ -53,8 +57,42 @@ var gridsterGlobalOptions = {
       },
     @endforeach
   ];
+  getOverflow(widgetsOptions{{ $dashboard->id }}, "{{$dashboard->name }}");
   var FDGridster{{ $dashboard->id }} = new FDGridster(gridsterOptions{{ $dashboard->id }});
 @endforeach
+
+/**
+ * @function getOverflow
+ * --------------------------------------------------------------------------
+ * Displays a growl notification if there are off-screen widgets
+ * @param {array} widgetOptions | The options array for the widgets of a dashboard
+ * @return null
+ * --------------------------------------------------------------------------
+ */
+function getOverflow(widgetOptions, dashboardName) {
+  var lowestRow = 0;
+
+  for (var i = widgetOptions.length - 1; i >= 0; i--) {
+
+    var localRowMax = parseInt(widgetOptions[i].general.row) + parseInt(widgetOptions[i].general.sizey);
+
+    if (localRowMax > lowestRow) {
+      lowestRow = localRowMax;
+    }
+
+  };
+
+  if (lowestRow > gridsterGlobalOptions['numberOfRows']) {
+    var msg = "There is a off-screen widget on your dashboard: " + dashboardName + ".";
+    $.growl.warning({ 
+      message: msg,
+      fixed: true,
+      location: "br"
+    });
+  };
+  
+  return null;
+}
 
 // Initialize FDGridster objects on DOM load
 $(document).ready(function() {

@@ -85,15 +85,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * getChartJSData
      * Returning template ready grouped dataset.
      * --------------------------------------------------
-     * @param array $range
-     * @param string $resolution
-     * @param bool $diff
-     * @param int length
      * @param string $dateFormat
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartJSData($range, $resolution, $length, $diff , $dateFormat) {
+    protected function getChartJSData($dateFormat) {
         $groupedData = array();
         $datetimes = array();
         $i = 0;
@@ -104,8 +100,8 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 'values' => array()
             );
         }
-        $histogram = $this->buildHistogram($range, $resolution, $length);
-        if ($diff) {
+        $histogram = $this->buildHistogram();
+        if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
         foreach ($histogram as $entry) {

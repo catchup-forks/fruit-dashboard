@@ -34,7 +34,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'   => FALSE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 3,
+                'min_rows'     => 5,
                 'default_cols' => 3,
                 'default_rows' => 4
             )

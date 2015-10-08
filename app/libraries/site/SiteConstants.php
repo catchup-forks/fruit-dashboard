@@ -25,10 +25,10 @@ class SiteConstants {
     private static $webAnalyticsServices = array('google_analytics');
     private static $skipCategoriesInNotification = array('personal');
     private static $singleStatHistoryDiffs = array(
-        'days'   => array(30, 7, 1),
-        'weeks'  => array(12, 4, 1),
-        'months' => array(6, 3, 1),
-        'years'  => array(5, 3, 1),
+        'days'   => array(1, 7, 30),
+        'weeks'  => array(1, 4, 12),
+        'months' => array(1, 3, 6),
+        'years'  => array(1, 3, 5),
     );
 
     private static $startupTypes = array(
@@ -51,6 +51,11 @@ class SiteConstants {
         '255, 210, 77',
         '77, 255, 210',
         '209, 0, 157',
+    );
+    private static $slackColors = array(
+        '#BADA55',
+        '#ABCDE',
+        '#FFBB66',
     );
     private static $facebookPopulateDataDays = 60;
     private static $googleAnalyticsLaunchDate = '2005-01-01';
@@ -138,6 +143,31 @@ class SiteConstants {
      */
     public static function getChartJsColors() {
         return self::$chartJsColors;
+    }
+
+    /**
+     * getSlackColors:
+     * --------------------------------------------------
+     * Returning colors for slack
+     * @return (array) ($slackColors) slackColors
+     * --------------------------------------------------
+     */
+    public static function getSlackColors() {
+        return self::$slackColors;
+    }
+
+    /**
+     * getSlackColor:
+     * --------------------------------------------------
+     * Returning the corresponging color
+     * @param int $i
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSlackColor($i) {
+        if (is_int($i)) {
+            return self::$slackColors[($i) % count(self::$slackColors)];
+        }
     }
 
     /**

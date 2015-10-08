@@ -362,6 +362,16 @@
        });
 
       /**
+       * @listens | element(s): $('#add-widget-submit-button') | event:click
+       * --------------------------------------------------------------------------
+       * Changes the button text to 'Loading...' when clicked
+       * --------------------------------------------------------------------------
+       */
+       $('#add-widget-submit-button').click(function() {
+          $(this).button('loading');
+       });
+
+      /**
        * @listens | element(s): $('#add_to_dashboard_select > select') | event:change
        * --------------------------------------------------------------------------
        * Changes the select to a text input when 'add to new dashboard' is selected

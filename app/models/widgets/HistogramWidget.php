@@ -19,8 +19,8 @@ abstract class HistogramWidget extends CronWidget
         'name' => array(
             'name'       => 'Name',
             'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The name of the widget.'
+            'help_text'  => 'The name of the widget.',
+            'disabled'   => TRUE
         ),
         'length' => array(
             'name'       => 'Length',
@@ -56,6 +56,24 @@ abstract class HistogramWidget extends CronWidget
         }
         return $types;
     }
+
+    /**
+     * setupDataManager
+     * Setting up the datamanager
+     * --------------------------------------------------
+     * @param array $options
+     * @return DataManager
+     * --------------------------------------------------
+     */
+     public function setupDataManager(array $options=array()) {
+        $dm = $this->dataManager();
+        $settings = $this->getSettings();
+        $dm->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);
+        $dm->setLength(array_key_exists('length', $options) ? $options['length'] : $settings['length']);
+        $dm->setRange(array_key_exists('range', $options) ? $options['range'] : array());
+        $dm->setDiff(array_key_exists('diff', $options) ? $options['diff'] : $this->isDifferentiated());
+        return $dm;
+     }
 
     /**
      * getSettingsFields
@@ -136,7 +154,11 @@ abstract class HistogramWidget extends CronWidget
         if (is_null($resolution)) {
             $resolution = $this->getSettings()['resolution'];
         }
-        return array_values($this->dataManager()->compare($resolution, $multiplier, $this->isDifferentiated()))[0];
+        $dmParams = array(
+            'resolution' => $resolution,
+            'length'     => $multiplier + 1,
+        );
+        return array_values($this->setupDataManager($dmParams)->compare())[0];
     }
 
     /**
@@ -180,7 +202,7 @@ abstract class HistogramWidget extends CronWidget
         if (isset($postData['range'])) {
             $range = $postData['range'];
         } else {
-            $range = null;
+            $range = array();
         }
 
         /*$range = array(
@@ -194,11 +216,12 @@ abstract class HistogramWidget extends CronWidget
             $resolution = $this->getSettings()['resolution'];
         }
 
-        return $this->dataManager()->getHistogram(
-            $range, $resolution,
-            $this->getSettings()['length'],
-            $this->isDifferentiated()
+        $dmParams = array(
+            'resolution' => $resolution,
+            'range'      => array()
         );
+
+        return $this->setupDataManager($dmParams)->getHistogram();
     }
 
 
@@ -211,7 +234,9 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function getLatestValues() {
-        return $this->dataManager()->getLatestValues($this->isDifferentiated());
+        $dm = $this->dataManager();
+        $dm->setDiff($this->isDifferentiated());
+        return $dm->getLatestValues();
      }
 
     /**
@@ -224,7 +249,7 @@ abstract class HistogramWidget extends CronWidget
     */
     public function save(array $options=array()) {
         parent::save($options);
-        if ( ! $this->getSettings()['name'] && $this instanceof iServiceWidget) {
+        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
             $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
         }
 
@@ -241,5 +266,6 @@ abstract class HistogramWidget extends CronWidget
     public function hasData() {
         return $this->dataManager()->getData() != FALSE;
     }
+
 }
 ?>

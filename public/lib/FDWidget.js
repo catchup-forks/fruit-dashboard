@@ -80,6 +80,7 @@ function FDWidget(widgetOptions) {
     function pollState() {
       send({'state_query': true}, function (data) {
         if (data['ready']) {
+          $(options.selectors.wrapper).html(data['html']);
           $(options.selectors.loading).hide();
           $(options.selectors.wrapper).show();
           done = true;
@@ -199,7 +200,12 @@ function FDWidget(widgetOptions) {
  /* -------------------------------------------------------------------------- *
   *                          WIDGET RELATED EVENTS                             *
   * -------------------------------------------------------------------------- */
- // If the mouse leaves the hamburger menu, close it.
+ // If the mouse leaves the widget, close dropdown menu.
+ $('.gridster-widget').mouseleave(function(){
+   $(".dropdown").removeClass("open");
+ });
+
+ // If the mouse leaves the dropdown menu, close it.
  $(".dropdown-menu").mouseleave(function(){
    $(".dropdown").removeClass("open");
  });

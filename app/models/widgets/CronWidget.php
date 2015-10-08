@@ -25,9 +25,13 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             if ($this->state == 'loading') {
                 return array('ready' => FALSE);
             } else if($this->state == 'active') {
+                /* Rerendering the widget */
+                $view = View::make($this->descriptor->getTemplateName())
+                    ->with('widget', $this);
                 return array(
                     'ready' => TRUE,
-                    'data'  => $this->getData($postData)
+                    'data'  => $this->getData($postData),
+                    'html'  => $view->render()
                 );
             } else {
                 return array('ready' => FALSE);

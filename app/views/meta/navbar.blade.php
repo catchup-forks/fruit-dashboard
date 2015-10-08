@@ -76,6 +76,12 @@
 
 </div> <!-- /.btn-group -->
 
+<div class="position-tr-second z-top cursor-pointer">
+
+    <span class="fa fa-2x fa-street-view fa-inverse color-hovered drop-shadow" alt="Community" data-toggle="tooltip" data-placement="left" title="Join our community"></span>
+    
+</div> <!-- /.position-tr-second -->
+
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])

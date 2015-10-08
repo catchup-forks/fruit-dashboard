@@ -56,6 +56,7 @@ class WidgetDescriptor extends Eloquent
      * Returning the corresponding DataManager object.
      * --------------------------------------------------
      * @param Widget $widget
+     * @param bool firstRun
      * @return DataManager
      * --------------------------------------------------
     */
@@ -70,8 +71,22 @@ class WidgetDescriptor extends Eloquent
                     return $manager;
                 }
             }
-            /* Creating a manager. */
-            return DataManager::createManagerFromWidget($widget);
+
+            /* No manager found */
+            if ($widget instanceof iServiceWidget && $firstRun) {
+                /* It's a service widget. */
+                /* Creating all related managers. */
+                $connectorClass = $widget->getConnectorClass();
+                $connector = new $connectorClass($widget->user());
+                $connector->createDataManagers($widget->getCriteria());
+
+                /* Calling getManager again, there should be a match now. */
+                return $this->getDataManager($widget, FALSE);
+            } else {
+                /* Creating a manager. */
+                return DataManager::createManagerFromWidget($widget);
+            }
+
        }
         return null;
     }
