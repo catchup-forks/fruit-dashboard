@@ -114,7 +114,7 @@ Widget stats
       var widgetData{{ $resolution }} = {
         'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
-        @foreach ($widget->getData()['datasets'] as $dataset)
+        @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
           {
               'values' : [{{ implode(',', $dataset['values']) }}],
               'name':  "{{ $dataset['name'] }}",
