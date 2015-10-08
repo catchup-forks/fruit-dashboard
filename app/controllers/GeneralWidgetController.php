@@ -652,8 +652,12 @@ class GeneralWidgetController extends BaseController {
             return Response::make('Bad request.', 401);
         }
 
-        $image = Image::loadView('to-image.to-image-general-layout', ['widget' => $widget->getSpecific()]);
-        return $image->download('widget.png');
+        File::put(public_path().'test.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget->getSpecific())));
+        return View::make('to-image.to-image-general-histogram', array('widget' => $widget->getSpecific()));
+
+
+        //$image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget->getSpecific()]);
+        //return $image->download('widget.png');
     }
 
 } /* GeneralWidgetController */
