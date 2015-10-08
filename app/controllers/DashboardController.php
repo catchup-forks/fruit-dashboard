@@ -41,7 +41,7 @@ class DashboardController extends BaseController
         }
 
         /* Creating view */
-        $view = View::make('dashboard.dashboard', $parameters);
+        $view = Auth::user()->createDashboardView();
 
         try {
             /* Trying to render the view. */
@@ -50,7 +50,7 @@ class DashboardController extends BaseController
             /* Error occured trying to find the widget. */
             Auth::user()->turnOffBrokenWidgets();
             /* Recreating view. */
-            $view = View::make('dashboard.dashboard', $parameters);
+            $view = Auth::user()->createDashboardView();
         }
         return $view;
 

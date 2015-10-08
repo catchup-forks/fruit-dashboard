@@ -44,6 +44,23 @@ abstract class TableWidget extends CronWidget
     public function getContent() {
         return $this->dataManager()->getContent();
     }
+
+    /**
+     * save
+     * Adding name property if not set.
+     * --------------------------------------------------
+     * @param array $options
+     * @return null
+     * --------------------------------------------------
+    */
+    public function save(array $options=array()) {
+        parent::save($options);
+        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
+            $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
+        }
+
+        return parent::save($options);
+    }
 }
 
 ?>

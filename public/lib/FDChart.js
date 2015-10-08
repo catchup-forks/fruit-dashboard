@@ -32,7 +32,7 @@ function FDChart(widgetOptions) {
           var canvasContext = canvas.get2dContext();
           if (canvasContext) {
             new Chart(canvasContext).Line(
-              chartOptions.transformLineChartDatasets(data), 
+              chartOptions.transformLineChartDatasets(data),
               chartOptions.getLineChartOptions())
           };
           break;
