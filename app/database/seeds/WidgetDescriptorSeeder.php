@@ -466,6 +466,38 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_users'],
+            array(
+                'name'         => 'Users',
+                'description'  => 'The total number of users.',
+                'type'         => 'google_analytics_users',
+                'category'     => 'google_analytics',
+                'is_premium'   => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_active_users'],
+            array(
+                'name'         => 'Active users',
+                'description'  => ' - FIXME - Please write something here',
+                'type'         => 'google_analytics_active_users',
+                'category'     => 'google_analytics',
+                'is_premium'   => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
             array(
                 'name'        => 'Shared widget',

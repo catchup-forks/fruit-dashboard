@@ -42,26 +42,6 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-     * getAccountIds
-     * Returning the first account id.
-     */
-    private function getAccountIds() {
-        /* Getting accounts */
-        $accounts = $this->analytics->management_accounts->listManagementAccounts();
-        $items = $accounts->getItems();
-        if (count($items) <= 0) {
-            return null;
-        }
-
-        /* Getting properties */
-        $ids = array();
-        foreach ($items as $account) {
-            array_push($ids, $account->getId());
-        }
-        return $ids;
-    }
-
-    /**
      * saveProperties
      * Saves a user's google analytics properties.
      */
@@ -86,33 +66,73 @@ class GoogleAnalyticsDataCollector
                 array_push($properties, $property);
             }
         }
-
         if (count($properties) > 0) {
             /* Only refreshing if we have results. */
             $this->user->googleAnalyticsProperties()->delete();
+            $this->user->googleAnalyticsGoals()->delete();
             $this->user->googleAnalyticsProfiles()->delete();
             foreach ($properties as $property) {
                 $property->save();
                 /* Saving profiles */
-                foreach ($this->getProfiles($property) as $profile) {
-                    $profile = new GoogleAnalyticsProfile(array(
-                        'profile_id' => $profile->id,
-                        'name'       => $profile->name,
-                    ));
-                    $profile->property()->associate($property);
-                    $profile->save();
-                }
+                $this->saveProfiles($property);
+                $this->saveGoals($property);
             }
+
         }
         return $properties;
+    }
+
+    /**
+     * saveGoals
+     * Saves a user's google analytics goals.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * --------------------------------------------------
+     */
+    private function saveGoals($property) {
+        /* Gathering data from google */
+        $analyticsGoals = $this->getGoals($property);
+        foreach ($analyticsGoals as $iGoal) {
+            $profile = $this->user->googleAnalyticsProfiles()->where('profile_id', $iGoal->getProfileId())->first();
+            if (is_null($profile)) {
+                continue;
+            }
+            /* Saving properties */
+            $goal = new GoogleAnalyticsGoal(array(
+                'name'        => $iGoal->getName(),
+                'goal_id'     => $iGoal->getId(),
+            ));
+            $goal->profile()->associate($profile);
+            $goal->save();
+        }
+    }
+
+    /**
+     * saveProfiles
+     * Saves a user's google analytics profiles.
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * --------------------------------------------------
+     */
+    private function saveProfiles($property) {
+        /* Gathering data from google */
+        $analyticsProfiles = $this->getProfiles($property);
+        foreach ($analyticsProfiles as $iProfile) {
+            /* Saving properties */
+            $profile = new GoogleAnalyticsProfile(array(
+                'name'       => $iProfile->getName(),
+                'profile_id' => $iProfile->getId(),
+            ));
+            $profile->property()->associate($property);
+            $profile->save();
+        }
     }
 
     /**
      * getMetrics
      * Retrieving specific metrics for the selected property.
      * --------------------------------------------------
-     * @param GoogleAnalyticsProperty $property
-     * @param int $profileId
+     * @param GoogleAnalyticsProfile $profileId
      * @param string $start
      * @param string $end
      * @param array $metrics
@@ -120,41 +140,34 @@ class GoogleAnalyticsDataCollector
      * @return array
      * --------------------------------------------------
      */
-    public function getMetrics($property, $profileId, $start, $end, $metrics, $optParams=array()) {
+    public function getMetrics($profileId, $start, $end, $metrics, $optParams=array()) {
         $useDimensions = array_key_exists('dimensions', $optParams);
         $metricsData = array();
 
-        /* Iterating through the profiles. */
-        foreach ($this->getProfiles($property) as $profile) {
-            if ($profile->id != $profileId) {
-                continue;
-            }
-
+        try {
             /* Retrieving results from API */
-            try {
-                $results = $this->analytics->data_ga->get('ga:' . $profile->getId(), $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
-            } catch (Exception $e) {
-                Log::error($e->getMessage());
-                throw new ServiceException("Google connection error.", 1);
-            }
+            $results = $this->analytics->data_ga->get('ga:' . $profileId, $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
+        } catch (ServiceException $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Google connection error.", 1);
+        }
+        /* Getting rows. */
+        $rows = $results->getRows();
 
-            $rows = $results->getRows();
-            $profileName = $results->getProfileInfo()->getProfileName();
-
-            if (count($rows) > 0) {
-                /* Populating metricsData. */
-                if ($useDimensions) {
-                    $metricsData = $this->buildDimensionsData($metrics, $rows, $profileName);
-                } else {
-                    $metricsData = $this->buildSimpleMetricsData($metrics, $rows);
-                }
-            } else if( ! $useDimensions) {
-                $rows = array();
-                foreach ($metrics as $metric) {
-                    array_push($rows, 0);
-                }
-                $metricsData = $this->buildSimpleMetricsData($metrics, array($rows), $profileName);
+        if (count($rows) > 0) {
+            /* Populating metricsData. */
+            if ($useDimensions) {
+                $metricsData = $this->buildDimensionsData($metrics, $rows);
+            } else {
+                $metricsData = $this->buildSimpleMetricsData($metrics, $rows);
             }
+        } else if( ! $useDimensions) {
+            /* The value is 0, for all the data. */
+            $rows = array();
+            foreach ($metrics as $metric) {
+                array_push($rows, 0);
+            }
+            $metricsData = $this->buildSimpleMetricsData($metrics, array($rows));
         }
         return $metricsData;
     }
@@ -184,11 +197,10 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
     * @param array $metrics
     * @param array $rows
-    * @param string $profileName
     * @return array
      * --------------------------------------------------
     */
-    private function buildDimensionsData($metrics, $rows, $profileName) {
+    private function buildDimensionsData($metrics, $rows) {
         /* Creating metrics array. */
         $metricsData = array();
         foreach ($metrics as $metric) {
@@ -212,52 +224,75 @@ class GoogleAnalyticsDataCollector
      * getAvgSessionDuration
      * Returning the number of sessions.
      * --------------------------------------------------
-     * @param GoogleAnalyticsProperty $property
-     * @param $profileId
+     * @param string $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getAvgSessionDuration($property, $profileId) {
-        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('avgSessionDuration'))['avgSessionDuration'];
+    public function getAvgSessionDuration($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            'yesterday', 'today', array('avgSessionDuration')
+        )['avgSessionDuration'];
    }
 
     /**
      * getSessionsPerUser
      * Returning the number of sessions per user.
      * --------------------------------------------------
-     * @param GoogleAnalyticsProperty $property
-     * @param $profileId
+     * @param string $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getSessionsPerUser($property, $profileId) {
-        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('sessionsPerUser'))['sessionsPerUser'];
+    public function getSessionsPerUser($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            'yesterday', 'today', array('sessionsPerUser')
+        )['sessionsPerUser'];
    }
 
     /**
      * getSessions
      * Returning the number of sessions.
      * --------------------------------------------------
-     * @param GoogleAnalyticsProperty $property
-     * @param $profileId
+     * @param string $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getSessions($property, $profileId) {
-        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('sessions'))['sessions'];
+    public function getSessions($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            'yesterday', 'today', array('sessions')
+        )['sessions'];
+   }
+
+    /**
+     * getUsers
+     * Returning the number of users.
+     * --------------------------------------------------
+     * @param string $profileId
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getUsers($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            'yesterday', 'today', array('users')
+        )['users'];
    }
 
     /**
      * getBounceRate
      * Returning the percentage of bounce rate.
      * --------------------------------------------------
-     * @param GoogleAnalyticsProperty $property
-     * @param $profileId
+     * @param string $profileId
      * @return array
      * --------------------------------------------------
      */
-    public function getBounceRate($property, $profileId) {
-        return $this->getMetrics($property, $profileId, SiteConstants::getGoogleAnalyticsLaunchDate(), 'today', array('bounceRate'))['bounceRate'];
+    public function getBounceRate($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            'yesterday', 'today', array('bounceRate')
+        )['bounceRate'];
    }
 
     /**
@@ -267,12 +302,49 @@ class GoogleAnalyticsDataCollector
      * @return array
      * --------------------------------------------------
      */
-    public function getProfiles($property) {
+    private function getProfiles($property) {
         try {
             return $this->analytics->management_profiles->listManagementProfiles($property->account_id, $property->property_id)->getItems();
         } catch (Exception $e) {
             Log::error($e->getMessage());
             throw new ServiceException("Google connection error.", 1);
         }
+    }
+
+    /**
+     * getGoals
+     * --------------------------------------------------
+     * @param GoogleAnalyticsProperty $property
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getGoals($property) {
+        try {
+            return $this->analytics->management_goals->listManagementGoals($property->account_id, $property->property_id, '~all')->getItems();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Google connection error.", 1);
+        }
    }
+
+    /**
+     * getAccountIds
+     * Returning the first account id.
+     */
+    private function getAccountIds() {
+        /* Getting accounts */
+        $accounts = $this->analytics->management_accounts->listManagementAccounts();
+        $items = $accounts->getItems();
+        if (count($items) <= 0) {
+            return null;
+        }
+
+        /* Getting properties */
+        $ids = array();
+        foreach ($items as $account) {
+            array_push($ids, $account->getId());
+        }
+        return $ids;
+    }
+
 } /* GoogleAnalyticsDataCollector */

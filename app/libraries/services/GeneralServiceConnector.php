@@ -113,7 +113,7 @@ abstract class GeneralServiceConnector
             $settingsCriteria = json_encode($criteria);
             $manager = $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->first();
             if ( ! is_null($manager)) {
-                /* Manager found, keeping leaving it alone. */
+                /* Manager found, leaving it alone. */
                 array_push($dataManagers, $manager->getSpecific());
                 continue;
             }

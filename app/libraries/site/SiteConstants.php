@@ -385,7 +385,7 @@ class SiteConstants {
      * --------------------------------------------------
      */
     public static function getGoogleAnalyticsLaunchDate() {
-        return self::$googleAnalyticsLaunchDate;
+        return Carbon::createFromFormat('Y-m-d', self::$googleAnalyticsLaunchDate);
     }
 
     /**
@@ -432,7 +432,7 @@ class SiteConstants {
     public static function getServicePopulationPeriod() {
         return array(
             'facebook'         => 60,
-            'google_analytics' => 30,
+            'google_analytics' => 60,
             'twitter'          => null,
             'stripe'           => 30,
             'braintree'        => 30,

@@ -3,32 +3,18 @@
 class GoogleAnalyticsPopulateData
 {
     /**
-     * The google analytics collector object.
+     * The user object.
      *
-     * @var GoogleAnalyticsDataCollector
+     * @var User
      */
-    private $collector = null;
-
-    /**
-     * The google analytics property.
-     *
-     * @var GoogleAnalyticsProperty
-     */
-    private $property = null;
-
-    /**
-     * The google analytics property.
-     *
-     * @var string
-     */
-    private $profileId = null;
+    private $user = null;
 
     /**
      * The dataManagers.
      *
      * @var array
      */
-    private $dataManagers = null;
+    private $dataManagers = array();
 
     /**
      * The dataManager criteria.
@@ -41,90 +27,111 @@ class GoogleAnalyticsPopulateData
      * Main job handler.
      */
     public function fire($job, $data) {
-        $this->user = User::find($data['user_id']);
+        /* Init */
+        Log::info("Starting data collection at " . Carbon::now()->toDateTimeString());
         $time = microtime(TRUE);
-        Log::info("Starting Google Analytics data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
-        $this->collector = new GoogleAnalyticsDataCollector($this->user);
+        $this->user     = User::find($data['user_id']);
         $this->criteria = $data['criteria'];
-        $this->property = $this->user->googleAnalyticsProperties()->where('id', $this->criteria['property'])->first();
-        $this->profileId = $this->criteria['profile'];
-        $this->dataManagers = $this->getManagers();
+
+        /* Getting managers. */
+        $this->getManagers();
+
+        /* Running data collection. */
         $this->populateData();
-        Log::info("Google Analytics data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
+
+        /* Finish */
+        Log::info("Data collection finished and it took " . (microtime(TRUE) - $time) . " seconds to run.");
+
         $job->delete();
     }
 
     /**
      * Populating the widgets with data.
      */
-    protected function populateData() {
-        $data = $this->collectAllData();
+    private function populateData() {
+        /* Initializing cumulative histograms. */
+        $this->initializeCumulativeHDMs();
 
-        /* Getting metrics. */
-        $sessionsData           = $data['sessions'];
-        $bounceRateData         = $data['bounceRate'];
-        $avgSessionDurationData = $data['avgSessionDuration'];
+        /* Building histograms. */
+        $this->buildHistograms();
 
-        /* Saving values. */
-        $this->dataManagers['google_analytics_sessions']->saveData($sessionsData, TRUE);
-        $this->dataManagers['google_analytics_bounce_rate']->saveData($bounceRateData, TRUE);
-        $this->dataManagers['google_analytics_avg_session_duration']->saveData($avgSessionDurationData, TRUE);
-        $this->dataManagers['google_analytics_top_sources']->initializeData();
-
-        foreach ($this->dataManagers as $manager) {
-            $manager->setWidgetsState('active');
+        /* Running default initializer on other managers. */
+        foreach ($this->dataManagers['other'] as $dataManager) {
+            $dataManager->initializeData();
+            $dataManager->setWidgetsState('active');
         }
     }
 
-
     /**
-     * Getting the property specific DataManagers
-     * @return array
+     * Getting the profile specific DataManagers
      */
     private function getManagers() {
-        $dataManagers = array();
+        $dataManagers = array(
+            'histogram' => array(
+                'cumulative' => array(),
+                'diffed'     => array()
+            ),
+            'other' => array()
+        );
 
         foreach ($this->user->dataManagers()->get() as $generalDataManager) {
             $dataManager = $generalDataManager->getSpecific();
+            $dataManager->data->raw_value = json_encode(array());
+            $dataManager->data->save();
 
             if ($dataManager->descriptor->category == 'google_analytics' && $dataManager->getCriteria() == $this->criteria) {
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+                if ($dataManager instanceof HistogramDataManager &&
+                        empty($dataManager->getOptionalParams())) {
+                    if ($dataManager->hasCumulative()) {
+                        $dataManagers['histogram']['cumulative'][$dataManager->descriptor->type] = $dataManager;
+                    } else {
+                        $dataManagers['histogram']['diffed'][$dataManager->descriptor->type] = $dataManager;
+                    }
+                } else {
+                    $dataManagers['other'][$dataManager->descriptor->type] = $dataManager;
+                }
             }
         }
-
-        return $dataManagers;
+        $this->dataManagers = $dataManagers;
     }
 
     /**
-     * Retrieving the full histogram from Google Analytics API
-     *
-     * @return array
+     * initializeCumulativeHDMs
+     * Setting the first values of all cumulative dms.
      */
-    private function collectAllData() {
-        /* Initializing arrays. */
-        $data = array(
-            'sessions'           => array(),
-            'bounceRate'         => array(),
-            'avgSessionDuration' => array()
+    private function initializeCumulativeHDMs() {
+        /* Preparing optimized loader. */
+        $loader = new GoogleAnalyticsOptimizedLoader(
+            $this->user,
+            $this->dataManagers['histogram']['cumulative']
         );
 
-        for ($i = SiteConstants::getServicePopulationPeriod()['google_analytics']; $i >= 0; --$i) {
-            /* Creating start, end days. */
-            $start = SiteConstants::getGoogleAnalyticsLaunchDate();
-            $end = Carbon::now()->subDays($i);
-            $metrics = $this->collector->getMetrics($this->property, $this->profileId, $start, $end->toDateString(), array_keys($data));
+        $loader->execute(
+            SiteConstants::getGoogleAnalyticsLaunchDate(),
+            Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics'])
+        );
+    }
 
-            foreach ($metrics as $metric=>$value) {
-                /* Getting daily data. */
-                $currentDateMetric = array();
-                $currentDateMetric['timestamp'] = $end->getTimestamp();
-                $currentDateMetric['value'] = $value;
-
-                /* Adding value. */
-                array_push($data[$metric], $currentDateMetric);
-            }
+    /**
+     * buildHistograms
+     * Collecting data for all histogram managers
+     */
+    private function buildHistograms() {
+        $managers = array();
+        foreach (array_merge(
+                $this->dataManagers['histogram']['cumulative'],
+                $this->dataManagers['histogram']['diffed']
+            ) as $type=>$dataManager) {
+            array_push($managers, $dataManager);
         }
-        return $data;
+
+        $loader = new GoogleAnalyticsOptimizedLoader($this->user, $managers);
+
+        $loader->execute(
+            Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics']),
+            Carbon::now(),
+            'ga:date'
+        );
     }
 
 }

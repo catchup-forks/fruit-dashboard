@@ -9,9 +9,23 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         'end'         => 'today',
         'max_results' => 5
     );
-    private static $dimensions = 'source';
+    private static $dimensions = array('source');
     private static $sortBy = '-ga:sessions';
     private static $metrics = array('sessions', 'users');
+
+    /**
+     * getOptionalParams
+     * Returning the optional parameters used by the DM.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getOptionalParams() {
+        return array(
+            'dimensions'  => $this->getDimensions(),
+            'sort'        => self::$sortBy,
+        );
+    }
 
 
     /**
@@ -26,7 +40,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      */
     private function getMetric($start, $end, $maxResults) {
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getMetrics($this->getProperty(), $this->getCriteria()['profile'], $start, $end, self::$metrics, array('dimensions' => 'ga:' . self::$dimensions, 'sort' => self::$sortBy, 'max-results' => $maxResults));
+        return $collector->getMetrics($this->getCriteria()['profile'], $start, $end, self::$metrics, array('dimensions' => $this->getDimensions(), 'sort' => self::$sortBy, 'max-results' => $maxResults));
     }
 
     /**
@@ -107,5 +121,14 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         return array_key_exists($key, $options) ? $options[$key] : self::$defaultOptions[$key];
     }
 
-
+    /**
+     * getDimensions
+     * Returning the dimensions in GA format.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getDimensions() {
+        return 'ga:' . implode(',ga:', self::$dimensions);
+    }
 }

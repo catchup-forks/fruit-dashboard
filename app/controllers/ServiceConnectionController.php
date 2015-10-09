@@ -498,9 +498,12 @@ class ServiceConnectionController extends BaseController
         }
 
         foreach (Input::get('profiles') as $id) {
-            if ($id == FALSE) {
+            $profile = Auth::user()->googleAnalyticsProfiles()->where('profile_id', $id)->first();
+
+            if (is_null($profile)) {
                 continue;
             }
+
             /* Creating data managers. */
             $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $settings = array('profile' => $id);
@@ -511,7 +514,7 @@ class ServiceConnectionController extends BaseController
             $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
                 Auth::user(), $settings
             );
-            $dashboardCreator->create(Auth::user()->googleAnalyticsProfiles()->where('profile_id', $id)->first()->name);
+            $dashboardCreator->create($profile->name);
         }
 
         $message = 'Connection successful.';

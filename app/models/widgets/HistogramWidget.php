@@ -2,10 +2,8 @@
 
 abstract class HistogramWidget extends CronWidget
 {
-    use NumericWidgetTrait;
-
-    protected static $cumulative   = FALSE;
     protected static $isHigherGood = TRUE;
+    use NumericWidgetTrait;
 
     /* -- Settings -- */
     private static $histogramSettings = array(
@@ -51,7 +49,7 @@ abstract class HistogramWidget extends CronWidget
     /* -- Choice functions -- */
     public function type() {
         $types = array('diff' => 'Differentiated');
-        if (static::$cumulative) {
+        if ($this->hasCumulative()) {
             $types['sum'] = 'Cumulative';
         }
         return $types;
@@ -94,7 +92,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function hasCumulative() {
-        return static::$cumulative;
+        return $this->dataManager()->hasCumulative();
      }
 
     /**
@@ -105,7 +103,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function isDifferentiated() {
-        return (static::$cumulative && $this->getSettings()['type'] == 'diff');
+        return ($this->hasCumulative() && $this->getSettings()['type'] == 'diff');
      }
 
     /**
@@ -212,7 +210,6 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
     public function getData($postData=null) {
-
         /* Getting range if present. */
         if (isset($postData['range'])) {
             $range = $postData['range'];
