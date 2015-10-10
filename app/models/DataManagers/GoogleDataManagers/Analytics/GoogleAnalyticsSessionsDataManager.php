@@ -8,7 +8,7 @@ class GoogleAnalyticsSessionsDataManager extends HistogramDataManager
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $this->flatData($collector->getSessions($this->getCriteria()['profile']));
+        return $collector->getSessions($this->getProfile()->id);
     }
 }
 ?>
