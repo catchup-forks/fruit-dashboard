@@ -56,20 +56,20 @@
 
   <!-- Adding loading on DataWidget -->
   @if ($widget->state == 'setup_required')
-      @include('widget.widget-setup-required', ['widget' => $widget,])
+      @include('widget.widget-setup-required')
   @elseif ($widget instanceof SharedWidget)
       <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->getRelatedWidget()->id}}">
-    @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()])
+    @include($widget->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget->getRelatedWidget()->getTemplateData()])
     </div>
   @elseif ($widget->premiumUserCheck() === -1)
      @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @else
     @if ($widget instanceof iAjaxWidget)
-      @include('widget.widget-loading', ['widget' => $widget,])
+      @include('widget.widget-loading')
       <div class="@if ($widget->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget->id}}">
     @endif
     @if ($widget->state != 'loading')
-      @include($widget->descriptor->getTemplateName(), ['widget' => $widget])
+      @include($widget->descriptor->getTemplateName(), ['widget' => $widget->getTemplateData()])
     @endif
     <!-- Adding loading on DataWidget -->
     @if ($widget instanceof iAjaxWidget)

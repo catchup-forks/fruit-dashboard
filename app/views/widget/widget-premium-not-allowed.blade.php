@@ -1,5 +1,5 @@
 <div class="text-white drop-shadow text-center">
-  <a href="{{ route('widget.singlestat', $widget->id) }}">
+  <a href="{{ route('widget.singlestat', $widget['id']) }}">
     <img src="/img/demonstration/graph_transparent.png" class="locked center-block">
   </a>
   <p>

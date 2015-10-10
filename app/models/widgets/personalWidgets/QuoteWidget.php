@@ -23,6 +23,19 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
     }
 
     /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'data' => $this->getData()
+        ));
+    }
+
+    /**
      * getSettingsFields
      * Returns the SettingsFields
      * --------------------------------------------------

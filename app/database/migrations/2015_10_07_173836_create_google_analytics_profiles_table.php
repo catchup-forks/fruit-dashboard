@@ -23,19 +23,6 @@ class CreateGoogleAnalyticsProfilesTable extends Migration {
 
             $table->string('name', 127);
          });
-
-        foreach (User::all() as $user) {
-            if ($user->isServiceConnected('google_analytics')) {
-                try {
-                    $gadc = new GoogleAnalyticsDataCollector($user);
-                    $gadc->saveProperties();
-                    Log::info("Updated Google analytics profiles of user #" . $user->id);
-                } catch (Exception $e) {
-                    Log::error('Error found while running migration: ' . get_class($this) . ' on user #' . $user->id . '. message: ' . $e->getMessage());
-
-                }
-            }
-        }
     }
 
     /**

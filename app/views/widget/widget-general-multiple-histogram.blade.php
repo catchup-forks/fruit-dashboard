@@ -1,10 +1,10 @@
 <div class="chart-data">
   <div class="chart-name larger-text">
-    {{ $widget->getSettings()['name'] }}
+    {{ $widget['settings']['name'] }}
   </div> <!-- /.chart-name -->
   <div class="chart-value larger-text">
-    @if ($widget->state == 'active')
-      {{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}
+    @if ($widget['state'] == 'active')
+      {{ Utilities::formatNumber(array_values($widget['instance']->getLatestValues())[0], $widget['format']) }}
     @endif
   </div> <!-- /.chart-value -->
 
@@ -12,7 +12,7 @@
 
 <div class="chart-diff-data text-center">
 
-  @if ($widget->getDiff() >= 0)
+  @if ($widget['defaultDiff'] >= 0)
     <div class="chart-diff text-success">
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
 
@@ -22,26 +22,26 @@
 
   @endif
 
-    <span class="chart-diff-value larger-text">{{$widget->getDiff()}}</span>
+    <span class="chart-diff-value larger-text">{{$widget['defaultDiff']}}</span>
   </div> <!-- /.chart-diff -->
 
 
   <div class="chart-diff-dimension smaller-text">
-    <small>(a {{ rtrim($widget->getSettings()['resolution'], 's') }} ago)</small>
+    <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
-<div id="chart-container-{{ $widget->id }}" class="clickable">
+<div id="chart-container-{{ $widget['id'] }}" class="clickable">
   <canvas class="chart chart-line"></canvas>
 </div>
 
 @section('widgetScripts')
 <script type="text/javascript">
   // Set chart data
-  var widgetData{{ $widget->id }} = {
-    'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+  var widgetData{{ $widget['id'] }} = {
+    'labels': [@foreach ($widget['data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
-    @foreach ($widget->getData()['datasets'] as $dataset)
+    @foreach ($widget['data']['datasets'] as $dataset)
       {
           'values' : [{{ implode(',', $dataset['values']) }}],
           'name' : "{{ $dataset['name'] }}",

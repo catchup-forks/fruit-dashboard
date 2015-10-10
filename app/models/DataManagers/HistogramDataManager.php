@@ -109,7 +109,8 @@ abstract class HistogramDataManager extends DataManager
         $lastData = $this->getLatestData();
 
         if ( ! empty($lastData)) {
-            if (static::$cumulative) {
+            if (static::$cumulative && array_key_exists('sum', $options) &&
+                    $optinos['sum'] == TRUE) {
                 $dbEntry['value'] += $lastData['value'];
             }
             if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
@@ -207,6 +208,9 @@ abstract class HistogramDataManager extends DataManager
      */
     public function compare() {
         $latestData = $this->getLatestData();
+        if (empty($latestData)) {
+            return array();
+        }
         $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
         $histogram = $this->buildHistogram();
         if ($this->diff) {

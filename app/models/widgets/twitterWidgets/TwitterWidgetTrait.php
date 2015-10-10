@@ -2,6 +2,18 @@
 
 trait TwitterWidgetTrait
 {
+
+    /**
+     * getUser
+     * Returning the name of the twitter user.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getUser() {
+        $this->user()->twitterUsers()->first()->screen_name;
+    }
+
     /**
      * getConnectorClass
      * --------------------------------------------------
@@ -21,7 +33,7 @@ trait TwitterWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return '@' . $this->user()->twitterUsers()->first()->screen_name . ' - ' . $this->descriptor->name;
+        return '@' . $this->getUser() . ' - ' . $this->descriptor->name;
     }
 }
 

@@ -2,6 +2,7 @@
 
 class TwitterMentionsWidget extends CronWidget implements iServiceWidget
 {
+    use TwitterWidgetTrait;
     /* -- Settings -- */
     private static $rangeSettings = array(
         'count' => array(
@@ -12,7 +13,19 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
             'default'    => '5'
         ),
     );
-    use TwitterWidgetTrait;
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'data' => $this->getData(),
+        ));
+    }
 
     /**
      * getSettingsFields

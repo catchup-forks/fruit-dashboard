@@ -109,7 +109,10 @@ class GoogleAnalyticsOptimizedLoader
                 } else {
                     $entry = $data;
                     $entry['timestamp'] = $query->getTimeStamp();
-                    $dataManager->collectData(array('entry' => $entry));
+                    $dataManager->collectData(array(
+                        'entry' => $entry,
+                        'sum' => TRUE
+                    ));
                 }
             } else if ($dataManager instanceof TopSourcesDataManager) {
 

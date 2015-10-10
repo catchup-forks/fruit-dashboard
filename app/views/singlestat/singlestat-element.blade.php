@@ -27,7 +27,6 @@
       {{ $value }} statistics
     </h3>
   </div> <!-- /.panel-heading -->
-
   <div class="panel-body no-padding" id="chart-{{ $resolution }}">
     <div id="chart-container">
       <canvas class="img-responsive canvas-auto"></canvas>
@@ -40,7 +39,7 @@
   <div class="panel-heading">
     <h3 class="panel-title">{{ $value }} data history</h3>
   </div> <!-- /.panel-heading -->
-  
+
   <div class="panel-body">
     <div class="row">
       <div class="col-sm-3">

@@ -14,7 +14,7 @@ class CreateGoogleAnalyticsGoalsTable extends Migration {
     {
         Schema::create('google_analytics_goals',function($table) {
             $table->increments('id');
-            $table->boolean('active');
+            $table->boolean('active')->default(FALSE);
 
             $table->string('goal_id', 127);
 

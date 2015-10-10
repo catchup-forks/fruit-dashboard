@@ -4,12 +4,6 @@ trait FacebookWidgetTrait
 {
     /* -- Settings -- */
     private static $pageSettings = array(
-        'name' => array(
-            'name'       => 'Name',
-            'type'       => 'TEXT',
-            'validation' => 'required',
-            'disabled'   => TRUE
-        ),
         'page' => array(
             'name'       => 'Page',
             'type'       => 'SCHOICE',
@@ -26,6 +20,19 @@ trait FacebookWidgetTrait
             $pages[$page->id] = $page->name;
         }
         return $pages;
+    }
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'pageName' => $this->getPage()->name
+        ));
     }
 
     /**

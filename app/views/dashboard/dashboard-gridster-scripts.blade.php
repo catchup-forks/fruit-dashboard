@@ -12,7 +12,6 @@ var gridsterGlobalOptions = {
 
 // Create FDGridster objects
 @foreach ($dashboards as $dashboard_id => $dashboard)
-  {{ Log::info($dashboard) }}
   var gridsterOptions{{ $dashboard_id }} = $.extend({},
     gridsterGlobalOptions,
     {
@@ -27,7 +26,7 @@ var gridsterGlobalOptions = {
   var widgetsOptions{{ $dashboard_id }} = [
     @foreach ($dashboard['widgets'] as $widget) {{ json_encode($widget['meta']) }}, @endforeach
   ];
-  
+
   var FDGridster{{ $dashboard_id }} = new FDGridster(gridsterOptions{{ $dashboard_id }});
 @endforeach
 

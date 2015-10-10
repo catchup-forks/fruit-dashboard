@@ -25,7 +25,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
             );
             $entry = $data;
             $entry['timestamp'] = $end->getTimeStamp();
-            $this->collectData(array('entry' => $entry));
+            $this->collectData(array('entry' => $entry, 'sum' => TRUE));
         }
 
         /* Building histogram. */
@@ -92,7 +92,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
 
         /* Saving entries. */
         foreach ($entries as $entry) {
-            $this->collectData(array('entry' => $entry));
+            $this->collectData(array('entry' => $entry, 'sum' => TRUE));
         }
     }
 }

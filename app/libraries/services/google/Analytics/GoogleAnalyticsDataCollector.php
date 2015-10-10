@@ -69,8 +69,6 @@ class GoogleAnalyticsDataCollector
         if (count($properties) > 0) {
             /* Only refreshing if we have results. */
             $this->user->googleAnalyticsProperties()->delete();
-            $this->user->googleAnalyticsGoals()->delete();
-            $this->user->googleAnalyticsProfiles()->delete();
             foreach ($properties as $property) {
                 $property->save();
                 /* Saving profiles */
@@ -93,14 +91,16 @@ class GoogleAnalyticsDataCollector
         /* Gathering data from google */
         $analyticsGoals = $this->getGoals($property);
         foreach ($analyticsGoals as $iGoal) {
-            $profile = $this->user->googleAnalyticsProfiles()->where('profile_id', $iGoal->getProfileId())->first();
+            $profile = $this->user->googleAnalyticsProfiles()
+                ->where('profile_id', $iGoal->getProfileId())
+                ->first(array('google_analytics_profiles.id'));
             if (is_null($profile)) {
                 continue;
             }
-            /* Saving properties */
+            /* Saving goal. */
             $goal = new GoogleAnalyticsGoal(array(
-                'name'        => $iGoal->getName(),
-                'goal_id'     => $iGoal->getId(),
+                'name'    => $iGoal->getName(),
+                'goal_id' => $iGoal->getId(),
             ));
             $goal->profile()->associate($profile);
             $goal->save();
@@ -118,7 +118,7 @@ class GoogleAnalyticsDataCollector
         /* Gathering data from google */
         $analyticsProfiles = $this->getProfiles($property);
         foreach ($analyticsProfiles as $iProfile) {
-            /* Saving properties */
+            /* Saving profile. */
             $profile = new GoogleAnalyticsProfile(array(
                 'name'       => $iProfile->getName(),
                 'profile_id' => $iProfile->getId(),
@@ -231,7 +231,8 @@ class GoogleAnalyticsDataCollector
     public function getAvgSessionDuration($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('avgSessionDuration')
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array('avgSessionDuration')
         )['avgSessionDuration'];
    }
 
@@ -246,7 +247,8 @@ class GoogleAnalyticsDataCollector
     public function getSessionsPerUser($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('sessionsPerUser')
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array('sessionsPerUser')
         )['sessionsPerUser'];
    }
 
@@ -261,7 +263,8 @@ class GoogleAnalyticsDataCollector
     public function getSessions($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('sessions')
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array('sessions')
         )['sessions'];
    }
 
@@ -276,7 +279,8 @@ class GoogleAnalyticsDataCollector
     public function getUsers($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('users')
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array('users')
         )['users'];
    }
 
@@ -291,7 +295,8 @@ class GoogleAnalyticsDataCollector
     public function getBounceRate($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('bounceRate')
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array('bounceRate')
         )['bounceRate'];
    }
 

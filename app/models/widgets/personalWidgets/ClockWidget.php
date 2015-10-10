@@ -20,6 +20,19 @@ class ClockWidget extends Widget
     }
 
     /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'currentTime' => Carbon::now()->format('H:i')
+        ));
+    }
+
+    /**
      * getSettingsFields
      * Returns the SettingsFields
      * --------------------------------------------------

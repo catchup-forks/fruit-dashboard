@@ -144,7 +144,6 @@ class DashboardController extends BaseController
     public function anyMakeDefault($dashboardId) {
         // Make is_default false for all dashboards
         foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
-            Log::info($oldDashboard->id);
             $oldDashboard->is_default = FALSE;
             $oldDashboard->save();
         }

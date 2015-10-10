@@ -1,12 +1,12 @@
-<div class="twitter-mentions" id="mentions-{{ $widget->id }}">
-  
+<div class="twitter-mentions" id="mentions-{{ $widget['id'] }}">
+
   <div class="widget-heading larger-text">
     <i class="fa fa-twitter"> </i>
-    Twitter Mentions  
+    Twitter Mentions
   </div> <!-- /.widget-heading -->
 
   {{-- for each mention --}}
-  @foreach ($widget->getData() as $tweet)
+  @foreach ($widget['data'] as $tweet)
   <blockquote class="twitter-tweet">
     <p>
     @foreach (explode(' ', $tweet['text']) as $word)
@@ -32,13 +32,5 @@
 </div>
 @section('widgetScripts')
 <script type="text/javascript">
-  // $(document).ready(function(){
-  //   $("#refresh-{{$widget->id}}").click(function () {
-  //     refreshWidget({{ $widget->id }}, function (data) {
-  //       console.log(data);
-  //       updateMentionsWidget(data, 'mentions-{{ $widget->id }}');
-  //    });
-  //  });
-  // });
 </script>
 @append

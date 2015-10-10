@@ -1,10 +1,10 @@
-<h3 id="greeting-{{ $widget->id }}" class="text-white text-center drop-shadow no-margin-top has-margin-vertical-sm truncate reset-line-height">
+<h3 id="greeting-{{ $widget['id'] }}" class="text-white text-center drop-shadow no-margin-top has-margin-vertical-sm truncate reset-line-height">
   Good <span class="greeting"></span>@if(isset(Auth::user()->name)), {{ Auth::user()->name }}@endif!
 </h3>
-  
+
 @section('widgetScripts')
 <script type="text/javascript">
-  var widgetData{{ $widget->id }} = {
+  var widgetData{{ $widget['id'] }} = {
     timeOfTheDay: "{{ SiteConstants::getTimeOfTheDay() }}"
   }
 </script>

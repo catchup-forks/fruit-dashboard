@@ -156,6 +156,22 @@ class Widget extends Eloquent
     }
 
     /**
+     * getTemplateData
+     * Returning all data that should be passed to the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData() {
+        return array(
+            'settings' => $this->getSettings(),
+            'instance' => $this,
+            'id'       => $this->id,
+            'state'    => $this->state
+        );
+    }
+
+    /**
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------
@@ -174,7 +190,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getSpecific($checkIntegrity=FALSE) {
-        $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
+        $className = $this->descriptor->getClassName();
         $widget = $className::find($this->id);
         if ($checkIntegrity) {
             $widget->checkIntegrity();

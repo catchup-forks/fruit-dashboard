@@ -64,8 +64,6 @@ class NotificationController extends BaseController
             return Redirect::route('notification.test')->with(['error' => 'We couldn\'t change the settings of the requested notification.']);
         }
 
-        Log::info(Input::all());
-
         /* Clean and save post data */
         $selectedWidgets = array();
         foreach (Input::all() as $key => $value) {

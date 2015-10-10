@@ -1,13 +1,13 @@
 <div class="chart-data">
   <div class="chart-name larger-text">
-    {{ $widget->getSettings()['name'] }}
+    {{ $widget['settings']['name'] }}
   </div> <!-- /.chart-name -->
   <div class="chart-value larger-text">
-    @if ($widget->state == 'active')
-      @if ( ! $widget->hasCumulative())
-      {{ Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat()) }}
+    @if ($widget['state'] == 'active')
+      @if ( ! $widget['hasCumulative'])
+      {{ Utilities::formatNumber($widget['instance']->getLatestValues()['value'], $widget['format']) }}
       @else
-      {{ Utilities::formatNumber($widget->getDiff($widget->getSettings()['length']), $widget->getFormat()) }}
+      {{ Utilities::formatNumber($widget['instance']->getDiff($widget['settings']['length']), $widget['format']) }}
       @endif
     @endif
   </div> <!-- /.chart-value -->
@@ -15,32 +15,32 @@
 
 <div class="chart-diff-data text-center">
 
-  <div class="chart-diff @if($widget->isSuccess($widget->getDiff())) text-success @else text-danger @endif">
-  @if ($widget->getDiff() >= 0)
+  <div class="chart-diff @if($widget['instance']->isSuccess($widget['defaultDiff'])) text-success @else text-danger @endif">
+  @if ($widget['defaultDiff'] >= 0)
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
   @else
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
-    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget->getDiff(), $widget->getFormat()) }}</span>
+    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget['defaultDiff'], $widget['format']) }}</span>
   </div> <!-- /.chart-diff -->
 
 
   <div class="chart-diff-dimension smaller-text">
-    <small>(a {{ rtrim($widget->getSettings()['resolution'], 's') }} ago)</small>
+    <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
-<div id="chart-container-{{ $widget->id }}" class="clickable">
+<div id="chart-container-{{ $widget['id'] }}" class="clickable">
   <canvas class="chart chart-line"></canvas>
 </div>
 
 @section('widgetScripts')
 <script type="text/javascript">
   // Set chart data
-  var widgetData{{ $widget->id }} = {
-    'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+  var widgetData{{ $widget['id'] }} = {
+    'labels': [@foreach ($widget['data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
-    @foreach ($widget->getData()['datasets'] as $dataset)
+    @foreach ($widget['data']['datasets'] as $dataset)
       {
           'values' : [{{ implode(',', $dataset['values']) }}],
           'name' : "{{ $dataset['name'] }}",

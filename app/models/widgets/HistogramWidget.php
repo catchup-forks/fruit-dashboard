@@ -56,6 +56,22 @@ abstract class HistogramWidget extends CronWidget
     }
 
     /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'defaultDiff'   => $this->getDiff(),
+            'format'        => $this->getFormat(),
+            'data'          => $this->getData(),
+            'hasCumulative' => $this->hasCumulative()
+        ));
+    }
+
+    /**
      * setupDataManager
      * Setting up the datamanager
      * --------------------------------------------------
@@ -171,7 +187,13 @@ abstract class HistogramWidget extends CronWidget
             'resolution' => $resolution,
             'length'     => $multiplier + 1,
         );
-        return array_values($this->setupDataManager($dmParams)->compare())[0];
+
+        $values = $this->setupDataManager($dmParams)->compare();
+
+        if (empty($values)) {
+            return 0;
+        }
+        return array_values($values)[0];
     }
 
     /**
