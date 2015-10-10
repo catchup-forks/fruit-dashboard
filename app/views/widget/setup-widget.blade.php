@@ -13,7 +13,7 @@
               <div class="panel-heading">
                 <h3 class="panel-title text-center">
                   Setup the
-                  <span class="text-success"><strong>{{ $widget->descriptor->name }} widget</strong></span>.
+                  <span class="text-success"><strong>{{ $widget->getDescriptor()->name }} widget</strong></span>.
                 </h3>
               </div> <!-- /.panel-heading -->
               <div class="panel-body">

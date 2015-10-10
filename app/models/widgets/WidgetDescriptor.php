@@ -38,7 +38,7 @@ class WidgetDescriptor extends Eloquent
      * @return WidgetDescriptor
      * --------------------------------------------------
     */
-    public static function find($id, $columns=array()) {
+    public static function find($id, $columns=array('*')) {
         /* Trying to load from cache. */
         $cacheKey = 'descriptor_' . $id;
         if (Cache::has($cacheKey)) {

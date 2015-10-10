@@ -79,7 +79,7 @@ Widget stats
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->descriptor->category.'/FD'. Utilities::underscoreToCamelCase($widget->descriptor->type).'Widget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->getDescriptor()->category.'/FD'. Utilities::underscoreToCamelCase($widget->getDescriptor()->type).'Widget.js') }}"></script>
   <!-- /FDWidget* classes -->
 
   <!-- Init FDChartOptions -->
@@ -94,7 +94,7 @@ Widget stats
           general: {
             id:    '{{ $widget->id }}',
             name:  '{{ $widget->name }}',
-            type:  '{{ $widget->descriptor->type }}',
+            type:  '{{ $widget->getDescriptor()->type }}',
             state: '{{ $widget->state }}',
           },
           features: {
@@ -131,7 +131,7 @@ Widget stats
 
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
-        FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->descriptor->type)}}Widget'](widgetOptions{{ $resolution }});
+        FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->getDescriptor()->type)}}Widget'](widgetOptions{{ $resolution }});
       @endforeach
 
       // Show graph on change
