@@ -25,14 +25,6 @@ class DashboardController extends BaseController
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
-        /* Checking the user's data managers integrity */
-        $time = microtime(TRUE);
-        Auth::user()->checkDataManagersIntegrity();
-
-        /* Checking the user's widgets integrity */
-        Auth::user()->checkWidgetsIntegrity();
-        Log::info("Check integrity time: " . (microtime(TRUE) - $time));
-
         /* Get active dashboard, if the url contains it */
         $parameters = array();
         $activeDashboard = Request::query('active');
@@ -40,8 +32,47 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
+        Log::info(' -- DEBUG LOG --');
+
+        /* Checking the user's data managers integrity */
+        $time = microtime(TRUE);
+        $startTime = $time;
+        $queries = count(DB::getQueryLog());
+        Auth::user()->checkDataManagersIntegrity();
+        Log::info(
+            "DM check integrity time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        $time = microtime(TRUE);
+        $queries = count(DB::getQueryLog());
+
+        /* Checking the user's widgets integrity */
+        Auth::user()->checkWidgetsIntegrity();
+        Log::info(
+            "Widget check integrity time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        $time = microtime(TRUE);
+        $queries = count(DB::getQueryLog());
+
         /* Creating view */
         $view = Auth::user()->createDashboardView();
+        Log::info(
+            "Data population time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        $time = microtime(TRUE);
+        $queries = count(DB::getQueryLog());
+
+        $view->render();
+        Log::info(
+            "Rendering time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        Log::info(
+            "Total loading time: ". (microtime(TRUE) - $startTime) .
+            " (" . count(DB::getQueryLog()) . ' db queries)'
+        );
 
         try {
             /* Trying to render the view. */
