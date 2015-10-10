@@ -73,9 +73,9 @@ class BraintreePopulateData
         $dataManagers = array();
 
         foreach ($this->user->dataManagers()->get() as $dataManager) {
-            if ($dataManager->descriptor->category == 'braintree') {
+            if ($dataManager->getDescriptor()->category == 'braintree') {
                 /* Setting dataManager. */
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+                $dataManagers[$dataManager->getDescriptor()->type] = $dataManager;
             }
         }
 

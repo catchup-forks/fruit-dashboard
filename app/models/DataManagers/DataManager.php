@@ -47,6 +47,11 @@ class DataManager extends Eloquent
         return $this->data->widgets();
     }
 
+    /* Optimized method, not using DB query */
+    public function getDescriptor() {
+        return WidgetDescriptor::find($this->descriptor_id);
+    }
+
     public function collectData($options=array())  {}
     public function initializeData() {
         $this->saveData(array());
@@ -94,7 +99,7 @@ class DataManager extends Eloquent
         /* Creating manager. */
         return self::createManager(
             $widget->user(),
-            $widget->descriptor,
+            $widget->getDescriptor(),
             $widget->getCriteria(),
             $widget->data
         );
@@ -112,7 +117,8 @@ class DataManager extends Eloquent
      * --------------------------------------------------
      */
     public static function createManager($user, $descriptor, array $criteria=array(), $data=null) {
-        $dataManager = new DataManager(array(
+        $className = $descriptor->getDMClassName();
+        $dataManager = new $className(array(
             'settings_criteria' => json_encode($criteria),
             'last_updated'      => Carbon::now()
         ));
@@ -130,9 +136,9 @@ class DataManager extends Eloquent
         /* Saving changes. */
         $dataManager->save();
 
-        $manager->initializeData();
+        $dataManager->initializeData();
 
-        return $manager;
+        return $dataManager;
     }
 
     /**
@@ -246,7 +252,8 @@ class DataManager extends Eloquent
      * --------------------------------------------------
      */
     public function newFromBuilder($attributes=array()) {
-        $className = Cache::get('descriptor_' . $attributes->descriptor_id)->getDMClassName();
+        $className = WidgetDescriptor::find($attributes->descriptor_id)
+            ->getDMClassName();
         $instance = new $className;
         $instance->exists = TRUE;
         $instance->setRawAttributes((array) $attributes, true);

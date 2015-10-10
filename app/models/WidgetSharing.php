@@ -65,7 +65,7 @@ class WidgetSharing extends Eloquent
         $widget = new SharedWidget(array('state' => 'active'));
 
         /* Getting original descriptor, for positioning. */
-        $originalDescriptor = $this->widget->descriptor;
+        $originalDescriptor = $this->widget->getDescriptor();
 
         /* Associate the widget to the dashboard */
         $dashboard = Dashboard::find($dashboardId);

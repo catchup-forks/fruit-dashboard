@@ -113,7 +113,7 @@ class GeneralWidgetController extends BaseController {
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
             'en' => 'Edit widget',
-            'el' => $widget->descriptor->getClassName())
+            'el' => $widget->getDescriptor()->getClassName())
         );
 
         /* Return */
@@ -224,7 +224,7 @@ class GeneralWidgetController extends BaseController {
             /* Saving old widget data */
             $position = $widget->position;
             $dashboard = $widget->dashboard;
-            $className = $widget->descriptor->getClassName();
+            $className = $widget->getDescriptor()->getClassName();
 
             /* Deleting old widget. */
             $widget->delete();

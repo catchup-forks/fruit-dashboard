@@ -84,7 +84,7 @@ class DashboardController extends BaseController
                 " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
             );
             var_dump(
-                 "Total loading time: ". (microtime(TRUE) - $startTime) .
+                 "Total loading time: ". (microtime(TRUE) - LARAVEL_START) .
                  " (" . count(DB::getQueryLog()) . ' db queries)'
             );
             exit(94);

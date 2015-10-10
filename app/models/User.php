@@ -172,7 +172,7 @@ class User extends Eloquent implements UserInterface
             if ($widget instanceof SharedWidget) {
                 continue;
             }
-            $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
+            $view = View::make($widget->getDescriptor()->getTemplateName())->with('widget', $widget);
             try {
                 $view->render();
             } catch (Exception $e) {

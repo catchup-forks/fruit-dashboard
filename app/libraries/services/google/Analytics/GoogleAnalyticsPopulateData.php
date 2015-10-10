@@ -78,16 +78,16 @@ class GoogleAnalyticsPopulateData
             $dataManager->data->raw_value = json_encode(array());
             $dataManager->data->save();
 
-            if ($dataManager->descriptor->category == 'google_analytics' && $dataManager->getCriteria() == $this->criteria) {
+            if ($dataManager->getDescriptor()->category == 'google_analytics' && $dataManager->getCriteria() == $this->criteria) {
                 if ($dataManager instanceof HistogramDataManager &&
                         empty($dataManager->getOptionalParams())) {
                     if ($dataManager->hasCumulative()) {
-                        $dataManagers['histogram']['cumulative'][$dataManager->descriptor->type] = $dataManager;
+                        $dataManagers['histogram']['cumulative'][$dataManager->getDescriptor()->type] = $dataManager;
                     } else {
-                        $dataManagers['histogram']['diffed'][$dataManager->descriptor->type] = $dataManager;
+                        $dataManagers['histogram']['diffed'][$dataManager->getDescriptor()->type] = $dataManager;
                     }
                 } else {
-                    $dataManagers['other'][$dataManager->descriptor->type] = $dataManager;
+                    $dataManagers['other'][$dataManager->getDescriptor()->type] = $dataManager;
                 }
             }
         }

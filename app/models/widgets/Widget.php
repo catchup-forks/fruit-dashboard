@@ -19,10 +19,15 @@ class Widget extends Eloquent
     protected static $criteriaSettings = array();
 
     /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
+    public function descriptor() { $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
+
+    /* Optimized method, not using DB query */
+    public function getDescriptor() {
+        return WidgetDescriptor::find($this->descriptor_id);
+    }
 
 
     /**
@@ -39,7 +44,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getMinRows() {
-        return $this->descriptor->min_rows;
+        return $this->getDescriptor()->min_rows;
     }
 
     /**
@@ -50,7 +55,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getMinCols() {
-        return $this->descriptor->min_cols;
+        return $this->getDescriptor()->min_cols;
     }
 
     /**
@@ -61,7 +66,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
      */
     public function canSendInNotification() {
-        return !(in_array($this->descriptor->category, SiteConstants::getSkippedCategoriesInNotification()));
+        return !(in_array($this->getDescriptor()->category, SiteConstants::getSkippedCategoriesInNotification()));
     }
 
     /**
@@ -128,7 +133,7 @@ class Widget extends Eloquent
         return array(
             'general' => array(
                 'id'    => $this->id,
-                'type'  => $this->descriptor->type,
+                'type'  => $this->getDescriptor()->type,
                 'state' => $this->state,
                 'row'   => $position->row,
                 'col'   => $position->col,
@@ -169,7 +174,7 @@ class Widget extends Eloquent
             'id'         => $this->id,
             'state'      => $this->state,
             'position'   => $this->getPosition(),
-            'descriptor' => $this->descriptor
+            'descriptor' => $this->getDescriptor()
         );
     }
 
@@ -349,7 +354,7 @@ class Widget extends Eloquent
             return 1;
         }
 
-        if ($this->descriptor->is_premium) {
+        if ($this->getDescriptor()->is_premium) {
             return -1;
         }
 
@@ -420,7 +425,7 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        if (is_null($this->descriptor)) {
+        if (is_null($this->getDescriptor())) {
             /* Associating descriptor. */
             $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
@@ -457,7 +462,8 @@ class Widget extends Eloquent
      * --------------------------------------------------
      */
     public function newFromBuilder($attributes=array()) {
-        $className = Cache::get('descriptor_' . $attributes->descriptor_id)->getClassName();
+        $className = WidgetDescriptor::find($attributes->descriptor_id)
+            ->getClassName();
         $instance = new $className;
         $instance->exists = TRUE;
         $instance->setRawAttributes((array) $attributes, true);

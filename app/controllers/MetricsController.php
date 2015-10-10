@@ -160,7 +160,7 @@ class MetricsController extends BaseController
 
             /* Iterate through all widgets */
             foreach (Widget::all() as $widget) {
-                $key = $widget->descriptor->category;
+                $key = $widget->getDescriptor()->category;
                 if (array_key_exists($key, $services)) {
                     $data[$services[$key]] += 1;
                 }
@@ -170,7 +170,7 @@ class MetricsController extends BaseController
         } else {
             $widgetcount = 0;
             foreach (Widget::all() as $widget) {
-                if ($widget->descriptor->category == $service) {
+                if ($widget->getDescriptor()->category == $service) {
                     $widgetcount += 1;
                 }
             }
@@ -199,7 +199,7 @@ class MetricsController extends BaseController
             } else {
                 /* Check for widgets */
                 foreach ($user->widgets as $widget) {
-                    if ( ($widget->descriptor->category == $service) and
+                    if ( ($widget->getDescriptor()->category == $service) and
                          ($widget->state == 'active') ) {
                         /* Increase counter */
                         $serviceWidgetUsers += 1;

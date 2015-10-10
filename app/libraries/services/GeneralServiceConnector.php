@@ -37,14 +37,14 @@ abstract class GeneralServiceConnector
 
         /* Deleting all DataManagers */
         foreach ($this->user->dataManagers as $dataManager) {
-            if ($dataManager->descriptor->category == static::$service) {
+            if ($dataManager->getDescriptor()->category == static::$service) {
                 $dataManager->delete();
             }
         }
 
         /* Deleting all widgets*/
         foreach ($this->user->widgets as $widget) {
-            if ($widget->descriptor->category == static::$service) {
+            if ($widget->getDescriptor()->category == static::$service) {
                 $widget->delete();
             }
         }

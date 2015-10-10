@@ -72,8 +72,8 @@ class DataPopulator
         $dataManagers = array();
 
         foreach ($this->user->dataManagers()->get() as $dataManager) {
-            if ($dataManager->descriptor->category == $this->service && $dataManager->getCriteria() == $this->criteria) {
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+            if ($dataManager->getDescriptor()->category == $this->service && $dataManager->getCriteria() == $this->criteria) {
+                $dataManagers[$dataManager->getDescriptor()->type] = $dataManager;
             }
         }
 
