@@ -32,47 +32,15 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
-        Log::info(' -- DEBUG LOG --');
-
         /* Checking the user's data managers integrity */
-        $time = microtime(TRUE);
-        $startTime = $time;
-        $queries = count(DB::getQueryLog());
+        $startTime = microtime(TRUE);
         Auth::user()->checkDataManagersIntegrity();
-        Log::info(
-            "DM check integrity time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
-        );
-        $time = microtime(TRUE);
-        $queries = count(DB::getQueryLog());
 
         /* Checking the user's widgets integrity */
         Auth::user()->checkWidgetsIntegrity();
-        Log::info(
-            "Widget check integrity time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
-        );
-        $time = microtime(TRUE);
-        $queries = count(DB::getQueryLog());
 
         /* Creating view */
         $view = Auth::user()->createDashboardView();
-        Log::info(
-            "Data population time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
-        );
-        $time = microtime(TRUE);
-        $queries = count(DB::getQueryLog());
-
-        $view->render();
-        Log::info(
-            "Rendering time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
-        );
-        Log::info(
-            "Total loading time: ". (microtime(TRUE) - $startTime) .
-            " (" . count(DB::getQueryLog()) . ' db queries)'
-        );
 
         try {
             /* Trying to render the view. */
