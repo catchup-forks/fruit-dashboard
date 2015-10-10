@@ -9,7 +9,7 @@
 class DashboardController extends BaseController
 {
 
-    const OPTIMIZE = TRUE;
+    const OPTIMIZE = FALSE;
 
     /**
      * ================================================== *
