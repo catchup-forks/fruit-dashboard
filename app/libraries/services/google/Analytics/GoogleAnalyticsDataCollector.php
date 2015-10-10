@@ -230,9 +230,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getAvgSessionDuration($profileId) {
         return $this->getMetrics(
-            $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
-            'today', array('avgSessionDuration')
+            $profileId, 'yesterday', 'today', array('avgSessionDuration')
         )['avgSessionDuration'];
    }
 
@@ -246,9 +244,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getSessionsPerUser($profileId) {
         return $this->getMetrics(
-            $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
-            'today', array('sessionsPerUser')
+            $profileId, 'yesterday', 'today', array('sessionsPerUser')
         )['sessionsPerUser'];
    }
 
@@ -295,8 +291,7 @@ class GoogleAnalyticsDataCollector
     public function getBounceRate($profileId) {
         return $this->getMetrics(
             $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
-            'today', array('bounceRate')
+            'yesterday', 'today', array('bounceRate')
         )['bounceRate'];
    }
 

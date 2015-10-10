@@ -11,7 +11,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
     public function initializeData() {
         /* Getting data required for the requests. */
         $collector = $this->getCollector();
-        $profileId = $this->getProfile()->profile_id;
+        $profileId = $this->getProfileId;
         $metrics   = $this->getMetricNames();
 
         if (static::$cumulative) {

@@ -188,8 +188,7 @@ class DataManager extends Eloquent
      */
      public function setWidgetsState($state) {
         foreach ($this->widgets as $generalWidget) {
-            $widget = $generalWidget->getSpecific();
-            $widget->setState($state);
+            $generalWidget->setState($state);
         }
      }
 

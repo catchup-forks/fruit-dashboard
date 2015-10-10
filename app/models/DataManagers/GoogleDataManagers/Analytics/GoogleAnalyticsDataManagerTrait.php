@@ -49,10 +49,22 @@ trait GoogleAnalyticsDataManagerTrait
      * --------------------------------------------------
     */
     public function getProfile() {
-        $profileId = $this->getCriteria()['profile'];
-        $profile = $this->user->googleAnalyticsProfiles()->where('profile_id', $profileId)->first();
+        $profile = $this->user->googleAnalyticsProfiles()
+            ->where('profile_id', $this->getProfileId())
+            ->first();
         /* Invalid profile in DB. */
         return $profile;
+    }
+    /**
+
+     * getProfileId
+     * --------------------------------------------------
+     * Returning the corresponding profile id.
+     * @return GoogleAnalyticsProperty
+     * --------------------------------------------------
+    */
+    public function getProfileId() {
+        return $this->getCriteria()['profile'];
     }
 }
 ?>

@@ -7,7 +7,7 @@ class GoogleAnalyticsBounceRateDataManager extends HistogramDataManager
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getBounceRate($this->getProfile()->id);
+        return $collector->getBounceRate($this->getProfileId());
     }
 }
 ?>

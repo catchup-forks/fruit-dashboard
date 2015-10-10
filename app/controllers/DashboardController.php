@@ -8,6 +8,9 @@
  */
 class DashboardController extends BaseController
 {
+
+    const OPTIMIZE = TRUE;
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -32,15 +35,60 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
+
         /* Checking the user's data managers integrity */
-        $startTime = microtime(TRUE);
+        if (self::OPTIMIZE) {
+            var_dump(' -- DEBUG LOG --');
+            $time = microtime(TRUE);
+            $startTime = $time;
+            $queries = count(DB::getQueryLog());
+            $startTime = microtime(TRUE);
+        }
         Auth::user()->checkDataManagersIntegrity();
+        if (self::OPTIMIZE) {
+            var_dump(
+                "DM check integrity time: ". (microtime(TRUE) - $time) .
+                " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            );
+            $queries = count(DB::getQueryLog());
+            $time = microtime(TRUE);
+        }
+
 
         /* Checking the user's widgets integrity */
         Auth::user()->checkWidgetsIntegrity();
+        if (self::OPTIMIZE) {
+           var_dump(
+               "Widget check integrity time: ". (microtime(TRUE) - $time) .
+               " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+           );
+           $queries = count(DB::getQueryLog());
+           $time = microtime(TRUE);
+        }
 
         /* Creating view */
         $view = Auth::user()->createDashboardView();
+        if (self::OPTIMIZE) {
+            var_dump(
+                "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
+                " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            );
+            $queries = count(DB::getQueryLog());
+            $time = microtime(TRUE);
+        }
+
+        $view->render();
+        if (self::OPTIMIZE) {
+            var_dump(
+                "Rendering time: ". (microtime(TRUE) - $time) .
+                " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            );
+            var_dump(
+                 "Total loading time: ". (microtime(TRUE) - $startTime) .
+                 " (" . count(DB::getQueryLog()) . ' db queries)'
+            );
+            exit(94);
+        }
 
         try {
             /* Trying to render the view. */

@@ -10,7 +10,18 @@ trait FacebookDataManagerTrait
      * --------------------------------------------------
     */
     public function getPage() {
-        return FacebookPage::find($this->getCriteria()['page']);
+        return FacebookPage::find($this->getPageId());
+    }
+
+    /**
+     * getPageId
+     * --------------------------------------------------
+     * Returning the facebook page id.
+     * @return string
+     * --------------------------------------------------
+    */
+    public function getPageId() {
+        return $this->getCriteria()['page'];
     }
 }
 ?>

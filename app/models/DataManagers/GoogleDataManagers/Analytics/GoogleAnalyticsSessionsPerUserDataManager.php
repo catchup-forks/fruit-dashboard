@@ -7,7 +7,7 @@ class GoogleAnalyticsSessionsPerUserDataManager extends HistogramDataManager
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getSessionsPerUser($this->getProfile()->id);
+        return $collector->getSessionsPerUser($this->getProfileId());
     }
 }
 ?>
