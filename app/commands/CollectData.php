@@ -37,7 +37,7 @@ class CollectData extends Command {
             if (Carbon::now()->diffInMinutes($manager->last_updated) >= $manager->update_period) {
                 $i++;
                 try {
-                    $manager->getSpecific()->collectData();
+                    $manager->collectData();
                 } catch (Exception $e) {
                     $errors++;
                     Log::error('Error found while collecting data on manager #' . $manager->id . '. message: ' . $e->getMessage());

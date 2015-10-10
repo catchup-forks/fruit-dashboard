@@ -114,7 +114,7 @@ abstract class GeneralServiceConnector
             $manager = $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->first();
             if ( ! is_null($manager)) {
                 /* Manager found, leaving it alone. */
-                array_push($dataManagers, $manager->getSpecific());
+                array_push($dataManagers, $manager);
                 continue;
             }
 

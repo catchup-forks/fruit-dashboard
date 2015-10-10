@@ -9,7 +9,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         if ( ! $this->dataExists()) {
             return null;
         }
-        return $this->data->manager->getSpecific();
+        return $this->data->manager;
     }
 
     /**

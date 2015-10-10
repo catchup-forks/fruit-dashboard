@@ -169,14 +169,13 @@ class Notification extends Eloquent
         $attachments = array();
         /* Iterating throurh the widgets. */
         foreach ($this->getSelectedWidgets() as $i=>$widgetId) {
-            $generalWidget = Widget::find($widgetId);
-            if (is_null($generalWidget)) {
+            $widget = Widget::find($widgetId);
+            if (is_null($widget)) {
                 /* Widget not found */
                 continue;
             }
 
             /* Preparing data. */
-            $widget = $generalWidget->getSpecific();
             $widgetData = array(
                 'color' => SiteConstants::getSlackColor($i)
             );

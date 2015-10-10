@@ -110,7 +110,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         }
 
         /* Calling the DM retriever on the specific descriptor. */
-        return $descriptor->getDataManager($this)->getSpecific();
+        return $descriptor->getDataManager($this);
     }
 
     /**

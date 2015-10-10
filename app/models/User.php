@@ -122,8 +122,7 @@ class User extends Eloquent implements UserInterface
                 'count'      => $i++
             );
             /* Iterating through the widgets. */
-            foreach ($dashboard->widgets as $generalWidget) {
-                $widget = $generalWidget->getSpecific();
+            foreach ($dashboard->widgets as $widget) {
                 array_push($dashboards[$dashboard->id]['widgets'], array(
                     'meta'         => $widget->getTemplateMeta(),
                     'templateData' => $widget->getTemplateData()
@@ -143,8 +142,8 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkWidgetsIntegrity() {
-        foreach ($this->widgets as $generalWidget) {
-            $generalWidget->getSpecific()->checkIntegrity();
+        foreach ($this->widgets as $widget) {
+            $widget->checkIntegrity();
         }
     }
 
@@ -156,8 +155,8 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkDataManagersIntegrity() {
-        foreach ($this->dataManagers as $generalDataManager) {
-            $generalDataManager->getSpecific()->checkIntegrity();
+        foreach ($this->dataManagers as $dataManager) {
+            $dataManager->checkIntegrity();
         }
     }
 
@@ -169,8 +168,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function turnOffBrokenWidgets() {
-        foreach ($this->widgets as $generalWidget) {
-            $widget = $generalWidget->getSpecific();
+        foreach ($this->widgets as $widget) {
             if ($widget instanceof SharedWidget) {
                 continue;
             }

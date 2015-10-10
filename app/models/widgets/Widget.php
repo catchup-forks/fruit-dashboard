@@ -185,22 +185,6 @@ class Widget extends Eloquent
     }
 
     /**
-     * getSpecific
-     * Getting the correct widget from a general widget,
-     * --------------------------------------------------
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function getSpecific($checkIntegrity=FALSE) {
-        $className = $this->descriptor->getClassName();
-        $widget = $className::find($this->id);
-        if ($checkIntegrity) {
-            $widget->checkIntegrity();
-        }
-        return $widget;
-    }
-
-    /**
      * getCriteria
      * Returning the settings that makes a difference among widgets.
      * --------------------------------------------------
@@ -463,6 +447,21 @@ class Widget extends Eloquent
          * if no change has been made to the model.
         */
         return parent::save();
+    }
+
+    /**
+     * newFromBuilder
+     * Override the base Model function to use polymorphism.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    public function newFromBuilder($attributes=array()) {
+        $className = Cache::get('descriptor_' . $attributes->descriptor_id)->getClassName();
+        $instance = new $className;
+        $instance->exists = TRUE;
+        $instance->setRawAttributes((array) $attributes, true);
+        return $instance;
     }
 
     /**

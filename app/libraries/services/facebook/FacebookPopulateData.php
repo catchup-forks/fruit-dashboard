@@ -81,8 +81,7 @@ class FacebookPopulateData
     private function getManagers() {
         $dataManagers = array();
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
+        foreach ($this->user->dataManagers()->get() as $dataManager) {
 
             if ($dataManager->descriptor->category == 'facebook' && $dataManager->getCriteria() == $this->criteria) {
                 $dataManagers[$dataManager->descriptor->type] = $dataManager;

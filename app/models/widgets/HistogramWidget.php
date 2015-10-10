@@ -328,7 +328,7 @@ abstract class HistogramWidget extends CronWidget
             /* Calculating data. */
             $history = $this->getHistory($i);
 
-            /* Creating format */
+            /* Creating format for percent. */
             $success = $this->isSuccess($history['percent']);
             $trendFormat = '<div class="';
             if ($success) { $trendFormat .= 'text-success';

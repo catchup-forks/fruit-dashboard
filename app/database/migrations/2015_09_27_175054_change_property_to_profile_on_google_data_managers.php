@@ -12,9 +12,8 @@ class ChangePropertyToProfileOnGoogleDataManagers extends Migration {
      */
     public function up()
     {
-        foreach (DataManager::all() as $generalDataManager) {
+        foreach (DataManager::all() as $dataManager) {
             try {
-                $dataManager = $generalDataManager->getSpecific();
                 if ( ! in_array('GoogleAnalyticsDataManagerTrait', class_uses($dataManager))) {
                     /* Not a GA DM. */
                     continue;
@@ -38,8 +37,7 @@ class ChangePropertyToProfileOnGoogleDataManagers extends Migration {
                 $dataManager->settings_criteria = json_encode($criteria);
 
                 /* Updating widget settings. */
-                foreach ($dataManager->widgets() as $generalWidget) {
-                    $widget = $generalWidget->getSpecific();
+                foreach ($dataManager->widgets() as $widget) {
                     $widget->saveSettings(array('profile' => $profile->id));
                 }
 
@@ -47,7 +45,7 @@ class ChangePropertyToProfileOnGoogleDataManagers extends Migration {
                 Log::info("Added GA profile to Datamanager #" . $dataManager->id);
 
             } catch (Exception $e) {
-                Log::error('Error found while running migration: ' . get_class($this) . ' on DataManager #' . $generalDataManager->id . '. message: ' . $e->getMessage());
+                Log::error('Error found while running migration: ' . get_class($this) . ' on DataManager #' . $dataManager->id . '. message: ' . $e->getMessage());
             }
         }
     }

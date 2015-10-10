@@ -29,9 +29,8 @@ class AddNameSettingToHistogramWidgets extends Migration {
             }
         }
 
-        foreach (Widget::all() as $generalWidget) {
+        foreach (Widget::all() as $widget) {
             try {
-                $widget = $generalWidget->getSpecific();
                 if ( ! $widget instanceof HistogramWidget) {
                     continue;
                 }

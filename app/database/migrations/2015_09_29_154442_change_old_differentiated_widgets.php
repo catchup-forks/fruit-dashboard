@@ -16,9 +16,8 @@ class ChangeOldDifferentiatedWidgets extends Migration {
             WidgetDescriptor::where('type', 'facebook_new_likes')->first(),
             WidgetDescriptor::where('type', 'twitter_new_followers')->first(),
         );
-        foreach (Widget::all() as $generalWidget) {
+        foreach (Widget::all() as $widget) {
             try {
-                $widget = $generalWidget->getSpecific();
                 $descriptor = null;
                 if ( ! $widget instanceof HistogramWidget || ! in_array($widget->descriptor, $deletableDescriptors)) {
                     /* Not a histogram widget. */
@@ -49,9 +48,8 @@ class ChangeOldDifferentiatedWidgets extends Migration {
             }
         }
         /* Deleting all dataManagers. */
-        foreach (DataManager::all() as $generalDataManager) {
+        foreach (DataManager::all() as $dataManager) {
             try {
-                $dataManager = $generalDataManager->getSpecific();
                 if (in_array($dataManager->descriptor, $deletableDescriptors)) {
                     $dataManager->delete();
                 }

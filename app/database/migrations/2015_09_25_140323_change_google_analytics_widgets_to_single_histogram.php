@@ -12,9 +12,8 @@ class ChangeGoogleAnalyticsWidgetsToSingleHistogram extends Migration {
      */
     public function up()
     {
-        foreach (DataManager::all() as $generalDataManager) {
+        foreach (DataManager::all() as $dataManager) {
             try {
-                $dataManager = $generalDataManager->getSpecific();
                 if ( ! in_array('GoogleAnalyticsDataManagerTrait', class_uses($dataManager)) || ! $dataManager instanceof HistogramDataManager) {
                     continue;
                 }

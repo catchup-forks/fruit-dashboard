@@ -67,7 +67,7 @@ class SharedWidget extends Widget
             return null;
         }
 
-        return $widget->getSpecific();
+        return $widget;
     }
     /**
      * getTemplateMeta

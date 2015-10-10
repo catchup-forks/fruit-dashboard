@@ -78,8 +78,7 @@ class StripePopulateData
     private function getManagers() {
         $dataManagers = array();
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
+        foreach ($this->user->dataManagers()->get() as $dataManager) {
             if ($dataManager->descriptor->category == 'stripe') {
                 /* Setting dataManager. */
                 $dataManagers[$dataManager->descriptor->type] = $dataManager;

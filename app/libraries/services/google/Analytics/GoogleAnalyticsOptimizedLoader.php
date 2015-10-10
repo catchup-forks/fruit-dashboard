@@ -89,7 +89,7 @@ class GoogleAnalyticsOptimizedLoader
         foreach ($query->getManagers() as $managerId) {
 
             /* Getting data and mangager. */
-            $dataManager = DataManager::find($managerId)->getSpecific();
+            $dataManager = DataManager::find($managerId);
             $data = $this->selectDataForManager(
                 $dataManager, $query->getData()
             );

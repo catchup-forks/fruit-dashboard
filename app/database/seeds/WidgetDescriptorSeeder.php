@@ -527,8 +527,12 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        foreach (WidgetDescriptor::all() as $descriptor) {
+            Cache::forever('descriptor_' . $descriptor->id, $descriptor);
+        }
+
         /* Send message to console */
-        Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated');
+        Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated, cached.');
     }
 
 } /* WidgetDescriptorSeeder */

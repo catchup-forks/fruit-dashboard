@@ -500,7 +500,7 @@ class GeneralWidgetController extends BaseController {
         if ($widget === null) {
             throw new WidgetDoesNotExist("Widget not found", 1);
         }
-        return $widget->getSpecific();
+        return $widget;
     }
 
     /**
@@ -553,11 +553,10 @@ class GeneralWidgetController extends BaseController {
             }
 
             /* Find widget */
-            $generalWidget = Widget::find($widgetData['id']);
+            $widget = Widget::find($widgetData['id']);
 
             /* Skip widget if not found */
-            if ($generalWidget === null) { continue; }
-            $widget = $generalWidget->getSpecific();
+            if ($widget === null) { continue; }
 
             /* Set position */
             try {
@@ -678,11 +677,11 @@ class GeneralWidgetController extends BaseController {
             return Response::make('Bad request.', 401);
         }
 
-        File::put(public_path().'test.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget->getSpecific())));
-        return View::make('to-image.to-image-general-histogram', array('widget' => $widget->getSpecific()));
+        File::put(public_path().'test.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget)));
+        return View::make('to-image.to-image-general-histogram', array('widget' => $widget));
 
 
-        //$image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget->getSpecific()]);
+        //$image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget]);
         //return $image->download('widget.png');
     }
 

@@ -74,8 +74,7 @@ class GoogleAnalyticsPopulateData
             'other' => array()
         );
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
+        foreach ($this->user->dataManagers()->get() as $dataManager) {
             $dataManager->data->raw_value = json_encode(array());
             $dataManager->data->save();
 
