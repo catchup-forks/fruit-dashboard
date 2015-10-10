@@ -108,7 +108,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return $this->getProperty()->name . ' - ' . $this->descriptor->name;
+        return $this->getProperty()->name . ' - ' . $this->getDescriptor()->name;
     }
 
 }

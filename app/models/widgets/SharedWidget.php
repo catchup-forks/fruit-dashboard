@@ -26,7 +26,7 @@ class SharedWidget extends Widget
      * --------------------------------------------------
     */
     public function getMinRows() {
-        return $this->getRelatedWidget()->descriptor->min_rows;
+        return $this->getRelatedWidget()->getDescriptor()->min_rows;
     }
 
     /**
@@ -37,7 +37,7 @@ class SharedWidget extends Widget
      * --------------------------------------------------
     */
     public function getMinCols() {
-        return $this->getRelatedWidget()->descriptor->min_cols;
+        return $this->getRelatedWidget()->getDescriptor()->min_cols;
     }
 
     /**
@@ -80,7 +80,7 @@ class SharedWidget extends Widget
         $related = $this->getRelatedWidget();
         $meta = parent::getTemplateMeta();
         $meta['general']['id'] = $related->id;
-        $meta['general']['type'] = $related->descriptor->type;
+        $meta['general']['type'] = $related->getDescriptor()->type;
         $meta['general']['state'] = $related->state;
         $meta['selectors'] = array(
             'widget'  => '[data-id=' . $this->id . ']',

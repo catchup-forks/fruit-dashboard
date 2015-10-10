@@ -17,7 +17,7 @@ trait DefaultAjaxWidgetTrait
                 return array('ready' => FALSE);
             } else if($this->state == 'active') {
                 /* Rerendering the widget */
-                $view = View::make($this->descriptor->getTemplateName())
+                $view = View::make($this->getDescriptor()->getTemplateName())
                     ->with('widget', $this->getTemplateData());
                 return array(
                     'ready' => TRUE,

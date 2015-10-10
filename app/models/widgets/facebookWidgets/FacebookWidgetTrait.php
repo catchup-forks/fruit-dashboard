@@ -105,7 +105,7 @@ trait FacebookWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return $this->getPage()->name . ' - ' . $this->descriptor->name;
+        return $this->getPage()->name . ' - ' . $this->getDescriptor()->name;
     }
 }
 

@@ -33,7 +33,7 @@ trait TwitterWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return '@' . $this->getUser() . ' - ' . $this->descriptor->name;
+        return '@' . $this->getUser() . ' - ' . $this->getDescriptor()->name;
     }
 }
 
