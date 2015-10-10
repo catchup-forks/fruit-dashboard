@@ -1,7 +1,7 @@
 <?php
 
 /* This class is responsible for table widgets data collection. */
-abstract class TableDataManager extends DataManager
+class TableDataManager extends DataManager
 {
     /**
      * getHeader
@@ -248,21 +248,6 @@ abstract class TableDataManager extends DataManager
         }
         $this->saveHeader($data['header']);
         $this->saveContent($data['content']);
-    }
-
-    /**
-     * getData
-     * Returning the raw data json decoded.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getData() {
-        $data = json_decode($this->data->raw_value, 1);
-        if ( ! is_array($data)) {
-            return array();
-        }
-        return $data;
     }
 
 }

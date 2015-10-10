@@ -164,10 +164,12 @@ class Widget extends Eloquent
     */
     public function getTemplateData() {
         return array(
-            'settings' => $this->getSettings(),
-            'instance' => $this,
-            'id'       => $this->id,
-            'state'    => $this->state
+            'settings'   => $this->getSettings(),
+            'instance'   => $this,
+            'id'         => $this->id,
+            'state'      => $this->state,
+            'position'   => $this->getPosition(),
+            'descriptor' => $this->descriptor
         );
     }
 

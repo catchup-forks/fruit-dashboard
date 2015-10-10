@@ -69,7 +69,7 @@
               @foreach ($dashboard->widgets as $widget)
 
                 @if ($widget->state != 'hidden')
-                  @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
+                  @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()->getTemplateData()])
                 @endif
 
               @endforeach

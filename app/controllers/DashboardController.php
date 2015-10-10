@@ -26,12 +26,12 @@ class DashboardController extends BaseController
         Auth::user()->checkOrCreateDefaultDashboard();
 
         /* Checking the user's data managers integrity */
-        $time = microtime(TRUE);
-        Auth::user()->checkDataManagersIntegrity();
+        //$time = microtime(TRUE);
+        //Auth::user()->checkDataManagersIntegrity();
 
         /* Checking the user's widgets integrity */
-        Auth::user()->checkWidgetsIntegrity();
-        Log::info("Check integrity time: " . (microtime(TRUE) - $time));
+        //Auth::user()->checkWidgetsIntegrity();
+        //Log::info("Check integrity time: " . (microtime(TRUE) - $time));
 
         /* Get active dashboard, if the url contains it */
         $parameters = array();

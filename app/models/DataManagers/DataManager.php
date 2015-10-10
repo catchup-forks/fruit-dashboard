@@ -160,7 +160,11 @@ class DataManager extends Eloquent
      * --------------------------------------------------
      */
     public function getData() {
-        return json_decode($this->data->raw_value, 1);
+        $data = json_decode($this->data->raw_value, 1);
+        if ( ! is_array($data)) {
+            return array();
+        }
+        return $data;
     }
 
     /**

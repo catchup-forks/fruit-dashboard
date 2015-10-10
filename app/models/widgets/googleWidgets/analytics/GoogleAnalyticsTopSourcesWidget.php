@@ -28,6 +28,20 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
     use GoogleAnalyticsWidgetTrait;
 
     /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'header'  => $this->getHeader(),
+            'content' => $this->getContent()
+        ));
+    }
+
+    /**
      * getSettingsFields
      * --------------------------------------------------
      * Returns the updated settings fields

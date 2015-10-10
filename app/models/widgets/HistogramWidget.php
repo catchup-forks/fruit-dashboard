@@ -48,7 +48,7 @@ abstract class HistogramWidget extends CronWidget
 
     /* -- Choice functions -- */
     public function type() {
-        $types = array('diff' => 'Differentiated');
+        $types = array('diff' => 'Differentiated', 'table' => 'Table');
         if ($this->hasCumulative()) {
             $types['sum'] = 'Cumulative';
         }
@@ -63,6 +63,13 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
     public function getTemplateData() {
+        if ($this->getSettings()['type'] == 'table') {
+            $tableData = $this->getTableData();
+            return array_merge(parent::getTemplateData(), array(
+                'header'  => $tableData['header'],
+                'content' => $tableData['content']
+            ));
+        }
         return array_merge(parent::getTemplateData(), array(
             'defaultDiff'   => $this->getDiff(),
             'format'        => $this->getFormat(),
@@ -207,9 +214,6 @@ abstract class HistogramWidget extends CronWidget
      */
     public function getHistory($multiplier=1, $resolution=null) {
         $currentValue = array_values($this->getLatestValues())[0];
-        if (is_null($resolution)) {
-            $resolution = $this->getSettings()['resolution'];
-        }
         $value = $currentValue - $this->getDiff($multiplier, $resolution);
         try {
             $percent = ($currentValue / $value - 1) * 100;
@@ -288,6 +292,60 @@ abstract class HistogramWidget extends CronWidget
         }
 
         return parent::save($options);
+    }
+
+    /**
+     * getTableData
+     * Returns the data in table format.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTableData() {
+        $settings = $this->getSettings();
+        /* Initializing table. */
+        $tableData = array(
+            'header' => array(
+                'datetime' => $settings['resolution'],
+                'value'    => '(METRICNAME)',
+                'trend'    => 'Trend'
+            ),
+            'content' => array(
+            )
+        );
+
+        /* Populating table data. */
+        for ($i = 0; $i < $settings['length']; ++$i) {
+            $now = Carbon::now();
+            switch ($settings['resolution']) {
+                case 'days':   $date = $now->subDays($i)->format('d'); break;
+                case 'weeks':  $date = $now->subWeeks($i)->format('W'); break;
+                case 'months': $date = $now->subMonths($i)->format('l'); break;
+                case 'years':  $date = $now->subYears($i)->format('Y'); break;
+                default:$date = '';
+            }
+
+            /* Calculating data. */
+            $history = $this->getHistory($i);
+
+            /* Creating format */
+            $success = $this->isSuccess($history['percent']);
+            $trendFormat = '<div class="';
+            if ($success) { $trendFormat .= 'text-success';
+            } else { $trendFormat .= 'text-danger'; }
+            $trendFormat .= '"> <span class="fa fa-arrow-';
+            if ($success) { $trendFormat .= 'up';
+            } else { $trendFormat .= 'down'; }
+            $trendFormat .= '"> %.2f%%</div>';
+
+            array_push($tableData['content'], array(
+                $date,
+                Utilities::formatNumber($history['value'], $this->getFormat()),
+                Utilities::formatNumber($history['percent'], $trendFormat)
+            ));
+        }
+
+        return $tableData;
     }
 
     /**
