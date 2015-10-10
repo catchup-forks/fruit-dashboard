@@ -77,8 +77,8 @@ class DashboardController extends BaseController
             $time = microtime(TRUE);
         }
 
-        $view->render();
         if (self::OPTIMIZE) {
+            $view->render();
             var_dump(
                 "Rendering time: ". (microtime(TRUE) - $time) .
                 " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
