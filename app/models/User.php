@@ -110,12 +110,16 @@ class User extends Eloquent implements UserInterface
      */
     public function createDashboardView(array $params=array()) {
         $dashboards = array();
+        $i = 0;
         foreach ($this->dashboards as $dashboard) {
             /* Creating dashboard array. */
+
             $dashboards[$dashboard->id] = array(
-                'name'      => $dashboard->name,
-                'is_locked' => $dashboard->is_locked,
-                'widgets' => array()
+                'name'       => $dashboard->name,
+                'is_locked'  => $dashboard->is_locked,
+                'is_default' => $dashboard->is_default,
+                'widgets'    => array(),
+                'count'      => $i++
             );
             /* Iterating through the widgets. */
             foreach ($dashboard->widgets as $generalWidget) {
