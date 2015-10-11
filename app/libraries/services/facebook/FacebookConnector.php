@@ -196,13 +196,13 @@ class FacebookConnector extends GeneralServiceConnector
 
     /**
      * createDataManagers
-     * Adding profile activation.
+     * Adding page activation.
      * --------------------------------------------------
      * @param array $criteria
      * --------------------------------------------------
      */
     public function createDataManagers(array $criteria=array()) {
-        /* Getting profile. */
+        /* Getting page. */
         $page = $this->user->facebookPages()
             ->where('id', $criteria['page'])->first();
         if (is_null($page)) {
@@ -210,7 +210,7 @@ class FacebookConnector extends GeneralServiceConnector
         }
         /* Setting page to active. */
         $page->active = TRUE;
-        $profile->save();
+        $page->save();
 
         return parent::createDataManagers($criteria);
     }
