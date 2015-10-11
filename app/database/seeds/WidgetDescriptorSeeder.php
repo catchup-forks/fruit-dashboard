@@ -498,6 +498,22 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_goal_completion'],
+            array(
+                'name'         => 'Goal completion',
+                'description'  => 'The total number of completions for the requested goal number.',
+                'type'         => 'google_analytics_goal_completion',
+                'category'     => 'google_analytics',
+                'is_premium'   => FALSE,
+                'number'       => 6,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
             array(
                 'name'         => 'Shared widget',

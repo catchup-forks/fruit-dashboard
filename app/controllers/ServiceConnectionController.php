@@ -452,6 +452,21 @@ class ServiceConnectionController extends BaseController
     }
 
     /**
+     * getGoogleAnalyticsGoals
+     * Returning the goals for the selected profile
+     * --------------------------------------------------
+     * @param int $profileId
+     * --------------------------------------------------
+     */
+    public function getGoogleAnalyticsGoals($profileId) {
+        $goals = array();
+        foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
+            $goals[$goal->goal_id] = $goal->name;
+        }
+        return Response::json($goals);
+    }
+
+    /**
      * postSelectGoogleAnalyticsProperties
      * --------------------------------------------------
      * @return Creates auto dashboard for the selected properties.

@@ -29,6 +29,16 @@ class PromoWidget extends Widget
 
         if ($descriptor->type == 'google_analytics_goal_completion') {
             /* Check if user has any goals. */
+            $profile = $this->user()->googleAnalyticsProfiles()
+                ->where('active', TRUE)->first();
+            $goal = $profile->goals()->where('active', TRUE)->first();
+            if ($goal) {
+                $this->transform(array(
+                    'profile' => $profile->profile_id,
+                    'goal'    => $goal->goal_id
+                ));
+            }
+
         } else if ($descriptor->category == 'google_analytics') {
             /* Check if user has any profiles. */
             $profile = $this->user()->googleAnalyticsProfiles()
@@ -84,7 +94,7 @@ class PromoWidget extends Widget
      * @param array $criteria
      * --------------------------------------------------
     */
-    public function transform(array $criteria=array()) {
+    private function transform(array $criteria=array()) {
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
         $className = $descriptor->getClassName();

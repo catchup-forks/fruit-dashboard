@@ -55,8 +55,8 @@ trait GoogleAnalyticsDataManagerTrait
         /* Invalid profile in DB. */
         return $profile;
     }
-    /**
 
+    /**
      * getProfileId
      * --------------------------------------------------
      * Returning the corresponding profile id.
