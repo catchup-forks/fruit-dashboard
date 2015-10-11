@@ -159,7 +159,7 @@
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
-  @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor)
+  @foreach (WidgetDescriptor::where('type', '!=', 'shared')->get() as $descriptor)
     <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. Utilities::underscoreToCamelCase($descriptor->type).'Widget.js') }}"></script>
   @endforeach
   <!-- /FDWidget* classes -->

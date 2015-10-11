@@ -33,9 +33,26 @@ class SiteConstants {
                 'settings' => array('type' => 'table', 'length' => 5),
             ),
         ),
-        'Activation' => array(),
+        'Activation' => array(
+            array(
+                'type'     => 'facebook_likes',
+                'position' => '{"col":1,"row":1,"size_x":5,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+            ),
+            array(
+                'type'     => 'twitter_followers_count',
+                'position' => '{"col":6,"row":1,"size_x":2,"size_y":2}',
+                'settings' => array('period' => 'days', 'multiplier' => 1),
+            ),
+            array(
+                'type'     => 'twitter_mentions',
+                'position' => '{"col":8,"row":1,"size_x":5,"size_y":8}',
+                'settings' => array('count' => 5),
+            ),
+        ),
         'Retention' => array(),
-        'Revenue' => array(),
+        'Revenue' => array(
+        ),
         'Referral' => array()
     );
     private static $financialServices    = array('braintree', 'stripe');
