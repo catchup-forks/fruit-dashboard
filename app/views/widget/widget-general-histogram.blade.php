@@ -4,11 +4,7 @@
   </div> <!-- /.chart-name -->
   <div class="chart-value larger-text">
     @if ($widget['state'] == 'active')
-      @if ( ! $widget['hasCumulative'])
-      {{ Utilities::formatNumber($widget['instance']->getLatestValues()['value'], $widget['format']) }}
-      @else
-      {{ Utilities::formatNumber($widget['instance']->getDiff($widget['settings']['length']), $widget['format']) }}
-      @endif
+      {{ Utilities::formatNumber(array_values($widget['instance']->getLatestValues())[0], $widget['format']) }}
     @endif
   </div> <!-- /.chart-value -->
 </div> <!-- /.chart-data -->

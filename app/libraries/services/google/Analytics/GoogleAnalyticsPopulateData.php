@@ -77,12 +77,16 @@ class GoogleAnalyticsPopulateData
         );
 
         foreach ($this->user->dataManagers()->get() as $dataManager) {
-            $dataManager->data->raw_value = json_encode(array());
-            $dataManager->data->save();
 
             if ($dataManager->getDescriptor()->category == 'google_analytics' &&
                     $dataManager->getCriteria() == $this->criteria &&
                     $dataManager->getData() == FALSE) {
+
+                /* Initializing data */
+                $dataManager->data->raw_value = json_encode(array());
+                $dataManager->data->save();
+                $dataManager->setWidgetsState('loading');
+
                 if ($dataManager instanceof HistogramDataManager &&
                         empty($dataManager->getOptionalParams())) {
                     if ($dataManager->hasCumulative()) {
