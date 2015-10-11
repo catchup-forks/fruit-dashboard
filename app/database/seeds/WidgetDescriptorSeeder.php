@@ -500,17 +500,29 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
             array(
-                'name'        => 'Shared widget',
-                'description' => '',
-                'type'        => 'shared',
-                'category'    => 'hidden',
-                'is_premium'  => FALSE,
-                'min_cols'     => 1,
-                'min_rows'     => 1,
-                'default_cols' => 1,
-                'default_rows' => 1
+                'name'         => 'Shared widget',
+                'description'  => '',
+                'type'         => 'shared',
+                'category'     => 'hidden',
+                'is_premium'   => FALSE,
             )
         );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'promo'],
+            array(
+                'name'         => 'Promo widget',
+                'description'  => '',
+                'type'         => 'promo',
+                'category'     => 'hidden',
+                'is_premium'   => FALSE,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 3
+            )
+        );
+
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_top_sources'],
             array(

@@ -60,6 +60,8 @@ class GoogleAnalyticsPopulateData
             $dataManager->initializeData();
             $dataManager->setWidgetsState('active');
         }
+
+        $this->activateWidgets();
     }
 
     /**
@@ -78,7 +80,9 @@ class GoogleAnalyticsPopulateData
             $dataManager->data->raw_value = json_encode(array());
             $dataManager->data->save();
 
-            if ($dataManager->getDescriptor()->category == 'google_analytics' && $dataManager->getCriteria() == $this->criteria) {
+            if ($dataManager->getDescriptor()->category == 'google_analytics' &&
+                    $dataManager->getCriteria() == $this->criteria &&
+                    $dataManager->getData() == FALSE) {
                 if ($dataManager instanceof HistogramDataManager &&
                         empty($dataManager->getOptionalParams())) {
                     if ($dataManager->hasCumulative()) {
@@ -133,4 +137,18 @@ class GoogleAnalyticsPopulateData
         );
     }
 
+    /**
+     * activateWidgets
+     * Setting all related widget's state to active.
+     */
+    private function activateWidgets() {
+        foreach ($this->dataManagers['histogram'] as $type=>$managers) {
+            foreach ($managers as $manager) {
+                $manager->setWidgetsState('active');
+            }
+        }
+        foreach ($this->dataManagers['other'] as $type=>$manager) {
+            $manager->setWidgetsState('active');
+        }
+    }
 }

@@ -31,7 +31,7 @@ abstract class HistogramWidget extends CronWidget
             'name'       => 'Histogram type',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'diff',
+            'default'    => 'chart',
             'help_text'  => 'The type of your chart.'
         ),
     );
@@ -48,10 +48,7 @@ abstract class HistogramWidget extends CronWidget
 
     /* -- Choice functions -- */
     public function type() {
-        $types = array('diff' => 'Differentiated', 'table' => 'Table');
-        if ($this->hasCumulative()) {
-            $types['sum'] = 'Cumulative';
-        }
+        $types = array('chart' => 'Chart', 'table' => 'Table');
         return $types;
     }
 
@@ -92,7 +89,7 @@ abstract class HistogramWidget extends CronWidget
         $dm->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);
         $dm->setLength(array_key_exists('length', $options) ? $options['length'] : $settings['length']);
         $dm->setRange(array_key_exists('range', $options) ? $options['range'] : array());
-        $dm->setDiff(array_key_exists('diff', $options) ? $options['diff'] : $this->isDifferentiated());
+        $dm->setDiff(array_key_exists('diff', $options) ? $options['diff'] : FALSE);
         return $dm;
      }
 
@@ -119,17 +116,6 @@ abstract class HistogramWidget extends CronWidget
      }
 
     /**
-     * isDifferentiated
-     * Returns whether or not the chart is differentiated.
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-     */
-     public function isDifferentiated() {
-        return ($this->hasCumulative() && $this->getSettings()['type'] == 'diff');
-     }
-
-    /**
      * getTemplateMeta
      * Returning data for the gridster init template.
      * --------------------------------------------------
@@ -145,7 +131,7 @@ abstract class HistogramWidget extends CronWidget
     }
 
     /**
-     * isGreen
+     * isSuccess
      * Returns whether or not the diff is considered
      * good in the histogram
      * --------------------------------------------------
@@ -273,7 +259,6 @@ abstract class HistogramWidget extends CronWidget
      */
      public function getLatestValues() {
         $dm = $this->dataManager();
-        $dm->setDiff($this->isDifferentiated());
         return $dm->getLatestValues();
      }
 

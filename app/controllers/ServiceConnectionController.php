@@ -73,13 +73,6 @@ class ServiceConnectionController extends BaseController
             )
         );
 
-        if (Session::pull('createDashboard')) {
-            $dashboardCreator = new BraintreeAutoDashboardCreator(
-                Auth::user()
-            );
-            $dashboardCreator->create();
-        }
-
         /* Render the page */
         return Redirect::to($this->getReferer())
             ->with('success', 'Braintree connection successful.');
@@ -152,12 +145,6 @@ class ServiceConnectionController extends BaseController
             }
 
             $connector->createDataManagers();
-
-            /* Creating dashboard automatically. */
-            if (Session::pull('createDashboard')) {
-                $dashboardCreator = new TwitterAutoDashboardCreator(Auth::user());
-                $dashboardCreator->create();
-            }
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())
@@ -337,21 +324,6 @@ class ServiceConnectionController extends BaseController
         if (count($pages) == 0) {
             return Redirect::to($this->getReferer())
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
-        } else if (count($pages) == 1) {
-            $pageId = array_keys($pages)[0];
-
-            /* Creating data managers */
-            $settings = array('page' => $pageId);
-            $connector = new FacebookConnector(Auth::user());
-            $connector->createDataManagers($settings);
-
-            /* Creating dashboard automatically. */
-            $dashboardCreator = new FacebookAutoDashboardCreator(
-                Auth::user(), $settings
-            );
-            $dashboardCreator->create($pages[$pageId]);
-
-            return Redirect::to($this->getReferer());
         }
 
         return View::make('service.facebook.select-pages')
@@ -380,18 +352,12 @@ class ServiceConnectionController extends BaseController
             /* Creating data managers. */
             $connector = new FacebookConnector(Auth::user());
             $connector->createDataManagers(array('page' => $id));
-
-            $dashboardCreator = new FacebookAutoDashboardCreator(
-                Auth::user(), array('page' => $id)
-            );
-            $dashboardCreator->create($pages[$id]);
         }
 
         return Redirect::to($this->getReferer())
             ->with('success', 'Connection successful.');
     }
     /**
-
      * anyFacebookRefreshPages
      * --------------------------------------------------
      * @return Refreshes a user's facebook pages.
@@ -509,12 +475,7 @@ class ServiceConnectionController extends BaseController
             $settings = array('profile' => $id);
 
             $connector = new GoogleAnalyticsConnector(Auth::user());
-            //$connector->createDataManagers($settings);
-
-            $dashboardCreator = new GoogleAnalyticsAutoDashboardCreator(
-                Auth::user(), $settings
-            );
-            $dashboardCreator->create($profile->name);
+            $connector->createDataManagers($settings);
         }
 
         $message = 'Connection successful.';
@@ -584,13 +545,6 @@ class ServiceConnectionController extends BaseController
                     )
                 )
             );
-
-            if (Session::pull('createDashboard')) {
-                $dashboardCreator = new StripeAutoDashboardCreator(
-                    Auth::user()
-                );
-                $dashboardCreator->create();
-            }
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())

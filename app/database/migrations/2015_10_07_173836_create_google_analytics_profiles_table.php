@@ -13,7 +13,7 @@ class CreateGoogleAnalyticsProfilesTable extends Migration {
     public function up() {
         Schema::create('google_analytics_profiles',function($table) {
             $table->increments('id');
-            $table->boolean('active');
+            $table->boolean('active')->default(FALSE);
 
             $table->string('profile_id', 127);
             $table->integer('property_id')->unsigned();

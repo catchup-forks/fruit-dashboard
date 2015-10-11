@@ -116,7 +116,7 @@
 
                                 <h3 class="descriptor-name text-center">{{ $descriptor->name }}
                                 </h3> <!-- /.descriptor-name -->
-                                {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
+                                {{ HTML::image($descriptor->getPhotoLocation(), $descriptor->name, array(
                                     'class' => 'img-responsive img-rounded center-block'
                                 ))}}
 

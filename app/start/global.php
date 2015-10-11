@@ -77,7 +77,7 @@ App::missing(function($e) {
 
 App::down(function()
 {
-	return Response::make("We are currently performing system maintenance. We'll be back in a few minutes!", 503);
+	return Response::make("We're currently performing system maintenance. We'll be back in a few minutes!", 503);
 });
 
 /*

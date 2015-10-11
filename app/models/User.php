@@ -123,9 +123,17 @@ class User extends Eloquent implements UserInterface
             );
             /* Iterating through the widgets. */
             foreach ($dashboard->widgets as $widget) {
+                try {
+                    $templateData = $widget->getTemplateData();
+                } catch (Exception $e) {
+                    /* Something went wrong during data population. */
+                    Log::error($e->getMessage());
+                    $templateData = Widget::getDefaultTemplateData($widget);
+                    $widget->setState('setup_required');
+                }
                 array_push($dashboards[$dashboard->id]['widgets'], array(
                     'meta'         => $widget->getTemplateMeta(),
-                    'templateData' => $widget->getTemplateData()
+                    'templateData' => $templateData
                 ));
 
             }
@@ -280,6 +288,41 @@ class User extends Eloquent implements UserInterface
         $subscription->user()->associate($this);
         $subscription->plan()->associate($plan);
         $subscription->save();
+
+        /* Creating Dashboard. */
+        $this->createDefaultDashboards();
+    }
+
+    /**
+     * createDefaultDashboards
+     * Creating the default dashboards for the user.
+     */
+    private function createDefaultDashboards() {
+        foreach (SiteConstants::getAutoDashboards() as $name=>$widgets) {
+            $dashboard = new Dashboard(array(
+                'name'       => $name . ' dashboard',
+                'background' => TRUE,
+                'number'     => $this->dashboards->max('number') + 1
+            ));
+            $dashboard->user()->associate($this);
+            $dashboard->save();
+            foreach ($widgets as $widgetMeta) {
+                $descriptor = WidgetDescriptor::where('type', $widgetMeta['type'])->first();
+                /* Creating widget instance. */
+                $widget = new PromoWidget(array(
+                    'position' => $widgetMeta['position'],
+                    'state'    => 'active'
+                ));
+                $widget->dashboard()->associate($dashboard);
+
+                /* Saving settings. */
+                $settings = array_key_exists('settings', $widgetMeta) ? $widgetMeta['settings'] : array ();
+                $widget->saveSettings(array(
+                    'widget_settings'    => json_encode($settings),
+                    'related_descriptor' => $descriptor->id
+                ));
+            }
+        }
     }
 
 }

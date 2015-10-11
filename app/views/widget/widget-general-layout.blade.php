@@ -33,7 +33,7 @@
         @endif
 
         {{-- SHARE --}}
-        @if ( ! $widget['instance'] instanceof SharedWidget)
+        @if ( ! $widget['instance'] instanceof SharedWidget && ! $widget['instance'] instanceof PromoWidget)
         <li>
           <a href="#" id="share-{{$widget['id']}}" onclick="showShareModal({{$widget['id']}})">
             <span class="fa fa-share-alt"> </span>

@@ -112,5 +112,16 @@ class WidgetDescriptor extends Eloquent
         return null;
     }
 
+    /**
+     * getPhotoLocation
+     * Returning the url of the demonstration photo.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getPhotoLocation() {
+        return 'img/demonstration/widget-' . $this->type. '.png';
+    }
+
 }
 ?>

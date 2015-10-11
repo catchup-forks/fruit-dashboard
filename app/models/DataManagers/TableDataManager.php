@@ -1,7 +1,7 @@
 <?php
 
 /* This class is responsible for table widgets data collection. */
-class TableDataManager extends DataManager
+abstract class TableDataManager extends DataManager
 {
     /**
      * getHeader

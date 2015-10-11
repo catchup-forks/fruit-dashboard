@@ -216,8 +216,8 @@ abstract class HistogramDataManager extends DataManager
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
+        $start = $histogram[0];
         $today = end($histogram);
-        $start = array_values($histogram)[0];
 
         /* Creating an arrays that will hold the values. */
         $values = array();
@@ -226,6 +226,7 @@ abstract class HistogramDataManager extends DataManager
                 $values[$dataId] = $today[$dataId] - $value;
             }
         }
+
         return $values;
     }
 
@@ -284,10 +285,8 @@ abstract class HistogramDataManager extends DataManager
                 if ( ! isset($previousEntryTime)) {
                     /* First element always makes it to the final histogram. */
                     $push = TRUE;
-                } else {
-                    if ($this->isBreakPoint($entryTime, $previousEntryTime)) {
-                        $push = TRUE;
-                    }
+                } else if ($this->isBreakPoint($entryTime, $previousEntryTime)){
+                    $push = TRUE;
                 }
 
                 if ($push) {

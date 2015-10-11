@@ -161,6 +161,24 @@ class Widget extends Eloquent
     }
 
     /**
+     * getDefaultTemplateData
+     * Returning all meta data about the widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getDefaultTemplateData($widget) {
+        return array(
+            'settings'   => $widget->getSettings(),
+            'instance'   => $widget,
+            'id'         => $widget->id,
+            'state'      => $widget->state,
+            'position'   => $widget->getPosition(),
+            'descriptor' => $widget->getDescriptor()
+        );
+    }
+
+    /**
      * getTemplateData
      * Returning all data that should be passed to the template.
      * --------------------------------------------------
@@ -168,14 +186,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getTemplateData() {
-        return array(
-            'settings'   => $this->getSettings(),
-            'instance'   => $this,
-            'id'         => $this->id,
-            'state'      => $this->state,
-            'position'   => $this->getPosition(),
-            'descriptor' => $this->getDescriptor()
-        );
+        return self::getDefaultTemplateData($this);
     }
 
     /**
@@ -425,7 +436,7 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        if (is_null($this->getDescriptor())) {
+        if (is_null($this->descriptor_id)) {
             /* Associating descriptor. */
             $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
@@ -435,7 +446,7 @@ class Widget extends Eloquent
             }
 
             // Assigning descriptor.
-            $this->descriptor()->associate($widgetDescriptor);
+            $this->descriptor_id = $widgetDescriptor->id;
         }
 
         // Saving settings by option.

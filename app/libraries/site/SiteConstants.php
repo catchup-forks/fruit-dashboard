@@ -20,6 +20,24 @@ class SiteConstants {
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
+    private static $autoDashboards    = array(
+        'Acquisition' => array(
+            array(
+                'type'     => 'google_analytics_sessions',
+                'position' => '{"row":1,"col":1,"size_x":4,"size_y":4}',
+                'settings' => array('type' => 'chart'),
+            ),
+            array(
+                'type'     => 'google_analytics_sessions',
+                'position' => '{"row":1,"col":1,"size_x":4,"size_y":4}',
+                'settings' => array('type' => 'table', 'length' => 5),
+            ),
+        ),
+        'Activation' => array(),
+        'Retention' => array(),
+        'Revenue' => array(),
+        'Referral' => array()
+    );
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
@@ -397,6 +415,17 @@ class SiteConstants {
      */
     public static function getApiVersions() {
         return self::$apiVersions;
+    }
+
+    /**
+     * getAutoDashboards
+     * --------------------------------------------------
+     * Returns the startup metrics.
+     * @return (array) ($autoDashboards) autoDashboards
+     * --------------------------------------------------
+     */
+    public static function getAutoDashboards() {
+        return self::$autoDashboards;
     }
 
     /**
