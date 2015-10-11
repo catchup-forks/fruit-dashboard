@@ -319,7 +319,8 @@ class User extends Eloquent implements UserInterface
                 $settings = array_key_exists('settings', $widgetMeta) ? $widgetMeta['settings'] : array ();
                 $widget->saveSettings(array(
                     'widget_settings'    => json_encode($settings),
-                    'related_descriptor' => $descriptor->id
+                    'related_descriptor' => $descriptor->id,
+                    'photo_location'     => $widgetMeta['pic_url']
                 ));
             }
         }

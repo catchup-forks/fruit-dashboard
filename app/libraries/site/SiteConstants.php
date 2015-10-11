@@ -24,13 +24,15 @@ class SiteConstants {
         'Acquisition' => array(
             array(
                 'type'     => 'google_analytics_sessions',
-                'position' => '{"row":1,"col":1,"size_x":4,"size_y":4}',
+                'position' => '{"row":1,"col":1,"size_x":4,"size_y":5}',
                 'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
             ),
             array(
                 'type'     => 'google_analytics_sessions',
-                'position' => '{"row":1,"col":1,"size_x":4,"size_y":4}',
+                'position' => '{"row":1,"col":6,"size_x":4,"size_y":5}',
                 'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
             ),
         ),
         'Activation' => array(
@@ -38,16 +40,19 @@ class SiteConstants {
                 'type'     => 'facebook_likes',
                 'position' => '{"col":1,"row":1,"size_x":5,"size_y":5}',
                 'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/fb_likes_chart.png'
             ),
             array(
                 'type'     => 'twitter_followers_count',
                 'position' => '{"col":6,"row":1,"size_x":2,"size_y":2}',
                 'settings' => array('period' => 'days', 'multiplier' => 1),
+                'pic_url'  => 'img/demonstration/promo/tw_followers_count.png'
             ),
             array(
                 'type'     => 'twitter_mentions',
                 'position' => '{"col":8,"row":1,"size_x":5,"size_y":8}',
                 'settings' => array('count' => 5),
+                'pic_url'  => 'img/demonstration/promo/tw_mentions.png'
             ),
         ),
         'Retention' => array(),

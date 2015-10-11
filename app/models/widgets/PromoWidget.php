@@ -15,6 +15,13 @@ class PromoWidget extends Widget
             'type'       => 'string',
             'default'    => '[]',
             'hidden'     => TRUE
+        ),
+        'photo_location' => array(
+            'name'       => 'The location of the photo of the widget.',
+            'type'       => 'string',
+            'default'    => '',
+            'validation' => 'required',
+            'hidden'     => TRUE
         )
     );
 

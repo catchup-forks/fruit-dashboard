@@ -46,7 +46,7 @@ class WidgetDescriptor extends Eloquent
         }
         /* Not found in cache, storing and returning the object from DB. */
         $descriptor = parent::find($id, $columns);
-        Cache::put($cacheKey, $descriptor);
+        Cache::forever($cacheKey, $descriptor);
         return $descriptor;
     }
 

@@ -481,37 +481,39 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'google_analytics_active_users'],
-            array(
-                'name'         => 'Active users',
-                'description'  => ' - FIXME - Please write something here',
-                'type'         => 'google_analytics_active_users',
-                'category'     => 'google_analytics',
-                'is_premium'   => FALSE,
-                'number'       => 3,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 4
-            )
-        );
+        if (App::environment() != 'production' && App::environment() != 'staging') {
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'google_analytics_active_users'],
+                array(
+                    'name'         => 'Active users',
+                    'description'  => ' - FIXME - Please write something here',
+                    'type'         => 'google_analytics_active_users',
+                    'category'     => 'google_analytics',
+                    'is_premium'   => FALSE,
+                    'number'       => 3,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 4
+                )
+            );
 
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'google_analytics_goal_completion'],
-            array(
-                'name'         => 'Goal completion',
-                'description'  => 'The total number of completions for the requested goal number.',
-                'type'         => 'google_analytics_goal_completion',
-                'category'     => 'google_analytics',
-                'is_premium'   => FALSE,
-                'number'       => 6,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 4
-            )
-        );
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'google_analytics_goal_completion'],
+                array(
+                    'name'         => 'Goal completion',
+                    'description'  => 'The total number of completions for the requested goal number.',
+                    'type'         => 'google_analytics_goal_completion',
+                    'category'     => 'google_analytics',
+                    'is_premium'   => FALSE,
+                    'number'       => 6,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 4
+                )
+            );
+        }
 
         WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
@@ -532,10 +534,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'type'         => 'promo',
                 'category'     => 'hidden',
                 'is_premium'   => FALSE,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 3,
-                'default_rows' => 3
+                'min_cols'     => 1,
+                'min_rows'     => 1,
+                'default_cols' => 1,
+                'default_rows' => 1
             )
         );
 
