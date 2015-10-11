@@ -15,7 +15,7 @@ class AddActiveToTwitterFacebookPages extends Migration {
             $table->boolean('active')->default(FALSE);
         });
         Schema::table('twitter_users',function($table) {
-            $table->boolean('active')->default(FALSE);
+            $table->boolean('active')->default(TRUE);
         });
     }
 
