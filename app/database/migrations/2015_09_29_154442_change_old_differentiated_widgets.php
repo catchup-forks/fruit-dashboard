@@ -16,11 +16,10 @@ class ChangeOldDifferentiatedWidgets extends Migration {
             WidgetDescriptor::where('type', 'facebook_new_likes')->first(),
             WidgetDescriptor::where('type', 'twitter_new_followers')->first(),
         );
-        foreach (Widget::all() as $generalWidget) {
+        foreach (Widget::all() as $widget) {
             try {
-                $widget = $generalWidget->getSpecific();
                 $descriptor = null;
-                if ( ! $widget instanceof HistogramWidget || ! in_array($widget->descriptor, $deletableDescriptors)) {
+                if ( ! $widget instanceof HistogramWidget || ! in_array($widget->getDescriptor(), $deletableDescriptors)) {
                     /* Not a histogram widget. */
                     continue;
                 }
@@ -39,7 +38,7 @@ class ChangeOldDifferentiatedWidgets extends Migration {
                         $widget->delete();
                         continue;
                     }
-                    $widget->descriptor()->associate($descriptor);
+                    $widget->descritor()->associate($descriptor);
                     $widget->saveSettings(array('type' => 'diff'));
                     Log::info("Linked widget #" . $widget->id . " data to cumulative.");
                 }
@@ -49,14 +48,13 @@ class ChangeOldDifferentiatedWidgets extends Migration {
             }
         }
         /* Deleting all dataManagers. */
-        foreach (DataManager::all() as $generalDataManager) {
+        foreach (DataManager::all() as $dataManager) {
             try {
-                $dataManager = $generalDataManager->getSpecific();
-                if (in_array($dataManager->descriptor, $deletableDescriptors)) {
+                if (in_array($dataManager->getDescriptor(), $deletableDescriptors)) {
                     $dataManager->delete();
                 }
             } catch (Exception $e) {
-                Log::error('Error found while running migration: ' . get_class($this) . ' on datamanager #' . $generalDataManager->id . '. message: ' . $e->getMessage());
+                Log::error('Error found while running migration: ' . get_class($this) . ' on datamanager #' . $dataManager->id . '. message: ' . $e->getMessage());
             }
         }
         /* Deleting descriptors. */

@@ -23,7 +23,7 @@ class TwitterNewFollowersDataManager extends HistogramDataManager
     private function getFollowersManager() {
         $descriptor_id = WidgetDescriptor::where('type', 'twitter_followers')->first()->id;
 
-        return $this->user->dataManagers()->where('descriptor_id', $descriptor_id)->first()->getSpecific();
+        return $this->user->dataManagers()->where('descriptor_id', $descriptor_id)->first();
 
     }
 }

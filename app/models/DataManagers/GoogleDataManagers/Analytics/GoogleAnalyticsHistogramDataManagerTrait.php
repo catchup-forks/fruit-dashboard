@@ -3,28 +3,40 @@
 trait GoogleAnalyticsHistogramDataManagerTrait
 {
     use GoogleAnalyticsDataManagerTrait;
+
     /**
      * initializeData
      * Creating, and saving data.
      */
     public function initializeData() {
-        try {
-            $data = array();
-            for ($i = SiteConstants::getServicePopulationPeriod()['google_analytics']; $i >= 0; --$i) {
-                /* Creating start, end days. */
-                $start = SiteConstants::getGoogleAnalyticsLaunchDate();
-                $end = Carbon::now()->subDays($i);
-                $metrics = $this->getCollector()->getMetrics($this->getProperty(), $this->getCriteria()['profile'], $start, $end->toDateString(), array(static::$metric));
-                array_push($data, array(
-                    'timestamp' => $end->getTimestamp(),
-                    'value'     => $metrics[static::$metric]
-                ));
-            }
-            $this->saveData($data);
-        } catch (ServiceException $e) {
-            Log::error('Google connection error. ' . $e->getMessage());
-            $this->delete();
+        /* Getting data required for the requests. */
+        $collector = $this->getCollector();
+        $profileId = $this->getProfileId();
+        $metrics   = $this->getMetricNames();
+
+        if (static::$cumulative) {
+            /* On cumulative charts, getting the data from the past. */
+            $start = SiteConstants::getGoogleAnalyticsLaunchDate();
+            $end = Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics']);
+            $data = $collector->getMetrics(
+                $profileId,
+                $start->toDateString(), $end->toDateString(),
+                $metrics
+            );
+            $entry = $data;
+            $entry['timestamp'] = $end->getTimeStamp();
+            $this->collectData(array('entry' => $entry, 'sum' => TRUE));
         }
+
+        /* Building histogram. */
+        /* On cumulative charts, getting the data from the past. */
+        $data = $collector->getMetrics(
+            $profileId,
+            Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics'])->toDateString(),
+            Carbon::now()->toDateString(),
+            $metrics, array('dimensions' => 'ga:date')
+        );
+        $this->saveHistogram($data);
     }
 
     /**
@@ -37,6 +49,51 @@ trait GoogleAnalyticsHistogramDataManagerTrait
     protected function getCollector() {
         $collector = new GoogleAnalyticsDataCollector($this->user);
         return $collector;
+    }
+
+    /**
+     * flatData
+     * --------------------------------------------------
+     * Returning a flattened data.
+     * @param $insightData
+     * --------------------------------------------------
+    */
+    public function flatData($insightData) {
+        $newData = array();
+        foreach ($insightData as $dataAsArray) {
+            foreach ($dataAsArray as $key=>$value) {
+                $newData[$key] = $value;
+            }
+        }
+        return $newData;
+    }
+
+    /**
+     * saveHistogram
+     * --------------------------------------------------
+     * Transforming and saving a histogram of values
+     * in google format to our format.
+     * @param array $data
+     * --------------------------------------------------
+    */
+    public function saveHistogram(array $data) {
+        /* Transformation */
+        $entries = array();
+        foreach ($data as $metricName=>$values) {
+            foreach ($values as $date=>$value) {
+                if ( ! array_key_exists($date, $entries)) {
+                    $entries[$date] = array(
+                        'timestamp' => strtotime($date)
+                    );
+                }
+                $entries[$date][$metricName] = $value;
+            }
+        }
+
+        /* Saving entries. */
+        foreach ($entries as $entry) {
+            $this->collectData(array('entry' => $entry, 'sum' => TRUE));
+        }
     }
 }
 ?>

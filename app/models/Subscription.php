@@ -52,9 +52,9 @@ class Subscription extends Eloquent
      * Cases @param TRIAL_ENABLED        |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
      * 1) No premium functionality added |  possible  |  false  |  false  |
-     * 2) Premium functionality added,         
+     * 2) Premium functionality added,
      *    Remaining days > 0             |   active   |  true   |  true   |
-     * 3) Premium functionality added,  
+     * 3) Premium functionality added,
      *    Remaining days <= 0            |   ended    |  true   |  false  |
      * 4) Unsubscribed from Premium plan |  disabled  |  false  |  false  |
      * 5) Subscribed to Premium plan     |  disabled  |  false  |  true   |
@@ -81,7 +81,7 @@ class Subscription extends Eloquent
                     'en' => 'Trial ended',
                     'el' => $this->user->email)
                 );
-            } 
+            }
 
             /* Return subscriptionInfo based on the cases */
             if ($this->isOnFreePlan()) {
@@ -93,7 +93,7 @@ class Subscription extends Eloquent
                         'TD' => false,
                         'PE' => false,
                     ];
-                
+
                 /* ==== CASE 2 === */
                 } elseif ($this->trial_status == 'active') {
                     /* Build and return subscriptionInfo */
@@ -125,7 +125,7 @@ class Subscription extends Eloquent
                         'PE' => false,
                     ];
                 }
-            
+
             /* ==== CASE 5 === */
             } else {
                 /* Build and return subscriptionInfo */
@@ -146,7 +146,7 @@ class Subscription extends Eloquent
                     'TD' => false,
                     'PE' => false,
                 ];
-            
+
             /* ==== CASE 2 === */
             } else {
                 /* Build and return subscriptionInfo */
@@ -415,9 +415,7 @@ class Subscription extends Eloquent
                 $result['errors'] |= TRUE;
                 $result['messages'] .= $error->code . ": " . $error->message . ' ';
             }
-
-            Log::info($subscriptionResult->transaction->status);
-            Log::info($subscriptionResult->transaction->status);
+            Log::error($subscriptionResult->transaction->status);
         }
 
         /* Return result */

@@ -47,11 +47,10 @@ class TwitterPopulateData
     private function getManagers() {
         $dataManagers = array();
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
-            if ($dataManager->descriptor->category == 'twitter') {
+        foreach ($this->user->dataManagers()->get() as $dataManager) {
+            if ($dataManager->getDescriptor()->category == 'twitter') {
                 /* Setting dataManager. */
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+                $dataManagers[$dataManager->getDescriptor()->type] = $dataManager;
             }
         }
 

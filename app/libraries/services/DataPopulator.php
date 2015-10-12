@@ -71,11 +71,9 @@ class DataPopulator
     private function getManagers() {
         $dataManagers = array();
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
-
-            if ($dataManager->descriptor->category == $this->service && $dataManager->getCriteria() == $this->criteria) {
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+        foreach ($this->user->dataManagers()->get() as $dataManager) {
+            if ($dataManager->getDescriptor()->category == $this->service && $dataManager->getCriteria() == $this->criteria) {
+                $dataManagers[$dataManager->getDescriptor()->type] = $dataManager;
             }
         }
 

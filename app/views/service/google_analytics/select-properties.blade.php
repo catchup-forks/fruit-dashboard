@@ -1,7 +1,7 @@
 @extends('meta.base-user')
 
   @section('pageTitle')
-    Financial connections
+    Select profiles & goals
   @stop
 
   @section('pageStylesheet')
@@ -11,7 +11,7 @@
 
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Select your Google Analytics properties
+      Select your Google Analytics profile
     </h1> <!-- /.text-center -->
 
     <div class="row">
@@ -26,17 +26,45 @@
 
               <div class="row">
 
-                {{ Form::label('properties', 'Google property', array(
-                  'class' => 'col-sm-3 control-label'
-                ))}}
-
                 <div class="col-sm-6">
 
-                  {{ Form::select('properties[]', $properties, null, array(
-                      'class' => 'form-control'
+                  {{ Form::label('properties', 'Google Analytics profile', array(
+                    'class' => 'control-label'
+                  ))}}
+
+                  {{ Form::select('profiles[]', $profiles, null, array(
+                      'class' => 'form-control', 'size' => 15, 'id' => 'profile-select'
+                    ))}}
+                </div>
+
+                <div class="col-sm-6">
+                  <div id="goal-onload">
+                    <h3> Please select a profile first. </h3>
+                  </div>
+
+                  <div class="not-visible text-center" id="goal-load">
+                    <i class="fa fa-3x fa-circle-o-notch fa-spin"></i>
+                    <h4>Loading...</h4>
+                  </div>
+
+                  <div class="alert alert-warning not-visible" id="goal-not-found">
+                    <strong>
+                      <span class="fa fa-exclamation-triangle"></span>
+                    </strong>
+                        You don't have any goals associated with this profile. <br>
+                        You can still continue, but won't get full experience.
+                  </div>
+
+                  <div class="not-visible" id="goals">
+                    {{ Form::label('goals', 'Google Analytics goal', array(
+                      'class' => 'control-label'
                     ))}}
 
-                </div> <!-- /.col-sm-6 -->
+                    {{ Form::select('goals[]', array(), null, array(
+                        'class' => 'form-control', 'size' => 15, 'id' => 'goal-select'
+                      ))}}
+                  </div>
+                </div>
 
               </div> <!-- /.row -->
 
@@ -68,5 +96,39 @@
 
   @stop
 
-  @section('pageScripts')
-  @stop
+@section('pageScripts')
+  <script type="text/javascript">
+  $(document).ready(function () {
+    function load() {
+      $("#goal-onload").hide();
+      $("#goal-not-found").hide();
+      $("#goals").hide();
+      $("#goal-load").show();
+    }
+    $("#profile-select").change(function () {
+      /* changed */
+      var goals_select = $("#goal-select");
+      var profile_id = $("#profile-select").val();
+      load();
+      $.ajax({
+        type: "get",
+        url: "{{ route('service.google_analytics.get-goals', 'profile_id') }}".replace("profile_id", profile_id),
+       }).done(function (data) {
+        /* AJAX ready */
+        $("#goal-load").hide();
+        goals_select.empty();
+        if (data == false) {
+          $("#goal-not-found").show();
+        } else {
+          $.each(data, function(id, name) {
+            goals_select.append($("<option></option>")
+              .attr('value', id).text(name));
+          });
+          $("#goals").show();
+        }
+
+       });
+    });
+  });
+  </script>
+@append

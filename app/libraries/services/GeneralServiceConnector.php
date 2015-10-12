@@ -37,14 +37,14 @@ abstract class GeneralServiceConnector
 
         /* Deleting all DataManagers */
         foreach ($this->user->dataManagers as $dataManager) {
-            if ($dataManager->descriptor->category == static::$service) {
+            if ($dataManager->getDescriptor()->category == static::$service) {
                 $dataManager->delete();
             }
         }
 
         /* Deleting all widgets*/
         foreach ($this->user->widgets as $widget) {
-            if ($widget->descriptor->category == static::$service) {
+            if ($widget->getDescriptor()->category == static::$service) {
                 $widget->delete();
             }
         }
@@ -113,8 +113,8 @@ abstract class GeneralServiceConnector
             $settingsCriteria = json_encode($criteria);
             $manager = $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->first();
             if ( ! is_null($manager)) {
-                /* Manager found, keeping leaving it alone. */
-                array_push($dataManagers, $manager->getSpecific());
+                /* Manager found, leaving it alone. */
+                array_push($dataManagers, $manager);
                 continue;
             }
 

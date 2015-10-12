@@ -15,7 +15,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
 
     /**
      * formatData
-     * Returning the last data in the histogram.
+     * Formatting data to the multiple histogram format.
      * --------------------------------------------------
      * @param Carbon $date
      * @param mixed $data
@@ -60,7 +60,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     public function getData() {
         $data = json_decode($this->data->raw_value, 1);
-        if ( ! array_key_exists('data', $data)) {
+        if ( (! is_array($data)) || (! array_key_exists('datasets', $data))) {
             return array();
         }
         return $data['data'];
@@ -75,7 +75,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     public function getDataSets() {
         $data = json_decode($this->data->raw_value, 1);
-        if ( ! array_key_exists('datasets', $data)) {
+        if ( (! is_array($data)) || (! array_key_exists('datasets', $data))) {
             return array();
         }
         return $data['datasets'];

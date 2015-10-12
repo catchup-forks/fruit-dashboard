@@ -20,6 +20,46 @@ class SiteConstants {
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
     private static $trialPeriodInDays = 14;
+    private static $autoDashboards    = array(
+        'Acquisition' => array(
+            array(
+                'type'     => 'google_analytics_sessions',
+                'position' => '{"row":1,"col":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
+            ),
+            array(
+                'type'     => 'google_analytics_sessions',
+                'position' => '{"row":1,"col":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
+            ),
+        ),
+        'Activation' => array(
+            array(
+                'type'     => 'facebook_likes',
+                'position' => '{"col":1,"row":1,"size_x":5,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/fb_likes_chart.png'
+            ),
+            array(
+                'type'     => 'twitter_followers_count',
+                'position' => '{"col":6,"row":1,"size_x":2,"size_y":2}',
+                'settings' => array('period' => 'days', 'multiplier' => 1),
+                'pic_url'  => 'img/demonstration/promo/tw_followers_count.png'
+            ),
+            array(
+                'type'     => 'twitter_mentions',
+                'position' => '{"col":8,"row":1,"size_x":5,"size_y":8}',
+                'settings' => array('count' => 5),
+                'pic_url'  => 'img/demonstration/promo/tw_mentions.png'
+            ),
+        ),
+        'Retention' => array(),
+        'Revenue' => array(
+        ),
+        'Referral' => array()
+    );
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
@@ -51,6 +91,11 @@ class SiteConstants {
         '255, 210, 77',
         '77, 255, 210',
         '209, 0, 157',
+    );
+    private static $slackColors = array(
+        '#BADA55',
+        '#ABCDE',
+        '#FFBB66',
     );
     private static $facebookPopulateDataDays = 60;
     private static $googleAnalyticsLaunchDate = '2005-01-01';
@@ -138,6 +183,31 @@ class SiteConstants {
      */
     public static function getChartJsColors() {
         return self::$chartJsColors;
+    }
+
+    /**
+     * getSlackColors:
+     * --------------------------------------------------
+     * Returning colors for slack
+     * @return (array) ($slackColors) slackColors
+     * --------------------------------------------------
+     */
+    public static function getSlackColors() {
+        return self::$slackColors;
+    }
+
+    /**
+     * getSlackColor:
+     * --------------------------------------------------
+     * Returning the corresponging color
+     * @param int $i
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSlackColor($i) {
+        if (is_int($i)) {
+            return self::$slackColors[($i) % count(self::$slackColors)];
+        }
     }
 
     /**
@@ -355,7 +425,7 @@ class SiteConstants {
      * --------------------------------------------------
      */
     public static function getGoogleAnalyticsLaunchDate() {
-        return self::$googleAnalyticsLaunchDate;
+        return Carbon::createFromFormat('Y-m-d', self::$googleAnalyticsLaunchDate);
     }
 
     /**
@@ -367,6 +437,17 @@ class SiteConstants {
      */
     public static function getApiVersions() {
         return self::$apiVersions;
+    }
+
+    /**
+     * getAutoDashboards
+     * --------------------------------------------------
+     * Returns the startup metrics.
+     * @return (array) ($autoDashboards) autoDashboards
+     * --------------------------------------------------
+     */
+    public static function getAutoDashboards() {
+        return self::$autoDashboards;
     }
 
     /**
@@ -402,7 +483,7 @@ class SiteConstants {
     public static function getServicePopulationPeriod() {
         return array(
             'facebook'         => 60,
-            'google_analytics' => 30,
+            'google_analytics' => 60,
             'twitter'          => null,
             'stripe'           => 30,
             'braintree'        => 30,

@@ -30,17 +30,17 @@ function FDCanvas(widgetOptions) {
    */
   function size() {
     // Set margins
-    if (options.data.page = 'dashboard') {
-      widthMargin = 20;
-      heigthMargin = 35;
-    } else if (options.data.page = 'singlestat') {
+    if (options.data.page == 'dashboard') {
+      widthMargin = 35;
+      heightMargin = 20;
+    } else if (options.data.page == 'singlestat') {
       widthMargin = 0;
-      heigthMargin = 0;
+      heightMargin = 20;
     };
 
     // Return
     return {'width': $(widgetSelector).first().width()-widthMargin,
-            'height': $(widgetSelector).first().height()-heigthMargin};
+            'height': $(widgetSelector).first().height()-heightMargin};
   }
 
   /**
@@ -63,7 +63,7 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    * Reinserts the canvas with the provided size
    * @param {dictionary} size | The width and height of the new canvas
-   * @return {this} 
+   * @return {this}
    * --------------------------------------------------------------------------
    */
   function reinsert() {

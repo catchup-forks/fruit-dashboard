@@ -22,7 +22,7 @@ trait BraintreeWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return 'Braintree - ' . $this->descriptor->name;
+        return 'Braintree - ' . $this->getDescriptor()->name;
     }
 }
 

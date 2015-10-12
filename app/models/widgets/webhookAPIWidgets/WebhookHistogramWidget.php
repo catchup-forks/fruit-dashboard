@@ -10,6 +10,11 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
             'validation' => 'required',
             'help_text'  => 'The widget data will be populated from data on this url.'
         ),
+        'name' => array(
+            'name'       => 'Name',
+            'type'       => 'TEXT',
+            'help_text'  => 'The name of the widget.',
+        ),
    );
 
     /* The settings to setup in the setup-wizard. */

@@ -30,6 +30,27 @@ class WidgetDescriptor extends Eloquent
     }
 
     /**
+     * find
+     * Returning the model based on id.
+     * --------------------------------------------------
+     * @param int $id
+     * @param array $columns
+     * @return WidgetDescriptor
+     * --------------------------------------------------
+    */
+    public static function find($id, $columns=array('*')) {
+        /* Trying to load from cache. */
+        $cacheKey = 'descriptor_' . $id;
+        if (Cache::has($cacheKey)) {
+            return Cache::get($cacheKey);
+        }
+        /* Not found in cache, storing and returning the object from DB. */
+        $descriptor = parent::find($id, $columns);
+        Cache::forever($cacheKey, $descriptor);
+        return $descriptor;
+    }
+
+    /**
      * getDataManager
      * Returning the specific DataManager class Name
      * --------------------------------------------------
@@ -89,6 +110,17 @@ class WidgetDescriptor extends Eloquent
 
        }
         return null;
+    }
+
+    /**
+     * getPhotoLocation
+     * Returning the url of the demonstration photo.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getPhotoLocation() {
+        return 'img/demonstration/widget-' . $this->type. '.png';
     }
 
 }

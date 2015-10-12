@@ -78,8 +78,8 @@
 
                 <div class="list-group margin-top-sm not-visible">
                   @foreach(Auth::user()->getPendingWidgetSharings() as $sharing)
-                      <span id="descriptor-{{ $sharing->widget->descriptor->id }}" class="list-group-item" data-widget="widget-{{ $sharing->widget->descriptor->type }}" data-selection="widget" data-group="shared_widgets">
-                        {{ $sharing->widget->descriptor->name }}
+                      <span id="descriptor-{{ $sharing->widget->getDescriptor()->id }}" class="list-group-item" data-widget="widget-{{ $sharing->widget->getDescriptor()->type }}" data-selection="widget" data-group="shared_widgets">
+                        {{ $sharing->widget->getDescriptor()->name }}
                         <a href="{{ route('widget.share.accept', $sharing->id) }}" class="btn btn-success btn-xs pull-right">Accept </a>
                         <a href="{{ route('widget.share.reject', $sharing->id) }}" class="btn btn-danger btn-xs has-margin-horizontal-sm pull-right">Reject </a>
                         {{-- This is the span for the selection icon --}}
@@ -116,7 +116,7 @@
 
                                 <h3 class="descriptor-name text-center">{{ $descriptor->name }}
                                 </h3> <!-- /.descriptor-name -->
-                                {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
+                                {{ HTML::image($descriptor->getPhotoLocation(), $descriptor->name, array(
                                     'class' => 'img-responsive img-rounded center-block'
                                 ))}}
 
@@ -359,6 +359,16 @@
           } else {
             inputDiv.fadeOut();
           }
+       });
+
+      /**
+       * @listens | element(s): $('#add-widget-submit-button') | event:click
+       * --------------------------------------------------------------------------
+       * Changes the button text to 'Loading...' when clicked
+       * --------------------------------------------------------------------------
+       */
+       $('#add-widget-submit-button').click(function() {
+          $(this).button('loading');
        });
 
       /**

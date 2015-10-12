@@ -8,6 +8,9 @@
  */
 class DashboardController extends BaseController
 {
+
+    const OPTIMIZE = FALSE;
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -25,14 +28,6 @@ class DashboardController extends BaseController
         /* Check the default dashboard and create if not exists */
         Auth::user()->checkOrCreateDefaultDashboard();
 
-        /* Checking the user's data managers integrity */
-        $time = microtime(TRUE);
-        Auth::user()->checkDataManagersIntegrity();
-
-        /* Checking the user's widgets integrity */
-        Auth::user()->checkWidgetsIntegrity();
-        Log::info("Check integrity time: " . (microtime(TRUE) - $time));
-
         /* Get active dashboard, if the url contains it */
         $parameters = array();
         $activeDashboard = Request::query('active');
@@ -40,8 +35,60 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
+
+        /* Checking the user's data managers integrity */
+        if (self::OPTIMIZE) {
+            var_dump(' -- DEBUG LOG --');
+            $time = microtime(TRUE);
+            $startTime = $time;
+            $queries = count(DB::getQueryLog());
+            $startTime = microtime(TRUE);
+        }
+        Auth::user()->checkDataManagersIntegrity();
+        if (self::OPTIMIZE) {
+            var_dump(
+                "DM check integrity time: ". (microtime(TRUE) - $time) .
+                " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            );
+            $queries = count(DB::getQueryLog());
+            $time = microtime(TRUE);
+        }
+
+
+        /* Checking the user's widgets integrity */
+        Auth::user()->checkWidgetsIntegrity();
+        if (self::OPTIMIZE) {
+           var_dump(
+               "Widget check integrity time: ". (microtime(TRUE) - $time) .
+               " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+           );
+           $queries = count(DB::getQueryLog());
+           $time = microtime(TRUE);
+        }
+
         /* Creating view */
-        $view = View::make('dashboard.dashboard', $parameters);
+        $view = Auth::user()->createDashboardView();
+        if (self::OPTIMIZE) {
+            var_dump(
+                "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
+                " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            );
+            $queries = count(DB::getQueryLog());
+            $time = microtime(TRUE);
+        }
+
+        if (self::OPTIMIZE) {
+            $view->render();
+            var_dump(
+                "Rendering time: ". (microtime(TRUE) - $time) .
+                " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            );
+            var_dump(
+                 "Total loading time: ". (microtime(TRUE) - LARAVEL_START) .
+                 " (" . count(DB::getQueryLog()) . ' db queries)'
+            );
+            exit(94);
+        }
 
         try {
             /* Trying to render the view. */
@@ -50,7 +97,7 @@ class DashboardController extends BaseController
             /* Error occured trying to find the widget. */
             Auth::user()->turnOffBrokenWidgets();
             /* Recreating view. */
-            $view = View::make('dashboard.dashboard', $parameters);
+            $view = Auth::user()->createDashboardView();
         }
         return $view;
 
@@ -144,7 +191,6 @@ class DashboardController extends BaseController
     public function anyMakeDefault($dashboardId) {
         // Make is_default false for all dashboards
         foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
-            Log::info($oldDashboard->id);
             $oldDashboard->is_default = FALSE;
             $oldDashboard->save();
         }

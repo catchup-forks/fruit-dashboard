@@ -24,8 +24,8 @@ class FacebookNewLikesDataManager extends HistogramDataManager
      */
     private function getLikesManager() {
         foreach ($this->user->dataManagers as $dataManager) {
-            if (($dataManager->descriptor->type == 'facebook_likes') && ($this->getCriteria() == $dataManager->getCriteria())) {
-                return $dataManager->getSpecific();
+            if (($dataManager->getDescriptor()->type == 'facebook_likes') && ($this->getCriteria() == $dataManager->getCriteria())) {
+                return $dataManager;
             }
         }
         return null;

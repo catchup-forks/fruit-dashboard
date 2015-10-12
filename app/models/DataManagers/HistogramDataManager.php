@@ -3,6 +3,7 @@
 /* This class is responsible for histogram data collection. */
 abstract class HistogramDataManager extends DataManager
 {
+    protected static $cumulative = FALSE;
     protected static $staticFields = array('date', 'timestamp');
     abstract public function getCurrentValue();
 
@@ -33,6 +34,14 @@ abstract class HistogramDataManager extends DataManager
      * @var int
      */
     protected $length = 15;
+
+    /**
+     * hasCumulative
+     * Returns whether or not the data has a cumulative option.
+     */
+    public function hasCumulative() {
+        return static::$cumulative;
+    }
 
     /**
      * setDiff
@@ -96,17 +105,20 @@ abstract class HistogramDataManager extends DataManager
             return;
         }
 
-        /* Saving data only every 15 minutes. */
         $currentData = $this->sortHistogram(FALSE);
+        $lastData = $this->getLatestData();
 
-        if ( ! is_array($currentData) && $this->data->raw_value != 'loading') {
-            /* Initializing data. */
-            $this->initializeData();
-        } else if (count($currentData) > 0) {
-            if (Carbon::createFromTimestamp(end($currentData)['timestamp'])->diffInMinutes($entryTime) < 15) {
+        if ( ! empty($lastData)) {
+            if (static::$cumulative && array_key_exists('sum', $options) &&
+                    $options['sum'] == TRUE) {
+                $dbEntry['value'] += $lastData['value'];
+            }
+            if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
                 array_pop($currentData);
             }
         }
+
+        /* Saving data only every 15 minutes. */
 
         array_push($currentData, $dbEntry);
         $this->saveData($currentData);
@@ -196,13 +208,16 @@ abstract class HistogramDataManager extends DataManager
      */
     public function compare() {
         $latestData = $this->getLatestData();
+        if (empty($latestData)) {
+            return array();
+        }
         $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
         $histogram = $this->buildHistogram();
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
+        $start = $histogram[0];
         $today = end($histogram);
-        $start = array_values($histogram)[0];
 
         /* Creating an arrays that will hold the values. */
         $values = array();
@@ -211,6 +226,7 @@ abstract class HistogramDataManager extends DataManager
                 $values[$dataId] = $today[$dataId] - $value;
             }
         }
+
         return $values;
     }
 
@@ -269,10 +285,8 @@ abstract class HistogramDataManager extends DataManager
                 if ( ! isset($previousEntryTime)) {
                     /* First element always makes it to the final histogram. */
                     $push = TRUE;
-                } else {
-                    if ($this->isBreakPoint($entryTime, $previousEntryTime)) {
-                        $push = TRUE;
-                    }
+                } else if ($this->isBreakPoint($entryTime, $previousEntryTime)){
+                    $push = TRUE;
                 }
 
                 if ($push) {
@@ -319,6 +333,9 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
      protected function formatData($date, $data) {
+        if (is_array($data) && ! empty($data)) {
+            $data = array_values($data)[0];
+        }
         if ( ! is_numeric($data)) {
             return null;
         }
@@ -408,10 +425,10 @@ abstract class HistogramDataManager extends DataManager
         if (! is_array($entry)) {
             return $entry;
         }
-        $values = array();
+        $values = $entry;
         foreach ($entry as $key=>$value) {
-            if ( ! in_array($key, static::$staticFields)) {
-                $values[$key] = $value;
+            if (in_array($key, static::$staticFields)) {
+                unset($values[$key]);
             }
         }
         return $values;

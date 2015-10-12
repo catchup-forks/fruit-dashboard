@@ -250,19 +250,4 @@ abstract class TableDataManager extends DataManager
         $this->saveContent($data['content']);
     }
 
-    /**
-     * getData
-     * Returning the raw data json decoded.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getData() {
-        $data = json_decode($this->data->raw_value, 1);
-        if ( ! is_array($data)) {
-            return array();
-        }
-        return $data;
-    }
-
 }

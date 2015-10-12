@@ -80,8 +80,7 @@ class MetricsController extends BaseController
         /* Get number of datapoints */
         $numberOfDataPoints = 0;
         foreach (User::all() as $user) {
-            foreach ($user->dataManagers as $generalDataManager) {
-                $dataManager = $generalDataManager->getSpecific();
+            foreach ($user->dataManagers as $dataManager) {
                 if ($dataManager instanceof HistogramDataManager) {
                     $numberOfDataPoints += count($dataManager->getData());
                 }
@@ -161,7 +160,7 @@ class MetricsController extends BaseController
 
             /* Iterate through all widgets */
             foreach (Widget::all() as $widget) {
-                $key = $widget->descriptor->category;
+                $key = $widget->getDescriptor()->category;
                 if (array_key_exists($key, $services)) {
                     $data[$services[$key]] += 1;
                 }
@@ -171,13 +170,50 @@ class MetricsController extends BaseController
         } else {
             $widgetcount = 0;
             foreach (Widget::all() as $widget) {
-                if ($widget->descriptor->category == $service) {
+                if ($widget->getDescriptor()->category == $service) {
                     $widgetcount += 1;
                 }
             }
             $data[$service] = $widgetcount;
         }
 
+        /* Return json */
+        return Response::json($data);
+    }
+
+    /**
+     * getServiceWidgetUsersCount
+     * --------------------------------------------------
+     * @return Returns the number of users who have at least
+     *          one widget with the provided service
+     * --------------------------------------------------
+     */
+    public function getServiceWidgetUsersCount($service) {
+        /* Get active users */
+        $serviceWidgetUsers = 0;
+        /* Iterate through all users */
+        foreach (User::all() as $user) {
+            /* Skip if service is not connected */
+            if (!$user->isServiceConnected($service)) {
+                continue;
+            } else {
+                /* Check for widgets */
+                foreach ($user->widgets as $widget) {
+                    if ( ($widget->getDescriptor()->category == $service) and
+                         ($widget->state == 'active') ) {
+                        /* Increase counter */
+                        $serviceWidgetUsers += 1;
+                        break;
+                    }
+                }
+            }
+        }
+        /* Create data for the json */
+        $data = [
+            "date"      => Carbon::now()->toDateString(),
+            "timestamp" => Carbon::now()->getTimestamp(),
+            "value"     => $serviceWidgetUsers
+        ];
         /* Return json */
         return Response::json($data);
     }

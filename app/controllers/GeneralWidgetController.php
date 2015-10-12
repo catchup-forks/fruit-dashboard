@@ -113,7 +113,7 @@ class GeneralWidgetController extends BaseController {
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
             'en' => 'Edit widget',
-            'el' => $widget->descriptor->getClassName())
+            'el' => $widget->getDescriptor()->getClassName())
         );
 
         /* Return */
@@ -224,7 +224,7 @@ class GeneralWidgetController extends BaseController {
             /* Saving old widget data */
             $position = $widget->position;
             $dashboard = $widget->dashboard;
-            $className = $widget->descriptor->getClassName();
+            $className = $widget->getDescriptor()->getClassName();
 
             /* Deleting old widget. */
             $widget->delete();
@@ -413,6 +413,27 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * anyAddNotify
+     * --------------------------------------------------
+     * @param (integer) ($widgetId) The ID of the widget
+     * @return
+     * --------------------------------------------------
+     */
+    public function anyAddNotify($sharingId) {
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof HistogramWidget) {
+                throw new WidgetDoesNotExist("This widget does not support notifications yet.", 1);
+            }
+        } catch (WidgetDoesNotExist $e) {
+            return Response::make($e->getMessage(), 401);
+        }
+
+        /* Everything OK, return response with 200 status code */
+        return Response::make("Added to notifications", 200);
+    }
+
+    /**
      * anyAcceptShare
      * --------------------------------------------------
      * @param (integer) ($sharingId) The ID of the sharing
@@ -470,11 +491,16 @@ class GeneralWidgetController extends BaseController {
     private function getWidget($widgetID) {
         $widget = Widget::find($widgetID);
 
+        /* User cross check. */
+        if ($widget->user() != Auth::user() && ! Auth::user()->widgetSharings()->where('widget_id', $widgetID)->first()) {
+            throw new WidgetDoesNotExist("You do not own this widget, nor is it shared with you.", 1);
+        }
+
         // Widget not found.
         if ($widget === null) {
             throw new WidgetDoesNotExist("Widget not found", 1);
         }
-        return $widget->getSpecific();
+        return $widget;
     }
 
     /**
@@ -527,11 +553,10 @@ class GeneralWidgetController extends BaseController {
             }
 
             /* Find widget */
-            $generalWidget = Widget::find($widgetData['id']);
+            $widget = Widget::find($widgetData['id']);
 
             /* Skip widget if not found */
-            if ($generalWidget === null) { continue; }
-            $widget = $generalWidget->getSpecific();
+            if ($widget === null) { continue; }
 
             /* Set position */
             try {
@@ -652,8 +677,12 @@ class GeneralWidgetController extends BaseController {
             return Response::make('Bad request.', 401);
         }
 
-        $image = Image::loadView('to-image.to-image-general-layout', ['widget' => $widget->getSpecific()]);
-        return $image->download('widget.png');
+        File::put(public_path().'test.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget)));
+        return View::make('to-image.to-image-general-histogram', array('widget' => $widget));
+
+
+        //$image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget]);
+        //return $image->download('widget.png');
     }
 
 } /* GeneralWidgetController */

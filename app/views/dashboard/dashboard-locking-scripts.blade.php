@@ -1,6 +1,7 @@
 <script type="text/javascript">
+var gridsterSelector = $('.item.active > .gridster');
 // Set initial lock state
-setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, false);
+setDashboardLock(gridsterSelector.attr("data-dashboard-id"), gridsterSelector.attr("data-lock-direction") == 'lock' ? true : false, false);
 
 /**
  * @listens | element(s): $('#dashboard-lock') | event:click
@@ -26,21 +27,24 @@ $('#dashboard-lock').click(function() {
  * Sets the lock parameters for a given dashboard
  * @param  {number} id | The ID of the dashboard.
  * @param  {boolean} direction | true on lock, false on unlock
- * @param  {boolean} showTooltips | show on true
+ * @param  {boolean} fixTooltips | fix on true
  * @return {null} None
  * --------------------------------------------------------------------------
  */
-function setDashboardLock(id, direction, showTooltips) {
-  showTooltips = typeof showTooltips !== 'undefined' ? showTooltips : true;
+function setDashboardLock(id, direction, fixTooltips) {
+  fixTooltips = typeof fixTooltips !== 'undefined' ? fixTooltips : true;
   var lock = $('#dashboard-lock');
   var options = {
-    'class-false' : 'fa fa-unlock-alt fa-2x fa-inverse color-hovered',
-    'class-true' : 'fa fa-lock fa-2x fa-inverse color-hovered',
+    'class-false' : 'fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered',
+    'class-true' : 'fa fa-fw fa-lock fa-2x fa-inverse color-hovered',
     'tooltip-false' : 'This dashboard is unlocked. Click to lock.',
     'tooltip-true' : 'This dashboard is locked. Click to unlock.',
     'lock-direction-false' : 'lock',
     'lock-direction-true' : 'unlock' 
   };
+
+  // Hide shown tooltip.
+  lock.tooltip('hide');
 
   if (direction) {
     // Set the lock icon
@@ -49,6 +53,8 @@ function setDashboardLock(id, direction, showTooltips) {
     lock.attr('title', options['tooltip-true']);
     // Set the lock direction
     lock.attr('data-lock-direction', options['lock-direction-true']);
+    // Set the dashboard lock direction
+    gridsterSelector.attr("data-lock-direction", options['lock-direction-true']);
 
   } else {
     // Set the lock icon
@@ -57,11 +63,13 @@ function setDashboardLock(id, direction, showTooltips) {
     lock.attr('title', options['tooltip-false']);
     // Set the lock direction
     lock.attr('data-lock-direction', options['lock-direction-false']);
+    // Set the dashboard lock direction
+    gridsterSelector.attr("data-lock-direction", options['lock-direction-false']);
   };
 
-  if (showTooltips) {
+  if (fixTooltips) {
     // Reinitialize tooltip
-    lock.tooltip('fixTitle').tooltip('show');  
+    lock.tooltip('fixTitle');  
   }
   
   // Set the Dashboard ID

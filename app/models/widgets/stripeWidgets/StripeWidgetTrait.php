@@ -21,7 +21,7 @@ trait StripeWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return 'Stripe - ' . $this->descriptor->name;
+        return 'Stripe - ' . $this->getDescriptor()->name;
     }
 }
 

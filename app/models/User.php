@@ -45,7 +45,16 @@ class User extends Eloquent implements UserInterface
     public function googleAnalyticsProperties() { return $this->hasMany('GoogleAnalyticsProperty'); }
 
     /* -- Custom relations. -- */
-    public function widgets() { return $this->hasManyThrough('Widget', 'Dashboard'); }
+    public function widgets() {
+        return $this->hasManyThrough('Widget', 'Dashboard');
+    }
+    public function googleAnalyticsProfiles() {
+        return $this->hasManyThrough(
+            'GoogleAnalyticsProfile',
+            'GoogleAnalyticsProperty',
+            'user_id', 'property_id'
+        );
+    }
 
     /**
      * isServiceConnected
@@ -92,6 +101,48 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
+     * createDashboardView
+     * --------------------------------------------------
+     * Creating a dashboard view.
+     * @param array $params
+     * @return View
+     * --------------------------------------------------
+     */
+    public function createDashboardView(array $params=array()) {
+        $dashboards = array();
+        $i = 0;
+        foreach ($this->dashboards as $dashboard) {
+            /* Creating dashboard array. */
+
+            $dashboards[$dashboard->id] = array(
+                'name'       => $dashboard->name,
+                'is_locked'  => $dashboard->is_locked,
+                'is_default' => $dashboard->is_default,
+                'widgets'    => array(),
+                'count'      => $i++
+            );
+            /* Iterating through the widgets. */
+            foreach ($dashboard->widgets as $widget) {
+                try {
+                    $templateData = $widget->getTemplateData();
+                } catch (Exception $e) {
+                    /* Something went wrong during data population. */
+                    Log::error($e->getMessage());
+                    $templateData = Widget::getDefaultTemplateData($widget);
+                    $widget->setState('setup_required');
+                }
+                array_push($dashboards[$dashboard->id]['widgets'], array(
+                    'meta'         => $widget->getTemplateMeta(),
+                    'templateData' => $templateData
+                ));
+
+            }
+        }
+        return View::make('dashboard.dashboard', $params)
+            ->with('dashboards', $dashboards);
+    }
+
+    /**
      * checkWidgetsIntegrity
      * --------------------------------------------------
      * Checking the overall integrity of the user's widgets.
@@ -99,8 +150,8 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkWidgetsIntegrity() {
-        foreach ($this->widgets as $generalWidget) {
-            $generalWidget->getSpecific()->checkIntegrity();
+        foreach ($this->widgets as $widget) {
+            $widget->checkIntegrity();
         }
     }
 
@@ -112,8 +163,8 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkDataManagersIntegrity() {
-        foreach ($this->dataManagers as $generalDataManager) {
-            $generalDataManager->getSpecific()->checkIntegrity();
+        foreach ($this->dataManagers as $dataManager) {
+            $dataManager->checkIntegrity();
         }
     }
 
@@ -125,12 +176,11 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function turnOffBrokenWidgets() {
-        foreach ($this->widgets as $generalWidget) {
-            $widget = $generalWidget->getSpecific();
+        foreach ($this->widgets as $widget) {
             if ($widget instanceof SharedWidget) {
                 continue;
             }
-            $view = View::make($widget->descriptor->getTemplateName())->with('widget', $widget);
+            $view = View::make($widget->getDescriptor()->getTemplateName())->with('widget', $widget);
             try {
                 $view->render();
             } catch (Exception $e) {
@@ -238,6 +288,42 @@ class User extends Eloquent implements UserInterface
         $subscription->user()->associate($this);
         $subscription->plan()->associate($plan);
         $subscription->save();
+
+        /* Creating Dashboard. */
+        $this->createDefaultDashboards();
+    }
+
+    /**
+     * createDefaultDashboards
+     * Creating the default dashboards for the user.
+     */
+    private function createDefaultDashboards() {
+        foreach (SiteConstants::getAutoDashboards() as $name=>$widgets) {
+            $dashboard = new Dashboard(array(
+                'name'       => $name . ' dashboard',
+                'background' => TRUE,
+                'number'     => $this->dashboards->max('number') + 1
+            ));
+            $dashboard->user()->associate($this);
+            $dashboard->save();
+            foreach ($widgets as $widgetMeta) {
+                $descriptor = WidgetDescriptor::where('type', $widgetMeta['type'])->first();
+                /* Creating widget instance. */
+                $widget = new PromoWidget(array(
+                    'position' => $widgetMeta['position'],
+                    'state'    => 'active'
+                ));
+                $widget->dashboard()->associate($dashboard);
+
+                /* Saving settings. */
+                $settings = array_key_exists('settings', $widgetMeta) ? $widgetMeta['settings'] : array ();
+                $widget->saveSettings(array(
+                    'widget_settings'    => json_encode($settings),
+                    'related_descriptor' => $descriptor->id,
+                    'photo_location'     => $widgetMeta['pic_url']
+                ));
+            }
+        }
     }
 
 }

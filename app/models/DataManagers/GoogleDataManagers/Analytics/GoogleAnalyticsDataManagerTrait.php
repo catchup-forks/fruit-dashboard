@@ -3,6 +3,28 @@
 trait GoogleAnalyticsDataManagerTrait
 {
     /**
+     * getMetricNames
+     * Returning the names of the metric used by the DM.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getMetricNames() {
+        return static::$metrics;
+    }
+
+    /**
+     * getOptionalParams
+     * Returning the optional parameters used by the DM.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getOptionalParams() {
+        return array();
+    }
+
+    /**
      * getProperty
      * --------------------------------------------------
      * Returning the corresponding property.
@@ -10,24 +32,39 @@ trait GoogleAnalyticsDataManagerTrait
      * --------------------------------------------------
     */
     public function getProperty() {
-        return GoogleAnalyticsProperty::find($this->getCriteria()['property']);
+        $profile = $this->getProfile();
+        /* Invalid profile in DB. */
+        if (is_null($profile)) {
+            return null;
+        }
+        $property = $this->user->googleAnalyticsProperties()->where('property_id', $profile->property_id)->first();
+        return $property;
     }
 
     /**
-     * flatData
+     * getProfile
      * --------------------------------------------------
-     * Returning a flattened data.
-     * @param $insightData
+     * Returning the corresponding profile.
+     * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    protected function flatData($insightData) {
-        return $insightData;
+    public function getProfile() {
+        $profile = $this->user->googleAnalyticsProfiles()
+            ->where('profile_id', $this->getProfileId())
+            ->first();
+        /* Invalid profile in DB. */
+        return $profile;
+    }
 
-        $newData = array();
-        foreach ($insightData as $name=>$dataAsArray) {
-            $newData[$name] = $dataAsArray[0];
-        }
-        return $newData;
+    /**
+     * getProfileId
+     * --------------------------------------------------
+     * Returning the corresponding profile id.
+     * @return GoogleAnalyticsProperty
+     * --------------------------------------------------
+    */
+    public function getProfileId() {
+        return $this->getCriteria()['profile'];
     }
 }
 ?>

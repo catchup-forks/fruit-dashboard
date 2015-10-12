@@ -125,7 +125,7 @@ class PaymentController extends BaseController
 
             /* Return with success */
             return Redirect::route('payment.plans')
-                ->with('success', 'Your subscription was successfull.');
+                ->with('success', 'Your subscription was successful.');
         } else {
             /* Return with errors */
             return Redirect::route('payment.subscribe', $planID)

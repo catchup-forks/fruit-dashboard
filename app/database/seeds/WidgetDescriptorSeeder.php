@@ -34,7 +34,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'   => FALSE,
                 'number'       => 1,
                 'min_cols'     => 3,
-                'min_rows'     => 3,
+                'min_rows'     => 5,
                 'default_cols' => 3,
                 'default_rows' => 4
             )
@@ -466,19 +466,81 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_users'],
+            array(
+                'name'         => 'Users',
+                'description'  => 'The total number of users.',
+                'type'         => 'google_analytics_users',
+                'category'     => 'google_analytics',
+                'is_premium'   => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
+            )
+        );
+
+        if (App::environment() != 'production' && App::environment() != 'staging') {
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'google_analytics_active_users'],
+                array(
+                    'name'         => 'Active users',
+                    'description'  => ' - FIXME - Please write something here',
+                    'type'         => 'google_analytics_active_users',
+                    'category'     => 'google_analytics',
+                    'is_premium'   => FALSE,
+                    'number'       => 3,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 4
+                )
+            );
+
+            WidgetDescriptor::updateOrCreate(
+                ['type' => 'google_analytics_goal_completion'],
+                array(
+                    'name'         => 'Goal completion',
+                    'description'  => 'The total number of completions for the requested goal number.',
+                    'type'         => 'google_analytics_goal_completion',
+                    'category'     => 'google_analytics',
+                    'is_premium'   => FALSE,
+                    'number'       => 6,
+                    'min_cols'     => 3,
+                    'min_rows'     => 3,
+                    'default_cols' => 3,
+                    'default_rows' => 4
+                )
+            );
+        }
+
+        WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
             array(
-                'name'        => 'Shared widget',
-                'description' => '',
-                'type'        => 'shared',
-                'category'    => 'hidden',
-                'is_premium'  => FALSE,
+                'name'         => 'Shared widget',
+                'description'  => '',
+                'type'         => 'shared',
+                'category'     => 'hidden',
+                'is_premium'   => FALSE,
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'promo'],
+            array(
+                'name'         => 'Promo widget',
+                'description'  => '',
+                'type'         => 'promo',
+                'category'     => 'hidden',
+                'is_premium'   => FALSE,
                 'min_cols'     => 1,
                 'min_rows'     => 1,
                 'default_cols' => 1,
                 'default_rows' => 1
             )
         );
+
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_top_sources'],
             array(
@@ -495,8 +557,12 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        foreach (WidgetDescriptor::all() as $descriptor) {
+            Cache::forever('descriptor_' . $descriptor->id, $descriptor);
+        }
+
         /* Send message to console */
-        Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated');
+        Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated, cached.');
     }
 
 } /* WidgetDescriptorSeeder */

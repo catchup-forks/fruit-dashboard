@@ -10,7 +10,7 @@ trait FacebookHistogramDataManagerTrait
      */
     public function getCurrentValue() {
         /* Getting the page from settings. */
-        return $this->getCollector()->getInsightCurrentValue($this->getPage()->id, static::$insight, static::$period);
+        return $this->getCollector()->getInsightCurrentValue($this->getPageId(), static::$insight, static::$period);
     }
 
     /**
@@ -20,7 +20,7 @@ trait FacebookHistogramDataManagerTrait
     public function initializeData() {
         try {
             $data = array();
-            foreach ($this->getCollector()->getPopulateHistogram($this->getPage()->id, static::$insight)[0]['values'] as $dailyData) {
+            foreach ($this->getCollector()->getPopulateHistogram($this->getPageId(), static::$insight)[0]['values'] as $dailyData) {
                 $date = Carbon::createFromTimestamp(strtotime($dailyData['end_time']));
                 array_push($data, array(
                     'value'     => $dailyData['value'],

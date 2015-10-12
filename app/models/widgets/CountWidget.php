@@ -3,6 +3,7 @@
 abstract class CountWidget extends Widget implements iAjaxWidget
 {
     use NumericWidgetTrait;
+    use DefaultAjaxWidgetTrait;
     protected static $histogramDescriptor = '';
 
     /* -- Settings -- */
@@ -29,6 +30,22 @@ abstract class CountWidget extends Widget implements iAjaxWidget
             'weeks'  => 'Week',
             'months' => 'Month',
         );
+    }
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        $values = $this->getData();
+        return array_merge(parent::getTemplateData(), array(
+            'valueDiff'    => $values['diff'],
+            'valueCurrent' => $values['latest'],
+            'format'       => $this->getFormat()
+        ));
     }
 
     /**
@@ -84,7 +101,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
      * @return DataManager
      * --------------------------------------------------
     */
-    public function getDataManager() {
+    protected function getDataManager() {
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::where('type', static::$histogramDescriptor)->first();
 
@@ -93,17 +110,17 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         }
 
         /* Calling the DM retriever on the specific descriptor. */
-        return $descriptor->getDataManager($this)->getSpecific();
+        return $descriptor->getDataManager($this);
     }
 
     /**
-     * getCurrentValue
+     * getData
      * Returning the current value.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    public function getCurrentValue() {
+    public function getData() {
         /* Getting manager. */
         $manager = $this->getDataManager();
         if (is_null($manager)) {
@@ -115,43 +132,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         return array(
             'latest' => $manager->getLatestValues(),
             'diff'   => $manager->compare());
-    }
-
-    /**
-     * handleAjax
-     * Handling general ajax request.
-     * --------------------------------------------------
-     * @param array $postData
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function handleAjax($postData) {
-        if (isset($postData['state_query']) && $postData['state_query']) {
-            /* Get state query signal */
-            if ($this->state == 'loading') {
-                return array('ready' => FALSE);
-            } else if($this->state == 'active') {
-                $view = View::make($this->descriptor->getTemplateName())
-                    ->with('widget', $this);
-                return array(
-                    'ready' => TRUE,
-                    'data'  => $this->getCurrentValue($postData),
-                    'html'  => $view->render()
-                );
-            } else {
-                return array('ready' => FALSE);
-            }
-        }
-        if (isset($postData['refresh_data']) && $postData['refresh_data']) {
-            /* Refresh signal */
-            try {
-                $this->refreshWidget();
-            } catch (ServiceException $e) {
-                Log::error($e->getMessage());
-                return array('status'  => FALSE,
-                             'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
-            }
-        }
     }
 
     /**

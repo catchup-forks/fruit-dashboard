@@ -12,9 +12,8 @@ class MakeResolutionCompatibleWithPeriod extends Migration {
      */
     public function up()
     {
-        foreach (Widget::all() as $generalWidget) {
+        foreach (Widget::all() as $widget) {
             try {
-                $widget = $generalWidget->getSpecific();
                 if ($widget instanceof HistogramWidget) {
                     $widget->saveSettings(array('resolution' => 'days'));
                 }

@@ -41,4 +41,39 @@ class GoogleAnalyticsConnector extends GoogleConnector {
         $collector->saveProperties();
     }
 
+    /**
+     * createDataManagers
+     * Adding profile activation.
+     * --------------------------------------------------
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    public function createDataManagers(array $criteria=array()) {
+        /* Getting profile. */
+        $profile = $this->user->googleAnalyticsProfiles()
+            ->where('profile_id', $criteria['profile'])->first();
+        if (is_null($profile)) {
+            throw new ServiceException("Selected profile not found.", 1);
+        }
+        /* Setting profile to active. */
+        $profile->active = TRUE;
+        $profile->save();
+
+        return parent::createDataManagers($criteria);
+    }
+
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    protected function populateData($criteria) {
+        Queue::push('GoogleAnalyticsPopulateData', array(
+            'user_id'  => $this->user->id,
+            'criteria' => $criteria
+        ));
+    }
+
 }

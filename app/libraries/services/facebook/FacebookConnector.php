@@ -194,6 +194,26 @@ class FacebookConnector extends GeneralServiceConnector
         }
     }
 
+    /**
+     * createDataManagers
+     * Adding page activation.
+     * --------------------------------------------------
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    public function createDataManagers(array $criteria=array()) {
+        /* Getting page. */
+        $page = $this->user->facebookPages()
+            ->where('id', $criteria['page'])->first();
+        if (is_null($page)) {
+            throw new ServiceException("Selected page not found.", 1);
+        }
+        /* Setting page to active. */
+        $page->active = TRUE;
+        $page->save();
+
+        return parent::createDataManagers($criteria);
+    }
 
     /**
      * disconnect

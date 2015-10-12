@@ -47,6 +47,11 @@ class DataManager extends Eloquent
         return $this->data->widgets();
     }
 
+    /* Optimized method, not using DB query */
+    public function getDescriptor() {
+        return WidgetDescriptor::find($this->descriptor_id);
+    }
+
     public function collectData($options=array())  {}
     public function initializeData() {
         $this->saveData(array());
@@ -94,7 +99,7 @@ class DataManager extends Eloquent
         /* Creating manager. */
         return self::createManager(
             $widget->user(),
-            $widget->descriptor,
+            $widget->getDescriptor(),
             $widget->getCriteria(),
             $widget->data
         );
@@ -112,33 +117,28 @@ class DataManager extends Eloquent
      * --------------------------------------------------
      */
     public static function createManager($user, $descriptor, array $criteria=array(), $data=null) {
-        $generalManager = new DataManager(array(
+        $className = $descriptor->getDMClassName();
+        $dataManager = new $className(array(
             'settings_criteria' => json_encode($criteria),
             'last_updated'      => Carbon::now()
         ));
-        $generalManager->user()->associate($user);
-        $generalManager->descriptor()->associate($descriptor);
+        $dataManager->user()->associate($user);
+        $dataManager->descriptor()->associate($descriptor);
 
         /* Creating/assigning data. */
         if ( ! is_null($data)) {
-            $generalManager->data()->associate($data);
+            $dataManager->data()->associate($data);
         } else {
             $data = Data::create(array('raw_value' => 'loading'));
-            $generalManager->data()->associate($data);
+            $dataManager->data()->associate($data);
         }
 
         /* Saving changes. */
-        $generalManager->save();
+        $dataManager->save();
 
-        $manager = $generalManager->getSpecific();
-        $manager->initializeData();
+        $dataManager->initializeData();
 
-        return $manager;
-    }
-
-    public function getSpecific() {
-        $className = WidgetDescriptor::find($this->descriptor_id)->getDMClassName();
-        return $className::find($this->id);
+        return $dataManager;
     }
 
     /**
@@ -160,7 +160,11 @@ class DataManager extends Eloquent
      * --------------------------------------------------
      */
     public function getData() {
-        return json_decode($this->data->raw_value, 1);
+        $data = json_decode($this->data->raw_value, 1);
+        if ( ! is_array($data)) {
+            return array();
+        }
+        return $data;
     }
 
     /**
@@ -184,8 +188,7 @@ class DataManager extends Eloquent
      */
      public function setWidgetsState($state) {
         foreach ($this->widgets as $generalWidget) {
-            $widget = $generalWidget->getSpecific();
-            $widget->setState($state);
+            $generalWidget->setState($state);
         }
      }
 
@@ -239,5 +242,21 @@ class DataManager extends Eloquent
         $result = parent::delete();
         Data::find($data_id)->delete();
         return $result;
+    }
+
+    /**
+     * newFromBuilder
+     * Override the base Model function to use polymorphism.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    public function newFromBuilder($attributes=array()) {
+        $className = WidgetDescriptor::find($attributes->descriptor_id)
+            ->getDMClassName();
+        $instance = new $className;
+        $instance->exists = TRUE;
+        $instance->setRawAttributes((array) $attributes, true);
+        return $instance;
     }
 }

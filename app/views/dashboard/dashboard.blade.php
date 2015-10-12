@@ -14,19 +14,19 @@
     {{-- Include navigation dots for each dashboard. --}}
     <ol class="carousel-indicators">
 
-      @foreach (Auth::user()->dashboards as $index => $dashboard)
+      @foreach ($dashboards as $dashboardId => $dashboardMeta)
         {{-- Set active dashboard. Get from backend or make the default --}}
         @if (isset($activeDashboard))
-          @if ($dashboard->id == $activeDashboard)
-            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow active"></li>
+          @if ($dashboardId == $activeDashboard)
+            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
           @else
-            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow"></li>
+            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
           @endif
         @else
-          @if($dashboard->is_default)
-            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow active"></li>
+          @if($dashboardMeta['is_default'])
+            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
           @else
-            <li data-target="#dashboards" data-slide-to="{{ $index }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboard->name }}" class="drop-shadow"></li>
+            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
           @endif
         @endif
       @endforeach
@@ -36,17 +36,17 @@
     {{-- Make a wrapper for dashboards --}}
     <div class="carousel-inner">
 
-      @foreach (Auth::user()->dashboards as $dashboard)
+      @foreach ($dashboards as $dashboardId => $dashboardMeta)
 
           {{-- Set active dashboard. Get from backend or make the default --}}
           @if (isset($activeDashboard))
-            @if ($dashboard->id == $activeDashboard)
+            @if ($dashboardId == $activeDashboard)
               <div class="item active">
             @else
               <div class="item">
             @endif
           @else
-            @if($dashboard->is_default)
+            @if($dashboardMeta['is_default'])
               <div class="item active">
             @else
               <div class="item">
@@ -57,20 +57,18 @@
           </div> <!-- /.fill -->
 
           {{-- Here comes the dashboard content --}}
-          @if($dashboard->is_locked)
-          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="lock">
+          @if($dashboardMeta['is_locked'])
+          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}" data-lock-direction="lock">
           @else
-          <div id="gridster-{{ $dashboard->id }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard->id }}" data-lock-direction="unlock">
-          @endif  
+          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}" data-lock-direction="unlock">
+          @endif
 
             {{-- Generate all the widgdets --}}
             <div class="gridster-container">
 
-              @foreach ($dashboard->widgets as $widget)
+              @foreach ($dashboardMeta['widgets'] as $widget)
 
-                @if ($widget->state != 'hidden')
-                  @include('widget.widget-general-layout', ['widget' => $widget->getSpecific()])
-                @endif
+                @include('widget.widget-general-layout', ['widget' => $widget['templateData']])
 
               @endforeach
 
@@ -84,7 +82,7 @@
 
     </div> <!-- /.carousel-inner -->
 
-    @if (Auth::user()->dashboards->count() > 1)
+    @if (count($dashboards) > 1)
     {{-- Set the navigational controls on sides. --}}
     <a class="left carousel-control" href="#dashboards" data-slide="prev">
         <span class="icon-prev"></span>
@@ -122,7 +120,26 @@
     </div>
   </div>
 </div>
-
+@if (Input::get('tour'))
+  <!-- Google Code for fruit dashboard - signed up Conversion Page -->
+  <script type="text/javascript">
+  /* <![CDATA[ */
+  var google_conversion_id = 1069862890;
+  var google_conversion_language = "en";
+  var google_conversion_format = "3";
+  var google_conversion_color = "ffffff";
+  var google_conversion_label = "mWRTCNDMrmAQ6p-T_gM";
+  var google_remarketing_only = false;
+  /* ]]> */
+  </script>
+  <script type="text/javascript" src="//www.googleadservices.com/pagead/conversion.js">
+  </script>
+  <noscript>
+  <div style="display:inline;">
+  <img height="1" width="1" style="border-style:none;" alt="" src="//www.googleadservices.com/pagead/conversion/1069862890/?label=mWRTCNDMrmAQ6p-T_gM&amp;guid=ON&amp;script=0"/>
+  </div>
+  </noscript>
+@endif
 @stop
 
 @section('pageScripts')
@@ -142,7 +159,7 @@
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->
-  @foreach (WidgetDescriptor::where('category', '!=', 'hidden')->get() as $descriptor) 
+  @foreach (WidgetDescriptor::where('type', '!=', 'shared')->get() as $descriptor)
     <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. Utilities::underscoreToCamelCase($descriptor->type).'Widget.js') }}"></script>
   @endforeach
   <!-- /FDWidget* classes -->
@@ -174,7 +191,7 @@
 
     // Change the dashboard-lock on dashboard change
     $('.carousel').on('slid.bs.carousel', function () {
-      setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, false);
+      setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, true);
     })
 
 

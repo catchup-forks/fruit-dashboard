@@ -13,7 +13,7 @@
               <div class="panel-heading">
                 <h3 class="panel-title text-center">
                   Setup the
-                  <span class="text-success"><strong>{{ $widget->descriptor->name }} widget</strong></span>.
+                  <span class="text-success"><strong>{{ $widget->getDescriptor()->name }} widget</strong></span>.
                 </h3>
               </div> <!-- /.panel-heading -->
               <div class="panel-body">
@@ -52,7 +52,10 @@
 
                   @endforeach
                   <hr>
-                    {{ Form::submit('Setup widget', array('class' => 'btn btn-primary pull-right') ) }}
+                    {{ Form::submit('Setup widget', array(
+                      'id' => 'setup-widget',
+                      'class' => 'btn btn-primary pull-right'
+                      ) ) }}
                     <a href="{{ route('dashboard.dashboard', ['active' => $widget->dashboard->id]) }}" class="btn btn-link pull-right">Cancel</a>
                 {{ Form::close() }}
               </div> <!-- /.panel-body -->
@@ -63,3 +66,22 @@
     </div> <!-- /.vertical-center -->
 
   @stop
+  @section('pageScripts')
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+      /**
+       * @listens | element(s): $('#setup-widget') | event:click
+       * --------------------------------------------------------------------------
+       * Changes the button text to 'Loading...' when clicked
+       * --------------------------------------------------------------------------
+       */
+       $('#setup-widget').click(function() {
+          $(this).button('loading');
+       });
+
+    })
+  </script>
+
+  @append

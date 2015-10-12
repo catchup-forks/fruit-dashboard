@@ -26,7 +26,7 @@ class SharedWidget extends Widget
      * --------------------------------------------------
     */
     public function getMinRows() {
-        return $this->getRelatedWidget()->descriptor->min_rows;
+        return $this->getRelatedWidget()->getDescriptor()->min_rows;
     }
 
     /**
@@ -37,7 +37,7 @@ class SharedWidget extends Widget
      * --------------------------------------------------
     */
     public function getMinCols() {
-        return $this->getRelatedWidget()->descriptor->min_cols;
+        return $this->getRelatedWidget()->getDescriptor()->min_cols;
     }
 
     /**
@@ -67,7 +67,34 @@ class SharedWidget extends Widget
             return null;
         }
 
-        return $widget->getSpecific();
+        return $widget;
+    }
+    /**
+     * getTemplateMeta
+     * Returning data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateMeta() {
+        $related = $this->getRelatedWidget();
+        $meta = parent::getTemplateMeta();
+        $meta['general']['id'] = $related->id;
+        $meta['general']['type'] = $related->getDescriptor()->type;
+        $meta['general']['state'] = $related->state;
+        $meta['selectors'] = array(
+            'widget'  => '[data-id=' . $this->id . ']',
+            'wrapper' => '#widget-wrapper-' . $related->id,
+            'loading' => '#widget-loading-' . $related->id,
+            'refresh' => '#widget-refresh-' . $related->id,
+        );
+        if ($related instanceof HistogramWidget) {
+            $meta['urls']['statUrl'] = route('widget.singlestat', $related->id);
+            $meta['selectors']['graph'] = '[id^=chart-container]';
+        }
+        $meta['data']['init'] = 'widgetData' . $related->id;
+
+        return $meta;
     }
 
 }

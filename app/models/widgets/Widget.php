@@ -19,10 +19,15 @@ class Widget extends Eloquent
     protected static $criteriaSettings = array();
 
     /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
+    public function descriptor() { $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
+
+    /* Optimized method, not using DB query */
+    public function getDescriptor() {
+        return WidgetDescriptor::find($this->descriptor_id);
+    }
 
 
     /**
@@ -39,7 +44,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getMinRows() {
-        return $this->descriptor->min_rows;
+        return $this->getDescriptor()->min_rows;
     }
 
     /**
@@ -50,7 +55,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getMinCols() {
-        return $this->descriptor->min_cols;
+        return $this->getDescriptor()->min_cols;
     }
 
     /**
@@ -61,7 +66,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
      */
     public function canSendInNotification() {
-        return !(in_array($this->descriptor->category, SiteConstants::getSkippedCategoriesInNotification()));
+        return !(in_array($this->getDescriptor()->category, SiteConstants::getSkippedCategoriesInNotification()));
     }
 
     /**
@@ -117,6 +122,74 @@ class Widget extends Eloquent
     }
 
     /**
+     * getTemplateMeta
+     * Returning data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateMeta() {
+        $position = $this->getPosition();
+        return array(
+            'general' => array(
+                'id'    => $this->id,
+                'type'  => $this->getDescriptor()->type,
+                'state' => $this->state,
+                'row'   => $position->row,
+                'col'   => $position->col,
+                'sizex' => $position->size_x,
+                'sizey' => $position->size_y
+            ),
+            'features' => array(
+                'drag' => true
+            ),
+            'urls' => array(
+              'deleteUrl' => route('widget.delete', $this->id),
+              'postUrl'   => route('widget.ajax-handler', $this->id) // AjaxWidgeTrait
+            ),
+            'selectors' => array(
+                'widget'  => '[data-id=' . $this->id . ']',
+                'wrapper' => '#widget-wrapper-' . $this->id,
+                'loading' => '#widget-loading-' . $this->id,
+                'refresh' => '#widget-refresh-' . $this->id,
+            ),
+            'data' => array(
+                'page' => 'dashboard',
+                'init' => 'widgetData' . $this->id
+            )
+        );
+    }
+
+    /**
+     * getDefaultTemplateData
+     * Returning all meta data about the widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getDefaultTemplateData($widget) {
+        return array(
+            'settings'   => $widget->getSettings(),
+            'instance'   => $widget,
+            'id'         => $widget->id,
+            'state'      => $widget->state,
+            'position'   => $widget->getPosition(),
+            'descriptor' => $widget->getDescriptor()
+        );
+    }
+
+    /**
+     * getTemplateData
+     * Returning all data that should be passed to the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData() {
+        return self::getDefaultTemplateData($this);
+    }
+
+    /**
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------
@@ -125,22 +198,6 @@ class Widget extends Eloquent
     */
     public function getSettings() {
         return json_decode($this->settings, 1);
-    }
-
-    /**
-     * getSpecific
-     * Getting the correct widget from a general widget,
-     * --------------------------------------------------
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function getSpecific($checkIntegrity=FALSE) {
-        $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-        $widget = $className::find($this->id);
-        if ($checkIntegrity) {
-            $widget->checkIntegrity();
-        }
-        return $widget;
     }
 
     /**
@@ -308,7 +365,7 @@ class Widget extends Eloquent
             return 1;
         }
 
-        if ($this->descriptor->is_premium) {
+        if ($this->getDescriptor()->is_premium) {
             return -1;
         }
 
@@ -379,7 +436,7 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        if (is_null($this->descriptor)) {
+        if (is_null($this->descriptor_id)) {
             /* Associating descriptor. */
             $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
@@ -389,7 +446,7 @@ class Widget extends Eloquent
             }
 
             // Assigning descriptor.
-            $this->descriptor()->associate($widgetDescriptor);
+            $this->descriptor_id = $widgetDescriptor->id;
         }
 
         // Saving settings by option.
@@ -406,6 +463,22 @@ class Widget extends Eloquent
          * if no change has been made to the model.
         */
         return parent::save();
+    }
+
+    /**
+     * newFromBuilder
+     * Override the base Model function to use polymorphism.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    public function newFromBuilder($attributes=array()) {
+        $className = WidgetDescriptor::find($attributes->descriptor_id)
+            ->getClassName();
+        $instance = new $className;
+        $instance->exists = TRUE;
+        $instance->setRawAttributes((array) $attributes, true);
+        return $instance;
     }
 
     /**

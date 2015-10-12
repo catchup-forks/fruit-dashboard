@@ -35,6 +35,7 @@ class FacebookRefreshPages extends Command {
             try {
                 $collector = new FacebookDataCollector($user);
                 $collector->savePages();
+                Log::info("Successfully updated FB pages for user #" . $user->id);
             } catch (Exception $e) {
                 Log::error('Error found while running ' . get_class($this) . ' on user #' . $user->id . '. message: ' . $e->getMessage());
             }
