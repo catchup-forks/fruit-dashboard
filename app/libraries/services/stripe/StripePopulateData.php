@@ -67,7 +67,7 @@ class StripePopulateData
         $this->dataManagers['stripe_arpu']->saveData($metrics['arpu']);
 
         foreach ($this->dataManagers as $manager) {
-            $manager->setWidgetsState('active');
+            $manager->setState('active');
         }
     }
 

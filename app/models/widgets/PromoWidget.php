@@ -102,6 +102,7 @@ class PromoWidget extends Widget
      * --------------------------------------------------
     */
     private function transform(array $criteria=array()) {
+        Log::info('transforming #' . $this->id . ' into ' . $this->getRelatedDescriptor()->name);
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
         $className = $descriptor->getClassName();
@@ -109,7 +110,7 @@ class PromoWidget extends Widget
         /* Creating new isntance */
         $widget = new $className(array(
             'position' => $this->position,
-            'state'    => 'active'
+            'state'    => 'loading'
         ));
         $widget->descriptor_id = $descriptor->id;
         $widget->dashboard()->associate($this->dashboard);

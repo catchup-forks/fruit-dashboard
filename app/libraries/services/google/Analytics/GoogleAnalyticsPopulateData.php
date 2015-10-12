@@ -1,54 +1,11 @@
 <?php
 
-class GoogleAnalyticsPopulateData
+class GoogleAnalyticsPopulateData extends DataPopulator
 {
-    /**
-     * The user object.
-     *
-     * @var User
-     */
-    private $user = null;
-
-    /**
-     * The dataManagers.
-     *
-     * @var array
-     */
-    private $dataManagers = array();
-
-    /**
-     * The dataManager criteria.
-     *
-     * @var array
-     */
-    private $criteria = null;
-
-    /**
-     * Main job handler.
-     */
-    public function fire($job, $data) {
-        /* Init */
-        Log::info("Starting data collection at " . Carbon::now()->toDateTimeString());
-        $time = microtime(TRUE);
-        $this->user     = User::find($data['user_id']);
-        $this->criteria = $data['criteria'];
-
-        /* Getting managers. */
-        $this->getManagers();
-
-        /* Running data collection. */
-        $this->populateData();
-
-        /* Finish */
-        Log::info("Data collection finished and it took " . (microtime(TRUE) - $time) . " seconds to run.");
-
-        $job->delete();
-    }
-
     /**
      * Populating the widgets with data.
      */
-    private function populateData() {
+    protected function populateData() {
         /* Initializing cumulative histograms. */
         $this->initializeCumulativeHDMs();
 
@@ -58,16 +15,13 @@ class GoogleAnalyticsPopulateData
         /* Running default initializer on other managers. */
         foreach ($this->dataManagers['other'] as $dataManager) {
             $dataManager->initializeData();
-            $dataManager->setWidgetsState('active');
         }
-
-        $this->activateWidgets();
     }
 
     /**
      * Getting the profile specific DataManagers
      */
-    private function getManagers() {
+    protected function getManagers() {
         $dataManagers = array(
             'histogram' => array(
                 'cumulative' => array(),
@@ -76,7 +30,7 @@ class GoogleAnalyticsPopulateData
             'other' => array()
         );
 
-        foreach ($this->user->dataManagers()->get() as $dataManager) {
+        foreach ($this->user->dataManagers->get() as $dataManager) {
 
             if ($dataManager->getDescriptor()->category == 'google_analytics' &&
                     $dataManager->getCriteria() == $this->criteria &&
@@ -85,7 +39,6 @@ class GoogleAnalyticsPopulateData
                 /* Initializing data */
                 $dataManager->data->raw_value = json_encode(array());
                 $dataManager->data->save();
-                $dataManager->setWidgetsState('loading');
 
                 if ($dataManager instanceof HistogramDataManager &&
                         empty($dataManager->getOptionalParams())) {
@@ -142,17 +95,17 @@ class GoogleAnalyticsPopulateData
     }
 
     /**
-     * activateWidgets
+     * activateManagers
      * Setting all related widget's state to active.
      */
-    private function activateWidgets() {
+    protected function activateManagers() {
         foreach ($this->dataManagers['histogram'] as $type=>$managers) {
             foreach ($managers as $manager) {
-                $manager->setWidgetsState('active');
+                $manager->setState('active');
             }
         }
         foreach ($this->dataManagers['other'] as $type=>$manager) {
-            $manager->setWidgetsState('active');
+            $manager->setState('active');
         }
     }
 }

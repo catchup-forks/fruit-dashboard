@@ -72,7 +72,8 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     protected function populateData($criteria) {
         Queue::push('GoogleAnalyticsPopulateData', array(
             'user_id'  => $this->user->id,
-            'criteria' => $criteria
+            'criteria' => $criteria,
+            'service'  => 'google_analytics'
         ));
     }
 

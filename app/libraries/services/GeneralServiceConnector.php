@@ -119,12 +119,13 @@ abstract class GeneralServiceConnector
             }
 
             /* Creating data */
-            $data = Data::create(array('raw_value' => 'loading'));
+            $data = Data::create(array('raw_value' => '[]'));
 
             /* Creating DataManager instance */
             $dataManager = new $className(array(
                 'settings_criteria' => json_encode($criteria),
-                'last_updated'      => Carbon::now()
+                'last_updated'      => Carbon::now(),
+                'state'             => 'loading'
             ));
 
             /* Assigning foreign values */

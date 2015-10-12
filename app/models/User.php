@@ -113,7 +113,6 @@ class User extends Eloquent implements UserInterface
         $i = 0;
         foreach ($this->dashboards as $dashboard) {
             /* Creating dashboard array. */
-
             $dashboards[$dashboard->id] = array(
                 'name'       => $dashboard->name,
                 'is_locked'  => $dashboard->is_locked,
@@ -123,13 +122,19 @@ class User extends Eloquent implements UserInterface
             );
             /* Iterating through the widgets. */
             foreach ($dashboard->widgets as $widget) {
-                try {
-                    $templateData = $widget->getTemplateData();
-                } catch (Exception $e) {
-                    /* Something went wrong during data population. */
-                    Log::error($e->getMessage());
+                Log::info(get_class($widget));
+                if ($widget->state == 'loading') {
+                    /* Widget is loading, no data is available yet. */
                     $templateData = Widget::getDefaultTemplateData($widget);
-                    $widget->setState('setup_required');
+                } else {
+                    try {
+                        $templateData = $widget->getTemplateData();
+                    } catch (Exception $e) {
+                        /* Something went wrong during data population. */
+                        Log::error($e->getMessage());
+                        $templateData = Widget::getDefaultTemplateData($widget);
+                        $widget->setState('setup_required');
+                    }
                 }
                 array_push($dashboards[$dashboard->id]['widgets'], array(
                     'meta'         => $widget->getTemplateMeta(),
@@ -185,6 +190,7 @@ class User extends Eloquent implements UserInterface
                 $view->render();
             } catch (Exception $e) {
                 Log::error($e->getMessage());
+                exit(94);
                 $widget->setState('setup_required');
             }
         }

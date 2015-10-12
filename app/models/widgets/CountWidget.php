@@ -57,7 +57,7 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         if ( ! $this->hasValidCriteria()) {
             $this->setState('setup_required');
         }
-        else if ($this->getDataManager()->data->raw_value == 'loading') {
+        else if ($this->getDataManager()->state == 'loading') {
             $this->setState('loading');
         } else if ($this->state != 'setup_required') {
             $this->setState('active');

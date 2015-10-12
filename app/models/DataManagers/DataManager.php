@@ -32,6 +32,7 @@ class DataManager extends Eloquent
         'descriptor_id',
         'settings_criteria',
         'update_period',
+        'state',
         'last_updated'
     );
 
@@ -56,6 +57,23 @@ class DataManager extends Eloquent
     public function initializeData() {
         $this->saveData(array());
         $this->collectData();
+    }
+
+    /**
+     * setState
+     * Setting a widget's state.
+     * --------------------------------------------------
+     * @param string $state
+     * --------------------------------------------------
+    */
+    public function setState($state) {
+        if ($this->state == $state) {
+            return;
+        }
+        Log::info("Changing state of manager #" . $this->id . ' from ' . $this->state . ' to '. $state);
+        $this->state = $state;
+        $this->save();
+        $this->setWidgetsState($state);
     }
 
     /**
@@ -120,7 +138,8 @@ class DataManager extends Eloquent
         $className = $descriptor->getDMClassName();
         $dataManager = new $className(array(
             'settings_criteria' => json_encode($criteria),
-            'last_updated'      => Carbon::now()
+            'last_updated'      => Carbon::now(),
+            'state'             => 'loading'
         ));
         $dataManager->user()->associate($user);
         $dataManager->descriptor()->associate($descriptor);
@@ -129,7 +148,7 @@ class DataManager extends Eloquent
         if ( ! is_null($data)) {
             $dataManager->data()->associate($data);
         } else {
-            $data = Data::create(array('raw_value' => 'loading'));
+            $data = Data::create(array('raw_value' => '[]'));
             $dataManager->data()->associate($data);
         }
 
@@ -137,6 +156,7 @@ class DataManager extends Eloquent
         $dataManager->save();
 
         $dataManager->initializeData();
+        $dataManager->setState('active');
 
         return $dataManager;
     }
@@ -198,15 +218,15 @@ class DataManager extends Eloquent
     */
     public function checkIntegrity() {
         $data = $this->data->raw_value;
-        if ($data == 'loading') {
+        if ($this->state == 'loading') {
             /* Populating is underway */
             $this->setWidgetsState('loading');
         } else if (is_null(json_decode($data)) || ! $this->hasValidScheme()) {
             /* No json in data, this is a problem. */
             $this->initializeData();
-            $this->setWidgetsState('active');
+            $this->setState('active');
         } else {
-            $this->setWidgetsState('active');
+            $this->setState('active');
         }
     }
 

@@ -7,28 +7,28 @@ class DataPopulator
      *
      * @var User
      */
-    private $user = null;
+    protected $user = null;
 
     /**
      * The name of the service.
      *
      * @var string
      */
-    private $service = '';
+    protected $service = '';
 
     /**
      * The dataManagers.
      *
      * @var array
      */
-    private $dataManagers = null;
+    protected $dataManagers = null;
 
     /**
      * The dataManager criteria.
      *
      * @var array
      */
-    private $criteria = null;
+    protected $criteria = null;
 
     /**
      * Main job handler.
@@ -47,15 +47,19 @@ class DataPopulator
         /* Running data collection. */
         $this->populateData();
 
+        /* Running data collection. */
+        $this->activateManagers();
+
         /* Finish */
         Log::info("Data collection finished and it took " . (microtime(TRUE) - $time) . " seconds to run.");
+
         $job->delete();
     }
 
     /**
      * Populating the widgets with data.
      */
-    private function populateData() {
+    protected function populateData() {
         foreach ($this->dataManagers as $manager) {
             if ($manager->getData() == FALSE) {
                 $manager->initializeData();
@@ -68,7 +72,7 @@ class DataPopulator
      * Getting the page specific DataManagers
      * @return array
      */
-    private function getManagers() {
+    protected function getManagers() {
         $dataManagers = array();
 
         foreach ($this->user->dataManagers()->get() as $dataManager) {
@@ -78,6 +82,16 @@ class DataPopulator
         }
 
         return $dataManagers;
+    }
+
+    /**
+     * activateManagers
+     * Setting all related widget's state to active.
+     */
+    protected function activateManagers() {
+        foreach ($this->dataManagers as $manager) {
+            $manager->setState('active');
+        }
     }
 
 }
