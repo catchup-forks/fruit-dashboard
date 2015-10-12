@@ -22,9 +22,6 @@ class User extends Eloquent implements UserInterface
         'date_of_birth',
         'created_at',
         'updated_at',
-        'last_activity',
-        'api_key',
-        'startup_type'
     );
 
     /* -- Relations -- */
@@ -246,13 +243,9 @@ class User extends Eloquent implements UserInterface
      * settings, background, subscription.
      */
     public function createDefaultProfile() {
-        /* Create extra attributes to user */
-        $this->api_key = md5(str_random(32));
-        $this->save();
-
         /* Create default settings for the user */
         $settings = new Settings(array(
-            'newsletter_frequency' => 0,
+            'api_key' => md5(str_random(32)),
         ));
         $settings->user()->associate($this);
         $settings->save();

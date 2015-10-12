@@ -7,7 +7,14 @@ class Settings extends Eloquent
 
     // -- Fields -- //
     protected $fillable = array(
-        'newsletter_frequency',
+        'last_activity',
+        'api_key',
+        'startup_type',
+        'onboarding_state',
+        'project_name',
+        'project_url',
+        'company_size',
+        'company_funding'
     );
     public $timestamps = FALSE;
 

@@ -88,7 +88,8 @@ class APIController extends BaseController
             case '1.0':
             default:
                 /* Get user and widget */
-                $user   = User::where('api_key', $apiKey)->first();
+                $settings = Settings::where('api_key', $apiKey)->first();
+                $user   = $settings->user;
                 $widget = Widget::find($widgetID);
 
                 /* Check API key */

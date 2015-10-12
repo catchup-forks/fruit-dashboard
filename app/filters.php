@@ -23,9 +23,9 @@ App::before(function($request) {
 App::after(function($request, $response) {
     /* Update last activity for the User */
     if (Auth::check()) {
-        $user = Auth::user();
-        $user->last_activity = Carbon::now();
-        $user->save();
+        $settings = Auth::user()->settings;
+        $settings->last_activity = Carbon::now();
+        $settings->save();
     }
 });
 

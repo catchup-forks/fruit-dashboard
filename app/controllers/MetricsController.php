@@ -32,7 +32,7 @@ class MetricsController extends BaseController
         /* Get active users */
         $activeUsers = 0;
         foreach (User::all() as $user) {
-            $diff = Carbon::now()->diffInDays(Carbon::parse($user->last_activity));
+            $diff = Carbon::now()->diffInDays(Carbon::parse($user->settings->last_activity));
             if ($diff <= 30) {
                 $activeUsers += 1;
             }

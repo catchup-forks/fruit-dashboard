@@ -67,9 +67,9 @@ class SignupWizardController extends BaseController
         }
 
         /* Success */
-        $user = Auth::user();
-        $user->startup_type = Input::get('startup_type');
-        $user->save();
+        $settings = Auth::user()->settings();
+        $settings->startup_type = Input::get('startup_type');
+        $settings->save();
 
         return Redirect::route('signup-wizard.financial-connections')->with('success', 'Startup type saved');
 
