@@ -56,6 +56,12 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postAddWidget'
     ]);
 
+    Route::get('add/{descriptorId}/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'widget.add-with-data',
+        'uses'   => 'GeneralWidgetController@getAddWidgetWithData'
+    ]);
+
     Route::get('{widgetID}/stats', [
         'before' => 'auth',
         'as'    => 'widget.singlestat',

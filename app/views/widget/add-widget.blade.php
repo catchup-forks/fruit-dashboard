@@ -45,7 +45,7 @@
                           @if(Auth::user()->isServiceConnected($group['name']))
                             <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive"></span>
                           @else
-                            <span class="fa fa-circle text-danger" data-connected="false" data-redirect-url="{{ route($group['connect_route']) }}" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
+                            <span class="fa fa-circle text-danger" data-connected="false" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
                           @endif
                         </small>
                       @else
@@ -329,13 +329,15 @@
           message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
           callback: function(result) {
               if (result) {
+
                 // Using from extension, redirect in new tab
                 if (window!=window.top) {
-                  window.open(url,'_blank').focus();
+                  $("#add-widget-form").submit();
+                  //window.open(url,'_blank').focus();
 
                 // Using website, redirect on same tab
                 } else {
-                  window.location = url;
+                  $("#add-widget-form").submit();
                 }
               }
           }

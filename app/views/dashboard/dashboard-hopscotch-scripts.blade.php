@@ -41,7 +41,7 @@
         placement: "left",
         yOffset: "center",
         arrowOffset: "center"
-      },             
+      },
       {
         title: "Settings",
         content: "More stuff here.",
@@ -61,7 +61,7 @@
       // POP the widget step, if there are no widgets on the dashboard
       newTour['steps'].splice(4,1);
     }
-    
+
     // Check if the dashboard has any widget
     if ($(".item.active > .gridster > ul > li")[0] == null) {
       // POP the widget step, if there are no widgets on the dashboard
@@ -73,7 +73,7 @@
     hopscotch.startTour(newTour);
   }
 
-  @if(Request::input('tour'))
+  @if(Input::get('tour'))
     startTour();
   @endif
 

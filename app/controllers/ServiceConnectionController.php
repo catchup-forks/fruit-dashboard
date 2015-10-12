@@ -710,9 +710,17 @@ class ServiceConnectionController extends BaseController
      * Saving the Referer to session.
      */
     private function saveReferer() {
-       $previous = URL::previous();
-       Session::forget('createDashboard');
+        $previous = URL::previous();
+        if (strpos($previous, route('widget.add')) === 0) {
+            Session::forget('addWidgetMeta');
+            Session::put('addWidgetMeta', array(
+                'dashboard'  => Input::get('dashboard'),
+                'descriptor' => Input::get('descriptor')
+            ));
+        }
+
         if (Input::get('createDashboard')) {
+            Session::forget('createDashboard');
             Session::put('createDashboard', true);
         }
         if ( ! is_null($previous)) {
@@ -729,7 +737,14 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     private function getReferer() {
-        if (Session::has('referer')) {
+        if (Session::has('addWidgetMeta')) {
+            /* We came from add widget. */
+            $meta = Session::pull('addWidgetMeta');
+            return route('widget.add-with-data', array(
+                'descriptorId' => $meta['descriptor'],
+                'dashboardId'  => $meta['dashboard']
+            ));
+        } else if (Session::has('referer')) {
             return Session::pull('referer');
         } else {
             return route('settings.settings');
