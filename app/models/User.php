@@ -122,7 +122,6 @@ class User extends Eloquent implements UserInterface
             );
             /* Iterating through the widgets. */
             foreach ($dashboard->widgets as $widget) {
-                Log::info(get_class($widget));
                 if ($widget->state == 'loading') {
                     /* Widget is loading, no data is available yet. */
                     $templateData = Widget::getDefaultTemplateData($widget);
@@ -190,7 +189,6 @@ class User extends Eloquent implements UserInterface
                 $view->render();
             } catch (Exception $e) {
                 Log::error($e->getMessage());
-                exit(94);
                 $widget->setState('setup_required');
             }
         }

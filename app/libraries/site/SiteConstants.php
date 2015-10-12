@@ -56,9 +56,8 @@ class SiteConstants {
             ),
         ),
         'Retention' => array(),
-        'Revenue' => array(
-        ),
-        'Referral' => array()
+        'Revenue' => array(),
+        //'Referral' => array()
     );
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');

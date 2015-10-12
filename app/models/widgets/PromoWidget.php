@@ -102,7 +102,6 @@ class PromoWidget extends Widget
      * --------------------------------------------------
     */
     private function transform(array $criteria=array()) {
-        Log::info('transforming #' . $this->id . ' into ' . $this->getRelatedDescriptor()->name);
         /* Getting descriptor. */
         $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
         $className = $descriptor->getClassName();

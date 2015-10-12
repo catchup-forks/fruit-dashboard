@@ -36,7 +36,7 @@ class TwitterPopulateData
         $this->dataManagers['twitter_followers']->initializeData();
         $this->dataManagers['twitter_mentions']->initializeData();
         foreach ($this->dataManagers as $manager) {
-            $manager->setWidgetsState('active');
+            $manager->setState('active');
         }
     }
 

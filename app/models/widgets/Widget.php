@@ -18,8 +18,10 @@ class Widget extends Eloquent
     protected static $setupSettings = array();
     protected static $criteriaSettings = array();
 
-    /* -- Relations -- */
+    /* Use only for association. */
     public function descriptor() { $this->belongsTo('WidgetDescriptor'); }
+
+    /* -- Relations -- */
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() { return $this->dashboard->user; }
@@ -28,7 +30,6 @@ class Widget extends Eloquent
     public function getDescriptor() {
         return WidgetDescriptor::find($this->descriptor_id);
     }
-
 
     /**
      * ================================================== *

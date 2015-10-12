@@ -30,15 +30,11 @@ class GoogleAnalyticsPopulateData extends DataPopulator
             'other' => array()
         );
 
-        foreach ($this->user->dataManagers->get() as $dataManager) {
+        foreach ($this->user->dataManagers()->get() as $dataManager) {
 
             if ($dataManager->getDescriptor()->category == 'google_analytics' &&
                     $dataManager->getCriteria() == $this->criteria &&
                     $dataManager->getData() == FALSE) {
-
-                /* Initializing data */
-                $dataManager->data->raw_value = json_encode(array());
-                $dataManager->data->save();
 
                 if ($dataManager instanceof HistogramDataManager &&
                         empty($dataManager->getOptionalParams())) {
@@ -52,7 +48,7 @@ class GoogleAnalyticsPopulateData extends DataPopulator
                 }
             }
         }
-        $this->dataManagers = $dataManagers;
+        return $dataManagers;
     }
 
     /**
