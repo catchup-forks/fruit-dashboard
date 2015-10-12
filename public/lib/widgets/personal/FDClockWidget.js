@@ -68,7 +68,7 @@ FDClockWidget.prototype.draw = function(refresh) {
  */
 FDClockWidget.prototype.setTime = function(refresh) {
     // Needed because of the scopes
-    var that = this
+    var that = this;
     
     // Formatter function
     function formatTime(time) {
@@ -84,6 +84,8 @@ FDClockWidget.prototype.setTime = function(refresh) {
       $(that.digitalSelector).html(h + ':' + m);
     }
 
+    updateClock();
+    
     if (refresh) {
       // Call again in 2000 ms
       setInterval(updateClock, 2000);

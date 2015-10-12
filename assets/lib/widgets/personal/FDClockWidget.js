@@ -42,6 +42,7 @@ FDClockWidget.prototype.init = function() {
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
+  console.log('clock widget');
   this.draw(refresh=false);  
 }
 
@@ -83,6 +84,8 @@ FDClockWidget.prototype.setTime = function(refresh) {
       $(that.digitalSelector).fitText(0.3, { 'minFontSize': 35 });
       $(that.digitalSelector).html(h + ':' + m);
     }
+
+    updateClock();
 
     if (refresh) {
       // Call again in 2000 ms
