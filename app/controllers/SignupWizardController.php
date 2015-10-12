@@ -278,7 +278,7 @@ class SignupWizardController extends BaseController
             array_key_exists('widget-quote', $widgetdata)) {
             $quotewidget = new QuoteWidget(array(
                 'state'    => 'active',
-                'position' => '{"row":11,"col":1,"size_x":12,"size_y":1}',
+                'position' => '{"row":10,"col":1,"size_x":12,"size_y":2}',
             ));
             $quotewidget->dashboard()->associate($dashboard);
 

@@ -16,8 +16,8 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
     /* Choices functions */
     public function type() {
         return array(
-            'inspirational' => 'Inspirational',
-            'funny'         => 'Funny',
+            'inspirational' => 'Inspirational quotes',
+            'funny'         => 'Funny quotes',
             'first-line'    => 'First lines from books',
         );
     }

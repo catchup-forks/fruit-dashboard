@@ -68,7 +68,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 2,
                 'min_cols'     => 5,
                 'min_rows'     => 1,
-                'default_cols' => 10,
+                'default_cols' => 12,
                 'default_rows' => 2
             )
         );
