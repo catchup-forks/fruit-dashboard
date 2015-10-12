@@ -12,14 +12,60 @@
 */
 class SiteConstants {
     /* -- Class properties -- */
+
+    /* Gridster */
     private static $gridNumberOfCols  = 12;
     private static $gridNumberOfRows  = 12;
     private static $widgetMargin      = 5;
+
+    /* Greetings widget */
     private static $morningStartsAt   = 5;
     private static $afternoonStartsAt = 13;
     private static $eveningStartsAt   = 17;
     private static $nightStartsAt     = 22;
+
+    /* Trial period */
     private static $trialPeriodInDays = 14;
+
+    /* Signup wizard */
+    private static $signupWizardSteps = array(
+        'company_info',
+        'google_analytics_connect',
+        'google_analytics_goal',
+        'social_connections',
+        'financial_connections',
+        'finished',
+    );
+
+    private static $signupWizardStartupTypes = array(
+        'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
+        'Ecommerce'    => 'Online shops selling goods to consumers.',
+        'Enterprise'   => 'Products for large enterprise customers.',
+        'Ads/Leadgen'  => 'Some users pay you to access the premium features.',
+        'Freemium'     => 'Consumer-oriented products with freemium monetization model.',
+        'Marketplaces' => 'Products that connect sellers with buyers.'
+    );
+
+    private static $signupWizardCompanySize = array(
+        '1-5'    => '1-5',
+        '5-10'   => '5-10',
+        '10-20'  => '10-20',
+        '20-50'  => '20-50',
+        '50-100' => '50-100',
+        '100+'   => '100+'
+    );
+
+    private static $signupWizardCompanyFunding = array(
+        'Bootstrapped'            => 'Bootstrapped',
+        'Incubator / Accelerator' => 'Incubator / Accelerator',
+        'Angel'                   => 'Angel',
+        'Seed'                    => 'Seed',
+        'Series A'                => 'Series A',
+        'Series B'                => 'Series B',
+        'Series C'                => 'Series C',
+    );
+
+    /* Auto dashboards */
     private static $autoDashboards    = array(
         'Acquisition' => array(
             array(
@@ -59,10 +105,24 @@ class SiteConstants {
         'Revenue' => array(),
         //'Referral' => array()
     );
+
+    /* Services and connections */
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
+    private static $facebookPopulateDataDays = 60;
+    private static $googleAnalyticsLaunchDate = '2005-01-01';
+
+    /* Notifications */
     private static $skipCategoriesInNotification = array('personal');
+    private static $slackColors = array(
+        '#BADA55',
+        '#ABCDE',
+        '#FFBB66',
+    );
+
+
+    /* Graphs and measures stat */
     private static $singleStatHistoryDiffs = array(
         'days'   => array(1, 7, 30),
         'weeks'  => array(1, 4, 12),
@@ -70,14 +130,6 @@ class SiteConstants {
         'years'  => array(1, 3, 5),
     );
 
-    private static $startupTypes = array(
-        'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
-        'Ecommerce'    => 'Online shops selling goods to consumers.',
-        'Enterprise'   => 'Products for large enterprise customers.',
-        'Ads/Leadgen'  => 'Some users pay you to access the premium features.',
-        'Freemium'     => 'Consumer-oriented products with freemium monetization model.',
-        'Marketplaces' => 'Products that connect sellers with buyers.'
-    );
     private static $chartJsColors = array(
         '105 ,153, 209',
         '77, 255, 121',
@@ -91,13 +143,8 @@ class SiteConstants {
         '77, 255, 210',
         '209, 0, 157',
     );
-    private static $slackColors = array(
-        '#BADA55',
-        '#ABCDE',
-        '#FFBB66',
-    );
-    private static $facebookPopulateDataDays = 60;
-    private static $googleAnalyticsLaunchDate = '2005-01-01';
+
+    /* API */
     private static $apiVersions = array('1.0');
 
    /**
@@ -221,16 +268,62 @@ class SiteConstants {
     }
 
     /**
-     * getStartupTypes:
+     * getSignupWizardNextStep:
      * --------------------------------------------------
-     * Returns the startup types
-     * @return (integer) ($startupTypes) startupTypes
+     * Returns the next step for the signup wizard
+     * @param (string) ($currentStep) the current step
+     * @return (string) ($nextStep) the next step
      * --------------------------------------------------
      */
-    public static function getStartupTypes() {
-        return self::$startupTypes;
+    public static function getSignupWizardNextStep($currentStep) {
+        /* Current step cannot be found */
+        if (in_array($currentStep, self::$signupWizardSteps)) {
+            /* Get the index */
+            $idx = array_search($currentStep, self::$signupWizardSteps);
+        } else {
+            return null;
+        }
+        
+        /* Last step or next */
+        if ($idx < length(self::$signupWizardSteps)) {
+            return self::$signupWizardSteps[$idx+1];
+        } else {
+            return null;
+        }
     }
 
+    /**
+     * getSignupWizardStartupTypes:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (array) ($signupWizardStartupTypes) startupTypes
+     * --------------------------------------------------
+     */
+    public static function getSignupWizardStartupTypes() {
+        return self::$signupWizardStartupTypes;
+    }
+
+    /**
+     * getSignupWizardCompanySize:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (array) ($signupWizardCompanySize) CompanySize
+     * --------------------------------------------------
+     */
+    public static function getSignupWizardCompanySize() {
+        return self::$signupWizardCompanySize;
+    }
+
+    /**
+     * getSignupWizardCompanyFunding:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (array) ($signupWizardCompanyFunding) CompanyFunding
+     * --------------------------------------------------
+     */
+    public static function getSignupWizardCompanyFunding() {
+        return self::$signupWizardCompanyFunding;
+    }
 
     /**
      * getTrialPeriodInDays:

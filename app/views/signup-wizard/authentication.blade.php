@@ -17,7 +17,7 @@
             <!-- name -->
             <div class="yourname-form">
                 <h1 class="text-white text-center drop-shadow">
-                    Good <span class="greeting"></span>.
+                    Good {{ SiteConstants::getTimeOfTheDay() }}.
                 </h1>  
                 <h1 class="text-white text-center drop-shadow">
                     What's your name?
@@ -81,10 +81,7 @@
     @section('pageScripts')
     <script type="text/javascript">
         $(document).ready(function() {
-
-          $('.greeting').html('{{ SiteConstants::getTimeOfTheDay() }}');
-
-          
+         
           $('#username_id').on('keydown', function (event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13' || keycode == '9'){
