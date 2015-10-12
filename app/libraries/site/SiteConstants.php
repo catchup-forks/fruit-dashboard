@@ -308,7 +308,7 @@ class SiteConstants {
             ),
             array(
                 'name'              => 'webhook_api',
-                'display_name'      => 'API / Webhook',
+                'display_name'      => 'Webhook / API',
                 'type'              => 'custom',
                 'disconnect_route'  => null,
                 'connect_route'     => null
