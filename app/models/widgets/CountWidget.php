@@ -151,5 +151,24 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         $this->state = 'active';
         $this->save();
     }
+
+    /**
+     * save
+     * Looking for managers.
+     * --------------------------------------------------
+     * @param array $options
+     * @return null
+     * --------------------------------------------------
+    */
+    public function save(array $options=array()) {
+        parent::save($options);
+        $dataManager = $this->getDataManager();
+        if ( ! is_null($dataManager)) {
+            $this->data()->associate($dataManager->data);
+            parent::save($options);
+        }
+
+        return TRUE;
+    }
 }
 ?>
