@@ -30,6 +30,6 @@ Route::group([
 
     Route::get('has-widget/{service}', [
         'as'     => 'metrics.hasWidget',
-        'uses'   => 'MetricsController@getServiceWidgetUsersCount'
+        'uses'   => 'MetricsController@getHasActiveWidgetCount'
     ]);
 });

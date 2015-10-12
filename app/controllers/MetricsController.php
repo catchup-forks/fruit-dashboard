@@ -182,38 +182,69 @@ class MetricsController extends BaseController
     }
 
     /**
-     * getServiceWidgetUsersCount
+     * getHasActiveWidgetCount
      * --------------------------------------------------
      * @return Returns the number of users who have at least
-     *          one widget with the provided service
+     *          one active widget with the provided service
      * --------------------------------------------------
      */
-    public function getServiceWidgetUsersCount($service) {
-        /* Get active users */
-        $serviceWidgetUsers = 0;
-        /* Iterate through all users */
-        foreach (User::all() as $user) {
-            /* Skip if service is not connected */
-            if (!$user->isServiceConnected($service)) {
-                continue;
-            } else {
-                /* Check for widgets */
+    public function getHasActiveWidgetCount($service) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
+
+        /* Get all connections by services */
+        if ($service == 'all') {
+            /* Build initial services and initial data */
+            $initialServices = array();
+            foreach (SiteConstants::getAllGroupsMeta() as $serviceMeta) {
+                $data[$serviceMeta['display_name']] = 0;
+                $initialServices[$serviceMeta['name']] = array(
+                    'display_name' => $serviceMeta['display_name'],
+                    'value' => FALSE
+                );
+            }
+
+            /* Iterate through all users */
+            foreach (User::all() as $user) {
+                /* Copy initialServices to currentServices */
+                $currentServices = $initialServices;
+                /* Iterate through the widgets of the user */
                 foreach ($user->widgets as $widget) {
-                    if ( ($widget->getDescriptor()->category == $service) and
-                         ($widget->state == 'active') ) {
-                        /* Increase counter */
-                        $serviceWidgetUsers += 1;
-                        break;
+                    $key = $widget->getDescriptor()->category;
+                    if (array_key_exists($key, $currentServices)) {
+                        /* Check active connection */
+                        if ($widget->state == 'active') {
+                            $currentServices[$key]['value'] = TRUE;
+                        }
                     }
                 }
+
+                /* Add current connections to data */
+                foreach ($currentServices as $currentService) {
+                    $data[$currentService['display_name']] += (int)$currentService['value'];
+                }
+            }
+
+        /* Get connections only for one service */
+        } else {
+            $data[$service] = 0;
+            /* Iterate through all users */
+            foreach (User::all() as $user) {
+                $serviceActive = FALSE;
+                /* Iterate through the widgets of the user */
+                foreach ($user->widgets as $widget) {
+                    /* Check active connection */
+                    if (($widget->getDescriptor()->category == $service) and 
+                        ($widget->state == 'active')) {
+                        $serviceActive = TRUE;
+                    }
+
+                }
+                /* Add active connection to data */
+                $data[$service] += (int)$serviceActive;
             }
         }
-        /* Create data for the json */
-        $data = [
-            "date"      => Carbon::now()->toDateString(),
-            "timestamp" => Carbon::now()->getTimestamp(),
-            "value"     => $serviceWidgetUsers
-        ];
+
         /* Return json */
         return Response::json($data);
     }
