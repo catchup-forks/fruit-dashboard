@@ -9,8 +9,8 @@ class Settings extends Eloquent
     protected $fillable = array(
         'last_activity',
         'api_key',
-        'startup_type',
         'onboarding_state',
+        'startup_type',
         'project_name',
         'project_url',
         'company_size',

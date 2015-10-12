@@ -62,9 +62,9 @@
 
             <div class="row">
               <div class="col-md-12">
-                <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>
-                <a href="{{ URL::route('signup-wizard.web-analytics-connections') }}" class="btn btn-primary pull-right">Next</a>
-                <a href="{{ URL::route('signup-wizard.web-analytics-connections') }}" class="btn btn-link pull-right">Skip</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('prev', $currentStep)) }}" class="btn btn-warning">Back</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-primary pull-right">Next</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-link pull-right">Skip</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 

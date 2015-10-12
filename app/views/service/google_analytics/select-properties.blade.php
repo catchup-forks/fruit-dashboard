@@ -74,7 +74,7 @@
 
                   <hr>
 
-                  <a href="{{ route('signup-wizard.social-connections') }}" class="btn btn-warning">Cancel</a>
+                  <a href="{{ route('signup-wizard.getStep', $cancelStep) }}" class="btn btn-warning">Cancel</a>
 
                   {{ Form::submit('Select', array(
                     'class' => 'btn btn-primary pull-right'

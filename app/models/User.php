@@ -246,6 +246,7 @@ class User extends Eloquent implements UserInterface
         /* Create default settings for the user */
         $settings = new Settings(array(
             'api_key' => md5(str_random(32)),
+            'onboarding_state' => SiteConstants::getSignupWizardStep('first', null),
         ));
         $settings->user()->associate($this);
         $settings->save();
@@ -295,6 +296,7 @@ class User extends Eloquent implements UserInterface
      * Creating the default dashboards for the user.
      */
     private function createDefaultDashboards() {
+        /* Make ARRRR dashboards */
         foreach (SiteConstants::getAutoDashboards() as $name=>$widgets) {
             $dashboard = new Dashboard(array(
                 'name'       => $name . ' dashboard',
@@ -321,6 +323,67 @@ class User extends Eloquent implements UserInterface
                 ));
             }
         }
+
+        /* Make personal dashboard */
+        $this->makePersonalAutoDashboard('auto', null);
+    }
+
+    /**
+     * makePersonalAutoDashboard
+     * creates a new Dashboard object and personal widgets
+     * optionally from the POST data
+     * --------------------------------------------------
+     * @param (string)  ($mode) 'auto' or 'manual'
+     * @param (array)   ($widgetdata) Personal widgets data
+     * @return (Dashboard) ($dashboard) The new Dashboard object
+     * --------------------------------------------------
+     */
+    private function makePersonalAutoDashboard($mode, $widgetdata) {
+        /* Create new dashboard */
+        $dashboard = new Dashboard(array(
+            'name'       => 'Personal dashboard',
+            'background' => 'On',
+            'number'     => $this->dashboards->max('number') + 1,
+            'is_default' => FALSE
+        ));
+        $dashboard->user()->associate($this);
+        $dashboard->save();
+
+        /* Create clock widget */
+        if (($mode == 'auto') or
+            array_key_exists('widget-clock', $widgetdata)) {
+            $clockwidget = new ClockWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
+            ));
+            $clockwidget->dashboard()->associate($dashboard);
+            $clockwidget->save();
+        }
+
+        /* Create greetings widget */
+        if (($mode == 'auto') or
+            array_key_exists('widget-greetings', $widgetdata)) {
+            $greetingswidget = new GreetingsWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
+            ));
+            $greetingswidget->dashboard()->associate($dashboard);
+            $greetingswidget->save();
+        }
+
+        /* Create quote widget */
+        if (($mode == 'auto') or
+            array_key_exists('widget-quote', $widgetdata)) {
+            $quotewidget = new QuoteWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":10,"col":1,"size_x":12,"size_y":2}',
+            ));
+            $quotewidget->dashboard()->associate($dashboard);
+            $quotewidget->saveSettings(array('type' => 'inspirational'));
+        }
+
+        /* Return */
+        return $dashboard;
     }
 
 }

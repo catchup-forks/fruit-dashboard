@@ -140,7 +140,7 @@ class ServiceConnectionController extends BaseController
                     'verifier'      => Input::get('oauth_verifier')
                 ));
             } catch (TwitterConnectFailed $e) {
-                return Redirect::route('signup-wizard.social-connections')
+                return Redirect::route('signup-wizard.getStep', 'social-connections')
                     ->with('error', 'Something went wrong, please try again.');
             }
 
@@ -237,7 +237,7 @@ class ServiceConnectionController extends BaseController
                 $connector->saveTokens();
             } catch (FacebookNotConnected $e) {
                 Log::info($e->getMessage());
-                return Redirect::route('signup-wizard.social-connections')
+                return Redirect::route('signup-wizard.getStep', 'social-connections')
                     ->with('error', 'Something went wrong with the connection.');
             }
             /* Track event | SERVICE CONNECTED */
@@ -326,8 +326,10 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'You don\'t have any facebook pages associated with this account');
         }
 
-        return View::make('service.facebook.select-pages')
-            ->with('pages', $pages);
+        return View::make('service.facebook.select-pages', array(
+                'pages' => $pages,
+                'cancelStep' => 'social-connections',
+            ));
     }
 
     /**
@@ -447,8 +449,10 @@ class ServiceConnectionController extends BaseController
                 ->with('error', 'You don\'t have any google analytics properties associated with this account');
         }
 
-        return View::make('service.google_analytics.select-properties')
-            ->with('profiles', $profiles);
+        return View::make('service.google_analytics.select-properties', array(
+                   'profiles' => $profiles,
+                   'cancelStep' => 'google-analytics-connection',
+                ));
     }
 
     /**
@@ -629,10 +633,10 @@ class ServiceConnectionController extends BaseController
                 $connector->saveTokens(array('auth_code' => Input::get('code')));
             } catch (GoogleConnectFailed $e) {
                 /* User declined */
-                return Redirect::route('signup-wizard.social-connections')
+                return Redirect::route('signup-wizard.getStep', 'social-connections')
                     ->with('error', 'something went wrong.');
             } catch (Google_Auth_Exception $e) {
-                return Redirect::route('signup-wizard.social-connections')
+                return Redirect::route('signup-wizard.getStep', 'social-connections')
                     ->with('error', 'Invalid token please try again.');
             }
 

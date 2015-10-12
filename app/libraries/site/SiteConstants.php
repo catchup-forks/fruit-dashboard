@@ -29,21 +29,23 @@ class SiteConstants {
 
     /* Signup wizard */
     private static $signupWizardSteps = array(
-        'company_info',
-        'google_analytics_connect',
-        'google_analytics_goal',
-        'social_connections',
-        'financial_connections',
+        'company-info',
+        'google-analytics-connection',
+        //'google-analytics-profile',
+        //'google-analytics-select-goal',
+        'social-connections',
+        'financial-connections',
         'finished',
     );
 
     private static $signupWizardStartupTypes = array(
-        'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
-        'Ecommerce'    => 'Online shops selling goods to consumers.',
-        'Enterprise'   => 'Products for large enterprise customers.',
-        'Ads/Leadgen'  => 'Some users pay you to access the premium features.',
-        'Freemium'     => 'Consumer-oriented products with freemium monetization model.',
-        'Marketplaces' => 'Products that connect sellers with buyers.'
+        'SaaS'         => 'SaaS | Software-as-a-service products for small and medium sized businesses.',
+        'Ecommerce'    => 'Ecommerce | Online shops selling goods to consumers.',
+        'Enterprise'   => 'Enterprise | Products for large enterprise customers.',
+        'Ads/Leadgen'  => 'Ads/Leadgen | Some users pay you to access the premium features.',
+        'Freemium'     => 'Freemium | Consumer-oriented products with freemium monetization model.',
+        'Marketplaces' => 'Marketplaces | Products that connect sellers with buyers.',
+        'Other'        => 'Other'
     );
 
     private static $signupWizardCompanySize = array(
@@ -63,6 +65,7 @@ class SiteConstants {
         'Series A'                => 'Series A',
         'Series B'                => 'Series B',
         'Series C'                => 'Series C',
+        'Other'                   => 'Other'
     );
 
     /* Auto dashboards */
@@ -268,27 +271,43 @@ class SiteConstants {
     }
 
     /**
-     * getSignupWizardNextStep:
+     * getSignupWizardStep:
      * --------------------------------------------------
      * Returns the next step for the signup wizard
-     * @param (string) ($currentStep) the current step
+     * @param (string) ($index) one of: next, prev, first, last
+     * @param (string) ($currentStep) the current step or null
      * @return (string) ($nextStep) the next step
      * --------------------------------------------------
      */
-    public static function getSignupWizardNextStep($currentStep) {
-        /* Current step cannot be found */
+    public static function getSignupWizardStep($index, $currentStep) {
+        /* First or last step */
+        if ($index == 'first') {
+            return self::$signupWizardSteps[0];
+        } elseif ($index == 'last') {
+            return end(self::$signupWizardSteps);
+        }
+
+        /* Find current step */
         if (in_array($currentStep, self::$signupWizardSteps)) {
-            /* Get the index */
-            $idx = array_search($currentStep, self::$signupWizardSteps);
+            $i = array_search($currentStep, self::$signupWizardSteps);
+        /* Current step cannot be found */
         } else {
             return null;
         }
         
-        /* Last step or next */
-        if ($idx < length(self::$signupWizardSteps)) {
-            return self::$signupWizardSteps[$idx+1];
-        } else {
-            return null;
+        /* Return step and check overflows */
+        if ($index == 'next') {
+            if ($i < count(self::$signupWizardSteps)-1) {
+                return self::$signupWizardSteps[$i+1];
+            } else {
+                return null;
+            }
+        } elseif ($index == 'prev') {
+            if ($i < 1) {
+                return self::$signupWizardSteps[0];
+            } else {
+                return self::$signupWizardSteps[$i-1];
+            }
         }
     }
 
@@ -372,7 +391,7 @@ class SiteConstants {
      * @return (array) ($serviceMeta)
      * --------------------------------------------------
      */
-    private static function getServiceMeta($service) {
+    public static function getServiceMeta($service) {
         return array(
             'name'             => $service,
             'display_name'     => Utilities::underscoreToCamelCase($service, TRUE),

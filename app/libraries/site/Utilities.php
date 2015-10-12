@@ -27,6 +27,20 @@ class Utilities {
     }
 
     /**
+     * dashToCamelCase
+     * Returns a string in CamelCase.
+     * --------------------------------------------------
+     * @param string $input
+     * @param boolean $keepSpace
+     * @return string
+     * --------------------------------------------------
+    */
+    public static function dashToCamelCase($input, $keepSpace=FALSE) {
+        $output = ucwords(str_replace('-',' ', $input));
+        return $keepSpace ? $output : str_replace(' ', '', $output);
+    }
+
+    /**
      * formatNumber
      * Formatting a number based on parameters.
      * --------------------------------------------------
