@@ -294,7 +294,7 @@ class SiteConstants {
         } else {
             return null;
         }
-        
+
         /* Return step and check overflows */
         if ($index == 'next') {
             if ($i < count(self::$signupWizardSteps)-1) {

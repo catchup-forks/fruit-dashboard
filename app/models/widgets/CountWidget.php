@@ -49,22 +49,6 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * checkIntegrity
-     * Adding manager loading integrity check.
-    */
-    public function checkIntegrity() {
-        parent::checkIntegrity();
-        if ( ! $this->hasValidCriteria()) {
-            $this->setState('setup_required');
-        }
-        else if ($this->getDataManager()->state == 'loading') {
-            $this->setState('loading');
-        } else if ($this->state != 'setup_required') {
-            $this->setState('active');
-        }
-    }
-
-    /**
      * getSettingsFields
      * --------------------------------------------------
      * Returns the updated settings fields

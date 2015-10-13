@@ -487,16 +487,15 @@ class Widget extends Eloquent
      * Checking the Settings integrity of widgets.
     */
     protected function checkSettingsIntegrity() {
-        if (is_null($this->getSettings())) {
-            $this->setState('setup_required');
-            return;
+        $settings = $this->getSettings();
+        if (is_null($settings)) {
+            throw new WidgetException;
         } else if ( ! $this->hasValidCriteria()) {
-            $this->setState('setup_required');
-            return;
+            throw new WidgetFatalException;
         }
-        foreach ($this->getSettingsFields() as $key=>$value) {
-            if ( ! array_key_exists($key, $this->getSettings())) {
-                $this->setState('setup_required');
+        foreach ($this->getSettingsFields() as $key=>$meta) {
+            if ( ! array_key_exists($key, $settings)) {
+                throw new WidgetException;
             }
         }
     }

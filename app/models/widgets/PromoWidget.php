@@ -32,7 +32,13 @@ class PromoWidget extends Widget
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
+
         $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
+
+        if (is_null($descriptor)) {
+            /* Invalid descriptor in DB. */
+            throw new WidgetFatalException;
+        }
 
         if ($descriptor->type == 'google_analytics_goal_completion') {
             /* Check if user has any goals. */
@@ -45,8 +51,9 @@ class PromoWidget extends Widget
                     'goal'    => $goal->goal_id
                 ));
             }
-
         } else if ($descriptor->category == 'google_analytics') {
+            /* Transforming GA widget */
+
             /* Check if user has any profiles. */
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->where('active', TRUE)->first();
@@ -54,6 +61,8 @@ class PromoWidget extends Widget
                 $this->transform(array('profile' => $profile->profile_id));
             }
         } else if ($descriptor->category == 'facebook') {
+            /* Transforming FB widget */
+
             /* Check if user has any pages. */
             $page = $this->user()->facebookPages()
                 ->where('active', TRUE)->first();
@@ -61,6 +70,8 @@ class PromoWidget extends Widget
                 $this->transform(array('page' => $page->id));
             }
         } else if ($descriptor->category == 'twitter') {
+            /* Transforming TW widget */
+
             /* Check if user has any twitter users. */
             $twitterUser = $this->user()->twitterUsers()
                 ->where('active', TRUE)->first();

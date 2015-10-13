@@ -152,7 +152,21 @@ class User extends Eloquent implements UserInterface
      */
     public function checkWidgetsIntegrity() {
         foreach ($this->widgets as $widget) {
-            $widget->checkIntegrity();
+            try {
+                $widget->checkIntegrity();
+            } catch (WidgetFatalException $e) {
+                /* Cannot recover widget. */
+                $widget->setState('setup_required');
+            } catch (WidgetException $e) {
+                /* A simple save might help. */
+                $widget->save();
+                try {
+                    $widget->checkIntegrity();
+                } catch (WidgetException $e) {
+                    /* Did not help. */
+                    $this->setState('setup_required');
+                }
+            }
         }
     }
 
