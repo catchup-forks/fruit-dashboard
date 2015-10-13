@@ -137,7 +137,8 @@
                    $.each(data, function(id, name) {
                      $('#{{$field}}-input').append($("<option></option>")
                        .attr('value', id).text(name));
-                 });
+                   });
+                 }
                @else
                 $('#{{$field}}-input').val(data);
                @endif

@@ -3,11 +3,12 @@
 class GoogleAnalyticsGoalCompletionDataManager extends HistogramDataManager
 {
     use GoogleAnalyticsHistogramDataManagerTrait;
+    use GoogleAnalyticsGoalDataManagerTrait;
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
         /* Getting the page from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getSessions($this->getProfileId());
+        return $collector->getGoalCompletions($this->getProfileId(), $this->getGoalId());
     }
 
     /**

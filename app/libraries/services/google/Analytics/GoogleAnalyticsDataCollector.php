@@ -281,6 +281,24 @@ class GoogleAnalyticsDataCollector
    }
 
     /**
+     * getGoalCompletions
+     * Returning the number of goal completions.
+     * --------------------------------------------------
+     * @param string $profileId
+     * @param string $goalId
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getGoalCompletions($profileId, $goalId) {
+        $metricName = 'goal' . $goalId . 'Completions';
+        return $this->getMetrics(
+            $profileId,
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array($metricName)
+        )[$metricName];
+   }
+
+    /**
      * getBounceRate
      * Returning the percentage of bounce rate.
      * --------------------------------------------------

@@ -335,11 +335,14 @@ class Widget extends Eloquent
             switch ($fieldMeta['type']) {
                 case 'SCHOICE':
                     if (array_key_exists('ajax_depends', $fieldMeta)) {
-                        $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                        try {
+                            $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                        } catch (Exception $e) {
+                            $choices = array();
+                        }
                     } else {
                         $choices = array_keys($this->$fieldName());
                     }
-                    Log::info($data);
                     $validationString .= 'in:' . implode(',', $choices)."|"; break;
                 case 'INT': $validationString .= 'integer|'; break;
                 case 'FLOAT':  $validationString .= 'numeric|'; break;

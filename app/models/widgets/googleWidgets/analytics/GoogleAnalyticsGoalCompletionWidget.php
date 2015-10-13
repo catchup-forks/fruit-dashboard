@@ -16,14 +16,19 @@ class GoogleAnalyticsGoalCompletionWidget extends HistogramWidget implements iSe
 
     /* Choices functions */
     public function goal($profileId=null) {
-        if (is_null($profileId)) {
-            /* On init using first profile. */
-            $profile = $this->user()->googleAnalyticsProfiles()
-                ->first();
-        } else {
+        if ($profileId) {
             /* Have specific profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->where('profile_id' , $profileId)
+                ->first();
+        } else if ($this->getSettings()['profile']) {
+            /* Have specific profile. */
+            $profile = $this->user()->googleAnalyticsProfiles()
+                ->where('profile_id' , $this->getSettings()['profile'])
+                ->first();
+        } else {
+            /* On init using first profile. */
+            $profile = $this->user()->googleAnalyticsProfiles()
                 ->first();
         }
 
