@@ -10,11 +10,11 @@ trait GoogleAnalyticsGoalDataManagerTrait
      * --------------------------------------------------
     */
     public function getGoal() {
-        $profile = $this->user->googleAnalyticsGoal()
-            ->where('goal_id', $this->getGoalId())
-            ->first();
-        /* Invalid profile in DB. */
-        return $profile;
+        $profile = $this->getProfile();
+        if (is_null($profile)) {
+            return null;
+        }
+        return $profile->goals()->where('goal_id', $this->getGoalId());
     }
 
     /**

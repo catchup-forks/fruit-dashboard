@@ -4,6 +4,7 @@ class GoogleAnalyticsGoalCompletionDataManager extends HistogramDataManager
 {
     use GoogleAnalyticsHistogramDataManagerTrait;
     use GoogleAnalyticsGoalDataManagerTrait;
+
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
         /* Getting the page from settings. */

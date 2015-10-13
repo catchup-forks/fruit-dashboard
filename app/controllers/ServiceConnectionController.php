@@ -483,18 +483,33 @@ class ServiceConnectionController extends BaseController
         }
 
         foreach (Input::get('profiles') as $id) {
+            /* Selecting profile */
             $profile = Auth::user()->googleAnalyticsProfiles()->where('profile_id', $id)->first();
-
             if (is_null($profile)) {
                 continue;
             }
 
-            /* Creating data managers. */
-            $collector = new GoogleAnalyticsDataCollector(Auth::user());
-            $settings = array('profile' => $id);
-
+            /* Creating connector instance. */
             $connector = new GoogleAnalyticsConnector(Auth::user());
+
+            /* Iterating through the goals. */
+            $goals = $profile->goals;
+            $selectedGoals = Input::get('goals');
+            if ($selectedGoals && ! empty($selectedGoals)) {
+                foreach ($selectedGoals as $goalId) {
+                    /* Creating data managers. */
+                    $settings = array(
+                        'profile'  => $id,
+                        'goal'     => $goalId
+                    );
+                    $connector->createDataManagers($settings);
+                }
+            }
+
+            /* Calling collector for simple profile managers. */
+            $settings = array('profile'  => $id);
             $connector->createDataManagers($settings);
+
         }
 
         $message = 'Connection successful.';

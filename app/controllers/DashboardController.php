@@ -35,7 +35,6 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
-
         /* Checking the user's data managers integrity */
         if (self::OPTIMIZE) {
             var_dump(' -- DEBUG LOG --');

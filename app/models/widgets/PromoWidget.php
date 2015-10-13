@@ -44,6 +44,9 @@ class PromoWidget extends Widget
             /* Check if user has any goals. */
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->where('active', TRUE)->first();
+            if (is_null($profile)) {
+                return;
+            }
             $goal = $profile->goals()->where('active', TRUE)->first();
             if ($goal) {
                 $this->transform(array(
