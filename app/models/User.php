@@ -119,7 +119,7 @@ class User extends Eloquent implements UserInterface
             );
             /* Iterating through the widgets. */
             foreach ($dashboard->widgets as $widget) {
-                if ($widget->state == 'loading') {
+                if ($widget->state == 'loading' || $widget->state == 'setup_required') {
                     /* Widget is loading, no data is available yet. */
                     $templateData = Widget::getDefaultTemplateData($widget);
                 } else {
@@ -164,7 +164,7 @@ class User extends Eloquent implements UserInterface
                     $widget->checkIntegrity();
                 } catch (WidgetException $e) {
                     /* Did not help. */
-                    $this->setState('setup_required');
+                    $widget->setState('setup_required');
                 }
             }
         }

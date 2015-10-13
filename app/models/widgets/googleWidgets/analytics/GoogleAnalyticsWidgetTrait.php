@@ -79,7 +79,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-        return array_merge(parent::getSetupFields(), self::$profileProperty);
+        return array_merge(parent::getSetupFields(), self::$profile);
     }
 
     /**

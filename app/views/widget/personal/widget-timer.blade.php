@@ -1,5 +1,5 @@
   <div class="text-center">
-  	<h1 id="timer-time-{{ $widget['id'] }}" class="no-margin text-white drop-shadow text-center">{{ $widget->getSettings()['countdown']}}</h1>
+  	<h1 id="timer-time-{{ $widget['id'] }}" class="no-margin text-white drop-shadow text-center">{{ $widget['settings']['countdown']}}</h1>
     <button id="start-{{ $widget['id'] }}" class="btn btn-primary">START!</button>
     <button id="reset-{{ $widget['id'] }}" class="btn btn-primary" style="display:none">RESET!</button>
   </div> <!-- /#digitTime -->
@@ -12,7 +12,7 @@
     var running = false;
     function reset() {
       running = false;
-      $("#timer-time-{{ $widget['id'] }}").html({{ $widget->getSettings()['countdown'] }});
+      $("#timer-time-{{ $widget['id'] }}").html({{ $widget['settings']['countdown'] }});
       $("#start-{{ $widget['id'] }}").show();
       $("#reset-{{ $widget['id'] }}").hide();
     }

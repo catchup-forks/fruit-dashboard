@@ -246,19 +246,26 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function isSettingVisible($fieldName) {
-        $meta = $this->getSettingsFields();
-        if ( ! array_key_exists($fieldName, $meta)) {
+        $settingsFields = $this->getSettingsFields();
+        if ( ! array_key_exists($fieldName, $settingsFields)) {
             /* Key doesn't exist. Don't even try to render it. */
             return FALSE;
         }
-        $fieldMeta = $meta[$fieldName];
-        if (array_key_exists('hidden', $fieldMeta) && $fieldMeta['hidden'] == TRUE) {
+        $fieldMeta = $settingsFields[$fieldName];
+        if (array_key_exists('hidden', $fieldMeta) &&
+                $fieldMeta['hidden'] == TRUE) {
             return FALSE;
         }
 
+        if (array_key_exists('ajax', $fieldMeta) &&
+                $fieldMeta['ajax'] == TRUE) {
+            return TRUE;
+        }
+
         /* Don't show singleChoice if there's only one value */
-        if (($fieldMeta['type'] == 'SCHOICE' || $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
-             count($this->$fieldName()) == 1) {
+        if (($fieldMeta['type'] == 'SCHOICE' ||
+                $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
+                 count($this->$fieldName()) == 1) {
             return FALSE;
         }
 
@@ -305,10 +312,11 @@ class Widget extends Eloquent
      * Getting the laravel validation array.
      * --------------------------------------------------
      * @param array $fields
+     * @param array $data
      * @return array
      * --------------------------------------------------
     */
-    public function getSettingsValidationArray(array $fields) {
+    public function getSettingsValidationArray(array $fields, array $data) {
         $validationArray = array();
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
@@ -325,7 +333,14 @@ class Widget extends Eloquent
 
             // Doing type based validation.
             switch ($fieldMeta['type']) {
-                case 'SCHOICE':  $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|"; break;
+                case 'SCHOICE':
+                    if (array_key_exists('ajax_depends', $fieldMeta)) {
+                        $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                    } else {
+                        $choices = array_keys($this->$fieldName());
+                    }
+                    Log::info($data);
+                    $validationString .= 'in:' . implode(',', $choices)."|"; break;
                 case 'INT': $validationString .= 'integer|'; break;
                 case 'FLOAT':  $validationString .= 'numeric|'; break;
                 case 'DATE':  $validationString .= 'date|'; break;

@@ -23,13 +23,13 @@
                   'class' => 'form-horizontal' )) }}
 
                   @foreach ($settings as $field=>$meta)
-                    <div class="form-group">
+                    <div class="form-group" id="field-{{$field}}">
                       {{ Form::label($field, $meta['name'], array(
                           'class' => 'col-sm-3 control-label'
                         )) }}
                       <div class="col-sm-8">
                         @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
-                          {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control']) }}
+                          {{ Form::select($field, $widget->$field(), null, ['class' => 'form-control', 'id' => $field . '-input']) }}
                         @elseif ($meta['type'] == "BOOL")
                         <!-- An amazing hack to send checkbox even if not checked -->
                           {{ Form::hidden($field, 0)}}
@@ -81,6 +81,40 @@
           $(this).button('loading');
        });
 
+       @foreach ($settings as $field=>$meta)
+         @if ( array_key_exists('ajax_depends', $meta))
+           /* Ajax loader for {{ $field }} */
+           @if ($widget->$field() == FALSE)
+             $('#field-{{$field}}').hide();
+           @endif
+           $('#{{ $meta['ajax_depends'] }}-input').change(function () {
+             $.ajax({
+               type: 'get',
+               url: '{{ route('widget.get-ajax-setting', array(
+                 'widgetId'  => $widget->id,
+                 'fieldName' => $field,
+                 'value'     => 'field_value'
+                 )) }}'.replace('field_value', $('#{{$meta['ajax_depends']}}-input').val()),
+             }).done(function (data) {
+               @if ($meta['type'] == 'SCHOICE')
+                 $('#{{$field}}-input').empty();
+                 if (data['error']) {
+                   easyGrowl('error', data['error'], 3000);
+                 } else {
+                   $.each(data, function(id, name) {
+                     $('#{{$field}}-input').append($("<option></option>")
+                       .attr('value', id).text(name));
+                   });
+                 }
+
+               @else
+                $('#{{$field}}-input').val(data);
+               @endif
+              $('#field-{{$field}}').show();
+             });
+           });
+         @endif
+       @endforeach
     })
   </script>
 

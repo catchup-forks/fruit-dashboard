@@ -32,6 +32,13 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postSetupWidget'
     ]);
 
+    Route::get('{WidgetId}/setting/ajax/{fieldName}/{value}', [
+        'before' => 'auth',
+        'as'    => 'widget.get-ajax-setting',
+        'uses'  => 'GeneralWidgetController@getAjaxSetting',
+    ]);
+
+
     Route::any('reset/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.reset',

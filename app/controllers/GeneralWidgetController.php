@@ -67,7 +67,8 @@ class GeneralWidgetController extends BaseController {
 
         /* Getting widget's validation array. */
         $validatorArray =  $widget->getSettingsValidationArray(
-            array_keys($widget->getSetupFields())
+            array_keys($widget->getSetupFields()),
+            Input::all()
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
@@ -164,7 +165,8 @@ class GeneralWidgetController extends BaseController {
             array(
                 Input::all(),
                 $widget->getSettingsValidationArray(
-                    $widget->getSetupFields()
+                    $widget->getSetupFields(),
+                    Input::all()
                 )
             )
         );
@@ -486,7 +488,11 @@ class GeneralWidgetController extends BaseController {
         $widget = Widget::find($widgetID);
 
         /* User cross check. */
-        if ($widget->user() != Auth::user() && ! Auth::user()->widgetSharings()->where('widget_id', $widgetID)->first()) {
+        if ($widget->user() != Auth::user() &&
+                ! Auth::user()->widgetSharings()
+                    ->where('widget_id', $widgetID)
+                    ->first()
+                ) {
             throw new WidgetDoesNotExist("You do not own this widget, nor is it shared with you.", 1);
         }
 
@@ -594,6 +600,29 @@ class GeneralWidgetController extends BaseController {
         ));
     }
 
+    /**
+     * getAjaxSetting
+     * --------------------------------------------------
+     * Returns the widget's settings in ajax.
+     * @param int $widgetId
+     * @param string $fieldName
+     * @param mixed $value
+     * --------------------------------------------------
+     */
+    public function getAjaxSetting($widgetId, $fieldName, $value) {
+        /* Selecing the widget */
+        try {
+            $widget = $this->getWidget($widgetId);
+        } catch (WidgetDoesNotExist $e) {
+            return Response::json(array('error' => $e));
+        }
+
+        try {
+            return Response::json($widget->$fieldName($value));
+        } catch (Exception $e) {
+            return Response::json( array('error' => $e->getMessage()));
+        }
+    }
 
     /**
      * ajaxHandler

@@ -9,7 +9,29 @@ class TimerWidget extends Widget
             'type'       => 'INT',
             'validation' => 'required'
         ),
+        'dimension' => array(
+            'name'         => 'Dimension',
+            'type'         => 'SCHOICE',
+            'validation'   => 'required',
+            'ajax_depends' => 'countdown'
+        ),
    );
+
+    /**
+     * dimension
+     * description
+     * --------------------------------------------------
+     * @params
+     * --------------------------------------------------
+     */
+    public function dimension($countdown=null) {
+        if (is_null($countdown)) {
+            return array();
+        } else {
+            return array("wooo");
+        }
+    }
+
     /* The settings to setup in the setup-wizard. */
     private static $timerSetupFields = array('countdown');
 
