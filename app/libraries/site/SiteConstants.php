@@ -18,11 +18,6 @@ class SiteConstants {
     private static $gridNumberOfRows  = 12;
     private static $widgetMargin      = 5;
 
-    /* Greetings widget */
-    private static $morningStartsAt   = 5;
-    private static $afternoonStartsAt = 13;
-    private static $eveningStartsAt   = 17;
-    private static $nightStartsAt     = 22;
 
     /* Trial period */
     private static $trialPeriodInDays = 14;
@@ -71,7 +66,7 @@ class SiteConstants {
     );
 
     /* Auto dashboards */
-    private static $autoDashboards    = array(
+    private static $autoDashboards = array(
         'Acquisition' => array(
             array(
                 'type'     => 'google_analytics_sessions',
@@ -204,40 +199,6 @@ class SiteConstants {
     }
 
     /**
-     * getTimeOfTheDay:
-     * --------------------------------------------------
-     * Returns the time of the day string
-     * @return (string) ($timeOfTheDay) morning, afternoon, evening, night
-     * --------------------------------------------------
-     */
-    public static function getTimeOfTheDay() {
-        /* Get TimeZone aware hour */
-        if (Session::get('timeZone')) {
-            $hour = Carbon::now(Session::get('timeZone'))->hour;
-        /* Error handling (TimeZone is not present, use Server time */
-        } else {
-            $hour = Carbon::now()->hour;
-        }
-
-        /* Morning */
-        if ((self::$morningStartsAt <= $hour) and ($hour < self::$afternoonStartsAt)) {
-            return 'morning';
-
-        /* Afternoon */
-        } elseif ((self::$afternoonStartsAt <= $hour) and ($hour < self::$eveningStartsAt)) {
-            return 'afternoon';
-
-        /* Evening */
-        } elseif ((self::$eveningStartsAt <= $hour) and ($hour < self::$nightStartsAt)) {
-            return 'evening';
-
-        /* Night */
-        } else {
-            return 'night';
-        }
-    }
-
-    /**
      * getChartJsColors:
      * --------------------------------------------------
      * Returning colors for chartJS
@@ -297,7 +258,7 @@ class SiteConstants {
     public static function getSignupWizardStep($index, $currentStep='', $to_group=false) {
         /* First or last step */
         if ($index == 'first') {
-            return self::$signupWizardSteps[0];
+            return array_values(self::$signupWizardSteps)[0];
         } elseif ($index == 'last') {
             return end(self::$signupWizardSteps);
         }
@@ -327,7 +288,7 @@ class SiteConstants {
         /* Return next step */
         if ($index == 'next') {
             /* Return next sub-group element */
-            if (is_numeric($itemidx) and ($itemidx < count(self::$signupWizardSteps[$keys[$groupidx]])-1) and (!$to_group)) {               
+            if (is_numeric($itemidx) and ($itemidx < count(self::$signupWizardSteps[$keys[$groupidx]])-1) and (!$to_group)) {
                 return self::$signupWizardSteps[$keys[$groupidx]][$itemidx+1];
             /* Next group has sub-group, return sub-group first */
             } else if (is_array(self::$signupWizardSteps[$keys[$groupidx+1]])) {

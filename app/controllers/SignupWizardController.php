@@ -121,7 +121,7 @@ class SignupWizardController extends BaseController
     public function getStep($step) {
         /* Get user settings */
         $settings = Auth::user()->settings;
-        
+
         /* Requesting the last step */
         if ($step == SiteConstants::getSignupWizardStep('last')) {
             /* Set onboarding state */
@@ -134,7 +134,7 @@ class SignupWizardController extends BaseController
             /* Set onboarding state */
             $settings->onboarding_state = $step;
             $settings->save();
-           
+
             /* Get responsible function */
             $stepFunction = 'get'. Utilities::dashToCamelCase($step);
 
@@ -215,7 +215,7 @@ class SignupWizardController extends BaseController
         /* Return */
         return array();
     }
-    
+
     /**
      * STEP | getGoogleAnalyticsConnection
      * --------------------------------------------------
@@ -275,7 +275,7 @@ class SignupWizardController extends BaseController
         $connector->createDataManagers(array('profile' => Input::get('profiles')));
 
         /* Save the selected profile in the session */
-        Session::push('selectedProfile', Input::get('profiles'));
+        Session::put('selectedProfile', Input::get('profiles'));
 
         /* Return */
         return array();
@@ -291,7 +291,7 @@ class SignupWizardController extends BaseController
         /* Get the goals of the user */
         $goals = array();
 
-        $profileId = Session::pull('selectedProfile');
+        $profileId = Session::get('selectedProfile');
         if (!is_null($profileId)) {
             foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
                 $goals[$goal->goal_id] = $goal->name;
@@ -307,10 +307,13 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function postGoogleAnalyticsGoal() {
-        /* Save profile (create datamanagers) */
+        /* Save goal (create datamanagers) */
         $connector = new GoogleAnalyticsConnector(Auth::user());
-        $connector->createDataManagers(array('goal' => Input::get('goals')));
-        
+        $connector->createDataManagers(array(
+            'profile' => Session::pull('selectedProfile'),
+            'goal'    => Input::get('goals')
+        ));
+
         /* Return */
         return array();
     }

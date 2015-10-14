@@ -328,7 +328,7 @@ class ServiceConnectionController extends BaseController
 
         return View::make('service.facebook.select-pages', array(
                 'pages' => $pages,
-                'cancelRoute' => $this->getReferer(),
+                'cancelRoute' => $this->getReferer(FALSE),
             ));
     }
 
@@ -453,7 +453,7 @@ class ServiceConnectionController extends BaseController
 
         return View::make('service.google_analytics.select-properties', array(
                    'profiles' => $profiles,
-                   'cancelRoute' => $this->getReferer(),
+                   'cancelRoute' => $this->getReferer(FALSE),
                 ));
     }
 
@@ -643,6 +643,10 @@ class ServiceConnectionController extends BaseController
      * --------------------------------------------------
      */
     private function connectGoogle($connectorClass, $returnRoute=null) {
+        if (Auth::user()->isServiceConnected($connectorClass::getServiceName())) {
+            return Redirect::to($this->getReferer())
+                ->with('warning', 'You are already connected the service');
+        }
         /* Creating connection credentials. */
         $connector = new $connectorClass(Auth::user());
         if (Input::get('code', FALSE)) {
@@ -733,7 +737,6 @@ class ServiceConnectionController extends BaseController
     private function saveReferer() {
         $previous = URL::previous();
         if (strpos($previous, route('widget.add')) === 0) {
-            Session::forget('addWidgetMeta');
             Session::put('addWidgetMeta', array(
                 'dashboard'  => Input::get('dashboard'),
                 'descriptor' => Input::get('descriptor')
@@ -741,7 +744,6 @@ class ServiceConnectionController extends BaseController
         }
 
         if (Input::get('createDashboard')) {
-            Session::forget('createDashboard');
             Session::put('createDashboard', true);
         }
         if ( ! is_null($previous)) {
@@ -757,7 +759,7 @@ class ServiceConnectionController extends BaseController
      * @return Returns the saved route from session.
      * --------------------------------------------------
      */
-    private function getReferer() {
+    private function getReferer($forget=TRUE) {
         if (Session::has('addWidgetMeta')) {
             /* We came from add widget. */
             $meta = Session::pull('addWidgetMeta');
@@ -766,6 +768,9 @@ class ServiceConnectionController extends BaseController
                 'dashboardId'  => $meta['dashboard']
             ));
         } else if (Session::has('referer')) {
+            if ( ! $forget) {
+                return Session::get('referer');
+            }
             return Session::pull('referer');
         } else {
             return route('settings.settings');

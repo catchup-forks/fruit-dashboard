@@ -39,48 +39,19 @@ class PromoWidget extends Widget
             /* Invalid descriptor in DB. */
             throw new WidgetFatalException;
         }
-
+        /* Creating criteria based on the service. */
         if ($descriptor->type == 'google_analytics_goal_completion') {
-            /* Check if user has any goals. */
-            $profile = $this->user()->googleAnalyticsProfiles()
-                ->where('active', TRUE)->first();
-            if (is_null($profile)) {
-                return;
-            }
-            $goal = $profile->goals()->where('active', TRUE)->first();
-            if ($goal) {
-                $this->transform(array(
-                    'profile' => $profile->profile_id,
-                    'goal'    => $goal->goal_id
-                ));
-            }
+            $criteria = $this->getGoalCriteria();
         } else if ($descriptor->category == 'google_analytics') {
-            /* Transforming GA widget */
-
-            /* Check if user has any profiles. */
-            $profile = $this->user()->googleAnalyticsProfiles()
-                ->where('active', TRUE)->first();
-            if ($profile) {
-                $this->transform(array('profile' => $profile->profile_id));
-            }
+            $criteria = $this->getProfileCriteria();
         } else if ($descriptor->category == 'facebook') {
-            /* Transforming FB widget */
-
-            /* Check if user has any pages. */
-            $page = $this->user()->facebookPages()
-                ->where('active', TRUE)->first();
-            if ($page) {
-                $this->transform(array('page' => $page->id));
-            }
+            $criteria = $this->getFacebookCriteria();
         } else if ($descriptor->category == 'twitter') {
-            /* Transforming TW widget */
-
-            /* Check if user has any twitter users. */
-            $twitterUser = $this->user()->twitterUsers()
-                ->where('active', TRUE)->first();
-            if ($twitterUser) {
-                $this->transform();
-            }
+            $criteria = $this->getTwitterCriteria();
+        }
+        if (isset($criteria)) {
+            /* Transforming widget if criteria is set */
+            $this->transform($criteria);
         }
     }
 
@@ -123,7 +94,7 @@ class PromoWidget extends Widget
         /* Creating new isntance */
         $widget = new $className(array(
             'position' => $this->position,
-            'state'    => 'loading'
+            'state'    => 'active'
         ));
         $widget->descriptor_id = $descriptor->id;
         $widget->dashboard()->associate($this->dashboard);
@@ -146,6 +117,87 @@ class PromoWidget extends Widget
      */
     public function getRelatedDescriptor() {
         return WidgetDescriptor::find($this->getSettings()['related_descriptor']);
+    }
+
+    /**
+     * getGoalCriteria
+     * Returning the criteria a the GA goal widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getGoalCriteria() {
+        /* Getting active profile. */
+        $profile = $this->user()->googleAnalyticsProfiles()
+            ->where('active', TRUE)->first();
+        if (is_null($profile)) {
+            return NULL;
+        }
+
+        /* Getting active goal. */
+        $goal = $profile->goals()->where('active', TRUE)->first();
+        if (is_null($goal)) {
+            return NULL;
+        }
+
+        return array(
+            'goal'    => $goal->goal_id,
+            'profile' => $profile->profile_id
+        );
+    }
+
+    /**
+     * getProfileCriteria
+     * Returning the criteria a GA widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getProfileCriteria() {
+        /* Getting active profile. */
+        $profile = $this->user()->googleAnalyticsProfiles()
+            ->where('active', TRUE)->first();
+        if (is_null($profile)) {
+            return NULL;
+        }
+        return array(
+            'profile' => $profile->profile_id
+        );
+    }
+
+    /**
+     * getFacebookCriteria
+     * Returning the criteria a Facebook widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getFacebookCriteria() {
+        /* Getting active profile. */
+        $page = $this->user()->facebookPages()->where('active', TRUE)->first();
+        if (is_null($page)) {
+            return NULL;
+        }
+        return array(
+            'page' => $page->id
+        );
+    }
+
+    /**
+     * getTwitterCriteria
+     * Returning the criteria a Twitter widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getTwitterCriteria() {
+        /* Getting active profile. */
+        $twitterUser = $this->user()->twitterUsers()
+            ->where('active', TRUE)->first();
+        if (is_null($twitterUser)) {
+            return NULL;
+        }
+        return array();
     }
 }
 ?>

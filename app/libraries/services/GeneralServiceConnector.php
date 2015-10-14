@@ -51,6 +51,17 @@ abstract class GeneralServiceConnector
     }
 
     /**
+     * getServiceName
+     * Returns the name of the service.
+     * --------------------------------------------------
+     * @return string.
+     * --------------------------------------------------
+     */
+    public static function getServiceName() {
+        return static::$service;
+    }
+
+    /**
      * getConnection
      * Getting the user's specific connection.
      * --------------------------------------------------

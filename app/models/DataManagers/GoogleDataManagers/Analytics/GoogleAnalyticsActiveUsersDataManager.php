@@ -22,6 +22,5 @@ class GoogleAnalyticsActiveUsersDataManager extends MultipleHistogramDataManager
         return array('dimensions' => 'ga:day');
     }
 
-
 }
 ?>
