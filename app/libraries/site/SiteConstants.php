@@ -31,8 +31,8 @@ class SiteConstants {
     private static $signupWizardSteps = array(
         'company-info',
         'google-analytics-connection',
-        //'google-analytics-profile',
-        //'google-analytics-select-goal',
+        'google-analytics-profile',
+        'google-analytics-goal',
         'social-connections',
         'financial-connections',
         'finished',

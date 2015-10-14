@@ -159,7 +159,12 @@ class SignupWizardController extends BaseController
         $stepFunction = 'post'. Utilities::dashToCamelCase($step);
 
         /* Call responsible function */
-        $this->$stepFunction();
+        $result = $this->$stepFunction();
+
+        /* Check result errors */
+        if (array_key_exists('error', $result)) {
+            return Redirect::route('signup-wizard.getStep', $step)->with('error', $result['error']);
+        }
 
         /* Return next step or dashboard and save the new state*/
         $nextStep = SiteConstants::getSignupWizardStep('next', $step);
@@ -205,26 +210,96 @@ class SignupWizardController extends BaseController
         $settings->startup_type     = Input::get('startup_type');
         $settings->company_size     = Input::get('company_size');
         $settings->company_funding  = Input::get('company_funding');
-        $settings->save();   
+        $settings->save();
+
+        /* Return */
+        return array();
     }
     
     /**
-     * STEP | getFinancialConnections
+     * STEP | getGoogleAnalyticsConnection
      * --------------------------------------------------
-     * @return Handles the extra process for getFinancialConnections
+     * @return Handles the extra process for getGoogleAnalyticsConnection
      * --------------------------------------------------
      */
-    public function getFinancialConnections() {
+    public function getGoogleAnalyticsConnection() {
+        /* Return */
+        return array('service' => SiteConstants::getServiceMeta('google_analytics'));
+    }
+
+    /**
+     * STEP | postGoogleAnalyticsConnection
+     * --------------------------------------------------
+     * @return Handles the extra process for postGoogleAnalyticsConnection
+     * --------------------------------------------------
+     */
+    public function postGoogleAnalyticsConnection() {
+        /* Return */
         return array();
     }
 
     /**
-     * STEP | postFinancialConnections
+     * STEP | getGoogleAnalyticsProfile
      * --------------------------------------------------
-     * @return Handles the extra process for postFinancialConnections
+     * @return Handles the extra process for getGoogleAnalyticsProfile
      * --------------------------------------------------
      */
-    public function postFinancialConnections() {
+    public function getGoogleAnalyticsProfile() {
+        /* Get the profiles of the user */
+        $profiles = array();
+        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+            $profiles[$property->name] = array();
+            foreach ($property->profiles as $profile) {
+                $profiles[$property->name][$profile->profile_id] = $profile->name;
+            }
+        }
+
+        /* Return */
+        return array('profiles' => $profiles);
+    }
+
+    /**
+     * STEP | postGoogleAnalyticsProfile
+     * --------------------------------------------------
+     * @return Handles the extra process for postGoogleAnalyticsProfile
+     * --------------------------------------------------
+     */
+    public function postGoogleAnalyticsProfile() {
+        /* Check errors */
+        if (count(Input::get('profiles')) == 0) {
+            return array('error' => 'Please select at least one of the profiles.');
+        }
+
+        /* Save profile (create datamanagers) */
+        $connector = new GoogleAnalyticsConnector(Auth::user());
+        $connector->createDataManagers(array('profile' => Input::get('profiles')));
+
+        /* Return */
+        return array();
+    }
+
+    /**
+     * STEP | getGoogleAnalyticsGoal
+     * --------------------------------------------------
+     * @return Handles the extra process for getGoogleAnalyticsGoal
+     * --------------------------------------------------
+     */
+    public function getGoogleAnalyticsGoal() {
+        /* Get the goals of the user */
+        $goals = array();
+        foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
+            $goals[$goal->goal_id] = $goal->name;
+        }
+        return array('goals' => $goals);
+    }
+
+    /**
+     * STEP | postGoogleAnalyticsGoal
+     * --------------------------------------------------
+     * @return Handles the extra process for postGoogleAnalyticsGoal
+     * --------------------------------------------------
+     */
+    public function postGoogleAnalyticsGoal() {
         return array();
     }
 
@@ -249,25 +324,24 @@ class SignupWizardController extends BaseController
     }
 
     /**
-     * STEP | getGoogleAnalyticsConnection
+     * STEP | getFinancialConnections
      * --------------------------------------------------
-     * @return Handles the extra process for getGoogleAnalyticsConnection
-     * --------------------------------------------------
-     */
-    public function getGoogleAnalyticsConnection() {
-        return array('service' => SiteConstants::getServiceMeta('google_analytics'));
-    }
-
-    /**
-     * STEP | postGoogleAnalyticsConnection
-     * --------------------------------------------------
-     * @return Handles the extra process for postGoogleAnalyticsConnection
+     * @return Handles the extra process for getFinancialConnections
      * --------------------------------------------------
      */
-    public function postGoogleAnalyticsConnection() {
+    public function getFinancialConnections() {
         return array();
     }
 
+    /**
+     * STEP | postFinancialConnections
+     * --------------------------------------------------
+     * @return Handles the extra process for postFinancialConnections
+     * --------------------------------------------------
+     */
+    public function postFinancialConnections() {
+        return array();
+    }
 
     /**
      * ================================================== *

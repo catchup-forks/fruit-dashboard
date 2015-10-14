@@ -384,7 +384,7 @@ class ServiceConnectionController extends BaseController
      */
 
     /**
-     * anyGoogleAnalyticsConnectanyGoogleConnect
+     * anyGoogleAnalyticsConnect
      * --------------------------------------------------
      * @return connects a user to GA.
      * --------------------------------------------------
@@ -393,6 +393,8 @@ class ServiceConnectionController extends BaseController
         $route = null;
         if (Session::pull('createDashboard')) {
             $route = 'service.google_analytics.select-properties';
+        } elseif (Session::pull('signupWizard')) {
+            $route = 'signup-wizard.'. SiteConstants::getSignupWizardStep('next', 'google-analytics-connection');
         }
         return $this->connectGoogle("GoogleAnalyticsConnector", $route);
      }

@@ -30,7 +30,7 @@
                         <span class="fa fa-check"> </span> Connected
                       </p>
                     @else
-                      <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
+                      <a href="{{ route($service['connect_route']) }}?signupWizard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
                     @endif
                     <p class="text-muted margin-top">
                       <span class="fa fa-lock"> </span>
