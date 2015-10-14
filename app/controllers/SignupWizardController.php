@@ -274,6 +274,9 @@ class SignupWizardController extends BaseController
         $connector = new GoogleAnalyticsConnector(Auth::user());
         $connector->createDataManagers(array('profile' => Input::get('profiles')));
 
+        /* Save the selected profile in the session */
+        Session::push('selectedProfile', Input::get('profiles'));
+
         /* Return */
         return array();
     }
@@ -287,8 +290,12 @@ class SignupWizardController extends BaseController
     public function getGoogleAnalyticsGoal() {
         /* Get the goals of the user */
         $goals = array();
-        foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
-            $goals[$goal->goal_id] = $goal->name;
+
+        $profileId = Session::pull('selectedProfile');
+        if (!is_null($profileId)) {
+            foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
+                $goals[$goal->goal_id] = $goal->name;
+            }
         }
         return array('goals' => $goals);
     }
@@ -300,6 +307,11 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function postGoogleAnalyticsGoal() {
+        /* Save profile (create datamanagers) */
+        $connector = new GoogleAnalyticsConnector(Auth::user());
+        $connector->createDataManagers(array('goal' => Input::get('goals')));
+        
+        /* Return */
         return array();
     }
 

@@ -29,13 +29,15 @@ class SiteConstants {
 
     /* Signup wizard */
     private static $signupWizardSteps = array(
-        'company-info',
-        'google-analytics-connection',
-        'google-analytics-profile',
-        'google-analytics-goal',
-        'social-connections',
-        'financial-connections',
-        'finished',
+        'company-info'          => 'company-info',
+        'google-analytics'      => array(
+            'google-analytics-connection',
+            'google-analytics-profile',
+            'google-analytics-goal',
+        ),
+        'social-connections'    => 'social-connections',
+        'financial-connections' => 'financial-connections',
+        'finished'              => 'finished',
     );
 
     private static $signupWizardStartupTypes = array(
@@ -286,12 +288,13 @@ class SiteConstants {
      * getSignupWizardStep:
      * --------------------------------------------------
      * Returns the next step for the signup wizard
-     * @param (string) ($index) one of: next, prev, first, last
-     * @param (string) ($currentStep) the current step or null
+     * @param (string)  ($index) one of: next, prev, first, last
+     * @param (boolean) ($to_group) true: jumps to next group, false jumps to next item
+     * @param (string) ($currentStep) the current step or empty string
      * @return (string) ($nextStep) the next step
      * --------------------------------------------------
      */
-    public static function getSignupWizardStep($index, $currentStep=array()) {
+    public static function getSignupWizardStep($index, $currentStep='', $to_group=false) {
         /* First or last step */
         if ($index == 'first') {
             return self::$signupWizardSteps[0];
@@ -300,25 +303,51 @@ class SiteConstants {
         }
 
         /* Find current step */
-        if (in_array($currentStep, self::$signupWizardSteps)) {
-            $i = array_search($currentStep, self::$signupWizardSteps);
+        $groupidx  = null;
+        $itemidx   = null;
+        $keys = array_keys(self::$signupWizardSteps);
+        $i=0;
+        foreach (self::$signupWizardSteps as $group => $items) {
+            if ($currentStep == $group) {
+                $groupidx = $i;
+                break;
+            } elseif (is_array($items) and in_array($currentStep, $items)) {
+                $groupidx = $i;
+                $itemidx  = array_search($currentStep, $items);
+                break;
+            }
+            $i += 1;
+        }
+
         /* Current step cannot be found */
-        } else {
+        if (is_null($groupidx)) {
             return null;
         }
 
-        /* Return step and check overflows */
+        /* Return next step */
         if ($index == 'next') {
-            if ($i < count(self::$signupWizardSteps)-1) {
-                return self::$signupWizardSteps[$i+1];
+            /* Return next sub-group element */
+            if (is_numeric($itemidx) and ($itemidx < count(self::$signupWizardSteps[$keys[$groupidx]])-1) and (!$to_group)) {               
+                return self::$signupWizardSteps[$keys[$groupidx]][$itemidx+1];
+            /* Next group has sub-group, return sub-group first */
+            } else if (is_array(self::$signupWizardSteps[$keys[$groupidx+1]])) {
+                return self::$signupWizardSteps[$keys[$groupidx+1]][0];
+            /* Return next group */
             } else {
-                return null;
+                return self::$signupWizardSteps[$keys[$groupidx+1]];
             }
+
+        /* Return previous step */
         } elseif ($index == 'prev') {
-            if ($i < 1) {
-                return self::$signupWizardSteps[0];
+            /* Return prev sub-group element */
+            if (is_numeric($itemidx) and ($itemidx > 0) and (!$to_group)) {
+                return self::$signupWizardSteps[$keys[$groupidx]][$itemidx-1];
+            /* Prev group has sub-group, return sub-group last */
+            } else if (is_array(self::$signupWizardSteps[$keys[$groupidx-1]])) {
+                return end(self::$signupWizardSteps[$keys[$groupidx-1]]);
+            /* Return prev group */
             } else {
-                return self::$signupWizardSteps[$i-1];
+                return self::$signupWizardSteps[$keys[$groupidx-1]];
             }
         }
     }

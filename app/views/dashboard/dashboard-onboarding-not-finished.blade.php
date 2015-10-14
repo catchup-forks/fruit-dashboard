@@ -17,7 +17,7 @@
           <div class="panel-body">
             
             <div class="row margin-top">
-              <div class="col-md-4 col-md-offset-4" >
+              <div class="col-md-6 col-md-offset-3" >
                 <div class="panel panel-default">
                   <div class="panel-body text-center">
                     <p>
@@ -32,7 +32,7 @@
                     </p>
                   </div> <!-- /.panel-body -->
                 </div> <!-- /.panel -->  
-              </div> <!-- /.col-md-4 -->
+              </div> <!-- /.col-md-6 -->
             </div> <!-- /.row -->
 
             <hr>
