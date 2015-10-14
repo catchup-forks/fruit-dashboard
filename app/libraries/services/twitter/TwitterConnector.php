@@ -144,18 +144,4 @@ class TwitterConnector extends GeneralServiceConnector
         $twitterUser->save();
     }
 
-
-    /**
-     * populateData
-     * --------------------------------------------------
-     * Collecting the initial data from the service.
-     * @param array $criteria
-     * --------------------------------------------------
-     */
-    protected function populateData($criteria) {
-        Queue::push('TwitterPopulateData', array(
-            'user_id' => $this->user->id
-        ));
-    }
-
 } /* TwitterConnector */
