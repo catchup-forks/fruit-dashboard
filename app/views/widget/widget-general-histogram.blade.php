@@ -3,9 +3,7 @@
     {{ $widget['settings']['name'] }}
   </div> <!-- /.chart-name -->
   <div class="chart-value larger-text">
-    @if ($widget['state'] == 'active')
-      {{ Utilities::formatNumber(array_values($widget['instance']->getLatestValues())[0], $widget['format']) }}
-    @endif
+    {{ Utilities::formatNumber(array_values($widget['instance']->getLatestValues())[0], $widget['format']) }}
   </div> <!-- /.chart-value -->
 </div> <!-- /.chart-data -->
 

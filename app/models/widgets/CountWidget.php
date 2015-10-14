@@ -149,7 +149,8 @@ abstract class CountWidget extends Widget implements iAjaxWidget
         $dataManager = $this->getDataManager();
         if ( ! is_null($dataManager)) {
             $this->data()->associate($dataManager->data);
-            parent::save($options);
+            $this->setState($dataManager->state, FALSE);
+            parent::save();
         }
 
         return TRUE;

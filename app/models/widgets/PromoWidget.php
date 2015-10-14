@@ -87,25 +87,18 @@ class PromoWidget extends Widget
      * --------------------------------------------------
     */
     private function transform(array $criteria=array()) {
-        /* Getting descriptor. */
+        /* Getting and changing descriptor. */
         $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
-        $className = $descriptor->getClassName();
+        $this->descriptor_id = $descriptor->id;
+        $this->save();
 
-        /* Creating new isntance */
-        $widget = new $className(array(
-            'position' => $this->position,
-            'state'    => 'active'
-        ));
-        $widget->descriptor_id = $descriptor->id;
-        $widget->dashboard()->associate($this->dashboard);
-
-        /* Saving widget, deleting the promo widget */
+        /* Getting the new object. */
+        $widget = Widget::find($this->id);
         $settings = array_merge(
             json_decode($this->getSettings()['widget_settings'], 1),
             $criteria
         );
         $widget->saveSettings($settings);
-        $this->delete();
     }
 
     /**
