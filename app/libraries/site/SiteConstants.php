@@ -291,7 +291,7 @@ class SiteConstants {
      * @return (string) ($nextStep) the next step
      * --------------------------------------------------
      */
-    public static function getSignupWizardStep($index, $currentStep) {
+    public static function getSignupWizardStep($index, $currentStep=array()) {
         /* First or last step */
         if ($index == 'first') {
             return self::$signupWizardSteps[0];

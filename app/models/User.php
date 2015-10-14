@@ -260,7 +260,7 @@ class User extends Eloquent implements UserInterface
         /* Create default settings for the user */
         $settings = new Settings(array(
             'api_key' => md5(str_random(32)),
-            'onboarding_state' => SiteConstants::getSignupWizardStep('first', null),
+            'onboarding_state' => SiteConstants::getSignupWizardStep('first'),
         ));
         $settings->user()->associate($this);
         $settings->save();

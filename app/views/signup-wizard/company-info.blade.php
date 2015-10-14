@@ -25,7 +25,7 @@
                   <label class="control-label">The name of your project</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-6">
-                  <input name='project_name' type='text' class='form-control' placeholder='Project name'>
+                  <input name='project_name' type='text' class='form-control' placeholder='Project name' value="{{ $info->project_name }}">
                 </div> <!-- /.col-sm-6 -->
               </div> <!-- /.form-group -->
 
@@ -34,7 +34,7 @@
                   <label class="control-label">The url of your project</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-6">
-                  <input name='project_url' type='text' class='form-control' placeholder='http://yourproject.com'>
+                  <input name='project_url' type='text' class='form-control' placeholder='http://yourproject.com' value="{{ $info->project_url }}">
                 </div> <!-- /.col-sm-6 -->
               </div> <!-- /.form-group -->
 
@@ -46,10 +46,9 @@
                   <select name="startup_type" class="form-control">
                     <option value=''>Please select one of the following</option>
                     @foreach (SiteConstants::getSignupWizardStartupTypes() as $value => $text)
-                      <option value="{{ $value }}">{{ $text }}</option>
+                      <option value="{{ $value }}" @if($info->startup_type == $value) selected @endif>{{ $text }}</option>
                     @endforeach
                   </select>
-                  <input id="startup_type_other" name="startup_type_other" type="hidden" value=''>
                 </div> <!-- /.col-sm-6 -->
               </div> <!-- /.form-group -->
 
@@ -61,7 +60,7 @@
                   <select name="company_size" class="form-control">
                     <option value=''>Please select one of the following</option>
                     @foreach (SiteConstants::getSignupWizardCompanySize() as $value => $text)
-                      <option value="{{ $value }}">{{ $text }}</option>
+                      <option value="{{ $value }}" @if($info->company_size == $value) selected @endif>{{ $text }}</option>
                     @endforeach
                   </select>
                 </div> <!-- /.col-sm-6 -->
@@ -75,10 +74,9 @@
                   <select name="company_funding" class="form-control">
                     <option value=''>Please select one of the following</option>
                     @foreach (SiteConstants::getSignupWizardCompanyFunding() as $value => $text)
-                      <option value="{{ $value }}">{{ $text }}</option>
+                      <option value="{{ $value }}"@if($info->company_funding == $value) selected @endif>{{ $text }}</option>
                     @endforeach
                   </select>
-                  <input id="company_funding_other" name="company_funding_other" type="hidden" value=''>
                 </div> <!-- /.col-sm-6 -->
               </div> <!-- /.form-group -->
              
@@ -101,7 +99,4 @@
   @stop
 
   @section('pageScripts')
-    <script type="text/javascript">
-      //ToDo add onSelect "other" events
-    </script>
   @stop

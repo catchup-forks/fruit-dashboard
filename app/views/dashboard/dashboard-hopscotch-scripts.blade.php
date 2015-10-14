@@ -13,7 +13,7 @@
       {
         title: "Hover widget",
         content: "You can move, setup & delete a widget by hovering it.",
-        target: document.querySelector(".item.active > .gridster > ul > li"),
+        target: document.querySelector(".item.active > .gridster > .gridster-container > .gridster-widget"),
         placement: "bottom",
         xOffset: "center",
         arrowOffset: "center"
@@ -29,7 +29,7 @@
       {
         title: "Lock dashboard",
         content: "You can lock or unlock the grid on your dashboard.",
-        target: document.querySelector(".item.active > .lock-icon span"),
+        target: document.querySelector("#dashboard-lock"),
         placement: "left",
         yOffset: -150,
         arrowOffset: 80
@@ -58,12 +58,13 @@
 
     // Check if the user has more than one dashboard
     if ($(".carousel-control")[0] == null) {
-      // POP the widget step, if there are no widgets on the dashboard
+      // POP the carousel and dashboard indicators steps, if there is only one dashboard
       newTour['steps'].splice(4,1);
+      newTour['steps'].splice(2,1);
     }
 
     // Check if the dashboard has any widget
-    if ($(".item.active > .gridster > ul > li")[0] == null) {
+    if ($(".item.active > .gridster > .gridster-container > .gridster-widget")[0] == null) {
       // POP the widget step, if there are no widgets on the dashboard
       newTour['steps'].splice(1,1);
     }
