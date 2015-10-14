@@ -6,7 +6,7 @@
     steps: [
       {
         title: "New widget",
-        content: "Add a new widget by clicking the + sign.",
+        content: "Add a new widget (e.g. your Facebook page likes) by clicking the + sign.",
         target: document.querySelector(".fa-plus-circle"),
         placement: "top"
       },
