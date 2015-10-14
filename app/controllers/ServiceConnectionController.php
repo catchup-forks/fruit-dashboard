@@ -328,7 +328,7 @@ class ServiceConnectionController extends BaseController
 
         return View::make('service.facebook.select-pages', array(
                 'pages' => $pages,
-                'cancelStep' => 'social-connections',
+                'cancelRoute' => $this->getReferer(),
             ));
     }
 
@@ -451,7 +451,7 @@ class ServiceConnectionController extends BaseController
 
         return View::make('service.google_analytics.select-properties', array(
                    'profiles' => $profiles,
-                   'cancelStep' => 'google-analytics-connection',
+                   'cancelRoute' => $this->getReferer(),
                 ));
     }
 
@@ -648,10 +648,10 @@ class ServiceConnectionController extends BaseController
                 $connector->saveTokens(array('auth_code' => Input::get('code')));
             } catch (GoogleConnectFailed $e) {
                 /* User declined */
-                return Redirect::route('signup-wizard.getStep', 'social-connections')
+                return Redirect::route('signup-wizard.getStep', 'google-analytics-connection')
                     ->with('error', 'something went wrong.');
             } catch (Google_Auth_Exception $e) {
-                return Redirect::route('signup-wizard.getStep', 'social-connections')
+                return Redirect::route('signup-wizard.getStep', 'google-analytics-connection')
                     ->with('error', 'Invalid token please try again.');
             }
 

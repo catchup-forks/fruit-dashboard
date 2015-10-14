@@ -19,49 +19,48 @@
         <div class="panel panel-default panel-transparent margin-top">
           <div class="panel-body">
 
-            <form method="POST" action="{{ route('signup-wizard.postStep', $currentStep) }}">
+            <form method="POST" action="{{ route('signup-wizard.postStep', $currentStep) }}" class="form-horizontal">
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">The name of your project</label>
+                  <label class="control-label">Name of your project</label>
                 </div> <!-- /.col-sm-4 -->
-                <div class="col-sm-6">
-                  <input name='project_name' type='text' class='form-control' placeholder='Project name'>
-                </div> <!-- /.col-sm-6 -->
+                <div class="col-sm-8">
+                  <input name='project_name' type='text' class='form-control' placeholder='Project name' value="{{ $info->project_name }}">
+                </div> <!-- /.col-sm-8 -->
               </div> <!-- /.form-group -->
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">The url of your project</label>
+                  <label class="control-label">Url of your project</label>
                 </div> <!-- /.col-sm-4 -->
-                <div class="col-sm-6">
-                  <input name='project_url' type='text' class='form-control' placeholder='http://yourproject.com'>
-                </div> <!-- /.col-sm-6 -->
+                <div class="col-sm-8">
+                  <input name='project_url' type='text' class='form-control' placeholder='http://yourproject.com' value="{{ $info->project_url }}">
+                </div> <!-- /.col-sm-8 -->
               </div> <!-- /.form-group -->
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">The type of your startup</label>
+                  <label class="control-label">Type of your startup</label>
                 </div> <!-- /.col-sm-4 -->
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                   <select name="startup_type" class="form-control">
                     <option value=''>Please select one of the following</option>
                     @foreach (SiteConstants::getSignupWizardStartupTypes() as $value => $text)
-                      <option value="{{ $value }}">{{ $text }}</option>
+                      <option value="{{ $value }}" @if($info->startup_type == $value) selected @endif>{{ $text }}</option>
                     @endforeach
                   </select>
-                  <input id="startup_type_other" name="startup_type_other" type="hidden" value=''>
-                </div> <!-- /.col-sm-6 -->
+                </div> <!-- /.col-sm-8 -->
               </div> <!-- /.form-group -->
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">The size of your startup</label>
+                  <label class="control-label">Size of your startup</label>
                 </div> <!-- /.col-sm-4 -->
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                   <select name="company_size" class="form-control">
                     <option value=''>Please select one of the following</option>
                     @foreach (SiteConstants::getSignupWizardCompanySize() as $value => $text)
-                      <option value="{{ $value }}">{{ $text }}</option>
+                      <option value="{{ $value }}" @if($info->company_size == $value) selected @endif>{{ $text }}</option>
                     @endforeach
                   </select>
                 </div> <!-- /.col-sm-6 -->
@@ -69,17 +68,16 @@
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">The funding of your company</label>
+                  <label class="control-label">Funding of your startup</label>
                 </div> <!-- /.col-sm-4 -->
-                <div class="col-sm-6">
+                <div class="col-sm-8">
                   <select name="company_funding" class="form-control">
                     <option value=''>Please select one of the following</option>
                     @foreach (SiteConstants::getSignupWizardCompanyFunding() as $value => $text)
-                      <option value="{{ $value }}">{{ $text }}</option>
+                      <option value="{{ $value }}"@if($info->company_funding == $value) selected @endif>{{ $text }}</option>
                     @endforeach
                   </select>
-                  <input id="company_funding_other" name="company_funding_other" type="hidden" value=''>
-                </div> <!-- /.col-sm-6 -->
+                </div> <!-- /.col-sm-8 -->
               </div> <!-- /.form-group -->
              
               <div class="row">
@@ -101,7 +99,4 @@
   @stop
 
   @section('pageScripts')
-    <script type="text/javascript">
-      //ToDo add onSelect "other" events
-    </script>
   @stop

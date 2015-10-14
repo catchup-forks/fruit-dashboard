@@ -68,7 +68,7 @@ class SignupWizardController extends BaseController
             );
 
             /* Redirect to next step */
-            return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first', null));
+            return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'));
 
         /* Validator failed */
         } else {
@@ -89,7 +89,7 @@ class SignupWizardController extends BaseController
         if (Input::get('code', FALSE)) {
             $userInfo = FacebookConnector::loginWithFacebook();
             if ($userInfo['isNew']) {
-                return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first', null))
+                return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'))
                     ->with('success', 'Welcome on board, '. $userInfo['user']->name. '!');
             } else {
                 return Redirect::route('dashboard.dashboard')
@@ -123,7 +123,7 @@ class SignupWizardController extends BaseController
         $settings = Auth::user()->settings;
         
         /* Requesting the last step */
-        if ($step == SiteConstants::getSignupWizardStep('last', null)) {
+        if ($step == SiteConstants::getSignupWizardStep('last')) {
             /* Set onboarding state */
             $settings->onboarding_state = 'finished';
             $settings->save();
@@ -132,7 +132,7 @@ class SignupWizardController extends BaseController
             return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
         } else {
             /* Set onboarding state */
-            $settings->onboarding_state = $nextStep;
+            $settings->onboarding_state = $step;
             $settings->save();
            
             /* Get responsible function */
@@ -188,7 +188,7 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getCompanyInfo() {
-        return array();
+        return array('info' => Auth::user()->settings);
     }
 
     /**
