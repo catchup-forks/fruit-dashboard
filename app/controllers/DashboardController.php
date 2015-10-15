@@ -27,8 +27,13 @@ class DashboardController extends BaseController
     public function anyDashboard() {
         /* Get the current user */
         $user = Auth::user();
+
         /* Check the default dashboard and create if not exists */
         $user->checkOrCreateDefaultDashboard();
+
+        /* Handle the widget sharings. */
+        $user->handleWidgetSharings();
+
         /* Check onboarding state */
         if ($user->settings->onboarding_state != 'finished') {
             return View::make('dashboard.dashboard-onboarding-not-finished', array(

@@ -58,8 +58,11 @@
   @if ($widget['state'] == 'setup_required')
       @include('widget.widget-setup-required')
   @elseif ($widget['instance'] instanceof SharedWidget)
-      <div class="@if ($widget['state'] == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['instance']->getRelatedWidget()['id']}}">
-    @include($widget['instance']->getRelatedWidget()->descriptor->getTemplateName(), ['widget' => $widget['instance']->getRelatedWidget()->getTemplateData()])
+      <div class="@if ($widget['instance']->getRelatedWidget()->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['instance']->getRelatedWidget()->id}}">
+    @include(
+      $widget['instance']->getRelatedWidget()->getDescriptor()->getTemplateName(),
+      ['widget' => $widget['instance']->getRelatedWidget()->getTemplateData()]
+    )
     </div>
   @elseif ($widget['instance']->premiumUserCheck() === -1)
      @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])

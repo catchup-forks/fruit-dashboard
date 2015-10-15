@@ -1,3 +1,4 @@
+<?php Log::info(get_class($widget['instance'])) ?>
 @if ($widget['instance']->hasData() == FALSE)
   <div id="widget-loading-{{ $widget['id'] }}" class="widget-inner fill">
     <p class="text-center">

@@ -10,7 +10,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
     public function initializeData() {
-        $this->saveData(array($this->getCurrentValue()), TRUE);
+        $this->collectData();
     }
 
     /**
@@ -22,17 +22,25 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
+     protected function formatData($date, array $data) {
+        if (empty($data)) {
+            /* There is no data. */
+            return null;
+        }
+
         $dataSets = $this->getDataSets();
         $decodedData = array(
             'timestamp' => $date->getTimestamp()
         );
+
         foreach ($data as $key=>$value) {
             if ( ! array_key_exists($key, $dataSets)) {
+                /* Key did not exist, adding to datasets. */
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }
             if ( ! is_numeric($value)) {
+                /* Value is not right for histograms, exiting. */
                 return null;
             }
             $decodedData[$dataSets[$key]] = $value;

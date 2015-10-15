@@ -40,7 +40,8 @@ class PromoWidget extends Widget
             throw new WidgetFatalException;
         }
         /* Creating criteria based on the service. */
-        if ($descriptor->type == 'google_analytics_goal_completion') {
+        if ($descriptor->type == 'google_analytics_goal_completion' ||
+                $descriptor->type == 'google_analytics_conversions') {
             $criteria = $this->getGoalCriteria();
         } else if ($descriptor->category == 'google_analytics') {
             $criteria = $this->getProfileCriteria();

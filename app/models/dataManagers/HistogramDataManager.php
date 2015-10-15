@@ -332,7 +332,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
+     protected function formatData($date, array $data) {
         if (is_array($data) && ! empty($data)) {
             $data = array_values($data)[0];
         }
