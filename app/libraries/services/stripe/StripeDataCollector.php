@@ -186,7 +186,7 @@ class StripeDataCollector
                 $this->getNewAccessToken();
             }
             $hasMore = $currentData['has_more'];
-            if ($depth++ > 20) {
+            if ($depth++ > 5) {
                 Log::warning('Reached limit of iterations on stripe customer collection. ');
                 $hasMore = FALSE;
             }
@@ -241,7 +241,7 @@ class StripeDataCollector
                 $this->getNewAccessToken();
             }
             $hasMore = $currentData['has_more'];
-            if ($depth++ > 20) {
+            if ($depth++ > 5) {
                 Log::warning('Reached limit of iterations on stripe event collection. ');
                 $hasMore = FALSE;
             }
