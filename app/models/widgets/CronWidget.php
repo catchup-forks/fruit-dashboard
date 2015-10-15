@@ -110,7 +110,6 @@ abstract class CronWidget extends Widget implements iAjaxWidget
         parent::checkIntegrity();
         if ( ! $this->dataExists()) {
             throw new WidgetException;
-
         }
     }
 

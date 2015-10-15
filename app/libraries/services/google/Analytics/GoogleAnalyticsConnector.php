@@ -65,9 +65,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
             }
             $goal->active = TRUE;
             $goal->save();
-
         }
-
         /* Setting profile to active. */
         $profile->active = TRUE;
         $profile->save();

@@ -223,7 +223,7 @@ class User extends Eloquent implements UserInterface
     /**
      * turnOffBrokenWidgets
      * --------------------------------------------------
-     * Setting all broken widget's state to setup required.
+     * Setting all broken widget's state.
      * @return boolean
      * --------------------------------------------------
      */
@@ -238,7 +238,7 @@ class User extends Eloquent implements UserInterface
                 $view->render();
             } catch (Exception $e) {
                 Log::error($e->getMessage());
-                $widget->setState('setup_required');
+                $widget->setState('rendering_error');
             }
         }
     }

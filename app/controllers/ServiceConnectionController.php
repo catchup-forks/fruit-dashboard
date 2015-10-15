@@ -235,9 +235,9 @@ class ServiceConnectionController extends BaseController
             /* Oauth ready. */
             try {
                 $connector->saveTokens();
-            } catch (FacebookNotConnected $e) {
+            } catch (ServiceException $e) {
                 Log::info($e->getMessage());
-                return Redirect::route('signup-wizard.getStep', 'social-connections')
+                return Redirect::route($this->getReferer(), 'social-connections')
                     ->with('error', 'Something went wrong with the connection.');
             }
             /* Track event | SERVICE CONNECTED */

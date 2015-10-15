@@ -75,6 +75,10 @@ class Widget extends Eloquent
      * Checking the widgets settings integrity, and trying to render the view.
     */
     public function checkIntegrity() {
+        /* By default we give a chance to recover from rendering_error */
+        if ($this->state == 'rendering_error') {
+            $this->setState('active');
+        }
         $this->checkSettingsIntegrity();
     }
 
@@ -233,7 +237,7 @@ class Widget extends Eloquent
         }
         $this->state = $state;
         if ($commit) {
-            $this->save();
+            $this->save(array('skipManager' => TRUE));
         }
     }
 

@@ -106,6 +106,7 @@ class DashboardController extends BaseController
             /* Trying to render the view. */
             return $view->render();
         } catch (Exception $e) {
+            var_dump('turning off widgets');
             /* Error occured trying to find the widget. */
             $user->turnOffBrokenWidgets();
             /* Recreating view. */
