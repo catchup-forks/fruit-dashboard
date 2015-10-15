@@ -22,7 +22,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, array $data) {
+     protected function formatData($date, $data) {
         if (empty($data)) {
             /* There is no data. */
             return null;
