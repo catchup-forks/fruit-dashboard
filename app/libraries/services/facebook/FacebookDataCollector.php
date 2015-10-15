@@ -72,12 +72,14 @@ class FacebookDataCollector
      * Saves The user's pages
      * --------------------------------------------------
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function savePages() {
         $userId = $this->getUserID();
         if (is_null($userId)) {
-            return;
+            throw new ServiceException("We couldn't find your facebook profile.", 1);
+            ;
         }
         try {
             $response = $this->fb->get('/' . $userId . '/accounts', $this->accessToken);
@@ -85,8 +87,7 @@ class FacebookDataCollector
             throw new ServiceException("Error Processing Request", 1);
         }
 
-        /* Deleting previous pages. */
-        $this->user->facebookPages()->delete();
+        /* Saving pages. */
         $pages = array();
         foreach ($response->getGraphEdge() as $graphNode) {
             $page = new FacebookPage(array(
@@ -116,7 +117,7 @@ class FacebookDataCollector
      * @param string $insight
      * @param string $period
      * @return numeric
-     * @throws FacebookNotConnected
+     * @throws ServiceException
      * --------------------------------------------------
     */
     public function getInsightCurrentValue($pageId, $insight, $period) {
@@ -134,7 +135,7 @@ class FacebookDataCollector
      * @param int $pageId
      * @param string $insight
      * @return array
-     * @throws FacebookNotConnected
+     * @throws ServiceException
      * --------------------------------------------------
     */
     public function getPopulateHistogram($pageId, $insight) {
@@ -155,7 +156,7 @@ class FacebookDataCollector
      * @param string $insight
      * @param array $params
      * @return array
-     * @throws FacebookNotConnected
+     * @throws ServiceException
      * --------------------------------------------------
     */
     private function getInsight($insight, $pageId, $params=array()) {

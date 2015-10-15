@@ -22,10 +22,10 @@ trait GoogleAnalyticsGoalWidgetTrait
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->where('profile_id' , $profileId)
                 ->first();
-        } else if ($this->getSettings()['profile']) {
+        } else if ($this->getProfileId()) {
             /* Have specific profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
-                ->where('profile_id' , $this->getSettings()['profile'])
+                ->where('profile_id' , $this->getProfileId())
                 ->first();
         } else {
             /* On init using first profile. */

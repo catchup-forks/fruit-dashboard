@@ -11,7 +11,7 @@ class ModifyWidgetStates extends Migration {
      * @return void
      */
     public function up() {
-        $deprecatedStates = array('hidden', 'missing_data');
+        $deprecatedStates = array('hidden');
 
         /* Get current states. */
         $states = array();

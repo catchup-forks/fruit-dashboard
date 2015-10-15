@@ -4,16 +4,6 @@
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
     /**
-     * initializeData
-     * --------------------------------------------------
-     * First time population of the data.
-     * --------------------------------------------------
-     */
-    public function initializeData() {
-        $this->collectData();
-    }
-
-    /**
      * formatData
      * Formatting data to the multiple histogram format.
      * --------------------------------------------------

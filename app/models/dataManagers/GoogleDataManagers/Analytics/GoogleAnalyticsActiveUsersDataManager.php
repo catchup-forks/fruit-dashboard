@@ -14,7 +14,7 @@ class GoogleAnalyticsActiveUsersDataManager extends MultipleHistogramDataManager
         /* Getting the page from settings. */
         $collector = new GoogleAnalyticsDataCollector($this->user);
         return $collector->getActiveUsers(
-            $this->getCriteria()['profile'],
+            $this->getProfileId(),
             $this->getMetricNames(),
             $this->getOptionalParams()
         );

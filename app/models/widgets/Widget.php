@@ -72,7 +72,7 @@ class Widget extends Eloquent
 
     /**
      * checkIntegrity
-     * Checking the widgets settings integrity, and trying to render the view.
+     * Checking the widgets settings integrity.
     */
     public function checkIntegrity() {
         /* By default we give a chance to recover from rendering_error */
