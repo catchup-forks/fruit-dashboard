@@ -28,7 +28,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             'timestamp' => $date->getTimestamp()
         );
         foreach ($data as $key=>$value) {
-            if (!array_key_exists($key, $dataSets)) {
+            if ( ! array_key_exists($key, $dataSets)) {
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }

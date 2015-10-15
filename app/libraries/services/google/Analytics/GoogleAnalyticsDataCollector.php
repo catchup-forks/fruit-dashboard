@@ -230,7 +230,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getAvgSessionDuration($profileId) {
         return $this->getMetrics(
-            $profileId, 'yesterday', 'today', array('avgSessionDuration')
+            $profileId, 'today', 'today', array('avgSessionDuration')
         )['avgSessionDuration'];
    }
 
@@ -244,7 +244,7 @@ class GoogleAnalyticsDataCollector
      */
     public function getSessionsPerUser($profileId) {
         return $this->getMetrics(
-            $profileId, 'yesterday', 'today', array('sessionsPerUser')
+            $profileId, 'today', 'today', array('sessionsPerUser')
         )['sessionsPerUser'];
    }
 
@@ -309,8 +309,30 @@ class GoogleAnalyticsDataCollector
     public function getBounceRate($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('bounceRate')
+            'today', 'today', array('bounceRate')
         )['bounceRate'];
+   }
+
+    /**
+     * getActiveUsers
+     * Returning the active useres (multiple).
+     * --------------------------------------------------
+     * @param string $profileId
+     * @param $metricNames
+     * @param array $optionalParams
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getActiveUsers($profileId, array $metricNames, array $optionalParams=array()) {
+        $currentValues = array();
+        foreach ($metricNames as $metric) {
+            $currentValues[$metric] = array_values($this->getMetrics(
+                $profileId,
+                'today', 'today',
+                array($metric), $optionalParams
+            )[$metric])[0];
+        }
+        return $currentValues;
    }
 
     /**
