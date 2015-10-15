@@ -6,22 +6,11 @@
  */
 var FDTwitterFollowersCountWidget = function(widgetOptions) {
  // Call parent constructor
- FDGeneralWidget.call(this, widgetOptions)
- 
+ FDCountWidget.call(this, widgetOptions)
+
  // Automatically initialize
  this.init();
 };
 
-FDTwitterFollowersCountWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDTwitterFollowersCountWidget.prototype = Object.create(FDCountWidget.prototype);
 FDTwitterFollowersCountWidget.prototype.constructor = FDTwitterFollowersCountWidget;
-
-/**
- * @function draw
- * Draws the widget
- * --------------------------------------------------------------------------
- * @return {this} 
- * --------------------------------------------------------------------------
- */
-FDTwitterFollowersCountWidget.prototype.draw = function(data) {
-  return this;
-}
