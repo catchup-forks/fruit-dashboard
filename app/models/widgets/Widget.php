@@ -246,19 +246,26 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function isSettingVisible($fieldName) {
-        $meta = $this->getSettingsFields();
-        if ( ! array_key_exists($fieldName, $meta)) {
+        $settingsFields = $this->getSettingsFields();
+        if ( ! array_key_exists($fieldName, $settingsFields)) {
             /* Key doesn't exist. Don't even try to render it. */
             return FALSE;
         }
-        $fieldMeta = $meta[$fieldName];
-        if (array_key_exists('hidden', $fieldMeta) && $fieldMeta['hidden'] == TRUE) {
+        $fieldMeta = $settingsFields[$fieldName];
+        if (array_key_exists('hidden', $fieldMeta) &&
+                $fieldMeta['hidden'] == TRUE) {
             return FALSE;
         }
 
+        if (array_key_exists('ajax', $fieldMeta) &&
+                $fieldMeta['ajax'] == TRUE) {
+            return TRUE;
+        }
+
         /* Don't show singleChoice if there's only one value */
-        if (($fieldMeta['type'] == 'SCHOICE' || $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
-             count($this->$fieldName()) == 1) {
+        if (($fieldMeta['type'] == 'SCHOICE' ||
+                $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
+                 count($this->$fieldName()) == 1) {
             return FALSE;
         }
 
@@ -305,10 +312,11 @@ class Widget extends Eloquent
      * Getting the laravel validation array.
      * --------------------------------------------------
      * @param array $fields
+     * @param array $data
      * @return array
      * --------------------------------------------------
     */
-    public function getSettingsValidationArray(array $fields) {
+    public function getSettingsValidationArray(array $fields, array $data) {
         $validationArray = array();
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
@@ -325,7 +333,17 @@ class Widget extends Eloquent
 
             // Doing type based validation.
             switch ($fieldMeta['type']) {
-                case 'SCHOICE':  $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|"; break;
+                case 'SCHOICE':
+                    if (array_key_exists('ajax_depends', $fieldMeta)) {
+                        try {
+                            $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                        } catch (Exception $e) {
+                            $choices = array();
+                        }
+                    } else {
+                        $choices = array_keys($this->$fieldName());
+                    }
+                    $validationString .= 'in:' . implode(',', $choices)."|"; break;
                 case 'INT': $validationString .= 'integer|'; break;
                 case 'FLOAT':  $validationString .= 'numeric|'; break;
                 case 'DATE':  $validationString .= 'date|'; break;
@@ -487,16 +505,15 @@ class Widget extends Eloquent
      * Checking the Settings integrity of widgets.
     */
     protected function checkSettingsIntegrity() {
-        if (is_null($this->getSettings())) {
-            $this->setState('setup_required');
-            return;
+        $settings = $this->getSettings();
+        if (is_null($settings)) {
+            throw new WidgetException;
         } else if ( ! $this->hasValidCriteria()) {
-            $this->setState('setup_required');
-            return;
+            throw new WidgetFatalException;
         }
-        foreach ($this->getSettingsFields() as $key=>$value) {
-            if ( ! array_key_exists($key, $this->getSettings())) {
-                $this->setState('setup_required');
+        foreach ($this->getSettingsFields() as $key=>$meta) {
+            if ( ! array_key_exists($key, $settings)) {
+                throw new WidgetException;
             }
         }
     }

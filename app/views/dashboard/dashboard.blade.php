@@ -11,28 +11,30 @@
 
 <div id="dashboards" class="carousel slide">
 
-    {{-- Include navigation dots for each dashboard. --}}
-    <ol class="carousel-indicators">
+    @if (count($dashboards) > 1)
+      {{-- Include navigation dots for each dashboard. --}}
+      <ol class="carousel-indicators">
 
-      @foreach ($dashboards as $dashboardId => $dashboardMeta)
-        {{-- Set active dashboard. Get from backend or make the default --}}
-        @if (isset($activeDashboard))
-          @if ($dashboardId == $activeDashboard)
-            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
+        @foreach ($dashboards as $dashboardId => $dashboardMeta)
+          {{-- Set active dashboard. Get from backend or make the default --}}
+          @if (isset($activeDashboard))
+            @if ($dashboardId == $activeDashboard)
+              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
+            @else
+              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
+            @endif
           @else
-            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
+            @if($dashboardMeta['is_default'])
+              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
+            @else
+              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
+            @endif
           @endif
-        @else
-          @if($dashboardMeta['is_default'])
-            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
-          @else
-            <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
-          @endif
-        @endif
-      @endforeach
+        @endforeach
 
-    </ol>
-
+      </ol>
+    @endif
+    
     {{-- Make a wrapper for dashboards --}}
     <div class="carousel-inner">
 

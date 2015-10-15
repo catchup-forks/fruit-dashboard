@@ -10,6 +10,7 @@ class TimerWidget extends Widget
             'validation' => 'required'
         ),
    );
+
     /* The settings to setup in the setup-wizard. */
     private static $timerSetupFields = array('countdown');
 

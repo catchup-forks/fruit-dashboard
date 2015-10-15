@@ -14,5 +14,5 @@ class GoogleAnalyticsProfile extends Eloquent
 
     // -- Relations -- //
     public function property() { return $this->belongsTo('GoogleAnalyticsProperty', 'property_id'); }
-    public function goals() { Log::info($this->id); return $this->hasMany('GoogleAnalyticsGoal', 'profile_id'); }
+    public function goals() { return $this->hasMany('GoogleAnalyticsGoal', 'profile_id'); }
 }

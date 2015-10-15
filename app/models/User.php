@@ -22,9 +22,6 @@ class User extends Eloquent implements UserInterface
         'date_of_birth',
         'created_at',
         'updated_at',
-        'last_activity',
-        'api_key',
-        'startup_type'
     );
 
     /* -- Relations -- */
@@ -122,7 +119,7 @@ class User extends Eloquent implements UserInterface
             );
             /* Iterating through the widgets. */
             foreach ($dashboard->widgets as $widget) {
-                if ($widget->state == 'loading') {
+                if ($widget->state == 'loading' || $widget->state == 'setup_required') {
                     /* Widget is loading, no data is available yet. */
                     $templateData = Widget::getDefaultTemplateData($widget);
                 } else {
@@ -155,7 +152,21 @@ class User extends Eloquent implements UserInterface
      */
     public function checkWidgetsIntegrity() {
         foreach ($this->widgets as $widget) {
-            $widget->checkIntegrity();
+            try {
+                $widget->checkIntegrity();
+            } catch (WidgetFatalException $e) {
+                /* Cannot recover widget. */
+                $widget->setState('setup_required');
+            } catch (WidgetException $e) {
+                /* A simple save might help. */
+                $widget->save();
+                try {
+                    $widget->checkIntegrity();
+                } catch (WidgetException $e) {
+                    /* Did not help. */
+                    $widget->setState('setup_required');
+                }
+            }
         }
     }
 
@@ -246,13 +257,10 @@ class User extends Eloquent implements UserInterface
      * settings, background, subscription.
      */
     public function createDefaultProfile() {
-        /* Create extra attributes to user */
-        $this->api_key = md5(str_random(32));
-        $this->save();
-
         /* Create default settings for the user */
         $settings = new Settings(array(
-            'newsletter_frequency' => 0,
+            'api_key' => md5(str_random(32)),
+            'onboarding_state' => SiteConstants::getSignupWizardStep('first'),
         ));
         $settings->user()->associate($this);
         $settings->save();
@@ -302,6 +310,7 @@ class User extends Eloquent implements UserInterface
      * Creating the default dashboards for the user.
      */
     private function createDefaultDashboards() {
+        /* Make ARRRR dashboards */
         foreach (SiteConstants::getAutoDashboards() as $name=>$widgets) {
             $dashboard = new Dashboard(array(
                 'name'       => $name . ' dashboard',
@@ -328,6 +337,67 @@ class User extends Eloquent implements UserInterface
                 ));
             }
         }
+
+        /* Make personal dashboard */
+        $this->makePersonalAutoDashboard('auto', null);
+    }
+
+    /**
+     * makePersonalAutoDashboard
+     * creates a new Dashboard object and personal widgets
+     * optionally from the POST data
+     * --------------------------------------------------
+     * @param (string)  ($mode) 'auto' or 'manual'
+     * @param (array)   ($widgetdata) Personal widgets data
+     * @return (Dashboard) ($dashboard) The new Dashboard object
+     * --------------------------------------------------
+     */
+    private function makePersonalAutoDashboard($mode, $widgetdata) {
+        /* Create new dashboard */
+        $dashboard = new Dashboard(array(
+            'name'       => 'Personal dashboard',
+            'background' => 'On',
+            'number'     => $this->dashboards->max('number') + 1,
+            'is_default' => FALSE
+        ));
+        $dashboard->user()->associate($this);
+        $dashboard->save();
+
+        /* Create clock widget */
+        if (($mode == 'auto') or
+            array_key_exists('widget-clock', $widgetdata)) {
+            $clockwidget = new ClockWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
+            ));
+            $clockwidget->dashboard()->associate($dashboard);
+            $clockwidget->save();
+        }
+
+        /* Create greetings widget */
+        if (($mode == 'auto') or
+            array_key_exists('widget-greetings', $widgetdata)) {
+            $greetingswidget = new GreetingsWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
+            ));
+            $greetingswidget->dashboard()->associate($dashboard);
+            $greetingswidget->save();
+        }
+
+        /* Create quote widget */
+        if (($mode == 'auto') or
+            array_key_exists('widget-quote', $widgetdata)) {
+            $quotewidget = new QuoteWidget(array(
+                'state'    => 'active',
+                'position' => '{"row":10,"col":1,"size_x":12,"size_y":2}',
+            ));
+            $quotewidget->dashboard()->associate($dashboard);
+            $quotewidget->saveSettings(array('type' => 'inspirational'));
+        }
+
+        /* Return */
+        return $dashboard;
     }
 
 }

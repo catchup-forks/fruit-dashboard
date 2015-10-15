@@ -71,7 +71,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      public function getWidgetApiUrl() {
         return route('api.post',
                     array(SiteConstants::getLatestApiVersion(),
-                          $this->user()->api_key,
+                          $this->user()->settings->api_key,
                           $this->id));
      }
 

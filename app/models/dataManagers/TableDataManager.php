@@ -105,7 +105,7 @@ abstract class TableDataManager extends DataManager
      * @param array $data
      * --------------------------------------------------
      */
-    public function insert($data) {
+    public function insert(array $data) {
         $currentData = $this->getContent();
         $entry = array();
         foreach ($this->getHeader() as $name=>$key) {

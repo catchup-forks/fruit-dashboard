@@ -68,7 +68,7 @@ class WidgetDescriptorSeeder extends Seeder
                 'number'       => 2,
                 'min_cols'     => 5,
                 'min_rows'     => 1,
-                'default_cols' => 10,
+                'default_cols' => 12,
                 'default_rows' => 2
             )
         );
@@ -547,6 +547,22 @@ class WidgetDescriptorSeeder extends Seeder
                 'name'        => 'Top sources',
                 'description' => '',
                 'type'        => 'google_analytics_top_sources',
+                'category'    => 'google_analytics',
+                'is_premium'  => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_conversions'],
+            array(
+                'name'        => 'Conversions',
+                'description' => '',
+                'type'        => 'google_analytics_conversions',
                 'category'    => 'google_analytics',
                 'is_premium'  => FALSE,
                 'number'       => 3,

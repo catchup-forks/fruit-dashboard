@@ -35,47 +35,7 @@ class SignupWizardController extends BaseController
         return View::make('signup-wizard.authentication');
     }
 
-    /**
-     * getSelectStartupType
-     * Renders the startup-type template.
-     * --------------------------------------------------
-     * @return Response
-     * --------------------------------------------------
-     */
-    public function getSelectStartupType() {
-        return View::make('signup-wizard.select-startup-type');
-    }
-
-    /**
-     * postSelectStartupType
-     * Saves the selected choice.
-     * --------------------------------------------------
-     * @return Response
-     * --------------------------------------------------
-     */
-    public function postSelectStartupType() {
-        $rules = array(
-            'startup_type' => 'required|in:' . implode(',', array_keys(SiteConstants::getStartupTypes())),
-        );
-
-        /* Run validation rules on the inputs */
-        $validator = Validator::make(Input::all(), $rules);
-
-        if ($validator->fails()) {
-            /* Fail. */
-            return Redirect::back();
-        }
-
-        /* Success */
-        $user = Auth::user();
-        $user->startup_type = Input::get('startup_type');
-        $user->save();
-
-        return Redirect::route('signup-wizard.financial-connections')->with('success', 'Startup type saved');
-
-    }
-
-    /**
+/**
      * postAuthentication
      * --------------------------------------------------
      * @return Saves the user authentication data
@@ -108,7 +68,7 @@ class SignupWizardController extends BaseController
             );
 
             /* Redirect to next step */
-            return Redirect::route('signup-wizard.financial-connections');
+            return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'));
 
         /* Validator failed */
         } else {
@@ -116,52 +76,6 @@ class SignupWizardController extends BaseController
             return Redirect::route('signup-wizard.authentication')
                 ->with('error', $validator->errors()->get(key($validator->invalid()))[0]);
         }
-    }
-
-    /**
-     * anyFinancialConnections
-     * --------------------------------------------------
-     * @return Renders the financial connections step
-     * --------------------------------------------------
-     */
-    public function anyFinancialConnections() {
-        /* Render the page */
-        return View::make('signup-wizard.financial-connections');
-    }
-
-    /**
-     * anySocialConnections
-     * --------------------------------------------------
-     * @return Renders the social connections setup step
-     * --------------------------------------------------
-     */
-    public function anySocialConnections() {
-        /* Render the page */
-        return View::make('signup-wizard.social-connections');
-    }
-
-    /**
-     * anyWebAnalyticsConnections
-     * --------------------------------------------------
-     * @return Renders the web analytics connections setup step
-     * --------------------------------------------------
-     */
-    public function anyWebAnalyticsConnections() {
-        /* Render the page */
-        return View::make('signup-wizard.web-analytics-connections');
-    }
-
-    /**
-     * getPersonalWidgets
-     * --------------------------------------------------
-     * @return Renders the personal widget setup step
-     * --------------------------------------------------
-     */
-    public function anyPersonalWidgets() {
-        /* Make personal dashboard automatically */
-        $this->makePersonalAutoDashboard(Auth::user(), 'auto', null);
-        /* Redirect to the dashboard */
-        return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
     }
 
     /**
@@ -175,7 +89,7 @@ class SignupWizardController extends BaseController
         if (Input::get('code', FALSE)) {
             $userInfo = FacebookConnector::loginWithFacebook();
             if ($userInfo['isNew']) {
-                return Redirect::route('signup-wizard.financial-connections')
+                return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'))
                     ->with('success', 'Welcome on board, '. $userInfo['user']->name. '!');
             } else {
                 return Redirect::route('dashboard.dashboard')
@@ -189,6 +103,259 @@ class SignupWizardController extends BaseController
 
         /* Basic page load */
         return Redirect::to(FacebookConnector::getFacebookLoginUrl());
+    }
+
+    /**
+     * ================================================== *
+     *                 FUNCTIONS FOR STEPS                *
+     * ================================================== *
+     */
+
+    /**
+     * getStep
+     * --------------------------------------------------
+     * @param (string) {$step} The actual step
+     * @return Renders the requested step
+     * --------------------------------------------------
+     */
+    public function getStep($step) {
+        /* Get user settings */
+        $settings = Auth::user()->settings;
+
+        /* Requesting the last step */
+        if ($step == SiteConstants::getSignupWizardStep('last')) {
+            /* Set onboarding state */
+            $settings->onboarding_state = 'finished';
+            $settings->save();
+
+            /* Redirect to the dashboard*/
+            return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
+        } else {
+            /* Set onboarding state */
+            $settings->onboarding_state = $step;
+            $settings->save();
+
+            /* Get responsible function */
+            $stepFunction = 'get'. Utilities::dashToCamelCase($step);
+
+            /* Call responsible function */
+            $params = $this->$stepFunction();
+            $params = array_merge($params, ['currentStep' => $step]);
+
+            /* Return */
+            return View::make('signup-wizard.'.$step, $params);
+        }
+    }
+
+    /**
+     * postStep
+     * --------------------------------------------------
+     * @param (string) {$step} The actual step
+     * @return Handles the POST data for the step, and renders next
+     * --------------------------------------------------
+     */
+    public function postStep($step) {
+        /* Get responsible function */
+        $stepFunction = 'post'. Utilities::dashToCamelCase($step);
+
+        /* Call responsible function */
+        $result = $this->$stepFunction();
+
+        /* Check result errors */
+        if (array_key_exists('error', $result)) {
+            return Redirect::route('signup-wizard.getStep', $step)->with('error', $result['error']);
+        }
+
+        /* Return next step or dashboard and save the new state*/
+        $nextStep = SiteConstants::getSignupWizardStep('next', $step);
+        $settings = Auth::user()->settings;
+        if (is_null($nextStep)) {
+            /* Set onboarding state */
+            $settings->onboarding_state = 'finished';
+            $settings->save();
+
+            /* Redirect to the dashboard*/
+            return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
+        } else {
+            /* Set onboarding state */
+            $settings->onboarding_state = $nextStep;
+            $settings->save();
+
+            /* Redirect to the next step*/
+            return Redirect::route('signup-wizard.getStep', $nextStep);
+        }
+    }
+
+    /**
+     * STEP | getCompanyInfo
+     * --------------------------------------------------
+     * @return Handles the extra process for getCompanyInfo
+     * --------------------------------------------------
+     */
+    public function getCompanyInfo() {
+        return array('info' => Auth::user()->settings);
+    }
+
+    /**
+     * STEP | postCompanyInfo
+     * --------------------------------------------------
+     * @return Handles the extra process for postCompanyInfo
+     * --------------------------------------------------
+     */
+    public function postCompanyInfo() {
+        /* Success */
+        $settings = Auth::user()->settings;
+        $settings->project_name     = Input::get('project_name');
+        $settings->project_url      = Input::get('project_url');
+        $settings->startup_type     = Input::get('startup_type');
+        $settings->company_size     = Input::get('company_size');
+        $settings->company_funding  = Input::get('company_funding');
+        $settings->save();
+
+        /* Return */
+        return array();
+    }
+
+    /**
+     * STEP | getGoogleAnalyticsConnection
+     * --------------------------------------------------
+     * @return Handles the extra process for getGoogleAnalyticsConnection
+     * --------------------------------------------------
+     */
+    public function getGoogleAnalyticsConnection() {
+        /* Return */
+        return array('service' => SiteConstants::getServiceMeta('google_analytics'));
+    }
+
+    /**
+     * STEP | postGoogleAnalyticsConnection
+     * --------------------------------------------------
+     * @return Handles the extra process for postGoogleAnalyticsConnection
+     * --------------------------------------------------
+     */
+    public function postGoogleAnalyticsConnection() {
+        /* Return */
+        return array();
+    }
+
+    /**
+     * STEP | getGoogleAnalyticsProfile
+     * --------------------------------------------------
+     * @return Handles the extra process for getGoogleAnalyticsProfile
+     * --------------------------------------------------
+     */
+    public function getGoogleAnalyticsProfile() {
+        /* Get the profiles of the user */
+        $profiles = array();
+        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+            $profiles[$property->name] = array();
+            foreach ($property->profiles as $profile) {
+                $profiles[$property->name][$profile->profile_id] = $profile->name;
+            }
+        }
+
+        /* Return */
+        return array('profiles' => $profiles);
+    }
+
+    /**
+     * STEP | postGoogleAnalyticsProfile
+     * --------------------------------------------------
+     * @return Handles the extra process for postGoogleAnalyticsProfile
+     * --------------------------------------------------
+     */
+    public function postGoogleAnalyticsProfile() {
+        /* Check errors */
+        if (count(Input::get('profiles')) == 0) {
+            return array('error' => 'Please select at least one of the profiles.');
+        }
+
+        /* Save profile (create datamanagers) */
+        $connector = new GoogleAnalyticsConnector(Auth::user());
+        $connector->createDataManagers(array('profile' => Input::get('profiles')));
+
+        /* Save the selected profile in the session */
+        Session::put('selectedProfile', Input::get('profiles'));
+
+        /* Return */
+        return array();
+    }
+
+    /**
+     * STEP | getGoogleAnalyticsGoal
+     * --------------------------------------------------
+     * @return Handles the extra process for getGoogleAnalyticsGoal
+     * --------------------------------------------------
+     */
+    public function getGoogleAnalyticsGoal() {
+        /* Get the goals of the user */
+        $goals = array();
+
+        $profileId = Session::get('selectedProfile');
+        if (!is_null($profileId)) {
+            foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
+                $goals[$goal->goal_id] = $goal->name;
+            }
+        }
+        return array('goals' => $goals);
+    }
+
+    /**
+     * STEP | postGoogleAnalyticsGoal
+     * --------------------------------------------------
+     * @return Handles the extra process for postGoogleAnalyticsGoal
+     * --------------------------------------------------
+     */
+    public function postGoogleAnalyticsGoal() {
+        /* Save goal (create datamanagers) */
+        $connector = new GoogleAnalyticsConnector(Auth::user());
+        $connector->createDataManagers(array(
+            'profile' => Session::pull('selectedProfile'),
+            'goal'    => Input::get('goals')
+        ));
+
+        /* Return */
+        return array();
+    }
+
+    /**
+     * STEP | getSocialConnections
+     * --------------------------------------------------
+     * @return Handles the extra process for getSocialConnections
+     * --------------------------------------------------
+     */
+    public function getSocialConnections() {
+        return array();
+    }
+
+    /**
+     * STEP | postSocialConnections
+     * --------------------------------------------------
+     * @return Handles the extra process for postSocialConnections
+     * --------------------------------------------------
+     */
+    public function postSocialConnections() {
+        return array();
+    }
+
+    /**
+     * STEP | getFinancialConnections
+     * --------------------------------------------------
+     * @return Handles the extra process for getFinancialConnections
+     * --------------------------------------------------
+     */
+    public function getFinancialConnections() {
+        return array();
+    }
+
+    /**
+     * STEP | postFinancialConnections
+     * --------------------------------------------------
+     * @return Handles the extra process for postFinancialConnections
+     * --------------------------------------------------
+     */
+    public function postFinancialConnections() {
+        return array();
     }
 
     /**
@@ -221,73 +388,6 @@ class SignupWizardController extends BaseController
 
         /* Return */
         return $user;
-    }
-
-    /**
-     * makePersonalAutoDashboard
-     * creates a new Dashboard object and personal widgets
-     * from the POST data
-     * --------------------------------------------------
-     * @param (User)    ($user) The current user
-     * @param (string)  ($mode) 'auto' or 'manual'
-     * @param (array)   ($widgetdata) Personal widgets data
-     * @return (Dashboard) ($dashboard) The new Dashboard object
-     * --------------------------------------------------
-     */
-    private function makePersonalAutoDashboard($user, $mode, $widgetdata) {
-        /* Create new dashboard */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Personal dashboard',
-            'background' => 'On',
-            'number'     => Dashboard::where('user_id', $user->id)->max('number') + 1,
-            'is_default' => TRUE
-        ));
-        $dashboard->user()->associate($user);
-
-        /* Save dashboard object */
-        $dashboard->save();
-
-        /* Create clock widget */
-        if (($mode == 'auto') or
-            array_key_exists('widget-clock', $widgetdata)) {
-            $clockwidget = new ClockWidget(array(
-                'state'    => 'active',
-                'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
-            ));
-            $clockwidget->dashboard()->associate($dashboard);
-
-            /* Save clock widget object */
-            $clockwidget->save();
-        }
-
-        /* Create greetings widget */
-        if (($mode == 'auto') or
-            array_key_exists('widget-greetings', $widgetdata)) {
-            $greetingswidget = new GreetingsWidget(array(
-                'state'    => 'active',
-                'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
-            ));
-            $greetingswidget->dashboard()->associate($dashboard);
-
-            /* Save greetings widget object */
-            $greetingswidget->save();
-        }
-
-        /* Create quote widget */
-        if (($mode == 'auto') or
-            array_key_exists('widget-quote', $widgetdata)) {
-            $quotewidget = new QuoteWidget(array(
-                'state'    => 'active',
-                'position' => '{"row":11,"col":1,"size_x":12,"size_y":1}',
-            ));
-            $quotewidget->dashboard()->associate($dashboard);
-
-            /* Save quote widget object */
-            $quotewidget->saveSettings(array('type' => 'inspirational'));
-        }
-
-        /* Return */
-        return $dashboard;
     }
 
 } /* SignupWizardController */

@@ -4,7 +4,8 @@ class TwitterUser extends Eloquent
 {
     // -- Fields -- //
     protected $fillable = array(
-        'screen_name',
+        'user_id',
+        'screen_name'
     );
 
     // -- Options -- //
