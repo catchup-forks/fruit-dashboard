@@ -3,8 +3,8 @@
     {% for dashboard in event.data %}
         <h3>{{ dashboard[1].name }}</h3>
         {% for widget in dashboard[1].widgets %}
-            {{ widget[1].name }}<br>
-            <span><img src="{{ widget[1].url }}"></img></span><br>
+            <h4><small>{{ widget[1].name }}</small>: {{ widget[1].latest}}</h4>
+            <br>
         {% endfor %}
     {% endfor %}
 </div>
