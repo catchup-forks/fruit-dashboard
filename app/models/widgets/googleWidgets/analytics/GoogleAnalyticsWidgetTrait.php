@@ -11,7 +11,6 @@ trait GoogleAnalyticsWidgetTrait
         ),
     );
     private static $profile = array('profile');
-    private static $profileProperty = array('profile');
 
     /* Choices functions */
     public function profile() {
@@ -83,6 +82,21 @@ trait GoogleAnalyticsWidgetTrait
     }
 
     /**
+     * getProfile
+     * --------------------------------------------------
+     * Returning the corresponding profile.
+     * @return GoogleAnalyticsProperty
+     * --------------------------------------------------
+    */
+    public function getProfile() {
+        $profile = $this->user()->googleAnalyticsProfiles()
+            ->where('profile_id', $this->getSettings()['profile'])
+            ->first();
+        /* Invalid profile in DB. */
+        return $profile;
+    }
+
+    /**
      * getProperty
      * --------------------------------------------------
      * Returning the corresponding property.
@@ -90,8 +104,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public function getProperty() {
-        $profileId = $this->getSettings()['profile'];
-        $profile = $this->user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first();
+        $profile = $this->getProfile();
         /* Invalid profile in DB. */
         if (is_null($profile)) {
             return null;

@@ -1,8 +1,8 @@
 <?php
 
-class GoogleAnalyticsTopSourcesWidget extends ServiceTableWidget implements iServiceWidget
+class GoogleAnalyticsConversionsWidget extends ServiceTableWidget implements iServiceWidget
 {
-    use GoogleAnalyticsWidgetTrait;
+    use GoogleAnalyticsGoalWidgetTrait;
 
     /**
      * getTemplateData

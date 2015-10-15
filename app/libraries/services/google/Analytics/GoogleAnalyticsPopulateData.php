@@ -30,10 +30,18 @@ class GoogleAnalyticsPopulateData extends DataPopulator
             'other' => array()
         );
 
-        foreach ($this->user->dataManagers()->get() as $dataManager) {
-
+        foreach ($this->user->dataManagers as $dataManager) {
+            /* Filtering criteria for manager. */
+            $dmCriteria = array();
+            $className = get_class($dataManager);
+            $hasEnoughCriteria = TRUE;
+            foreach ($className::getCriteriaFields() as $field) {
+                if ( ! array_key_exists($field, $this->criteria)) {
+                    $hasEnoughCriteria = FALSE;
+                }
+            }
             if ($dataManager->getDescriptor()->category == 'google_analytics' &&
-                    $dataManager->getCriteria() == $this->criteria &&
+                    $hasEnoughCriteria &&
                     $dataManager->getData() == FALSE) {
 
                 if ($dataManager instanceof HistogramDataManager &&

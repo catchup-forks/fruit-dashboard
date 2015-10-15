@@ -1,6 +1,6 @@
 <?php
 
-class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
+class GoogleAnalyticsConversionsDataManager extends TableDataManager
 {
     use GoogleAnalyticsDataManagerTrait;
 
@@ -10,8 +10,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         'max_results' => 5
     );
     private static $dimensions = array('source');
-    private static $sortBy = '-ga:sessions';
-    private static $metrics = array('sessions', 'users');
+    private static $sortBy = '-ga:users';
 
     /**
      * getOptionalParams
@@ -27,6 +26,16 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         );
     }
 
+    /**
+     * getMetricNames
+     * Returning the names of the metric used by the DM.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getMetricNames() {
+        return array('users', 'goal' . $this->getCriteria()['goal'] . 'Completions');
+    }
 
     /**
      * getMetric
@@ -40,7 +49,16 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      */
     private function getMetric($start, $end, $maxResults) {
         $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getMetrics($this->getCriteria()['profile'], $start, $end, self::$metrics, array('dimensions' => $this->getDimensions(), 'sort' => self::$sortBy, 'max-results' => $maxResults));
+        return $collector->getMetrics(
+            $this->getProfileId(),
+            $start, $end,
+            $this->getMetricNames(),
+            array(
+                'dimensions'  => $this->getDimensions(),
+                'sort'        => self::$sortBy,
+                'max-results' => $maxResults
+            )
+        );
     }
 
     /**
@@ -65,9 +83,17 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         $this->initTable();
 
         /* Inserting rows. */
-        foreach ($metricsData as $metric=>$row) {
-            $this->insert(array_merge(array('Source' => $metric), $row));
+        foreach ($metricsData as $source=>$row) {
+            $visitors    = array_values($row)[0];
+            $completions = array_values($row)[1];
+            $this->insert(array(
+                $source,
+                $visitors,
+                $completions,
+                sprintf('%.2f%%', $completions/$visitors * 100)
+            ));
         }
+        $this->setState('active', FALSE);
     }
 
     /**
@@ -84,9 +110,9 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 
         /* Adding cols. */
         $this->addCol('Source');
-        foreach (self::$metrics as $metric) {
-            $this->addCol(ucwords($metric));
-        }
+        $this->addCol('Unique visitors');
+        $this->addCol('Completion');
+        $this->addCol('Ratio');
     }
 
     /**

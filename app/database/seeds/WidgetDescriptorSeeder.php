@@ -557,6 +557,22 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
+        WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_conversions'],
+            array(
+                'name'        => 'Conversions',
+                'description' => '',
+                'type'        => 'google_analytics_conversions',
+                'category'    => 'google_analytics',
+                'is_premium'  => FALSE,
+                'number'       => 3,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
+
         foreach (WidgetDescriptor::all() as $descriptor) {
             Cache::forever('descriptor_' . $descriptor->id, $descriptor);
         }

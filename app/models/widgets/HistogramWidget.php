@@ -291,9 +291,9 @@ abstract class HistogramWidget extends CronWidget
         /* Initializing table. */
         $tableData = array(
             'header' => array(
-                'datetime' => $settings['resolution'],
-                'value'    => '(METRICNAME)',
-                'trend'    => 'Trend'
+                 $settings['resolution'] => 'datetime',
+                 '(METRICNAME)'          => 'value',
+                 'Trend'                 => 'trend'
             ),
             'content' => array(
             )
