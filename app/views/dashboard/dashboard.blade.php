@@ -34,7 +34,7 @@
 
       </ol>
     @endif
-    
+
     {{-- Make a wrapper for dashboards --}}
     <div class="carousel-inner">
 
@@ -158,6 +158,7 @@
   <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDGeneralWidget.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
   <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js') }}"></script>
+  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDCountWidget.js') }}"></script>
   <!-- /FDAbstractWidget* classes -->
 
   <!-- FDWidget* classes -->

@@ -109,7 +109,8 @@ abstract class HistogramDataManager extends DataManager
         $lastData = $this->getLatestData();
 
         if ( ! empty($lastData)) {
-            if (static::$cumulative && array_key_exists('sum', $options) &&
+            if (static::$cumulative &&
+                    array_key_exists('sum', $options) &&
                     $options['sum'] == TRUE) {
                 $dbEntry['value'] += $lastData['value'];
             }
@@ -119,7 +120,6 @@ abstract class HistogramDataManager extends DataManager
         }
 
         /* Saving data only every 15 minutes. */
-
         array_push($currentData, $dbEntry);
         $this->saveData($currentData);
     }
@@ -332,7 +332,7 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
+     protected function formatData($date, array $data) {
         if (is_array($data) && ! empty($data)) {
             $data = array_values($data)[0];
         }

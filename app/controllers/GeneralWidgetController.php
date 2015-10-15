@@ -665,10 +665,12 @@ class GeneralWidgetController extends BaseController {
 
         /* Splitting emails. */
         $i = 0;
-        foreach (array_filter(preg_split('/[,\s]+/', $emails)) as $email) {
+        foreach (array_filter(preg_split('/[,\s]+/', $emails)) as $emailName) {
             /* Finding registered users. */
-            $user = User::where('email', $email)->first();
-            if (is_null($user) && $user->id != Auth::user()->id) {
+            $user = User::where('email', $emailName)
+                ->orwhere('name', $emailName)
+                ->first();
+            if (is_null($user) || $user->id == Auth::user()->id) {
                 continue;
             }
 

@@ -6,22 +6,11 @@
  */
 var FDGoogleAnalyticsSessionsCountWidget = function(widgetOptions) {
  // Call parent constructor
- FDGeneralWidget.call(this, widgetOptions)
- 
+ FDCountWidget.call(this, widgetOptions)
+
  // Automatically initialize
  this.init();
 };
 
-FDGoogleAnalyticsSessionsCountWidget.prototype = Object.create(FDGeneralWidget.prototype);
+FDGoogleAnalyticsSessionsCountWidget.prototype = Object.create(FDCountWidget.prototype);
 FDGoogleAnalyticsSessionsCountWidget.prototype.constructor = FDGoogleAnalyticsSessionsCountWidget;
-
-/**
- * @function draw
- * Draws the widget
- * --------------------------------------------------------------------------
- * @return {this} 
- * --------------------------------------------------------------------------
- */
-FDGoogleAnalyticsSessionsCountWidget.prototype.draw = function(data) {
-  return this;
-}
