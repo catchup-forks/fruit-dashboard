@@ -90,7 +90,7 @@ trait GoogleAnalyticsWidgetTrait
     */
     public function getProfile() {
         $profile = $this->user()->googleAnalyticsProfiles()
-            ->where('profile_id', $this->getSettings()['profile'])
+            ->where('profile_id', $this->getProfileId())
             ->first();
         /* Invalid profile in DB. */
         return $profile;
@@ -122,6 +122,17 @@ trait GoogleAnalyticsWidgetTrait
      */
     public function getDefaultName() {
         return $this->getProperty()->name . ' - ' . $this->getDescriptor()->name;
+    }
+
+    /**
+     * getProfileId
+     * --------------------------------------------------
+     * Returning the corresponding profile id.
+     * @return GoogleAnalyticsProperty
+     * --------------------------------------------------
+    */
+    public function getProfileId() {
+        return $this->getSettings()['profile'];
     }
 
 }

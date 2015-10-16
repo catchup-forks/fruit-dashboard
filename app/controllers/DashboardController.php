@@ -48,7 +48,7 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
-        /* Checking the user's data managers integrity */
+        /* Checking the user's data managers integrity. */
         if (self::OPTIMIZE) {
             var_dump(' -- DEBUG LOG --');
             $time = microtime(TRUE);
@@ -104,7 +104,9 @@ class DashboardController extends BaseController
 
         try {
             /* Trying to render the view. */
-            return $view->render();
+            $renderedView = $view->render();
+            Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+            return $renderedView;
         } catch (Exception $e) {
             /* Error occured trying to find the widget. */
             $user->turnOffBrokenWidgets();

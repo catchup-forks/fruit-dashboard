@@ -3,6 +3,7 @@
 class WebhookHistogramDataManager extends MultipleHistogramDataManager
 {
     use WebhookDataManager;
+
     /**
      * getUrl
      * --------------------------------------------------
@@ -17,17 +18,12 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
     public function getCurrentValue() {
         $data = $this->getJson();
 
+        /* Checking the data. */
         if (is_null($data) || empty($data)) {
             return array();
         }
 
-        $decodedData = array();
-        foreach ($data as $name=>$value) {
-            if ( ! in_array($name, static::$staticFields) && is_numeric($value)) {
-                $decodedData[$name] = $value;
-            }
-        }
-        return $decodedData;
+        return $data;
     }
 
 }

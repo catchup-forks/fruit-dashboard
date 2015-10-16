@@ -67,7 +67,6 @@ class DataManager extends Eloquent
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-
         $widgetClassName = str_replace(
             'DataManager', 'Widget', get_called_class()
         );

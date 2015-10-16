@@ -29,9 +29,6 @@
                 <div class="list-group margin-top-sm">
                   @if (count(Auth::user()->getPendingWidgetSharings()) > 0)
                     <a href="#shared_widgets" class="list-group-item" data-selection="group" data-group="shared_widgets" data-type="shared">
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
-                        </small>
                         Shared widgets
                         <span class="selection-icon"> </span>
                     </a>
@@ -40,20 +37,7 @@
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
                     <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
-                      @if($group['type'] == 'service')
-                        <small>
-                          @if(Auth::user()->isServiceConnected($group['name']))
-                            <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive"></span>
-                          @else
-                            <span class="fa fa-circle text-danger" data-connected="false" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
-                          @endif
-                        </small>
-                      @else
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
-                        </small>
-                      @endif
-                      {{ $group['display_name'] }}
+                      <span class="service-name">{{ $group['display_name'] }}</span>
                       {{-- This is the span for the selection icon --}}
                       <span class="selection-icon"> </span>
                     </a>
@@ -179,7 +163,7 @@
 
                     </div> <!-- /#add-widget .col-md-12 -->
 
-                    <div id="connect-service" class="col-md-12 text-center not-visible">
+                    <div id="connect-service" class="col-md-12 text-center"><!-- not-visible"> -->
                       <div class="alert alert-warning" role="alert">
                         <strong>
                           <span class="fa fa-exclamation-triangle"></span>
@@ -230,7 +214,7 @@
       // Filter widgets by group.
       function filterWidgets(group) {
         // Look for .not-visible wrapper and remove if any.
-        $('.list-group.not-visible').removeClass('not-visible');
+      //  $('.list-group.not-visible').removeClass('not-visible');
         // Hide all widget list-group-items.
         $('[data-selection="widget"]').hide();
         // Show the filtered list-group-items.
@@ -277,12 +261,12 @@
         url = groupConnectionMarker.data('redirect-url');
 
         addPanel.addClass('not-visible');
-        connectPanel.addClass('not-visible');
+      //  connectPanel.addClass('not-visible');
 
         if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
           connectPanel.removeClass('not-visible');
         } else {
-          addPanel.removeClass('not-visible');
+      //    addPanel.removeClass('not-visible');
         }
 
       }
@@ -323,10 +307,16 @@
       // Listen clicks on the #connect-widget-submit button.
       // Displays modal and redirects to connect service page.
       $('#connect-widget-submit').click(function(e){
-        e.preventDefault()
+        var service = '';
+        $('.service-name').each(function(index, element){
+          if($(element).next().hasClass('fa-check')) {
+            service = $(element).html();
+          }
+        });
+        e.preventDefault();
         bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
-          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
+          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Okay, take me to ' + service + '!',
           callback: function(result) {
               if (result) {
 

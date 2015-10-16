@@ -40,7 +40,7 @@
                         </p>
                         
                       @else
-
+                        <span class="not-visible">{{ $service['display_name'] }}</span>
                         <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
 
                       @endif
@@ -88,10 +88,11 @@
       // Service redirection
       $('.connect-redirect').click(function(e) {
         var url = $(this).attr('href');
+        var service = $(this).prev().html();
         e.preventDefault();
         bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
-          message: 'To connect the service, we will redirect you to their site. Are you sure?',
+          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
+          message: 'To connect the service, we will redirect you to their site. Okay, take me to ' + service + '!',
           // On clicking OK redirect to fruit dashboard add widget page.
           callback: function(result) {
             if (result) {
