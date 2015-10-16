@@ -1,3 +1,4 @@
+
 /**
  * @class FDCountWidget
  * --------------------------------------------------------------------------
@@ -54,4 +55,3 @@ FDCountWidget.prototype.refresh = function(data) {
   $('#' + this.options.selectors.count).tooltip({'html': true});
   return this;
 }
-
