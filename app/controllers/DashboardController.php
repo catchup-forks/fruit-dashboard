@@ -27,8 +27,13 @@ class DashboardController extends BaseController
     public function anyDashboard() {
         /* Get the current user */
         $user = Auth::user();
+
         /* Check the default dashboard and create if not exists */
         $user->checkOrCreateDefaultDashboard();
+
+        /* Handle the widget sharings. */
+        $user->handleWidgetSharings();
+
         /* Check onboarding state */
         if ($user->settings->onboarding_state != 'finished') {
             return View::make('dashboard.dashboard-onboarding-not-finished', array(
@@ -43,7 +48,7 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
-        /* Checking the user's data managers integrity */
+        /* Checking the user's data managers integrity. */
         if (self::OPTIMIZE) {
             var_dump(' -- DEBUG LOG --');
             $time = microtime(TRUE);
@@ -99,8 +104,10 @@ class DashboardController extends BaseController
 
         try {
             /* Trying to render the view. */
-            return $view->render();
-        } catch (ServiceException $e) {
+            $renderedView = $view->render();
+            Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+            return $renderedView;
+        } catch (Exception $e) {
             /* Error occured trying to find the widget. */
             $user->turnOffBrokenWidgets();
             /* Recreating view. */

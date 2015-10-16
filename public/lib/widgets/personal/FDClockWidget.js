@@ -7,7 +7,7 @@
 var FDClockWidget = function(widgetOptions) {
  // Call parent constructor
  FDGeneralWidget.call(this, widgetOptions)
- 
+
  // Plus attributes
  this.digitalSelector = '#digital-clock-' + this.options.general.id;
  this.analogueSelector = '#analogue-clock-' + this.options.general.id;
@@ -26,30 +26,34 @@ FDClockWidget.prototype.constructor = FDClockWidget;
  * @function init
  * --------------------------------------------------------------------------
  * Override parent init, add clock refresh on every 500ms
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.init = function() {
   this.updateData(window['widgetData' + this.options.general.id]);
-  this.draw(refresh=true);  
+  this.draw(refresh=true);
 }
 
 /**
  * @function reinit
  * --------------------------------------------------------------------------
  * Override parent reinit
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
+<<<<<<< HEAD
   this.draw(refresh=false);  
+=======
+  this.draw(refresh=false);
+>>>>>>> 04bcffb2c8a487f85c0f234d9a343833bcbc042a
 }
 
 /**
  * @function draw
  * Draws the widget
  * --------------------------------------------------------------------------
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.draw = function(refresh) {
@@ -63,13 +67,13 @@ FDClockWidget.prototype.draw = function(refresh) {
  * @function setTime
  * Sets the time for the Clock widget
  * --------------------------------------------------------------------------
- * @return {null} 
+ * @return {null}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.setTime = function(refresh) {
     // Needed because of the scopes
     var that = this
-    
+
     // Formatter function
     function formatTime(time) {
       if (time < 10) {time = "0" + time};

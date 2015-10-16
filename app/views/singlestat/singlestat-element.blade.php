@@ -45,62 +45,33 @@
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            {{-- 5 years ago --}}
-            {{-- 6 months ago --}}
-            {{-- 12 weeks ago --}}
-            {{-- 30 days ago --}}
-            <h3>{{ Utilities::formatNumber($values['days'][30]['value'], $widget->getFormat()) }}</h3>
-            <div class="@if ($values['days'][30]['success']) text-success @else text-danger @endif">
-            @if ($values['days'][30]['percent'] >= 0)
-              <span class="fa fa-arrow-up"> </span>
-            @else
-              <span class="fa fa-arrow-down"> </span>
-            @endif
-              {{-- compared to current value in percent --}}
-              {{ Utilities::formatNumber($values['days'][30]['percent'], '%.2f%%') }}
-            </div> <!-- /.text-success -->
-            <p><small>30 days ago</small></p>
+            @include('singlestat.singlestat-diff', 
+              [ 'format'     => $widget->getFormat(), 
+                'values'     => $values, 
+                'resolution' => $resolution, 
+                'distance'   => (($resolution=='days') ? 30 : (($resolution=='weeks') ? 12 : (($resolution=='months') ? 6 : 5))) ] )  
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            {{-- 3 years ago --}}
-            {{-- 3 months ago --}}
-            {{-- 4 weeks ago --}}
-            {{-- 7 days ago --}}
-            <h3>{{ Utilities::formatNumber($values['days'][7]['value'], $widget->getFormat()) }}</h3>
-            <div class="@if ($values['days'][7]['success']) text-success @else text-danger @endif">
-            @if ($values['days'][7]['percent'] >= 0)
-              <span class="fa fa-arrow-up"> </span>
-            @else
-              <span class="fa fa-arrow-down"> </span>
-            @endif
-              {{-- compared to current value in percent --}}
-              {{ Utilities::formatNumber($values['days'][7]['percent'], '%.2f%%') }}
-            </div> <!-- /.text-success -->
-            <p><small>7 days ago</small></p>
+            @include('singlestat.singlestat-diff',
+            [ 'format'     => $widget->getFormat(), 
+              'values'     => $values, 
+              'resolution' => $resolution, 
+              'distance'   => (($resolution=='days') ? 7 : (($resolution=='weeks') ? 4 : (($resolution=='months') ? 3 : 3))) ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            {{-- 1 year ago --}}
-            {{-- 1 month ago --}}
-            {{-- 1 week ago --}}
-            {{-- 1 day ago --}}
-            <h3>{{ Utilities::formatNumber($values['days'][1]['value'], $widget->getFormat()) }}</h3>
-            <div class="@if ($values['days'][1]['success']) text-success @else text-danger @endif">
-            @if ($values['days'][1]['percent'] >= 0)
-              <span class="fa fa-arrow-up"> </span>
-            @else
-              <span class="fa fa-arrow-down"> </span>
-            @endif
-              {{ Utilities::formatNumber($values['days'][1]['percent'], '%.2f%%') }}
-            </div> <!-- /.text-success -->
-            <p><small>1 day ago</small></p>
+            @include('singlestat.singlestat-diff',
+            [ 'format'     => $widget->getFormat(), 
+              'values'     => $values, 
+              'resolution' => $resolution, 
+              'distance'   => 1 ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
@@ -115,6 +86,39 @@
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
+    </div> <!-- /.row -->
+  </div> <!-- /.panel-body -->
+</div> <!-- /.panel -->
+
+<div class="panel fill panel-default panel-transparent">
+  <div class="panel-heading">
+    <h3 class="panel-title">{{ $value }} datatable</h3>
+  </div> <!-- /.panel-heading -->
+
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <table class="table datatable">
+          <thead>
+            <tr>
+              <th class="col-sm-1">#</th>
+              @foreach($widget->getData([ 'resolution' => $resolution ])['labels'] as $datetime)
+                <th>{{ $datetime }}</th>
+              @endforeach
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($widget->getData([ 'resolution' => $resolution ])['datasets'] as $dataset)
+              <tr>
+                <td class="col-sm-1" style="background-color: rgb({{ $dataset['color'] }})"></td>
+                @foreach ($dataset['values'] as $value)
+                  <td>{{ $value }}</td>
+                @endforeach
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div> <!-- /.col-sm-12 -->
     </div> <!-- /.row -->
   </div> <!-- /.panel-body -->
 </div> <!-- /.panel -->

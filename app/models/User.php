@@ -94,7 +94,44 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function getPendingWidgetSharings() {
-        return $this->widgetSharings()->where('state', 'not_seen')->orWhere('state', 'seen')->get();
+        return $this->widgetSharings()
+            ->where('state', 'not_seen')
+            ->orWhere('state', 'seen')
+            ->get();
+    }
+
+    /**
+     * handleWidgetSharings
+     * --------------------------------------------------
+     * Creating the dashboard if necessary, adding the
+     * widget automatically
+     * --------------------------------------------------
+     */
+    public function handleWidgetSharings() {
+        /* Check if user has any widgetSharings. */
+        if ($this->hasUnseenWidgetSharings()) {
+            $sharingDashboard = $this->dashboards()
+                ->where('name', SiteConstants::getSharedWidgetsDashboardName())
+                ->first();
+            if (is_null($sharingDashboard)) {
+                /* Dashboard does not exists, creating it automatically. */
+                $sharingDashboard = new Dashboard(array(
+                    'name'       => SiteConstants::getSharedWidgetsDashboardName(),
+                    'background' => TRUE,
+                    'number'     => $this->dashboards->count() + 1,
+                    'is_locked'  => FALSE,
+                    'is_default' => FALSE
+                ));
+                $sharingDashboard->user()->associate($this);
+                $sharingDashboard->save();
+            }
+
+            /* Accepting all sharings. */
+            foreach ($this->getPendingWidgetSharings() as $sharing) {
+                $sharing->accept($sharingDashboard->id);
+            }
+        }
+
     }
 
     /**
@@ -186,7 +223,7 @@ class User extends Eloquent implements UserInterface
     /**
      * turnOffBrokenWidgets
      * --------------------------------------------------
-     * Setting all broken widget's state to setup required.
+     * Setting all broken widget's state.
      * @return boolean
      * --------------------------------------------------
      */
@@ -195,12 +232,13 @@ class User extends Eloquent implements UserInterface
             if ($widget instanceof SharedWidget) {
                 continue;
             }
-            $view = View::make($widget->getDescriptor()->getTemplateName())->with('widget', $widget);
+            $view = View::make($widget->getDescriptor()->getTemplateName())
+                ->with('widget', $widget->getTemplateData());
             try {
                 $view->render();
             } catch (Exception $e) {
                 Log::error($e->getMessage());
-                $widget->setState('setup_required');
+                $widget->setState('rendering_error');
             }
         }
     }

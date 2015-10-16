@@ -34,13 +34,13 @@
                       {{ HTML::image('img/logos/'.$service['name'].'.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
 
                       @if(Auth::user()->isServiceConnected($service['name']))
-
+                      
                         <p class="text-success text-center lead margin-top">
                           <span class="fa fa-check"> </span> Connected
                         </p>
                         
                       @else
-
+                        <span class="not-visible">{{ $service['display_name'] }}</span>
                         <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
 
                       @endif
@@ -88,19 +88,30 @@
       // Service redirection
       $('.connect-redirect').click(function(e) {
         var url = $(this).attr('href');
+        var service = $(this).prev().html();
         e.preventDefault();
-        bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
+        bootbox.dialog({
+          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
           message: 'To connect the service, we will redirect you to their site. Are you sure?',
-          // On clicking OK redirect to fruit dashboard add widget page.
-          callback: function(result) {
-            if (result) {
-              if (window!=window.top) {
-                window.open(url, '_blank');
-              } else {
-                window.location = url;
+          buttons: {
+            cancel: {
+              label: 'Cancel',
+              className: 'btn-default',
+              callback: function(){}
+            },
+            main: {
+              label: 'Okay, take me to ' + service + '!',
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  if (window!=window.top) {
+                    window.open(url, '_blank');
+                  } else {
+                    window.location = url;
+                  }
+                }
               }
-            }
+            }  
           }
         });
       });

@@ -36,9 +36,9 @@ function FDGridster(gridsterOptions) {
     // Build widgets
     for (var i = widgetsOptions.length - 1; i >= 0; i--) {
       // Add parent selector to widget selector
-      widgetsOptions[i].selectors.widget = 
+      widgetsOptions[i].selectors.widget =
         options.namespace + ' ' +
-        options.widgetsSelector + 
+        options.widgetsSelector +
         widgetsOptions[i].selectors.widget;
       // Initialize widget
       var widget = new FDWidget(widgetsOptions[i]);
@@ -52,7 +52,7 @@ function FDGridster(gridsterOptions) {
 
     // Look for off-screen widgets on dashboard.
     getOverflow(widgetsOptions);
-        
+
     // return
     return this;
   }
@@ -67,12 +67,12 @@ function FDGridster(gridsterOptions) {
    */
   function init() {
     // Build options
-    gridOptions = $.extend({}, 
+    gridOptions = $.extend({},
                   getDefaultOptions(),
-                  {resize:    getResizeOptions()}, 
+                  {resize:    getResizeOptions()},
                   {draggable: getDraggingOptions()}
               );
-    
+
     // Create gridster.js object and lock / unlock
     if (options.isLocked) {
       gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster').disable();
@@ -99,7 +99,13 @@ function FDGridster(gridsterOptions) {
 
     // Remove the FDWidget object
     for (var i = widgets.length - 1; i >= 0; i--) {
-      if (widgetId == widgets[i].id) {
+      /* Trimming the id from the selector. */
+      var selector = widgets[i].widget.getSelector();
+      var id = selector.substring(
+        selector.lastIndexOf("=") + 1,
+        selector.lastIndexOf("]")
+      );
+      if (widgetId == id) {
         widget = widgets.splice(i, 1)[0].widget;
         break;
       };
@@ -136,7 +142,7 @@ function FDGridster(gridsterOptions) {
       });
       $(options.widgetsSelector).addClass('can-hover');
     };
-    
+
   }
 
 
@@ -280,7 +286,7 @@ function FDGridster(gridsterOptions) {
    */
   function getOverflow(widgetsOptions) {
     var lowestRow = 0;
-   
+
     for (var i = widgetsOptions.length - 1; i >= 0; i--) {
       var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey) - 1;
       if (localRowMax > lowestRow) {
@@ -292,7 +298,7 @@ function FDGridster(gridsterOptions) {
       var msg = "There is a off-screen widget on your dashboard: " + options.name + ".";
       easyGrowl('warning', msg, 10000);
     };
-    
+
     return this;
   }
 
@@ -303,7 +309,7 @@ function FDGridster(gridsterOptions) {
   /**
    * @event $(".widget-delete").click
    * --------------------------------------------------------------------------
-   * 
+   *
    * --------------------------------------------------------------------------
    */
   $(".widget-delete").click(function(e) {

@@ -117,6 +117,7 @@ class SiteConstants {
         'Revenue' => array(),
         //'Referral' => array()
     );
+    private static $sharedWidgetsDashboardName = 'Shared widgets';
 
     /* Services and connections */
     private static $financialServices    = array('braintree', 'stripe');
@@ -584,6 +585,17 @@ class SiteConstants {
      */
     public static function cleanupPolicy($entryTime) {
         return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+    }
+
+    /**
+     * getSharedWidgetsDashboardName
+     * --------------------------------------------------
+     * Returns The shared widgets dashboard's name
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSharedWidgetsDashboardName() {
+        return self::$sharedWidgetsDashboardName;
     }
 
     /**

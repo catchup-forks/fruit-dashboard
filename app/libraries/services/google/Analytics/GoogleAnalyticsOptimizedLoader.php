@@ -111,11 +111,9 @@ class GoogleAnalyticsOptimizedLoader
                     $entry['timestamp'] = $query->getTimeStamp();
                     $dataManager->collectData(array(
                         'entry' => $entry,
-                        'sum' => TRUE
+                        'sum' => $dataManager->hasCumulative()
                     ));
                 }
-            } else if ($dataManager instanceof TopSourcesDataManager) {
-
             }
         }
     }
@@ -174,7 +172,7 @@ class GoogleAnalyticsOptimizedLoader
      * --------------------------------------------------
      */
     private function getHash(DataManager $dataManager) {
-        return $dataManager->getCriteria()['profile'] . '_' . implode('|', $dataManager->getOptionalParams());
+        return $dataManager->getProfileId() . '_' . implode('|', $dataManager->getOptionalParams());
     }
 }
 
@@ -226,7 +224,7 @@ class GoogleAnalyticsQuery
         /* Assigning values. */
         $this->metrics   = $dataManager->getMetricNames();
         $this->optParams = $dataManager->getOptionalParams();
-        $this->profileId = $dataManager->getCriteria()['profile'];
+        $this->profileId = $dataManager->getProfileId();
         array_push($this->dataManagers, $dataManager->id);
     }
 

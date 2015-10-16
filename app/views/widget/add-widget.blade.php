@@ -29,9 +29,6 @@
                 <div class="list-group margin-top-sm">
                   @if (count(Auth::user()->getPendingWidgetSharings()) > 0)
                     <a href="#shared_widgets" class="list-group-item" data-selection="group" data-group="shared_widgets" data-type="shared">
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
-                        </small>
                         Shared widgets
                         <span class="selection-icon"> </span>
                     </a>
@@ -39,21 +36,8 @@
 
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
-                    <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
-                      @if($group['type'] == 'service')
-                        <small>
-                          @if(Auth::user()->isServiceConnected($group['name']))
-                            <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive"></span>
-                          @else
-                            <span class="fa fa-circle text-danger" data-connected="false" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
-                          @endif
-                        </small>
-                      @else
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
-                        </small>
-                      @endif
-                      {{ $group['display_name'] }}
+                    <a href="#{{ $group['name'] }}" class="list-group-item" data-redirect-url="{{ ($group['connect_route']) ? route($group['connect_route']) : "" }}" data-connected="{{ Auth::user()->isServiceConnected($group['name']) }}" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
+                      <span class="service-name">{{ $group['display_name'] }}</span>
                       {{-- This is the span for the selection icon --}}
                       <span class="selection-icon"> </span>
                     </a>
@@ -272,14 +256,14 @@
         var connectPanel = $('#connect-service');
 
         var firstCheckedGroup = $('.fa-check').first().parent();
-        var groupConnectionMarker = firstCheckedGroup.find('span').first();
+        //var groupConnectionMarker = firstCheckedGroup.find('span').first();
 
-        url = groupConnectionMarker.data('redirect-url');
+        url = firstCheckedGroup.data('redirect-url');
 
         addPanel.addClass('not-visible');
         connectPanel.addClass('not-visible');
 
-        if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
+        if (firstCheckedGroup.data('type') === 'service' && firstCheckedGroup.data('connected').length==0) {
           connectPanel.removeClass('not-visible');
         } else {
           addPanel.removeClass('not-visible');
@@ -323,23 +307,38 @@
       // Listen clicks on the #connect-widget-submit button.
       // Displays modal and redirects to connect service page.
       $('#connect-widget-submit').click(function(e){
-        e.preventDefault()
-        bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
+        var service = '';
+        $('.service-name').each(function(index, element){
+          if($(element).next().hasClass('fa-check')) {
+            service = $(element).html();
+          }
+        });
+        e.preventDefault();
+        bootbox.dialog({
+          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
           message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
-          callback: function(result) {
-              if (result) {
-
-                // Using from extension, redirect in new tab
-                if (window!=window.top) {
-                  $("#add-widget-form").submit();
-                  //window.open(url,'_blank').focus();
-
-                // Using website, redirect on same tab
-                } else {
-                  $("#add-widget-form").submit();
-                }
+          buttons: {
+            cancel: {
+              label: 'Cancel',
+              className: 'btn-default',
+              callback: function(){}
+            },
+            main: {
+              label: 'Okay, take me to ' + service + '!',
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  // Using from extension, redirect in new tab
+                  if (window!=window.top) {
+                    $("#add-widget-form").submit();
+                    //window.open(url,'_blank').focus();
+                  // Using website, redirect on same tab
+                  } else {
+                    $("#add-widget-form").submit();
+                  }
               }
+              }
+            }  
           }
         });
       });

@@ -3,9 +3,6 @@
     {{ Utilities::underscoreToCamelCase($widget['descriptor']->type, TRUE) }}
   </div> <!-- /.widget-heading -->
   <p class="lead text-center">
-    This widget has invalid settings, that can't be recovered,
-  </p>
-  <p class="text-center">You can try to reset it
-    <a href="{{ URL::route('widget.reset', $widget['id']) }}">here</a>.
+    This widget has no data, you can try to refresh it, or check the data source, if it's available.
   </p>
 </div> <!-- /.widget-inner -->

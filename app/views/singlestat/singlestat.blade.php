@@ -90,6 +90,7 @@ Widget stats
 
   <script type="text/javascript">
     @foreach ($widget->resolution() as $resolution=>$value)
+
       var widgetOptions{{ $resolution }} = {
           general: {
             id:    '{{ $widget->id }}',
@@ -112,7 +113,7 @@ Widget stats
       }
 
       var widgetData{{ $resolution }} = {
-        'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+        'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
         @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
           {
@@ -127,7 +128,13 @@ Widget stats
 
     $(document).ready(function () {
       // Show first tab
-      $('.nav-pills a:first').tab('show');
+      //$('.nav-pills a:first').tab('show');
+      // Show weeks Tab
+      $('.nav-pills a').each(function(index,element){
+        if($(element).data('resolution')=='{{ $widget->getSettings()["resolution"] }}') {
+          $(element).tab('show');
+        }
+      });
 
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
