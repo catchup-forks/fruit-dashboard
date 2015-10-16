@@ -42,7 +42,6 @@ FDClockWidget.prototype.init = function() {
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
-  console.log('clock widget');
   this.draw(refresh=false);  
 }
 
