@@ -5,7 +5,7 @@
 @section('widgetScripts')
 <script type="text/javascript">
   var widgetData{{ $widget['id'] }} = {
-    timeOfTheDay: "{{ SiteConstants::getTimeOfTheDay() }}"
+    timeOfTheDay: "{{ GreetingsWidget::getTimeOfTheDay() }}"
   }
 </script>
 @append

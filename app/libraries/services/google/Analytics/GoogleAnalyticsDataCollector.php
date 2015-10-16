@@ -44,6 +44,9 @@ class GoogleAnalyticsDataCollector
     /**
      * saveProperties
      * Saves a user's google analytics properties.
+     * --------------------------------------------------
+     * @throws ServiceException
+     * --------------------------------------------------
      */
     public function saveProperties() {
         $properties = array();
@@ -75,7 +78,6 @@ class GoogleAnalyticsDataCollector
                 $this->saveProfiles($property);
                 $this->saveGoals($property);
             }
-
         }
         return $properties;
     }
@@ -138,9 +140,10 @@ class GoogleAnalyticsDataCollector
      * @param array $metrics
      * @param array $optParams
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
-    public function getMetrics($profileId, $start, $end, $metrics, $optParams=array()) {
+    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array()) {
         $useDimensions = array_key_exists('dimensions', $optParams);
         $metricsData = array();
 
@@ -151,6 +154,7 @@ class GoogleAnalyticsDataCollector
             Log::error($e->getMessage());
             throw new ServiceException("Google connection error.", 1);
         }
+
         /* Getting rows. */
         $rows = $results->getRows();
 
@@ -173,12 +177,12 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-    * buildSimpleMetricsData
-    * Building dimension specific data.
+     * buildSimpleMetricsData
+     * Building dimension specific data.
      * --------------------------------------------------
-    * @param array $metrics
-    * @param array  $rows
-    * @return array
+     * @param array $metrics
+     * @param array  $rows
+     * @return array
      * --------------------------------------------------
     */
     private function buildSimpleMetricsData($metrics, $rows) {
@@ -192,12 +196,12 @@ class GoogleAnalyticsDataCollector
     }
 
     /**
-    * buildDimensionsData
-    * Building dimension specific data.
+     * buildDimensionsData
+     * Building dimension specific data.
      * --------------------------------------------------
-    * @param array $metrics
-    * @param array $rows
-    * @return array
+     * @param array $metrics
+     * @param array $rows
+     * @return array
      * --------------------------------------------------
     */
     private function buildDimensionsData($metrics, $rows) {
@@ -226,11 +230,12 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      * @param string $profileId
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function getAvgSessionDuration($profileId) {
         return $this->getMetrics(
-            $profileId, 'yesterday', 'today', array('avgSessionDuration')
+            $profileId, 'today', 'today', array('avgSessionDuration')
         )['avgSessionDuration'];
    }
 
@@ -240,11 +245,12 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      * @param string $profileId
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function getSessionsPerUser($profileId) {
         return $this->getMetrics(
-            $profileId, 'yesterday', 'today', array('sessionsPerUser')
+            $profileId, 'today', 'today', array('sessionsPerUser')
         )['sessionsPerUser'];
    }
 
@@ -254,6 +260,7 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      * @param string $profileId
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function getSessions($profileId) {
@@ -270,6 +277,7 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      * @param string $profileId
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function getUsers($profileId) {
@@ -281,18 +289,61 @@ class GoogleAnalyticsDataCollector
    }
 
     /**
+     * getGoalCompletions
+     * Returning the number of goal completions.
+     * --------------------------------------------------
+     * @param string $profileId
+     * @param string $goalId
+     * @return array
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    public function getGoalCompletions($profileId, $goalId) {
+        $metricName = 'goal' . $goalId . 'Completions';
+        return $this->getMetrics(
+            $profileId,
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today', array($metricName)
+        )[$metricName];
+   }
+
+    /**
      * getBounceRate
      * Returning the percentage of bounce rate.
      * --------------------------------------------------
      * @param string $profileId
      * @return array
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function getBounceRate($profileId) {
         return $this->getMetrics(
             $profileId,
-            'yesterday', 'today', array('bounceRate')
+            'today', 'today', array('bounceRate')
         )['bounceRate'];
+   }
+
+    /**
+     * getActiveUsers
+     * Returning the active useres (multiple).
+     * --------------------------------------------------
+     * @param string $profileId
+     * @param $metricNames
+     * @param array $optionalParams
+     * @return array
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    public function getActiveUsers($profileId, array $metricNames, array $optionalParams=array()) {
+        $currentValues = array();
+        foreach ($metricNames as $metric) {
+            $currentValues[$metric] = array_values($this->getMetrics(
+                $profileId,
+                'today', 'today',
+                array($metric), $optionalParams
+            )[$metric])[0];
+        }
+        return $currentValues;
    }
 
     /**
@@ -333,7 +384,12 @@ class GoogleAnalyticsDataCollector
      */
     private function getAccountIds() {
         /* Getting accounts */
-        $accounts = $this->analytics->management_accounts->listManagementAccounts();
+        try {
+            $accounts = $this->analytics->management_accounts->listManagementAccounts();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Google connection error.", 1);
+        }
         $items = $accounts->getItems();
         if (count($items) <= 0) {
             return null;

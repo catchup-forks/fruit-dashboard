@@ -25,8 +25,21 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+        /* Get the current user */
+        $user = Auth::user();
+
         /* Check the default dashboard and create if not exists */
-        Auth::user()->checkOrCreateDefaultDashboard();
+        $user->checkOrCreateDefaultDashboard();
+
+        /* Handle the widget sharings. */
+        $user->handleWidgetSharings();
+
+        /* Check onboarding state */
+        if ($user->settings->onboarding_state != 'finished') {
+            return View::make('dashboard.dashboard-onboarding-not-finished', array(
+                    'currentState' => $user->settings->onboarding_state
+                ));
+        }
 
         /* Get active dashboard, if the url contains it */
         $parameters = array();
@@ -35,8 +48,7 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
-
-        /* Checking the user's data managers integrity */
+        /* Checking the user's data managers integrity. */
         if (self::OPTIMIZE) {
             var_dump(' -- DEBUG LOG --');
             $time = microtime(TRUE);
@@ -44,7 +56,7 @@ class DashboardController extends BaseController
             $queries = count(DB::getQueryLog());
             $startTime = microtime(TRUE);
         }
-        Auth::user()->checkDataManagersIntegrity();
+        $user->checkDataManagersIntegrity();
         if (self::OPTIMIZE) {
             var_dump(
                 "DM check integrity time: ". (microtime(TRUE) - $time) .
@@ -56,7 +68,7 @@ class DashboardController extends BaseController
 
 
         /* Checking the user's widgets integrity */
-        Auth::user()->checkWidgetsIntegrity();
+        $user->checkWidgetsIntegrity();
         if (self::OPTIMIZE) {
            var_dump(
                "Widget check integrity time: ". (microtime(TRUE) - $time) .
@@ -67,7 +79,7 @@ class DashboardController extends BaseController
         }
 
         /* Creating view */
-        $view = Auth::user()->createDashboardView();
+        $view = $user->createDashboardView();
         if (self::OPTIMIZE) {
             var_dump(
                 "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
@@ -92,12 +104,14 @@ class DashboardController extends BaseController
 
         try {
             /* Trying to render the view. */
-            return $view->render();
-        } catch (ServiceException $e) {
+            $renderedView = $view->render();
+            Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+            return $renderedView;
+        } catch (Exception $e) {
             /* Error occured trying to find the widget. */
-            Auth::user()->turnOffBrokenWidgets();
+            $user->turnOffBrokenWidgets();
             /* Recreating view. */
-            $view = Auth::user()->createDashboardView();
+            $view = $user->createDashboardView();
         }
         return $view;
 

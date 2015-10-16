@@ -18,24 +18,21 @@ class SiteConstants {
     private static $gridNumberOfRows  = 12;
     private static $widgetMargin      = 5;
 
-    /* Greetings widget */
-    private static $morningStartsAt   = 5;
-    private static $afternoonStartsAt = 13;
-    private static $eveningStartsAt   = 17;
-    private static $nightStartsAt     = 22;
 
     /* Trial period */
     private static $trialPeriodInDays = 14;
 
     /* Signup wizard */
     private static $signupWizardSteps = array(
-        'company-info',
-        'google-analytics-connection',
-        //'google-analytics-profile',
-        //'google-analytics-select-goal',
-        'social-connections',
-        'financial-connections',
-        'finished',
+        'company-info'          => 'company-info',
+        'google-analytics'      => array(
+            'google-analytics-connection',
+            'google-analytics-profile',
+            'google-analytics-goal',
+        ),
+        'social-connections'    => 'social-connections',
+        'financial-connections' => 'financial-connections',
+        'finished'              => 'finished',
     );
 
     private static $signupWizardStartupTypes = array(
@@ -69,17 +66,29 @@ class SiteConstants {
     );
 
     /* Auto dashboards */
-    private static $autoDashboards    = array(
+    private static $autoDashboards = array(
         'Acquisition' => array(
             array(
                 'type'     => 'google_analytics_sessions',
-                'position' => '{"row":1,"col":1,"size_x":4,"size_y":5}',
+                'position' => '{"row":1,"col":1,"size_x":4,"size_y":6}',
                 'settings' => array('type' => 'chart'),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
             ),
             array(
                 'type'     => 'google_analytics_sessions',
-                'position' => '{"row":1,"col":6,"size_x":4,"size_y":5}',
+                'position' => '{"row":7,"col":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
+            ),
+            array(
+                'type'     => 'google_analytics_goal_completion',
+                'position' => '{"row":1,"col":6,"size_x":4,"size_y":6}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
+            ),
+            array(
+                'type'     => 'google_analytics_goal_completion',
+                'position' => '{"row":7,"col":6,"size_x":4,"size_y":5}',
                 'settings' => array('type' => 'table', 'length' => 5),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
             ),
@@ -108,6 +117,7 @@ class SiteConstants {
         'Revenue' => array(),
         //'Referral' => array()
     );
+    private static $sharedWidgetsDashboardName = 'Shared widgets';
 
     /* Services and connections */
     private static $financialServices    = array('braintree', 'stripe');
@@ -190,40 +200,6 @@ class SiteConstants {
     }
 
     /**
-     * getTimeOfTheDay:
-     * --------------------------------------------------
-     * Returns the time of the day string
-     * @return (string) ($timeOfTheDay) morning, afternoon, evening, night
-     * --------------------------------------------------
-     */
-    public static function getTimeOfTheDay() {
-        /* Get TimeZone aware hour */
-        if (Session::get('timeZone')) {
-            $hour = Carbon::now(Session::get('timeZone'))->hour;
-        /* Error handling (TimeZone is not present, use Server time */
-        } else {
-            $hour = Carbon::now()->hour;
-        }
-
-        /* Morning */
-        if ((self::$morningStartsAt <= $hour) and ($hour < self::$afternoonStartsAt)) {
-            return 'morning';
-
-        /* Afternoon */
-        } elseif ((self::$afternoonStartsAt <= $hour) and ($hour < self::$eveningStartsAt)) {
-            return 'afternoon';
-
-        /* Evening */
-        } elseif ((self::$eveningStartsAt <= $hour) and ($hour < self::$nightStartsAt)) {
-            return 'evening';
-
-        /* Night */
-        } else {
-            return 'night';
-        }
-    }
-
-    /**
      * getChartJsColors:
      * --------------------------------------------------
      * Returning colors for chartJS
@@ -274,39 +250,66 @@ class SiteConstants {
      * getSignupWizardStep:
      * --------------------------------------------------
      * Returns the next step for the signup wizard
-     * @param (string) ($index) one of: next, prev, first, last
-     * @param (string) ($currentStep) the current step or null
+     * @param (string)  ($index) one of: next, prev, first, last
+     * @param (boolean) ($to_group) true: jumps to next group, false jumps to next item
+     * @param (string) ($currentStep) the current step or empty string
      * @return (string) ($nextStep) the next step
      * --------------------------------------------------
      */
-    public static function getSignupWizardStep($index, $currentStep) {
+    public static function getSignupWizardStep($index, $currentStep='', $to_group=false) {
         /* First or last step */
         if ($index == 'first') {
-            return self::$signupWizardSteps[0];
+            return array_values(self::$signupWizardSteps)[0];
         } elseif ($index == 'last') {
             return end(self::$signupWizardSteps);
         }
 
         /* Find current step */
-        if (in_array($currentStep, self::$signupWizardSteps)) {
-            $i = array_search($currentStep, self::$signupWizardSteps);
+        $groupidx  = null;
+        $itemidx   = null;
+        $keys = array_keys(self::$signupWizardSteps);
+        $i=0;
+        foreach (self::$signupWizardSteps as $group => $items) {
+            if ($currentStep == $group) {
+                $groupidx = $i;
+                break;
+            } elseif (is_array($items) and in_array($currentStep, $items)) {
+                $groupidx = $i;
+                $itemidx  = array_search($currentStep, $items);
+                break;
+            }
+            $i += 1;
+        }
+
         /* Current step cannot be found */
-        } else {
+        if (is_null($groupidx)) {
             return null;
         }
 
-        /* Return step and check overflows */
+        /* Return next step */
         if ($index == 'next') {
-            if ($i < count(self::$signupWizardSteps)-1) {
-                return self::$signupWizardSteps[$i+1];
+            /* Return next sub-group element */
+            if (is_numeric($itemidx) and ($itemidx < count(self::$signupWizardSteps[$keys[$groupidx]])-1) and (!$to_group)) {
+                return self::$signupWizardSteps[$keys[$groupidx]][$itemidx+1];
+            /* Next group has sub-group, return sub-group first */
+            } else if (is_array(self::$signupWizardSteps[$keys[$groupidx+1]])) {
+                return self::$signupWizardSteps[$keys[$groupidx+1]][0];
+            /* Return next group */
             } else {
-                return null;
+                return self::$signupWizardSteps[$keys[$groupidx+1]];
             }
+
+        /* Return previous step */
         } elseif ($index == 'prev') {
-            if ($i < 1) {
-                return self::$signupWizardSteps[0];
+            /* Return prev sub-group element */
+            if (is_numeric($itemidx) and ($itemidx > 0) and (!$to_group)) {
+                return self::$signupWizardSteps[$keys[$groupidx]][$itemidx-1];
+            /* Prev group has sub-group, return sub-group last */
+            } else if (is_array(self::$signupWizardSteps[$keys[$groupidx-1]])) {
+                return end(self::$signupWizardSteps[$keys[$groupidx-1]]);
+            /* Return prev group */
             } else {
-                return self::$signupWizardSteps[$i-1];
+                return self::$signupWizardSteps[$keys[$groupidx-1]];
             }
         }
     }
@@ -582,6 +585,17 @@ class SiteConstants {
      */
     public static function cleanupPolicy($entryTime) {
         return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+    }
+
+    /**
+     * getSharedWidgetsDashboardName
+     * --------------------------------------------------
+     * Returns The shared widgets dashboard's name
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSharedWidgetsDashboardName() {
+        return self::$sharedWidgetsDashboardName;
     }
 
     /**

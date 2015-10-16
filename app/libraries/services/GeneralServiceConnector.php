@@ -51,6 +51,17 @@ abstract class GeneralServiceConnector
     }
 
     /**
+     * getServiceName
+     * Returns the name of the service.
+     * --------------------------------------------------
+     * @return string.
+     * --------------------------------------------------
+     */
+    public static function getServiceName() {
+        return static::$service;
+    }
+
+    /**
      * getConnection
      * Getting the user's specific connection.
      * --------------------------------------------------
@@ -109,9 +120,24 @@ abstract class GeneralServiceConnector
                 continue;
             }
 
+            /* Filtering criteria for manager. */
+            $dmCriteria = array();
+            try {
+                foreach ($className::getCriteriaFields() as $field) {
+                    if (array_key_exists($field, $criteria)) {
+                        $dmCriteria[$field] = $criteria[$field];
+                    } else {
+                        throw new Exception("The criteria is not enough for this manager.", 1);
+                    }
+                }
+            } catch (Exception $e) {
+                continue;
+            }
+
             /* Detecting previous managers. */
-            $settingsCriteria = json_encode($criteria);
+            $settingsCriteria = json_encode($dmCriteria);
             $manager = $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->first();
+
             if ( ! is_null($manager)) {
                 /* Manager found, leaving it alone. */
                 array_push($dataManagers, $manager);
@@ -123,7 +149,7 @@ abstract class GeneralServiceConnector
 
             /* Creating DataManager instance */
             $dataManager = new $className(array(
-                'settings_criteria' => json_encode($criteria),
+                'settings_criteria' => json_encode($dmCriteria),
                 'last_updated'      => Carbon::now(),
                 'state'             => 'loading'
             ));

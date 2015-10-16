@@ -72,9 +72,13 @@ class Widget extends Eloquent
 
     /**
      * checkIntegrity
-     * Checking the widgets settings integrity, and trying to render the view.
+     * Checking the widgets settings integrity.
     */
     public function checkIntegrity() {
+        /* By default we give a chance to recover from rendering_error */
+        if ($this->state == 'rendering_error') {
+            $this->setState('active');
+        }
         $this->checkSettingsIntegrity();
     }
 
@@ -233,7 +237,7 @@ class Widget extends Eloquent
         }
         $this->state = $state;
         if ($commit) {
-            $this->save();
+            $this->save(array('skipManager' => TRUE));
         }
     }
 
@@ -335,11 +339,14 @@ class Widget extends Eloquent
             switch ($fieldMeta['type']) {
                 case 'SCHOICE':
                     if (array_key_exists('ajax_depends', $fieldMeta)) {
-                        $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                        try {
+                            $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                        } catch (Exception $e) {
+                            $choices = array();
+                        }
                     } else {
                         $choices = array_keys($this->$fieldName());
                     }
-                    Log::info($data);
                     $validationString .= 'in:' . implode(',', $choices)."|"; break;
                 case 'INT': $validationString .= 'integer|'; break;
                 case 'FLOAT':  $validationString .= 'numeric|'; break;

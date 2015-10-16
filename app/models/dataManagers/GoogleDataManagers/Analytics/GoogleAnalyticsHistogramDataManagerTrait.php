@@ -25,7 +25,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
             );
             $entry = $data;
             $entry['timestamp'] = $end->getTimeStamp();
-            $this->collectData(array('entry' => $entry, 'sum' => TRUE));
+            $this->collectData(array('entry' => $entry, 'sum' => $this->hasCumulative()));
         }
 
         /* Building histogram. */
@@ -89,10 +89,12 @@ trait GoogleAnalyticsHistogramDataManagerTrait
                 $entries[$date][$metricName] = $value;
             }
         }
-
         /* Saving entries. */
         foreach ($entries as $entry) {
-            $this->collectData(array('entry' => $entry, 'sum' => TRUE));
+            $this->collectData(array(
+                'entry' => $entry,
+                'sum'   => $this->hasCumulative()
+            ));
         }
     }
 }

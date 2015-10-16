@@ -4,7 +4,7 @@
   </div> <!-- /.widget-heading -->
   <table class="table table-condensed table-bordered">
     <thead>
-    @foreach ($widget['header'] as $key=>$name)
+    @foreach ($widget['header'] as $name=>$key)
       <th>{{ $name }}</th>
     @endforeach
     </thead>

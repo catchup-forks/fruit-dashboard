@@ -30,7 +30,7 @@
                         <span class="fa fa-check"> </span> Connected
                       </p>
                     @else
-                      <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
+                      <a href="{{ route($service['connect_route']) }}?signupWizard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
                     @endif
                     <p class="text-muted margin-top">
                       <span class="fa fa-lock"> </span>
@@ -43,14 +43,23 @@
 
             <hr>
 
-            <div class="row">
-              <div class="col-md-12">
-                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('prev', $currentStep)) }}" class="btn btn-warning">Back</a>
-                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-primary pull-right">Next</a>
-                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-link pull-right">Skip</a>
-              </div> <!-- /.col-md-12 -->
-            </div> <!-- /.row -->
-
+            @if(Auth::user()->isServiceConnected($service['name']))
+              <div class="row">
+                <div class="col-md-12">
+                  <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('prev', $currentStep)) }}" class="btn btn-warning">Back</a>
+                  <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-primary pull-right">Next</a>
+                  <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-link pull-right">Skip</a>
+                </div> <!-- /.col-md-12 -->
+              </div> <!-- /.row -->
+            @else
+              <div class="row">
+                <div class="col-md-12">
+                  <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('prev', $currentStep)) }}" class="btn btn-warning">Back</a>
+                  <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep, true)) }}" class="btn btn-primary pull-right">Next</a>
+                  <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep, true)) }}" class="btn btn-link pull-right">Skip</a>
+                </div> <!-- /.col-md-12 -->
+              </div> <!-- /.row -->
+            @endif
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-md-10 -->

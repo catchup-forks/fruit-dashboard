@@ -184,8 +184,9 @@ abstract class HistogramWidget extends CronWidget
         $values = $this->setupDataManager($dmParams)->compare();
 
         if (empty($values)) {
-            return 0;
+            return null;
         }
+
         return array_values($values)[0];
     }
 
@@ -200,6 +201,7 @@ abstract class HistogramWidget extends CronWidget
      */
     public function getHistory($multiplier=1, $resolution=null) {
         $currentValue = array_values($this->getLatestValues())[0];
+        $diff = $this->getDiff($multiplier, $resolution);
         $value = $currentValue - $this->getDiff($multiplier, $resolution);
         try {
             $percent = ($currentValue / $value - 1) * 100;
@@ -291,9 +293,9 @@ abstract class HistogramWidget extends CronWidget
         /* Initializing table. */
         $tableData = array(
             'header' => array(
-                'datetime' => $settings['resolution'],
-                'value'    => '(METRICNAME)',
-                'trend'    => 'Trend'
+                 $settings['resolution'] => 'datetime',
+                 '(METRICNAME)'          => 'value',
+                 'Trend'                 => 'trend'
             ),
             'content' => array(
             )

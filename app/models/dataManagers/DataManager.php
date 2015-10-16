@@ -60,6 +60,20 @@ class DataManager extends Eloquent
     }
 
     /**
+     * getCriteriaFields
+     * Returns the criteria fields.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getCriteriaFields() {
+        $widgetClassName = str_replace(
+            'DataManager', 'Widget', get_called_class()
+        );
+        return $widgetClassName::getCriteriaFields();
+    }
+
+    /**
      * setState
      * Setting a widget's state.
      * --------------------------------------------------

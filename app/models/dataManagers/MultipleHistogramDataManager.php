@@ -4,16 +4,6 @@
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
     /**
-     * initializeData
-     * --------------------------------------------------
-     * First time population of the data.
-     * --------------------------------------------------
-     */
-    public function initializeData() {
-        $this->saveData(array($this->getCurrentValue()), TRUE);
-    }
-
-    /**
      * formatData
      * Formatting data to the multiple histogram format.
      * --------------------------------------------------
@@ -23,16 +13,24 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
      protected function formatData($date, $data) {
+        if (empty($data)) {
+            /* There is no data. */
+            return null;
+        }
+
         $dataSets = $this->getDataSets();
         $decodedData = array(
             'timestamp' => $date->getTimestamp()
         );
+
         foreach ($data as $key=>$value) {
-            if (!array_key_exists($key, $dataSets)) {
+            if ( ! array_key_exists($key, $dataSets)) {
+                /* Key did not exist, adding to datasets. */
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }
             if ( ! is_numeric($value)) {
+                /* Value is not right for histograms, exiting. */
                 return null;
             }
             $decodedData[$dataSets[$key]] = $value;

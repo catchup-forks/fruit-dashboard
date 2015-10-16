@@ -41,7 +41,8 @@ abstract class CronWidget extends Widget implements iAjaxWidget
             $dataManager = $this->getDescriptor()->getDataManager($this);
             if ( ! is_null($dataManager)) {
                 $this->data()->associate($dataManager->data);
-                parent::save($options);
+                $this->setState($dataManager->state, FALSE);
+                parent::save();
             }
         }
 
@@ -108,8 +109,7 @@ abstract class CronWidget extends Widget implements iAjaxWidget
     public function checkIntegrity() {
         parent::checkIntegrity();
         if ( ! $this->dataExists()) {
-            throw new WidgetException("Widget data does not exist.", 1);
-
+            throw new WidgetException;
         }
     }
 

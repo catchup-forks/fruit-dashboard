@@ -55,6 +55,17 @@ class GoogleAnalyticsConnector extends GoogleConnector {
         if (is_null($profile)) {
             throw new ServiceException("Selected profile not found.", 1);
         }
+
+        if (array_key_exists('goal', $criteria)) {
+            $goal = $profile->goals()
+                ->where('goal_id', $criteria['goal'])
+                ->first();
+            if (is_null($goal)) {
+                throw new ServiceException("Selected goal not found.", 1);
+            }
+            $goal->active = TRUE;
+            $goal->save();
+        }
         /* Setting profile to active. */
         $profile->active = TRUE;
         $profile->save();

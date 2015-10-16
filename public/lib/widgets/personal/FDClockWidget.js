@@ -7,7 +7,7 @@
 var FDClockWidget = function(widgetOptions) {
  // Call parent constructor
  FDGeneralWidget.call(this, widgetOptions)
- 
+
  // Plus attributes
  this.digitalSelector = '#digital-clock-' + this.options.general.id;
  this.analogueSelector = '#analogue-clock-' + this.options.general.id;
@@ -26,23 +26,22 @@ FDClockWidget.prototype.constructor = FDClockWidget;
  * @function init
  * --------------------------------------------------------------------------
  * Override parent init, add clock refresh on every 500ms
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.init = function() {
   this.updateData(window['widgetData' + this.options.general.id]);
-  this.draw(refresh=true);  
+  this.draw(refresh=true);
 }
 
 /**
  * @function reinit
  * --------------------------------------------------------------------------
  * Override parent reinit
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
-  console.log('clock widget');
   this.draw(refresh=false);  
 }
 
@@ -50,7 +49,7 @@ FDClockWidget.prototype.reinit = function() {
  * @function draw
  * Draws the widget
  * --------------------------------------------------------------------------
- * @return {this} 
+ * @return {this}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.draw = function(refresh) {
@@ -64,7 +63,7 @@ FDClockWidget.prototype.draw = function(refresh) {
  * @function setTime
  * Sets the time for the Clock widget
  * --------------------------------------------------------------------------
- * @return {null} 
+ * @return {null}
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.setTime = function(refresh) {

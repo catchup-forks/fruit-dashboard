@@ -17,8 +17,8 @@
             <!-- name -->
             <div class="yourname-form">
                 <h1 class="text-white text-center drop-shadow">
-                    Good {{ SiteConstants::getTimeOfTheDay() }}.
-                </h1>  
+                    Good {{ GreetingsWidget::getTimeOfTheDay() }}.
+                </h1>
                 <h1 class="text-white text-center drop-shadow">
                     What's your name?
                 </h1>
@@ -32,7 +32,7 @@
             <div class="youremail-form not-visible">
                 <h1 class="text-white text-center drop-shadow">
                     Nice to meet you, <span class="username"></span>.
-                </h1>  
+                </h1>
                 <h1 class="text-white text-center drop-shadow">
                     What is your email address?
                 </h1>
@@ -40,7 +40,7 @@
                 <!-- Stop Chrome from ignoring autocomplete -->
                 <input style="display:none">
                 <input type="password" style="display:none">
-                
+
                 <div class="form-group">
                     {{ Form::text('email', Input::old('email'), array('autocomplete' => 'off', 'autocorrect' => 'off', 'class' => 'form-control input-lg text-white drop-shadow text-center greetings-name', 'id' => 'email_id')) }}
                 </div>
@@ -51,7 +51,7 @@
 
 
             </div>
-  
+
             <!-- password -->
             <div class="yourpassword-form not-visible">
                 <h1 class="text-white text-center drop-shadow">
@@ -75,13 +75,13 @@
     </div> <!-- /.vertical-center -->
 
     </body>
-    
+
     @stop
 
     @section('pageScripts')
     <script type="text/javascript">
         $(document).ready(function() {
-         
+
           $('#username_id').on('keydown', function (event){
             var keycode = (event.keyCode ? event.keyCode : event.which);
             if(keycode == '13' || keycode == '9'){
@@ -92,11 +92,11 @@
                       $('.youremail-form').slideDown('fast', function() {
                         $('#email_id').focus();
                       });
-                    });      
+                    });
                 } else {
                   easyGrowl('warning', "Please enter your name.", 5000);
                 }
-            }    
+            }
           });
 
           function IsEmail(email) {
@@ -127,7 +127,7 @@
                             $('.yourpassword-form').slideDown('fast', function() {
                               $('#password_id').focus();
                             });
-                          }); 
+                          });
 
                         // Email taken, show error
                         } else {
@@ -137,7 +137,7 @@
                             $('#email_id').focus();
                           });
 
-                          $.growl.error({ 
+                          $.growl.error({
                             message: "This email has already been registered. If you would like to sign in, <a href=\"{{ route('auth.signin') }}\">click here.</a>",
                             fixed: true,
                             location: "br"
@@ -154,31 +154,31 @@
                         });
                       }
                   });
-                                  
+
               } else {
                 easyGrowl('warning', "Please enter a valid email address.", 5000);
               }
-              
-            }    
+
+            }
           });
 
           $('#password_id').on('keydown', function (event){
-            
+
             var keycode = (event.keyCode ? event.keyCode : event.which);
-            
+
             if(keycode == '13' || keycode == '9'){
               event.preventDefault();
-              
+
               if ($('#password_id').val().length > 3) {
-                
+
                 $('#signup-form-id').submit();
-                  
+
               } else {
                 easyGrowl('warning', "Your password should be at least 4 characters long.", 5000);
               }
             }
             });
-        
+
         });
     </script>
 
