@@ -331,6 +331,26 @@
                 }
               }
           }
+          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
+          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+          buttons: {
+            main: {
+              label: 'Okay, take me to ' + service + '!',
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  // Using from extension, redirect in new tab
+                  if (window!=window.top) {
+                    $("#add-widget-form").submit();
+                    //window.open(url,'_blank').focus();
+                  // Using website, redirect on same tab
+                  } else {
+                    $("#add-widget-form").submit();
+                  }
+              }
+              }
+            }  
+          }
         });
       });
 
