@@ -30,14 +30,15 @@ class NotificationController extends BaseController
      /**
      * anySend
      * --------------------------------------------------
-     * @param (integer) ($notificationId) The notification id
+     * @param (integer) ($id) The notification id
      * @return Sends the selected notification
      * --------------------------------------------------
      */
-    public function anySend($notificationId) {
+    public function anySend($id) {
         /* Get the requested notification */
-        $notification = Notification::where('id', $notificationId)->where('user_id', Auth::user()->id)->first();
+        $notification = Notification::find($id);
 
+        /* Error handling */
         if ($notification == null) {
             return Redirect::route('notification.test')->with(['error' => 'We couldn\'t send the requested notification.']);
         }
@@ -58,7 +59,7 @@ class NotificationController extends BaseController
      */
     public function postWidgets($notificationId) {
         /* Get the requested notification */
-        $notification = Notification::where('id', $notificationId)->where('user_id', Auth::user()->id)->first();
+        $notification = Notification::find($notificationId);
 
         if ($notification == null) {
             return Redirect::route('notification.test')->with(['error' => 'We couldn\'t change the settings of the requested notification.']);

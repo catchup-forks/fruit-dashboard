@@ -14,7 +14,7 @@ Route::group([
         'uses'   => 'NotificationController@anyTest'
     ]);
 
-    Route::any('send/{notificationId}', [
+    Route::any('send/{id}', [
         'before' => 'auth',
         'as'     => 'notification.send',
         'uses'   => 'NotificationController@anySend'
