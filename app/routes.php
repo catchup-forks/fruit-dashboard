@@ -65,7 +65,6 @@ include 'routes/service-connection.php';
  */
 include 'routes/metrics.php';
 
-
 /**
  * --------------------------------------------------------------------------
  * /dev | Testing urls (except for production server)
