@@ -121,7 +121,7 @@ class SignupWizardController extends BaseController
     public function getStep($step) {
         /* Get user settings */
         $settings = Auth::user()->settings;
-        
+
         /* Requesting the last step */
         if ($step == SiteConstants::getSignupWizardStep('last', null)) {
             /* Set onboarding state */
