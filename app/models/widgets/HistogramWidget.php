@@ -22,8 +22,8 @@ abstract class HistogramWidget extends CronWidget
         ),
         'length' => array(
             'name'       => 'Length',
-            'type'       => 'INT|min:5|max:15',
-            'validation' => 'required',
+            'type'       => 'INT',
+            'validation' => 'required|min:5',
             'default'    => 15,
             'help_text'  => 'The number of data points on your histogram.'
         ),
@@ -293,9 +293,9 @@ abstract class HistogramWidget extends CronWidget
         /* Initializing table. */
         $tableData = array(
             'header' => array(
-                 $settings['resolution'] => 'datetime',
-                 '(METRICNAME)'          => 'value',
-                 'Trend'                 => 'trend'
+                 $settings['resolution']       => 'datetime',
+                 $this->getDescriptor()->name  => 'value',
+                 'Trend'                       => 'trend'
             ),
             'content' => array(
             )

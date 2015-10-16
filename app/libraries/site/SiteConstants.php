@@ -69,13 +69,13 @@ class SiteConstants {
     private static $autoDashboards = array(
         'Acquisition' => array(
             array(
-                'type'     => 'google_analytics_sessions',
+                'type'     => 'google_analytics_users',
                 'position' => '{"row":1,"col":1,"size_x":4,"size_y":6}',
                 'settings' => array('type' => 'chart'),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
             ),
             array(
-                'type'     => 'google_analytics_sessions',
+                'type'     => 'google_analytics_users',
                 'position' => '{"row":7,"col":1,"size_x":4,"size_y":5}',
                 'settings' => array('type' => 'table', 'length' => 5),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'

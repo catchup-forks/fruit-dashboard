@@ -35,7 +35,9 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      * --------------------------------------------------
      */
     private function testUrl() {
-        $this->dataManager->testUrl();
+        if ($this->dataExists()) {
+            $this->dataManager()->testUrl();
+        }
     }
 
     /**
@@ -79,12 +81,15 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
       * --------------------------------------------------
       */
      public function save(array $options=array()) {
+        parent::save();
         try {
-            $this->testUrl();
+            if ($this->state == 'active') {
+                $this->testUrl();
+            }
         } catch (ServiceException $e) {
             $this->setState('setup_required', FALSE);
+            parent::save();
         }
-        parent::save();
      }
 }
 ?>

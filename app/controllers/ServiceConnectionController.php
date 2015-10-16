@@ -392,9 +392,12 @@ class ServiceConnectionController extends BaseController
     public function anyGoogleAnalyticsConnect() {
         $route = null;
         if (Session::pull('createDashboard')) {
-            $route = 'service.google_analytics.select-properties';
+            $route = route('service.google_analytics.select-properties');
         } elseif (Session::pull('signupWizard')) {
-            $route = 'signup-wizard.'. SiteConstants::getSignupWizardStep('next', 'google-analytics-connection');
+            $route = route(
+                'signup-wizard.getStep',
+                SiteConstants::getSignupWizardStep('next', 'google-analytics-connection')
+            );
         }
         return $this->connectGoogle("GoogleAnalyticsConnector", $route);
      }
@@ -642,7 +645,7 @@ class ServiceConnectionController extends BaseController
      * @return connects a user to a google service.
      * --------------------------------------------------
      */
-    private function connectGoogle($connectorClass, $returnRoute=null) {
+    private function connectGoogle($connectorClass, $returnUrl=null) {
         if (Auth::user()->isServiceConnected($connectorClass::getServiceName())) {
             return Redirect::to($this->getReferer())
                 ->with('warning', 'You are already connected the service');
@@ -677,11 +680,11 @@ class ServiceConnectionController extends BaseController
             );
 
             /* Successful connect. */
-            if (is_null($returnRoute)) {
+            if (is_null($returnUrl)) {
                 return Redirect::to($this->getReferer())
                     ->with('success', 'Google connection successful');
             } else {
-                return Redirect::route($returnRoute)
+                return Redirect::to($returnUrl)
                     ->with('success', 'Google connection successful');
             }
 
@@ -745,6 +748,9 @@ class ServiceConnectionController extends BaseController
 
         if (Input::get('createDashboard')) {
             Session::put('createDashboard', true);
+        }
+        if (Input::get('signupWizard')) {
+            Session::put('signupWizard', true);
         }
         if ( ! is_null($previous)) {
             Session::put('referer', $previous);

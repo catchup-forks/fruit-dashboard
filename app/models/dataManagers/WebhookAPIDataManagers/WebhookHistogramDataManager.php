@@ -20,7 +20,7 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
 
         /* Checking the data. */
         if (is_null($data) || empty($data)) {
-            return array('empty', '0');
+            return array();
         }
 
         return $data;

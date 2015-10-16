@@ -19,6 +19,15 @@ class SharedWidget extends Widget
     );
 
     /**
+     * checkIntegrity
+     * Checking if the widget exists.
+     */
+    public function checkIntegrity() {
+        parent::checkIntegrity();
+        $this->getRelatedWidget();
+    }
+
+    /**
      * getMinRows
      * Returning the minimum rows required for the widget.
      * --------------------------------------------------
@@ -64,7 +73,6 @@ class SharedWidget extends Widget
         if (is_null($widget)) {
             /* Related widget does not exist. */
             $this->delete();
-            return null;
         }
 
         return $widget;

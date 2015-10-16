@@ -5,7 +5,10 @@
       'class' => 'img-responsive img-rounded center-block'
     )
   )}}
-    Connect the service <a href="{{ route('service.' . $widget['relatedDescriptor']->category . '.connect') }}?createDashboard=1"><button class="btn btn-primary btn-xs">here</button></a>.
+  @if (TRUE)
+  @endif
+  {{ $widget['connectionMeta']['text'] }}
+  <a href="{{ $widget['connectionMeta']['url'] }}?createDashboard=1"><button class="btn btn-primary btn-xs">here</button></a>.
 
 </h4>
 
