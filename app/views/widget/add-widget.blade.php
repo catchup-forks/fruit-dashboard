@@ -163,7 +163,7 @@
 
                     </div> <!-- /#add-widget .col-md-12 -->
 
-                    <div id="connect-service" class="col-md-12 text-center"><!-- not-visible"> -->
+                    <div id="connect-service" class="col-md-12 text-center not-visible">
                       <div class="alert alert-warning" role="alert">
                         <strong>
                           <span class="fa fa-exclamation-triangle"></span>
@@ -214,7 +214,7 @@
       // Filter widgets by group.
       function filterWidgets(group) {
         // Look for .not-visible wrapper and remove if any.
-      //  $('.list-group.not-visible').removeClass('not-visible');
+        $('.list-group.not-visible').removeClass('not-visible');
         // Hide all widget list-group-items.
         $('[data-selection="widget"]').hide();
         // Show the filtered list-group-items.
@@ -261,12 +261,12 @@
         url = groupConnectionMarker.data('redirect-url');
 
         addPanel.addClass('not-visible');
-      //  connectPanel.addClass('not-visible');
+        connectPanel.addClass('not-visible');
 
         if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
           connectPanel.removeClass('not-visible');
         } else {
-      //    addPanel.removeClass('not-visible');
+          addPanel.removeClass('not-visible');
         }
 
       }
@@ -330,6 +330,26 @@
                   $("#add-widget-form").submit();
                 }
               }
+          }
+          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
+          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+          buttons: {
+            main: {
+              label: 'Okay, take me to ' + service + '!',
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  // Using from extension, redirect in new tab
+                  if (window!=window.top) {
+                    $("#add-widget-form").submit();
+                    //window.open(url,'_blank').focus();
+                  // Using website, redirect on same tab
+                  } else {
+                    $("#add-widget-form").submit();
+                  }
+              }
+              }
+            }  
           }
         });
       });
