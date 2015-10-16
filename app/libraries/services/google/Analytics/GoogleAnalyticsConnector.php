@@ -73,19 +73,4 @@ class GoogleAnalyticsConnector extends GoogleConnector {
         return parent::createDataManagers($criteria);
     }
 
-    /**
-     * populateData
-     * --------------------------------------------------
-     * Collecting the initial data from the service.
-     * @param array $criteria
-     * --------------------------------------------------
-     */
-    protected function populateData($criteria) {
-        Queue::push('GoogleAnalyticsPopulateData', array(
-            'user_id'  => $this->user->id,
-            'criteria' => $criteria,
-            'service'  => 'google_analytics'
-        ));
-    }
-
 }
