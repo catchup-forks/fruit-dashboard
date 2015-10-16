@@ -45,33 +45,33 @@
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            {{-- 5 years ago --}}
-            {{-- 6 months ago --}}
-            {{-- 12 weeks ago --}}
-            {{-- 30 days ago --}}
-            @include('singlestat.singlestat-diff', [ 'format' => $widget->getFormat(), 'values' => $values, 'resolution' => $resolution, 'distance' => (($resolution=='days') ? 30 : (($resolution=='weeks') ? 12 : (($resolution=='months') ? 6 : 5))) ] )  
+            @include('singlestat.singlestat-diff', 
+              [ 'format'     => $widget->getFormat(), 
+                'values'     => $values, 
+                'resolution' => $resolution, 
+                'distance'   => (($resolution=='days') ? 30 : (($resolution=='weeks') ? 12 : (($resolution=='months') ? 6 : 5))) ] )  
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            {{-- 3 years ago --}}
-            {{-- 3 months ago --}}
-            {{-- 4 weeks ago --}}
-            {{-- 7 days ago --}}
-            @include('singlestat.singlestat-diff', [ 'format' => $widget->getFormat(), 'values' => $values, 'resolution' => $resolution, 'distance' => (($resolution=='days') ? 7 : (($resolution=='weeks') ? 4 : (($resolution=='months') ? 3 : 3))) ] )
+            @include('singlestat.singlestat-diff',
+            [ 'format'     => $widget->getFormat(), 
+              'values'     => $values, 
+              'resolution' => $resolution, 
+              'distance'   => (($resolution=='days') ? 7 : (($resolution=='weeks') ? 4 : (($resolution=='months') ? 3 : 3))) ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            {{-- 1 year ago --}}
-            {{-- 1 month ago --}}
-            {{-- 1 week ago --}}
-            {{-- 1 day ago --}}
-            @include('singlestat.singlestat-diff', [ 'format' => $widget->getFormat(), 'values' => $values, 'resolution' => $resolution, 'distance' => 1 ] )
+            @include('singlestat.singlestat-diff',
+            [ 'format'     => $widget->getFormat(), 
+              'values'     => $values, 
+              'resolution' => $resolution, 
+              'distance'   => 1 ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
@@ -101,7 +101,7 @@
         <table class="table datatable">
           <thead>
             <tr>
-              <th>#</th>
+              <th class="col-sm-1">#</th>
               @foreach($widget->getData([ 'resolution' => $resolution ])['labels'] as $datetime)
                 <th>{{ $datetime }}</th>
               @endforeach
@@ -110,7 +110,7 @@
           <tbody>
             @foreach ($widget->getData([ 'resolution' => $resolution ])['datasets'] as $dataset)
               <tr>
-                <td style="background-color: rgb({{ $dataset['color'] }})"></td>
+                <td class="col-sm-1" style="background-color: rgb({{ $dataset['color'] }})"></td>
                 @foreach ($dataset['values'] as $value)
                   <td>{{ $value }}</td>
                 @endforeach
