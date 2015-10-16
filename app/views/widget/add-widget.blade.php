@@ -36,7 +36,7 @@
 
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
-                    <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
+                    <a href="#{{ $group['name'] }}" class="list-group-item" data-redirect-url="{{ ($group['connect_route']) ? route($group['connect_route']) : "" }}" data-connected="{{ Auth::user()->isServiceConnected($group['name']) }}" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
                       <span class="service-name">{{ $group['display_name'] }}</span>
                       {{-- This is the span for the selection icon --}}
                       <span class="selection-icon"> </span>
@@ -256,14 +256,14 @@
         var connectPanel = $('#connect-service');
 
         var firstCheckedGroup = $('.fa-check').first().parent();
-        var groupConnectionMarker = firstCheckedGroup.find('span').first();
+        //var groupConnectionMarker = firstCheckedGroup.find('span').first();
 
-        url = groupConnectionMarker.data('redirect-url');
+        url = firstCheckedGroup.data('redirect-url');
 
         addPanel.addClass('not-visible');
         connectPanel.addClass('not-visible');
 
-        if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
+        if (firstCheckedGroup.data('type') === 'service' && firstCheckedGroup.data('connected').length==0) {
           connectPanel.removeClass('not-visible');
         } else {
           addPanel.removeClass('not-visible');
@@ -314,26 +314,15 @@
           }
         });
         e.preventDefault();
-        bootbox.confirm({
-          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
-          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Okay, take me to ' + service + '!',
-          callback: function(result) {
-              if (result) {
-
-                // Using from extension, redirect in new tab
-                if (window!=window.top) {
-                  $("#add-widget-form").submit();
-                  //window.open(url,'_blank').focus();
-
-                // Using website, redirect on same tab
-                } else {
-                  $("#add-widget-form").submit();
-                }
-              }
-          }
+        bootbox.dialog({
           title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
           message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
           buttons: {
+            cancel: {
+              label: 'Cancel',
+              className: 'btn-default',
+              callback: function(){}
+            },
             main: {
               label: 'Okay, take me to ' + service + '!',
               className: 'btn-primary',
