@@ -556,7 +556,7 @@ class ServiceConnectionController extends BaseController
     public function anyStripeConnect() {
         if (Auth::user()->isServiceConnected('stripe')) {
             return Redirect::back()
-                ->with('warning', 'You are already connected the service');
+                ->with('warning', 'You have already connected the service');
         }
 
         if (Input::get('code', FALSE)) {
@@ -648,7 +648,7 @@ class ServiceConnectionController extends BaseController
     private function connectGoogle($connectorClass, $returnUrl=null) {
         if (Auth::user()->isServiceConnected($connectorClass::getServiceName())) {
             return Redirect::to($this->getReferer())
-                ->with('warning', 'You are already connected the service');
+                ->with('warning', 'You have already connected the service');
         }
         /* Creating connection credentials. */
         $connector = new $connectorClass(Auth::user());
