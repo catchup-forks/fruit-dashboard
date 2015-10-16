@@ -83,16 +83,21 @@
         e.preventDefault();
         bootbox.confirm({
           title: 'We’ll take you to {{ $service["display_name"] }} to authorize Fruit Dashboard to get data.',
-          message: 'To connect the service, we will redirect you to their site. Okay, take me to {{ $service["display_name"] }}!',
-          // On clicking OK redirect to fruit dashboard add widget page.
-          callback: function(result) {
-            if (result) {
-              if (window!=window.top) {
-                window.open(url, '_blank');
-              } else {
-                window.location = url;
+          message: 'To connect the service, we will redirect you to their site. Are you sure?',
+          buttons: {
+            main: {
+              label: 'Okay, take me to {{ $service["display_name"] }}!',
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  if (window!=window.top) {
+                    window.open(url, '_blank');
+                  } else {
+                    window.location = url;
+                  }
+                }
               }
-            }
+            }  
           }
         });
       });
