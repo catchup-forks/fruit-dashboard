@@ -3,7 +3,7 @@
 class GoogleAnalyticsUsersDataManager extends MultipleHistogramDataManager
 {
     use GoogleAnalyticsHistogramDataManagerTrait;
-    protected static $metrics = array('users');
+    protected static $metrics = array('newUsers');
     protected static $cumulative = TRUE;
     private static $dimensions = array('source');
     private static $sortBy = '-ga:users';
