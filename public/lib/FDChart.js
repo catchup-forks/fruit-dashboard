@@ -45,7 +45,7 @@ function FDChart(widgetOptions) {
 
       // For each one point dataset, unshift an extra value.
       for (var i = data.datasets.length - 1; i >= 0; i--) {
-        
+
         if (data.datasets[i].values.length == 1) {
           data.datasets[i].values.unshift(data.datasets[i].values[0]);
         };
@@ -73,6 +73,23 @@ function FDChart(widgetOptions) {
     // Draw chart
     switch(type) {
       case 'line':
+        var canvasContext = canvas.get2dContext();
+        if (canvasContext) {
+          new Chart(canvasContext).Line(
+            chartOptions.transformLineChartDatasets(data), 
+            chartOptions.getLineChartOptions(singlePointOptions))
+        };
+        break;
+      case 'combined':
+        // in datasets set type = line for line
+        // if not set, defaults to bar chart
+        var canvasContext = canvas.get2dContext();
+        if (canvasContext) {
+          new Chart(canvasContext).Overlay(
+            chartOptions.transformLineChartDatasets(data), 
+            chartOptions.getLineChartOptions(singlePointOptions))
+        };
+        break;
       default:
           var canvasContext = canvas.get2dContext();
           if (canvasContext) {
