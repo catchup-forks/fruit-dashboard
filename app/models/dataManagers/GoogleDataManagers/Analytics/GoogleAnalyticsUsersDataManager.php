@@ -3,7 +3,7 @@
 class GoogleAnalyticsUsersDataManager extends HistogramDataManager
 {
     use GoogleAnalyticsHistogramDataManagerTrait;
-    protected static $metrics = array('users');
+    protected static $metrics = array('newUsers');
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
         /* Getting the page from settings. */

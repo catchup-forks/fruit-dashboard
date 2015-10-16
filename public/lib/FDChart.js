@@ -31,11 +31,11 @@ function FDChart(widgetOptions) {
     // var steps;
 
     // If on dashboard and datasets exist.
-    if (data.datasets && widgetOptions.data.page == 'dashboard') {
+    if (data && data.datasets && widgetOptions.data.page == 'dashboard') {
       // In case of one point datasets, unshift an extra label.
       if (data.datasets[0].values.length == 1) {
         data.labels.unshift(data.labels[0]);
-        
+
         // Build extra options for single point charts.
         singlePointOptions = {
           pointDotStrokeWidth : 1,
@@ -62,7 +62,7 @@ function FDChart(widgetOptions) {
         //     scaleStartValue: start,
         //   }
         // };
-        
+
       };
 
     };
@@ -76,7 +76,7 @@ function FDChart(widgetOptions) {
         var canvasContext = canvas.get2dContext();
         if (canvasContext) {
           new Chart(canvasContext).Line(
-            chartOptions.transformLineChartDatasets(data), 
+            chartOptions.transformLineChartDatasets(data),
             chartOptions.getLineChartOptions(singlePointOptions))
         };
         break;
@@ -86,7 +86,7 @@ function FDChart(widgetOptions) {
         var canvasContext = canvas.get2dContext();
         if (canvasContext) {
           new Chart(canvasContext).Overlay(
-            chartOptions.transformLineChartDatasets(data), 
+            chartOptions.transformLineChartDatasets(data),
             chartOptions.getLineChartOptions(singlePointOptions))
         };
         break;
@@ -94,7 +94,7 @@ function FDChart(widgetOptions) {
           var canvasContext = canvas.get2dContext();
           if (canvasContext) {
             new Chart(canvasContext).Line(
-              chartOptions.transformLineChartDatasets(data), 
+              chartOptions.transformLineChartDatasets(data),
               chartOptions.getLineChartOptions(singlePointOptions))
           };
           break;
