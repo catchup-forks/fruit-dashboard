@@ -42,11 +42,7 @@ FDClockWidget.prototype.init = function() {
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
-<<<<<<< HEAD
-  this.draw(refresh=false);  
-=======
   this.draw(refresh=false);
->>>>>>> 04bcffb2c8a487f85c0f234d9a343833bcbc042a
 }
 
 /**
