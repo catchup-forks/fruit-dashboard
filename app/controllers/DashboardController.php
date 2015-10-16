@@ -25,9 +25,6 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        $dm = DataManager::find(6);
-        $dm->initializeData();
-        exit(94);
         /* Get the current user */
         $user = Auth::user();
 
