@@ -10,7 +10,6 @@ var FDCountWidget = function(widgetOptions) {
    * -------------------------------------------------------------------------- */
   this.options    = widgetOptions;
   this.widgetData = null;
-  this.count      = this.options.selectors.count;
 
   // AutoLoad
   this.init();
@@ -39,6 +38,7 @@ FDCountWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDCountWidget.prototype.reinit = function() {
+   // No need to redraw, table is responsive
    return this;
 };
 
@@ -51,9 +51,7 @@ FDCountWidget.prototype.reinit = function() {
  * --------------------------------------------------------------------------
  */
 FDCountWidget.prototype.refresh = function(data) {
-  $('#' + this.count).tooltip({'html':true});
+  $('#' + this.options.selectors.count).tooltip({'html': true});
   return this;
 }
-/* -------------------------------------------------------------------------- *
- *                                   EVENTS                                   *
- * -------------------------------------------------------------------------- */
+

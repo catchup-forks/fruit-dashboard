@@ -28,6 +28,19 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
     }*/
 
     /**
+     * testUrl
+     * Testing if there's data on the provided url.
+     * --------------------------------------------------
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    private function testUrl() {
+        if ($this->dataExists()) {
+            $this->dataManager()->testUrl();
+        }
+    }
+
+    /**
      * getSettingsFields
      * Returns the SettingsFields
      * --------------------------------------------------
@@ -58,6 +71,25 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      */
      public static function getCriteriaFields() {
         return array_merge(parent::getCriteriaFields(), self::$webhookCriteriaFields);
+     }
+
+     /**
+      * save
+      * Overriding save to add url testing.
+      * --------------------------------------------------
+      * @return
+      * --------------------------------------------------
+      */
+     public function save(array $options=array()) {
+        parent::save();
+        try {
+            if ($this->state == 'active') {
+                $this->testUrl();
+            }
+        } catch (ServiceException $e) {
+            $this->setState('setup_required', FALSE);
+            parent::save();
+        }
      }
 }
 ?>

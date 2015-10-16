@@ -42,7 +42,7 @@ trait GoogleAnalyticsGoalWidgetTrait
         }
 
         if (empty($goals)) {
-            throw new Exception("No goal found.", 1);
+            throw new Exception("No goal found, for the selected profile.", 1);
         }
 
         return $goals;

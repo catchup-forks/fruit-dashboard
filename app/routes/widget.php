@@ -38,7 +38,6 @@ Route::group([
         'uses'  => 'GeneralWidgetController@getAjaxSetting',
     ]);
 
-
     Route::any('reset/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.reset',

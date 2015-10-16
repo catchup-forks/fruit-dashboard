@@ -11,3 +11,4 @@ function FDGoogleAnalyticsGoalCompletionWidget(widgetOptions) {
 
 FDGoogleAnalyticsGoalCompletionWidget.prototype = Object.create(FDHistogramWidget.prototype);
 FDGoogleAnalyticsGoalCompletionWidget.prototype.constructor = FDGoogleAnalyticsGoalCompletionWidget;
+

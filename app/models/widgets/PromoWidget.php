@@ -26,19 +26,85 @@ class PromoWidget extends Widget
     );
 
     /**
+     * getConnectionMeta
+     * Returns the connection meta.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getConnectionMeta() {
+        $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
+
+        if (is_null($descriptor)) {
+            /* Invalid descriptor in DB. */
+            throw new DescriptorDoesNotExists;
+        }
+
+        $connectionText = "Connect the service";
+
+        if ($descriptor->category == 'google_analytics') {
+            /* GA descriptor. */
+            if ( ! $this->user()->isServiceConnected('google_analytics')) {
+                return array(
+                    'text' => $connectionText,
+                    'url'  => route('service.google_analytics.connect')
+                );
+            }
+
+            /* GA connected. */
+            if ($descriptor->type == 'google_analytics_goal_completion' ||
+                    $descriptor->type == 'google_analytics_conversions') {
+                /* Goal widget. */
+                return array(
+                    'text' => 'Please select your Google Analytics goal',
+                    'url'  => route('service.google_analytics.select-properties')
+                );
+            }
+            /* Default GA widget. */
+            return array(
+                'text' => 'Please select your Google Analytics profile',
+                'url'  => route('service.facebook.select-pages')
+            );
+
+        } else if ($descriptor->category == 'google_analytics') {
+                return array(
+                    'text' => $connectionText,
+                    'url'  => route('service.facebook.connect')
+                );
+        } else if ($descriptor->category == 'facebook') {
+            if ( ! $this->user()->isServiceConnected('facebook')) {
+                return array(
+                    'text' => $connectionText,
+                    'url'  => route('service.facebook.connect')
+                );
+            }
+            /* Facebook connected. */
+            return array(
+                'text' => 'Please select your Facebook page',
+                'url'  => route('service.facebook.select-pages')
+            );
+        } else if ($descriptor->category == 'twitter') {
+            return array(
+                'text' => $connectionText,
+                'url'  => route('service.twitter.connect')
+            );
+        }
+    }
+
+    /**
      * checkIntegrity
      * Transforming the widget with specific criteria,
      * if the transform condition applies.
     */
     public function checkIntegrity() {
         parent::checkIntegrity();
-
         $descriptor = WidgetDescriptor::find($this->getSettings()['related_descriptor']);
 
         if (is_null($descriptor)) {
             /* Invalid descriptor in DB. */
             throw new WidgetFatalException;
         }
+
         /* Creating criteria based on the service. */
         if ($descriptor->type == 'google_analytics_goal_completion' ||
                 $descriptor->type == 'google_analytics_conversions') {
@@ -76,7 +142,8 @@ class PromoWidget extends Widget
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'relatedDescriptor' => $this->getRelatedDescriptor()
+            'relatedDescriptor' => $this->getRelatedDescriptor(),
+            'connectionMeta'    => $this->getConnectionMeta(),
         ));
     }
 
