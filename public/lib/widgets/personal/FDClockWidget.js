@@ -42,7 +42,11 @@ FDClockWidget.prototype.init = function() {
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.reinit = function() {
+<<<<<<< HEAD
   this.draw(refresh=false);  
+=======
+  this.draw(refresh=false);
+>>>>>>> 04bcffb2c8a487f85c0f234d9a343833bcbc042a
 }
 
 /**
@@ -69,7 +73,7 @@ FDClockWidget.prototype.draw = function(refresh) {
 FDClockWidget.prototype.setTime = function(refresh) {
     // Needed because of the scopes
     var that = this
-    
+
     // Formatter function
     function formatTime(time) {
       if (time < 10) {time = "0" + time};

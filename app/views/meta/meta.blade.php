@@ -76,7 +76,7 @@
     {{ HTML::script('js/jquery.ba-resize.min.js'); }}
     {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
     {{ HTML::script('js/jquery.growl.js'); }}
-    {{ HTML::script('js/Chart.js'); }}
+    {{ HTML::script('js/Chart.min.js'); }}
     {{ HTML::script('js/jstz.min.js') }}
     {{ HTML::script('js/hopscotch.min.js') }}
     {{ HTML::script('js/bootbox.min.js') }}

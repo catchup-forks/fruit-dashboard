@@ -34,12 +34,13 @@ function FDChartOptions(widgetOptions) {
    * @function getLineChartOptions
    * --------------------------------------------------------------------------
    * Returns the options for a line chart based on the page
+   * @param {object} type | extra options for single point or flat line charts
    * @return {dictionary} chartOptions | the chart options
    * --------------------------------------------------------------------------
    */
-  function getLineChartOptions() {
+  function getLineChartOptions(singlePointOptions) {
     if (page == 'dashboard') {
-      return getLineChartOptionsDashboard();
+      return getLineChartOptionsDashboard(singlePointOptions);
     } else if (page == 'singleStat') {
       return getLineChartOptionsSingleStat();
     }
@@ -83,17 +84,24 @@ function FDChartOptions(widgetOptions) {
    * @function getLineChartOptionsDashboard
    * --------------------------------------------------------------------------
    * Returns the line chart options for the dashboard page
+   * @param {object} type | extra options for single point or flat line charts
    * @return {dictionary} chartOptions | Dictionary with the options
    * --------------------------------------------------------------------------
    */
-  function getLineChartOptionsDashboard() {
-    return {
-       pointDot: true,
-       pointDotRadius : 1.2,
-       bezierCurve: true,
-       bezierCurveTension : 0.35,
-       animation: false
+  function getLineChartOptionsDashboard(singlePointOptions) {
+    var defaultOptions = {
+      pointDot: true,
+      pointDotRadius : 1.2,
+      bezierCurve: true,
+      bezierCurveTension : 0.35,
+      animation: false
+    }
+
+    if (singlePointOptions) {
+      jQuery.extend(defaultOptions, singlePointOptions);
     };
+
+    return defaultOptions;
   }
 
   /**
