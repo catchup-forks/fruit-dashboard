@@ -34,7 +34,7 @@
                       {{ HTML::image('img/logos/'.$service['name'].'.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
 
                       @if(Auth::user()->isServiceConnected($service['name']))
-
+                      
                         <p class="text-success text-center lead margin-top">
                           <span class="fa fa-check"> </span> Connected
                         </p>
