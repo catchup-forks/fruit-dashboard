@@ -61,7 +61,6 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      * --------------------------------------------------
      */
     public function collectData($options=array()) {
-        $this->setState('loading');
         $options = self::createOptions($options);
         /* Collecting and transforming data.*/
         $metricsData = array();
@@ -78,7 +77,6 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
         foreach ($metricsData as $metric=>$row) {
             $this->insert(array_merge(array('Source' => $metric), $row));
         }
-        $this->setState('active');
     }
 
     /**

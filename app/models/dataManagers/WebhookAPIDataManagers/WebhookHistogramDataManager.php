@@ -26,5 +26,18 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
         return $data;
     }
 
+    /**
+     * testUrl
+     * Testing if there's data on the provided url.
+     * --------------------------------------------------
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    public function testUrl() {
+        if ($this->getCurrentValue() == FALSE) {
+            throw new ServiceException("There's no data on the provided url", 1);
+        }
+    }
+
 }
 ?>

@@ -11,7 +11,7 @@
 
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Select your Google Analytics profile
+      Setup your Google Analytics connection
     </h1> <!-- /.text-center -->
 
     <div class="row">
@@ -28,7 +28,7 @@
 
                 <div class="col-sm-6">
 
-                  {{ Form::label('properties', 'Google Analytics profile', array(
+                  {{ Form::label('properties', 'Select your profile', array(
                     'class' => 'control-label'
                   ))}}
 
@@ -39,7 +39,6 @@
 
                 <div class="col-sm-6">
                   <div id="goal-onload">
-                    <h3> Please select a profile first. </h3>
                   </div>
 
                   <div class="not-visible text-center" id="goal-load">
@@ -56,7 +55,7 @@
                   </div>
 
                   <div class="not-visible" id="goals">
-                    {{ Form::label('goals', 'Google Analytics goal', array(
+                    {{ Form::label('goals', 'Select your signup conversion goal', array(
                       'class' => 'control-label'
                     ))}}
 

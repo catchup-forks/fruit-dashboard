@@ -45,11 +45,11 @@
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            @include('singlestat.singlestat-diff', 
-              [ 'format'     => $widget->getFormat(), 
-                'values'     => $values, 
-                'resolution' => $resolution, 
-                'distance'   => (($resolution=='days') ? 30 : (($resolution=='weeks') ? 12 : (($resolution=='months') ? 6 : 5))) ] )  
+            @include('singlestat.singlestat-diff',
+              [ 'format'     => $widget->getFormat(),
+                'values'     => $values,
+                'resolution' => $resolution,
+                'distance'   => (($resolution=='days') ? 30 : (($resolution=='weeks') ? 12 : (($resolution=='months') ? 6 : 5))) ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-sm-3 -->
@@ -57,9 +57,9 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             @include('singlestat.singlestat-diff',
-            [ 'format'     => $widget->getFormat(), 
-              'values'     => $values, 
-              'resolution' => $resolution, 
+            [ 'format'     => $widget->getFormat(),
+              'values'     => $values,
+              'resolution' => $resolution,
               'distance'   => (($resolution=='days') ? 7 : (($resolution=='weeks') ? 4 : (($resolution=='months') ? 3 : 3))) ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
@@ -68,9 +68,9 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             @include('singlestat.singlestat-diff',
-            [ 'format'     => $widget->getFormat(), 
-              'values'     => $values, 
-              'resolution' => $resolution, 
+            [ 'format'     => $widget->getFormat(),
+              'values'     => $values,
+              'resolution' => $resolution,
               'distance'   => 1 ] )
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
@@ -97,7 +97,7 @@
 
   <div class="panel-body">
     <div class="row">
-      <div class="col-sm-12">
+      <div class="col-sm-12 table-responsive">
         <table class="table datatable">
           <thead>
             <tr>

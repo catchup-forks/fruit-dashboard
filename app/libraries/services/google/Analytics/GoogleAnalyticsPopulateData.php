@@ -41,18 +41,20 @@ class GoogleAnalyticsPopulateData extends DataPopulator
                 }
             }
             if ($dataManager->getDescriptor()->category == 'google_analytics' &&
-                    $hasEnoughCriteria &&
-                    $dataManager->getData() == FALSE) {
-
-                if ($dataManager instanceof HistogramDataManager &&
-                        empty($dataManager->getOptionalParams())) {
-                    if ($dataManager->hasCumulative()) {
-                        $dataManagers['histogram']['cumulative'][$dataManager->getDescriptor()->type] = $dataManager;
+                    $hasEnoughCriteria) {
+                if ($dataManager->getData() == FALSE) {
+                    if ($dataManager instanceof HistogramDataManager &&
+                            empty($dataManager->getOptionalParams())) {
+                        if ($dataManager->hasCumulative()) {
+                            $dataManagers['histogram']['cumulative'][$dataManager->getDescriptor()->type] = $dataManager;
+                        } else {
+                            $dataManagers['histogram']['diffed'][$dataManager->getDescriptor()->type] = $dataManager;
+                        }
                     } else {
-                        $dataManagers['histogram']['diffed'][$dataManager->getDescriptor()->type] = $dataManager;
+                        $dataManagers['other'][$dataManager->getDescriptor()->type] = $dataManager;
                     }
                 } else {
-                    $dataManagers['other'][$dataManager->getDescriptor()->type] = $dataManager;
+                    $dataManager->setState('active');
                 }
             }
         }

@@ -16,7 +16,7 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
             <h1 class="text-center">
-              Connect your google analytics account
+              Connect your Google Analytics account
             </h1>
             
             <div class="row margin-top">
@@ -26,10 +26,12 @@
                     {{ HTML::image('img/logos/analytics.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
 
                     @if(Auth::user()->isServiceConnected($service['name']))
+                      <span class="not-visible">{{ $service['display_name'] }}</span>
                       <p class="text-success text-center lead margin-top">
                         <span class="fa fa-check"> </span> Connected
                       </p>
                     @else
+                      <span class="not-visible">{{ $service['display_name'] }}</span>
                       <a href="{{ route($service['connect_route']) }}?signupWizard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
                     @endif
                     <p class="text-muted margin-top">

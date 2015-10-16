@@ -665,10 +665,9 @@ class GeneralWidgetController extends BaseController {
 
         /* Splitting emails. */
         $i = 0;
-        foreach (array_filter(preg_split('/[,\s]+/', $emails)) as $emailName) {
+        foreach (array_filter(preg_split('/[,\s]+/', $emails)) as $email) {
             /* Finding registered users. */
-            $user = User::where('email', $emailName)
-                ->orwhere('name', $emailName)
+            $user = User::where('email', $email)
                 ->first();
             if (is_null($user) || $user->id == Auth::user()->id) {
                 continue;
@@ -702,12 +701,20 @@ class GeneralWidgetController extends BaseController {
             return Response::make('Bad request.', 401);
         }
 
-        File::put(public_path().'test.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget)));
-        return View::make('to-image.to-image-general-histogram', array('widget' => $widget));
+        //File::put(public_path().'/widgetCharts/widget_' . $widgetID .'.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget)));
+        //return View::make('to-image.to-image-general-histogram', array('widget' => $widget));
 
+        $image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget]);
 
-        //$image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget]);
-        //return $image->download('widget.png');
+        if (App::environment('local')) {
+            /* On local maching the vagrant runs on port 8000. */
+            $image->html = str_replace(
+                'localhost:8001',
+                'localhost:8000',
+                $image->html
+            );
+        }
+        return $image->download('widget.png');
     }
 
     /**

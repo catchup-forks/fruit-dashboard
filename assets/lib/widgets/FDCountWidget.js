@@ -1,3 +1,4 @@
+
 /**
  * @class FDCountWidget
  * --------------------------------------------------------------------------
@@ -10,7 +11,6 @@ var FDCountWidget = function(widgetOptions) {
    * -------------------------------------------------------------------------- */
   this.options    = widgetOptions;
   this.widgetData = null;
-  this.wrapper    = new FDCount(this.options.selectors.wrapper);
 
   // AutoLoad
   this.init();
@@ -28,9 +28,6 @@ var FDCountWidget = function(widgetOptions) {
   * --------------------------------------------------------------------------
   */
 FDCountWidget.prototype.init = function() {
-  console.log(this.wrapper);
-  this.updateData(window[this.options.data.init]);
-  this.table.draw(this.widgetData);
   return this;
 };
 
@@ -55,52 +52,6 @@ FDCountWidget.prototype.reinit = function() {
  * --------------------------------------------------------------------------
  */
 FDCountWidget.prototype.refresh = function(data) {
-  this.updateData(data);
-  this.table.draw(this.widgetData);
+  $('#' + this.options.selectors.count).tooltip({'html': true});
   return this;
 }
-
-/**
- * @function updateData
- * --------------------------------------------------------------------------
- * Transforms the data to HTML Count format and stores it
- * @param {dictionary} rawData | the table data
- * @return {this} stores the transformed data
- * --------------------------------------------------------------------------
- */
-FDCountWidget.prototype.updateData = function(rawData) {
-  var transformedData = { header: '', content: '' };
-
-  // Error handling
-  if (rawData == undefined) {}
-  else if (!('header' in rawData)) {}
-  // Transforming data
-  else {
-    // Adding header
-    transformedData.header = '<thead>';
-    for (var i = 0; i < rawData.header.length; i++) {
-      transformedData.header += '<th>' + rawData.header[i] + '</th>';
-    };
-    transformedData.header += '</thead>';
-
-    // Adding content
-    transformedData.content = '<tbody>';
-    for (var row=0; row < rawData.content.length; row++) {
-      transformedData.content += '<tr>';
-      for (var key in rawData.content[row]) {
-        transformedData.content += '<td>' + rawData.content[row][key] + '</td>';
-      }
-      transformedData.content += '</tr>';
-    }
-      transformedData.content += '</tbody>';
-  }
-
-  // Store new data
-  this.widgetData = transformedData;
-
-  // Return
-  return this;
-}
-/* -------------------------------------------------------------------------- *
- *                                   EVENTS                                   *
- * -------------------------------------------------------------------------- */
