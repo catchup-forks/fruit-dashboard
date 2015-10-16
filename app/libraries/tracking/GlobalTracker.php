@@ -45,7 +45,7 @@ class GlobalTracker {
      */
     public static function isTrackingEnabled() {
         /* ---- FORCE TRACKING (DEBUG MODE) ---- */
-        return TRUE;
+        //return TRUE;
 
         /* Tracking is enabled only on production server */
         if (App::environment('production')) {
