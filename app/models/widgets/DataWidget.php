@@ -95,7 +95,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * Returns whether or not there is dat in the DB.
      */
     public function dataExists() {
-        return ! is_null($this->getData());
+        return $this->data && ( ! is_null($this->getData()));
     }
 
     /**
