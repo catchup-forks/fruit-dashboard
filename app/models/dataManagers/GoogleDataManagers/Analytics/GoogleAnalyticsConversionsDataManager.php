@@ -10,7 +10,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
         'max_results' => 5
     );
     private static $dimensions = array('source');
-    private static $sortBy = '-ga:users';
+    private static $sortBy = '-ga:newUsers';
 
     /**
      * getOptionalParams
@@ -34,7 +34,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
      * --------------------------------------------------
      */
     public function getMetricNames() {
-        return array('users', 'goal' . $this->criteria['goal'] . 'Completions');
+        return array('newUsers', 'goal' . $this->criteria['goal'] . 'Completions');
     }
 
     /**
@@ -62,7 +62,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
     }
 
     /**
-     * collectData
+     * collect
      * Creating the table in the db.
      * --------------------------------------------------
      * @param array $options

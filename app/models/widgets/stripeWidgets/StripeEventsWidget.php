@@ -38,7 +38,7 @@ class StripeEventsWidget extends DataWidget implements iDataWidget
     */
     public function handleAjax($postData) {
         if (isset($postData['collect']) && ($postData['collect'])) {
-            $this->collectData();
+            $this->collect();
         }
         return $this->getData($postData['type']);
     }

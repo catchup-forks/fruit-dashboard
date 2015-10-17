@@ -53,7 +53,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
     }
 
     /**
-     * collectData
+     * collect
      * Creating the table in the db.
      * --------------------------------------------------
      * @param array $options

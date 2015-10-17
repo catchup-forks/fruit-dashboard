@@ -33,13 +33,13 @@ class CollectData extends Command {
         $errors = 0;
         $i = 0;
         foreach (Data::all() as $data) {
-            if (Carbon::now()->diffInMinutes($data->last_updated) >= $data->update_period) {
+            if (Carbon::now()->diffInMinutes($data->updated_at) >= $data->update_period) {
                 $i++;
                 try {
                     $data->collect();
                 } catch (Exception $e) {
                     $errors++;
-                    Log::error('Error found while collecting data on data #' . $manager->id . '. message: ' . $e->getMessage());
+                    Log::error('Error found while collecting data on data #' . $data->id . '. message: ' . $e->getMessage());
                 }
             }
         }

@@ -217,13 +217,8 @@ class GoogleAnalyticsDataCollector
                 if ( ! array_key_exists($row[0], $metricsData[$metric])) {
                     $metricsData[$metric][$row[0]] = array();
                 }
-                if (count($row) == 3) {
-                    /* Multiple values on the row. one metric */
-                    $metricsData[$metric][$row[0]][$row[1]] = $row[2];
-                } else {
-                    /* One data per row. multiple metrics */
-                    $metricsData[$metric][$row[0]] = $row[$i];
-                }
+                /* One data per row. multiple metrics */
+                $metricsData[$metric][$row[0]] = $row[$i];
             }
             ++$i;
         }

@@ -19,7 +19,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         }
 
         $dataSets = $this->getDataSets();
-        $decodedData = array(
+        $encodedData = array(
             'timestamp' => $date->getTimestamp()
         );
         foreach ($data as $key=>$value) {
@@ -32,9 +32,15 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 /* Value is not right for histograms, exiting. */
                 return null;
             }
-            $decodedData[$dataSets[$key]] = $value;
+            $encodedData[$dataSets[$key]] = $value;
         }
-        return $decodedData;
+        /* Populating zero values to keep integrity. */
+        foreach ($dataSets as $dataset) {
+            if ( ! in_array($dataset, array_keys($encodedData))) {
+                $encodedData[$dataset] = 0;
+            }
+        }
+        return $encodedData;
      }
 
     /**

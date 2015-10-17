@@ -88,7 +88,7 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * collectData
+     * collect
      * --------------------------------------------------
      * Getting the new value based on getCurrentValue()
      * --------------------------------------------------
@@ -119,11 +119,10 @@ abstract class HistogramDataManager extends DataManager
                 }
             }
             if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
-                Log::info("Popping");
+                var_dump("Popping");
                 array_pop($currentData);
             }
         }
-
         /* Saving data only every 15 minutes. */
         array_push($currentData, $dbEntry);
         $this->save($currentData);

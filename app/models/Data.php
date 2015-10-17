@@ -226,7 +226,7 @@ class Data extends Eloquent
      * --------------------------------------------------
      */
     public function __call($method, $args) {
-        return $this->manager->$method($args);
+        return call_user_func_array(array($this->manager, $method), $args);
     }
 
 }

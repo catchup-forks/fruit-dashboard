@@ -3,7 +3,7 @@
 class QuoteDataManager extends DataManager
 {
     /**
-     * collectData
+     * collect
      * --------------------------------------------------
      * Retrieves data from a google spreadsheet and saves to db
      * @return None

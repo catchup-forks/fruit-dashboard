@@ -228,12 +228,18 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function turnOffBrokenWidgets() {
-        foreach ($this->widgets as $widget) {
+        foreach ($this->widgets()->with('data')->get() as $widget) {
             if ($widget instanceof SharedWidget) {
                 continue;
             }
+            if ($widget->state == 'loading' || $widget->state == 'setup_required') {
+                /* Widget is loading, no data is available yet. */
+                $templateData = Widget::getDefaultTemplateData($widget);
+            } else {
+                $templateData = $widget->getTemplateData();
+            }
             $view = View::make($widget->getDescriptor()->getTemplateName())
-                ->with('widget', $widget->getTemplateData());
+                ->with('widget', $templateData);
             try {
                 $view->render();
             } catch (Exception $e) {

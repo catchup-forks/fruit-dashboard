@@ -3,6 +3,18 @@
 trait GoogleAnalyticsDataManagerTrait
 {
     /**
+     * getCollector
+     * Returning a data collector
+     * --------------------------------------------------
+     * @return FacebookDataCollector
+     * --------------------------------------------------
+     */
+    protected function getCollector() {
+        $collector = new GoogleAnalyticsDataCollector($this->user);
+        return $collector;
+    }
+
+    /**
      * getMetricNames
      * Returning the names of the metric used by the DM.
      * --------------------------------------------------

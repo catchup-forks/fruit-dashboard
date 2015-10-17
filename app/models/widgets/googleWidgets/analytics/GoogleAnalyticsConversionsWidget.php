@@ -28,14 +28,13 @@ class GoogleAnalyticsConversionsWidget extends ServiceTableWidget implements iSe
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->data->collect(array(
+            $options = array(
                 'start'       => $this->getSettings()['range_start'],
                 'end'         => $this->getSettings()['range_end'],
                 'max_results' => $this->getSettings()['max_results'],
-            ));
-        } else {
-            $this->data->collect($options);
+            );
         }
+        $this->data->collect($options);
     }
 
     /**

@@ -3,7 +3,7 @@
 class TwitterMentionsDataManager extends ArticleDataManager
 {
     /**
-     * collectData
+     * collect
      * Creating data for the widget.
      * @param array $options.
      */
