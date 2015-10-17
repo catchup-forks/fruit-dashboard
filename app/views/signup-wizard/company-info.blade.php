@@ -11,7 +11,7 @@
 
   <div class="container">
     <h1 class="text-center text-white drop-shadow">
-      Let us know about your company
+      Tell us about your project
     </h1> <!-- /.text-center -->
 
     <div class="row">
@@ -22,7 +22,7 @@
             <form method="POST" action="{{ route('signup-wizard.postStep', $currentStep) }}" class="form-horizontal">
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">Name of your project</label>
+                  <label class="control-label">Project name</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-8">
                   <input name='project_name' type='text' class='form-control' placeholder='Project name' value="{{ $info->project_name }}">
@@ -31,7 +31,7 @@
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">Url of your project</label>
+                  <label class="control-label">Webpage</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-8">
                   <input name='project_url' type='text' class='form-control' placeholder='http://yourproject.com' value="{{ $info->project_url }}">
@@ -40,7 +40,7 @@
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">Type of your startup</label>
+                  <label class="control-label">Startup type</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-8">
                   <select name="startup_type" class="form-control">
@@ -54,7 +54,7 @@
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">Size of your startup</label>
+                  <label class="control-label">Team members</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-8">
                   <select name="company_size" class="form-control">
@@ -68,7 +68,7 @@
 
               <div class="form-group">
                 <div class="col-sm-4">
-                  <label class="control-label">Funding of your startup</label>
+                  <label class="control-label">Funding</label>
                 </div> <!-- /.col-sm-4 -->
                 <div class="col-sm-8">
                   <select name="company_funding" class="form-control">

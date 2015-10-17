@@ -112,7 +112,11 @@ abstract class HistogramDataManager extends DataManager
             if (static::$cumulative &&
                     array_key_exists('sum', $options) &&
                     $options['sum'] == TRUE) {
-                $dbEntry['value'] += $lastData['value'];
+                foreach (self::getEntryValues($dbEntry) as $key=>$value) {
+                    if (array_key_exists($key, $lastData)) {
+                        $dbEntry[$key] += $lastData[$key];
+                    }
+                }
             }
             if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
                 Log::info("Popping");

@@ -14,16 +14,22 @@ trait GoogleAnalyticsHistogramDataManagerTrait
         $profileId = $this->getProfileId();
         $metrics   = $this->getMetricNames();
 
-        if (static::$cumulative) {
+        if ( ! static::$cumulative) {
             /* On cumulative charts, getting the data from the past. */
             $start = SiteConstants::getGoogleAnalyticsLaunchDate();
             $end = Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics']);
             $data = $collector->getMetrics(
                 $profileId,
                 $start->toDateString(), $end->toDateString(),
-                $metrics
+                $metrics,
+                $this->getOptionalParams()
             );
-            $entry = $data;
+            $values = array_values($data)[0];
+            if (is_array($values)) {
+                $entry = $values;
+            } else {
+                $entry = array('value' => $values);
+            }
             $entry['timestamp'] = $end->getTimeStamp();
             $this->collect(array('entry' => $entry, 'sum' => $this->hasCumulative()));
         }
@@ -34,7 +40,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
             $profileId,
             Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics'])->toDateString(),
             Carbon::now()->toDateString(),
-            $metrics, array('dimensions' => 'ga:date')
+            $metrics, array('dimensions' => 'ga:date,ga:source')
         );
         $this->saveHistogram($data);
     }
