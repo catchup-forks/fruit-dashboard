@@ -8,7 +8,7 @@ module.exports = {
     }
   },
   copy_lib: {
-    files: ['<%= pkg.dirs.developement.lib %>/*'],
+    files: ['<%= pkg.dirs.developement.lib %>/**/*'],
     tasks: ['copy:lib'],
     options: {
       nospawn: true

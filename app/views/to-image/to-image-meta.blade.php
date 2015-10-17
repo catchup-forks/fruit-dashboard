@@ -16,10 +16,6 @@
       <!-- Font Awesome CSS -->
       {{ HTML::style('css/font-awesome.min.css') }}
       <!-- /FontAwesome CSS-->
-
-      <!-- Custom styles -->
-      {{ HTML::style('css/custom.css') }}
-      <!-- /Custom styles -->
     @show
   </head>
 

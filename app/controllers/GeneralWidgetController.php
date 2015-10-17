@@ -695,26 +695,50 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function anySaveWidgetToImage($widgetID) {
-        $widget = Widget::find($widgetID);
+        $widget = $this->getWidget($widgetID);
+
+        /* Widget not found */
         if (is_null($widget)) {
-            /* Widget not found */
             return Response::make('Bad request.', 401);
         }
 
-        //File::put(public_path().'/widgetCharts/widget_' . $widgetID .'.html', View::make('to-image.to-image-general-histogram', array('widget' => $widget)));
-        //return View::make('to-image.to-image-general-histogram', array('widget' => $widget));
+        if ($widget->state == 'loading' || $widget->state == 'setup_required') {
+            /* Widget is loading, no data is available yet. */
+            $templateData = Widget::getDefaultTemplateData($widget);
+        } else {
+            try {
+                $templateData = $widget->getTemplateData();
+            } catch (Exception $e) {
+                /* Something went wrong during data population. */
+                Log::error($e->getMessage());
+                $templateData = Widget::getDefaultTemplateData($widget);
+                $widget->setState('setup_required');
+            }
+        }
 
-        $image = PDF::loadView('to-image.to-image-general-histogram', ['widget' => $widget]);
+        /* Build templatedata */
+        $widgetData = array_merge($widget->getTemplateMeta(),$templateData);
+
+        $htmlpath = public_path() . '/widgets/' . $widgetID . '.html';
+        $pngpath = public_path() . '/widgets/' . $widgetID . '.png';
+
+        $view = View::make('to-image.to-image-general-histogram', array('widget' => $widgetData));
+        File::put($htmlpath, $view);
 
         if (App::environment('local')) {
+            $html = File::get($htmlpath);
             /* On local maching the vagrant runs on port 8000. */
-            $image->html = str_replace(
+            $html = str_replace(
                 'localhost:8001',
                 'localhost:8000',
-                $image->html
+                $html
             );
+            File::put($htmlpath, $html);
         }
-        return $image->download('widget.png');
+
+        //Image::loadFile($htmlpath)->save($pngpath);
+        //return $view;
+        return Image::loadFile($htmlpath)->download('widget.png');
     }
 
     /**
