@@ -1,74 +1,40 @@
 @extends('to-image.to-image-meta')
 
 @section('pageContent')
-<div id="panel-to-image" class="panel fill panel-default" style="width:400px; height:200px">
-  <div class="panel-body no-padding" id="chart-to-image">
-    <div id="chart-container">
-      <canvas class="img-responsive canvas-auto"></canvas>
-    </div>
-  </div> <!-- /.panel-body -->
-</div> <!-- /.panel -->
+<h1>Hello</h1>
+<div class="fill" id="widget-wrapper-{{$widget['general']['id']}}">
+  <div class="chart-data">
+  <div class="chart-name larger-text">
+    {{ $widget['settings']['name'] }}
+  </div> <!-- /.chart-name -->
+  <div class="chart-value larger-text">
+    {{ Utilities::formatNumber(array_values($widget['instance']->getLatestValues())[0], $widget['format']) }}
+  </div> <!-- /.chart-value -->
+</div> <!-- /.chart-data -->
+</div>
+
+<div class="chart-diff-data text-center">
+
+  <div class="chart-diff @if($widget['instance']->isSuccess($widget['defaultDiff'])) text-success @else text-danger @endif">
+  @if ($widget['defaultDiff'] >= 0)
+      <span class="fa fa-arrow-up chart-diff-icon"> </span>
+  @else
+      <span class="fa fa-arrow-down chart-diff-icon"> </span>
+  @endif
+    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget['defaultDiff'], $widget['format']) }}</span>
+  </div> <!-- /.chart-diff -->
+
+
+  <div class="chart-diff-dimension smaller-text">
+    <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
+  </div> <!-- /.chart-diff-dimension -->
+</div> <!-- /.chart-diff-data -->
+
+<div id="chart-container-{{ $widget['id'] }}" class="clickable">
+  <canvas class="chart chart-line"></canvas>
+</div>
 @stop
 
 @section('pageScripts')
 
-<!-- FDGeneral* classes -->
-<script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
-<!-- /FDGeneral* classes -->
-
-<!-- FDAbstractWidget* classes -->
-<script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
-<!-- /FDAbstractWidget* classes -->
-
-<!-- FDWidget* classes -->
-<script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->getDescriptor()->category.'/FD'. Utilities::underscoreToCamelCase($widget->getDescriptor()->type).'Widget.js') }}"></script>
-<!-- /FDWidget* classes -->
-
-<!-- Init FDChartOptions -->
-<script type="text/javascript">
-    new FDChartOptions({data:{page: 'dashboard'}}).init();
-</script>
-<!-- /Init FDChartOptions -->
-
-<script type="text/javascript">
-    var widgetOptionsToImage = {
-        general: {
-          id:    '{{ $widget->id }}',
-          name:  '{{ $widget->name }}',
-          type:  '{{ $widget->getDescriptor()->type }}',
-          state: '{{ $widget->state }}',
-        },
-        features: {
-          drag:    false,
-        },
-        urls: {},
-        selectors: {
-          widget: '#panel-to-image',
-          graph:  '#chart-to-image'
-        },
-        data: {
-          page: 'dashboard',
-          init: 'widgetDataToImage',
-        }
-    }
-
-    var widgetDataToImage = {
-      'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
-      'datasets': [
-      @foreach ($widget->getData()['datasets'] as $dataset)
-        {
-            'values' : [{{ implode(',', $dataset['values']) }}],
-            'name':  "{{ $dataset['name'] }}",
-            'color': "{{ $dataset['color'] }}"
-        },
-      @endforeach
-      ]
-    }
-
-  $(document).ready(function () {
-    FDWidgetToImage = new window['FD{{ Utilities::underscoreToCamelCase($widget->getDescriptor()->type)}}Widget'](widgetOptionsToImage);
-  });
-</script>
 @append

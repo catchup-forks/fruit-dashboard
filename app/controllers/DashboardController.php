@@ -43,7 +43,7 @@ class DashboardController extends BaseController
 
         /* Get active dashboard, if the url contains it */
         $parameters = array();
-        $activeDashboard = Request::query('active');
+        $activeDashboard = Input::get('active');
         if ($activeDashboard) {
             $parameters['activeDashboard'] = $activeDashboard;
         }
