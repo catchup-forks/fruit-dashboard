@@ -571,9 +571,7 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        foreach (WidgetDescriptor::all() as $descriptor) {
-            Cache::forever('descriptor_' . $descriptor->id, $descriptor);
-        }
+        WidgetDescriptor::rememberForever()->get();
 
         /* Send message to console */
         Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated, cached.');

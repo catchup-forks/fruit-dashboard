@@ -1,6 +1,6 @@
 <?php
 
-abstract class HistogramWidget extends CronWidget
+abstract class HistogramWidget extends DataWidget
 {
     protected static $isHigherGood = TRUE;
     use NumericWidgetTrait;
@@ -84,13 +84,13 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function setupDataManager(array $options=array()) {
-        $dm = $this->dataManager();
         $settings = $this->getSettings();
-        $dm->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);
-        $dm->setLength(array_key_exists('length', $options) ? $options['length'] : $settings['length']);
-        $dm->setRange(array_key_exists('range', $options) ? $options['range'] : array());
-        $dm->setDiff(array_key_exists('diff', $options) ? $options['diff'] : FALSE);
-        return $dm;
+        $manager = $this->data->getManager();
+        $manager->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);
+        $manager->setLength(array_key_exists('length', $options) ? $options['length'] : $settings['length']);
+        $manager->setRange(array_key_exists('range', $options) ? $options['range'] : array());
+        $manager->setDiff(array_key_exists('diff', $options) ? $options['diff'] : FALSE);
+        return $manager;
      }
 
     /**
@@ -112,7 +112,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function hasCumulative() {
-        return $this->dataManager()->hasCumulative();
+        return $this->data->hasCumulative();
      }
 
     /**
@@ -184,7 +184,7 @@ abstract class HistogramWidget extends CronWidget
         $values = $this->setupDataManager($dmParams)->compare();
 
         if (empty($values)) {
-            return null;
+            return 0;
         }
 
         return array_values($values)[0];
@@ -201,7 +201,6 @@ abstract class HistogramWidget extends CronWidget
      */
     public function getHistory($multiplier=1, $resolution=null) {
         $currentValue = array_values($this->getLatestValues())[0];
-        $diff = $this->getDiff($multiplier, $resolution);
         $value = $currentValue - $this->getDiff($multiplier, $resolution);
         try {
             $percent = ($currentValue / $value - 1) * 100;
@@ -250,8 +249,6 @@ abstract class HistogramWidget extends CronWidget
         return $this->setupDataManager($dmParams)->getHistogram();
     }
 
-
-
     /**
      * getLatestValues
      * Returning the last values in the histogram.
@@ -260,8 +257,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function getLatestValues() {
-        $dm = $this->dataManager();
-        return $dm->getLatestValues();
+        return $this->data->getLatestValues();
      }
 
     /**
@@ -343,7 +339,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
     public function hasData() {
-        return $this->dataManager()->getData() != FALSE;
+        return $this->data->decode() != FALSE;
     }
 
 }

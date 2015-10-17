@@ -42,13 +42,13 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     }
 
     /**
-     * createDataManagers
+     * createDataObjects
      * Adding profile activation.
      * --------------------------------------------------
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function createDataManagers(array $criteria=array()) {
+    public function createDataObjects(array $criteria=array()) {
         /* Getting profile. */
         $profile = $this->user->googleAnalyticsProfiles()
             ->where('profile_id', $criteria['profile'])->first();
@@ -70,22 +70,6 @@ class GoogleAnalyticsConnector extends GoogleConnector {
         $profile->active = TRUE;
         $profile->save();
 
-        return parent::createDataManagers($criteria);
+        return parent::createDataObjects($criteria);
     }
-
-    /**
-     * populateData
-     * --------------------------------------------------
-     * Collecting the initial data from the service.
-     * @param array $criteria
-     * --------------------------------------------------
-     */
-    protected function populateData($criteria) {
-        Queue::push('GoogleAnalyticsPopulateData', array(
-            'user_id'  => $this->user->id,
-            'criteria' => $criteria,
-            'service'  => 'google_analytics'
-        ));
-    }
-
 }

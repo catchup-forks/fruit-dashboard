@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends CronWidget implements iAjaxWidget
+class QuoteWidget extends DataWidget implements iAjaxWidget
 {
     /* -- Settings -- */
     private static $quoteSettings = array(

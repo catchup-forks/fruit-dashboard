@@ -36,9 +36,9 @@ abstract class GeneralServiceConnector
         $this->user->connections()->where('service', static::$service)->delete();
 
         /* Deleting all DataManagers */
-        foreach ($this->user->dataManagers as $dataManager) {
-            if ($dataManager->getDescriptor()->category == static::$service) {
-                $dataManager->delete();
+        foreach ($this->user->dataObjects as $data) {
+            if ($data->getDescriptor()->category == static::$service) {
+                $data->delete();
             }
         }
 
@@ -103,29 +103,30 @@ abstract class GeneralServiceConnector
     }
 
     /**
-     * Creating the dataManagers.
+     * Creating the Data objects.
      * --------------------------------------------------
      * @param array $criteria
      * @return array
      * --------------------------------------------------
      */
-    public function createDataManagers(array $criteria=array()) {
-        $dataManagers = array();
-        foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
+    public function createDataObjects(array $criteria=array()) {
+        $dataObjects = array();
+        foreach(WidgetDescriptor::where('category', static::$service)
+            ->orderBy('number', 'asc')->get() as $descriptor) {
             /* Creating widget instance. */
-            $className = $descriptor->getDMClassName();
+            $className = $descriptor->getClassName();
 
             /* No manager class found */
-            if ( ! class_exists($className)) {
+            if ( ! class_exists($descriptor->getDMClassName())) {
                 continue;
             }
 
             /* Filtering criteria for manager. */
-            $dmCriteria = array();
+            $dataCriteria = array();
             try {
                 foreach ($className::getCriteriaFields() as $field) {
                     if (array_key_exists($field, $criteria)) {
-                        $dmCriteria[$field] = $criteria[$field];
+                        $dataCriteria[$field] = $criteria[$field];
                     } else {
                         throw new Exception("The criteria is not enough for this manager.", 1);
                     }
@@ -135,38 +136,32 @@ abstract class GeneralServiceConnector
             }
 
             /* Detecting previous managers. */
-            $settingsCriteria = json_encode($dmCriteria);
-            $manager = $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->first();
+            $settingsCriteria = json_encode($dataCriteria);
+            $data = $this->user->dataObjects()
+                ->where('descriptor_id', $descriptor->id)
+                ->where('criteria', $settingsCriteria)
+                ->first();
 
-            if ( ! is_null($manager)) {
-                /* Manager found, leaving it alone. */
-                array_push($dataManagers, $manager);
+            if ( ! is_null($data)) {
+                /* Data found, leaving it alone. */
+                array_push($dataObjects, $data);
                 continue;
             }
 
             /* Creating data */
-            $data = Data::create(array('raw_value' => '[]'));
-
-            /* Creating DataManager instance */
-            $dataManager = new $className(array(
-                'settings_criteria' => json_encode($dmCriteria),
-                'last_updated'      => Carbon::now(),
-                'state'             => 'loading'
-            ));
+            $data = Data::create(array(
+                'criteria'      => $settingsCriteria,
+                'user_id'       => $this->user->id,
+                'descriptor_id' => $descriptor->id
+            ), FALSE);
 
             /* Assigning foreign values */
-            $dataManager->descriptor()->associate($descriptor);
-            $dataManager->user()->associate($this->user);
-            $dataManager->data()->associate($data);
-
-            $dataManager->save();
-
-            array_push($dataManagers, $dataManager);
+            $data->save();
+            array_push($dataObjects, $data);
         }
 
         $this->populateData($criteria);
-
-        return $dataManagers;
+        return $dataObjects;
     }
 
     /**

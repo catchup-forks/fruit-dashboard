@@ -30,13 +30,13 @@ class CleanupData extends Command {
         Log::info("Data cleanup started at " . Carbon::now()->toDateTimeString());
         $time = microtime(TRUE);
         $allDeletionCount = 0;
-        foreach (DataManager::all() as $dataManager) {
+        foreach (Data::all() as $data) {
             try {
-                if ($dataManager instanceof HistogramDataManager) {
-                    $allDeletionCount += $dataManager->cleanupData();
+                if ($data->getManager() instanceof HistogramDataManager) {
+                    $allDeletionCount += $data->cleanupData();
                 }
             } catch (Exception $e) {
-                Log::error("An error occurred while cleaning up data on manager #" . $dataManager->id . "." . $e->getMessage());
+                Log::error("An error occurred while cleaning up data #" . $data->id . "." . $e->getMessage());
 
             }
         }

@@ -22,7 +22,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         $decodedData = array(
             'timestamp' => $date->getTimestamp()
         );
-
         foreach ($data as $key=>$value) {
             if ( ! array_key_exists($key, $dataSets)) {
                 /* Key did not exist, adding to datasets. */
@@ -35,7 +34,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             }
             $decodedData[$dataSets[$key]] = $value;
         }
-
         return $decodedData;
      }
 
@@ -50,18 +48,18 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
     }
 
     /**
-     * getData
-     * Returning the raw data json decoded.
+     * getEntries
+     * Returning the entries
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function getData() {
-        $data = json_decode($this->data->raw_value, 1);
-        if ( (! is_array($data)) || (! array_key_exists('datasets', $data))) {
+    public function getEntries() {
+        if ( (! is_array($this->data)) ||
+                (! array_key_exists('data', $this->data))) {
             return array();
         }
-        return $data['data'];
+        return $this->data['data'];
     }
 
     /**
@@ -72,11 +70,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
     public function getDataSets() {
-        $data = json_decode($this->data->raw_value, 1);
-        if ( (! is_array($data)) || (! array_key_exists('datasets', $data))) {
+        if ( ( ! is_array($this->data)) ||
+                ( ! array_key_exists('datasets', $this->data))) {
             return array();
         }
-        return $data['datasets'];
+        return $this->data['datasets'];
     }
 
     /**
@@ -110,39 +108,20 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
-        return array('datasets' => array_values($groupedData), 'labels' => $datetimes);
+        return array(
+            'datasets' => array_values($groupedData),
+            'labels' => $datetimes
+        );
     }
-
-    /**
-     * saveData
-     * Saving the data to DB
-     * --------------------------------------------------
-     * @param data $inputData
-     * @param boolean $transform
-     * --------------------------------------------------
-     */
-     public function saveData($inputData, $transform=FALSE) {
-        if ($transform) {
-            $this->data->raw_value = self::transformData($inputData);
-        } else {
-            /* Getting dataSets */
-            $this->data->raw_value = json_encode(array(
-                'datasets' => $this->getDataSets(),
-                'data'     => $inputData
-            ));
-        }
-        $this->data->save();
-     }
 
     /**
      * transformData
      * Creating the final DB-ready json
      * --------------------------------------------------
-     * @param array $histogramData
      * @return string (json)
      * --------------------------------------------------
      */
-    private static final function transformData(array $histogramData) {
+    private static final function transformData() {
         $dbData = array(
             'datasets' => array(),
             'data'     => array()
@@ -154,7 +133,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         }
 
         $i = 0;
-        foreach ($histogramData as $entry) {
+        foreach ($this->data as $entry) {
             /* Creating the new entry */
             $newEntry = array();
 
@@ -180,7 +159,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             array_push($dbData['data'], $newEntry);
         }
 
-        return json_encode($dbData);
+        return $dbData;
     }
 
     /**
@@ -192,12 +171,12 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     private function addToDataSets($key) {
         $dataSets = $this->getDataSets();
-        if (is_null($dataSets)) {
+        if (empty($dataSets)) {
             /* Empty dataset */
-           $this->data->raw_value = json_encode(array(
+           $this->data = array(
                 'datasets' => array($key => 'data_0'),
                 'data'     => array()
-           ));
+           );
        } else {
             /* Adding to datasets. */
            $name = 'data_' . count($dataSets);
@@ -205,31 +184,56 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
 
            /* Adding 0 to previous values. */
            $newData = array();
-           foreach ($this->getData() as $entry) {
+           foreach ($this->getEntries() as $entry) {
                 $newEntry = $entry;
                 $newEntry[$name] = 0;
                 array_push($newData, $newEntry);
            }
 
            /* Creating layout. */
-           $this->data->raw_value = json_encode(array(
+           $this->data = array(
                 'datasets' => $dataSets,
                 'data'     => $newData
-           ));
+           );
         }
-
        /* Saving to DB. */
-        $this->data->save();
+        $this->save();
     }
 
     /**
-     * hasData
-     * Returns whether or not there's data in the histogram.
+     * saveDatasets
+     * Saving data sets.
      * --------------------------------------------------
-     * @return boolean
+     * @param array $datasets
+     * @param boolean $commit
      * --------------------------------------------------
      */
-    public function hasData() {
-        return $this->dataManager()->getData() != FALSE;
+    public function saveDatasets(array $datasets, $commit=TRUE) {
+        $this->data = array(
+            'data'     => $this->getEntries(),
+            'datasets' => $datasets
+        );
+
+        if ($commit) {
+            $this->save();
+        }
     }
+
+    /**
+     * save
+     * Saving the data.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public function save($data=null) {
+        if ( ! is_null($data) && ! array_key_exists('datasets', $data)) {
+            $data = array(
+                'data'     => $data,
+                'datasets' => $this->getDataSets()
+            );
+        }
+        parent::save($data);
+    }
+
 }

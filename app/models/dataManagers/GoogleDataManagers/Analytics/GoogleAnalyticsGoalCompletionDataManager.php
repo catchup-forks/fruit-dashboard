@@ -20,7 +20,7 @@ class GoogleAnalyticsGoalCompletionDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
     public function getMetricNames() {
-        return array('goal' . $this->getCriteria()['goal'] . 'Completions');
+        return array('goal' . $this->criteria['goal'] . 'Completions');
     }
 }
 ?>

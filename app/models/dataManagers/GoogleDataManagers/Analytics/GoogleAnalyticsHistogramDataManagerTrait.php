@@ -5,10 +5,10 @@ trait GoogleAnalyticsHistogramDataManagerTrait
     use GoogleAnalyticsDataManagerTrait;
 
     /**
-     * initializeData
+     * initialize
      * Creating, and saving data.
      */
-    public function initializeData() {
+    public function initialize() {
         /* Getting data required for the requests. */
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();
@@ -25,7 +25,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
             );
             $entry = $data;
             $entry['timestamp'] = $end->getTimeStamp();
-            $this->collectData(array('entry' => $entry, 'sum' => $this->hasCumulative()));
+            $this->collect(array('entry' => $entry, 'sum' => $this->hasCumulative()));
         }
 
         /* Building histogram. */
@@ -91,7 +91,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
         }
         /* Saving entries. */
         foreach ($entries as $entry) {
-            $this->collectData(array(
+            $this->collect(array(
                 'entry' => $entry,
                 'sum'   => $this->hasCumulative()
             ));

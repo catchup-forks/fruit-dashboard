@@ -4,6 +4,14 @@
 abstract class TableDataManager extends DataManager
 {
     /**
+     * initialize
+     * Initializing the data.
+     */
+    public function initialize() {
+        $this->collect();
+    }
+
+    /**
      * getHeader
      * Returns the header from data.
      * --------------------------------------------------
@@ -11,11 +19,10 @@ abstract class TableDataManager extends DataManager
      * --------------------------------------------------
      */
     public function getHeader() {
-        $data = $this->getData();
-        if ( ! array_key_exists('header', $data)) {
+        if ( ! array_key_exists('header', $this->data)) {
             return array();
         }
-        return $data['header'];
+        return $this->data['header'];
     }
 
     /**
@@ -26,11 +33,10 @@ abstract class TableDataManager extends DataManager
      * --------------------------------------------------
      */
     public function getContent() {
-        $data = $this->getData();
-        if ( ! array_key_exists('content', $data)) {
+        if ( ! array_key_exists('content', $this->data)) {
             return array();
         }
-        return $data['content'];
+        return $this->data['content'];
     }
 
     /**
@@ -95,7 +101,7 @@ abstract class TableDataManager extends DataManager
      * Deletes all rows from the table
      */
     public function clearTable() {
-        $this->saveData(array('header' => array(), 'content' => array()));
+        $this->save(array('header' => array(), 'content' => array()));
     }
 
     /**
@@ -189,7 +195,7 @@ abstract class TableDataManager extends DataManager
             array_push($newContent, $row);
         }
 
-        $this->saveData(array('header' => $header, 'content' => $newContent));
+        $this->save(array('header' => $header, 'content' => $newContent));
     }
 
 
@@ -201,15 +207,14 @@ abstract class TableDataManager extends DataManager
      * @param boolean $commit
      * --------------------------------------------------
      */
-    public function saveContent($content, $commit=TRUE) {
-        $header = $this->getHeader();
-        $this->data->raw_value = json_encode(array(
-            'header'  => $header,
+    public function saveContent(array $content, $commit=TRUE) {
+        $this->data = array(
+            'header'  => $this->getHeader(),
             'content' => $content
-        ));
+        );
 
         if ($commit) {
-            $this->data->save();
+            $this->save();
         }
     }
 
@@ -221,33 +226,15 @@ abstract class TableDataManager extends DataManager
      * @param boolean $commit
      * --------------------------------------------------
      */
-    public function saveHeader($header, $commit=TRUE) {
-        $content = $this->getContent();
-        $this->data->raw_value = json_encode(array(
+    public function saveHeader(array $header, $commit=TRUE) {
+        $this->data = array(
             'header'  => $header,
-            'content' => $content
-        ));
+            'content' => $this->getContent()
+        );
 
         if ($commit) {
-            $this->data->save();
+            $this->save();
         }
-    }
-
-    /**
-     * saveData
-     * Saving both content, and header
-     * --------------------------------------------------
-     * @param array $content
-     * @param array $header
-     * --------------------------------------------------
-     */
-    public function saveData($data) {
-        if ( ! array_key_exists('header', $data) || ! array_key_exists('content', $data)) {
-            $this->collectData();
-            return;
-        }
-        $this->saveHeader($data['header']);
-        $this->saveContent($data['content']);
     }
 
 }

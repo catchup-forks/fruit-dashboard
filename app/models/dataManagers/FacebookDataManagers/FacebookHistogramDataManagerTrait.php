@@ -14,10 +14,10 @@ trait FacebookHistogramDataManagerTrait
     }
 
     /**
-     * initializeData
+     * initialize
      * Creating, and saving data.
      */
-    public function initializeData() {
+    public function initialize() {
         try {
             $data = array();
             foreach ($this->getCollector()->getPopulateHistogram($this->getPageId(), static::$insight)[0]['values'] as $dailyData) {
@@ -27,7 +27,7 @@ trait FacebookHistogramDataManagerTrait
                     'timestamp' => $date->getTimestamp()
                 ));
             }
-            $this->saveData($data);
+            $this->save($data);
         } catch (ServiceException $e) {
             Log::error('Facebook connection error. ' . $e->getMessage());
             $this->delete();

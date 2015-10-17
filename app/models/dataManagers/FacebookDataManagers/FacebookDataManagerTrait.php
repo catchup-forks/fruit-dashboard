@@ -21,7 +21,7 @@ trait FacebookDataManagerTrait
      * --------------------------------------------------
     */
     public function getPageId() {
-        return $this->getCriteria()['page'];
+        return $this->criteria['page'];
     }
 }
 ?>

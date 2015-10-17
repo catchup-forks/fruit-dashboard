@@ -72,8 +72,8 @@ class GeneralWidgetController extends BaseController {
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
-        /* Adding update_period on CronWidget */
-        if ($widget instanceof CronWidget) {
+        /* Adding update_period on DataWidget */
+        if ($widget instanceof DataWidget) {
             $validatorArray['update_period'] = 'required|integer|min:23';
         }
 
@@ -105,8 +105,8 @@ class GeneralWidgetController extends BaseController {
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
 
-        /* Adding update_period on CronWidget */
-        if ($widget instanceof CronWidget) {
+        /* Adding update_period on DataWidget */
+        if ($widget instanceof DataWidget) {
             $widget->setUpdatePeriod(Input::get('update_period'));
         }
 
@@ -361,7 +361,7 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof CronWidget) {
+            if ( ! $widget instanceof DataWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
             }
         } catch (WidgetDoesNotExist $e) {
@@ -386,7 +386,7 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof CronWidget) {
+            if ( ! $widget instanceof DataWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
             }
         } catch (WidgetDoesNotExist $e) {
@@ -755,9 +755,6 @@ class GeneralWidgetController extends BaseController {
 
         /* Associate descriptor and save */
         $options = array();
-        if ($widget instanceof CronWidget && $className::getCriteriaFields() !== FALSE) {
-            $options['skipManager'] = TRUE;
-        }
 
         $widget->save($options);
 

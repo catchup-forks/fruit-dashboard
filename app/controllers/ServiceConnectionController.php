@@ -56,7 +56,7 @@ class ServiceConnectionController extends BaseController
         /* Saving connection. */
         $braintreeConnector = new BraintreeConnector(Auth::user());
         $braintreeConnector->saveTokens(Input::all());
-        $braintreeConnector->createDataManagers();
+        $braintreeConnector->createDataObjects();
 
         /* Track event | SERVICE CONNECTED */
         $tracker = new GlobalTracker();
@@ -144,7 +144,7 @@ class ServiceConnectionController extends BaseController
                     ->with('error', 'Something went wrong, please try again.');
             }
 
-            $connector->createDataManagers();
+            $connector->createDataObjects();
 
             /* Successful connect. */
             return Redirect::to($this->getReferer())
@@ -351,9 +351,9 @@ class ServiceConnectionController extends BaseController
         }
 
         foreach (Input::get('pages') as $id) {
-            /* Creating data managers. */
+            /* Creating data objects. */
             $connector = new FacebookConnector(Auth::user());
-            $connector->createDataManagers(array('page' => $id));
+            $connector->createDataObjects(array('page' => $id));
         }
 
         return Redirect::to($this->getReferer())
@@ -502,18 +502,18 @@ class ServiceConnectionController extends BaseController
             $selectedGoals = Input::get('goals');
             if ($selectedGoals && ! empty($selectedGoals)) {
                 foreach ($selectedGoals as $goalId) {
-                    /* Creating data managers. */
+                    /* Creating data objects. */
                     $settings = array(
                         'profile'  => $id,
                         'goal'     => $goalId
                     );
-                    $connector->createDataManagers($settings);
+                    $connector->createDataObjects($settings);
                 }
             }
 
-            /* Calling collector for simple profile managers. */
+            /* Calling collector for simple profile objects. */
             $settings = array('profile'  => $id);
-            $connector->createDataManagers($settings);
+            $connector->createDataObjects($settings);
 
         }
 
@@ -569,7 +569,7 @@ class ServiceConnectionController extends BaseController
                     ->with('error', 'Something went wrong, please try again.');
             }
 
-            $connector->createDataManagers();
+            $connector->createDataObjects();
 
             /* Track event | SERVICE CONNECTED */
             $tracker = new GlobalTracker();

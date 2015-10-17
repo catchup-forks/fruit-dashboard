@@ -17,14 +17,14 @@ class DataPopulator
     protected $service = '';
 
     /**
-     * The dataManagers.
+     * The data objects.
      *
      * @var array
      */
-    protected $dataManagers = null;
+    protected $dataObjects = array();
 
     /**
-     * The dataManager criteria.
+     * The data criteria.
      *
      * @var array
      */
@@ -41,14 +41,14 @@ class DataPopulator
         $this->criteria = $data['criteria'];
         $this->service  = $data['service'];
 
-        /* Getting managers. */
-        $this->dataManagers = $this->getManagers();
+        /* Getting data objects. */
+        $this->dataObjects = $this->getDataObjects();
 
         /* Running data collection. */
-        $this->populateData();
+        $this->populate();
 
         /* Running data collection. */
-        $this->activateManagers();
+        $this->activate();
 
         /* Finish */
         Log::info("Data collection finished and it took " . (microtime(TRUE) - $time) . " seconds to run.");
@@ -59,11 +59,10 @@ class DataPopulator
     /**
      * Populating the widgets with data.
      */
-    protected function populateData() {
-        foreach ($this->dataManagers as $manager) {
-            if ($manager->getData() == FALSE) {
-                $manager->initializeData();
-                $manager->setWidgetsState('active');
+    protected function populate() {
+        foreach ($this->dataObjects as $data) {
+            if ($data->decode() == FALSE) {
+                $data->initialize();
             }
         }
     }
@@ -72,25 +71,26 @@ class DataPopulator
      * Getting the page specific DataManagers
      * @return array
      */
-    protected function getManagers() {
-        $dataManagers = array();
+    protected function getDataObjects() {
+        $dataObjects = array();
 
-        foreach ($this->user->dataManagers()->get() as $dataManager) {
-            if ($dataManager->getDescriptor()->category == $this->service && $dataManager->getCriteria() == $this->criteria) {
-                $dataManagers[$dataManager->getDescriptor()->type] = $dataManager;
+        foreach ($this->user->dataObjects()->get() as $data) {
+            if ($data->getDescriptor()->category == $this->service &&
+                    $data->getCriteria() == $this->criteria) {
+                $dataObjects[$data->getDescriptor()->type] = $data;
             }
         }
 
-        return $dataManagers;
+        return $dataObjects;
     }
 
     /**
-     * activateManagers
+     * activate
      * Setting all related widget's state to active.
      */
-    protected function activateManagers() {
-        foreach ($this->dataManagers as $manager) {
-            $manager->setState('active');
+    protected function activate() {
+        foreach ($this->dataObjects as $dataObject) {
+            $dataObject->setState('active');
         }
     }
 

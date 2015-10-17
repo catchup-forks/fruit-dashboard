@@ -60,7 +60,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
      * @return array
      * --------------------------------------------------
      */
-    public function collectData($options=array()) {
+    public function collect($options=array()) {
         $options = self::createOptions($options);
         /* Collecting and transforming data.*/
         $metricsData = array();

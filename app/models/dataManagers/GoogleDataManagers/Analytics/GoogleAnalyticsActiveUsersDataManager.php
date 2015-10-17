@@ -32,10 +32,10 @@ class GoogleAnalyticsActiveUsersDataManager extends MultipleHistogramDataManager
     }
 
     /**
-     * initializeData
+     * initialize
      * Running custom initializer for this DM.
      */
-    public function initializeData() {
+    public function initialize() {
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();
         $data = array();
@@ -50,7 +50,6 @@ class GoogleAnalyticsActiveUsersDataManager extends MultipleHistogramDataManager
             )[$metric];
         }
         $this->saveHistogram($data);
-
     }
 }
 ?>

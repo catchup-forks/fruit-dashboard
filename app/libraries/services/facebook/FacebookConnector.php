@@ -161,10 +161,16 @@ class FacebookConnector extends GeneralServiceConnector
         $helper = $fb->getRedirectLoginHelper();
 
         /* Retrieving access token */
-        if (App::environment('local')) {
-            $accessToken = $helper->getAccessToken(str_replace(8000, 8001, URL::full()));
-        } else {
-            $accessToken = $helper->getAccessToken();
+        try {
+            if (App::environment('local')) {
+                $accessToken = $helper->getAccessToken(str_replace(8000, 8001, URL::full()));
+            } else {
+                $accessToken = $helper->getAccessToken();
+            }
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Facebook connection error.", 1);
+
         }
 
         /* Retrieving user info. */
@@ -195,13 +201,13 @@ class FacebookConnector extends GeneralServiceConnector
     }
 
     /**
-     * createDataManagers
+     * createDataObjects
      * Adding page activation.
      * --------------------------------------------------
      * @param array $criteria
      * --------------------------------------------------
      */
-    public function createDataManagers(array $criteria=array()) {
+    public function createDataObjects(array $criteria=array()) {
         /* Getting page. */
         $page = $this->user->facebookPages()
             ->where('id', $criteria['page'])->first();
@@ -212,7 +218,7 @@ class FacebookConnector extends GeneralServiceConnector
         $page->active = TRUE;
         $page->save();
 
-        return parent::createDataManagers($criteria);
+        return parent::createDataObjects($criteria);
     }
 
     /**

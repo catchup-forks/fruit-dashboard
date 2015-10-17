@@ -72,7 +72,7 @@
                     </div>
                   </div>
                 <!-- /.dashboard select -->
-                @if ($widget instanceof CronWidget)
+                @if ($widget instanceof DataWidget)
                   <!-- Update interval select -->
                   <div class="form-group">
                     {{ Form::label('update_period', 'Update (Minutes)', array(

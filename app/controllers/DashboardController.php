@@ -56,10 +56,10 @@ class DashboardController extends BaseController
             $queries = count(DB::getQueryLog());
             $startTime = microtime(TRUE);
         }
-        $user->checkDataManagersIntegrity();
+        $user->checkDataIntegrity();
         if (self::OPTIMIZE) {
             var_dump(
-                "DM check integrity time: ". (microtime(TRUE) - $time) .
+                "Data check integrity time: ". (microtime(TRUE) - $time) .
                 " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
             );
             $queries = count(DB::getQueryLog());
@@ -99,6 +99,7 @@ class DashboardController extends BaseController
                  "Total loading time: ". (microtime(TRUE) - LARAVEL_START) .
                  " (" . count(DB::getQueryLog()) . ' db queries)'
             );
+            var_dump(DB::getQueryLog());
             exit(94);
         }
 

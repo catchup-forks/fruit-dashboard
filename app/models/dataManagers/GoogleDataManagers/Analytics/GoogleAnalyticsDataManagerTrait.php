@@ -64,7 +64,7 @@ trait GoogleAnalyticsDataManagerTrait
      * --------------------------------------------------
     */
     public function getProfileId() {
-        return $this->getCriteria()['profile'];
+        return $this->criteria['profile'];
     }
 }
 ?>

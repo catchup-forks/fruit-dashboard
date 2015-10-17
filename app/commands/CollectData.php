@@ -18,8 +18,7 @@ class CollectData extends Command {
      *
      * @var string
      */
-    protected $description = 'Running data collection on all widget
-    \'s implementing the CronWidget interface.';
+    protected $description = 'Running data collection.';
 
     /**
      * Execute the console command.
@@ -33,14 +32,14 @@ class CollectData extends Command {
         $time = microtime(TRUE);
         $errors = 0;
         $i = 0;
-        foreach (DataManager::all() as $manager) {
-            if (Carbon::now()->diffInMinutes($manager->last_updated) >= $manager->update_period) {
+        foreach (Data::all() as $data) {
+            if (Carbon::now()->diffInMinutes($data->last_updated) >= $data->update_period) {
                 $i++;
                 try {
-                    $manager->collectData();
+                    $data->collect();
                 } catch (Exception $e) {
                     $errors++;
-                    Log::error('Error found while collecting data on manager #' . $manager->id . '. message: ' . $e->getMessage());
+                    Log::error('Error found while collecting data on data #' . $manager->id . '. message: ' . $e->getMessage());
                 }
             }
         }

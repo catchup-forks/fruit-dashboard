@@ -80,9 +80,9 @@ class MetricsController extends BaseController
         /* Get number of datapoints */
         $numberOfDataPoints = 0;
         foreach (User::all() as $user) {
-            foreach ($user->dataManagers as $dataManager) {
-                if ($dataManager instanceof HistogramDataManager) {
-                    $numberOfDataPoints += count($dataManager->getData());
+            foreach ($user->dataObjects as $data) {
+                if ($data->getManager() instanceof HistogramDataManager) {
+                    $numberOfDataPoints += count($data->decode());
                 }
             }
         }
@@ -234,7 +234,7 @@ class MetricsController extends BaseController
                 /* Iterate through the widgets of the user */
                 foreach ($user->widgets as $widget) {
                     /* Check active connection */
-                    if (($widget->getDescriptor()->category == $service) and 
+                    if (($widget->getDescriptor()->category == $service) and
                         ($widget->state == 'active')) {
                         $serviceActive = TRUE;
                     }

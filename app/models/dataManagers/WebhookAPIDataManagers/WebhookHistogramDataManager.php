@@ -12,7 +12,7 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
      * --------------------------------------------------
     */
     protected function getUrl() {
-        return $this->getCriteria()['url'];
+        return $this->criteria['url'];
     }
 
     public function getCurrentValue() {

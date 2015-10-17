@@ -25,7 +25,7 @@ trait GoogleAnalyticsGoalDataManagerTrait
      * --------------------------------------------------
     */
     public function getGoalId() {
-        return $this->getCriteria()['goal'];
+        return $this->criteria['goal'];
     }
 }
 ?>

@@ -237,7 +237,7 @@ class Widget extends Eloquent
         }
         $this->state = $state;
         if ($commit) {
-            $this->save(array('skipManager' => TRUE));
+            $this->save();
         }
     }
 

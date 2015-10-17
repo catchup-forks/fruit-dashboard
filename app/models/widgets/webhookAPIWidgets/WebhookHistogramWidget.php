@@ -36,7 +36,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      */
     private function testUrl() {
         if ($this->dataExists()) {
-            $this->dataManager()->testUrl();
+            $this->data->testUrl();
         }
     }
 

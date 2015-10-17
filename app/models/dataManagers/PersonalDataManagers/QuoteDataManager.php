@@ -9,7 +9,7 @@ class QuoteDataManager extends DataManager
      * @return None
      * --------------------------------------------------
      */
-    public function collectData($options=array()) {
+    public function collect($options=array()) {
         /* Getting the JSON from GoogleSpreadsheet. */
         $file = file_get_contents($this->getQuoteSpreadsheetUri());
         $decoded_data = json_decode($file);
@@ -23,15 +23,20 @@ class QuoteDataManager extends DataManager
         $quotes = $decoded_data->{'feed'}->{'entry'};
         $key = array_rand($quotes);
         $quote = $quotes[$key];
-        $this->data->raw_value = json_encode(array(
+        $this->save(array(
             'quote'    => $quote->{'gsx$quote'}->{'$t'},
             'author'   => $quote->{'gsx$author'}->{'$t'},
             'type'     => $quote->{'gsx$type'}->{'$t'},
             'language' => $quote->{'gsx$language'}->{'$t'}
         ));
+    }
 
-        /* Save quote */
-        $this->data->save();
+    /**
+     * initialize
+     * Initializing the data.
+     */
+    public function initialize() {
+        $this->collect();
     }
 
     /**
@@ -73,7 +78,7 @@ class QuoteDataManager extends DataManager
         $uri = $_ENV['QUOTE_FEED_CONNECT_URI'];
 
         /* Get spreadsheet based on type */
-        switch ($this->getCriteria()['type']) {
+        switch ($this->criteria['type']) {
             case 'inspirational':
                 $uri .= $_ENV['QUOTE_FEED_SPREADSHEET_EN_INSPIRATIONAL_URI'];
                 break;

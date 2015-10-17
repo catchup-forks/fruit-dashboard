@@ -34,7 +34,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
      * --------------------------------------------------
      */
     public function getMetricNames() {
-        return array('users', 'goal' . $this->getCriteria()['goal'] . 'Completions');
+        return array('users', 'goal' . $this->criteria['goal'] . 'Completions');
     }
 
     /**
@@ -69,7 +69,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
      * @return array
      * --------------------------------------------------
      */
-    public function collectData($options=array()) {
+    public function collect($options=array()) {
         $options = self::createOptions($options);
         /* Collecting and transforming data.*/
         $metricsData = array();
@@ -93,7 +93,6 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
                 sprintf('%.2f%%', $completions/$visitors * 100)
             ));
         }
-        $this->setState('active', FALSE);
     }
 
     /**

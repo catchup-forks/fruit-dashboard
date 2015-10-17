@@ -4,6 +4,14 @@
 abstract class ArticleDataManager extends DataManager
 {
     /**
+     * initialize
+     * Initializing the data.
+     */
+    public function initialize() {
+        $this->collect();
+    }
+
+    /**
      * getArticles
      * Returns the articles from data.
      * --------------------------------------------------
@@ -11,7 +19,7 @@ abstract class ArticleDataManager extends DataManager
      * --------------------------------------------------
      */
     public function getArticles() {
-        return $this->getData();
+        return $this->data;
     }
 
     /**
@@ -34,7 +42,7 @@ abstract class ArticleDataManager extends DataManager
      * Delets all articles.
      */
     public function clearData() {
-        $this->saveData(array());
+        $this->save(array());
     }
 
     /**
@@ -54,7 +62,7 @@ abstract class ArticleDataManager extends DataManager
         array_push($articles, $article);
 
         /* Saving data. */
-        $this->saveData($articles);
+        $this->save($articles);
     }
 
     /**

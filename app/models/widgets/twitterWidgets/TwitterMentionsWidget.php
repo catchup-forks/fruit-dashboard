@@ -1,6 +1,6 @@
 <?php
 
-class TwitterMentionsWidget extends CronWidget implements iServiceWidget
+class TwitterMentionsWidget extends DataWidget implements iServiceWidget
 {
     use TwitterWidgetTrait;
     /* -- Settings -- */
@@ -48,9 +48,9 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->dataManager()->collectData(array('count' => $this->getSettings()['count']));
+            $this->data->collect(array('count' => $this->getSettings()['count']));
         } else {
-            $this->dataManager()->collectData($options);
+            $this->data->collect($options);
         }
     }
 

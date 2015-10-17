@@ -16,7 +16,7 @@ class WidgetDescriptor extends Eloquent
 
     // -- Relations -- //
     public function widgets() {return $this->hasMany('Widget', 'descriptor_id');}
-    public function dataManagers() {return $this->hasMany('DataManager', 'descriptor_id');}
+    public function dataObjects() {return $this->hasMany('Data', 'descriptor_id');}
 
     /**
      * getClassName
@@ -40,18 +40,11 @@ class WidgetDescriptor extends Eloquent
     */
     public static function find($id, $columns=array('*')) {
         /* Trying to load from cache. */
-        $cacheKey = 'descriptor_' . $id;
-        if (Cache::has($cacheKey)) {
-            return Cache::get($cacheKey);
-        }
-        /* Not found in cache, storing and returning the object from DB. */
-        $descriptor = parent::find($id, $columns);
-        Cache::forever($cacheKey, $descriptor);
-        return $descriptor;
+        return  WidgetDescriptor::rememberForever()->where('id', $id)->first();
     }
 
     /**
-     * getDataManager
+     * getDMClassName
      * Returning the specific DataManager class Name
      * --------------------------------------------------
      * @return string The widget class Name
@@ -73,43 +66,39 @@ class WidgetDescriptor extends Eloquent
     }
 
     /**
-     * getDataManager
-     * Returning the corresponding DataManager object.
+     * getDataObject
+     * Returning the corresponding Data object.
      * --------------------------------------------------
      * @param Widget $widget
      * @param bool firstRun
-     * @return DataManager
+     * @return Data
      * --------------------------------------------------
     */
-    public function getDataManager($widget, $firstRun=TRUE) {
-        $className = $this->getDMClassName();
-        if (class_exists($className) && $widget->hasValidCriteria()) {
-            /* Manager class exists, and widget has been set up */
-            $managers = $widget->user()->dataManagers()->where('descriptor_id', $this->id)->get();
+    public function getDataObject($widget, $firstRun=TRUE) {
+        /* Manager class exists, and widget has been set up */
+        $data = $widget->user()->dataObjects()
+            ->where('descriptor_id', $this->id)->get();
 
-            foreach ($managers as $manager) {
-                if ($manager->getCriteria() == $widget->getCriteria()) {
-                    return $manager;
-                }
+        foreach ($data as $iData) {
+            if ($iData->getCriteria() == $widget->getCriteria()) {
+                return $iData;
             }
+        }
 
-            /* No manager found */
-            if ($widget instanceof iServiceWidget && $firstRun) {
-                /* It's a service widget. */
-                /* Creating all related managers. */
-                $connectorClass = $widget->getConnectorClass();
-                $connector = new $connectorClass($widget->user());
-                $connector->createDataManagers($widget->getCriteria());
+        /* No data found */
+        if ($widget instanceof iServiceWidget && $firstRun) {
+            /* It's a service widget. */
+            /* Creating all related data. */
+            $connectorClass = $widget->getConnectorClass();
+            $connector = new $connectorClass($widget->user());
+            $connector->createDataObjects($widget->getCriteria());
 
-                /* Calling getManager again, there should be a match now. */
-                return $this->getDataManager($widget, FALSE);
-            } else {
-                /* Creating a manager. */
-                return DataManager::createManagerFromWidget($widget);
-            }
-
-       }
-        return null;
+            /* Calling getDataObject again, there should be a match now. */
+            return $this->getDataObject($widget, FALSE);
+        } else {
+            /* Creating a manager. */
+            return Data::createFromWidget($widget);
+        }
     }
 
     /**

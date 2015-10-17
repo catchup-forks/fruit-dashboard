@@ -10,7 +10,7 @@ class ApiHistogramDataManager extends MultipleHistogramDataManager
      * --------------------------------------------------
     */
     public function getUrl() {
-        return $this->getCriteria()['url'];
+        return $this->criteria['url'];
     }
 
     /**
@@ -26,14 +26,14 @@ class ApiHistogramDataManager extends MultipleHistogramDataManager
     }
 
     /**
-     * initializeData
+     * initialize
      * --------------------------------------------------
      * Saves empty array, beacuse we are saving the widget
      *      data elsewhere (in API controller).
      * --------------------------------------------------
      */
-    public function initializeData() {
-        $this->saveData(array(), TRUE);
+    public function initialize() {
+        $this->save(array());
     }
 }
 ?>

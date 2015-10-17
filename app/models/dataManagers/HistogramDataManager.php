@@ -93,7 +93,7 @@ abstract class HistogramDataManager extends DataManager
      * Getting the new value based on getCurrentValue()
      * --------------------------------------------------
      */
-    public function collectData($options=array()) {
+    public function collect($options=array()) {
         /* Getting the entry */
         $entry = array_key_exists('entry', $options) ? $options['entry'] : $this->getCurrentValue();
 
@@ -115,13 +115,14 @@ abstract class HistogramDataManager extends DataManager
                 $dbEntry['value'] += $lastData['value'];
             }
             if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
+                Log::info("Popping");
                 array_pop($currentData);
             }
         }
 
         /* Saving data only every 15 minutes. */
         array_push($currentData, $dbEntry);
-        $this->saveData($currentData);
+        $this->save($currentData);
     }
 
     /**
@@ -161,7 +162,7 @@ abstract class HistogramDataManager extends DataManager
         /* Just making sure all went fine, and not deleting everything. */
         if (count($newData) > 0) {
             /* Overwriting the data, just to be nice sorting it ascending. */
-            $this->saveData(array_reverse($newData));
+            $this->save(array_reverse($newData));
         }
 
         return $deleted;
@@ -306,6 +307,14 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * getEntries
+     * Returning the histogram entries.
+     */
+    public function getEntries() {
+        return $this->data;
+    }
+
+    /**
      * sortHistogram
      * Sorting the array.
      * --------------------------------------------------
@@ -314,7 +323,7 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
     protected function sortHistogram($desc=TRUE) {
-        $fullHistogram = $this->getData();
+        $fullHistogram = $this->getEntries();
         if (is_array($fullHistogram)) {
             usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
         } else {
@@ -355,7 +364,7 @@ abstract class HistogramDataManager extends DataManager
             $histogram = self::getDiff($histogram);
         }
         /* Handle empty data */
-        if ($histogram == null) {
+        if (empty($histogram)) {
             return array();
         } else {
             return end($histogram);

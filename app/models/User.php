@@ -31,7 +31,7 @@ class User extends Eloquent implements UserInterface
     public function settings() { return $this->hasOne('Settings'); }
     public function notifications() { return $this->hasMany('Notification'); }
     public function background() { return $this->hasOne('Background'); }
-    public function dataManagers() { return $this->hasmany('DataManager'); }
+    public function dataObjects() { return $this->hasmany('Data'); }
     public function widgetSharings() { return $this->hasmany('WidgetSharing'); }
 
     /* -- Libraries -- */
@@ -155,7 +155,7 @@ class User extends Eloquent implements UserInterface
                 'count'      => $i++
             );
             /* Iterating through the widgets. */
-            foreach ($dashboard->widgets as $widget) {
+            foreach ($dashboard->widgets()->with('data')->get() as $widget) {
                 if ($widget->state == 'loading' || $widget->state == 'setup_required') {
                     /* Widget is loading, no data is available yet. */
                     $templateData = Widget::getDefaultTemplateData($widget);
@@ -208,15 +208,15 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
-     * checkDataManagersIntegrity
+     * checkDataIntegrity
      * --------------------------------------------------
      * Checking the overall integrity of the user's data managers.
      * @return boolean
      * --------------------------------------------------
      */
-    public function checkDataManagersIntegrity() {
-        foreach ($this->dataManagers as $dataManager) {
-            $dataManager->checkIntegrity();
+    public function checkDataIntegrity() {
+        foreach ($this->dataObjects as $data) {
+            $data->checkIntegrity();
         }
     }
 

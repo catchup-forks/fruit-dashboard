@@ -7,7 +7,7 @@ class TwitterMentionsDataManager extends ArticleDataManager
      * Creating data for the widget.
      * @param array $options.
      */
-    public function collectData($options=array()) {
+    public function collect($options=array()) {
         if (array_key_exists('count', $options)) {
             $count = $options['count'];
         } else {

@@ -1,6 +1,6 @@
 <?php
 
-class StripeEventsWidget extends DataWidget implements iCronWidget
+class StripeEventsWidget extends DataWidget implements iDataWidget
 {
 
     /**
