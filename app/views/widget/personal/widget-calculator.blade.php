@@ -26,9 +26,23 @@
   <tr>
     <td><input type="button" class="btn btn-danger fill no-padding" value="  c  " onclick="calc_{{ $widget['id'] }}.input.value = ''"></td>
     <td><input type="button" class="btn btn-primary fill no-padding" value="  0  " onclick="calc_{{ $widget['id'] }}.input.value += '0'"></td>
-    <td><input type="button" class="btn btn-success fill no-padding" value="  =  " onclick="calc_{{ $widget['id'] }}.input.value = eval(calc_{{ $widget['id'] }}.input.value)"></td>
+    <td><input type="submit" class="btn btn-success fill no-padding" value="  =  "></td>
     <td><input type="button" class="btn btn-primary fill no-padding" value="  /  " onclick="calc_{{ $widget['id'] }}.input.value += ' / '"></td>
   </tr>
 </table>
 </form>
 </div>
+
+@section('widgetScripts')
+<script type="text/javascript">
+  $(document).ready(function () {
+    var form = "[name='calc_{{ $widget['id'] }}']";
+    var input = form + " [name='input']";
+    $(form).submit( function (e) {
+      e.preventDefault();
+      var value = eval($(input).val());
+      $(input).val(Math.round(value * 1000) / 1000);
+    });
+  });
+</script>
+@append

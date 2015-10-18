@@ -211,7 +211,7 @@
         easyGrowl('info', 'You have unseen widget sharing notifications. You can check them out <a href="{{route('widget.add')}}" class="btn btn-xs btn-primary">here</a>.', 5000)
       @endif
       // Share widget submit.
-      $('#share-widget-form').submit(function() {
+      $('#share-widget-form').submit(function(event) {
         var emailAddresses = $('#email-addresses').val();
         var widgetId = $('#widget-id').val();
 
