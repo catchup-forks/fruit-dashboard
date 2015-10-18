@@ -2,10 +2,10 @@
 
 class Data extends Eloquent
 {
-    // Escaping eloquent's plural naming.
+    /* Escaping eloquent's plural naming. */
     protected $table = 'data';
 
-    // -- Fields -- //
+    /* -- Fields -- */
     protected $fillable = array(
         'raw_value',
         'user_id',
@@ -165,7 +165,7 @@ class Data extends Eloquent
             $this->setWidgetsState('loading');
         } else if (is_null(json_decode($this->raw_value))) {
             /* No json in data, this is a problem. */
-            $this->initialize();
+            $this->manager->initialize();
             $this->setState('active');
         } else {
             $this->setState('active');

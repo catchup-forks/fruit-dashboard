@@ -17,6 +17,7 @@ trait GoogleAnalyticsGoalWidgetTrait
 
     /* Choices functions */
     public function goal($profileId=null) {
+        $init = FALSE;
         if ($profileId) {
             /* Have specific profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
@@ -31,6 +32,7 @@ trait GoogleAnalyticsGoalWidgetTrait
             /* On init using first profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->first();
+            $init = TRUE;
         }
 
         if (is_null($profile)) {
@@ -41,7 +43,7 @@ trait GoogleAnalyticsGoalWidgetTrait
             $goals[$goal->goal_id] = $goal->name;
         }
 
-        if (empty($goals)) {
+        if ( ! $init && empty($goals)) {
             throw new Exception("No goal found, for the selected profile.", 1);
         }
 
