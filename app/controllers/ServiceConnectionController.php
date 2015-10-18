@@ -469,7 +469,10 @@ class ServiceConnectionController extends BaseController
      */
     public function getGoogleAnalyticsGoals($profileId) {
         $goals = array();
-        foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
+        foreach (Auth::user()->googleAnalyticsProfiles()
+            ->where('profile_id', $profileId)
+            ->first(array('google_analytics_profiles.id'))
+            ->goals as $goal) {
             $goals[$goal->goal_id] = $goal->name;
         }
         return Response::json($goals);
