@@ -35,9 +35,6 @@ trait GoogleAnalyticsDimensionHistogramDataManagerTrait
             Carbon::now()->toDateString(),
             $metrics, $options, TRUE
         );
-        var_dump('imsorry');
-        var_dump($data);
-        exit(94);
         $this->saveHistogram($data);
     }
 
