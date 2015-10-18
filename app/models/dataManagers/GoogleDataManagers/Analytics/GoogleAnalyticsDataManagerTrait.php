@@ -60,10 +60,10 @@ trait GoogleAnalyticsDataManagerTrait
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    public function getProfile() {
+    public function getProfile(array $attributes=array('*')) {
         $profile = $this->user->googleAnalyticsProfiles()
             ->where('profile_id', $this->getProfileId())
-            ->first();
+            ->first($attributes);
         /* Invalid profile in DB. */
         return $profile;
     }

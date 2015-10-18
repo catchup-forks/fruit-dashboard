@@ -10,7 +10,7 @@ trait GoogleAnalyticsGoalDataManagerTrait
      * --------------------------------------------------
     */
     public function getGoal() {
-        $profile = $this->getProfile();
+        $profile = $this->getProfile(array('google_analytics_profiles.id'));
         if (is_null($profile)) {
             return null;
         }

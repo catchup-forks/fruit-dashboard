@@ -115,7 +115,7 @@ trait GoogleAnalyticsGoalWidgetTrait
      * --------------------------------------------------
     */
     public function getGoal() {
-        $profile = $this->getProfile();
+        $profile = $this->getProfile(array('google_analytics_profiles.id'));
         foreach ($profile->goals as $iGoal) {
             if ($iGoal->goal_id == $this->getSettings()['goal']){
                 return $iGoal;

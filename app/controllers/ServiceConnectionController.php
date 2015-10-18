@@ -489,7 +489,9 @@ class ServiceConnectionController extends BaseController
 
         foreach (Input::get('profiles') as $id) {
             /* Selecting profile */
-            $profile = Auth::user()->googleAnalyticsProfiles()->where('profile_id', $id)->first();
+            $profile = Auth::user()->googleAnalyticsProfiles()
+                ->where('profile_id', $id)
+                ->first(array('google_analytics_profiles.id'));
             if (is_null($profile)) {
                 continue;
             }
@@ -512,7 +514,7 @@ class ServiceConnectionController extends BaseController
             }
 
             /* Calling collector for simple profile objects. */
-            $settings = array('profile'  => $id);
+            $settings = array('profile' => $id);
             $connector->createDataObjects($settings);
 
         }

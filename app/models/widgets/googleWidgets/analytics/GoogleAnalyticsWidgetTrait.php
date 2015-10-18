@@ -88,10 +88,10 @@ trait GoogleAnalyticsWidgetTrait
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    public function getProfile() {
+    public function getProfile(array $attributes=array('*')) {
         $profile = $this->user()->googleAnalyticsProfiles()
             ->where('profile_id', $this->getProfileId())
-            ->first(array('google_analytics_profiles.id'));
+            ->first($attributes);
         /* Invalid profile in DB. */
         return $profile;
     }
