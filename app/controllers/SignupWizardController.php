@@ -272,7 +272,7 @@ class SignupWizardController extends BaseController
 
         /* Save profile (create datamanagers) */
         $connector = new GoogleAnalyticsConnector(Auth::user());
-        $connector->createObjects(array('profile' => Input::get('profiles')));
+        $connector->createDataObjects(array('profile' => Input::get('profiles')));
 
         /* Save the selected profile in the session */
         Session::put('selectedProfile', Input::get('profiles'));
