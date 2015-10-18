@@ -91,7 +91,7 @@ trait GoogleAnalyticsWidgetTrait
     public function getProfile() {
         $profile = $this->user()->googleAnalyticsProfiles()
             ->where('profile_id', $this->getProfileId())
-            ->first();
+            ->first(array('google_analytics_profiles.id'));
         /* Invalid profile in DB. */
         return $profile;
     }

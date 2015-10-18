@@ -190,7 +190,8 @@ class PromoWidget extends Widget
     private function getGoalCriteria() {
         /* Getting active profile. */
         $profile = $this->user()->googleAnalyticsProfiles()
-            ->where('active', TRUE)->first();
+            ->where('active', TRUE)
+            ->first(array('google_analytics_profiles.id'));
         if (is_null($profile)) {
             return NULL;
         }

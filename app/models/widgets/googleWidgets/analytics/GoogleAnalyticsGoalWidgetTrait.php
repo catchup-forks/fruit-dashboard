@@ -22,16 +22,16 @@ trait GoogleAnalyticsGoalWidgetTrait
             /* Have specific profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->where('profile_id' , $profileId)
-                ->first();
+                ->first(array('google_analytics_profiles.id'));
         } else if ($this->getProfileId()) {
             /* Have specific profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->where('profile_id' , $this->getProfileId())
-                ->first();
+                ->first(array('google_analytics_profiles.id'));
         } else {
             /* On init using first profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
-                ->first();
+                ->first(array('google_analytics_profiles.id'));
             $init = TRUE;
         }
 
@@ -39,6 +39,7 @@ trait GoogleAnalyticsGoalWidgetTrait
             throw new Exception("The selected profile is invalid.", 1);
         }
 
+        $goals = array();
         foreach ($profile->goals as $goal) {
             $goals[$goal->goal_id] = $goal->name;
         }

@@ -51,7 +51,8 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     public function createDataObjects(array $criteria=array()) {
         /* Getting profile. */
         $profile = $this->user->googleAnalyticsProfiles()
-            ->where('profile_id', $criteria['profile'])->first();
+            ->where('profile_id', $criteria['profile'])
+            ->first(array('google_analytics_profiles.id'));
         if (is_null($profile)) {
             throw new ServiceException("Selected profile not found.", 1);
         }

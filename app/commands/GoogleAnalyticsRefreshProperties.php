@@ -35,7 +35,7 @@ class GoogleAnalyticsRefreshProperties extends Command {
             try {
                 $collector = new GoogleAnalyticsDataCollector($user);
                 $collector->saveProperties();
-                Log::info("Successfully updated GA properties for user #" . $user->id);
+                Log::info("Successfully updated GA properties of user #" . $user->id);
             } catch (Exception $e) {
                 Log::error('Error found while running ' . get_class($this) . ' on user #' . $user->id . '. message: ' . $e->getMessage());
             }
