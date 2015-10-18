@@ -25,6 +25,8 @@ class CreateGoogleAnalyticsGoalsTable extends Migration {
 
             $table->string('name', 127);
          });
+
+        Artisan::call('google_analytics:refresh_properties');
     }
 
     /**

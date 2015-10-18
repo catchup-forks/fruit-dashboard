@@ -326,7 +326,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getActiveUsers
-     * Returning the active useres (multiple).
+     * Returning the active users (multiple).
      * --------------------------------------------------
      * @param string $profileId
      * @param $metricNames

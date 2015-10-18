@@ -48,7 +48,9 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->data->collect(array('count' => $this->getSettings()['count']));
+            $this->data->collect(
+                array('count' => $this->getSettings()['count'])
+            );
         } else {
             $this->data->collect($options);
         }
