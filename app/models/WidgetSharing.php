@@ -34,7 +34,21 @@ class WidgetSharing extends Eloquent
     */
     public function accept($dashboardId) {
         /* Right now we auto accept, the sharing. */
-        //$this->setState('accepted');
+        $this->setState('accepted');
+        $this->createSharedWidget($dashboardId);
+    }
+
+    /**
+     * autoCreate
+     * Creating the shared widget.
+     * --------------------------------------------------
+     * @param string $state
+     * @param int $dashboardId
+     * --------------------------------------------------
+    */
+    public function autoCreate($dashboardId) {
+        /* Right now we auto accept, the sharing. */
+        $this->setState('auto_created');
         $this->createSharedWidget($dashboardId);
     }
 

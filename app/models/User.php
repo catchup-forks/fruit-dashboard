@@ -62,6 +62,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function updateDashboardCache() {
+        Log::info("Event triggered");
         $this->update_cache = TRUE;
         $this->save();
     }
@@ -141,7 +142,7 @@ class User extends Eloquent implements UserInterface
 
             /* Accepting all sharings. */
             foreach ($this->getPendingWidgetSharings() as $sharing) {
-                $sharing->accept($sharingDashboard->id);
+                $sharing->autoCreate($sharingDashboard->id);
             }
         }
 
