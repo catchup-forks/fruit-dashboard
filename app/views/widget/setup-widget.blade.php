@@ -88,6 +88,7 @@
              $('#field-{{$field}}').hide();
            @endif
            $('#{{ $meta['ajax_depends'] }}-input').change(function () {
+             $('#setup-widget').button('loading');
              $.ajax({
                type: 'get',
                url: '{{ route('widget.get-ajax-setting', array(
@@ -96,6 +97,7 @@
                  'value'     => 'field_value'
                  )) }}'.replace('field_value', $('#{{$meta['ajax_depends']}}-input').val()),
              }).done(function (data) {
+               $('#setup-widget').button('reset');
                @if ($meta['type'] == 'SCHOICE')
                  $('#{{$field}}-input').empty();
                  if (data['error']) {
