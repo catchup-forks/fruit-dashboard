@@ -474,7 +474,7 @@ class Widget extends Eloquent
             }
 
             // Assigning descriptor.
-            $this->descriptor->associate($widgetDescriptor);
+            $this->descriptor()->associate($widgetDescriptor);
         }
 
         // Saving settings by option.
