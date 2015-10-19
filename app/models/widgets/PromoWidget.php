@@ -167,6 +167,7 @@ class PromoWidget extends Widget
             $criteria
         );
         $widget->saveSettings($settings);
+        $widget->checkIntegrity();
     }
 
     /**
@@ -191,7 +192,10 @@ class PromoWidget extends Widget
         /* Getting active profile. */
         $profile = $this->user()->googleAnalyticsProfiles()
             ->where('active', TRUE)
-            ->first(array('google_analytics_profiles.id'));
+            ->first(array(
+                'google_analytics_profiles.id',
+                'google_analytics_profiles.profile_id'
+            ));
         if (is_null($profile)) {
             return NULL;
         }
