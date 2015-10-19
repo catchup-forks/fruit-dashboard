@@ -107,7 +107,7 @@
       <form id="share-widget-form" class="form-horizontal">
         <div class="modal-body">
             <div id="email-addresses-group" class="form-group">
-              <label for="new-dashboard" class="col-sm-5 control-label">Type the email addresses of people you want to share.</label>
+              <label for="new-dashboard" class="col-sm-5 control-label">Type the email address of the user you want to share the widget with.</label>
               <div class="col-sm-7">
                 <input id="email-addresses" type="text" class="form-control" />
                 <input id="widget-id" type="hidden" />

@@ -27,12 +27,6 @@
                 <h3 class="text-center">Select a group</h3>
 
                 <div class="list-group margin-top-sm">
-                  @if (count(Auth::user()->getPendingWidgetSharings()) > 0)
-                    <a href="#shared_widgets" class="list-group-item" data-selection="group" data-group="shared_widgets" data-type="shared">
-                        Shared widgets
-                        <span class="selection-icon"> </span>
-                    </a>
-                  @endif
 
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
@@ -43,6 +37,13 @@
                     </a>
 
                   @endforeach
+
+                  @if (count(Auth::user()->getWidgetSharings()) > 0)
+                    <a href="#shared_widgets" class="list-group-item list-group-item-info" data-selection="group" data-group="shared_widgets" data-type="shared">
+                        Shared widgets
+                        <span class="selection-icon"> </span>
+                    </a>
+                  @endif
 
                 </div> <!-- /.list-group -->
 
@@ -61,10 +62,9 @@
                 <h3 class="text-center">Select a widget</h3>
 
                 <div class="list-group margin-top-sm not-visible">
-                  @foreach(Auth::user()->getPendingWidgetSharings() as $sharing)
+                  @foreach(Auth::user()->getWidgetSharings() as $sharing)
                       <span id="descriptor-{{ $sharing->widget->getDescriptor()->id }}" class="list-group-item" data-widget="widget-{{ $sharing->widget->getDescriptor()->type }}" data-selection="widget" data-group="shared_widgets">
                         {{ $sharing->widget->getDescriptor()->name }}
-                        <a href="{{ route('widget.share.accept', $sharing->id) }}" class="btn btn-success btn-xs pull-right">Accept </a>
                         <a href="{{ route('widget.share.reject', $sharing->id) }}" class="btn btn-danger btn-xs has-margin-horizontal-sm pull-right">Reject </a>
                         {{-- This is the span for the selection icon --}}
                     </span>

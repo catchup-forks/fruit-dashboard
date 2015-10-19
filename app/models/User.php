@@ -135,6 +135,17 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
+     * getWidgetSharings
+     * --------------------------------------------------
+     * Returns the shared widgets.
+     * @return object
+     * --------------------------------------------------
+     */
+    public function getWidgetSharings() {
+        return $this->widgetSharings()->get();
+    }
+
+    /**
      * createDashboardView
      * --------------------------------------------------
      * Creating a dashboard view.
