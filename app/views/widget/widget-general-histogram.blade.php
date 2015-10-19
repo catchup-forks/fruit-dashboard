@@ -36,6 +36,7 @@
     'datasets': [
     @foreach ($widget['data']['datasets'] as $dataset)
       {
+          'type' : '{{ $dataset['type'] }}',
           'values' : [{{ implode(',', $dataset['values']) }}],
           'name' : "{{ $dataset['name'] }}",
           'color': "{{ $dataset['color'] }}"

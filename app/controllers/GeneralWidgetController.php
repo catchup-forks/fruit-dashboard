@@ -650,6 +650,17 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * acceptWidgetSharings
+     * Setting all widget sharings accepted.
+     */
+    public function acceptWidgetSharings() {
+        foreach (Auth::user()->widgetSharings as $sharingObject) {
+            $sharingObject->setState('accepted');
+        }
+        return Response::make('Widget shared.', 200);
+    }
+
+    /**
      * postShareWidget
      * --------------------------------------------------
      * @param (integer) ($widgetID) The ID of the sharable widget

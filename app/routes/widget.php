@@ -122,4 +122,10 @@ Route::group([
         'uses'   => 'GeneralWidgetController@anySaveWidgetToImage'
     ]);
 
+    Route::any('sharing/accept/all', [
+        'before' => 'auth',
+        'as'     => 'widget.accept.all',
+        'uses'   => 'GeneralWidgetController@acceptWidgetSharings'
+    ]);
+
 });

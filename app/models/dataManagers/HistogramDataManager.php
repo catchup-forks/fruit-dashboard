@@ -214,16 +214,10 @@ abstract class HistogramDataManager extends DataManager
      * compare
      * Comparing the current value respect to period.
      * --------------------------------------------------
-     * @param boolean $diff
      * @return array
      * --------------------------------------------------
      */
     public function compare() {
-        $latestData = $this->getLatestData();
-        if (empty($latestData)) {
-            return array();
-        }
-        $referenceTime = Carbon::createFromTimestamp($latestData['timestamp']);
         $histogram = $this->buildHistogram();
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
@@ -251,21 +245,43 @@ abstract class HistogramDataManager extends DataManager
      * --------------------------------------------------
      */
     protected function getChartJSData($dateFormat) {
-        $datetimes = array();
-        $dataSet = array(
+        $dataSets = array(array(
+            'type'   => 'line',
             'color'  => SiteConstants::getChartJsColors()[0],
             'name'   => '',
             'values' => array()
-        );
+        ));
+        if ($this->hasCumulative()) {
+            array_push($dataSets, array(
+                'type'   => 'bar',
+                'color'  => SiteConstants::getChartJsColors()[1],
+                'name'   => 'Diffed values',
+                'values' => array()
+            ));
+        }
+        $datetimes = array();
         $histogram = $this->buildHistogram();
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
         foreach ($histogram as $entry) {
+            $value = $entry['value'];
+            array_push($dataSets[0]['values'], $value);
+
+            /* Getting the diff. */
+            if ($this->hasCumulative()) {
+                if (isset($prevValue)) {
+                    $diffedValue = $value - $prevValue;
+                } else {
+                    $diffedValue = 0;
+                }
+                array_push($dataSets[1]['values'], $diffedValue);
+                $prevValue = $value;
+            }
+
             array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
-            array_push($dataSet['values'], $entry['value']);
         }
-        return array('datasets' => array($dataSet), 'labels' => $datetimes);
+        return array('datasets' => $dataSets, 'labels' => $datetimes);
     }
 
 
