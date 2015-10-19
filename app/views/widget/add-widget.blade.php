@@ -315,8 +315,8 @@
         });
         e.preventDefault();
         bootbox.dialog({
-          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
-          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
+          title: 'We need you to allow Fruit Dashboard access.',
+          message: 'To connect ' + service + ', we will redirect you to their site.',
           buttons: {
             cancel: {
               label: 'Cancel',
@@ -324,7 +324,7 @@
               callback: function(){}
             },
             main: {
-              label: 'Okay, take me to ' + service + '!',
+              label: 'Take me to ' + service,
               className: 'btn-primary',
               callback: function(result) {
                 if (result) {

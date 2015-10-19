@@ -94,34 +94,34 @@
       $('.connect-redirect').click(function(e) {
         var url = $(this).attr('href');
         var service = $(this).prev().html();
-        e.preventDefault();
-        bootbox.dialog({
-          title: 'We’ll take you to ' + service + ' to authorize Fruit Dashboard to get data.',
-          message: 'To connect the service, we will redirect you to their site. Are you sure?',
-          buttons: {
-            cancel: {
-              label: 'Cancel',
-              className: 'btn-default',
-              callback: function(){}
-            },
-            main: {
-              label: 'Okay, take me to ' + service + '!',
-              className: 'btn-primary',
-              callback: function(result) {
-                if (result) {
-                  if (window!=window.top) {
-                    window.open(url, '_blank');
-                  } else {
-                    window.location = url;
+            e.preventDefault();
+            bootbox.dialog({
+              title: 'We need you to allow Fruit Dashboard access.',
+              message: 'To connect ' + service + ', we will redirect you to their site.',
+              buttons: {
+                cancel: {
+                  label: 'Cancel',
+                  className: 'btn-default',
+                  callback: function(){}
+                },
+                main: {
+                  label: 'Take me to ' + service,
+                  className: 'btn-primary',
+                  callback: function(result) {
+                    if (result) {
+                      if (window!=window.top) {
+                        window.open(url, '_blank');
+                      } else {
+                        window.location = url;
+                      }
+                    }
                   }
-                }
+                }  
               }
-            }  
-          }
-        });
-      });
+            });
+          });
 
-    })
+        })
   </script>
   
 

@@ -84,8 +84,8 @@
         var url = $(this).attr('href');
         e.preventDefault();
         bootbox.dialog({
-          title: 'We’ll take you to {{ $service["display_name"] }} to authorize Fruit Dashboard to get data.',
-          message: 'To connect the service, we will redirect you to their site. Are you sure?',
+          title: 'We need you to allow Fruit Dashboard access.',
+          message: 'To connect {{ $service["display_name"] }}, we will redirect you to their site.',
           buttons: {
             cancel: {
               label: 'Cancel',
@@ -93,7 +93,7 @@
               callback: function(){}
             },
             main: {
-              label: 'Okay, take me to {{ $service["display_name"] }}!',
+              label: 'Take me to {{ $service["display_name"] }}',
               className: 'btn-primary',
               callback: function(result) {
                 if (result) {
