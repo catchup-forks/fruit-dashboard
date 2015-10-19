@@ -32,14 +32,13 @@
                   <div class="panel panel-default">
                     <div class="panel-body text-center">
                       {{ HTML::image('img/logos/'.$service['name'].'.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
+                        <span>{{ $service['display_name'] }}</span>
 
                       @if(Auth::user()->isServiceConnected($service['name']))
-                        <span class="not-visible">{{ $service['display_name'] }}</span>
                         <p class="text-success text-center lead margin-top">
                           <span class="fa fa-check"> </span> Connected
                         </p>
                       @else
-                        <span class="not-visible">{{ $service['display_name'] }}</span>
                         <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
                       @endif
 
