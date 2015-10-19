@@ -66,11 +66,6 @@ class PromoWidget extends Widget
                 'url'  => route('service.facebook.select-pages')
             );
 
-        } else if ($descriptor->category == 'google_analytics') {
-                return array(
-                    'text' => $connectionText,
-                    'url'  => route('service.facebook.connect')
-                );
         } else if ($descriptor->category == 'facebook') {
             if ( ! $this->user()->isServiceConnected('facebook')) {
                 return array(
