@@ -488,7 +488,7 @@ class GeneralWidgetController extends BaseController {
         $widget = Widget::find($widgetID);
 
         /* User cross check. */
-        if ($widget->user() != Auth::user() &&
+        if ($widget->user()->id != Auth::user()->id &&
                 ! Auth::user()->widgetSharings()
                     ->where('widget_id', $widgetID)
                     ->first()

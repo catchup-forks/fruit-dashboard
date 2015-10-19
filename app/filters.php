@@ -14,7 +14,7 @@
 /* This filter runs before a request is served */
 App::before(function($request) {
     /* Make secure connection */
-    if ( (!App::environment('local')) and (!Request::secure()) ) {
+    if ( ( ! App::environment('local')) and (!Request::secure()) ) {
         return Redirect::secure(Request::path());
     }
 });
@@ -46,7 +46,7 @@ Route::filter('auth', function()
     if (Auth::guest() && Request::ajax()) {
         return Response::make('Unauthorized', 401);
     }
-    
+
     /* Not authenticated */
     if (Auth::guest()) {
         return Redirect::route('auth.signin');

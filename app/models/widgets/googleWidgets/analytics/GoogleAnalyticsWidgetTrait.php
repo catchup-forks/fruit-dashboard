@@ -25,19 +25,6 @@ trait GoogleAnalyticsWidgetTrait
     }
 
     /**
-     * getTemplateData
-     * Returning the mostly used values in the template.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getTemplateData() {
-        return array_merge(parent::getTemplateData(), array(
-            'propertyName' => $this->getProperty()->name
-        ));
-    }
-
-    /**
      * getConnectorClass
      * --------------------------------------------------
      * Returns the connector class for the widgets.

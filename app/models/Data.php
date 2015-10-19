@@ -23,8 +23,10 @@ class Data extends Eloquent
     protected $manager = null;
 
     /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
-    public function user() { return $this->belongsTo('User'); }
+    public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id'); }
+    public function user() {
+        return User::remember(120)->find($this->user_id);
+    }
     public function widgets() { return $this->hasMany('Widget'); }
     /* Optimized method, not using DB query */
     public function getDescriptor() {
@@ -227,6 +229,17 @@ class Data extends Eloquent
      */
     public function __call($method, $args) {
         return call_user_func_array(array(&$this->manager, $method), $args);
+    }
+    /**
+     * Overriding save to add descriptor automatically.
+     *
+     * @return the saved object.
+     * @throws DescriptorDoesNotExist
+    */
+    public function save(array $options=array()) {
+        /* Notify user about the change */
+        $this->user()->updateDashboardCache();
+        return parent::save($options);
     }
 
 }

@@ -87,6 +87,12 @@ class Dashboard extends Eloquent
         return TRUE;
     }
 
+    public function save(array $options=array()) {
+        /* Notify user about the change */
+        $this->user->updateDashboardCache();
+        return parent::save($options);
+    }
+
     /**
      * inGrid
      * Determines, if the rectangle is in the grid.

@@ -23,19 +23,6 @@ trait FacebookWidgetTrait
     }
 
     /**
-     * getTemplateData
-     * Returning the mostly used values in the template.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getTemplateData() {
-        return array_merge(parent::getTemplateData(), array(
-            'pageName' => $this->getPage()->name
-        ));
-    }
-
-    /**
      * getConnectorClass
      * --------------------------------------------------
      * Returns the connector class for the widgets.

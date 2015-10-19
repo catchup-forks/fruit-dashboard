@@ -11,6 +11,7 @@
     <!-- Page Content -->
     <div class="container">
     Your access token is: {{ var_dump($accesstoken) }}
+    </div>
     <!-- /.container -->
-    </body>
+</body>
 </html>
