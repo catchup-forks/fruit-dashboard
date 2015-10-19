@@ -5,7 +5,7 @@
      data-sizey="{{ $widget['position']->size_y }}"
      data-min-sizex="{{ $widget['instance']->getMinCols() }}"
      data-min-sizey="{{ $widget['instance']->getMinRows() }}"
-     class="gridster-widget can-hover">
+     class="gridster-widget can-hover overflow-hidden">
 
     <div class="dropdown position-tr-sm">
       <a id="{{ $widget['id'] }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

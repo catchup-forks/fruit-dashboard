@@ -197,7 +197,6 @@
       setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, true);
     })
 
-
     function showShareModal(widgetId) {
      $('#share-widget-modal').modal('show');
      $('#share-widget-modal').on('shown.bs.modal', function (params) {
