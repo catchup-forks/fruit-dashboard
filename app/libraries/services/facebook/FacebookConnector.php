@@ -231,7 +231,7 @@ class FacebookConnector extends GeneralServiceConnector
     public function disconnect() {
         parent::disconnect();
         /* deleting all plans. */
-        FacebookPage::where('user_id', $this->user->id)->delete();
+        $this->user->facebookPages()->delete();
     }
 
 } /* FacebookConnector */

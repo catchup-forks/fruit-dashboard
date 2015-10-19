@@ -152,7 +152,8 @@ abstract class GeneralServiceConnector
             $data = Data::create(array(
                 'criteria'      => $settingsCriteria,
                 'user_id'       => $this->user->id,
-                'descriptor_id' => $descriptor->id
+                'descriptor_id' => $descriptor->id,
+                'state'         => 'loading'
             ), FALSE);
 
             /* Assigning foreign values */

@@ -211,6 +211,7 @@
       @endif
       // Share widget submit.
       $('#share-widget-form').submit(function(event) {
+        event.preventDefault();
         var emailAddresses = $('#email-addresses').val();
         var widgetId = $('#widget-id').val();
 
@@ -231,7 +232,6 @@
           return
         } else {
           $('#email-addresses-group').addClass('has-error');
-          event.preventDefault();
         }
 
       });

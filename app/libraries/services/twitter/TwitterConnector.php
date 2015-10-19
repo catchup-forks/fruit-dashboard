@@ -144,4 +144,17 @@ class TwitterConnector extends GeneralServiceConnector
         $twitterUser->save();
     }
 
+    /**
+     * disconnect
+     * --------------------------------------------------
+     * disconnecting the user from facebook.
+     * @throws ServiceNotConnected
+     * --------------------------------------------------
+     */
+    public function disconnect() {
+        parent::disconnect();
+        /* deleting all plans. */
+        $this->user->twitterUsers()->delete();
+    }
+
 } /* TwitterConnector */

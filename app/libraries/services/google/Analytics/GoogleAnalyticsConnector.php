@@ -23,7 +23,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     public function disconnect() {
         parent::disconnect();
         /* deleting all plans. */
-        GoogleAnalyticsProperty::where('user_id', $this->user->id)->delete();
+        $this->user->googleAnalyticsProperties()->delete();
     }
 
     /**

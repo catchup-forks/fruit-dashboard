@@ -62,7 +62,6 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function updateDashboardCache() {
-        Log::info("Event triggered");
         $this->update_cache = TRUE;
         $this->save();
     }
