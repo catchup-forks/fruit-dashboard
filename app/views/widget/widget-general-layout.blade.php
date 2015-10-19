@@ -7,6 +7,12 @@
      data-min-sizey="{{ $widget['instance']->getMinRows() }}"
      class="gridster-widget can-hover overflow-hidden">
 
+     @if ($widget['instance'] instanceof SharedWidget)
+      <div class="position-tr-sm-second">
+        <span class="fa fa-share-alt text-white display-hovered drop-shadow" data-toggle="tooltip" title="This widget is shared with you" data-placement="left"></span>
+      </div> <!-- /.position-tr-sm-second -->
+     @endif
+
     <div class="dropdown position-tr-sm">
       <a id="{{ $widget['id'] }}" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <span class="fa fa-bars drop-shadow text-white color-hovered display-hovered"></span>
