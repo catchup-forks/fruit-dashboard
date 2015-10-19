@@ -1,8 +1,6 @@
-<div class="chart-data">
-  <div class="chart-name larger-text">
-    {{ $widget['settings']['name'] }}
-  </div> <!-- /.chart-name -->
-</div> <!-- /.chart-data -->
+<p class="chart-name text-center">
+  {{ $widget['settings']['name'] }}
+</p> <!-- /.chart-name -->
 
 <div class="chart-diff-data text-center">
 
