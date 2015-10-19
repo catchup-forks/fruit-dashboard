@@ -62,7 +62,6 @@ trait GoogleAnalyticsHistogramDataManagerTrait
                 $entries[$date][$metricName] = $value;
             }
         }
-        var_dump($entries);
         /* Saving entries. */
         foreach ($entries as $entry) {
             $this->collect(array(

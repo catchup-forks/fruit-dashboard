@@ -22,6 +22,7 @@ class User extends Eloquent implements UserInterface
         'date_of_birth',
         'created_at',
         'updated_at',
+        'update_cache',
     );
 
     /* -- Relations -- */
@@ -51,6 +52,18 @@ class User extends Eloquent implements UserInterface
             'GoogleAnalyticsProperty',
             'user_id', 'property_id'
         );
+    }
+
+    /**
+     * updateDashboardCache
+     * Setting the update_cache property.
+     * --------------------------------------------------
+     * @params
+     * --------------------------------------------------
+     */
+    public function updateDashboardCache() {
+        $this->update_cache = TRUE;
+        $this->save();
     }
 
     /**
@@ -156,36 +169,36 @@ class User extends Eloquent implements UserInterface
     public function createDashboardView(array $params=array()) {
         $dashboards = array();
         $i = 0;
-        foreach ($this->dashboards as $dashboard) {
-            /* Creating dashboard array. */
-            $dashboards[$dashboard->id] = array(
-                'name'       => $dashboard->name,
-                'is_locked'  => $dashboard->is_locked,
-                'is_default' => $dashboard->is_default,
-                'widgets'    => array(),
-                'count'      => $i++
-            );
-            /* Iterating through the widgets. */
-            foreach ($dashboard->widgets()->with('data')->get() as $widget) {
-                if ($widget->state == 'loading' || $widget->state == 'setup_required') {
-                    /* Widget is loading, no data is available yet. */
-                    $templateData = Widget::getDefaultTemplateData($widget);
-                } else {
-                    try {
-                        $templateData = $widget->getTemplateData();
-                    } catch (Exception $e) {
-                        /* Something went wrong during data population. */
-                        Log::error($e->getMessage());
-                        $templateData = Widget::getDefaultTemplateData($widget);
-                        $widget->setState('setup_required');
-                    }
-                }
-                array_push($dashboards[$dashboard->id]['widgets'], array(
-                    'meta'         => $widget->getTemplateMeta(),
-                    'templateData' => $templateData
-                ));
-
+        foreach ($this->widgets()->with('dashboard')->get() as $widget) {
+            if ( ! array_key_exists($widget->dashboard_id, $dashboards)) {
+                /* Creating dashboard array. */
+                $dashboards[$widget->dashboard_id] = array(
+                    'name'       => $widget->dashboard->name,
+                    'is_locked'  => $widget->dashboard->is_locked,
+                    'is_default' => $widget->dashboard->is_default,
+                    'widgets'    => array(),
+                    'count'      => $i++
+                );
             }
+            /* Getting template data for the widget. */
+            if ($widget->state == 'loading' || $widget->state == 'setup_required') {
+                /* Widget is loading, no data is available yet. */
+                $templateData = Widget::getDefaultTemplateData($widget);
+            } else {
+                try {
+                    $templateData = $widget->getTemplateData();
+                } catch (Exception $e) {
+                    /* Something went wrong during data population. */
+                    Log::error($e->getMessage());
+                    $templateData = Widget::getDefaultTemplateData($widget);
+                    $widget->setState('setup_required');
+                }
+            }
+            /* Adding widget to the dashboard array. */
+            array_push($dashboards[$widget->dashboard_id]['widgets'], array(
+                'meta'         => $widget->getTemplateMeta(),
+                'templateData' => $templateData
+            ));
         }
         return View::make('dashboard.dashboard', $params)
             ->with('dashboards', $dashboards);
@@ -199,7 +212,10 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkWidgetsIntegrity() {
-        foreach ($this->widgets as $widget) {
+        foreach ($this->widgets()->with('data')->get() as $widget) {
+            if ( ! is_null($widget->data)) {
+                $widget->data->checkIntegrity();
+            }
             try {
                 $widget->checkIntegrity();
             } catch (WidgetFatalException $e) {
@@ -215,19 +231,6 @@ class User extends Eloquent implements UserInterface
                     $widget->setState('setup_required');
                 }
             }
-        }
-    }
-
-    /**
-     * checkDataIntegrity
-     * --------------------------------------------------
-     * Checking the overall integrity of the user's data managers.
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function checkDataIntegrity() {
-        foreach ($this->dataObjects as $data) {
-            $data->checkIntegrity();
         }
     }
 

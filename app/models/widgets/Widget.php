@@ -19,12 +19,14 @@ class Widget extends Eloquent
     protected static $criteriaSettings = array();
 
     /* Use only for association. */
-    public function descriptor() { $this->belongsTo('WidgetDescriptor'); }
+    public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
 
     /* -- Relations -- */
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
-    public function user() { return $this->dashboard->user; }
+    public function user() {
+        return User::remember(120)->find($this->dashboard->user_id);
+    }
 
     /* Optimized method, not using DB query */
     public function getDescriptor() {
@@ -459,6 +461,9 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
+        /* Notify user about the change */
+        $this->user()->updateDashboardCache();
+
         if (is_null($this->descriptor_id)) {
             /* Associating descriptor. */
             $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
@@ -469,7 +474,7 @@ class Widget extends Eloquent
             }
 
             // Assigning descriptor.
-            $this->descriptor_id = $widgetDescriptor->id;
+            $this->descriptor->associate($widgetDescriptor);
         }
 
         // Saving settings by option.

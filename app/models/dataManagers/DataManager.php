@@ -54,7 +54,7 @@ abstract class DataManager
         $this->dataObject = $data;
         $this->data = $data->decode();
         $this->criteria = $data->getCriteria();
-        $this->user = $data->user;
+        $this->user = $data->user();
     }
 
     abstract public function collect($options=array());

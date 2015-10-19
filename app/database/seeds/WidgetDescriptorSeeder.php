@@ -588,7 +588,6 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         Artisan::call('cache:clear');
-        WidgetDescriptor::rememberForever()->get();
 
         /* Send message to console */
         Log::info('WidgetDescriptorSeeder | All WidgetDescriptors updated, cached.');

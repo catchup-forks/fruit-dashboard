@@ -40,7 +40,7 @@ class WidgetDescriptor extends Eloquent
     */
     public static function find($id, $columns=array('*')) {
         /* Trying to load from cache. */
-        return  WidgetDescriptor::rememberForever()->where('id', $id)->first();
+        return WidgetDescriptor::rememberForever()->where('id', $id)->first();
     }
 
     /**

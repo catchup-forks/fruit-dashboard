@@ -18,7 +18,6 @@ class SiteConstants {
     private static $gridNumberOfRows  = 12;
     private static $widgetMargin      = 5;
 
-
     /* Trial period */
     private static $trialPeriodInDays = 14;
 
@@ -64,6 +63,9 @@ class SiteConstants {
         'Series C'                => 'Series C',
         'Other'                   => 'Other'
     );
+
+    /* Dashboard cache */
+    private static $dashboardCacheMinutes = 60;
 
     /* Auto dashboards */
     private static $autoDashboards = array(
@@ -624,6 +626,15 @@ class SiteConstants {
      */
     public static function getSkippedCategoriesInNotification() {
         return self::$skipCategoriesInNotification;
+    }
+
+    /**
+     * getDashboardCacheMinutes
+     * Returns the number of minutes, of how long the
+     * dashboard should be stored in the cache.
+     */
+    public static function getDashboardCacheMinutes() {
+        return self::$dashboardCacheMinutes;
     }
 
 } /* SiteConstants */
