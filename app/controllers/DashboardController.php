@@ -25,18 +25,22 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        /* Trying to load from cache. */
-        $cachedDashboard = $this->getFromCache();
-        if ( ! is_null($cachedDashboard)) {
-            /* Some logging */
-            if ( ! App::environment('producion')) {
-                Log::info("Loading dashboard from cache.");
-                Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
-            }
+        /* No caching in local development */
+        if (!App::environment('local')) {
+            /* Trying to load from cache. */
+            $cachedDashboard = $this->getFromCache();
+            if (!is_null($cachedDashboard)) {
+                /* Some logging */
+                if (!App::environment('producion')) {
+                    Log::info("Loading dashboard from cache.");
+                    Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+                }
 
-            /* Returning the cached dashboard. */
-            return $cachedDashboard;
+                /* Returning the cached dashboard. */
+                return $cachedDashboard;
+            }
         }
+        
         if (self::OPTIMIZE) {
             return $this->showOptimizeLog(Auth::user());
             exit(94);
