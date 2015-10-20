@@ -128,8 +128,6 @@ function FDChartOptions(widgetOptions) {
       );
     }
 
-    console.log(transformedData);
-
     // Return
     return transformedData;
 
@@ -184,8 +182,20 @@ function FDChartOptions(widgetOptions) {
        //pointDotRadius : 2,
        //scaleGridLineColor : "rgba(179,179,179,0.4)",
        //scaleGridLineWidth : 0.35,
-       tooltipTemplate: "<%=value%>",
-       multiTooltipTemplate: "<%=datasetLabel%>: <%=value%>",
+       tooltipTemplate: function (d) {
+          if (d.label) {
+            return d.label + ': ' + d.value;
+          } else {
+            return d.value;
+          };
+       },
+       multiTooltipTemplate: function (d) {
+          if (d.datasetLabel) {
+            return d.datasetLabel + ': ' + d.value;
+          } else {
+            return d.value;
+          };
+       }
     };
   }
 
