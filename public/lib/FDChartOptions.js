@@ -23,7 +23,7 @@ function FDChartOptions(widgetOptions) {
   function init() {
     if (page == 'dashboard') {
       setDefaultOptionsDashboard();
-    } else if (page == 'singleStat') {
+    } else if (page == 'singlestat') {
       setDefaultOptionsSingleStat();
     };
 
@@ -41,7 +41,7 @@ function FDChartOptions(widgetOptions) {
   function getLineChartOptions(singlePointOptions) {
     if (page == 'dashboard') {
       return getLineChartOptionsDashboard(singlePointOptions);
-    } else if (page == 'singleStat') {
+    } else if (page == 'singlestat') {
       return getLineChartOptionsSingleStat();
     }
   }
@@ -128,6 +128,8 @@ function FDChartOptions(widgetOptions) {
       );
     }
 
+    console.log(transformedData);
+
     // Return
     return transformedData;
 
@@ -161,9 +163,9 @@ function FDChartOptions(widgetOptions) {
     Chart.defaults.global.tooltipCaretSize    = 5;
     Chart.defaults.global.tooltipFillColor    = "rgba(0,0,0,0.6)";
     Chart.defaults.global.tooltipFontSize     = 11;
-    Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
+    //Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
     Chart.defaults.global.scaleFontSize       = 9;
-    Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
+    //Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
     
     // Return
     return true;
@@ -178,12 +180,12 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsSingleStat() {
     return {
-       pointHitDetectionRadius : 5,
-       pointDotRadius : 2,
-       scaleGridLineColor : "rgba(179,179,179,0.4)",
-       scaleGridLineWidth : 0.35,
-       tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
-       multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
+       //pointHitDetectionRadius : 5,
+       //pointDotRadius : 2,
+       //scaleGridLineColor : "rgba(179,179,179,0.4)",
+       //scaleGridLineWidth : 0.35,
+       tooltipTemplate: "<%=value%>",
+       multiTooltipTemplate: "<%=datasetLabel%>: <%=value%>",
     };
   }
 
