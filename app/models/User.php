@@ -167,6 +167,9 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function createDashboardView(array $params=array()) {
+        if(array_key_exists('activeDashboard', $params)) {
+            $existsActiveDashboard = false;
+        }
         $dashboards = array();
         $i = 0;
         foreach ($this->widgets()->with('dashboard')->get() as $widget) {
@@ -179,6 +182,11 @@ class User extends Eloquent implements UserInterface
                     'widgets'    => array(),
                     'count'      => $i++
                 );
+
+                /* Check activeDashboard exists */
+                if(isset($existsActiveDashboard) && $params['activeDashboard']==$widget->dashboard_id) {
+                    $existsActiveDashboard = true;
+                }
             }
             /* Getting template data for the widget. */
             if ($widget->state == 'loading' || $widget->state == 'setup_required') {
@@ -200,6 +208,12 @@ class User extends Eloquent implements UserInterface
                 'templateData' => $templateData
             ));
         }
+
+        /* Set default dashboard if activeDashboard not exists */
+        if(isset($existsActiveDashboard) && !$existsActiveDashboard) {
+            unset($params['activeDashboard']);
+        }
+
         return View::make('dashboard.dashboard', $params)
             ->with('dashboards', $dashboards);
     }

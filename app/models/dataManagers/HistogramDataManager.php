@@ -222,18 +222,22 @@ abstract class HistogramDataManager extends DataManager
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
-        $start = $histogram[0];
-        $today = end($histogram);
+        if(count($histogram)>0) {
+            $start = $histogram[0];
+            $today = end($histogram);
 
-        /* Creating an arrays that will hold the values. */
-        $values = array();
-        foreach (self::getEntryValues($start) as $dataId=>$value) {
-            if (array_key_exists($dataId, $today)) {
-                $values[$dataId] = $today[$dataId] - $value;
+            /* Creating an arrays that will hold the values. */
+            $values = array();
+            foreach (self::getEntryValues($start) as $dataId=>$value) {
+                if (array_key_exists($dataId, $today)) {
+                    $values[$dataId] = $today[$dataId] - $value;
+                }
             }
-        }
 
-        return $values;
+            return $values;
+        }
+        
+        return array();
     }
 
     /**

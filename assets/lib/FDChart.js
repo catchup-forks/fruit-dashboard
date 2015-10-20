@@ -30,8 +30,10 @@ function FDChart(widgetOptions) {
     // var max;
     // var steps;
 
+    var isDatasetsExist = data && data.datasets && data.datasets.length>0;
+
     // If on dashboard and datasets exist.
-    if (data && data.datasets && widgetOptions.data.page == 'dashboard') {
+    if (isDatasetsExist && widgetOptions.data.page == 'dashboard') {
       // In case of one point datasets, unshift an extra label.
       if (data.datasets[0].values.length == 1) {
         data.labels.unshift(data.labels[0]);
@@ -70,27 +72,11 @@ function FDChart(widgetOptions) {
     // Clear the existing chart
     clear();
 
-    // Draw chart
-    switch(type) {
-      case 'line':
-        var canvasContext = canvas.get2dContext();
-        if (canvasContext) {
-          new Chart(canvasContext).Line(
-            chartOptions.transformLineChartDatasets(data),
-            chartOptions.getLineChartOptions(singlePointOptions))
-        };
-        break;
-      case 'combined':
-        // in datasets set type = line for line
-        // if not set, defaults to bar chart
-        var canvasContext = canvas.get2dContext();
-        if (canvasContext) {
-          new Chart(canvasContext).Overlay(
-            chartOptions.transformLineChartDatasets(data),
-            chartOptions.getLineChartOptions(singlePointOptions))
-        };
-        break;
-      default:
+    // If datasets exist.
+    if(isDatasetsExist) {
+      // Draw chart
+      switch(type) {
+        case 'line':
           var canvasContext = canvas.get2dContext();
           if (canvasContext) {
             new Chart(canvasContext).Line(
@@ -98,6 +84,25 @@ function FDChart(widgetOptions) {
               chartOptions.getLineChartOptions(singlePointOptions))
           };
           break;
+        case 'combined':
+          // in datasets set type = line for line
+          // if not set, defaults to bar chart
+          var canvasContext = canvas.get2dContext();
+          if (canvasContext) {
+            new Chart(canvasContext).Overlay(
+              chartOptions.transformLineChartDatasets(data),
+              chartOptions.getLineChartOptions(singlePointOptions))
+          };
+          break;
+        default:
+            var canvasContext = canvas.get2dContext();
+            if (canvasContext) {
+              new Chart(canvasContext).Line(
+                chartOptions.transformLineChartDatasets(data),
+                chartOptions.getLineChartOptions(singlePointOptions))
+            };
+            break;
+      }
     }
 
     // return
