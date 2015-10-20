@@ -190,8 +190,8 @@ class User extends Eloquent implements UserInterface
                 } catch (Exception $e) {
                     /* Something went wrong during data population. */
                     Log::error($e->getMessage());
+                    $widget->setState('rendering_error');
                     $templateData = Widget::getDefaultTemplateData($widget);
-                    $widget->setState('setup_required');
                 }
             }
             /* Adding widget to the dashboard array. */

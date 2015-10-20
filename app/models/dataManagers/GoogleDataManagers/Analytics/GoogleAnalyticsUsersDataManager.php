@@ -1,8 +1,9 @@
 <?php
 
-class GoogleAnalyticsUsersDataManager extends HistogramDataManager
+class GoogleAnalyticsUsersDataManager extends MultipleHistogramDataManager
 {
-    use GoogleAnalyticsHistogramDataManagerTrait;
+    use GoogleAnalyticsHistogramBySourceDataManagerTrait;
+
     protected static $metrics = array('newUsers');
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
@@ -10,6 +11,5 @@ class GoogleAnalyticsUsersDataManager extends HistogramDataManager
         $collector = new GoogleAnalyticsDataCollector($this->user);
         return $collector->getUsers($this->getProfileId());
     }
-
 }
 ?>

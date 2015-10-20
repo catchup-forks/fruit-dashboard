@@ -1,9 +1,9 @@
 <?php
 
-class GoogleAnalyticsGoalCompletionDataManager extends HistogramDataManager
+class GoogleAnalyticsGoalCompletionDataManager extends MultipleHistogramDataManager
 {
-    use GoogleAnalyticsHistogramDataManagerTrait;
     use GoogleAnalyticsGoalDataManagerTrait;
+    use GoogleAnalyticsHistogramBySourceDataManagerTrait;
 
     protected static $cumulative = TRUE;
     public function getCurrentValue() {

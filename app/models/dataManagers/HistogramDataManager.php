@@ -116,6 +116,7 @@ abstract class HistogramDataManager extends DataManager
         $currentData = $this->sortHistogram(FALSE);
         $lastData = $this->getLatestData();
 
+        /* Checking for cumulative. */
         if ( ! empty($lastData)) {
             if (static::$cumulative &&
                     array_key_exists('sum', $options) &&
@@ -126,14 +127,16 @@ abstract class HistogramDataManager extends DataManager
                     }
                 }
             }
+            /* Saving data only every 15 minutes. */
             if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
                 var_dump("Popping");
                 array_pop($currentData);
             }
         }
-        /* Saving data only every 15 minutes. */
-        array_push($currentData, $dbEntry);
-        $this->save($currentData);
+        if ( ! empty(self::getEntryValues($dbEntry))) {
+            array_push($currentData, $dbEntry);
+            $this->save($currentData);
+        }
     }
 
     /**
@@ -432,18 +435,23 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    protected static function getDiff(array $data, $dataName='value') {
+    protected static function getDiff(array $data) {
         $differentiatedArray = array();
         foreach ($data as $entry) {
             /* Copying entry. */
-            $diffEntry = $entry;
             $diffValue = 0;
-            if (isset($lastValue)) {
-                $diffValue = $entry[$dataName] - $lastValue;
+            if (isset($lastEntry)) {
+                $diffEntry = array(
+                    'timestamp' => $entry['timestamp']
+                );
+                foreach (self::getEntryValues($entry) as $key=>$value) {
+                    if (array_key_exists($key, $lastEntry)) {
+                        $diffEntry[$key] = $entry[$key] - $lastEntry[$key];
+                    } 
+                }
+                array_push($differentiatedArray, $diffEntry);
             }
-            $diffEntry[$dataName] = $diffValue;
-            array_push($differentiatedArray, $diffEntry);
-            $lastValue = $entry[$dataName];
+            $lastEntry = $entry;
         }
         return $differentiatedArray;
     }

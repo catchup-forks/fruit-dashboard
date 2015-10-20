@@ -1,17 +1,20 @@
 <?php
+namespace Migrations;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWidgetSharingTable extends Migration {
+class CreateWidgetSharingTable extends Migration
+{
 
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up() {
-        Schema::create('widget_sharings',function($table) {
+    public function up()
+    {
+        Schema::create('widget_sharings', function ($table) {
             $table->increments('id');
 
             $table->integer('src_user_id')->unsigned();
@@ -33,15 +36,15 @@ class CreateWidgetSharingTable extends Migration {
 
             $table->timestamps();
         });
-     }
+    }
 
     /**
      * Reverse the migrations.
      *
      * @return void
      */
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('widget_sharings');
     }
-
 }

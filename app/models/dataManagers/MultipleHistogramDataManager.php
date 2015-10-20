@@ -3,6 +3,25 @@
 /* This class is responsible for histogram data collection. */
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
+
+    /**
+     * Whether or not we should transform to single histogram.
+     *
+     * @var bool
+     */
+    protected $toSingle = FALSE;
+
+    /**
+     * setSingle
+     * Sets the toSingle varibale.
+     * --------------------------------------------------
+     * @param boolean $single
+     * --------------------------------------------------
+     */
+    public function setSingle($single) {
+        $this->toSingle = $single;
+    }
+
     /**
      * formatData
      * Formatting data to the multiple histogram format.
@@ -13,11 +32,6 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
      protected function formatData($date, $data) {
-        if (empty($data)) {
-            /* There is no data. */
-            return null;
-        }
-
         $dataSets = $this->getDataSets();
         $encodedData = array(
             'timestamp' => $date->getTimestamp()
@@ -92,18 +106,22 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * --------------------------------------------------
      */
     protected function getChartJSData($dateFormat) {
+        if ($this->toSingle) {
+            return parent::getChartJSData($dateFormat);
+        }
         $groupedData = array();
         $datetimes = array();
         $i = 0;
         foreach ($this->getDataSets() as $name=>$dataId) {
             $groupedData[$dataId] = array(
+                'type'   => 'line',
                 'name'   => $name,
                 'color'  => SiteConstants::getChartJsColors()[($i++) % count(SiteConstants::getChartJsColors())],
                 'values' => array()
             );
         }
         $histogram = $this->buildHistogram();
-        if ($this->diff) {
+        if ($this->diff || ! $this->toSingle) {
             $histogram = self::getDiff($histogram);
         }
         foreach ($histogram as $entry) {
@@ -114,6 +132,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
+        
         return array(
             'datasets' => array_values($groupedData),
             'labels' => $datetimes
@@ -124,10 +143,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * transformData
      * Creating the final DB-ready json
      * --------------------------------------------------
-     * @return string (json)
+     * @param array ($histogramData)
+     * @return array
      * --------------------------------------------------
      */
-    private static final function transformData() {
+    protected static final function transformData($histogramData) {
         $dbData = array(
             'datasets' => array(),
             'data'     => array()
@@ -139,7 +159,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         }
 
         $i = 0;
-        foreach ($this->data as $entry) {
+        foreach ($histogramData as $entry) {
             /* Creating the new entry */
             $newEntry = array();
 
@@ -242,4 +262,29 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         parent::save($data);
     }
 
+    /**
+     * sortHistogram
+     * Sorting the array, and summing the values.
+     * --------------------------------------------------
+     * @param boolean $desc
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function sortHistogram($desc=TRUE) {
+        if ($this->toSingle) {
+            $histogram = array();
+            /* Summarizing the entries. */
+            foreach (parent::sortHistogram($desc) as $entry) {
+                $newEntry = array(
+                    'timestamp' => $entry['timestamp'],
+                    'value'     => array_sum(static::getEntryValues($entry))
+                );
+                array_push($histogram, $newEntry);
+            }
+        } else {
+            $histogram = parent::sortHistogram($desc);
+        }
+        /* Returning the parent by default. */
+        return $histogram;
+    }
 }

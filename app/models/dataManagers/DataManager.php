@@ -1,7 +1,8 @@
 <?php
 
 /* When a manager is using a webhook. */
-trait WebhookDataManager {
+trait WebhookDataManager
+{
     /**
      * getJson
      * Returning the json from the url.
@@ -9,7 +10,8 @@ trait WebhookDataManager {
      * @return array/null
      * --------------------------------------------------
      */
-    private function getJson() {
+    private function getJson()
+    {
         try {
             $json = file_get_contents($this->criteria['url']);
         } catch (Exception $e) {
@@ -50,7 +52,8 @@ abstract class DataManager
      */
     protected $criteria = null;
 
-    function __construct($data) {
+    function __construct($data)
+    {
         $this->dataObject = $data;
         $this->data = $data->decode();
         $this->criteria = $data->getCriteria();
@@ -67,10 +70,12 @@ abstract class DataManager
      * @param array $data
      * --------------------------------------------------
      */
-     public function save($data=null) {
+     public function save($data=null)
+     {
         if ( ! is_null($data)) {
             $this->data = $data;
         }
+
         $this->dataObject->saveData($this->data);
      }
 }

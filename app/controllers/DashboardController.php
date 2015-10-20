@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * --------------------------------------------------------------------------
  * DashboardController: Handles the authentication related sites
@@ -8,7 +7,6 @@
  */
 class DashboardController extends BaseController
 {
-
     const OPTIMIZE = FALSE;
 
     /**
@@ -35,8 +33,9 @@ class DashboardController extends BaseController
             }
 
             /* Returning the cached dashboard. */
-            return $cachedDashboard;
+            //return $cachedDashboard;
         }
+
         if (self::OPTIMIZE) {
             return $this->showOptimizeLog(Auth::user());
             exit(94);

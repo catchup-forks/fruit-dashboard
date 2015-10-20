@@ -1,8 +1,8 @@
 <?php
 
-class GoogleAnalyticsSessionsDataManager extends HistogramDataManager
+class GoogleAnalyticsSessionsDataManager extends MultipleHistogramDataManager
 {
-    use GoogleAnalyticsHistogramDataManagerTrait;
+    use GoogleAnalyticsHistogramBySourceDataManagerTrait;
     protected static $metrics = array('sessions');
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
