@@ -13,12 +13,12 @@
   <script type="text/javascript">
   $(function() {
     $('.locked').each(function(index) {
-      var containerHeight = $(this).closest('li').height();
-      var containerWidth = $(this).closest('li').width();
+      var containerHeight = $(this).parents('.gridster-widget').height();
+      var containerWidth = $(this).parents('.gridster-widget').width();
       if (containerHeight > containerWidth) {
         $(this).width(containerWidth-2*30);
       } else {
-        $(this).height(containerHeight-2*35);
+        $(this).height(containerHeight-2*50);
       };
     });
   });

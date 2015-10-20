@@ -85,6 +85,9 @@ class Subscription extends Eloquent
                 /* Update status in db */
                 $this->changeTrialState('ended');
 
+                /* Update dashboard cache */
+                $this->user->updateDashboardCache();
+
                 /* Track event | TRIAL ENDED */
                 $tracker = new GlobalTracker();
                 $tracker->trackAll('lazy', array(
@@ -174,6 +177,9 @@ class Subscription extends Eloquent
 
                 /* Update status in db */
                 $this->changeTrialState('ended');
+
+                /* Update dashboard cache */
+                $this->user->updateDashboardCache();
 
                 /* Track event | TRIAL ENDED */
                 $tracker = new GlobalTracker();
@@ -335,6 +341,9 @@ class Subscription extends Eloquent
             $this->changeTrialState('disabled');
         }
 
+        /* Update dashboard cache */
+        $this->user->updateDashboardCache();
+
         /* Return the updated result */
         return $result;
     }
@@ -362,6 +371,9 @@ class Subscription extends Eloquent
             $this->changeTrialState('disabled');
             $this->save();
         }
+
+        /* Update dashboard cache */
+        $this->user->updateDashboardCache();
 
         /* Return the updated result */
         return $result;

@@ -384,10 +384,7 @@ class Widget extends Eloquent
      * @return int 1: user is premium, -1 fails, 0 default
      * --------------------------------------------------
      */
-     public function premiumUserCheck() {
-        Log::info('premiumUserCheck');
-        Log::info($this->user()->subscription->getSubscriptionInfo()['PE']);
-        
+     public function premiumUserCheck() {       
         /* Premium users can see everything. */
         if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
             return 1;

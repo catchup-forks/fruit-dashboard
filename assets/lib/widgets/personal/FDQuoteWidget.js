@@ -27,8 +27,10 @@ FDQuoteWidget.prototype.constructor = FDQuoteWidget;
  * --------------------------------------------------------------------------
  */
 FDQuoteWidget.prototype.draw = function(data) {
-  $(this.quoteSelector).html(data['quote']);
-  $(this.authorSelector).html(data['author']);
+  if (data) {
+    $(this.quoteSelector).html(data['quote']);
+    $(this.authorSelector).html(data['author']);
+  }
   return this;
 }
 
