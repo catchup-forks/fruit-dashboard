@@ -385,16 +385,15 @@ class Widget extends Eloquent
      * --------------------------------------------------
      */
      public function premiumUserCheck() {
+        Log::info('premiumUserCheck');
+        Log::info($this->user()->subscription->getSubscriptionInfo()['PE']);
+        
         /* Premium users can see everything. */
         if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
             return 1;
+        } else {
+            return 0;
         }
-
-        if ($this->getDescriptor()->is_premium) {
-            return -1;
-        }
-
-        return 0;
      }
 
     /**

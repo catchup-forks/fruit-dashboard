@@ -364,9 +364,16 @@ class User extends Eloquent implements UserInterface
 
         /* Create default subscription for the user */
         $plan = Plan::getFreePlan();
+        if ($_ENV['SUBSCRIPTION_MODE'] == 'premium_feature_and_trial') {
+            $trialStatus = 'possible';
+        } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'premium_feature_only') {
+            $trialStatus = 'possible';
+        } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'trial_only') {
+            $trialStatus = 'active';
+        }
         $subscription = new Subscription(array(
             'status'       => 'active',
-            'trial_status' => 'possible',
+            'trial_status' => $trialStatus,
             'trial_start'  => null,
         ));
         $subscription->user()->associate($this);

@@ -94,6 +94,7 @@
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
+<!--
     <a href="{{ route('payment.plans') }}"
        class="position-br drop-shadow z-top no-underline"
        data-toggle="tooltip"
@@ -109,6 +110,7 @@
             {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }}
         </span>
     </a>
+-->
 @endif
 
 @section('pageScripts')
