@@ -68,7 +68,7 @@ class DashboardController extends BaseController
         $user->checkWidgetsIntegrity();
 
         /* Creating view */
-        $view = $user->createDashboardView();
+        $view = $user->createDashboardView($parameters);
 
         try {
             /* Trying to render the view. */
@@ -81,7 +81,7 @@ class DashboardController extends BaseController
             /* Error occured, trying to find the widget. */
             $user->turnOffBrokenWidgets();
             /* Recreating view. */
-            $renderedView= $user->createDashboardView()->render();
+            $renderedView= $user->createDashboardView($parameters)->render();
         }
 
         /* Saving the cache, and returning the view. */

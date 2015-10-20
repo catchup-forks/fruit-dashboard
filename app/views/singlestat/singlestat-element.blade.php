@@ -78,10 +78,17 @@
       <div class="col-sm-3">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
-            <h3 class="text-primary">{{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}</h3>
-            <div class="text-success">
-              <span class="fa fa-check"> </span>
-            </div> <!-- /.text-success -->
+            @if(count($widget->getLatestValues())>0)
+              <h3 class="text-primary">{{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}</h3>
+              <div class="text-success">
+                <span class="fa fa-check"> </span>
+              </div> <!-- /.text-success -->
+            @else
+              <h3 class="text-primary">0</h3>
+              <div class="text-danger">
+                <span class="fa fa-ban"> </span>
+              </div> <!-- /.text-danger -->
+            @endif
             <p><small>Current value</small></p>
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
@@ -110,14 +117,17 @@
           <tbody>
             @foreach ($widget->getData([ 'resolution' => $resolution ])['datasets'] as $dataset)
               <tr>
-                <td class="col-sm-1" style="background-color: rgb({{ $dataset['color'] }})"></td>
+                <td class="col-sm-1">
+                  <span class="fa fa-square" style="color: rgb({{ $dataset['color'] }})"></span>
+                  <span>{{ $dataset['name'] }}</span>
+                </td>
                 @foreach ($dataset['values'] as $value)
                   <td>{{ $value }}</td>
                 @endforeach
-              </tr>
+              </tr> <!-- /.col-sm-1 -->
             @endforeach
           </tbody>
-        </table>
+        </table> <!-- /.table .datatable -->
       </div> <!-- /.col-sm-12 -->
     </div> <!-- /.row -->
   </div> <!-- /.panel-body -->
