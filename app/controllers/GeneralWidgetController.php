@@ -388,7 +388,7 @@ class GeneralWidgetController extends BaseController {
             $widget = $this->getWidget($widgetID);
             if ( ! $widget instanceof DataWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
-            } else if ( ! $widget->state != 'active') {
+            } else if ($widget->state != 'active') {
                 throw new WidgetDoesNotExist("This widget is not active.", 1);
             }
         } catch (WidgetDoesNotExist $e) {
