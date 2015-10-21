@@ -108,10 +108,12 @@ Widget stats
       }
 
       var widgetData{{ $resolution }} = {
+        'isCombined' : {{$widget->hasCumulative()}},
         'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
         @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
           {
+              'type' : '{{ $dataset['type'] }}',
               'values' : [{{ implode(',', $dataset['values']) }}],
               'name':  "{{ $dataset['name'] }}",
               'color': "{{ $dataset['color'] }}"

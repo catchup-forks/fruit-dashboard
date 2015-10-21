@@ -29,7 +29,12 @@ var FDHistogramWidget = function(widgetOptions) {
   */
 FDHistogramWidget.prototype.init = function() {
    this.updateData(window[this.options.data.init]);
-   this.chart.draw('line', this.widgetData);
+   if (this.widgetData.isCombined == 1) {
+    this.chart.draw('combined', this.widgetData);
+   } else {
+    this.chart.draw('line', this.widgetData); 
+   };
+   
    return this;
 };
 
@@ -41,7 +46,11 @@ FDHistogramWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.reinit = function() {
-   this.chart.draw('line', this.widgetData);
+   if (this.widgetData.isCombined == 1) {
+    this.chart.draw('combined', this.widgetData);
+   } else {
+    this.chart.draw('line', this.widgetData); 
+   };
    return this;
 };
 
@@ -54,7 +63,11 @@ FDHistogramWidget.prototype.reinit = function() {
  */
 FDHistogramWidget.prototype.refresh = function(data) {
   this.updateData(data);
-  this.chart.draw('line', this.widgetData);
+  if (this.widgetData.isCombined == 1) {
+   this.chart.draw('combined', this.widgetData);
+  } else {
+   this.chart.draw('line', this.widgetData); 
+  };
   return this;
 }
 
