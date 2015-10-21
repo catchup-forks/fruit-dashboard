@@ -441,10 +441,12 @@ class ServiceConnectionController extends BaseController
     public function getSelectGoogleAnalyticsProperties() {
         /* Getting a user's google analytics properties for multiple select. */
         $profiles = array();
+        $activeProfile = null;
         foreach (Auth::user()->googleAnalyticsProperties as $property) {
             $profiles[$property->name] = array();
             foreach ($property->profiles as $profile) {
                 $profiles[$property->name][$profile->profile_id] = $profile->name;
+                if ($profile->active) { $activeProfile = $profile; }
             }
         }
 
@@ -455,8 +457,9 @@ class ServiceConnectionController extends BaseController
         }
 
         return View::make('service.google_analytics.select-properties', array(
-                   'profiles' => $profiles,
-                   'cancelRoute' => $this->getReferer(FALSE),
+                   'profiles'      => $profiles,
+                   'cancelRoute'   => $this->getReferer(FALSE),
+                   'activeProfile' => $activeProfile
                 ));
     }
 
