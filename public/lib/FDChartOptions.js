@@ -127,7 +127,7 @@ function FDChartOptions(widgetOptions) {
       datasets: [],
     };
 
-    for (i = 0; i < data.datasets.length; ++i) {
+    for (var i = data.datasets.length - 1; i >= 0; i--) {
       transformedData.datasets.push(
           transform(
             data.datasets[i].type,
@@ -165,6 +165,8 @@ function FDChartOptions(widgetOptions) {
         pointHoverBorderWidth: 2,
         
         borderWidth: 2,
+
+        stacked: true,
         
         hoverBackgroundColor: "rgba(" + color + ", 1)",
         hoverBorderColor: "rgba(" + color + ", 1)",
