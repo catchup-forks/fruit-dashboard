@@ -252,14 +252,14 @@ abstract class HistogramDataManager extends DataManager
         $dataSets = array(array(
             'type'   => 'line',
             'color'  => SiteConstants::getChartJsColors()[0],
-            'name'   => '',
+            'name'   => 'Sum',
             'values' => array()
         ));
         if ($this->hasCumulative()) {
             array_push($dataSets, array(
                 'type'   => 'bar',
                 'color'  => SiteConstants::getChartJsColors()[1],
-                'name'   => 'Diffed values',
+                'name'   => 'Diff',
                 'values' => array()
             ));
         }
