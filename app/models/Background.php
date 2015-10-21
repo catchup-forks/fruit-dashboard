@@ -59,9 +59,11 @@ class Background extends Eloquent
          */
 
         /* Check environment */
-        $directory =  '/img/backgrounds-production/';
-        if ( !(file_exists($directory)) or !(App::environment('production')) ) {
-            $directory = '/img/backgrounds/';
+        $relDir = '/img/backgrounds-production/';
+        $absDir = public_path() . $relDir;
+        if ((!file_exists($absDir)) or (!App::environment('local'))) {
+            $relDir = '/img/backgrounds/';
+            $absDir = public_path() . $relDir;
         }
 
         /* get the number of background images & collect them in an array */
@@ -69,13 +71,12 @@ class Background extends Eloquent
         self::$backgroundFiles = array();
         
         /* Iterate through files and add them to the list */
-        $dir = public_path() . $directory;
-        if ($handle = opendir($dir)) {
+        if ($handle = opendir($absDir)) {
             while (($filename = readdir($handle)) !== false) {
                 if (!in_array($filename, array('.', '..')) && 
-                    !is_dir($dir. $filename) && 
+                    !is_dir($absDir. $filename) && 
                     !(substr($filename, 0, 1 ) === ".")) {
-                        self::$backgroundFiles = array_add(self::$backgroundFiles, $i, $directory.$filename);
+                        self::$backgroundFiles = array_add(self::$backgroundFiles, $i, $relDir.$filename);
                         $i++;
                 }
             }
