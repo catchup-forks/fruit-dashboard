@@ -133,7 +133,7 @@ abstract class HistogramDataManager extends DataManager
                 array_pop($currentData);
             }
         }
-        if ( ! empty(self::getEntryValues($dbEntry))) {
+        if (self::getEntryValues($dbEntry) != FALSE) {
             array_push($currentData, $dbEntry);
             $this->save($currentData);
         }
