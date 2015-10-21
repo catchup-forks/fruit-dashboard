@@ -155,6 +155,7 @@ function FDChartOptions(widgetOptions) {
         yAxisID: yAxisID,
         backgroundColor: "rgba(" + color + ", " + alpha + ")",
         borderColor: "rgba(" + color + ", 1)",
+        
         pointBorderColor: "rgba(" + color + ", 1)",
         pointBackgroundColor: "#fff",
         pointBorderWidth: 1,
@@ -162,9 +163,11 @@ function FDChartOptions(widgetOptions) {
         pointHoverBackgroundColor: "rgba(" + color + ", 1)",
         pointHoverBorderColor: "rgba(" + color + ", 1)",
         pointHoverBorderWidth: 2,
+        
         borderWidth: 2,
-        HoverBackgroundColor: "rgba(" + color + ", 1)",
-        HoverBorderColor: "rgba(" + color + ", 1)",
+        
+        hoverBackgroundColor: "rgba(" + color + ", 1)",
+        hoverBorderColor: "rgba(" + color + ", 1)",
 
         data: values
       }
@@ -179,17 +182,7 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsSingleStat() {
-    // Chart.defaults.global.animationSteps      = 60;
-    // Chart.defaults.global.animationEasing     = "easeOutQuart";
-    // Chart.defaults.global.tooltipCornerRadius = 4;
-    // Chart.defaults.global.tooltipXPadding     = 5;
-    // Chart.defaults.global.tooltipYPadding     = 5;
-    // Chart.defaults.global.tooltipCaretSize    = 5;
-    // Chart.defaults.global.tooltipFillColor    = "rgba(0,0,0,0.6)";
-    // Chart.defaults.global.tooltipFontSize     = 11;
-    // //Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
-    // Chart.defaults.global.scaleFontSize       = 9;
-    // //Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
+    Chart.defaults.global.responsive      = false;
     
     // Return
     return true;
@@ -204,24 +197,38 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsSingleStat() {
     return {
-       //pointHitDetectionRadius : 5,
-       //pointDotRadius : 2,
-       //scaleGridLineColor : "rgba(179,179,179,0.4)",
-       //scaleGridLineWidth : 0.35,
-       tooltipTemplate: function (d) {
-          if (d.label) {
-            return d.label + ': ' + d.value;
-          } else {
-            return d.value;
-          };
-       },
-       multiTooltipTemplate: function (d) {
-          if (d.datasetLabel) {
-            return d.datasetLabel + ': ' + d.value;
-          } else {
-            return d.value;
-          };
-       }
+      scales: {
+        xAxes: [{
+          display: true
+        }],
+        yAxes: [
+        {
+          display: true,
+          type: 'linear',
+          id: "y-axis-1",
+        },
+        {
+          display: true,
+          type: 'linear',
+          position: 'right',
+          id: "y-axis-2",
+        }
+        ]
+      },
+      tooltipTemplate: function (d) {
+        if (d.label) {
+          return d.label + ': ' + d.value;
+        } else {
+          return d.value;
+        };
+      },
+      multiTooltipTemplate: function (d) {
+        if (d.datasetLabel) {
+          return d.datasetLabel + ': ' + d.value;
+        } else {
+          return d.value;
+        };
+      }
     };
   }
 
