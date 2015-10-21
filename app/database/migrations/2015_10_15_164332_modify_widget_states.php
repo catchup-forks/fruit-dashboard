@@ -22,12 +22,7 @@ class ModifyWidgetStates extends Migration {
             $table->dropColumn('state');
         });
         Schema::table('widgets',function($table) {
-            $table->enum('state', array(
-                'active',
-                'loading',
-                'setup_required',
-                'rendering_error'
-            ));
+            $table->string('state', 16);
         });
 
         foreach ($states as $widgetId => $state) {

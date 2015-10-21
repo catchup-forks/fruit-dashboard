@@ -14,8 +14,8 @@ class Widget extends Eloquent
     public $timestamps = FALSE;
 
     /* These variables will be overwritten, with late static binding. */
-    protected static $settingsFields = array();
-    protected static $setupSettings = array();
+    protected static $settingsFields   = array();
+    protected static $setupSettings    = array();
     protected static $criteriaSettings = array();
 
     /* Use only for association. */
@@ -93,6 +93,17 @@ class Widget extends Eloquent
     */
     public static function getSettingsFields() {
         return self::$settingsFields;
+    }
+
+    /**
+     * getErrorCodes
+     * Returning the error codes.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getErrorCodes() {
+        return array();
     }
 
     /**
@@ -503,6 +514,26 @@ class Widget extends Eloquent
         $instance->exists = TRUE;
         $instance->setRawAttributes((array) $attributes, true);
         return $instance;
+    }
+
+    /**
+     * getErrorMessage
+     * Returning the corresponding error.
+     * --------------------------------------------------
+     * @return string 
+     * --------------------------------------------------
+     */
+    public function getErrorMessage() {
+        $state = $this->state;
+        if (strpos('error_', $state) === 0) {
+            $errorCodes = $this->getErrorCodes();
+            $key = substr($state, strpos($state, '_') + 1);
+            
+            if (array_key_exists($key, $errorCodes) {
+                return $errorCodes[$key];
+            }
+        }
+        return '';
     }
 
     /**
