@@ -31,7 +31,9 @@ FDGreetingsWidget.prototype.constructor = FDGreetingsWidget;
  * --------------------------------------------------------------------------
  */
 FDGreetingsWidget.prototype.draw = function(data) {
-  $(this.containerSelector).fitText(2.2, {'minFontSize': 24});
-  $(this.greetingSelector).html(data['timeOfTheDay']);
+  if (data) {
+    $(this.containerSelector).fitText(2.2, {'minFontSize': 24});
+    $(this.greetingSelector).html(data['timeOfTheDay']);
+  }
   return this;
 }

@@ -384,17 +384,13 @@ class Widget extends Eloquent
      * @return int 1: user is premium, -1 fails, 0 default
      * --------------------------------------------------
      */
-     public function premiumUserCheck() {
+     public function premiumUserCheck() {       
         /* Premium users can see everything. */
         if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
             return 1;
+        } else {
+            return 0;
         }
-
-        if ($this->getDescriptor()->is_premium) {
-            return -1;
-        }
-
-        return 0;
      }
 
     /**

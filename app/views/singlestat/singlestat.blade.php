@@ -36,12 +36,7 @@ Widget stats
                   <div role="tabpanel" class="tab-pane fade col-md-12" id="singlestat-{{ $resolution }}">
                     {{-- Check Premium feature and disable charts if needed --}}
                     @if (!Auth::user()->subscription->getSubscriptionInfo()['PE'])
-                      {{-- Allow the default chart, disable others --}}
-                      @if ($resolution != $widget->getSettingsFields()['resolution']['default'])
-                        @include('singlestat.singlestat-premium-feature-needed')
-                      @else
-                        @include('singlestat.singlestat-element')
-                      @endif
+                      @include('singlestat.singlestat-premium-feature-needed')
                     @else
                       @include('singlestat.singlestat-element')
                     @endif
@@ -113,10 +108,12 @@ Widget stats
       }
 
       var widgetData{{ $resolution }} = {
+        'isCombined' : {{$widget->hasCumulative()}},
         'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
         @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
           {
+              'type' : '{{ $dataset['type'] }}',
               'values' : [{{ implode(',', $dataset['values']) }}],
               'name':  "{{ $dataset['name'] }}",
               'color': "{{ $dataset['color'] }}"

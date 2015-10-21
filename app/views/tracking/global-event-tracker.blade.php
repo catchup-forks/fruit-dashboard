@@ -1,3 +1,7 @@
+<!-- Kissmetrics -->
+@include('tracking.kissmetrics')
+<!-- /Kissmetrics -->
+
 <!-- Google Analytics -->
 @include('tracking.google-analytics')
 <!-- /Google Analytics -->
@@ -13,6 +17,7 @@
 <!-- Mixpanel -->
 @include('tracking.mixpanel')
 <!-- /Mixpanel -->
+</script>
 
 <!-- Global tracking function -->
 <script type="text/javascript">
@@ -35,13 +40,19 @@ function trackAll(mode, eventData){
         };
 
         // Customer IO data
-        var customerIOData = {
+        var customerIOEventData = {
             'en': eventData['en'],
             'md': {'metadata': eventData['el']},
         };
 
         // Mixpanel data
         var mixpanelEventData = {
+            'en': eventData['en'],
+            'md': {'metadata': eventData['el']},
+        };
+
+        // Kissmetrics data
+        var kissmetricsEventData = {
             'en': eventData['en'],
             'md': {'metadata': eventData['el']},
         };
@@ -62,13 +73,19 @@ function trackAll(mode, eventData){
             'md': eventData['md'],
         };
 
-        var customerIOData = {
+        var customerIOEventData = {
             'en': eventData['en'],
             'md': eventData['md'],
         };
 
         // Mixpanel data
         var mixpanelEventData = {
+            'en': eventData['en'],
+            'md': eventData['md'],
+        };
+
+        // Kissmetrics data
+        var kissmetricsEventData = {
             'en': eventData['en'],
             'md': eventData['md'],
         };
@@ -91,8 +108,8 @@ function trackAll(mode, eventData){
 
     // Customer IO
     _cio.track(
-        customerIOData['en'], 
-        customerIOData['md']
+        customerIOEventData['en'], 
+        customerIOEventData['md']
     );
 
     // Mixpanel
@@ -100,6 +117,12 @@ function trackAll(mode, eventData){
         mixpanelEventData['en'],
         mixpanelEventData['md']
     );
+
+    // Kissmetrics
+    _kmq.push(['record', 
+        kissmetricsEventData['en'],
+        kissmetricsEventData['md']
+    ]);
 
     // Return
     return true;
