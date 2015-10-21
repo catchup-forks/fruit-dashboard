@@ -62,20 +62,11 @@ Widget stats
   @stop
 
   @section('pageScripts')
-
-  <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
-  <!-- /FDGeneral* classes -->
-
-  <!-- FDAbstractWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
-  <!-- /FDAbstractWidget* classes -->
-
-  <!-- FDWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->getDescriptor()->category.'/FD'. Utilities::underscoreToCamelCase($widget->getDescriptor()->type).'Widget.js') }}"></script>
-  <!-- /FDWidget* classes -->
+  <!-- FDJSlibs merged -->
+  {{ Minify::javascriptDir('/lib/general') }}
+  {{ Minify::javascriptDir('/lib/widget-wrapper') }}
+  {{ Minify::javascriptDir('/lib/widgets') }}
+  <!-- FDJSlibs merged -->
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">

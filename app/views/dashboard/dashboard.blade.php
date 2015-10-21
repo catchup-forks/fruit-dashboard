@@ -130,28 +130,12 @@
 @stop
 
 @section('pageScripts')
-  <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDGridster.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDWidget.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDTable.js') }}"></script>
-  <!-- /FDGeneral* classes -->
-
-  <!-- FDAbstractWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDGeneralWidget.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDTableWidget.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDCountWidget.js') }}"></script>
-  <!-- /FDAbstractWidget* classes -->
-
-  <!-- FDWidget* classes -->
-  @foreach (WidgetDescriptor::where('type', '!=', 'shared')->get() as $descriptor)
-    <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$descriptor->category.'/FD'. Utilities::underscoreToCamelCase($descriptor->type).'Widget.js') }}"></script>
-  @endforeach
-  <!-- /FDWidget* classes -->
-
+  <!-- FDJSlibs merged -->
+  {{ Minify::javascriptDir('/lib/general') }}
+  {{ Minify::javascriptDir('/lib/widget-wrapper') }}
+  {{ Minify::javascriptDir('/lib/widgets') }}
+  <!-- FDJSlibs merged -->
+  
   <!-- Gridster scripts -->
   @include('dashboard.dashboard-gridster-scripts')
   <!-- /Gridster scripts -->
