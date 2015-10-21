@@ -130,6 +130,9 @@ return array(
 		// Snappy (Wkhtmltopdf) wrapper
 		'Barryvdh\Snappy\ServiceProvider',
 
+		// Asset minifyer
+		'CeesVanEgmond\Minify\MinifyServiceProvider',
+
 	),
 
 	/*
