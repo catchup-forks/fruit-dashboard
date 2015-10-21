@@ -70,10 +70,6 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsDashboard() {
-    //Chart.defaults.global.animationSteps  = 60;
-    //Chart.defaults.global.animationEasing = "easeOutQuart";
-    Chart.defaults.global.showScale       = false;
-    Chart.defaults.global.showTooltips    = false;
     Chart.defaults.global.responsive      = false;
     
     // Return
@@ -90,11 +86,24 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsDashboard(singlePointOptions) {
     var defaultOptions = {
-      pointDot: true,
-      pointDotRadius : 1.2,
-      bezierCurve: true,
-      bezierCurveTension : 0.35,
-      animation: false
+      scales: {
+        xAxes: [{
+          display: false
+        }],
+        yAxes: [
+          {
+            display: false,
+            type: 'linear',
+            id: "y-axis-1",
+          },
+          {
+            display: false,
+            type: 'linear',
+            position: 'right',
+            id: "y-axis-2",
+          }
+          ]
+      }
     }
 
     if (singlePointOptions) {
@@ -121,25 +130,42 @@ function FDChartOptions(widgetOptions) {
     for (i = 0; i < data.datasets.length; ++i) {
       transformedData.datasets.push(
           transform(
+            data.datasets[i].type,
             data.datasets[i].values, 
             data.datasets[i].name, 
             data.datasets[i].color
           )
       );
     }
-
     // Return
     return transformedData;
 
-    function transform(values, name, color) {
+    function transform(type, values, name, color) {
+      var yAxisID = "y-axis-2";
+      var alpha = 0.2;
+      if (type == 'bar') {
+        yAxisID = "y-axis-1";
+        alpha = 0.8;
+      };
       return {
+        type: type,
         label: name,
-        fillColor : "rgba(" + color + ", 0.2)",
-        strokeColor : "rgba(" + color + ", 1)",
-        pointColor : "rgba(" + color + ", 1)",
-        pointStrokeColor : "#fff",
-        pointHighlightFill : "#fff",
-        pointHighlightStroke : "rgba(" + color + ", 1)",
+        
+        fill: false,
+        yAxisID: yAxisID,
+        backgroundColor: "rgba(" + color + ", " + alpha + ")",
+        borderColor: "rgba(" + color + ", 1)",
+        pointBorderColor: "rgba(" + color + ", 1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 3,
+        pointHoverBackgroundColor: "rgba(" + color + ", 1)",
+        pointHoverBorderColor: "rgba(" + color + ", 1)",
+        pointHoverBorderWidth: 2,
+        borderWidth: 2,
+        HoverBackgroundColor: "rgba(" + color + ", 1)",
+        HoverBorderColor: "rgba(" + color + ", 1)",
+
         data: values
       }
     }
@@ -153,17 +179,17 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsSingleStat() {
-    Chart.defaults.global.animationSteps      = 60;
-    Chart.defaults.global.animationEasing     = "easeOutQuart";
-    Chart.defaults.global.tooltipCornerRadius = 4;
-    Chart.defaults.global.tooltipXPadding     = 5;
-    Chart.defaults.global.tooltipYPadding     = 5;
-    Chart.defaults.global.tooltipCaretSize    = 5;
-    Chart.defaults.global.tooltipFillColor    = "rgba(0,0,0,0.6)";
-    Chart.defaults.global.tooltipFontSize     = 11;
-    //Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
-    Chart.defaults.global.scaleFontSize       = 9;
-    //Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
+    // Chart.defaults.global.animationSteps      = 60;
+    // Chart.defaults.global.animationEasing     = "easeOutQuart";
+    // Chart.defaults.global.tooltipCornerRadius = 4;
+    // Chart.defaults.global.tooltipXPadding     = 5;
+    // Chart.defaults.global.tooltipYPadding     = 5;
+    // Chart.defaults.global.tooltipCaretSize    = 5;
+    // Chart.defaults.global.tooltipFillColor    = "rgba(0,0,0,0.6)";
+    // Chart.defaults.global.tooltipFontSize     = 11;
+    // //Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
+    // Chart.defaults.global.scaleFontSize       = 9;
+    // //Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
     
     // Return
     return true;
