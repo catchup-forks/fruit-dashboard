@@ -114,13 +114,12 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     */
     public function checkIntegrity()
     {
-        $dataState = $this->data->state;
         parent::checkIntegrity();
         if ( ! $this->dataExists() ||
-            ($this->data->decode() == FALSE && $dataState != 'loading')) {
+            ($this->data->decode() == FALSE && $this->data->state != 'loading')) {
             throw new WidgetException;
         }
-        $this->setState($dataState);
+        $this->setState($this->data->state);
     }
 
 }
