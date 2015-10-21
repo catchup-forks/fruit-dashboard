@@ -164,8 +164,13 @@
   @include('dashboard.dashboard-hopscotch-scripts')
   <!-- /Hopscotch scripts -->
 
-  <!-- Google AdWords -->
-
+  @if (GlobalTracker::isTrackingEnabled() and Input::get('tour'))
+  <!-- Send acquisition event -->
+  <script type="text/javascript">
+    trackAll('lazy', {'en': 'Acquisition goal | Finished SignupWizard', 'el': '{{ Auth::user()->email }}', });
+  </script>
+  <!-- /Send acquisition event -->
+  @endif
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
