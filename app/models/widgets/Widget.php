@@ -529,7 +529,7 @@ class Widget extends Eloquent
             $errorCodes = $this->getErrorCodes();
             $key = substr($state, strpos($state, '_') + 1);
             
-            if (array_key_exists($key, $errorCodes) {
+            if (array_key_exists($key, $errorCodes)) {
                 return $errorCodes[$key];
             }
         }
