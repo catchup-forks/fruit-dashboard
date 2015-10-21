@@ -13,8 +13,8 @@
 
         <div class="row">
           <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default panel-transparent">
-              <div class="panel-body text-center">
+            <div id="subscription-panel" class="panel panel-default panel-transparent not-visible">
+              <div  class="panel-body text-center">
                 {{ Form::open(array('route' => array('payment.subscribe', $plan->id))) }}
                   <div id="payment-form"></div>
 
@@ -48,6 +48,10 @@
         // Initialize payment form
         braintree.setup(clientToken, "dropin", {
           container: "payment-form"
+        });
+
+        $(document).ready(function(){
+          $('#subscription-panel').fadeIn();
         });
     </script>
   @stop
