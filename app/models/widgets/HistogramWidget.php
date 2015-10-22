@@ -127,6 +127,7 @@ abstract class HistogramWidget extends DataWidget
         $meta['general']['name'] = $this->getSettings()['name'];
         $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
         $meta['selectors']['graph'] = '[id^=chart-container]';
+        $meta['layout'] = $this->getSettings()['type']; 
         return $meta;
     }
 
