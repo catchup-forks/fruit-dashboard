@@ -9,8 +9,9 @@
 </div>
 
 @section('widgetScripts')
-
   <script type="text/javascript">
+  var widgetData{{ $widget['id'] }} = {};
+
   $(function() {
     $('.locked').each(function(index) {
       var containerHeight = $(this).parents('.gridster-widget').height();

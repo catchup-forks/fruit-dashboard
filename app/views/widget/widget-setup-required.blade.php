@@ -9,3 +9,10 @@
     <a href="{{ URL::route('widget.reset', $widget['id']) }}">here</a>.
   </p>
 </div> <!-- /.widget-inner -->
+
+@section('widgetScripts')
+<script type="text/javascript">
+  // Set chart data
+  var widgetData{{ $widget['id'] }} = {};
+</script>
+@append
