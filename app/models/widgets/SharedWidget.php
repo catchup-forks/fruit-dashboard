@@ -77,6 +77,18 @@ class SharedWidget extends Widget
 
         return $widget;
     }
+
+    /**
+     * getSharingId
+     * Returning the sharing id.
+     * --------------------------------------------------
+     * @return int
+     * --------------------------------------------------
+     */
+    public function getSharingId() {
+        return $this->getSettings()['sharing_object'];
+    }
+
     /**
      * getTemplateMeta
      * Returning data for the gridster init template.
