@@ -8,14 +8,7 @@
       <!-- Fonts -->
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
       <!-- /Fonts -->
-
-      <!-- Bootstrap CSS -->
-      {{ HTML::style('css/bootstrap.min.css') }}
-      <!-- /Bootstrap CSS-->
-
-      <!-- Font Awesome CSS -->
-      {{ HTML::style('css/font-awesome.min.css') }}
-      <!-- /FontAwesome CSS-->
+      {{ Minify::stylesheetDir('/css')->withFullUrl() }}
     @show
   </head>
 
@@ -27,11 +20,9 @@
   @show
 
   @section('scripts')
-    <!-- Base scripts -->
-    {{ HTML::script('js/jquery.min.js'); }}
-    {{ HTML::script('js/bootstrap.min.js'); }}
-    {{ HTML::script('js/Chart.js'); }}
-    <!-- /Base scripts -->
+    <!-- General libs -->
+    {{ Minify::javascriptDir('/js')->withFullUrl() }}
+    <!-- /General libs -->
 
     <!-- Page specific scripts -->
     @section('pageScripts')

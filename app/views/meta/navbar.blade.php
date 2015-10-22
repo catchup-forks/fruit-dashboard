@@ -24,7 +24,7 @@
     <!-- new shared widget notification -->
     @if(Auth::user()->hasUnseenWidgetSharings())
         <div class="position-bl-second drop-shadow z-top">
-          <a href="#" onclick="goToDashboard({{count($dashboards)-1}});" alt="New shared widget" title="You have a new shared widget on your dashboard. Click to see." data-toggle="tooltip" data-placement="right">
+          <a href="#" onclick="goToDashboard(@if(isset($dashboards)) {{ count($dashboards)-1 }} @endif );" alt="New shared widget" title="You have a new shared widget on your dashboard. Click to see." data-toggle="tooltip" data-placement="right">
             <span class="fa fa-fw fa-share-square-o fa-2x fa-inverse color-hovered"></span>
           </a>
         </div>
