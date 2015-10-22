@@ -7,15 +7,6 @@
     </div>
 @endif
 
-<!-- new shared widget notification -->
-@if(Auth::user()->hasUnseenWidgetSharings())
-    <div class="position-bl-second drop-shadow z-top">
-      <a href="#" onclick="goToDashboard({{count($dashboards)-1}});" alt="New shared widget" title="You have a new shared widget on your dashboard. Click to see." data-toggle="tooltip" data-placement="right">
-        <span class="fa fa-fw fa-share-square-o fa-2x fa-inverse color-hovered"></span>
-      </a>
-    </div>
-@endif
-
 <!-- add new widget button -->
 <div class="position-bl drop-shadow z-top">
   <a href="{{ URL::route('widget.add') }}" alt="New widget" title="Add new widget" data-toggle="tooltip" data-placement="right">
@@ -29,6 +20,15 @@
         <span class="fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered"> </span>
     </div>
     <!-- /dashboard lock icon -->
+
+    <!-- new shared widget notification -->
+    @if(Auth::user()->hasUnseenWidgetSharings())
+        <div class="position-bl-second drop-shadow z-top">
+          <a href="#" onclick="goToDashboard({{count($dashboards)-1}});" alt="New shared widget" title="You have a new shared widget on your dashboard. Click to see." data-toggle="tooltip" data-placement="right">
+            <span class="fa fa-fw fa-share-square-o fa-2x fa-inverse color-hovered"></span>
+          </a>
+        </div>
+    @endif
 @endif
 
 
