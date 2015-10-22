@@ -665,7 +665,9 @@ class GeneralWidgetController extends BaseController {
      */
     public function acceptWidgetSharings() {
         foreach (Auth::user()->widgetSharings as $sharingObject) {
-            $sharingObject->setState('accepted');
+			if ($sharingObject->state != 'rejected') {
+                $sharingObject->setState('accepted');
+            }
         }
         return Response::make('Widget shared.', 200);
     }
