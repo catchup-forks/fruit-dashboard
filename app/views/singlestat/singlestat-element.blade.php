@@ -117,7 +117,7 @@
           <tbody>
             @foreach ($widget->getData([ 'resolution' => $resolution ])['datasets'] as $dataset)
               <tr>
-                <td class="col-sm-1">
+                <td class="col-sm-1 dataset-label">
                   <span class="fa fa-square" style="color: rgb({{ $dataset['color'] }})"></span>
                   <span>{{ $dataset['name'] }}</span>
                 </td>

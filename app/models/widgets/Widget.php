@@ -62,6 +62,20 @@ class Widget extends Eloquent
     }
 
     /**
+     * renderable
+     * Returns whether or not the widget is renderable.
+     * --------------------------------------------------
+     * @return int
+     * --------------------------------------------------
+    */
+    public function renderable() {
+        if ($this->state == 'active') {
+            return TRUE;
+        }
+        return FALSE;
+    }
+
+    /**
      * canSendInNotification
      * --------------------------------------------------
      * Returns whether the widget can be sent in notification or not

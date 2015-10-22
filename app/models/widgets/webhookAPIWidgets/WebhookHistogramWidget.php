@@ -87,7 +87,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
                 $this->testUrl();
             }
         } catch (ServiceException $e) {
-            $this->setState('setup_required', FALSE);
+            $this->data->setState('data_source_error', FALSE);
             parent::save();
         }
      }

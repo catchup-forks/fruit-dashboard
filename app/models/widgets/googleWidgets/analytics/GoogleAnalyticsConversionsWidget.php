@@ -34,7 +34,12 @@ class GoogleAnalyticsConversionsWidget extends ServiceTableWidget implements iSe
                 'max_results' => $this->getSettings()['max_results'],
             );
         }
-        $this->data->collect($options);
+        try {
+            $this->data->collect($options);
+        } catch (ServiceException $e) {
+            Log::error('An error occurred during collecting data on #' . $this->data->id );
+            $this->data->setState('data_source_error');
+        }
     }
 
     /**

@@ -4,14 +4,6 @@
 abstract class TableDataManager extends DataManager
 {
     /**
-     * initialize
-     * Initializing the data.
-     */
-    public function initialize() {
-        $this->collect();
-    }
-
-    /**
      * getHeader
      * Returns the header from data.
      * --------------------------------------------------

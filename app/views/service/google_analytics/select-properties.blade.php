@@ -10,14 +10,17 @@
   @section('pageContent')
 
   <div class="container">
-    <h1 class="text-center text-white drop-shadow">
-      Setup your Google Analytics connection
-    </h1> <!-- /.text-center -->
 
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent margin-top">
           <div class="panel-body">
+
+            <h1 class="text-center">
+              Setup your Google Analytics connection
+            </h1> <!-- /.text-center -->
+
+            <hr />
 
             {{ Form::open(array(
               'route' => array('service.google_analytics.select-properties'))) }}

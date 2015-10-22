@@ -70,7 +70,9 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsDashboard() {
-    Chart.defaults.global.responsive      = false;
+    Chart.defaults.global.responsive              = false;
+    Chart.defaults.global.animation.duration      = 0;
+
     
     // Return
     return true;
@@ -126,6 +128,7 @@ function FDChartOptions(widgetOptions) {
       labels  : data.labels,
       datasets: [],
     };
+
 
     for (var i = data.datasets.length - 1; i >= 0; i--) {
       transformedData.datasets.push(

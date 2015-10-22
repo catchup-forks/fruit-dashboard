@@ -48,11 +48,15 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->data->collect(
-                array('count' => $this->getSettings()['count'])
+            $options = array(
+                'count' => $this->getSettings()['count']
             );
-        } else {
+        }
+        try {
             $this->data->collect($options);
+        } catch (ServiceException $e) {
+            Log::error('An error occurred during collecting data on #' . $this->data->id );
+            $this->data->setState('data_source_error');
         }
     }
 

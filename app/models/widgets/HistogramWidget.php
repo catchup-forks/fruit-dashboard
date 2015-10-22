@@ -60,19 +60,30 @@ abstract class HistogramWidget extends DataWidget
      * --------------------------------------------------
      */
     public function getTemplateData() {
-        if ($this->getSettings()['type'] == 'table') {
-            $tableData = $this->getTableData();
+        $data = $this->getData();
+        if ($this->isTable()) {
             return array_merge(parent::getTemplateData(), array(
-                'header'  => $tableData['header'],
-                'content' => $tableData['content']
+                'header'  => $data['header'],
+                'content' => $data['content']
             ));
         }
         return array_merge(parent::getTemplateData(), array(
             'defaultDiff'   => $this->getDiff(),
             'format'        => $this->getFormat(),
-            'data'          => $this->getData(),
+            'data'          => $data,
             'hasCumulative' => $this->hasCumulative()
         ));
+    }
+
+    /**
+     * isTable
+     * Returning whether or not using a table layout.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+    protected function isTable() {
+        return $this->getSettings()['type'] == 'table';
     }
 
     /**
@@ -224,9 +235,28 @@ abstract class HistogramWidget extends DataWidget
      * --------------------------------------------------
      */
     public function getData($postData=null) {
+        if ( ! is_array($postData)) {
+            $postData = array();
+        }
+        if ($this->isTable()) {
+            return $this->getTableData($postData);
+        } else {
+            return $this->getHistogramData($postData);
+        }
+    }
+
+    /**
+     * getHistogramData
+     * Returning the histogram data.
+     * --------------------------------------------------
+     * @param array $options
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getHistogramData(array $options) {
         /* Getting range if present. */
-        if (isset($postData['range'])) {
-            $range = $postData['range'];
+        if (isset($options['range'])) {
+            $range = $options['range'];
         } else {
             $range = array();
         }
@@ -236,8 +266,8 @@ abstract class HistogramWidget extends DataWidget
             'end'   => Carbon::createFromFormat('Y-m-d', '2015-09-17')
         );*/
 
-        if (isset($postData['resolution'])) {
-            $resolution = $postData['resolution'];
+        if (isset($options['resolution'])) {
+            $resolution = $options['resolution'];
         } else {
             $resolution = $this->getSettings()['resolution'];
         }
@@ -282,10 +312,11 @@ abstract class HistogramWidget extends DataWidget
      * getTableData
      * Returns the data in table format.
      * --------------------------------------------------
+     * @param array $options
      * @return array
      * --------------------------------------------------
      */
-    public function getTableData() {
+    public function getTableData(array $options) {
         $settings = $this->getSettings();
         /* Initializing table. */
         $tableData = array(

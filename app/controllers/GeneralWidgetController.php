@@ -715,7 +715,7 @@ class GeneralWidgetController extends BaseController {
             return Response::make('Bad request.', 401);
         }
 
-        if ($widget->state == 'loading' || $widget->state == 'setup_required') {
+        if ( ! $widget->renderable()) {
             /* Widget is loading, no data is available yet. */
             $templateData = Widget::getDefaultTemplateData($widget);
         } else {
@@ -725,7 +725,7 @@ class GeneralWidgetController extends BaseController {
                 /* Something went wrong during data population. */
                 Log::error($e->getMessage());
                 $templateData = Widget::getDefaultTemplateData($widget);
-                $widget->setState('setup_required');
+                $widget->setState('rendering_error');
             }
         }
 
