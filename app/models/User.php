@@ -158,7 +158,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function getWidgetSharings() {
-        return $this->widgetSharings()->get();
+        return $this->widgetSharings()->where('state', '!=', 'rejected')->get();
     }
 
     /**

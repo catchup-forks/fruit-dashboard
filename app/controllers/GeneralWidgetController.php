@@ -462,6 +462,14 @@ class GeneralWidgetController extends BaseController {
         if ( ! is_null($sharing)) {
             $sharing->reject();
         }
+    
+        /* Deleting widgets with this sharing. */
+        foreach (Auth::user()->widgets as $widget) {
+            if ($widget instanceof SharedWidget &&
+                    $widget->getSharingId() == $sharing->id) {
+                $widget->delete();
+            }
+        } 
 
         if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
             return Redirect::route('dashboard.dashboard');
