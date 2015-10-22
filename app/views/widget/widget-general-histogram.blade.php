@@ -31,7 +31,7 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget['id'] }} = {
-    'isCombined' : {{ $widget['data']['isCombined'] }},
+    'isCombined' : {{ $widget['instance']->hasCumulative() }},
     'labels': [@foreach ($widget['data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
     @foreach ($widget['data']['datasets'] as $dataset)
