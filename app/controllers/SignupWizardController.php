@@ -31,9 +31,6 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function getAuthentication() {
-        $data = Data::find(6);
-        $data->initialize();
-        exit(94);
         /* Render the page */
         return View::make('signup-wizard.authentication');
     }
