@@ -10,7 +10,12 @@
         name: '{{ Auth::user()->name }}',
         email: '{{ Auth::user()->email }}',
         created_at: {{ strtotime(Auth::user()->created_at) }},
-        "is_extension_installed": (window!=window.top) ? true : false
+        "is_extension_installed": (window!=window.top) ? true : false,
+        "startup_type": "{{ Auth::user()->settings->startup_type }}",
+        "project_name": "{{ Auth::user()->settings->project_name }}",
+        "project_url": "{{ Auth::user()->settings->project_url }}",
+        "company_size": "{{ Auth::user()->settings->company_size }}",
+        "company_funding": "{{ Auth::user()->settings->company_funding }}"
     @else
         user_id: 0,
         name: 'Anonymous user',
