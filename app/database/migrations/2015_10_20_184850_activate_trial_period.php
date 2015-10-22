@@ -13,11 +13,9 @@ class ActivateTrialPeriod extends Migration {
     public function up()
     {
         foreach (User::all() as $user) {
-            if ($user->subscription->trial_status == 'possible') {
-                $user->subscription->trial_status ='active';
-                $user->subscription->trial_start = Carbon::now();
-                $user->subscription->save();
-            }
+            $user->subscription->trial_status ='active';
+            $user->subscription->trial_start = Carbon::now();
+            $user->subscription->save();
         }
     }
 
@@ -29,11 +27,9 @@ class ActivateTrialPeriod extends Migration {
     public function down()
     {
         foreach (User::all() as $user) {
-            if ($user->subscription->trial_status == 'active') {
-                $user->subscription->trial_status = 'possible';
-                $user->subscription->trial_start = Carbon::now();
-                $user->subscription->save();
-            }
+            $user->subscription->trial_status = 'possible';
+            $user->subscription->trial_start = Carbon::now();
+            $user->subscription->save();
         }
     }
 
