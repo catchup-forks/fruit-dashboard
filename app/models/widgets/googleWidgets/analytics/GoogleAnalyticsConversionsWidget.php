@@ -13,7 +13,7 @@ class GoogleAnalyticsConversionsWidget extends ServiceTableWidget implements iSe
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'header'  => $this->getHeader(),
+            'header'  => array_keys($this->getHeader()),
             'content' => $this->getContent()
         ));
     }
@@ -58,6 +58,18 @@ class GoogleAnalyticsConversionsWidget extends ServiceTableWidget implements iSe
                 $this->dataExists()) {
             $this->updateData();
         }
+    }
+    /**
+     * getData
+     * Passing the job to the dataObject.
+     */
+    public function getData($postData=null)
+    {
+        $data = $this->data->decode();
+        if (array_key_exists('header', $data)) {
+            $data['header'] = array_keys($data['header']);
+        }
+        return $data;
     }
 
 }

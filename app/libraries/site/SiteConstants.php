@@ -72,25 +72,31 @@ class SiteConstants {
         'Acquisition' => array(
             array(
                 'type'     => 'google_analytics_users',
-                'position' => '{"row":1,"col":1,"size_x":4,"size_y":6}',
+                'position' => '{"row":1,"col":1,"size_x":3,"size_y":5}',
                 'settings' => array('type' => 'chart'),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
             ),
             array(
                 'type'     => 'google_analytics_users',
-                'position' => '{"row":7,"col":1,"size_x":4,"size_y":5}',
+                'position' => '{"row":4,"col":1,"size_x":4,"size_y":5}',
                 'settings' => array('type' => 'table', 'length' => 5),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
             ),
             array(
                 'type'     => 'google_analytics_goal_completion',
-                'position' => '{"row":1,"col":6,"size_x":4,"size_y":6}',
+                'position' => '{"row":6,"col":1,"size_x":3,"size_y":5}',
                 'settings' => array('type' => 'chart'),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_chart.png'
             ),
             array(
                 'type'     => 'google_analytics_goal_completion',
-                'position' => '{"row":7,"col":6,"size_x":4,"size_y":5}',
+                'position' => '{"row":6,"col":4,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
+            ),
+            array(
+                'type'     => 'google_analytics_conversions',
+                'position' => '{"row":1,"col":8,"size_x":5,"size_y":6}',
                 'settings' => array('type' => 'table', 'length' => 5),
                 'pic_url'  => 'img/demonstration/promo/un_visitor_table.png'
             ),
@@ -116,7 +122,44 @@ class SiteConstants {
             ),
         ),
         'Retention' => array(),
-        'Revenue' => array(),
+        'Revenue' => array(
+            array(
+                'type'     => 'stripe_mrr',
+                'position' => '{"col":1,"row":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/stripe_mrr.png'
+            ),
+            array(
+                'type'     => 'stripe_arr',
+                'position' => '{"col":5,"row":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/stripe_mrr.png'
+            ),
+            array(
+                'type'     => 'stripe_arpu',
+                'position' => '{"col":9,"row":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/stripe_mrr.png'
+            ),
+            array(
+                'type'     => 'braintree_mrr',
+                'position' => '{"col":1,"row":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/stripe_mrr.png'
+            ),
+            array(
+                'type'     => 'braintree_arr',
+                'position' => '{"col":5,"row":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/stripe_mrr.png'
+            ),
+            array(
+                'type'     => 'braintree_arpu',
+                'position' => '{"col":9,"row":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/stripe_mrr.png'
+            ),
+        ),
         //'Referral' => array()
     );
     private static $sharedWidgetsDashboardName = 'Shared widgets';
