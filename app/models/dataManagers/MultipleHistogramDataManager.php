@@ -132,10 +132,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
-        
+        $isCombined = $this->toSingle ? 'true' : 'false' ; 
         return array(
-            'datasets' => array_values($groupedData),
-            'labels' => $datetimes
+            'isCombined' => $isCombined,
+            'datasets'   => array_values($groupedData),
+            'labels'     => $datetimes
         );
     }
 

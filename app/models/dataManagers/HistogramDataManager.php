@@ -285,7 +285,8 @@ abstract class HistogramDataManager extends DataManager
 
             array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
         }
-        return array('datasets' => $dataSets, 'labels' => $datetimes);
+        $isCombined = $this->toSingle ? 'true' : 'false' ; 
+        return array('datasets' => $dataSets, 'labels' => $datetimes, 'isCombined' => $isCombined);
     }
 
 
