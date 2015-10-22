@@ -19,24 +19,31 @@ function FDTable(widgetSelector) {
    * @return {true} 
    * --------------------------------------------------------------------------
    */
-  function draw(data) {
+  function draw(data, isHistogram) {
+    isHistogram = typeof isHistogram !== 'undefined' ? isHistogram : false;
+
     // Clear the existing table
     clear();
 
-    // Draw table
-    $(selector).append('<thead></thead>');
-    for(var i=0; i<data.header.length; i++) {
-      $(selector + ' thead').append('<th>' + data.header[i] + '</th>');
-    }
-    $(selector).append('<tbody></tbody>');
-    var item, row;
-    for(var i=0; i<data.content.length; i++) {
-      item = data.content[i];
-      row = '';
-      for(var j=0; j<item.length; j++) {
-        row += '<td>' + item[j] + '</td>';
+    if(isHistogram) {
+      // Draw table
+      $(selector).append('<thead></thead>');
+      for(var i=0; i<data.header.length; i++) {
+        $(selector + ' thead').append('<th>' + data.header[i] + '</th>');
       }
-      $(selector + ' tbody').append('<tr>' + row + '</tr>');
+      $(selector).append('<tbody></tbody>');
+      var item, row;
+      for(var i=0; i<data.content.length; i++) {
+        item = data.content[i];
+        row = '';
+        for(var j=0; j<item.length; j++) {
+          row += '<td>' + item[j] + '</td>';
+        }
+        $(selector + ' tbody').append('<tr>' + row + '</tr>');
+      }
+    } else {
+      $(selector).append(data.header);
+      $(selector).append(data.content);
     }
 
     // return

@@ -14,7 +14,7 @@ function FDWidget(widgetOptions) {
   var specific        = new window[widgetClass](options);
 
   // For debugging
-  var logging = false;
+  var logging = true;
 
   // Public functions
   this.send    = send;

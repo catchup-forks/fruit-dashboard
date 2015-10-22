@@ -153,7 +153,7 @@ function FDChartOptions(widgetOptions) {
         label: name,
         
         fill: false,
-        //yAxisID: yAxisID,
+        yAxisID: yAxisID,
         backgroundColor: "rgba(" + color + ", " + alpha + ")",
         borderColor: "rgba(" + color + ", 1)",
         

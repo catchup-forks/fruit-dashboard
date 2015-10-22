@@ -9,7 +9,6 @@
 <script type="text/javascript">
   // Set table data
   var widgetData{{ $widget['id'] }} = {
-    'type': 'table',
     'header': [@foreach ($widget['header'] as $key => $num)'{{ $key }}',@endforeach],
     'content': [@foreach ($widget['content'] as $row)[@foreach ($row as $col)'{{ $col }}',@endforeach],@endforeach]
   }
