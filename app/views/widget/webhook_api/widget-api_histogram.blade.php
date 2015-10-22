@@ -1,7 +1,7 @@
 @if ($widget['instance']->hasData() == FALSE)
   <div id="widget-loading-{{ $widget['id'] }}" class="widget-inner fill">
     <p class="text-center">
-      <h4 class="text-center">widget id: {{ $widget['id'] }}</h4>
+      <h4 class="text-center">{{ $widget['settings']['name'] }} (id: {{ $widget['id'] }})</h4>
       This widget is waiting for data on this url:
       <pre>
         {{ $widget['settings']['url'] }}
