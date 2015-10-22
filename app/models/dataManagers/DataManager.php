@@ -61,7 +61,14 @@ abstract class DataManager
     }
 
     abstract public function collect($options=array());
-    abstract public function initialize();
+
+    /**
+     * initialize
+     * Default initializer
+     */
+    public function initialize() {
+        $this->collect();
+    }
 
     /**
      * save

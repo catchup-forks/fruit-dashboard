@@ -63,7 +63,12 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     */
     public function updateData(array $options=array())
     {
-        $this->data->collect($options);
+        try {
+            $this->data->collect($options);
+        } catch (ServiceException $e) {
+            Log::error('An error occurred during collecting data on #' . $this->data->id );
+            $this->data->setState('data_source_error');
+        }
     }
 
     /**
@@ -116,7 +121,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     {
         parent::checkIntegrity();
         if ( ! $this->dataExists() ||
-            ($this->data->decode() == FALSE && $this->data->state != 'loading')) {
+            ($this->data->decode() == FALSE && $this->data->state == 'active')) {
             throw new WidgetException;
         }
         $this->setState($this->data->state);

@@ -151,7 +151,7 @@ class GoogleAnalyticsDataCollector
         try {
             /* Retrieving results from API */
             $results = $this->analytics->data_ga->get('ga:' . $profileId, $start, $end, 'ga:' . implode(',ga:', $metrics), $optParams);
-        } catch (ServiceException $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
             throw new ServiceException("Google connection error.", 1);
         }

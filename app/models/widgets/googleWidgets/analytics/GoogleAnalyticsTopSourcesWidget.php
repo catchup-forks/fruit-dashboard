@@ -28,13 +28,17 @@ class GoogleAnalyticsTopSourcesWidget extends ServiceTableWidget implements iSer
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->data->collect(array(
+            $options = array(
                 'start'       => $this->getSettings()['range_start'],
                 'end'         => $this->getSettings()['range_end'],
                 'max_results' => $this->getSettings()['max_results'],
-            ));
-        } else {
+            );
+        }
+        try {
             $this->data->collect($options);
+        } catch (ServiceException $e) {
+            Log::error('An error occurred during collecting data on #' . $this->data->id );
+            $this->data->setState('data_source_error');
         }
     }
 

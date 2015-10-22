@@ -17,7 +17,11 @@ class RefactorDataTable extends Migration {
             $table->integer('descriptor_id')->unsigned();
             $table->integer('update_period')->default(60);
             $table->string('criteria', 255)->nullable();
-            $table->enum('state', array('active', 'loading'))->default('active');
+            $table->enum('state', array(
+                'active',
+                'loading',
+                'data_source_error'
+            ))->default('active');
         });
         Log::info("Added DM fields to data table");
         foreach (DB::table('data_managers')->get() as $dm) {

@@ -125,7 +125,11 @@
 
       // Skips to the given dashboard (zero based index).
       goToDashboard = function(index){
-        $('.carousel').carousel(index);
+          $('.carousel').carousel(index);
+          $.ajax({
+            type: 'get',
+            url: '{{ route('widget.accept.all') }}' 
+        })
       };
     })
 </script>

@@ -5,7 +5,7 @@
      data-sizey="{{ $widget['position']->size_y }}"
      data-min-sizex="{{ $widget['instance']->getMinCols() }}"
      data-min-sizey="{{ $widget['instance']->getMinRows() }}"
-     class="gridster-widget can-hover overflow-hidden">
+     class="gridster-widget can-hover">
 
      @if ($widget['instance'] instanceof SharedWidget)
       <div class="position-tr-sm-second">
@@ -63,9 +63,11 @@
   @if ($widget['instance']->premiumUserCheck() === 0)
      @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @elseif ($widget['state'] == 'setup_required')
-      @include('widget.widget-setup-required')
+      @include('widget.errors.widget-setup-required')
+  @elseif ($widget['state'] == 'data_source_error')
+      @include('widget.errors.widget-data-source-error')
   @elseif ($widget['state'] == 'rendering_error')
-      @include('widget.widget-rendering-error')
+      @include('widget.errors.widget-rendering-error')
   @elseif ($widget['instance'] instanceof SharedWidget)
       <div class="@if ($widget['instance']->getRelatedWidget()->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['instance']->getRelatedWidget()->id}}">
     @include(

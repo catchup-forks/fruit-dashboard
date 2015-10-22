@@ -11,10 +11,13 @@
 
 
   <div class="container">
-    <div class="row">
+    <div class="row not-visible margin-top">
       <div class="col-md-10 col-md-offset-1">
-        <div class="panel panel-default panel-transparent margin-top">
+        <div class="panel panel-default panel-transparent">
           <div class="panel-body">
+            <h1 class="text-center">
+              You didn't finish your onboarding wizard
+            </h1> <!-- /.text-center -->
             
             <div class="row margin-top">
               <div class="col-md-6 col-md-offset-3" >
@@ -22,9 +25,6 @@
                   <div class="panel-body text-center">
                     <p>
                     {{ HTML::image('/img/icon128x128.png', "Fruit Dashboard", array('class' => 'img-responsive img-rounded center-block')) }}
-                    </p>
-                    <p class="text-success text-center lead margin-top">
-                      You didn't finish your onboarding wizard
                     </p>
                     <p class="text-muted margin-top">
                       <span class="fa fa-check"> </span>
@@ -53,4 +53,16 @@
   @stop
 
   @section('pageScripts')
+
+  <script type="text/javascript">
+    $(function(){
+
+      setTimeout(function(){
+        $('.not-visible').fadeIn();
+      }, 1000);
+
+    })    
+  </script>
+  
+
   @stop

@@ -37,9 +37,14 @@ class CollectData extends Command {
                 $i++;
                 try {
                     $data->collect();
+                } catch (ServiceException $e) {
+                    $errors++;
+                    Log::error('Data source error occurred on data #' . $data->id . '. message: ' . $e->getMessage());
+                    $data->setState('data_source_error');
                 } catch (Exception $e) {
                     $errors++;
                     Log::error('Error found while collecting data on data #' . $data->id . '. message: ' . $e->getMessage());
+
                 }
             }
         }

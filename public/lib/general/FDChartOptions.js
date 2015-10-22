@@ -23,7 +23,7 @@ function FDChartOptions(widgetOptions) {
   function init() {
     if (page == 'dashboard') {
       setDefaultOptionsDashboard();
-    } else if (page == 'singleStat') {
+    } else if (page == 'singlestat') {
       setDefaultOptionsSingleStat();
     };
 
@@ -41,7 +41,7 @@ function FDChartOptions(widgetOptions) {
   function getLineChartOptions(singlePointOptions) {
     if (page == 'dashboard') {
       return getLineChartOptionsDashboard(singlePointOptions);
-    } else if (page == 'singleStat') {
+    } else if (page == 'singlestat') {
       return getLineChartOptionsSingleStat();
     }
   }
@@ -70,7 +70,9 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsDashboard() {
-    Chart.defaults.global.responsive      = false;
+    Chart.defaults.global.responsive              = false;
+    Chart.defaults.global.animation.duration      = 0;
+
     
     // Return
     return true;
@@ -127,13 +129,15 @@ function FDChartOptions(widgetOptions) {
       datasets: [],
     };
 
+
     for (var i = data.datasets.length - 1; i >= 0; i--) {
       transformedData.datasets.push(
           transform(
             data.datasets[i].type,
             data.datasets[i].values, 
             data.datasets[i].name, 
-            data.datasets[i].color
+            data.datasets[i].color,
+            data.isCombined
           )
       );
     }
@@ -141,19 +145,32 @@ function FDChartOptions(widgetOptions) {
     // Return
     return transformedData;
 
-    function transform(type, values, name, color) {
-      var yAxisID = "y-axis-2";
+    function transform(type, values, name, color, isCombined) {
+
       var alpha = 0.2;
       if (type == 'bar') {
-        yAxisID = "y-axis-1";
         alpha = 0.8;
       };
-      return {
+
+      var yAxisID = "y-axis-1";
+
+      if (isCombined) {
+
+        yAxisID = "y-axis-2";
+
+        if (type == 'bar') {
+          yAxisID = "y-axis-1";
+        };
+        
+      };
+
+      var transformedObject = {
         type: type,
         label: name,
+
+        yAxisID: yAxisID,
         
         fill: false,
-        yAxisID: yAxisID,
         backgroundColor: "rgba(" + color + ", " + alpha + ")",
         borderColor: "rgba(" + color + ", 1)",
         
@@ -166,14 +183,14 @@ function FDChartOptions(widgetOptions) {
         pointHoverBorderWidth: 2,
         
         borderWidth: 2,
-
-        stacked: true,
         
         hoverBackgroundColor: "rgba(" + color + ", 1)",
         hoverBorderColor: "rgba(" + color + ", 1)",
 
         data: values
-      }
+      };
+
+      return transformedObject;
     }
   }
 
