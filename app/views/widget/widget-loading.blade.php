@@ -3,3 +3,10 @@
     <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
   </p>
 </div> <!-- /.widget-inner -->
+
+@section('widgetScripts')
+<script type="text/javascript">
+  // Set chart data
+  var widgetData{{ $widget['id'] }} = {};
+</script>
+@append
