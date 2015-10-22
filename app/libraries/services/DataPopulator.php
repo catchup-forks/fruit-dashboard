@@ -62,11 +62,13 @@ class DataPopulator
     protected function populate() {
         foreach ($this->dataObjects as $data) {
             if ($data->decode() == FALSE) {
-            try {
-                $data->initialize();
-                $data->setState('active');
-            } catch (ServiceException $e) {
-                $data->setState('data_source_error');
+                try {
+                    $data->initialize();
+                    $data->setState('active');
+                } catch (ServiceException $e) {
+                    Log::error($e->getMessage());
+                    $data->setState('data_source_error');
+                }
             }
         }
     }
