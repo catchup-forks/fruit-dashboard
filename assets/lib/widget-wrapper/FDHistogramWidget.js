@@ -11,6 +11,7 @@ var FDHistogramWidget = function(widgetOptions) {
   this.options    = widgetOptions;
   this.widgetData = null;
   this.chart      = new FDChart(this.options);
+  this.table      = new FDTable(this.options.selectors.wrapper);
 
   // AutoLoad
   this.init();
@@ -51,6 +52,7 @@ FDHistogramWidget.prototype.reinit = function() {
    } else {
     this.chart.draw('line', this.widgetData); 
    };
+
    return this;
 };
 

@@ -37,6 +37,9 @@ class DashboardController extends BaseController
                 /* Returning the cached dashboard. */
                 return $cachedDashboard;
             }
+
+            /* Returning the cached dashboard. */
+            return $cachedDashboard;
         }
         if (self::OPTIMIZE) {
             return $this->showOptimizeLog(Auth::user());

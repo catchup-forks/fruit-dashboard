@@ -23,7 +23,7 @@ function FDChartOptions(widgetOptions) {
   function init() {
     if (page == 'dashboard') {
       setDefaultOptionsDashboard();
-    } else if (page == 'singlestat') {
+    } else if (page == 'singleStat') {
       setDefaultOptionsSingleStat();
     };
 
@@ -41,7 +41,7 @@ function FDChartOptions(widgetOptions) {
   function getLineChartOptions(singlePointOptions) {
     if (page == 'dashboard') {
       return getLineChartOptionsDashboard(singlePointOptions);
-    } else if (page == 'singlestat') {
+    } else if (page == 'singleStat') {
       return getLineChartOptionsSingleStat();
     }
   }
@@ -137,6 +137,7 @@ function FDChartOptions(widgetOptions) {
           )
       );
     }
+
     // Return
     return transformedData;
 

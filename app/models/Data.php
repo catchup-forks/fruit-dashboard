@@ -97,7 +97,9 @@ class Data extends Eloquent
             /* Creating manager if descriptor is set. */
             $className = WidgetDescriptor::find($attributes->descriptor_id)
                 ->getDMClassName();
-            $data->manager = new $className($data);
+            if(class_exists($className)) {
+                $data->manager = new $className($data);
+            }
         }
         return $data;
     }
