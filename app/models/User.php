@@ -91,7 +91,10 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function hasUnseenWidgetSharings() {
-        $sharings = $this->widgetSharings()->where('state', 'not_seen')->get();
+        $sharings = $this->widgetSharings()
+            ->where('state', 'not_seen')
+            ->orWhere('state', 'auto_created')
+            ->get();
         if (count($sharings) > 0) {
             return TRUE;
         }
