@@ -137,10 +137,7 @@ function FDChartOptions(widgetOptions) {
           )
       );
     }
-<<<<<<< HEAD:public/lib/FDChartOptions.js
 
-=======
->>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/general/FDChartOptions.js
     // Return
     return transformedData;
 
@@ -188,21 +185,7 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsSingleStat() {
-<<<<<<< HEAD:public/lib/FDChartOptions.js
-    Chart.defaults.global.animationSteps      = 60;
-    Chart.defaults.global.animationEasing     = "easeOutQuart";
-    Chart.defaults.global.tooltipCornerRadius = 4;
-    Chart.defaults.global.tooltipXPadding     = 5;
-    Chart.defaults.global.tooltipYPadding     = 5;
-    Chart.defaults.global.tooltipCaretSize    = 5;
-    Chart.defaults.global.tooltipFillColor    = "rgba(0,0,0,0.6)";
-    Chart.defaults.global.tooltipFontSize     = 11;
-    Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
-    Chart.defaults.global.scaleFontSize       = 9;
-    Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
-=======
     Chart.defaults.global.responsive      = false;
->>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/general/FDChartOptions.js
     
     // Return
     return true;
@@ -217,14 +200,6 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsSingleStat() {
     return {
-<<<<<<< HEAD:public/lib/FDChartOptions.js
-       pointHitDetectionRadius : 5,
-       pointDotRadius : 2,
-       scaleGridLineColor : "rgba(179,179,179,0.4)",
-       scaleGridLineWidth : 0.35,
-       tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
-       multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
-=======
       scales: {
         xAxes: [{
           display: true
@@ -257,7 +232,6 @@ function FDChartOptions(widgetOptions) {
           return d.value;
         };
       }
->>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/general/FDChartOptions.js
     };
   }
 

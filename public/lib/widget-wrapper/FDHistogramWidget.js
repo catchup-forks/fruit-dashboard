@@ -30,20 +30,12 @@ var FDHistogramWidget = function(widgetOptions) {
   */
 FDHistogramWidget.prototype.init = function() {
    this.updateData(window[this.options.data.init]);
-<<<<<<< HEAD:public/lib/widgets/FDHistogramWidget.js
-   if(this.widgetData.type=='chart') {
-    this.chart.draw('line', this.widgetData);
-   } else if(this.widgetData.type=='table') {
-    this.table.draw(this.widgetData);
-   }
-=======
    if (this.widgetData.isCombined == 1) {
     this.chart.draw('combined', this.widgetData);
    } else {
     this.chart.draw('line', this.widgetData); 
    };
    
->>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/widget-wrapper/FDHistogramWidget.js
    return this;
 };
 
@@ -55,19 +47,12 @@ FDHistogramWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.reinit = function() {
-<<<<<<< HEAD:public/lib/widgets/FDHistogramWidget.js
-   if(this.widgetData.type=='chart') {
-    this.chart.draw('line', this.widgetData);
-   } else if(this.widgetData.type=='table') {
-    this.table.draw(this.widgetData);
-   }
-=======
    if (this.widgetData.isCombined == 1) {
     this.chart.draw('combined', this.widgetData);
    } else {
     this.chart.draw('line', this.widgetData); 
    };
->>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/widget-wrapper/FDHistogramWidget.js
+
    return this;
 };
 
@@ -80,19 +65,11 @@ FDHistogramWidget.prototype.reinit = function() {
  */
 FDHistogramWidget.prototype.refresh = function(data) {
   this.updateData(data);
-<<<<<<< HEAD:public/lib/widgets/FDHistogramWidget.js
-  if(this.widgetData.type=='chart') {
-    this.chart.draw('line', this.widgetData);
-  } else if(this.widgetData.type=='table') {
-    this.table.draw(this.widgetData);
-  }
-=======
   if (this.widgetData.isCombined == 1) {
    this.chart.draw('combined', this.widgetData);
   } else {
    this.chart.draw('line', this.widgetData); 
   };
->>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/widget-wrapper/FDHistogramWidget.js
   return this;
 }
 
