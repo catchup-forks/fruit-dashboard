@@ -30,11 +30,15 @@ var FDHistogramWidget = function(widgetOptions) {
   */
 FDHistogramWidget.prototype.init = function() {
    this.updateData(window[this.options.data.init]);
-   if (this.widgetData.isCombined == 1) {
-    this.chart.draw('combined', this.widgetData);
-   } else {
-    this.chart.draw('line', this.widgetData); 
-   };
+   if(this.options.layout=='chart') {
+     if (this.widgetData.isCombined == 1) {
+      this.chart.draw('combined', this.widgetData);
+     } else {
+      this.chart.draw('line', this.widgetData); 
+     }
+    } else if(this.options.layout=='table') {
+      this.table.draw(this.widgetData, true);
+    } 
    
    return this;
 };
@@ -47,11 +51,15 @@ FDHistogramWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.reinit = function() {
-   if (this.widgetData.isCombined == 1) {
-    this.chart.draw('combined', this.widgetData);
-   } else {
-    this.chart.draw('line', this.widgetData); 
-   };
+  if(this.options.layout=='chart') {
+    if (this.widgetData.isCombined == 1) {
+      this.chart.draw('combined', this.widgetData);
+    } else {
+      this.chart.draw('line', this.widgetData); 
+    }
+  } else if(this.options.layout=='table') {
+    this.table.draw(this.widgetData, true);
+  }
 
    return this;
 };
@@ -65,11 +73,17 @@ FDHistogramWidget.prototype.reinit = function() {
  */
 FDHistogramWidget.prototype.refresh = function(data) {
   this.updateData(data);
-  if (this.widgetData.isCombined == 1) {
-   this.chart.draw('combined', this.widgetData);
-  } else {
-   this.chart.draw('line', this.widgetData); 
-  };
+  
+  if(this.options.layout=='chart') {
+    if (this.widgetData.isCombined == 1) {
+      this.chart.draw('combined', this.widgetData);
+    } else {
+      this.chart.draw('line', this.widgetData); 
+    }
+  } else if(this.options.layout=='table') {
+    this.table.draw(this.widgetData, true);
+  }
+
   return this;
 }
 
