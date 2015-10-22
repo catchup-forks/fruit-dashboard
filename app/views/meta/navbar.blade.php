@@ -129,7 +129,7 @@
           $.ajax({
             type: 'get',
             url: '{{ route('widget.accept.all') }}' 
-        })
+        });
       };
     })
 </script>
