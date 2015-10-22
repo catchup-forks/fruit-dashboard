@@ -31,7 +31,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
+    protected function formatData($date, $data) {
         $dataSets = $this->getDataSets();
         $encodedData = array(
             'timestamp' => $date->getTimestamp()

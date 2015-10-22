@@ -787,7 +787,7 @@ class ServiceConnectionController extends BaseController
             }
             return Session::pull('referer');
         } else {
-            return route('settings.settings');
+            return route('dashboard.dashboard');
         }
     }
 

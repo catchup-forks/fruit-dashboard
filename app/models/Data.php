@@ -168,7 +168,7 @@ class Data extends Eloquent
      * Checking the data integrity.
     */
     public function checkIntegrity() {
-        $decodedData = json_decode($this->raw_value);
+        $decodedData = json_decode($this->raw_value, 1);
         if ($this->state == 'loading') {
             /* Populating is underway */
             $this->setWidgetsState('loading');
