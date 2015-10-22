@@ -31,7 +31,7 @@ var FDHistogramWidget = function(widgetOptions) {
 FDHistogramWidget.prototype.init = function() {
    this.updateData(window[this.options.data.init]);
 
-   if(this.options.layout=='chart') {
+   if(this.options.layout=='chart' || this.options.layout == 'multiple') {
      if (this.widgetData.isCombined) {
       this.chart.draw('combined', this.widgetData);
      } else {
@@ -52,7 +52,7 @@ FDHistogramWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.reinit = function() {
-  if(this.options.layout=='chart') {
+  if(this.options.layout=='chart' || this.options.layout == 'multiple') {
     if (this.widgetData.isCombined) {
       this.chart.draw('combined', this.widgetData);
     } else {
@@ -75,7 +75,7 @@ FDHistogramWidget.prototype.reinit = function() {
 FDHistogramWidget.prototype.refresh = function(data) {
   this.updateData(data);
   
-  if(this.options.layout=='chart') {
+  if(this.options.layout=='chart' || this.options.layout == 'multiple') {
     if (this.widgetData.isCombined) {
       this.chart.draw('combined', this.widgetData);
     } else {

@@ -318,33 +318,42 @@ abstract class HistogramWidget extends DataWidget
      */
     public function getTableData(array $options) {
         $settings = $this->getSettings();
+        $dateHeader = rtrim(ucwords($settings['resolution']), 's');
         /* Initializing table. */
         $tableData = array(
             'header' => array(
-                 $settings['resolution']       => 'datetime',
-                 $this->getDescriptor()->name  => 'value',
-                 'Trend'                       => 'trend'
+                 $dateHeader,
+                 $this->getDescriptor()->name,
+                 'Trend'
             ),
             'content' => array(
             )
         );
 
+        
         /* Populating table data. */
-        for ($i = 0; $i < $settings['length']; ++$i) {
+        for ($i = $settings['length'] - 1; $i >= 0; --$i) {
             $now = Carbon::now();
             switch ($settings['resolution']) {
-                case 'days':   $date = $now->subDays($i)->format('d'); break;
+                case 'days':   $date = $now->subDays($i)->format('M-d'); break;
                 case 'weeks':  $date = $now->subWeeks($i)->format('W'); break;
-                case 'months': $date = $now->subMonths($i)->format('l'); break;
+                case 'months': $date = $now->subMonths($i)->format('M'); break;
                 case 'years':  $date = $now->subYears($i)->format('Y'); break;
                 default:$date = '';
             }
 
             /* Calculating data. */
             $history = $this->getHistory($i);
+            $value = $history['value'];
+
+            if (isset($previousValue)) {
+                $percent = ($value / $previousValue - 1) * 100;
+            } else {
+                $percent = 0;
+            }
 
             /* Creating format for percent. */
-            $success = $this->isSuccess($history['percent']);
+            $success = $this->isSuccess($percent);
             $trendFormat = '<div class="';
             if ($success) { $trendFormat .= 'text-success';
             } else { $trendFormat .= 'text-danger'; }
@@ -356,10 +365,13 @@ abstract class HistogramWidget extends DataWidget
             array_push($tableData['content'], array(
                 $date,
                 Utilities::formatNumber($history['value'], $this->getFormat()),
-                Utilities::formatNumber($history['percent'], $trendFormat)
+                Utilities::formatNumber($percent, $trendFormat)
             ));
-        }
 
+            /* Saving previous value. */
+            $previousValue = $value;
+        }
+        $tableData['content'] = array_reverse($tableData['content']);
         return $tableData;
     }
 
