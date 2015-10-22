@@ -31,6 +31,7 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget['id'] }} = {
+    'type': 'chart',
     'labels': [@foreach ($widget['data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
     @foreach ($widget['data']['datasets'] as $dataset)

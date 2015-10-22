@@ -5,15 +5,9 @@
 @section('widgetScripts')
 
  <script type="text/javascript">
-   $(document).ready(function() {
-    $("#note-data-{{ $widget['id'] }}").on('change keyup', function () {
-        $.ajax({
-            type: "POST",
-            data: {'text': $("#note-data-{{ $widget['id'] }}").val()},
-            url: "{{ route('widget.ajax-handler', $widget['id']) }}"
-        });
-    });
-   });
+    var widgetData{{ $widget['id'] }} = {
+        url: "{{ route('widget.ajax-handler', $widget['id']) }}"
+    }
  </script>
 
 @append

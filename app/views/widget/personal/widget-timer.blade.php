@@ -6,42 +6,11 @@
 
 @section('widgetScripts')
 
- <!-- script for clock -->
+ <!-- script for timer -->
  <script type="text/javascript">
-  $(document).ready(function() {
-    var running = false;
-    function reset() {
-      running = false;
-      $("#timer-time-{{ $widget['id'] }}").html({{ $widget['settings']['countdown'] }});
-      $("#start-{{ $widget['id'] }}").show();
-      $("#reset-{{ $widget['id'] }}").hide();
-    }
-    function countdown() {
-      if (!running) {
-        return;
-      }
-      seconds = $("#timer-time-{{ $widget['id'] }}").html();
-      seconds = parseInt(seconds, 10);
-      if (seconds == 1) {
-        return;
-      }
-      seconds --;
-      $("#timer-time-{{ $widget['id'] }}").html(seconds);
-      setTimeout(countdown, 1000);
-    }
-
-    $("#start-{{ $widget['id'] }}").click(function () {
-      running = true;
-      $("#start-{{ $widget['id'] }}").hide();
-      $("#reset-{{ $widget['id'] }}").show();
-      countdown();
-    });
-
-    $("#reset-{{ $widget['id'] }}").click(function () {
-      reset();
-    });
-
-   });
+  var widgetData{{ $widget['id'] }} = {
+    countdown: "{{ $widget['settings']['countdown'] }}"
+  }
  </script>
  <!-- /script for clock -->
 

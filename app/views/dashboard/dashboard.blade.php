@@ -171,10 +171,6 @@
   @include('dashboard.dashboard-gridster-scripts')
   <!-- /Gridster scripts -->
 
-  <!-- Dashboard locking scripts -->
-  @include('dashboard.dashboard-locking-scripts')
-  <!-- /Dashboard locking scripts -->
-
   <!-- Hopscotch scripts -->
   @include('dashboard.dashboard-hopscotch-scripts')
   <!-- /Hopscotch scripts -->
@@ -194,7 +190,8 @@
 
     // Change the dashboard-lock on dashboard change
     $('.carousel').on('slid.bs.carousel', function () {
-      setDashboardLock($('.item.active > .gridster').attr("data-dashboard-id"), $('.item.active > .gridster').attr("data-lock-direction") == 'lock' ? true : false, true);
+      var gridster = window['FDGridster' + $('.item.active > .gridster').attr("data-dashboard-id")];
+      gridster.setDashboardLock();
     })
 
     function showShareModal(widgetId) {

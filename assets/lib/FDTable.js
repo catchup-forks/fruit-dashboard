@@ -24,8 +24,20 @@ function FDTable(widgetSelector) {
     clear();
 
     // Draw table
-    $(selector).append(data.header);
-    $(selector).append(data.content);
+    $(selector).append('<thead></thead>');
+    for(var i=0; i<data.header.length; i++) {
+      $(selector + ' thead').append('<th>' + data.header[i] + '</th>');
+    }
+    $(selector).append('<tbody></tbody>');
+    var item, row;
+    for(var i=0; i<data.content.length; i++) {
+      item = data.content[i];
+      row = '';
+      for(var j=0; j<item.length; j++) {
+        row += '<td>' + item[j] + '</td>';
+      }
+      $(selector + ' tbody').append('<tr>' + row + '</tr>');
+    }
 
     // return
     return true;
