@@ -271,7 +271,10 @@ class GoogleAnalyticsDataCollector
         return $this->getMetrics(
             $profileId,
             SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
-            'today', array('sessions')
+            'today',
+            array('sessions'), array(
+                'dimensions'  => 'ga:source'
+            )
         )['sessions'];
    }
 
@@ -288,8 +291,11 @@ class GoogleAnalyticsDataCollector
         return $this->getMetrics(
             $profileId,
             SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
-            'today', array('users')
-        )['users'];
+            'today',
+            array('newUsers'), array(
+                'dimensions'  => 'ga:source'
+            )
+        )['newUsers'];
    }
 
     /**
@@ -307,7 +313,10 @@ class GoogleAnalyticsDataCollector
         return $this->getMetrics(
             $profileId,
             SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
-            'today', array($metricName)
+            'today',
+            array($metricName), array(
+                'dimensions'  => 'ga:source'
+            )
         )[$metricName];
    }
 

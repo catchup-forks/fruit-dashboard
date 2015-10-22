@@ -7,8 +7,7 @@ class GoogleAnalyticsSessionsDataManager extends MultipleHistogramDataManager
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
         /* Getting the page from settings. */
-        $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getSessions($this->getProfileId());
+        return $this->getCollector()->getSessions($this->getProfileId());
     }
 }
 ?>

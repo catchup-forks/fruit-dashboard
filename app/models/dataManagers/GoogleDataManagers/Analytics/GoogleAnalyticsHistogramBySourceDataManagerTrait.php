@@ -15,8 +15,7 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
         $metric = $this->getMetricNames()[0];
         return array(
             'dimensions'  => 'ga:source',
-            'sort'        => '-ga:' . $metric,
-            'max-results' => 20
+            'sort'        => '-ga:' . $metric
         );
     }
 
