@@ -23,3 +23,17 @@
 .carousel-control {
   width: @carousel-control-width;
 }
+
+.promo-opaque {
+  opacity: 0.8;
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+  // -webkit-filter: blur(1px);
+  // filter: blur(1px);
+}
+
+.promo-opaque:hover {
+  opacity: 1;
+  filter: alpha(opacity=100); /* For IE8 and earlier */
+  // -webkit-filter: none;
+  // filter: none;
+}
