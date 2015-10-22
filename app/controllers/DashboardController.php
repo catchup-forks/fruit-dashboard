@@ -27,7 +27,7 @@ class DashboardController extends BaseController
         if ( ! App::environment('local')) {
             /* Trying to load from cache. */
             $cachedDashboard = $this->getFromCache();
-            if (!is_null($cachedDashboard)) {
+            if ( ! is_null($cachedDashboard)) {
                 /* Some logging */
                 if (!App::environment('producion')) {
                     Log::info("Loading dashboard from cache.");
@@ -37,9 +37,6 @@ class DashboardController extends BaseController
                 /* Returning the cached dashboard. */
                 return $cachedDashboard;
             }
-
-            /* Returning the cached dashboard. */
-            return $cachedDashboard;
         }
         if (self::OPTIMIZE) {
             return $this->showOptimizeLog(Auth::user());
