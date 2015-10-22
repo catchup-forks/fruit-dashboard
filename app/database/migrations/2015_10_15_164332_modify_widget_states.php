@@ -31,7 +31,8 @@ class ModifyWidgetStates extends Migration {
                 'active',
                 'loading',
                 'setup_required',
-                'rendering_error'
+                'rendering_error',
+                'data_source_error'
             ));
         });
 

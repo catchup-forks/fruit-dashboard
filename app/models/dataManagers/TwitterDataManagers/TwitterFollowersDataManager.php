@@ -7,14 +7,5 @@ class TwitterFollowersDataManager extends HistogramDataManager
         $collector = new TwitterDataCollector($this->user);
         return $collector->getFollowersCount();
     }
-
-    /**
-     * initialize
-     * Initializing the data.
-     */
-    public function initialize() {
-        $this->collect();
-    }
-
 }
 ?>

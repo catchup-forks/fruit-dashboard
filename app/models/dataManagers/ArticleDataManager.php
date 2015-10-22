@@ -4,14 +4,6 @@
 abstract class ArticleDataManager extends DataManager
 {
     /**
-     * initialize
-     * Initializing the data.
-     */
-    public function initialize() {
-        $this->collect();
-    }
-
-    /**
      * getArticles
      * Returns the articles from data.
      * --------------------------------------------------

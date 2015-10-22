@@ -189,18 +189,19 @@ class User extends Eloquent implements UserInterface
                 }
             }
             /* Getting template data for the widget. */
-            if ($widget->state == 'loading' || $widget->state == 'setup_required') {
+            if ($widget->renderable()) {
                 /* Widget is loading, no data is available yet. */
-                $templateData = Widget::getDefaultTemplateData($widget);
-            } else {
                 try {
                     $templateData = $widget->getTemplateData();
                 } catch (Exception $e) {
                     /* Something went wrong during data population. */
                     Log::error($e->getMessage());
                     $widget->setState('rendering_error');
+                    /* Falling back to default template data. */
                     $templateData = Widget::getDefaultTemplateData($widget);
                 }
+            } else {
+                $templateData = Widget::getDefaultTemplateData($widget);
             }
             /* Adding widget to the dashboard array. */
             array_push($dashboards[$widget->dashboard_id]['widgets'], array(
@@ -260,11 +261,10 @@ class User extends Eloquent implements UserInterface
             if ($widget instanceof SharedWidget) {
                 continue;
             }
-            if ($widget->state == 'loading' || $widget->state == 'setup_required') {
-                /* Widget is loading, no data is available yet. */
-                $templateData = Widget::getDefaultTemplateData($widget);
-            } else {
+            if ($widget->renderable()) {
                 $templateData = $widget->getTemplateData();
+            } else {
+                $templateData = Widget::getDefaultTemplateData($widget);
             }
             $view = View::make($widget->getDescriptor()->getTemplateName())
                 ->with('widget', $templateData);

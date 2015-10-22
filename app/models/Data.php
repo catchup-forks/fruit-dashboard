@@ -74,8 +74,12 @@ class Data extends Eloquent
         /* Reinitializing data. (This will create the manager) */
         $data = Data::find($data->id);
         if ($initialize) {
-            $data->initialize();
-            $data->setState('active');
+            try {
+                $data->initialize();
+                $data->setState('active');
+            } catch (ServiceException $e) {
+                $data->setState('data_source_error');
+            }
         }
 
         return $data;
@@ -169,8 +173,12 @@ class Data extends Eloquent
             $this->setWidgetsState('loading');
         } else if (is_null(json_decode($this->raw_value))) {
             /* No json in data, this is a problem. */
-            $this->manager->initialize();
-            $this->setState('active');
+            try {
+                $this->manager->initialize();
+                $this->setState('active');
+            } catch (ServiceException $e) {
+                $this->setState('data_source_error');
+            }
         } else {
             $this->setState('active');
         }

@@ -3,6 +3,6 @@
     {{ Utilities::underscoreToCamelCase($widget['descriptor']->type, TRUE) }}
   </div> <!-- /.widget-heading -->
   <p class="lead text-center">
-    This widget has no data, you can try to refresh it, or check the data source, if it's available.
+    Something went wrong during the data collection on this widget, please check the availability of the data source.
   </p>
 </div> <!-- /.widget-inner -->

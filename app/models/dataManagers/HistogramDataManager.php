@@ -44,14 +44,6 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * initialize
-     * Default initializer
-     */
-    public function initialize() {
-        $this->collect();
-    }
-
-    /**
      * setDiff
      * Setting the $diff
      * --------------------------------------------------
@@ -99,6 +91,7 @@ abstract class HistogramDataManager extends DataManager
      * collect
      * --------------------------------------------------
      * Getting the new value based on getCurrentValue()
+     * @throws ServiceException
      * --------------------------------------------------
      */
     public function collect($options=array()) {
