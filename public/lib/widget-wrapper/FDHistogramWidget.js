@@ -30,7 +30,7 @@ var FDHistogramWidget = function(widgetOptions) {
   */
 FDHistogramWidget.prototype.init = function() {
    this.updateData(window[this.options.data.init]);
-   if (this.widgetData.isCombined == 1) {
+   if (this.widgetData.isCombined) {
     this.chart.draw('combined', this.widgetData);
    } else {
     this.chart.draw('line', this.widgetData); 
@@ -47,7 +47,7 @@ FDHistogramWidget.prototype.init = function() {
   * --------------------------------------------------------------------------
   */
 FDHistogramWidget.prototype.reinit = function() {
-   if (this.widgetData.isCombined == 1) {
+   if (this.widgetData.isCombined) {
     this.chart.draw('combined', this.widgetData);
    } else {
     this.chart.draw('line', this.widgetData); 
@@ -65,7 +65,7 @@ FDHistogramWidget.prototype.reinit = function() {
  */
 FDHistogramWidget.prototype.refresh = function(data) {
   this.updateData(data);
-  if (this.widgetData.isCombined == 1) {
+  if (this.widgetData.isCombined) {
    this.chart.draw('combined', this.widgetData);
   } else {
    this.chart.draw('line', this.widgetData); 
