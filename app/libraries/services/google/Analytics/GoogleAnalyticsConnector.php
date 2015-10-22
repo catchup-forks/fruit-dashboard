@@ -66,6 +66,13 @@ class GoogleAnalyticsConnector extends GoogleConnector {
             }
             $goal->active = TRUE;
             $goal->save();
+
+			/* Sending tracking event. */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Activation goal | Connected GA Goal',
+                'el' => $this->user->email)
+            );
         }
         /* Setting profile to active. */
         $profile->active = TRUE;
