@@ -35,7 +35,7 @@ function FDCanvas(widgetOptions) {
       heightMargin = 20;
     } else if (options.data.page == 'singlestat') {
       widthMargin = 0;
-      heightMargin = 20;
+      heightMargin = 0;
     };
 
     // Return
@@ -75,7 +75,7 @@ function FDCanvas(widgetOptions) {
     if (options.data.page == 'dashboard') {
       $(graphSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     } else if (options.data.page == 'singlestat') {
-      $(graphSelector).append('<canvas class="img-responsive canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+      $(graphSelector).append('<canvas class="canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     };
 
     // Return

@@ -7,7 +7,7 @@
     app_id: '{{ $_ENV["INTERCOM_APP_ID"] }}',
     @if (Auth::user())
         user_id: {{ Auth::user()->id }},
-        name: '{{ Auth::user()->email }}',
+        name: '{{ Auth::user()->name }}',
         email: '{{ Auth::user()->email }}',
         created_at: {{ strtotime(Auth::user()->created_at) }},
         "is_extension_installed": (window!=window.top) ? true : false

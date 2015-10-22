@@ -15,10 +15,10 @@ class PlanSeeder extends Seeder
                 'braintree_merchant_currency'   => null,
                 'description'                   => 
                     '<ul class="list-group">
-                      <li class="list-group-item">30 days of historical data</li>
+                      <li class="list-group-item">30 days trial without any restrictions</li>
                       <li class="list-group-item">Community support</li>
                     </ul>
-                    <p><small>Just create an account, and use the free functionalities without any install.</small></p>',
+                    <p><small>Just create an account, and use the all functionalities without any install.</small></p>',
             )
         );
 
@@ -32,7 +32,7 @@ class PlanSeeder extends Seeder
                 'braintree_merchant_currency'   => $_ENV['BRAINTREE_MERCHANT_CURRENCY'],
                 'description'                   => 
                     '<ul class="list-group">
-                      <li class="list-group-item">Unlimited historical data</li>
+                      <li class="list-group-item">All functionalities available</li>
                       <li class="list-group-item">Email support</li>
                     </ul>
                     <p><small>Use the dashboard without any restrictions.</small></p>',

@@ -11,7 +11,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return string
      * --------------------------------------------------
     */
-    public function refreshWidget() {
+    public function refreshWidget()
+    {
         /* Setting to loading, and waiting for the collector to finish. */
         $this->setState('loading');
         $this->updateData();
@@ -26,13 +27,16 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return null
      * --------------------------------------------------
     */
-    public function save(array $options=array()) {
+    public function save(array $options=array())
+    {
         parent::save($options);
 
         /* Assigning data. */
         if ($this->hasValidCriteria()) {
             $this->assignData();
-            $this->setState($this->data->state, FALSE);
+            if ($this->state != 'setup_required') {
+                $this->setState($this->data->state, FALSE);
+            }
             parent::save();
         }
 
@@ -43,7 +47,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * assignData
      * Assigning the data to the widget.
      */
-    public function assignData() {
+    public function assignData()
+    {
         $this->data()
             ->associate($this->getDescriptor()->getDataObject($this));
     }
@@ -56,7 +61,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return string
      * --------------------------------------------------
     */
-    public function updateData(array $options=array()) {
+    public function updateData(array $options=array())
+    {
         $this->data->collect($options);
     }
 
@@ -67,7 +73,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @param int interval
      * --------------------------------------------------
     */
-    public function setUpdatePeriod($interval) {
+    public function setUpdatePeriod($interval)
+    {
         $this->data->setUpdatePeriod($interval);
     }
 
@@ -78,7 +85,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return int
      * --------------------------------------------------
     */
-    public function getUpdatePeriod() {
+    public function getUpdatePeriod()
+    {
         return $this->data->update_period;
     }
 
@@ -86,7 +94,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * getData
      * Passing the job to the dataObject.
      */
-    public function getData($postData=null) {
+    public function getData($postData=null)
+    {
         return $this->data->decode();
     }
 
@@ -94,17 +103,20 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * dataExists
      * Returns whether or not there is dat in the DB.
      */
-    public function dataExists() {
-        return $this->data;
+    public function dataExists()
+    {
+        return ! is_null($this->data);
     }
 
     /**
      * checkIntegrity
      * adding data integrity check.
     */
-    public function checkIntegrity() {
+    public function checkIntegrity()
+    {
         parent::checkIntegrity();
-        if ( ! $this->dataExists()) {
+        if ( ! $this->dataExists() ||
+            ($this->data->decode() == FALSE && $this->data->state != 'loading')) {
             throw new WidgetException;
         }
         $this->setState($this->data->state);

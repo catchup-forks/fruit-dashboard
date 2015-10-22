@@ -53,9 +53,11 @@ FDClockWidget.prototype.reinit = function() {
  * --------------------------------------------------------------------------
  */
 FDClockWidget.prototype.draw = function(refresh) {
-  if (this.widgetData.type == 'digital') {
-    this.setTime(refresh);
-  }
+  if (this.widgetData) {
+    if (this.widgetData.type == 'digital') {
+      this.setTime(refresh);
+    }
+  };
   return this;
 }
 

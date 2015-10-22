@@ -21,13 +21,15 @@ class GlobalTracker {
     private static $intercomIO;
     private static $customerIO;
     private static $mixpanel;
+    private static $kissmetrics;
 
     /* -- Constructor -- */
     public function __construct(){
-       self::$google   = new GoogleTracker();
+        self::$google   = new GoogleTracker();
         self::$intercomIO = new IntercomIOTracker();
         self::$customerIO = new CustomerIOTracker();
         self::$mixpanel = new MixpanelTracker();
+        self::$kissmetrics = new KissmetricsTracker();
     }
 
 
@@ -111,6 +113,12 @@ class GlobalTracker {
                     'md' => array('metadata' => $eventData['el'])
                 );
 
+                /* Kissmetrics event data */
+                $kissmetricsEventData = array(
+                    'en' => $eventData['en'],
+                    'md' => array('metadata' => $eventData['el'])
+                );
+
             /* Detailed option */
             } else {
                 /* Google Analytics event data */
@@ -138,6 +146,12 @@ class GlobalTracker {
                     'en' => $eventData['en'],
                     'md' => $eventData['md'],
                 );
+
+                /* Kissmetrics event data */
+                $kissmetricsEventData = array(
+                    'en' => $eventData['en'],
+                    'md' => $eventData['md'],
+                );
             }
 
             /* Send events */
@@ -145,6 +159,8 @@ class GlobalTracker {
             self::$intercomIO->sendEvent($intercomIOEventData);
             self::$customerIO->sendEvent($customerIOEventData);
             self::$mixpanel->sendEvent($mixpanelEventData);
+            self::$kissmetrics->sendEvent($kissmetricsEventData);
+
         }
     }
 

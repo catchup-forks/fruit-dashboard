@@ -70,10 +70,6 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsDashboard() {
-    //Chart.defaults.global.animationSteps  = 60;
-    //Chart.defaults.global.animationEasing = "easeOutQuart";
-    Chart.defaults.global.showScale       = false;
-    Chart.defaults.global.showTooltips    = false;
     Chart.defaults.global.responsive      = false;
     
     // Return
@@ -90,11 +86,24 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsDashboard(singlePointOptions) {
     var defaultOptions = {
-      pointDot: true,
-      pointDotRadius : 1.2,
-      bezierCurve: true,
-      bezierCurveTension : 0.35,
-      animation: false
+      scales: {
+        xAxes: [{
+          display: false
+        }],
+        yAxes: [
+          {
+            display: false,
+            type: 'linear',
+            id: "y-axis-1",
+          },
+          {
+            display: false,
+            type: 'linear',
+            position: 'right',
+            id: "y-axis-2",
+          }
+          ]
+      }
     }
 
     if (singlePointOptions) {
@@ -118,28 +127,54 @@ function FDChartOptions(widgetOptions) {
       datasets: [],
     };
 
-    for (i = 0; i < data.datasets.length; ++i) {
+    for (var i = data.datasets.length - 1; i >= 0; i--) {
       transformedData.datasets.push(
           transform(
+            data.datasets[i].type,
             data.datasets[i].values, 
             data.datasets[i].name, 
             data.datasets[i].color
           )
       );
     }
+<<<<<<< HEAD:public/lib/FDChartOptions.js
 
+=======
+>>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/general/FDChartOptions.js
     // Return
     return transformedData;
 
-    function transform(values, name, color) {
+    function transform(type, values, name, color) {
+      var yAxisID = "y-axis-2";
+      var alpha = 0.2;
+      if (type == 'bar') {
+        yAxisID = "y-axis-1";
+        alpha = 0.8;
+      };
       return {
+        type: type,
         label: name,
-        fillColor : "rgba(" + color + ", 0.2)",
-        strokeColor : "rgba(" + color + ", 1)",
-        pointColor : "rgba(" + color + ", 1)",
-        pointStrokeColor : "#fff",
-        pointHighlightFill : "#fff",
-        pointHighlightStroke : "rgba(" + color + ", 1)",
+        
+        fill: false,
+        yAxisID: yAxisID,
+        backgroundColor: "rgba(" + color + ", " + alpha + ")",
+        borderColor: "rgba(" + color + ", 1)",
+        
+        pointBorderColor: "rgba(" + color + ", 1)",
+        pointBackgroundColor: "#fff",
+        pointBorderWidth: 1,
+        pointHoverRadius: 3,
+        pointHoverBackgroundColor: "rgba(" + color + ", 1)",
+        pointHoverBorderColor: "rgba(" + color + ", 1)",
+        pointHoverBorderWidth: 2,
+        
+        borderWidth: 2,
+
+        stacked: true,
+        
+        hoverBackgroundColor: "rgba(" + color + ", 1)",
+        hoverBorderColor: "rgba(" + color + ", 1)",
+
         data: values
       }
     }
@@ -153,6 +188,7 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsSingleStat() {
+<<<<<<< HEAD:public/lib/FDChartOptions.js
     Chart.defaults.global.animationSteps      = 60;
     Chart.defaults.global.animationEasing     = "easeOutQuart";
     Chart.defaults.global.tooltipCornerRadius = 4;
@@ -164,6 +200,9 @@ function FDChartOptions(widgetOptions) {
     Chart.defaults.global.scaleLineColor      = "rgba(179,179,179,1)";
     Chart.defaults.global.scaleFontSize       = 9;
     Chart.defaults.global.scaleFontColor      = "rgba(230,230,230,1)";
+=======
+    Chart.defaults.global.responsive      = false;
+>>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/general/FDChartOptions.js
     
     // Return
     return true;
@@ -178,12 +217,47 @@ function FDChartOptions(widgetOptions) {
    */
   function getLineChartOptionsSingleStat() {
     return {
+<<<<<<< HEAD:public/lib/FDChartOptions.js
        pointHitDetectionRadius : 5,
        pointDotRadius : 2,
        scaleGridLineColor : "rgba(179,179,179,0.4)",
        scaleGridLineWidth : 0.35,
        tooltipTemplate: "<%if (label){%><%=label %>: <%}%><%= value %>",
        multiTooltipTemplate: "<%if (datasetLabel){%><%=datasetLabel %>: <%}%><%= value %>",
+=======
+      scales: {
+        xAxes: [{
+          display: true
+        }],
+        yAxes: [
+        {
+          display: true,
+          type: 'linear',
+          id: "y-axis-1",
+        },
+        {
+          display: true,
+          type: 'linear',
+          position: 'right',
+          id: "y-axis-2",
+        }
+        ]
+      },
+      tooltipTemplate: function (d) {
+        if (d.label) {
+          return d.label + ': ' + d.value;
+        } else {
+          return d.value;
+        };
+      },
+      multiTooltipTemplate: function (d) {
+        if (d.datasetLabel) {
+          return d.datasetLabel + ': ' + d.value;
+        } else {
+          return d.value;
+        };
+      }
+>>>>>>> dde8973a34933ac53597462aa7764bfd102aaf86:assets/lib/general/FDChartOptions.js
     };
   }
 

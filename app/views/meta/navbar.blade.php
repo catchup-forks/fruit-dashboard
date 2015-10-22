@@ -67,7 +67,7 @@
             </a>
         </li>
         <li>
-            <a target="_blank" href="https://github.com/tryfruit/fruit-dashboard/">
+            <a target="_blank" href="https://github.com/tryfruit/fruit-dashboard/" onclick="trackAll('lazy', {'en': 'Clicked on contribute plan', 'el': '{{ Auth::user()->email }}', });">
                 <span class="fa fa-puzzle-piece"></span> Contribute
             </a>
         </li>
@@ -87,13 +87,14 @@
 
 <div class="position-tr-second z-top-under-dropdown cursor-pointer">
 
-<!--    <span class="fa fa-fw fa-2x fa-street-view fa-inverse color-hovered drop-shadow" alt="Community" data-toggle="tooltip" data-placement="left" title="Join our community"></span>-->
+<a href="http://fruitdashboard.tryfruit.com/community/" class="fa fa-fw fa-2x fa-street-view fa-inverse color-hovered drop-shadow" alt="Community" data-toggle="tooltip" data-placement="left" title="Join our community" onclick="trackAll('lazy', {'en': 'clicked_on_community', 'el': '{{ Auth::user()->email }}', });" target="_blank"></a>
     
 </div> <!-- /.position-tr-second -->
 
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
+<!--
     <a href="{{ route('payment.plans') }}"
        class="position-br drop-shadow z-top no-underline"
        data-toggle="tooltip"
@@ -109,6 +110,7 @@
             {{ Auth::user()->subscription->getSubscriptionInfo()['trialDaysRemaining'] }}
         </span>
     </a>
+-->
 @endif
 
 @section('pageScripts')

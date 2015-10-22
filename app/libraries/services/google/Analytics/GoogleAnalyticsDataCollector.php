@@ -139,11 +139,12 @@ class GoogleAnalyticsDataCollector
      * @param string $end
      * @param array $metrics
      * @param array $optParams
+     * @param boolean rawReturn
      * @return array
      * @throws ServiceException
      * --------------------------------------------------
      */
-    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array()) {
+    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array(), $rawReturn=FALSE) {
         $useDimensions = array_key_exists('dimensions', $optParams);
         $metricsData = array();
 
@@ -158,7 +159,9 @@ class GoogleAnalyticsDataCollector
         /* Getting rows. */
         $rows = $results->getRows();
 
-        if (count($rows) > 0) {
+        if ($rawReturn) {
+            return $rows;    
+        } else if (count($rows) > 0) {
             /* Populating metricsData. */
             if ($useDimensions) {
                 $metricsData = $this->buildDimensionsData($metrics, $rows);

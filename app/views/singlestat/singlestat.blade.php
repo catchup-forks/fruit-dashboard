@@ -36,12 +36,7 @@ Widget stats
                   <div role="tabpanel" class="tab-pane fade col-md-12" id="singlestat-{{ $resolution }}">
                     {{-- Check Premium feature and disable charts if needed --}}
                     @if (!Auth::user()->subscription->getSubscriptionInfo()['PE'])
-                      {{-- Allow the default chart, disable others --}}
-                      @if ($resolution != $widget->getSettingsFields()['resolution']['default'])
-                        @include('singlestat.singlestat-premium-feature-needed')
-                      @else
-                        @include('singlestat.singlestat-element')
-                      @endif
+                      @include('singlestat.singlestat-premium-feature-needed')
                     @else
                       @include('singlestat.singlestat-element')
                     @endif
@@ -67,20 +62,11 @@ Widget stats
   @stop
 
   @section('pageScripts')
-
-  <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
-  <!-- /FDGeneral* classes -->
-
-  <!-- FDAbstractWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
-  <!-- /FDAbstractWidget* classes -->
-
-  <!-- FDWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->getDescriptor()->category.'/FD'. Utilities::underscoreToCamelCase($widget->getDescriptor()->type).'Widget.js') }}"></script>
-  <!-- /FDWidget* classes -->
+  <!-- FDJSlibs merged -->
+  {{ Minify::javascriptDir('/lib/general') }}
+  {{ Minify::javascriptDir('/lib/widget-wrapper') }}
+  {{ Minify::javascriptDir('/lib/widgets') }}
+  <!-- FDJSlibs merged -->
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
@@ -113,10 +99,12 @@ Widget stats
       }
 
       var widgetData{{ $resolution }} = {
+        'isCombined' : {{$widget->hasCumulative()}},
         'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
         @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
           {
+              'type' : '{{ $dataset['type'] }}',
               'values' : [{{ implode(',', $dataset['values']) }}],
               'name':  "{{ $dataset['name'] }}",
               'color': "{{ $dataset['color'] }}"

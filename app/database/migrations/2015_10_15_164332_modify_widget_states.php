@@ -16,7 +16,12 @@ class ModifyWidgetStates extends Migration {
         /* Get current states. */
         $states = array();
         foreach (Widget::all() as $widget) {
-            $states[$widget->id] = $widget->state;
+            if (is_null($widget->dashboard)) {
+                Log::warning('Deleting widget ' . $widget->id . ' due to a broken dashboard connection'); 
+                $widget->delete();
+            } else {
+                $states[$widget->id] = $widget->state;
+            }
         }
         Schema::table('widgets',function($table) {
             $table->dropColumn('state');

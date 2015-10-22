@@ -198,8 +198,8 @@ class User extends Eloquent implements UserInterface
                 } catch (Exception $e) {
                     /* Something went wrong during data population. */
                     Log::error($e->getMessage());
+                    $widget->setState('rendering_error');
                     $templateData = Widget::getDefaultTemplateData($widget);
-                    $widget->setState('setup_required');
                 }
             }
             /* Adding widget to the dashboard array. */
@@ -364,9 +364,23 @@ class User extends Eloquent implements UserInterface
 
         /* Create default subscription for the user */
         $plan = Plan::getFreePlan();
+        if ($_ENV['SUBSCRIPTION_MODE'] == 'premium_feature_and_trial') {
+            $trialStatus = 'possible';
+        } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'premium_feature_only') {
+            $trialStatus = 'possible';
+        } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'trial_only') {
+            $trialStatus = 'active';
+            /* Track event | TRIAL STARTS */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Trial starts',
+                'el' => $this->email)
+            );
+        }
+        
         $subscription = new Subscription(array(
             'status'       => 'active',
-            'trial_status' => 'possible',
+            'trial_status' => $trialStatus,
             'trial_start'  => null,
         ));
         $subscription->user()->associate($this);

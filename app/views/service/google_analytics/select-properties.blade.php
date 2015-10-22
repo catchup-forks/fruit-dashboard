@@ -104,10 +104,8 @@
       $("#goals").hide();
       $("#goal-load").show();
     }
-    $("#profile-select").change(function () {
-      /* changed */
+    function selectProfile(profile_id) {
       var goals_select = $("#goal-select");
-      var profile_id = $("#profile-select").val();
       load();
       $.ajax({
         type: "get",
@@ -127,7 +125,15 @@
         }
 
        });
+    }
+    $("#profile-select").change(function () {
+      /* changed */
+      selectProfile($("#profile-select").val());
     });
+    @if ( ! is_null($activeProfile))
+      $("#profile-select").val({{$activeProfile->profile_id}});
+      selectProfile({{ $activeProfile->profile_id }});
+    @endif
   });
   </script>
 @append

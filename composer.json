@@ -19,7 +19,9 @@
         "barryvdh/laravel-async-queue": "^0.3.1",
         "abraham/twitteroauth": "^0.5.3",
         "facebook/php-sdk-v4" : "~5.0",
-        "barryvdh/laravel-snappy": "0.1.*"
+        "barryvdh/laravel-snappy": "0.1.*",
+        "kissmetrics/kissmetrics-php": "~0.2.0",
+        "ceesvanegmond/minify": "2.0.*"
     },
     "require-dev": {
         "phpunit/phpunit" : "4.3.*"

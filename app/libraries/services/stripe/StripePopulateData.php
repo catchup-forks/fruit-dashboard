@@ -205,7 +205,6 @@ class StripePopulateData
             'discount'        => $subscriptionData['discount'],
             'trial_start'     => $subscriptionData['trial_start'],
             'trial_end'       => $subscriptionData['trial_end'],
-            'discount'        => $subscriptionData['discount']
         ));
 
         // Creating the plan if necessary.

@@ -74,34 +74,36 @@ function FDChart(widgetOptions) {
 
     // If datasets exist.
     if(isDatasetsExist) {
+      var canvasContext = canvas.get2dContext();
       // Draw chart
       switch(type) {
         case 'line':
-          var canvasContext = canvas.get2dContext();
-          if (canvasContext) {
-            new Chart(canvasContext).Line(
-              chartOptions.transformLineChartDatasets(data),
-              chartOptions.getLineChartOptions(singlePointOptions))
-          };
+        if (canvasContext) {
+          new Chart(canvasContext, {
+            type: 'line',
+            data: chartOptions.transformLineChartDatasets(data),
+            options: chartOptions.getLineChartOptions(singlePointOptions)
+          });
+        };
           break;
         case 'combined':
-          // in datasets set type = line for line
-          // if not set, defaults to bar chart
-          var canvasContext = canvas.get2dContext();
           if (canvasContext) {
-            new Chart(canvasContext).Overlay(
-              chartOptions.transformLineChartDatasets(data),
-              chartOptions.getLineChartOptions(singlePointOptions))
+            new Chart(canvasContext, {
+              type: 'bar',
+              data: chartOptions.transformLineChartDatasets(data),
+              options: chartOptions.getLineChartOptions(singlePointOptions)
+            });
           };
           break;
         default:
-            var canvasContext = canvas.get2dContext();
-            if (canvasContext) {
-              new Chart(canvasContext).Line(
-                chartOptions.transformLineChartDatasets(data),
-                chartOptions.getLineChartOptions(singlePointOptions))
-            };
-            break;
+          if (canvasContext) {
+            new Chart(canvasContext, {
+              type: 'line',
+              data: chartOptions.transformLineChartDatasets(data),
+              options: chartOptions.getLineChartOptions(singlePointOptions)
+            });
+          };
+          break;
       }
     }
 

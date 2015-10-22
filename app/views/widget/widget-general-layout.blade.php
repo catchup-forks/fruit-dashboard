@@ -60,8 +60,9 @@
       </ul>
     </div>
 
-  <!-- Adding loading on DataWidget -->
-  @if ($widget['state'] == 'setup_required')
+  @if ($widget['instance']->premiumUserCheck() === 0)
+     @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
+  @elseif ($widget['state'] == 'setup_required')
       @include('widget.widget-setup-required')
   @elseif ($widget['state'] == 'rendering_error')
       @include('widget.widget-rendering-error')
@@ -72,8 +73,6 @@
       ['widget' => $widget['instance']->getRelatedWidget()->getTemplateData()]
     )
     </div>
-  @elseif ($widget['instance']->premiumUserCheck() === -1)
-     @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
   @else
     @if ($widget['instance'] instanceof iAjaxWidget)
       @include('widget.widget-loading')

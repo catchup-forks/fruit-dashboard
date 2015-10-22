@@ -160,7 +160,6 @@ abstract class GeneralServiceConnector
             $data->save();
             array_push($dataObjects, $data);
         }
-
         $this->populateData($criteria);
         return $dataObjects;
     }

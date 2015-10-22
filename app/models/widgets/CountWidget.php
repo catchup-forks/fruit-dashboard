@@ -102,8 +102,15 @@ abstract class CountWidget extends DataWidget implements iAjaxWidget
     public function getData($postData=null) {
         /* Getting manager. */
         $settings = $this->getSettings();
-        $this->data->setResolution($settings['period']);
-        $this->data->setLength($settings['multiplier'] + 1);
+        $dataManager = $this->data->getManager();
+        if ($dataManager instanceof MultipleHistogramDataManager) {
+            /* If the manager is multiple use single transformation. */
+            $dataManager->setSingle(TRUE);
+        }
+
+        $dataManager->setResolution($settings['period']);
+        $dataManager->setLength($settings['multiplier'] + 1);
+
         return array(
             'latest' => $this->data->getLatestValues(),
             'diff'   => $this->data->compare());

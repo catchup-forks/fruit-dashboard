@@ -200,25 +200,17 @@ abstract class HistogramWidget extends DataWidget
      * --------------------------------------------------
      */
     public function getHistory($multiplier=1, $resolution=null) {
-        if(count($this->getLatestValues())>0) {
-            $currentValue = array_values($this->getLatestValues())[0];
-            $value = $currentValue - $this->getDiff($multiplier, $resolution);
-            try {
-                $percent = ($currentValue / $value - 1) * 100;
-            } catch (Exception $e) {
-                $percent = 'inf';
-            }
-            return array(
-                'value'   => $value,
-                'percent' => $percent,
-                'success' => $this->isSuccess($percent)
-            );
+        $currentValue = array_values($this->getLatestValues())[0];
+        $value = $currentValue - $this->getDiff($multiplier, $resolution);
+        try {
+            $percent = ($currentValue / $value - 1) * 100;
+        } catch (Exception $e) {
+            $percent = 'inf';
         }
-
         return array(
-            'value'   => '0',
-            'percent' => '0',
-            'success' => false
+            'value'   => $value,
+            'percent' => $percent,
+            'success' => $this->isSuccess($percent)
         );
     }
 

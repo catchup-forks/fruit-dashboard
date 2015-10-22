@@ -19,7 +19,7 @@ class SiteConstants {
     private static $widgetMargin      = 5;
 
     /* Trial period */
-    private static $trialPeriodInDays = 14;
+    private static $trialPeriodInDays = 30;
 
     /* Signup wizard */
     private static $signupWizardSteps = array(
@@ -610,7 +610,7 @@ class SiteConstants {
     public static function getServicePopulationPeriod() {
         return array(
             'facebook'         => 60,
-            'google_analytics' => 60,
+            'google_analytics' => 15,
             'twitter'          => null,
             'stripe'           => 30,
             'braintree'        => 30,
