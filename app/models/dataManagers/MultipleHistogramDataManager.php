@@ -121,7 +121,7 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             );
         }
         $histogram = $this->buildHistogram();
-        if ($this->diff || ! $this->toSingle) {
+        if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
         foreach ($histogram as $entry) {

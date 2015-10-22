@@ -65,6 +65,8 @@ class DashboardController extends BaseController
         if ($activeDashboard) {
             $parameters['activeDashboard'] = $activeDashboard;
         }
+        /* Checking the user's data integrity */
+        $user->checkDataIntegrity();
 
         /* Checking the user's widgets integrity */
         $user->checkWidgetsIntegrity();

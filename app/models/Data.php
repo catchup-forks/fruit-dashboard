@@ -134,6 +134,7 @@ class Data extends Eloquent
         Log::info("Changing state of data #" . $this->id . ' from ' . $this->state . ' to '. $state);
         $this->state = $state;
         $this->save();
+        /* Notifying widgets. */
         $this->setWidgetsState($state);
     }
 
@@ -181,6 +182,11 @@ class Data extends Eloquent
                 Log::error($e->getMessage());
                 $this->setState('data_source_error');
             }
+        } else if ($this->state == 'data_source_error'){
+            try {
+                $this->collect();
+                $this->setState('active');
+            } catch (ServiceException $e) {}
         } else {
             $this->setState('active');
         }

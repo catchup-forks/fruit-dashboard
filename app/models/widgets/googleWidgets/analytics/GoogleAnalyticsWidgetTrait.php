@@ -15,7 +15,9 @@ trait GoogleAnalyticsWidgetTrait
     /* Choices functions */
     public function profile() {
         $profiles = array();
-        foreach ($this->user()->googleAnalyticsProperties as $property) {
+        foreach ($this->user()->googleAnalyticsProperties()
+           ->orderBy('name')
+           ->get() as $property) {
             $profiles[$property->name] = array();
             foreach ($property->profiles as $profile) {
                 $profiles[$property->name][$profile->profile_id] = $profile->name;

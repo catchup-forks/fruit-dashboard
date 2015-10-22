@@ -49,7 +49,7 @@
                     <h4>Loading...</h4>
                   </div>
 
-                  <div class="alert alert-warning not-visible" id="goal-not-found">
+                  <div class="alert alert-warning not-visible text-center" id="goal-not-found">
                     <strong>
                       <span class="fa fa-exclamation-triangle"></span>
                     </strong>
@@ -72,11 +72,12 @@
 
               <div class="row">
 
-                <div class="col-md-12">
+                <div class="col-md-12 text-center">
 
                   <hr>
 
-                  <a href="{{ $cancelRoute }}" class="btn btn-warning">Cancel</a>
+                  <a href="{{ $cancelRoute }}" class="btn btn-warning pull-left">Cancel</a>
+                  <a href="{{ route('service.google_analytics.refresh-properties') }}" class="btn btn-success">Click here to refresh your properties</a>
 
                   {{ Form::submit('Select', array(
                     'class' => 'btn btn-primary pull-right'

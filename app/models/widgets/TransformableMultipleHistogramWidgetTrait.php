@@ -25,6 +25,8 @@ trait TransformableMultipleHistogramWidgetTrait
         /* Setting single. */
         if ($this->isCumulative()) {
             $manager->setSingle(TRUE);
+        } else {
+            $manager->setDiff(TRUE);
         }
         return $manager;
     }
@@ -38,7 +40,7 @@ trait TransformableMultipleHistogramWidgetTrait
      * --------------------------------------------------
      */
     private function isCumulative() {
-        return $this->getSettings()['type'] == 'chart';
+        return $this->getSettings()['type'] != 'multiple';
     }
 
 }

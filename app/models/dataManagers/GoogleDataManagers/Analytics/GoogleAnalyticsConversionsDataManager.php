@@ -21,8 +21,8 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
      */
     public function getOptionalParams() {
         return array(
-            'dimensions'  => $this->getDimensions(),
-            'sort'        => self::$sortBy,
+            'dimensions' => $this->getDimensions(),
+            'sort'       => self::$sortBy,
         );
     }
 
@@ -34,7 +34,18 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
      * --------------------------------------------------
      */
     public function getMetricNames() {
-        return array('newUsers', 'goal' . $this->criteria['goal'] . 'Completions');
+        return array('newUsers', $this->getGoalMetric());
+    }
+
+    /**
+     * getGoalMetric
+     * Returning the name of the goal metric
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    public function getGoalMetric() {
+        return 'goal' . $this->criteria['goal'] . 'Completions';
     }
 
     /**
@@ -55,7 +66,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
             $this->getMetricNames(),
             array(
                 'dimensions'  => $this->getDimensions(),
-                'sort'        => self::$sortBy,
+                'sort'        => '-ga:'. $this->getGoalMetric(),
                 'max-results' => $maxResults
             )
         );
@@ -90,7 +101,7 @@ class GoogleAnalyticsConversionsDataManager extends TableDataManager
                 $source,
                 $visitors,
                 $completions,
-                sprintf('%.2f%%', $completions/$visitors * 100)
+                sprintf('%.2f%%', $visitors != 0 ? $completions/$visitors * 100 : 0)
             ));
         }
     }

@@ -210,10 +210,12 @@ class User extends Eloquent implements UserInterface
                 $templateData = Widget::getDefaultTemplateData($widget);
             }
             /* Adding widget to the dashboard array. */
-            array_push($dashboards[$widget->dashboard_id]['widgets'], array(
-                'meta'         => $widget->getTemplateMeta(),
-                'templateData' => $templateData
-            ));
+            if (array_key_exists($widget->dashboard_id, $dashboards)) {
+                array_push($dashboards[$widget->dashboard_id]['widgets'], array(
+                    'meta'         => $widget->getTemplateMeta(),
+                    'templateData' => $templateData
+                ));
+            }
         }
 
         /* Set default dashboard if activeDashboard not exists */
@@ -226,6 +228,19 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
+     * checkDataIntegrity
+     * --------------------------------------------------
+     * Checking the overall integrity of the user's data.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function checkDataIntegrity() {
+        foreach ($this->dataObjects as $data) {
+            $data->checkIntegrity();
+        }
+    }
+
+    /**
      * checkWidgetsIntegrity
      * --------------------------------------------------
      * Checking the overall integrity of the user's widgets.
@@ -234,9 +249,6 @@ class User extends Eloquent implements UserInterface
      */
     public function checkWidgetsIntegrity() {
         foreach ($this->widgets()->with('data')->get() as $widget) {
-            if ( ! is_null($widget->data)) {
-                $widget->data->checkIntegrity();
-            }
             try {
                 $widget->checkIntegrity();
             } catch (WidgetFatalException $e) {

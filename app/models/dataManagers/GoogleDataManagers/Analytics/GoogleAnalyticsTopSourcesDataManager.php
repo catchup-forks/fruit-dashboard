@@ -11,7 +11,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
     );
     private static $dimensions = array('source');
     private static $sortBy = '-ga:sessions';
-    private static $metrics = array('sessions', 'users');
+    private static $metrics = array('sessions', 'newUsers');
 
     /**
      * getOptionalParams

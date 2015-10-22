@@ -370,7 +370,6 @@ class ServiceConnectionController extends BaseController
         try {
             $collector = new FacebookDataCollector(Auth::user());
             $collector->savePages();
-
         } catch (ServiceNotConnected $e) {}
 
         /* Redirect */
@@ -442,7 +441,9 @@ class ServiceConnectionController extends BaseController
         /* Getting a user's google analytics properties for multiple select. */
         $profiles = array();
         $activeProfile = null;
-        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+        foreach (Auth::user()->googleAnalyticsProperties()
+                   ->orderBy('name')
+                   ->get() as $property) {
             $profiles[$property->name] = array();
             foreach ($property->profiles as $profile) {
                 $profiles[$property->name][$profile->profile_id] = $profile->name;
@@ -542,7 +543,6 @@ class ServiceConnectionController extends BaseController
         try {
             $collector = new GoogleAnalyticsDataCollector(Auth::user());
             $collector->saveProperties();
-
         } catch (ServiceNotConnected $e) {}
 
         /* Redirect */

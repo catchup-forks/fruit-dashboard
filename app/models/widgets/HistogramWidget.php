@@ -61,13 +61,15 @@ abstract class HistogramWidget extends DataWidget
      */
     public function getTemplateData() {
         $data = $this->getData();
+        $templateData = parent::getTemplateData();
         if ($this->isTable()) {
-            return array_merge(parent::getTemplateData(), array(
+            return array_merge($templateData, array(
                 'header'  => $data['header'],
-                'content' => $data['content']
+                'content' => $data['content'],
+                'data'    => $data
             ));
         }
-        return array_merge(parent::getTemplateData(), array(
+        return array_merge($templateData, array(
             'defaultDiff'   => $this->getDiff(),
             'format'        => $this->getFormat(),
             'data'          => $data,
@@ -254,28 +256,15 @@ abstract class HistogramWidget extends DataWidget
      * --------------------------------------------------
      */
     protected function getHistogramData(array $options) {
+        $dmParams = array();
         /* Getting range if present. */
-        if (isset($options['range'])) {
-            $range = $options['range'];
-        } else {
-            $range = array();
+        if (array_key_exists('range', $options)) {
+            $dmParams['range'] = $options['range'];
         }
 
-        /*$range = array(
-            'start' => Carbon::createFromFormat('Y-m-d', '2015-09-04'),
-            'end'   => Carbon::createFromFormat('Y-m-d', '2015-09-17')
-        );*/
-
-        if (isset($options['resolution'])) {
-            $resolution = $options['resolution'];
-        } else {
-            $resolution = $this->getSettings()['resolution'];
+        if (array_key_exists('resolution', $options)) {
+            $dmParams['resolution'] = $options['resolution'];
         }
-
-        $dmParams = array(
-            'resolution' => $resolution,
-            'range'      => array()
-        );
 
         return $this->setupDataManager($dmParams)->getHistogram();
     }
@@ -330,7 +319,6 @@ abstract class HistogramWidget extends DataWidget
             )
         );
 
-        
         /* Populating table data. */
         for ($i = $settings['length'] - 1; $i >= 0; --$i) {
             $now = Carbon::now();
@@ -358,7 +346,7 @@ abstract class HistogramWidget extends DataWidget
             if ($success) { $trendFormat .= 'text-success';
             } else { $trendFormat .= 'text-danger'; }
             $trendFormat .= '"> <span class="fa fa-arrow-';
-            if ($success) { $trendFormat .= 'up';
+            if ($percent >= 0) { $trendFormat .= 'up';
             } else { $trendFormat .= 'down'; }
             $trendFormat .= '"> %.2f%%</div>';
 

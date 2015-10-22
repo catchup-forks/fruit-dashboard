@@ -10,6 +10,9 @@
     <p class="text-center">
       <button onclick="copyToClipboard('{{ $widget['settings']['url'] }}');" class="btn btn-sm btn-primary">Copy to clipboard</button>
     </p>
+    <p class="text-center">
+      Read more about the API <a href="https://github.com/tryfruit/fruit-dashboard-api" target="_blank">here</a>
+    </p> <!-- /.lead -->
   </div> <!-- /.widget-inner -->
 @else
     @include('widget.widget-general-multiple-histogram')

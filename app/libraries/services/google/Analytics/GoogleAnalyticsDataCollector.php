@@ -49,6 +49,11 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      */
     public function saveProperties() {
+        /* Building array of current property ids. */
+        $propertyIds = array();
+        foreach ($this->user->googleAnalyticsProperties as $property) {
+            array_push($propertyIds, $property->property_id);
+        }
         $properties = array();
         foreach ($this->getAccountIds() as $accountId) {
             /* Gathering data from google */
@@ -71,9 +76,16 @@ class GoogleAnalyticsDataCollector
         }
         if (count($properties) > 0) {
             /* Only refreshing if we have results. */
-            $this->user->googleAnalyticsProperties()->delete();
             foreach ($properties as $property) {
-                $property->save();
+                if ( ! in_array($property->property_id, $propertyIds)) {
+                    /* New property. */
+                    $property->save();
+                } else {
+                    /* Property already saved. */
+                    $property = $this->user->googleAnalyticsProperties()
+                        ->where('property_id', $property->property_id)
+                        ->first();
+                }
                 /* Saving profiles */
                 $this->saveProfiles($property);
                 $this->saveGoals($property);
@@ -99,13 +111,25 @@ class GoogleAnalyticsDataCollector
             if (is_null($profile)) {
                 continue;
             }
+
             /* Saving goal. */
             $goal = new GoogleAnalyticsGoal(array(
                 'name'    => $iGoal->getName(),
                 'goal_id' => $iGoal->getId(),
             ));
             $goal->profile()->associate($profile);
-            $goal->save();
+
+            /* Finding a match. */
+            $exists = FALSE;
+            foreach ($profile->goals as $prevGoal) {
+                if ($goal->goal_id == $prevGoal->goal_id &&
+                    $goal->name == $prevGoal->name) {
+                    $exists = TRUE;
+                }
+            }
+            if ( ! $exists ) {
+                $goal->save();
+            }
         }
     }
 
@@ -117,6 +141,12 @@ class GoogleAnalyticsDataCollector
      * --------------------------------------------------
      */
     private function saveProfiles($property) {
+        /* Buildingf ID array. */
+        $profileIds = array();
+        foreach ($this->user->googleAnalyticsProfiles()->get(array('profile_id')) as $profile) {
+            array_push($profileIds, $profile->profile_id);
+        }
+
         /* Gathering data from google */
         $analyticsProfiles = $this->getProfiles($property);
         foreach ($analyticsProfiles as $iProfile) {
@@ -126,7 +156,10 @@ class GoogleAnalyticsDataCollector
                 'profile_id' => $iProfile->getId(),
             ));
             $profile->property()->associate($property);
-            $profile->save();
+            if ( ! in_array($profile->profile_id, $profileIds)) {
+                /* Saving only if did not exist. */
+                $profile->save();
+            }
         }
     }
 

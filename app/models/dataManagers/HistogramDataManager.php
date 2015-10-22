@@ -217,6 +217,10 @@ abstract class HistogramDataManager extends DataManager
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
+        
+        if (count($histogram) < 1) {
+            throw new WidgetException('Data not found');
+        }
 
         $start = $histogram[0];
         $today = end($histogram);
@@ -451,7 +455,11 @@ abstract class HistogramDataManager extends DataManager
             }
             $lastEntry = $entry;
         }
+        if (count($differentiatedArray) <= 0) {
+            return array($lastEntry);
+        }
         return $differentiatedArray;
+
     }
 
     /**
