@@ -310,22 +310,22 @@ function FDGridster(gridsterOptions) {
   }
 
   /**
- * @function toggleDashboardLock
- * --------------------------------------------------------------------------
- * Toggles the lock option for the given dashboard
- * @return {null} None
- * --------------------------------------------------------------------------
- */
-function toggleDashboardLock() {
-  // Change gridster
-  changeGridster();
+   * @function toggleDashboardLock
+   * --------------------------------------------------------------------------
+   * Toggles the lock option for the given dashboard
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function toggleDashboardLock() {
+    // Change gridster
+    changeGridster();
 
-  // Change lock icon
-  setDashboardLock();
+    // Change lock icon
+    setDashboardLock();
 
-  // Call ajax
-  callLockToggleAjax();
-}
+    // Call ajax
+    callLockToggleAjax();
+  }
 
 /**
  * @function setDashboardLock
@@ -372,51 +372,51 @@ function setDashboardLock(fixTooltips) {
   lock.attr('data-dashboard-id', options.id);
 }
 
-function changeGridster() {
-  if (options.isLocked==0) {
-    lock();
-  } else {
-    unlock();
-  };
-}
+  function changeGridster() {
+    if (options.isLocked==0) {
+      lock();
+    } else {
+      unlock();
+    };
+  }
 
-/**
- * @function callLockToggleAjax
- * --------------------------------------------------------------------------
- * Calls the locking method to save state in the database. Reverts the whole
- *    process on fail.
- * @return {null} None
- * --------------------------------------------------------------------------
- */
-function callLockToggleAjax() {
-  // Initialize variables based on the direction
-  if (options.isLocked==1) {
-    var url = "/dashboard/lock/" + options.id;
-    var successmsg = "You successfully locked the dashboard."
-    var errormsg = "Something went wrong, we couldn't lock your dashboard."
-  } else {
-    var url = "/dashboard/unlock/" + options.id;
-    var successmsg = "You successfully unlocked the dashboard."
-    var errormsg = "Something went wrong, we couldn't unlock your dashboard."
-  };
+  /**
+   * @function callLockToggleAjax
+   * --------------------------------------------------------------------------
+   * Calls the locking method to save state in the database. Reverts the whole
+   *    process on fail.
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function callLockToggleAjax() {
+    // Initialize variables based on the direction
+    if (options.isLocked==1) {
+      var url = "/dashboard/lock/" + options.id;
+      var successmsg = "You successfully locked the dashboard."
+      var errormsg = "Something went wrong, we couldn't lock your dashboard."
+    } else {
+      var url = "/dashboard/unlock/" + options.id;
+      var successmsg = "You successfully unlocked the dashboard."
+      var errormsg = "Something went wrong, we couldn't unlock your dashboard."
+    };
 
-  // Call ajax function
-  $.ajax({
-    type: "POST",
-    dataType: 'json',
-    url: url,
-        data: null,
-        success: function(data) {
-          easyGrowl('success', successmsg, 3000);
-        },
-        error: function() {
-          easyGrowl('error', errormsg, 3000);
-          // Revert the process
-          changeGridster();
-          setDashboardLock();
-        }
-    });
-}
+    // Call ajax function
+    $.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: url,
+          data: null,
+          success: function(data) {
+            easyGrowl('success', successmsg, 3000);
+          },
+          error: function() {
+            easyGrowl('error', errormsg, 3000);
+            // Revert the process
+            changeGridster();
+            setDashboardLock();
+          }
+      });
+  }
 
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
@@ -433,7 +433,7 @@ function callLockToggleAjax() {
   });
 
   $('#dashboard-lock').click(function() {
-    if($(this).attr("data-dashboard-id")==options.id) {
+    if($(this).attr("data-dashboard-id") == options.id) {
       // Call  the function
       toggleDashboardLock();
     }

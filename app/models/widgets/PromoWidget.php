@@ -77,10 +77,10 @@ class PromoWidget extends Widget
                 'text' => 'Please select your Facebook page',
                 'url'  => route('service.facebook.select-pages')
             );
-        } else if ($descriptor->category == 'twitter') {
+        } else {
             return array(
                 'text' => $connectionText,
-                'url'  => route('service.twitter.connect')
+                'url'  => route('service.' . $descriptor->category . '.connect')
             );
         }
     }
@@ -109,6 +109,8 @@ class PromoWidget extends Widget
             $criteria = $this->getFacebookCriteria();
         } else if ($descriptor->category == 'twitter') {
             $criteria = $this->getTwitterCriteria();
+        } else if ($this->user()->isServiceConnected($descriptor->category)) {
+            $criteria = array();
         }
         if (isset($criteria)) {
             /* Transforming widget if criteria is set */

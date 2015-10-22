@@ -665,7 +665,9 @@ class GeneralWidgetController extends BaseController {
      */
     public function acceptWidgetSharings() {
         foreach (Auth::user()->widgetSharings as $sharingObject) {
-            $sharingObject->setState('accepted');
+			if ($sharingObject->state != 'rejected') {
+                $sharingObject->setState('accepted');
+            }
         }
         return Response::make('Widget shared.', 200);
     }
@@ -744,7 +746,9 @@ class GeneralWidgetController extends BaseController {
         $pngpath = public_path() . '/widgets/' . $widgetID . '.png';
 
         $view = View::make('to-image.to-image-general-histogram', array('widget' => $widgetData));
+        return $view;
         File::put($htmlpath, $view);
+
 
         if (App::environment('local')) {
             $html = File::get($htmlpath);
@@ -755,6 +759,7 @@ class GeneralWidgetController extends BaseController {
                 $html
             );
             File::put($htmlpath, $html);
+            return $view;
         }
 
         //Image::loadFile($htmlpath)->save($pngpath);

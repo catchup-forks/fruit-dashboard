@@ -13,3 +13,10 @@
     We're looking into the problem.
   </p>
 </div> <!-- /.widget-inner -->
+
+@section('widgetScripts')
+<script type="text/javascript">
+  // Set chart data
+  var widgetData{{ $widget['id'] }} = {};
+</script>
+@append

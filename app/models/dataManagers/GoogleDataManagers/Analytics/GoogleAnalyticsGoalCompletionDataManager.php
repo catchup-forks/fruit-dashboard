@@ -8,8 +8,7 @@ class GoogleAnalyticsGoalCompletionDataManager extends MultipleHistogramDataMana
     protected static $cumulative = TRUE;
     public function getCurrentValue() {
         /* Getting the page from settings. */
-        $collector = new GoogleAnalyticsDataCollector($this->user);
-        return $collector->getGoalCompletions($this->getProfileId(), $this->getGoalId());
+        return $this->getCollector()->getGoalCompletions($this->getProfileId(), $this->getGoalId());
     }
 
     /**

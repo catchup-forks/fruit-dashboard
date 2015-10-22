@@ -122,7 +122,6 @@ abstract class HistogramDataManager extends DataManager
             }
             /* Saving data only every 15 minutes. */
             if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
-                var_dump("Popping");
                 array_pop($currentData);
             }
         }

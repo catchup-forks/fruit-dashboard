@@ -525,9 +525,9 @@ class ServiceConnectionController extends BaseController
 
         }
 
-        $message = 'Connection successful.';
+        $message = 'Profiles successfully selected.';
 
-        return Redirect::to($this->getReferer())
+        return Redirect::route('dashboard.dashboard')
             ->with('success', $message);
     }
 
@@ -787,7 +787,7 @@ class ServiceConnectionController extends BaseController
             }
             return Session::pull('referer');
         } else {
-            return route('settings.settings');
+            return route('dashboard.dashboard');
         }
     }
 

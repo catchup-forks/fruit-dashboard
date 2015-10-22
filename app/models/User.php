@@ -175,22 +175,25 @@ class User extends Eloquent implements UserInterface
         }
         $dashboards = array();
         $i = 0;
-        foreach ($this->widgets()->with('dashboard')->get() as $widget) {
-            if ( ! array_key_exists($widget->dashboard_id, $dashboards)) {
+        foreach ($this->dashboards as $dashboard) {
                 /* Creating dashboard array. */
-                $dashboards[$widget->dashboard_id] = array(
-                    'name'       => $widget->dashboard->name,
-                    'is_locked'  => $widget->dashboard->is_locked,
-                    'is_default' => $widget->dashboard->is_default,
+                $dashboards[$dashboard->id] = array(
+                    'name'       => $dashboard->name,
+                    'is_locked'  => $dashboard->is_locked,
+                    'is_default' => $dashboard->is_default,
                     'widgets'    => array(),
                     'count'      => $i++
                 );
 
                 /* Check activeDashboard exists */
-                if(isset($existsActiveDashboard) && $params['activeDashboard']==$widget->dashboard_id) {
+                if(isset($existsActiveDashboard) &&
+                        $params['activeDashboard'] == $dashboard->id) {
                     $existsActiveDashboard = true;
                 }
-            }
+        }
+
+        /* Populating widget data. */
+        foreach ($this->widgets()->with('dashboard')->get() as $widget) {
             /* Getting template data for the widget. */
             if ($widget->renderable()) {
                 /* Widget is loading, no data is available yet. */
