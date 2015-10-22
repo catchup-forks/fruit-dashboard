@@ -127,6 +127,7 @@ function FDChartOptions(widgetOptions) {
       datasets: [],
     };
 
+
     for (var i = data.datasets.length - 1; i >= 0; i--) {
       transformedData.datasets.push(
           transform(

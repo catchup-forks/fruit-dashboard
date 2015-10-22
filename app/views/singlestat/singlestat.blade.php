@@ -95,7 +95,8 @@ Widget stats
           data: {
             page: 'singlestat',
             init: 'widgetData{{ $resolution }}',
-          }
+          },
+          layout: 'chart'
       }
 
       var widgetData{{ $resolution }} = {
