@@ -132,10 +132,11 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
-        
+        $isCombined = $this->toSingle ? 'true' : 'false' ; 
         return array(
-            'datasets' => array_values($groupedData),
-            'labels' => $datetimes
+            'isCombined' => $isCombined,
+            'datasets'   => self::removeEmptyDatasets(array_values($groupedData)),
+            'labels'     => $datetimes
         );
     }
 
@@ -286,5 +287,24 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
         }
         /* Returning the parent by default. */
         return $histogram;
+    }
+
+    /**
+     * removeEmptyDatasets
+     * Returning the datasets, removing the empty ones.
+     * --------------------------------------------------
+     * @param array $datasets
+     * @return array
+     * --------------------------------------------------
+     */
+    private static function removeEmptyDatasets($datasets) {
+        $hasData = FALSE;
+        $cleanedDataSets = array();
+        foreach ($datasets as $dataset) {
+            if ((count($dataset['values']) > 0) && (max($dataset['values']) > 0)) {
+                array_push($cleanedDataSets, $dataset);
+            }
+        }
+        return $cleanedDataSets;
     }
 }
