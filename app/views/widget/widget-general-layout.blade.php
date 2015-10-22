@@ -5,7 +5,7 @@
      data-sizey="{{ $widget['position']->size_y }}"
      data-min-sizex="{{ $widget['instance']->getMinCols() }}"
      data-min-sizey="{{ $widget['instance']->getMinRows() }}"
-     class="gridster-widget can-hover overflow-hidden">
+     class="gridster-widget can-hover">
 
      @if ($widget['instance'] instanceof SharedWidget)
       <div class="position-tr-sm-second">

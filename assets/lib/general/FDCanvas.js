@@ -35,7 +35,7 @@ function FDCanvas(widgetOptions) {
       heightMargin = 20;
     } else if (options.data.page == 'singlestat') {
       widthMargin = 0;
-      heightMargin = 0;
+      heightMargin = 20;
     };
 
     // Return
