@@ -99,6 +99,7 @@ class SharedWidget extends Widget
         if ($related instanceof HistogramWidget) {
             $meta['urls']['statUrl'] = route('widget.singlestat', $related->id);
             $meta['selectors']['graph'] = '[id^=chart-container]';
+            $meta['layout'] = $related->getSettings()['type'];
         }
         $meta['data']['init'] = 'widgetData' . $related->id;
 
