@@ -17,18 +17,15 @@
 
 @section('widgetScripts')
 <script type="text/javascript">
-
-  function copyToClipboard(url) {
-      var $temp = $("<input>");
-      $("body").append($temp);
-      $temp.val(url).select();
-      document.execCommand("copy");
-      $temp.remove();
-  }
-
-$(document).ready(function(){
-
-});
-
+  @if ($widget['instance']->hasData() == FALSE)
+    var widgetData{{ $widget['id'] }} = {};
+    function copyToClipboard(url) {
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(url).select();
+        document.execCommand("copy");
+        $temp.remove();
+    }
+  @endif
 </script>
 @append
