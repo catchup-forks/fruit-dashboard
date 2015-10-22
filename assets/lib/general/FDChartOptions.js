@@ -70,7 +70,9 @@ function FDChartOptions(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function setDefaultOptionsDashboard() {
-    Chart.defaults.global.responsive      = false;
+    Chart.defaults.global.responsive              = false;
+    Chart.defaults.global.animation.duration      = 0;
+
     
     // Return
     return true;
