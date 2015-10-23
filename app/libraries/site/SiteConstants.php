@@ -652,7 +652,7 @@ class SiteConstants {
      */
     public static function getServicePopulationPeriod() {
         return array(
-            'facebook'         => 60,
+            'facebook'         => 120,
             'google_analytics' => 60,
             'twitter'          => null,
             'stripe'           => 30,
