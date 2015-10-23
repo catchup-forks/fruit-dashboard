@@ -163,7 +163,11 @@ class PromoWidget extends Widget
             $criteria
         );
         $widget->saveSettings($settings);
-        $widget->checkIntegrity();
+        try {
+            $widget->checkIntegrity();
+        } catch (WidgetException $e) {
+            $widget->save();
+        }
     }
 
     /**
