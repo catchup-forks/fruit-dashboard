@@ -42,16 +42,21 @@ class MixpanelTracker {
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        /* Attach user to the event */
-        if (Auth::check()) {
-            self::$mixpanel->identify(Auth::user()->id);
-        }
+        try {
+            /* Attach user to the event */
+            if (Auth::check()) {
+                self::$mixpanel->identify(Auth::user()->id);
+            }
 
-        /* Build and send the request */
-        self::$mixpanel->track(
-            $eventData['en']
-           // array_key_exists('md', $eventData) ? $eventData['md'] : array()
-        );
+            /* Build and send the request */
+            self::$mixpanel->track(
+                $eventData['en']
+               // array_key_exists('md', $eventData) ? $eventData['md'] : array()
+            );
+        } catch (Exception $e) {
+            Log::info('MixpanelTracker exception');
+            Log::info($e);
+        }
 
         /* Return */
         return true;

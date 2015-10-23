@@ -58,10 +58,15 @@ class GoogleTracker {
         );
 
         /* Send the request */
-        $client = new GuzzleClient;
-        $client->post($url['endpoint'], [
-            'query' => $url['params']
-        ]);
+        try {
+            $client = new GuzzleClient;
+            $client->post($url['endpoint'], [
+                'query' => $url['params']
+            ]);
+        } catch (Exception $e) {
+            Log::info('GoogleTracker exception');
+            Log::info($e);
+        }
         
         //$response = SiteFunctions::postUrl($url);
 

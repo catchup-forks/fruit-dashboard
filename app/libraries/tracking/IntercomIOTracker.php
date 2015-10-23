@@ -55,6 +55,9 @@ class IntercomIOTracker {
                 "metadata" => array_key_exists('md', $eventData) ? $eventData['md'] : null
             ));
         } catch (\Intercom\Exception\ClientErrorResponseException $e) {
+        } catch (Exception $e) {
+            Log::info('IntercomIOTracker exception');
+            Log::info($e);
         }
 
         /* Return */
