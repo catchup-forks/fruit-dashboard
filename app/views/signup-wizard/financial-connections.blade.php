@@ -15,6 +15,11 @@
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
+            <span class="pull-right" title="These provide data on your revenues." data-toggle="tooltip" data-placement="bottom">
+              <sup>
+                <i class="fa fa-2x fa-info-circle text-muted"></i>
+              </sup>
+            </span>
             <h1 class="text-center">
               Connect your financial accounts
             </h1>
@@ -33,14 +38,14 @@
                     <div class="panel-body text-center">
                       {{ HTML::image('img/logos/'.$service['name'].'.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
 
-                      @if(Auth::user()->isServiceConnected($service['name']))
+                        <span>{{ $service['display_name'] }}</span>
 
+                      @if(Auth::user()->isServiceConnected($service['name']))
                         <p class="text-success text-center lead margin-top">
                           <span class="fa fa-check"> </span> Connected
                         </p>
                         
                       @else
-
                         <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
 
                       @endif
@@ -62,8 +67,9 @@
 
             <div class="row">
               <div class="col-md-12">
-                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-primary pull-right">Next</a>
-                <a href="{{ URL::route('signup-wizard.social-connections') }}" class="btn btn-link pull-right">Skip</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('prev', $currentStep)) }}" class="btn btn-warning">Back</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-primary pull-right">Finish</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-link pull-right">Skip and finish</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 
@@ -87,24 +93,35 @@
       // Service redirection
       $('.connect-redirect').click(function(e) {
         var url = $(this).attr('href');
-        e.preventDefault();
-        bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
-          message: 'To connect the service, we will redirect you to their site. Are you sure?',
-          // On clicking OK redirect to fruit dashboard add widget page.
-          callback: function(result) {
-            if (result) {
-              if (window!=window.top) {
-                window.open(url, '_blank');
-              } else {
-                window.location = url;
+        var service = $(this).prev().html();
+            e.preventDefault();
+            bootbox.dialog({
+              title: 'We need you to allow Fruit Dashboard access.',
+              message: 'To connect ' + service + ', we will redirect you to their site.',
+              buttons: {
+                cancel: {
+                  label: 'Cancel',
+                  className: 'btn-default',
+                  callback: function(){}
+                },
+                main: {
+                  label: 'Take me to ' + service,
+                  className: 'btn-primary',
+                  callback: function(result) {
+                    if (result) {
+                      if (window!=window.top) {
+                        window.open(url, '_blank');
+                      } else {
+                        window.location = url;
+                      }
+                    }
+                  }
+                }  
               }
-            }
-          }
-        });
-      });
+            });
+          });
 
-    })
+        })
   </script>
   
 

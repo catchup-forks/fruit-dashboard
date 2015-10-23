@@ -14,16 +14,24 @@ class Widget extends Eloquent
     public $timestamps = FALSE;
 
     /* These variables will be overwritten, with late static binding. */
-    protected static $settingsFields = array();
-    protected static $setupSettings = array();
+    protected static $settingsFields   = array();
+    protected static $setupSettings    = array();
     protected static $criteriaSettings = array();
 
+    /* Use only for association. */
+    public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
+
     /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor'); }
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
-    public function user() { return $this->dashboard->user; }
+    public function user() {
+        return User::remember(120)->find($this->dashboard->user_id);
+    }
 
+    /* Optimized method, not using DB query */
+    public function getDescriptor() {
+        return WidgetDescriptor::find($this->descriptor_id);
+    }
 
     /**
      * ================================================== *
@@ -39,7 +47,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getMinRows() {
-        return $this->descriptor->min_rows;
+        return $this->getDescriptor()->min_rows;
     }
 
     /**
@@ -50,7 +58,21 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getMinCols() {
-        return $this->descriptor->min_cols;
+        return $this->getDescriptor()->min_cols;
+    }
+
+    /**
+     * renderable
+     * Returns whether or not the widget is renderable.
+     * --------------------------------------------------
+     * @return int
+     * --------------------------------------------------
+    */
+    public function renderable() {
+        if ($this->state == 'active') {
+            return TRUE;
+        }
+        return FALSE;
     }
 
     /**
@@ -61,14 +83,18 @@ class Widget extends Eloquent
      * --------------------------------------------------
      */
     public function canSendInNotification() {
-        return !(in_array($this->descriptor->category, SiteConstants::getSkippedCategoriesInNotification()));
+        return !(in_array($this->getDescriptor()->category, SiteConstants::getSkippedCategoriesInNotification()));
     }
 
     /**
      * checkIntegrity
-     * Checking the widgets settings integrity, and trying to render the view.
+     * Checking the widgets settings integrity.
     */
     public function checkIntegrity() {
+        /* By default we give a chance to recover from rendering_error */
+        if ($this->state == 'rendering_error') {
+            $this->setState('active');
+        }
         $this->checkSettingsIntegrity();
     }
 
@@ -81,6 +107,17 @@ class Widget extends Eloquent
     */
     public static function getSettingsFields() {
         return self::$settingsFields;
+    }
+
+    /**
+     * getErrorCodes
+     * Returning the error codes.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getErrorCodes() {
+        return array();
     }
 
     /**
@@ -117,6 +154,74 @@ class Widget extends Eloquent
     }
 
     /**
+     * getTemplateMeta
+     * Returning data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateMeta() {
+        $position = $this->getPosition();
+        return array(
+            'general' => array(
+                'id'    => $this->id,
+                'type'  => $this->getDescriptor()->type,
+                'state' => $this->state,
+                'row'   => $position->row,
+                'col'   => $position->col,
+                'sizex' => $position->size_x,
+                'sizey' => $position->size_y
+            ),
+            'features' => array(
+                'drag' => true
+            ),
+            'urls' => array(
+              'deleteUrl' => route('widget.delete', $this->id),
+              'postUrl'   => route('widget.ajax-handler', $this->id) // AjaxWidgeTrait
+            ),
+            'selectors' => array(
+                'widget'  => '[data-id=' . $this->id . ']',
+                'wrapper' => '#widget-wrapper-' . $this->id,
+                'loading' => '#widget-loading-' . $this->id,
+                'refresh' => '#widget-refresh-' . $this->id,
+            ),
+            'data' => array(
+                'page' => 'dashboard',
+                'init' => 'widgetData' . $this->id
+            )
+        );
+    }
+
+    /**
+     * getDefaultTemplateData
+     * Returning all meta data about the widget.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public static function getDefaultTemplateData($widget) {
+        return array(
+            'settings'   => $widget->getSettings(),
+            'instance'   => $widget,
+            'id'         => $widget->id,
+            'state'      => $widget->state,
+            'position'   => $widget->getPosition(),
+            'descriptor' => $widget->getDescriptor()
+        );
+    }
+
+    /**
+     * getTemplateData
+     * Returning all data that should be passed to the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData() {
+        return self::getDefaultTemplateData($this);
+    }
+
+    /**
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------
@@ -124,23 +229,11 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getSettings() {
-        return json_decode($this->settings, 1);
-    }
-
-    /**
-     * getSpecific
-     * Getting the correct widget from a general widget,
-     * --------------------------------------------------
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function getSpecific($checkIntegrity=FALSE) {
-        $className = WidgetDescriptor::find($this->descriptor_id)->getClassName();
-        $widget = $className::find($this->id);
-        if ($checkIntegrity) {
-            $widget->checkIntegrity();
+        $settings = json_decode($this->settings, 1);
+        if ( ! is_array($settings)) {
+            return array();
         }
-        return $widget;
+        return $settings;
     }
 
     /**
@@ -188,19 +281,26 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function isSettingVisible($fieldName) {
-        $meta = $this->getSettingsFields();
-        if ( ! array_key_exists($fieldName, $meta)) {
+        $settingsFields = $this->getSettingsFields();
+        if ( ! array_key_exists($fieldName, $settingsFields)) {
             /* Key doesn't exist. Don't even try to render it. */
             return FALSE;
         }
-        $fieldMeta = $meta[$fieldName];
-        if (array_key_exists('hidden', $fieldMeta) && $fieldMeta['hidden'] == TRUE) {
+        $fieldMeta = $settingsFields[$fieldName];
+        if (array_key_exists('hidden', $fieldMeta) &&
+                $fieldMeta['hidden'] == TRUE) {
             return FALSE;
         }
 
+        if (array_key_exists('ajax', $fieldMeta) &&
+                $fieldMeta['ajax'] == TRUE) {
+            return TRUE;
+        }
+
         /* Don't show singleChoice if there's only one value */
-        if (($fieldMeta['type'] == 'SCHOICE' || $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
-             count($this->$fieldName()) == 1) {
+        if (($fieldMeta['type'] == 'SCHOICE' ||
+                $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
+                 count($this->$fieldName()) == 1) {
             return FALSE;
         }
 
@@ -247,10 +347,11 @@ class Widget extends Eloquent
      * Getting the laravel validation array.
      * --------------------------------------------------
      * @param array $fields
+     * @param array $data
      * @return array
      * --------------------------------------------------
     */
-    public function getSettingsValidationArray(array $fields) {
+    public function getSettingsValidationArray(array $fields, array $data) {
         $validationArray = array();
 
         foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
@@ -267,7 +368,17 @@ class Widget extends Eloquent
 
             // Doing type based validation.
             switch ($fieldMeta['type']) {
-                case 'SCHOICE':  $validationString .= 'in:' . implode(',',array_keys($this->$fieldName()))."|"; break;
+                case 'SCHOICE':
+                    if (array_key_exists('ajax_depends', $fieldMeta)) {
+                        try {
+                            $choices = array_keys($this->$fieldName($data[$fieldMeta['ajax_depends']]));
+                        } catch (Exception $e) {
+                            $choices = array();
+                        }
+                    } else {
+                        $choices = array_keys($this->$fieldName());
+                    }
+                    $validationString .= 'in:' . implode(',', $choices)."|"; break;
                 case 'INT': $validationString .= 'integer|'; break;
                 case 'FLOAT':  $validationString .= 'numeric|'; break;
                 case 'DATE':  $validationString .= 'date|'; break;
@@ -302,17 +413,13 @@ class Widget extends Eloquent
      * @return int 1: user is premium, -1 fails, 0 default
      * --------------------------------------------------
      */
-     public function premiumUserCheck() {
+     public function premiumUserCheck() {       
         /* Premium users can see everything. */
         if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
             return 1;
+        } else {
+            return 0;
         }
-
-        if ($this->descriptor->is_premium) {
-            return -1;
-        }
-
-        return 0;
      }
 
     /**
@@ -347,6 +454,15 @@ class Widget extends Eloquent
         if ($commit) {
             $this->save(array('skip_settings' => TRUE));
         }
+        
+        /* Returning the changed fields. */ 
+        $changedFields = array();
+        foreach (array_diff($settings, $oldSettings) as $key=>$value) {
+            if ($value) {
+                array_push($changedFields, $key);
+            }
+        }
+        return $changedFields;
 
     }
 
@@ -371,7 +487,7 @@ class Widget extends Eloquent
     }
 
 
-   /* -- Eloquent overridden methods -- */
+    /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
      *
@@ -379,7 +495,10 @@ class Widget extends Eloquent
      * @throws DescriptorDoesNotExist
     */
     public function save(array $options=array()) {
-        if (is_null($this->descriptor)) {
+        /* Notify user about the change */
+        $this->user()->updateDashboardCache();
+
+        if (is_null($this->descriptor_id)) {
             /* Associating descriptor. */
             $widgetDescriptor = WidgetDescriptor::where('type', $this->getType())->first();
 
@@ -409,20 +528,55 @@ class Widget extends Eloquent
     }
 
     /**
+     * newFromBuilder
+     * Override the base Model function to use polymorphism.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    public function newFromBuilder($attributes=array()) {
+        $className = WidgetDescriptor::find($attributes->descriptor_id)
+            ->getClassName();
+        $instance = new $className;
+        $instance->exists = TRUE;
+        $instance->setRawAttributes((array) $attributes, true);
+        return $instance;
+    }
+
+    /**
+     * getErrorMessage
+     * Returning the corresponding error.
+     * --------------------------------------------------
+     * @return string 
+     * --------------------------------------------------
+     */
+    public function getErrorMessage() {
+        $state = $this->state;
+        if (strpos('error_', $state) === 0) {
+            $errorCodes = $this->getErrorCodes();
+            $key = substr($state, strpos($state, '_') + 1);
+            
+            if (array_key_exists($key, $errorCodes)) {
+                return $errorCodes[$key];
+            }
+        }
+        return '';
+    }
+
+    /**
      * checkSettingsIntegrity
      * Checking the Settings integrity of widgets.
     */
     protected function checkSettingsIntegrity() {
-        if (is_null($this->getSettings())) {
-            $this->setState('setup_required');
-            return;
+        $settings = $this->getSettings();
+        if (is_null($settings)) {
+            throw new WidgetException;
         } else if ( ! $this->hasValidCriteria()) {
-            $this->setState('setup_required');
-            return;
+            throw new WidgetFatalException;
         }
-        foreach ($this->getSettingsFields() as $key=>$value) {
-            if ( ! array_key_exists($key, $this->getSettings())) {
-                $this->setState('setup_required');
+        foreach ($this->getSettingsFields() as $key=>$meta) {
+            if ( ! array_key_exists($key, $settings)) {
+                throw new WidgetException;
             }
         }
     }
@@ -443,6 +597,14 @@ class Widget extends Eloquent
         return str_replace('_widget', '', $lowercase);
     }
 
+    /**
+     * Overriding delete to update the user's cache.
+    */
+    public function delete() {
+        /* Notify user about the change */
+        //$this->user()->updateDashboardCache();
+        parent::delete();
+    }
 }
 
 ?>

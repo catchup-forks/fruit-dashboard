@@ -1,8 +1,9 @@
 <?php
 
-abstract class CountWidget extends Widget implements iAjaxWidget
+abstract class CountWidget extends DataWidget implements iAjaxWidget
 {
     use NumericWidgetTrait;
+    use DefaultAjaxWidgetTrait;
     protected static $histogramDescriptor = '';
 
     /* -- Settings -- */
@@ -32,16 +33,32 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * checkIntegrity
-     * Adding manager loading integrity check.
-    */
-    public function checkIntegrity() {
-        parent::checkIntegrity();
-        if ($this->getDataManager()->data->raw_value == 'loading') {
-            $this->setState('loading');
-        } else if ($this->state != 'setup_required') {
-            $this->setState('active');
-        }
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        $values = $this->getData();
+        return array_merge(parent::getTemplateData(), array(
+            'valueDiff'    => $values['diff'],
+            'valueCurrent' => $values['latest'],
+            'format'       => $this->getFormat()
+        ));
+    }
+
+    /**
+     * getTemplateMeta
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateMeta() {
+        $meta = parent::getTemplateMeta();
+        $meta['selectors']['count'] = 'count-' . $this->id;
+        return $meta;
     }
 
     /**
@@ -75,109 +92,40 @@ abstract class CountWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * getDataManager
-     * Returning the corresponding DataManager
-     * --------------------------------------------------
-     * @return DataManager
-     * --------------------------------------------------
-    */
-    public function getDataManager() {
-        /* Getting descriptor. */
-        $descriptor = WidgetDescriptor::where('type', static::$histogramDescriptor)->first();
-        if (is_null($descriptor)) {
-            throw new DescriptorDoesNotExist("The descriptor for " . static::$histogramDescriptor . " does not exist", 1);
-        }
-
-        $managers = $this->user()->dataManagers()->where(
-            'descriptor_id', $descriptor->id)->get();
-
-        foreach ($managers as $generalManager) {
-            $manager = $generalManager->getSpecific();
-            if ($manager->getCriteria() == $this->getCriteria() && $manager instanceof HistogramDataManager) {
-                /* Found a match. */
-                return $manager;
-            }
-        }
-
-        /* No manager found. */
-        if ($this->hasValidCriteria()) {
-            return DataManager::createManager(
-                $this->user(),
-                $descriptor,
-                $this->getCriteria()
-            );
-        }
-
-        return null;
-    }
-
-    /**
-     * getCurrentValue
+     * getData
      * Returning the current value.
      * --------------------------------------------------
+     * @param array $postData
      * @return array
      * --------------------------------------------------
     */
-    public function getCurrentValue() {
+    public function getData($postData=null) {
         /* Getting manager. */
-        $manager = $this->getDataManager();
-        if (is_null($manager)) {
-            return array();
-        }
         $settings = $this->getSettings();
-        return array('latest' => $manager->getLatestValues(), 'diff' => $manager->compare($settings['period'], $settings['multiplier']));
+        $dataManager = $this->data->getManager();
+        if ($dataManager instanceof MultipleHistogramDataManager) {
+            /* If the manager is multiple use single transformation. */
+            $dataManager->setSingle(TRUE);
+        }
+
+        $dataManager->setResolution($settings['period']);
+        $dataManager->setLength($settings['multiplier'] + 1);
+
+        return array(
+            'latest' => $this->data->getLatestValues(),
+            'diff'   => $this->data->compare());
     }
 
     /**
-     * handleAjax
-     * Handling general ajax request.
-     * --------------------------------------------------
-     * @param array $postData
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function handleAjax($postData) {
-        if (isset($postData['state_query']) && $postData['state_query']) {
-            /* Get state query signal */
-            if ($this->state == 'loading') {
-                return array('ready' => FALSE);
-            } else if($this->state == 'active') {
-                return array(
-                    'ready' => TRUE,
-                    'data'  => $this->getCurrentValue($postData)
-                );
-            } else {
-                return array('ready' => FALSE);
-            }
-        }
-        if (isset($postData['refresh_data']) && $postData['refresh_data']) {
-            /* Refresh signal */
-            try {
-                $this->refreshWidget();
-            } catch (ServiceException $e) {
-                Log::error($e->getMessage());
-                return array('status'  => FALSE,
-                             'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
-            }
-        }
+     * assignData
+     * Assigning the data to the widget.
+     */
+    public function assignData() {
+        $descriptor = WidgetDescriptor::rememberForever()
+            ->where('type', static::$histogramDescriptor)
+            ->first();
+        $this->data()->associate($descriptor->getDataObject($this));
     }
 
-    /**
-     * Refreshing the widget data.
-     * --------------------------------------------------
-     * @return string
-     * --------------------------------------------------
-    */
-    public function refreshWidget() {
-        $this->state = 'loading';
-        $this->save();
-
-        /* Refreshing widget data. */
-        $this->getDataManager()->collectData();
-
-        /* Faling back to active. */
-        $this->state = 'active';
-        $this->save();
-    }
 }
 ?>

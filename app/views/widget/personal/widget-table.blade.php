@@ -1,1 +1,1 @@
- @include('widget.widget-general-table', ['widget' => $widget])
+ @include('widget.widget-general-table')

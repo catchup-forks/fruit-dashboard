@@ -12,9 +12,8 @@ class ChangePropertyToProfileOnGoogleWidgets extends Migration {
      */
     public function up()
     {
-        foreach (Widget::all() as $generalWidget) {
+        foreach (Widget::all() as $widget) {
             try {
-                $widget = $generalWidget->getSpecific();
                 if ( ! in_array('GoogleAnalyticsWidgetTrait', class_uses($widget))) {
                     /* Not a GA DM. */
                     continue;
@@ -37,7 +36,7 @@ class ChangePropertyToProfileOnGoogleWidgets extends Migration {
                 Log::info("Added GA profile to widget #" . $widget->id);
 
             } catch (Exception $e) {
-                Log::error('Error found while running migration: ' . get_class($this) . ' on Widget #' . $generalWidget->id . '. message: ' . $e->getMessage());
+                Log::error('Error found while running migration: ' . get_class($this) . ' on Widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
         }
     }

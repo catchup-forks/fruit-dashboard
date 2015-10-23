@@ -9,6 +9,11 @@
   cursor: pointer;
 }
 
+.opaque {
+  opacity: 0.8;
+  filter: alpha(opacity=80); /* For IE8 and earlier */
+}
+
 .clickable {
   cursor: pointer;
 }
@@ -31,6 +36,18 @@
   text-overflow: ellipsis;
 }
 
+.static {
+  overflow: scroll;
+}
+
 .reset-line-height {
   line-height: normal;
+}
+
+.smaller-text {
+  font-size: 90%;
+}
+
+.larger-text {
+  font-size: 120%
 }

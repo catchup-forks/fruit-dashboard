@@ -18,7 +18,7 @@ class MetricsController extends BaseController
     /**
      * getUserCount
      * --------------------------------------------------
-     * @return Returns the number of users 
+     * @return Returns the number of users
      *          by different dimensions in json
      * --------------------------------------------------
      */
@@ -32,7 +32,7 @@ class MetricsController extends BaseController
         /* Get active users */
         $activeUsers = 0;
         foreach (User::all() as $user) {
-            $diff = Carbon::now()->diffInDays(Carbon::parse($user->last_activity));
+            $diff = Carbon::now()->diffInDays(Carbon::parse($user->settings->last_activity));
             if ($diff <= 30) {
                 $activeUsers += 1;
             }
@@ -63,7 +63,7 @@ class MetricsController extends BaseController
     /**
      * getVanityCount
      * --------------------------------------------------
-     * @return Returns the vanity number(s) 
+     * @return Returns the vanity number(s)
      *          by different dimensions in json
      * --------------------------------------------------
      */
@@ -80,11 +80,10 @@ class MetricsController extends BaseController
         /* Get number of datapoints */
         $numberOfDataPoints = 0;
         foreach (User::all() as $user) {
-            foreach ($user->widgets as $widget) {
-                try {
-                    $numberOfDataPoints += count($widget->getSpecific()->getData());
-                } catch (Exception $e) {
-                    continue;
+            foreach ($user->dataObjects as $dataObject) {
+                $manager = $dataObject->getManager();
+                if ($manager instanceof HistogramDataManager) {
+                    $numberOfDataPoints += count($manager->getEntries());
                 }
             }
         }
@@ -162,7 +161,7 @@ class MetricsController extends BaseController
 
             /* Iterate through all widgets */
             foreach (Widget::all() as $widget) {
-                $key = $widget->descriptor->category;
+                $key = $widget->getDescriptor()->category;
                 if (array_key_exists($key, $services)) {
                     $data[$services[$key]] += 1;
                 }
@@ -172,11 +171,79 @@ class MetricsController extends BaseController
         } else {
             $widgetcount = 0;
             foreach (Widget::all() as $widget) {
-                if ($widget->descriptor->category == $service) {
+                if ($widget->getDescriptor()->category == $service) {
                     $widgetcount += 1;
                 }
             }
             $data[$service] = $widgetcount;
+        }
+
+        /* Return json */
+        return Response::json($data);
+    }
+
+    /**
+     * getHasActiveWidgetCount
+     * --------------------------------------------------
+     * @return Returns the number of users who have at least
+     *          one active widget with the provided service
+     * --------------------------------------------------
+     */
+    public function getHasActiveWidgetCount($service) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
+
+        /* Get all connections by services */
+        if ($service == 'all') {
+            /* Build initial services and initial data */
+            $initialServices = array();
+            foreach (SiteConstants::getAllGroupsMeta() as $serviceMeta) {
+                $data[$serviceMeta['display_name']] = 0;
+                $initialServices[$serviceMeta['name']] = array(
+                    'display_name' => $serviceMeta['display_name'],
+                    'value' => FALSE
+                );
+            }
+
+            /* Iterate through all users */
+            foreach (User::all() as $user) {
+                /* Copy initialServices to currentServices */
+                $currentServices = $initialServices;
+                /* Iterate through the widgets of the user */
+                foreach ($user->widgets as $widget) {
+                    $key = $widget->getDescriptor()->category;
+                    if (array_key_exists($key, $currentServices)) {
+                        /* Check active connection */
+                        if ($widget->state == 'active') {
+                            $currentServices[$key]['value'] = TRUE;
+                        }
+                    }
+                }
+
+                /* Add current connections to data */
+                foreach ($currentServices as $currentService) {
+                    $data[$currentService['display_name']] += (int)$currentService['value'];
+                }
+            }
+
+        /* Get connections only for one service */
+        } else {
+            $data[$service] = 0;
+            /* Iterate through all users */
+            foreach (User::all() as $user) {
+                $serviceActive = FALSE;
+                /* Iterate through the widgets of the user */
+                foreach ($user->widgets as $widget) {
+                    /* Check active connection */
+                    if (($widget->getDescriptor()->category == $service) and
+                        ($widget->state == 'active')) {
+                        $serviceActive = TRUE;
+                    }
+
+                }
+                /* Add active connection to data */
+                $data[$service] += (int)$serviceActive;
+            }
         }
 
         /* Return json */

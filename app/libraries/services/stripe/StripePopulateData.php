@@ -33,11 +33,11 @@ class StripePopulateData
     private $user = null;
 
     /**
-     * The dataManagers.
+     * The dataObjects.
      *
      * @var array
      */
-    private $dataManagers = null;
+    private $dataObjects = null;
 
     /**
      * Main job handler.
@@ -46,10 +46,10 @@ class StripePopulateData
         $this->user = User::find($data['user_id']);
         $time = microtime(TRUE);
         Log::info("Starting Stripe data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
+        $this->dataObjects = $this->getDataObjects();
         $this->calculator = new StripeCalculator($this->user);
         $this->events = $this->calculator->getCollector()->getEvents();
         $this->filterEvents();
-        $this->dataManagers = $this->getManagers();
         $this->populateData();
         Log::info("Stripe data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
         $job->delete();
@@ -62,12 +62,12 @@ class StripePopulateData
         /* Creating data for the last DAYS days. */
         $metrics = $this->getMetrics();
 
-        $this->dataManagers['stripe_mrr']->saveData($metrics['mrr']);
-        $this->dataManagers['stripe_arr']->saveData($metrics['arr']);
-        $this->dataManagers['stripe_arpu']->saveData($metrics['arpu']);
+        $this->dataObjects['stripe_mrr']->saveData($metrics['mrr']);
+        $this->dataObjects['stripe_arr']->saveData($metrics['arr']);
+        $this->dataObjects['stripe_arpu']->saveData($metrics['arpu']);
 
-        foreach ($this->dataManagers as $manager) {
-            $manager->setWidgetsState('active');
+        foreach ($this->dataObjects as $manager) {
+            $manager->setState('active');
         }
     }
 
@@ -75,18 +75,17 @@ class StripePopulateData
      * Getting the DataManagers
      * @return array
      */
-    private function getManagers() {
-        $dataManagers = array();
+    private function getDataObjects() {
+        $dataObjects = array();
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
-            if ($dataManager->descriptor->category == 'stripe') {
-                /* Setting dataManager. */
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+        foreach ($this->user->dataObjects as $dataObject) {
+            if ($dataObject->getDescriptor()->category == 'stripe') {
+                /* Setting dataObject. */
+                $dataObjects[$dataObject->getDescriptor()->type] = $dataObject;
             }
         }
 
-        return $dataManagers;
+        return $dataObjects;
     }
 
     /**
@@ -206,7 +205,6 @@ class StripePopulateData
             'discount'        => $subscriptionData['discount'],
             'trial_start'     => $subscriptionData['trial_start'],
             'trial_end'       => $subscriptionData['trial_end'],
-            'discount'        => $subscriptionData['discount']
         ));
 
         // Creating the plan if necessary.

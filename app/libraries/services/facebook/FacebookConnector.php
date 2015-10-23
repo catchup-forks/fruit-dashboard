@@ -161,10 +161,16 @@ class FacebookConnector extends GeneralServiceConnector
         $helper = $fb->getRedirectLoginHelper();
 
         /* Retrieving access token */
-        if (App::environment('local')) {
-            $accessToken = $helper->getAccessToken(str_replace(8000, 8001, URL::full()));
-        } else {
-            $accessToken = $helper->getAccessToken();
+        try {
+            if (App::environment('local')) {
+                $accessToken = $helper->getAccessToken(str_replace(8000, 8001, URL::full()));
+            } else {
+                $accessToken = $helper->getAccessToken();
+            }
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            throw new ServiceException("Facebook connection error.", 1);
+
         }
 
         /* Retrieving user info. */
@@ -194,6 +200,26 @@ class FacebookConnector extends GeneralServiceConnector
         }
     }
 
+    /**
+     * createDataObjects
+     * Adding page activation.
+     * --------------------------------------------------
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    public function createDataObjects(array $criteria=array()) {
+        /* Getting page. */
+        $page = $this->user->facebookPages()
+            ->where('id', $criteria['page'])->first();
+        if (is_null($page)) {
+            throw new ServiceException("Selected page not found.", 1);
+        }
+        /* Setting page to active. */
+        $page->active = TRUE;
+        $page->save();
+
+        return parent::createDataObjects($criteria);
+    }
 
     /**
      * disconnect
@@ -205,21 +231,7 @@ class FacebookConnector extends GeneralServiceConnector
     public function disconnect() {
         parent::disconnect();
         /* deleting all plans. */
-        FacebookPage::where('user_id', $this->user->id)->delete();
-    }
-
-    /**
-     * populateData
-     * --------------------------------------------------
-     * Collecting the initial data from the service.
-     * @param array $criteria
-     * --------------------------------------------------
-     */
-    protected function populateData($criteria) {
-        Queue::push('FacebookPopulateData', array(
-            'user_id'  => $this->user->id,
-            'criteria' => $criteria
-        ));
+        $this->user->facebookPages()->delete();
     }
 
 } /* FacebookConnector */

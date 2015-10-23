@@ -36,12 +36,7 @@ Widget stats
                   <div role="tabpanel" class="tab-pane fade col-md-12" id="singlestat-{{ $resolution }}">
                     {{-- Check Premium feature and disable charts if needed --}}
                     @if (!Auth::user()->subscription->getSubscriptionInfo()['PE'])
-                      {{-- Allow the default chart, disable others --}}
-                      @if ($resolution != $widget->getSettingsFields()['resolution']['default'])
-                        @include('singlestat.singlestat-premium-feature-needed')
-                      @else
-                        @include('singlestat.singlestat-element')
-                      @endif
+                      @include('singlestat.singlestat-premium-feature-needed')
                     @else
                       @include('singlestat.singlestat-element')
                     @endif
@@ -67,20 +62,11 @@ Widget stats
   @stop
 
   @section('pageScripts')
-
-  <!-- FDGeneral* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/FDCanvas.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChart.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('lib/FDChartOptions.js') }}"></script>
-  <!-- /FDGeneral* classes -->
-
-  <!-- FDAbstractWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/FDHistogramWidget.js') }}"></script>
-  <!-- /FDAbstractWidget* classes -->
-
-  <!-- FDWidget* classes -->
-  <script type="text/javascript" src="{{ URL::asset('lib/widgets/'.$widget->descriptor->category.'/FD'. Utilities::underscoreToCamelCase($widget->descriptor->type).'Widget.js') }}"></script>
-  <!-- /FDWidget* classes -->
+  <!-- FDJSlibs merged -->
+  {{ Minify::javascriptDir('/lib/general') }}
+  {{ Minify::javascriptDir('/lib/widget-wrapper') }}
+  {{ Minify::javascriptDir('/lib/widgets') }}
+  <!-- FDJSlibs merged -->
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">
@@ -90,11 +76,12 @@ Widget stats
 
   <script type="text/javascript">
     @foreach ($widget->resolution() as $resolution=>$value)
+
       var widgetOptions{{ $resolution }} = {
           general: {
             id:    '{{ $widget->id }}',
             name:  '{{ $widget->name }}',
-            type:  '{{ $widget->descriptor->type }}',
+            type:  '{{ $widget->getDescriptor()->type }}',
             state: '{{ $widget->state }}',
           },
           features: {
@@ -108,14 +95,17 @@ Widget stats
           data: {
             page: 'singlestat',
             init: 'widgetData{{ $resolution }}',
-          }
+          },
+          layout: 'chart'
       }
 
       var widgetData{{ $resolution }} = {
-        'labels': [@foreach ($widget->getData()['labels'] as $datetime) "{{$datetime}}", @endforeach],
+        'isCombined' : @if($widget->getData(['resolution'=>$resolution])['isCombined']) true @else false @endif,
+        'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
-        @foreach ($widget->getData()['datasets'] as $dataset)
+        @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
           {
+              'type' : '{{ $dataset['type'] }}',
               'values' : [{{ implode(',', $dataset['values']) }}],
               'name':  "{{ $dataset['name'] }}",
               'color': "{{ $dataset['color'] }}"
@@ -127,11 +117,17 @@ Widget stats
 
     $(document).ready(function () {
       // Show first tab
-      $('.nav-pills a:first').tab('show');
+      //$('.nav-pills a:first').tab('show');
+      // Show weeks Tab
+      $('.nav-pills a').each(function(index,element){
+        if($(element).data('resolution')=='{{ $widget->getSettings()["resolution"] }}') {
+          $(element).tab('show');
+        }
+      });
 
       // Create graph objects
       @foreach ($widget->resolution() as $resolution=>$value)
-        FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->descriptor->type)}}Widget'](widgetOptions{{ $resolution }});
+        FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->getDescriptor()->type)}}Widget'](widgetOptions{{ $resolution }});
       @endforeach
 
       // Show graph on change

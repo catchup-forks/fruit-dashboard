@@ -15,14 +15,12 @@ class DatabaseSeeder extends Seeder {
 
         /* CONFIG::LOCAL ONLY */
         if (App::environment('local')) {
-            Eloquent::unguard();
-            $this->call('UserSeeder');
+            /* Nothing here */
 
         /* CONFIG::DEVELOPMENT ONLY */
         } else if (App::environment('development')) {
-            Eloquent::unguard();
-            $this->call('UserSeeder');
-
+            /* Nothing here */
+            
         /* CONFIG::STAGING ONLY */
         } else if (App::environment('staging')) {
             /* Nothing here */

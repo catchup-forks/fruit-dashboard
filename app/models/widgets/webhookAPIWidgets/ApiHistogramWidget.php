@@ -10,6 +10,12 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             'help_text'  => 'The widget data will be posted to this url.',
             'disabled'   => TRUE
         ),
+        'name' => array(
+            'name'       => 'Name',
+            'type'       => 'TEXT',
+            'validation' => 'required',
+            'help_text'  => 'The name of the widget.',
+        ),
    );
 
     /* The settings to setup in the setup-wizard. */
@@ -21,6 +27,20 @@ class ApiHistogramWidget extends MultipleHistogramWidget
         $hourly = array('hours' => 'Hourly');
         return array_merge($hourly, parent::resolution());
     }*/
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        if ( ! $this->hasData()) {
+            return self::getDefaultTemplateData($this);
+        } 
+        return parent::getTemplateData();
+    }
 
     /**
      * getSettingsFields
@@ -65,7 +85,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      public function getWidgetApiUrl() {
         return route('api.post',
                     array(SiteConstants::getLatestApiVersion(),
-                          $this->user()->api_key,
+                          $this->user()->settings->api_key,
                           $this->id));
      }
 
@@ -88,6 +108,26 @@ class ApiHistogramWidget extends MultipleHistogramWidget
          /* Return */
          return parent::save();
      }
+
+    /**
+     * hasData
+     * Returns whether or not there's data in the histogram.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+     public function hasData() {
+
+         $data = $this->data->decode();
+         if ($data == FALSE) {
+             return FALSE;
+          }
+          if ( ( ! array_key_exists('datasets', $data)) ||
+              ($data['datasets'] == FALSE)) {
+              return FALSE ;
+          }
+          return TRUE;
+    }
 
 }
 ?>

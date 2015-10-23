@@ -259,7 +259,7 @@
                         </small>
                     @endif
 
-                    {{ $service['display_name'] }}
+                    <span class="service-name">{{ $service['display_name'] }}</span>
                     <span class="pull-right">
                     @if(Auth::user()->isServiceConnected($service['name']))
                         <button class="btn btn-xs btn-danger">
@@ -299,19 +299,30 @@
       // Service redirection
       $('.connect-redirect').click(function(e) {
         var url = $(this).attr('href');
+        var service = $(this).find('.service-name').html();
         e.preventDefault();
-        bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
-          message: 'To connect the service, we will redirect you to their site. Are you sure?',
-          // On clicking OK redirect to fruit dashboard add widget page.
-          callback: function(result) {
-            if (result) {
-              if (window!=window.top) {
-                window.open(url, '_blank');
-              } else {
-                window.location = url;
+        bootbox.dialog({
+          title: 'We need you to allow Fruit Dashboard access.',
+          message: 'To connect ' + service + ', we will redirect you to their site.',
+          buttons: {
+            cancel: {
+              label: 'Cancel',
+              className: 'btn-default',
+              callback: function(){}
+            },
+            main: {
+              label: 'Take me to ' + service,
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  if (window!=window.top) {
+                    window.open(url, '_blank');
+                  } else {
+                    window.location = url;
+                  }
+                }
               }
-            }
+            }  
           }
         });
       });

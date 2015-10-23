@@ -19,11 +19,10 @@ class Notification extends Eloquent
     );
 
     /* -- No timestamps -- */
-    public $timestamps = false; 
+    public $timestamps = false;
 
     /* -- Relations -- */
     public function user() { return $this->belongsTo('User'); }
-
 
     /**
      * ================================================== *
@@ -32,110 +31,36 @@ class Notification extends Eloquent
      */
 
     /**
-     * fire
+     * newFromBuilder
+     * Override the base Model function to use polymorphism.
      * --------------------------------------------------
-     * @return Fires the notification event
+     * @param array $attributes
      * --------------------------------------------------
      */
-    public function fire() {
-        /* Send notification based on its type */
-        switch ($this->type) {
-            case 'slack':
-                $this->sendSlackNotification();
-                break;
-            case 'email':
-            default:
-                $this->sendEmailNotification();
-                break;
-        }
+    public function newFromBuilder($attributes=array()) {
+        $className = ucfirst($attributes->type).'Notification';
+        $instance = new $className;
+        $instance->exists = TRUE;
+        $instance->setRawAttributes((array) $attributes, true);
+        return $instance;
     }
 
     /**
-     * ================================================== *
-     *                   PRIVATE SECTION                  *
-     * ================================================== *
-     */
-    /**
-     * sendEmailNotification
+     * getSelectedWidgets
+     * Returns an array of the selected widgets.
      * --------------------------------------------------
-     * @return Sends a notification in email.
+     * @return array
      * --------------------------------------------------
      */
-    private function sendEmailNotification() {
-        /* Build Widgets data */
-        $widgetsData = $this->buildWidgetsDataForEmail();
-
-        /* Send Customer IO event */
-        $tracker = new CustomerIOTracker();
-        $eventData = array(
-            'en' => '<TRIGGER>SendSummaryEmail',
-            'md' => array(
-                'frequency' => $this->frequency,
-                'data'      => $widgetsData,
-            ),
-        );
-        $tracker->sendEvent($eventData);
-
-        /* Return */
-        return TRUE;
-    }
-
-    /**
-     * sendSlackNotification
-     * --------------------------------------------------
-     * @return Sends a notification to slack.
-     * --------------------------------------------------
-     */
-    private function sendSlackNotification() {
-        /* Return */
-        return TRUE;
-    }
-
-    /**
-     * buildWidgetsDataForEmail
-     * --------------------------------------------------
-     * @return Builds the widgets data for the eamil notification
-     * --------------------------------------------------
-     */
-    private function buildWidgetsDataForEmail() {
-        $finalData = array();
-
-        /* Iterate through dashboards */
-        foreach ($this->user->dashboards as $dashboard) {
-            $dashboardData = array(
-                'name' => $dashboard->name,
-                'widgets' => array()
-            );
-
-            /* Iterate through widgets */
-            foreach ($dashboard->widgets as $widget) {
-                /* Skip not enabled widgets */
-                if (!$widget->canSendInNotification()) {
-                    continue;
-                }
-
-                /* Skip not selected widgets */
-                if (!in_array($widget->id, json_decode($this->selected_widgets))) {
-                    continue;
-                }
-
-                $widgetData = array(
-                    'url'   => 'http://code.openark.org/forge/wp-content/uploads/2010/02/mycheckpoint-dml-chart-hourly-88-b.png',
-                    'name'  => $widget->getSettings()['name'],
-                );
-
-                /* Append widget data to dashboard data */
-                array_push($dashboardData['widgets'], $widgetData);
-            }
-
-            /* Append dashboard data to final data if there are enabled widgets */
-            if (count($dashboardData['widgets'])) {
-                array_push($finalData, $dashboardData);
+    public function getSelectedWidgets() {
+        if (is_array($this->selected_widgets)) {
+            return $this->selected_widgets;
+        } else if (is_string($this->selected_widgets)) {
+            $decoded = json_decode($this->selected_widgets);
+            if (is_array($decoded)) {
+                return $decoded;
             }
         }
-
-        /* Return in JSON */
-        return $finalData;
+        return array();
     }
-
 }

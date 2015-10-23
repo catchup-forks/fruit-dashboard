@@ -27,4 +27,9 @@ Route::group([
         'as'     => 'metrics.getWidgetsCount',
         'uses'   => 'MetricsController@getWidgetsCount'
     ]);
+
+    Route::get('has-widget/{service}', [
+        'as'     => 'metrics.hasWidget',
+        'uses'   => 'MetricsController@getHasActiveWidgetCount'
+    ]);
 });

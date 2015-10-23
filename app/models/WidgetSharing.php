@@ -33,7 +33,22 @@ class WidgetSharing extends Eloquent
      * --------------------------------------------------
     */
     public function accept($dashboardId) {
+        /* Right now we auto accept, the sharing. */
         $this->setState('accepted');
+        $this->createSharedWidget($dashboardId);
+    }
+
+    /**
+     * autoCreate
+     * Creating the shared widget.
+     * --------------------------------------------------
+     * @param string $state
+     * @param int $dashboardId
+     * --------------------------------------------------
+    */
+    public function autoCreate($dashboardId) {
+        /* Right now we auto accept, the sharing. */
+        $this->setState('auto_created');
         $this->createSharedWidget($dashboardId);
     }
 
@@ -65,7 +80,7 @@ class WidgetSharing extends Eloquent
         $widget = new SharedWidget(array('state' => 'active'));
 
         /* Getting original descriptor, for positioning. */
-        $originalDescriptor = $this->widget->getSpecific()->descriptor;
+        $originalDescriptor = $this->widget->getDescriptor();
 
         /* Associate the widget to the dashboard */
         $dashboard = Dashboard::find($dashboardId);

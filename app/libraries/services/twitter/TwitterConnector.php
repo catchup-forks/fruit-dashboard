@@ -40,8 +40,26 @@ class TwitterConnector extends GeneralServiceConnector
             $_ENV['TWITTER_CONSUMER_KEY'],
             $_ENV['TWITTER_CONSUMER_SECRET']
         );
+
         /* Getting a request token. */
-        $requestToken = $connection->oauth('oauth/request_token', array('oauth_callback' => route('service.twitter.connect')));
+        $tries = 0;
+        $ready = FALSE;
+        while ( ! $ready && $tries < 4) {
+            try {
+                $requestToken = $connection->oauth(
+                    'oauth/request_token', array(
+                        'oauth_callback' => route('service.twitter.connect')
+                    )
+                );
+                $ready = TRUE;
+            } catch (Exception $e) {
+                sleep(3);
+                $tries++;
+            }
+        }
+        if ($tries == 4) {
+            throw new ServiceException('Could not connect to twitter, please try again later', 1);
+        }
 
         /* Return URI */
         return array(
@@ -144,18 +162,17 @@ class TwitterConnector extends GeneralServiceConnector
         $twitterUser->save();
     }
 
-
     /**
-     * populateData
+     * disconnect
      * --------------------------------------------------
-     * Collecting the initial data from the service.
-     * @param array $criteria
+     * disconnecting the user from facebook.
+     * @throws ServiceNotConnected
      * --------------------------------------------------
      */
-    protected function populateData($criteria) {
-        Queue::push('TwitterPopulateData', array(
-            'user_id' => $this->user->id
-        ));
+    public function disconnect() {
+        parent::disconnect();
+        /* deleting all plans. */
+        $this->user->twitterUsers()->delete();
     }
 
 } /* TwitterConnector */

@@ -59,6 +59,11 @@ Route::group([
         'as'     => 'service.google_analytics.connect',
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsConnect'
     ]);
+    Route::get('google_analytics/get-goals/{profileId}', [
+        'before' => 'auth',
+        'as'     => 'service.google_analytics.get-goals',
+        'uses'   => 'ServiceConnectionController@getGoogleAnalyticsGoals'
+    ]);
     Route::any('google_analytics/disconnect', [
         'before' => 'auth',
         'as'     => 'service.google_analytics.disconnect',

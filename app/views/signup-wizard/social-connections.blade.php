@@ -32,17 +32,14 @@
                   <div class="panel panel-default">
                     <div class="panel-body text-center">
                       {{ HTML::image('img/logos/'.$service['name'].'.png', $service['display_name'], array('class' => 'img-responsive img-rounded')) }}
+                        <span>{{ $service['display_name'] }}</span>
 
                       @if(Auth::user()->isServiceConnected($service['name']))
-
                         <p class="text-success text-center lead margin-top">
                           <span class="fa fa-check"> </span> Connected
                         </p>
-                        
                       @else
-
                         <a href="{{ route($service['connect_route']) }}?createDashboard=1" class="btn btn-primary btn-block margin-top connect-redirect">Connect</a>
-
                       @endif
 
                       <p class="text-muted margin-top">
@@ -62,9 +59,9 @@
 
             <div class="row">
               <div class="col-md-12">
-                <a href="{{ URL::route('signup-wizard.financial-connections') }}" class="btn btn-warning">Back</a>
-                <a href="{{ URL::route('signup-wizard.web-analytics-connections') }}" class="btn btn-primary pull-right">Next</a>
-                <a href="{{ URL::route('signup-wizard.web-analytics-connections') }}" class="btn btn-link pull-right">Skip</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('prev', $currentStep)) }}" class="btn btn-warning">Back</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-primary pull-right">Next</a>
+                <a href="{{ route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('next', $currentStep)) }}" class="btn btn-link pull-right">Skip</a>
               </div> <!-- /.col-md-12 -->
             </div> <!-- /.row -->
 
@@ -88,19 +85,30 @@
       // Service redirection
       $('.connect-redirect').click(function(e) {
         var url = $(this).attr('href');
+        var service = $(this).prev().html();
         e.preventDefault();
-        bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
-          message: 'To connect the service, we will redirect you to their site. Are you sure?',
-          // On clicking OK redirect to fruit dashboard add widget page.
-          callback: function(result) {
-            if (result) {
-              if (window!=window.top) {
-                window.open(url, '_blank');
-              } else {
-                window.location = url;
+        bootbox.dialog({
+          title: 'We need you to allow Fruit Dashboard access.',
+          message: 'To connect ' + service + ', we will redirect you to their site.',
+          buttons: {
+            cancel: {
+              label: 'Cancel',
+              className: 'btn-default',
+              callback: function(){}
+            },
+            main: {
+              label: 'Take me to ' + service,
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  if (window!=window.top) {
+                    window.open(url, '_blank');
+                  } else {
+                    window.location = url;
+                  }
+                }
               }
-            }
+            }  
           }
         });
       });

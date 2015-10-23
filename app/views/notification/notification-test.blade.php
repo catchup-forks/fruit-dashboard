@@ -62,12 +62,17 @@
                     @if ($widget->canSendInNotification())
                       <div class="checkbox">
                         <label>
-                          @if (in_array($widget->id, json_decode($notification->selected_widgets)))
-                            <input name="widget-{{ $widget->id }}" type="checkbox" checked> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
-                              <a class="btn btn-default btn-xs" href="{{ route('widget.to-image', [$widget->id]) }}">(download image)</a>
-                          @else
+                          @if (is_null($notification->selected_widgets))
                             <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
                             <a class="btn btn-default btn-xs" href="{{ route('widget.to-image', [$widget->id]) }}">(download image)</a>
+                          @else
+                            @if (in_array($widget->id, json_decode($notification->selected_widgets)))
+                              <input name="widget-{{ $widget->id }}" type="checkbox" checked> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
+                                <a class="btn btn-default btn-xs" href="{{ route('widget.to-image', [$widget->id]) }}">(download image)</a>
+                            @else
+                              <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
+                              <a class="btn btn-default btn-xs" href="{{ route('widget.to-image', [$widget->id]) }}">(download image)</a>
+                            @endif
                           @endif
                         </label>
                       </div>

@@ -12,33 +12,182 @@
 */
 class SiteConstants {
     /* -- Class properties -- */
+
+    /* Gridster */
     private static $gridNumberOfCols  = 12;
     private static $gridNumberOfRows  = 12;
     private static $widgetMargin      = 5;
-    private static $morningStartsAt   = 5;
-    private static $afternoonStartsAt = 13;
-    private static $eveningStartsAt   = 17;
-    private static $nightStartsAt     = 22;
-    private static $trialPeriodInDays = 14;
+
+    /* Trial period */
+    private static $trialPeriodInDays = 30;
+
+    /* Signup wizard */
+    private static $signupWizardSteps = array(
+        'company-info'          => 'company-info',
+        'google-analytics'      => array(
+            'google-analytics-connection',
+            'google-analytics-profile',
+            'google-analytics-goal',
+        ),
+        'social-connections'    => 'social-connections',
+        'financial-connections' => 'financial-connections',
+        'finished'              => 'finished',
+    );
+
+    private static $signupWizardStartupTypes = array(
+        'SaaS'         => 'SaaS | Software-as-a-service products for small and medium sized businesses.',
+        'Ecommerce'    => 'Ecommerce | Online shops selling goods to consumers.',
+        'Enterprise'   => 'Enterprise | Products for large enterprise customers.',
+        'Ads/Leadgen'  => 'Ads/Leadgen | Some users pay you to access the premium features.',
+        'Freemium'     => 'Freemium | Consumer-oriented products with freemium monetization model.',
+        'Marketplaces' => 'Marketplaces | Products that connect sellers with buyers.',
+        'Other'        => 'Other'
+    );
+
+    private static $signupWizardCompanySize = array(
+        '1-5'    => '1-5',
+        '5-10'   => '5-10',
+        '10-20'  => '10-20',
+        '20-50'  => '20-50',
+        '50-100' => '50-100',
+        '100+'   => '100+'
+    );
+
+    private static $signupWizardCompanyFunding = array(
+        'Bootstrapped'            => 'Bootstrapped',
+        'Incubator / Accelerator' => 'Incubator / Accelerator',
+        'Angel'                   => 'Angel',
+        'Seed'                    => 'Seed',
+        'Series A'                => 'Series A',
+        'Series B'                => 'Series B',
+        'Series C'                => 'Series C',
+        'Other'                   => 'Other'
+    );
+
+    /* Dashboard cache */
+    private static $dashboardCacheMinutes = 60;
+
+    /* Auto dashboards */
+    private static $autoDashboards = array(
+        'Acquisition' => array(
+            array(
+                'type'     => 'google_analytics_users',
+                'position' => '{"row":1,"col":1,"size_x":3,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/unique-visitors-chart.png'
+            ),
+            array(
+                'type'     => 'google_analytics_users',
+                'position' => '{"row":6,"col":1,"size_x":3,"size_y":5}',
+                'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/unique-visitors-table.png'
+            ),
+            array(
+                'type'     => 'google_analytics_goal_completion',
+                'position' => '{"row":1,"col":4,"size_x":3,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/goal-completions-chart.png'
+            ),
+            array(
+                'type'     => 'google_analytics_goal_completion',
+                'position' => '{"row":6,"col":4,"size_x":3,"size_y":5}',
+                'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/goal-completions-table.png'
+            ),
+            array(
+                'type'     => 'google_analytics_conversions',
+                'position' => '{"row":1,"col":8,"size_x":3,"size_y":5}',
+                'settings' => array('type' => 'table', 'length' => 5),
+                'pic_url'  => 'img/demonstration/promo/conversions-table.png'
+            ),
+        ),
+        'Activation' => array(
+            array(
+                'type'     => 'facebook_likes',
+                'position' => '{"col":1,"row":1,"size_x":3,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/facebook-likes-chart.png'
+            ),
+            array(
+                'type'     => 'twitter_followers_count',
+                'position' => '{"col":4,"row":1,"size_x":3,"size_y":5}',
+                'settings' => array('period' => 'days', 'multiplier' => 1),
+                'pic_url'  => 'img/demonstration/promo/twitter-followers-count.png'
+            ),
+            array(
+                'type'     => 'twitter_mentions',
+                'position' => '{"col":7,"row":1,"size_x":3,"size_y":5}',
+                'settings' => array('count' => 5),
+                'pic_url'  => 'img/demonstration/promo/twitter-mentions.png'
+            ),
+        ),
+        //'Retention' => array(),
+        'Revenue' => array(
+            array(
+                'type'     => 'stripe_mrr',
+                'position' => '{"col":1,"row":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/monthly-recurring-revenue-chart.png'
+            ),
+            array(
+                'type'     => 'stripe_arr',
+                'position' => '{"col":5,"row":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/annual-recurring-revenue-chart.png'
+            ),
+            array(
+                'type'     => 'stripe_arpu',
+                'position' => '{"col":9,"row":1,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/average-revenue-per-user-chart.png'
+            ),
+            array(
+                'type'     => 'braintree_mrr',
+                'position' => '{"col":1,"row":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/monthly-recurring-revenue-chart.png'
+            ),
+            array(
+                'type'     => 'braintree_arr',
+                'position' => '{"col":5,"row":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/annual-recurring-revenue-chart.png'
+            ),
+            array(
+                'type'     => 'braintree_arpu',
+                'position' => '{"col":9,"row":6,"size_x":4,"size_y":5}',
+                'settings' => array('type' => 'chart'),
+                'pic_url'  => 'img/demonstration/promo/average-revenue-per-user-chart.png'
+            ),
+        ),
+        //'Referral' => array()
+    );
+    private static $sharedWidgetsDashboardName = 'Shared widgets';
+
+    /* Services and connections */
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
+    private static $facebookPopulateDataDays = 60;
+    private static $googleAnalyticsLaunchDate = '2005-01-01';
+
+    /* Notifications */
     private static $skipCategoriesInNotification = array('personal');
-    private static $singleStatHistoryDiffs = array(
-        'days'   => array(30, 7, 1),
-        'weeks'  => array(12, 4, 1),
-        'months' => array(6, 3, 1),
-        'years'  => array(5, 3, 1),
+    private static $slackColors = array(
+        '#BADA55',
+        '#ABCDE',
+        '#FFBB66',
     );
 
-    private static $startupTypes = array(
-        'SaaS'         => 'Software-as-a-service products for small and medium sized businesses.',
-        'Ecommerce'    => 'Online shops selling goods to consumers.',
-        'Enterprise'   => 'Products for large enterprise customers.',
-        'Ads/Leadgen'  => 'Some users pay you to access the premium features.',
-        'Freemium'     => 'Consumer-oriented products with freemium monetization model.',
-        'Marketplaces' => 'Products that connect sellers with buyers.'
+
+    /* Graphs and measures stat */
+    private static $singleStatHistoryDiffs = array(
+        'days'   => array(1, 7, 30),
+        'weeks'  => array(1, 4, 12),
+        'months' => array(1, 3, 6),
+        'years'  => array(1, 3, 5),
     );
+
     private static $chartJsColors = array(
         '105 ,153, 209',
         '77, 255, 121',
@@ -52,8 +201,8 @@ class SiteConstants {
         '77, 255, 210',
         '209, 0, 157',
     );
-    private static $facebookPopulateDataDays = 60;
-    private static $googleAnalyticsLaunchDate = '2005-01-01';
+
+    /* API */
     private static $apiVersions = array('1.0');
 
    /**
@@ -96,40 +245,6 @@ class SiteConstants {
     }
 
     /**
-     * getTimeOfTheDay:
-     * --------------------------------------------------
-     * Returns the time of the day string
-     * @return (string) ($timeOfTheDay) morning, afternoon, evening, night
-     * --------------------------------------------------
-     */
-    public static function getTimeOfTheDay() {
-        /* Get TimeZone aware hour */
-        if (Session::get('timeZone')) {
-            $hour = Carbon::now(Session::get('timeZone'))->hour;
-        /* Error handling (TimeZone is not present, use Server time */
-        } else {
-            $hour = Carbon::now()->hour;
-        }
-
-        /* Morning */
-        if ((self::$morningStartsAt <= $hour) and ($hour < self::$afternoonStartsAt)) {
-            return 'morning';
-
-        /* Afternoon */
-        } elseif ((self::$afternoonStartsAt <= $hour) and ($hour < self::$eveningStartsAt)) {
-            return 'afternoon';
-
-        /* Evening */
-        } elseif ((self::$eveningStartsAt <= $hour) and ($hour < self::$nightStartsAt)) {
-            return 'evening';
-
-        /* Night */
-        } else {
-            return 'night';
-        }
-    }
-
-    /**
      * getChartJsColors:
      * --------------------------------------------------
      * Returning colors for chartJS
@@ -138,6 +253,31 @@ class SiteConstants {
      */
     public static function getChartJsColors() {
         return self::$chartJsColors;
+    }
+
+    /**
+     * getSlackColors:
+     * --------------------------------------------------
+     * Returning colors for slack
+     * @return (array) ($slackColors) slackColors
+     * --------------------------------------------------
+     */
+    public static function getSlackColors() {
+        return self::$slackColors;
+    }
+
+    /**
+     * getSlackColor:
+     * --------------------------------------------------
+     * Returning the corresponging color
+     * @param int $i
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSlackColor($i) {
+        if (is_int($i)) {
+            return self::$slackColors[($i) % count(self::$slackColors)];
+        }
     }
 
     /**
@@ -152,16 +292,105 @@ class SiteConstants {
     }
 
     /**
-     * getStartupTypes:
+     * getSignupWizardStep:
      * --------------------------------------------------
-     * Returns the startup types
-     * @return (integer) ($startupTypes) startupTypes
+     * Returns the next step for the signup wizard
+     * @param (string)  ($index) one of: next, prev, first, last
+     * @param (boolean) ($to_group) true: jumps to next group, false jumps to next item
+     * @param (string) ($currentStep) the current step or empty string
+     * @return (string) ($nextStep) the next step
      * --------------------------------------------------
      */
-    public static function getStartupTypes() {
-        return self::$startupTypes;
+    public static function getSignupWizardStep($index, $currentStep='', $to_group=false) {
+        /* First or last step */
+        if ($index == 'first') {
+            return array_values(self::$signupWizardSteps)[0];
+        } elseif ($index == 'last') {
+            return end(self::$signupWizardSteps);
+        }
+
+        /* Find current step */
+        $groupidx  = null;
+        $itemidx   = null;
+        $keys = array_keys(self::$signupWizardSteps);
+        $i=0;
+        foreach (self::$signupWizardSteps as $group => $items) {
+            if ($currentStep == $group) {
+                $groupidx = $i;
+                break;
+            } elseif (is_array($items) and in_array($currentStep, $items)) {
+                $groupidx = $i;
+                $itemidx  = array_search($currentStep, $items);
+                break;
+            }
+            $i += 1;
+        }
+
+        /* Current step cannot be found */
+        if (is_null($groupidx)) {
+            return null;
+        }
+
+        /* Return next step */
+        if ($index == 'next') {
+            /* Return next sub-group element */
+            if (is_numeric($itemidx) and ($itemidx < count(self::$signupWizardSteps[$keys[$groupidx]])-1) and (!$to_group)) {
+                return self::$signupWizardSteps[$keys[$groupidx]][$itemidx+1];
+            /* Next group has sub-group, return sub-group first */
+            } else if (is_array(self::$signupWizardSteps[$keys[$groupidx+1]])) {
+                return self::$signupWizardSteps[$keys[$groupidx+1]][0];
+            /* Return next group */
+            } else {
+                return self::$signupWizardSteps[$keys[$groupidx+1]];
+            }
+
+        /* Return previous step */
+        } elseif ($index == 'prev') {
+            /* Return prev sub-group element */
+            if (is_numeric($itemidx) and ($itemidx > 0) and (!$to_group)) {
+                return self::$signupWizardSteps[$keys[$groupidx]][$itemidx-1];
+            /* Prev group has sub-group, return sub-group last */
+            } else if (is_array(self::$signupWizardSteps[$keys[$groupidx-1]])) {
+                return end(self::$signupWizardSteps[$keys[$groupidx-1]]);
+            /* Return prev group */
+            } else {
+                return self::$signupWizardSteps[$keys[$groupidx-1]];
+            }
+        }
     }
 
+    /**
+     * getSignupWizardStartupTypes:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (array) ($signupWizardStartupTypes) startupTypes
+     * --------------------------------------------------
+     */
+    public static function getSignupWizardStartupTypes() {
+        return self::$signupWizardStartupTypes;
+    }
+
+    /**
+     * getSignupWizardCompanySize:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (array) ($signupWizardCompanySize) CompanySize
+     * --------------------------------------------------
+     */
+    public static function getSignupWizardCompanySize() {
+        return self::$signupWizardCompanySize;
+    }
+
+    /**
+     * getSignupWizardCompanyFunding:
+     * --------------------------------------------------
+     * Returns the startup types
+     * @return (array) ($signupWizardCompanyFunding) CompanyFunding
+     * --------------------------------------------------
+     */
+    public static function getSignupWizardCompanyFunding() {
+        return self::$signupWizardCompanyFunding;
+    }
 
     /**
      * getTrialPeriodInDays:
@@ -210,7 +439,7 @@ class SiteConstants {
      * @return (array) ($serviceMeta)
      * --------------------------------------------------
      */
-    private static function getServiceMeta($service) {
+    public static function getServiceMeta($service) {
         return array(
             'name'             => $service,
             'display_name'     => Utilities::underscoreToCamelCase($service, TRUE),
@@ -239,7 +468,7 @@ class SiteConstants {
             ),
             array(
                 'name'              => 'webhook_api',
-                'display_name'      => 'API / Webhook',
+                'display_name'      => 'Webhook / API',
                 'type'              => 'custom',
                 'disconnect_route'  => null,
                 'connect_route'     => null
@@ -355,7 +584,7 @@ class SiteConstants {
      * --------------------------------------------------
      */
     public static function getGoogleAnalyticsLaunchDate() {
-        return self::$googleAnalyticsLaunchDate;
+        return Carbon::createFromFormat('Y-m-d', self::$googleAnalyticsLaunchDate);
     }
 
     /**
@@ -367,6 +596,17 @@ class SiteConstants {
      */
     public static function getApiVersions() {
         return self::$apiVersions;
+    }
+
+    /**
+     * getAutoDashboards
+     * --------------------------------------------------
+     * Returns the startup metrics.
+     * @return (array) ($autoDashboards) autoDashboards
+     * --------------------------------------------------
+     */
+    public static function getAutoDashboards() {
+        return self::$autoDashboards;
     }
 
     /**
@@ -393,6 +633,17 @@ class SiteConstants {
     }
 
     /**
+     * getSharedWidgetsDashboardName
+     * --------------------------------------------------
+     * Returns The shared widgets dashboard's name
+     * @return string
+     * --------------------------------------------------
+     */
+    public static function getSharedWidgetsDashboardName() {
+        return self::$sharedWidgetsDashboardName;
+    }
+
+    /**
      * getServicePopulationPeriod
      * --------------------------------------------------
      * Returns how many days back should the populator go.
@@ -402,7 +653,7 @@ class SiteConstants {
     public static function getServicePopulationPeriod() {
         return array(
             'facebook'         => 60,
-            'google_analytics' => 30,
+            'google_analytics' => 60,
             'twitter'          => null,
             'stripe'           => 30,
             'braintree'        => 30,
@@ -418,6 +669,15 @@ class SiteConstants {
      */
     public static function getSkippedCategoriesInNotification() {
         return self::$skipCategoriesInNotification;
+    }
+
+    /**
+     * getDashboardCacheMinutes
+     * Returns the number of minutes, of how long the
+     * dashboard should be stored in the cache.
+     */
+    public static function getDashboardCacheMinutes() {
+        return self::$dashboardCacheMinutes;
     }
 
 } /* SiteConstants */

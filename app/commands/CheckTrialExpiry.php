@@ -34,7 +34,6 @@ class CheckTrialExpiry extends Command {
             
             /* Catch if the user has no subscription (db seed error) */
             if ($subscription == null) {
-                error_log('catched');
                 continue;
             }
 

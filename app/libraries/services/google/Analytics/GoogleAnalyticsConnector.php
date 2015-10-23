@@ -23,7 +23,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
     public function disconnect() {
         parent::disconnect();
         /* deleting all plans. */
-        GoogleAnalyticsProperty::where('user_id', $this->user->id)->delete();
+        $this->user->googleAnalyticsProperties()->delete();
     }
 
     /**
@@ -41,20 +41,43 @@ class GoogleAnalyticsConnector extends GoogleConnector {
         $collector->saveProperties();
     }
 
-
     /**
-     * populateData
-     * Collecting the initial data from the service.
+     * createDataObjects
+     * Adding profile activation.
      * --------------------------------------------------
      * @param array $criteria
      * --------------------------------------------------
      */
-    protected function populateData($criteria) {
-        Queue::push('GoogleAnalyticsPopulateData', array(
-            'user_id'  => $this->user->id,
-            'criteria' => $criteria
+    public function createDataObjects(array $criteria=array()) {
+        /* Getting profile. */
+        $profile = $this->user->googleAnalyticsProfiles()
+            ->where('profile_id', $criteria['profile'])
+            ->first(array('google_analytics_profiles.id'));
+        if (is_null($profile)) {
+            throw new ServiceException("Selected profile not found.", 1);
+        }
 
-        ));
+        if (array_key_exists('goal', $criteria)) {
+            $goal = $profile->goals()
+                ->where('goal_id', $criteria['goal'])
+                ->first();
+            if (is_null($goal)) {
+                throw new ServiceException("Selected goal not found.", 1);
+            }
+            $goal->active = TRUE;
+            $goal->save();
+
+			/* Sending tracking event. */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Activation goal | Connected GA Goal',
+                'el' => $this->user->email)
+            );
+        }
+        /* Setting profile to active. */
+        $profile->active = TRUE;
+        $profile->save();
+
+        return parent::createDataObjects($criteria);
     }
-
 }

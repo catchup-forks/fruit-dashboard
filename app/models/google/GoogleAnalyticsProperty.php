@@ -4,7 +4,7 @@ class GoogleAnalyticsProperty extends Eloquent
 {
     // -- Fields -- //
     protected $fillable = array(
-        'id',
+        'property_id',
         'name',
         'account_id'
     );
@@ -14,4 +14,5 @@ class GoogleAnalyticsProperty extends Eloquent
 
     // -- Relations -- //
     public function user() { return $this->belongsTo('User'); }
+    public function profiles() { return $this->hasMany('GoogleAnalyticsProfile', 'property_id'); }
 }

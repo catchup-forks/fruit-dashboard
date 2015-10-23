@@ -32,6 +32,12 @@ Route::group([
         'uses'   => 'GeneralWidgetController@postSetupWidget'
     ]);
 
+    Route::get('{WidgetId}/setting/ajax/{fieldName}/{value}', [
+        'before' => 'auth',
+        'as'    => 'widget.get-ajax-setting',
+        'uses'  => 'GeneralWidgetController@getAjaxSetting',
+    ]);
+
     Route::any('reset/{widgetID}', [
         'before' => 'auth',
         'as'     => 'widget.reset',
@@ -54,6 +60,12 @@ Route::group([
         'before' => 'auth',
         'as'     => 'widget.doAdd',
         'uses'   => 'GeneralWidgetController@postAddWidget'
+    ]);
+
+    Route::get('add/{descriptorId}/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'widget.add-with-data',
+        'uses'   => 'GeneralWidgetController@getAddWidgetWithData'
     ]);
 
     Route::get('{widgetID}/stats', [
@@ -108,6 +120,12 @@ Route::group([
         'before' => 'auth',
         'as'     => 'widget.to-image',
         'uses'   => 'GeneralWidgetController@anySaveWidgetToImage'
+    ]);
+
+    Route::any('sharing/accept/all', [
+        'before' => 'auth',
+        'as'     => 'widget.accept.all',
+        'uses'   => 'GeneralWidgetController@acceptWidgetSharings'
     ]);
 
 });

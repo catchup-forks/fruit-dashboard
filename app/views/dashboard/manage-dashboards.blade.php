@@ -65,7 +65,7 @@
               @endforeach
               
               <div class="col-sm-6 col-md-4">
-                <div class="add-new text-center no-underline clickable" onclick="$('#add-dashboard-modal').modal('show');">
+                <div class="add-new text-center no-underline clickable larger-text" onclick="$('#add-dashboard-modal').modal('show');">
                   Add new...
                 </div> <!-- /.add-new -->  
               </div> <!-- /.col-sm-6 -->

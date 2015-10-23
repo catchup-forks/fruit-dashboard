@@ -11,7 +11,7 @@ class CreateWidgetSharingTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('widget_sharings',function($table) {
+        Schema::create('widget_sharings', function ($table) {
             $table->increments('id');
 
             $table->integer('src_user_id')->unsigned();
@@ -33,7 +33,7 @@ class CreateWidgetSharingTable extends Migration {
 
             $table->timestamps();
         });
-     }
+    }
 
     /**
      * Reverse the migrations.
@@ -43,5 +43,4 @@ class CreateWidgetSharingTable extends Migration {
     public function down() {
         Schema::dropIfExists('widget_sharings');
     }
-
 }

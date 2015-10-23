@@ -67,12 +67,13 @@ class GeneralWidgetController extends BaseController {
 
         /* Getting widget's validation array. */
         $validatorArray =  $widget->getSettingsValidationArray(
-            array_keys($widget->getSetupFields())
+            array_keys($widget->getSetupFields()),
+            Input::all()
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
-        /* Adding update_period on CronWidget */
-        if ($widget instanceof CronWidget) {
+        /* Adding update_period on DataWidget */
+        if ($widget instanceof DataWidget) {
             $validatorArray['update_period'] = 'required|integer|min:23';
         }
 
@@ -104,8 +105,8 @@ class GeneralWidgetController extends BaseController {
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
 
-        /* Adding update_period on CronWidget */
-        if ($widget instanceof CronWidget) {
+        /* Adding update_period on DataWidget */
+        if ($widget instanceof DataWidget) {
             $widget->setUpdatePeriod(Input::get('update_period'));
         }
 
@@ -113,7 +114,7 @@ class GeneralWidgetController extends BaseController {
         $tracker = new GlobalTracker();
         $tracker->trackAll('lazy', array(
             'en' => 'Edit widget',
-            'el' => $widget->descriptor->getClassName())
+            'el' => $widget->getDescriptor()->getClassName())
         );
 
         /* Return */
@@ -164,7 +165,8 @@ class GeneralWidgetController extends BaseController {
             array(
                 Input::all(),
                 $widget->getSettingsValidationArray(
-                    $widget->getSetupFields()
+                    $widget->getSetupFields(),
+                    Input::all()
                 )
             )
         );
@@ -224,7 +226,7 @@ class GeneralWidgetController extends BaseController {
             /* Saving old widget data */
             $position = $widget->position;
             $dashboard = $widget->dashboard;
-            $className = $widget->descriptor->getClassName();
+            $className = $widget->getDescriptor()->getClassName();
 
             /* Deleting old widget. */
             $widget->delete();
@@ -268,6 +270,29 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * getAddWidgetWithData
+     * --------------------------------------------------
+     * @return Renders the add widget page
+     * --------------------------------------------------
+     */
+    public function getAddWidgetWithData($descriptorId, $dashboardId) {
+        $descriptor = WidgetDescriptor::find($descriptorId);
+        $dashboard = Dashboard::find($dashboardId);
+
+        try {
+            $widget = $this->addWidget($descriptor, $dashboard);
+        } catch (Exception $e) {
+            return Redirect::route('widget.add')->with('error', 'Something went wrong, please try again.');
+        }
+        /* If widget has no setup fields, redirect to dashboard automatically */
+        if ($widget->getSetupFields() == FALSE) {
+            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
+                ->with('success', 'Widget successfully created.'); }
+        return Redirect::route('widget.setup', array($widget->id))
+            ->with('success', 'Widget successfully created. You can customize it here.');
+    }
+
+    /**
      * postAddWidget
      * --------------------------------------------------
      * @return Creates a widget instance and sends to wizard.
@@ -275,31 +300,14 @@ class GeneralWidgetController extends BaseController {
      */
     public function postAddWidget($descriptorID) {
         /* Get the widget descriptor */
-
         $descriptor = WidgetDescriptor::find($descriptorID);
-        if (is_null($descriptor)) {return Redirect::back()
-                ->with('error', 'Something went wrong, your widget cannot be found.');
-        }
-        /* Create new widget instance */
-        $className = $descriptor->getClassName();
 
-        /* Looking for a connection */
-        if (in_array($descriptor->category, SiteConstants::getServices())) {
-            $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
-            if ( ! $connected) {
-                $redirectRoute = 'service.' . $descriptor->category . '.connect';
-                return Redirect::route($redirectRoute);
-            }
-        }
-
-        /* Create widget */
-        $widget = new $className(array('state' => 'active'));
-
-        /* Associate to dashboard */
+        /* Get the dashbhoard */
         $dashboardNum = Input::get('toDashboard');
 
-        /* Add to new dashboard */
         if ($dashboardNum == 0) {
+            /* Add to new dashboard */
+
             /* Get the new name or fallback to the default */
             $newDashboardName = Input::get('newDashboardName');
             if (empty($newDashboardName)) {
@@ -313,42 +321,30 @@ class GeneralWidgetController extends BaseController {
             ));
             $dashboard->user()->associate(Auth::user());
             $dashboard->save();
-
-        /* Adding to existing dashboard*/
-        } else if (Input::get('toDashboard')) {
+        } else if ($dashboardNum > 0) {
+            /* Adding to existing dashboard */
             $dashboard = Dashboard::find($dashboardNum);
             if (is_null($dashboard)) {
                 $dashboard = Auth::user()->dashboards[0];
             }
-
-        /* Error handling */
         } else {
+            /* Error handling */
             $dashboard = Auth::user()->dashboards[0];
         }
 
-        /* Associate the widget to the dashboard */
-        $widget->dashboard()->associate($dashboard);
-
-        /* Finding position. */
-        $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
-
-        /* Associate descriptor and save */
-        $options = array();
-        if ($widget instanceof CronWidget && $className::getCriteriaFields() !== FALSE) {
-            $options['skipManager'] = TRUE;
+        try {
+            $widget = $this->addWidget($descriptor, $dashboard);
+        } catch (DescriptorDoesNotExist $e) {
+            return Redirect::back()
+                ->with('error', 'Something went wrong, your widget cannot be found.');
+        } catch (ServiceException $e) {
+            /* Service not connected. */
+            $redirectRoute = route('service.' . $descriptor->category . '.connect') . '?descriptor=' . $descriptorID . '&dashboard=' . Input::get('toDashboard');
+            return Redirect::to($redirectRoute);
         }
-        $widget->save($options);
-
-        /* Track event | ADD WIDGET */
-        $tracker = new GlobalTracker();
-        $tracker->trackAll('lazy', array(
-            'en' => 'Add widget',
-            'el' => $className)
-        );
 
         /* If widget has no setup fields, redirect to dashboard automatically */
-        $setupFields = $widget->getSetupFields();
-        if (empty($setupFields)) {
+        if ($widget->getSetupFields() == FALSE) {
             return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
@@ -365,7 +361,7 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof CronWidget) {
+            if ( ! $widget instanceof DataWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
             }
         } catch (WidgetDoesNotExist $e) {
@@ -390,8 +386,10 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof CronWidget) {
+            if ( ! $widget instanceof DataWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
+            } else if ($widget->state != 'active') {
+                throw new WidgetDoesNotExist("This widget is not active.", 1);
             }
         } catch (WidgetDoesNotExist $e) {
             return Redirect::route('dashboard.dashboard')
@@ -410,6 +408,27 @@ class GeneralWidgetController extends BaseController {
         return View::make('singlestat.singlestat')
             ->with('widget', $widget)
             ->with('values', $values);
+    }
+
+    /**
+     * anyAddNotify
+     * --------------------------------------------------
+     * @param (integer) ($widgetId) The ID of the widget
+     * @return
+     * --------------------------------------------------
+     */
+    public function anyAddNotify($sharingId) {
+        try {
+            $widget = $this->getWidget($widgetID);
+            if ( ! $widget instanceof HistogramWidget) {
+                throw new WidgetDoesNotExist("This widget does not support notifications yet.", 1);
+            }
+        } catch (WidgetDoesNotExist $e) {
+            return Response::make($e->getMessage(), 401);
+        }
+
+        /* Everything OK, return response with 200 status code */
+        return Response::make("Added to notifications", 200);
     }
 
     /**
@@ -443,6 +462,14 @@ class GeneralWidgetController extends BaseController {
         if ( ! is_null($sharing)) {
             $sharing->reject();
         }
+    
+        /* Deleting widgets with this sharing. */
+        foreach (Auth::user()->widgets as $widget) {
+            if ($widget instanceof SharedWidget &&
+                    $widget->getSharingId() == $sharing->id) {
+                $widget->delete();
+            }
+        } 
 
         if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
             return Redirect::route('dashboard.dashboard');
@@ -470,11 +497,20 @@ class GeneralWidgetController extends BaseController {
     private function getWidget($widgetID) {
         $widget = Widget::find($widgetID);
 
+        /* User cross check. */
+        if ($widget->user()->id != Auth::user()->id &&
+                ! Auth::user()->widgetSharings()
+                    ->where('widget_id', $widgetID)
+                    ->first()
+                ) {
+            throw new WidgetDoesNotExist("You do not own this widget, nor is it shared with you.", 1);
+        }
+
         // Widget not found.
         if ($widget === null) {
             throw new WidgetDoesNotExist("Widget not found", 1);
         }
-        return $widget->getSpecific();
+        return $widget;
     }
 
     /**
@@ -527,11 +563,10 @@ class GeneralWidgetController extends BaseController {
             }
 
             /* Find widget */
-            $generalWidget = Widget::find($widgetData['id']);
+            $widget = Widget::find($widgetData['id']);
 
             /* Skip widget if not found */
-            if ($generalWidget === null) { continue; }
-            $widget = $generalWidget->getSpecific();
+            if ($widget === null) { continue; }
 
             /* Set position */
             try {
@@ -575,6 +610,29 @@ class GeneralWidgetController extends BaseController {
         ));
     }
 
+    /**
+     * getAjaxSetting
+     * --------------------------------------------------
+     * Returns the widget's settings in ajax.
+     * @param int $widgetId
+     * @param string $fieldName
+     * @param mixed $value
+     * --------------------------------------------------
+     */
+    public function getAjaxSetting($widgetId, $fieldName, $value) {
+        /* Selecing the widget */
+        try {
+            $widget = $this->getWidget($widgetId);
+        } catch (WidgetDoesNotExist $e) {
+            return Response::json(array('error' => $e));
+        }
+
+        try {
+            return Response::json($widget->$fieldName($value));
+        } catch (Exception $e) {
+            return Response::json( array('error' => $e->getMessage()));
+        }
+    }
 
     /**
      * ajaxHandler
@@ -602,6 +660,20 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * acceptWidgetSharings
+     * Setting all widget sharings accepted.
+     */
+    public function acceptWidgetSharings() {
+        foreach (Auth::user()->widgetSharings as $sharingObject) {
+			if ($sharingObject->state != 'rejected') {
+                $sharingObject->setState('accepted');
+            }
+        }
+        Auth::user()->updateDashboardCache();
+        return Response::make('Widget shared.', 200);
+    }
+
+    /**
      * postShareWidget
      * --------------------------------------------------
      * @param (integer) ($widgetID) The ID of the sharable widget
@@ -619,10 +691,12 @@ class GeneralWidgetController extends BaseController {
         $i = 0;
         foreach (array_filter(preg_split('/[,\s]+/', $emails)) as $email) {
             /* Finding registered users. */
-            $user = User::where('email', $email)->first();
-            if (is_null($user) && $user->id != Auth::user()->id) {
+            $user = User::where('email', $email)
+                ->first();
+            if (is_null($user) || $user->id == Auth::user()->id) {
                 continue;
             }
+            $user->updateDashboardCache();
 
             /* Creating sharing object. */
             $sharing = new WidgetSharing(array(
@@ -646,14 +720,104 @@ class GeneralWidgetController extends BaseController {
      * --------------------------------------------------
      */
     public function anySaveWidgetToImage($widgetID) {
-        $widget = Widget::find($widgetID);
+        $widget = $this->getWidget($widgetID);
+
+        /* Widget not found */
         if (is_null($widget)) {
-            /* Widget not found */
             return Response::make('Bad request.', 401);
         }
 
-        $image = Image::loadView('to-image.to-image-general-layout', ['widget' => $widget->getSpecific()]);
-        return $image->download('widget.png');
+        if ( ! $widget->renderable()) {
+            /* Widget is loading, no data is available yet. */
+            $templateData = Widget::getDefaultTemplateData($widget);
+        } else {
+            try {
+                $templateData = $widget->getTemplateData();
+            } catch (Exception $e) {
+                /* Something went wrong during data population. */
+                Log::error($e->getMessage());
+                $templateData = Widget::getDefaultTemplateData($widget);
+                $widget->setState('rendering_error');
+            }
+        }
+
+        /* Build templatedata */
+        $widgetData = array_merge($widget->getTemplateMeta(),$templateData);
+
+        $htmlpath = public_path() . '/widgets/' . $widgetID . '.html';
+        $pngpath = public_path() . '/widgets/' . $widgetID . '.png';
+
+        $view = View::make('to-image.to-image-general-histogram', array('widget' => $widgetData));
+        return $view;
+        File::put($htmlpath, $view);
+
+
+        if (App::environment('local')) {
+            $html = File::get($htmlpath);
+            /* On local maching the vagrant runs on port 8000. */
+            $html = str_replace(
+                'localhost:8001',
+                'localhost:8000',
+                $html
+            );
+            File::put($htmlpath, $html);
+            return $view;
+        }
+
+        //Image::loadFile($htmlpath)->save($pngpath);
+        //return $view;
+        return Image::loadFile($htmlpath)->download('widget.png');
+    }
+
+    /**
+     * addWidget
+     * Adding a widget and returning it
+     * --------------------------------------------------
+     * @param WidgetDescriptor $descriptor
+     * @param Dashboard $dashboard
+     * --------------------------------------------------
+     */
+    private function addWidget($descriptor, $dashboard) {
+        if (is_null($descriptor)) {
+            throw new DescriptorDoesNotExist;
+        }
+        if (is_null($dashboard)) {
+            throw new DescriptorDoesNotExist;
+        }
+
+        /* Create new widget instance */
+        $className = $descriptor->getClassName();
+
+        /* Looking for a connection */
+        if (in_array($descriptor->category, SiteConstants::getServices())) {
+            $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
+            if ( ! $connected) {
+                throw new ServiceException;
+            }
+        }
+
+        /* Create widget */
+        $widget = new $className(array('state' => 'active'));
+
+        /* Associate the widget to the dashboard */
+        $widget->dashboard()->associate($dashboard);
+
+        /* Finding position. */
+        $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
+
+        /* Associate descriptor and save */
+        $options = array();
+
+        $widget->save($options);
+
+        /* Track event | ADD WIDGET */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Add widget',
+            'el' => $className)
+        );
+
+        return $widget;
     }
 
 } /* GeneralWidgetController */

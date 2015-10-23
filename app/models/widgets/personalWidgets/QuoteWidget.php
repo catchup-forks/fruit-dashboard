@@ -1,6 +1,6 @@
 <?php
 
-class QuoteWidget extends CronWidget implements iAjaxWidget
+class QuoteWidget extends DataWidget implements iAjaxWidget
 {
     /* -- Settings -- */
     private static $quoteSettings = array(
@@ -16,10 +16,23 @@ class QuoteWidget extends CronWidget implements iAjaxWidget
     /* Choices functions */
     public function type() {
         return array(
-            'inspirational' => 'Inspirational',
-            'funny'         => 'Funny',
+            'inspirational' => 'Inspirational quotes',
+            'funny'         => 'Funny quotes',
             'first-line'    => 'First lines from books',
         );
+    }
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'data' => $this->getData()
+        ));
     }
 
     /**

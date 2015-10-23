@@ -1,1 +1,6 @@
- @include('widget.widget-general-count', ['widget' => $widget, 'metric' => 'likes'])
+@include(
+  'widget.widget-general-count', [
+    'description'  => 'The number of likes on your page ' . $widget['pageName'],
+    'footer'       => $widget['pageName']
+  ]
+)

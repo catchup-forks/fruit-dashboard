@@ -26,22 +26,24 @@
   .rounded;
 }
 
-.chart-data {
+.chart-value {
   position: absolute;
-  top: 5px;
-  left: 10px;
+  top: @margin/5;
+  left: @margin/2.5;
   .has-padding;
 }
 
 .chart-name {
-  font-size: 110%;
+  position: absolute;
+  bottom: @margin/5;
+  width: 50%;
+  left: 25%;
   color: @white;
   .text-shadow;
 }
 
 .chart-value {
   font-weight: 800;
-  font-size: 120%;
   color: @chart-color;
   //.text-shadow;
 }
@@ -62,10 +64,8 @@
 
 .chart-diff-value {
   font-weight: 600;
-  font-size: 120%;
 }
 
 .chart-diff-dimension {
-  font-size: 90%;
   margin-top: -3px;
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * --------------------------------------------------------------------------
  * DashboardController: Handles the authentication related sites
@@ -8,6 +7,8 @@
  */
 class DashboardController extends BaseController
 {
+    const OPTIMIZE = FALSE;
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -22,37 +23,74 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+        /* No caching in local development */
+        if ( ! App::environment('local')) {
+            /* Trying to load from cache. */
+            $cachedDashboard = $this->getFromCache();
+            if ( ! is_null($cachedDashboard)) {
+                /* Some logging */
+                if (!App::environment('producion')) {
+                    Log::info("Loading dashboard from cache.");
+                    Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+                }
+
+                /* Returning the cached dashboard. */
+                return $cachedDashboard;
+            }
+        }
+        if (self::OPTIMIZE) {
+            return $this->showOptimizeLog(Auth::user());
+            exit(94);
+        }
+
+        /* Get the current user */
+        $user = Auth::user();
+
         /* Check the default dashboard and create if not exists */
-        Auth::user()->checkOrCreateDefaultDashboard();
+        $user->checkOrCreateDefaultDashboard();
 
-        /* Checking the user's data managers integrity */
-        $time = microtime(TRUE);
-        Auth::user()->checkDataManagersIntegrity();
+        /* Handle the widget sharings. */
+        $user->handleWidgetSharings();
 
-        /* Checking the user's widgets integrity */
-        Auth::user()->checkWidgetsIntegrity();
-        Log::info("Check integrity time: " . (microtime(TRUE) - $time));
+        /* Check onboarding state */
+        if ($user->settings->onboarding_state != 'finished') {
+            return View::make('dashboard.dashboard-onboarding-not-finished', array(
+                    'currentState' => $user->settings->onboarding_state
+                ));
+        }
 
         /* Get active dashboard, if the url contains it */
         $parameters = array();
-        $activeDashboard = Request::query('active');
+        $activeDashboard = Input::get('active');
         if ($activeDashboard) {
             $parameters['activeDashboard'] = $activeDashboard;
         }
+        /* Checking the user's data integrity */
+        $user->checkDataIntegrity();
+
+        /* Checking the user's widgets integrity */
+        $user->checkWidgetsIntegrity();
 
         /* Creating view */
-        $view = View::make('dashboard.dashboard', $parameters);
+        $view = $user->createDashboardView($parameters);
 
         try {
             /* Trying to render the view. */
-            return $view->render();
+            $renderedView = $view->render();
+
+            if ( ! App::environment('producion')) {
+                Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+            }
         } catch (Exception $e) {
-            /* Error occured trying to find the widget. */
-            Auth::user()->turnOffBrokenWidgets();
+            /* Error occured, trying to find the widget. */
+            $user->turnOffBrokenWidgets();
             /* Recreating view. */
-            $view = View::make('dashboard.dashboard', $parameters);
+            $renderedView= $user->createDashboardView($parameters)->render();
         }
-        return $view;
+
+        /* Saving the cache, and returning the view. */
+        $this->saveToCache($renderedView);
+        return $renderedView;
 
     }
 
@@ -144,7 +182,6 @@ class DashboardController extends BaseController
     public function anyMakeDefault($dashboardId) {
         // Make is_default false for all dashboards
         foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
-            Log::info($oldDashboard->id);
             $oldDashboard->is_default = FALSE;
             $oldDashboard->save();
         }
@@ -254,6 +291,93 @@ class DashboardController extends BaseController
             return NULL;
         }
         return $dashboard;
+    }
+    /**
+     * showOptimizeLog
+     * Renders the status log.
+     * --------------------------------------------------
+     * @param User $user
+     * --------------------------------------------------
+     */
+    private function showOptimizeLog($user) {
+        var_dump(' -- DEBUG LOG --');
+        $time = microtime(TRUE);
+        $startTime = $time;
+        $queries = count(DB::getQueryLog());
+        $startTime = microtime(TRUE);
+        /* Checking the user's widgets integrity */
+        $user->checkWidgetsIntegrity();
+        var_dump(
+            "Widget check integrity time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        $queries = count(DB::getQueryLog());
+        $time = microtime(TRUE);
+
+        /* Creating view */
+        $view = $user->createDashboardView();
+        var_dump(
+            "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        $queries = count(DB::getQueryLog());
+        $time = microtime(TRUE);
+
+        $view->render();
+        var_dump(
+            "Rendering time: ". (microtime(TRUE) - $time) .
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+        );
+        var_dump(
+             "Total loading time: ". (microtime(TRUE) - LARAVEL_START) .
+             " (" . count(DB::getQueryLog()) . ' db queries)'
+        );
+        var_dump(DB::getQueryLog());
+        return;
+    }
+
+    /**
+     * getFromCache
+     * Returns the dashboard if it's cached.
+     * --------------------------------------------------
+     * @return View/null
+     * --------------------------------------------------
+     */
+    private function getFromCache() {
+        $user = Auth::user();
+        if ( ! $user->update_cache) {
+            return Cache::get($this->getDashboardCacheKey());
+        }
+        return;
+    }
+
+    /**
+     * saveToCache
+     * Saving the dashboard to cache.
+     * --------------------------------------------------
+     * @param string $renderedView
+     * --------------------------------------------------
+     */
+    private function saveToCache($renderedView) {
+        $user = Auth::user();
+        Cache::put(
+            $this->getDashboardCacheKey(),
+            $renderedView,
+            SiteConstants::getDashboardCacheMinutes()
+        );
+        $user->update_cache = FALSE;
+        $user->save();
+    }
+
+    /**
+     * getDashboardCacheKey
+     * Returns the cache key for the user's dashboard.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    private function getDashboardCacheKey() {
+        return 'dashboard_' . Auth::user()->id;
     }
 
 } /* DashboardController */

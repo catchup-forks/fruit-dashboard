@@ -49,25 +49,35 @@ class Subscription extends Eloquent
      *     TD: Trial badge displayed    (true | false)
      *     PE: Premium feature enabled  (true | false)
      * --------------------------------------------------------------------
-     * Cases @param TRIAL_ENABLED        |     TS     |   TD    |   PE    |
+     * Cases @param SUBSCRIPTION_MODE: 
+     *     premium_feature_and_trial     |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
      * 1) No premium functionality added |  possible  |  false  |  false  |
-     * 2) Premium functionality added,         
+     * 2) Premium functionality added,
      *    Remaining days > 0             |   active   |  true   |  true   |
-     * 3) Premium functionality added,  
+     * 3) Premium functionality added,
      *    Remaining days <= 0            |   ended    |  true   |  false  |
      * 4) Unsubscribed from Premium plan |  disabled  |  false  |  false  |
      * 5) Subscribed to Premium plan     |  disabled  |  false  |  true   |
      * --------------------------------------------------------------------
-     * Cases @param TRIAL_DISABLED       |     TS     |   TD    |   PE    |
+     * Cases @param SUBSCRIPTION_MODE:          
+     *     premium_feature_only          |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
      * 1) Is on free plan                |  disabled  |  false  |  false  |
      * 2) Subscribed to Premium plan     |  disabled  |  false  |  true   |
      * --------------------------------------------------------------------
+     * Cases @param SUBSCRIPTION_MODE          
+     *     trial_only                    |     TS     |   TD    |   PE    |
+     * --------------------------------------------------------------------
+     * 1) Remaining days > 0             |   active   |  true   |  true   |
+     * 2) Remaining days <= 0            |   ended    |  true   |  false  |
+     * 3) Unsubscribed from Premium plan |  disabled  |  false  |  false  |
+     * 4) Subscribed to Premium plan     |  disabled  |  false  |  true   |
+     * --------------------------------------------------------------------
      */
     public function getSubscriptionInfo() {
-        /* TRIAL_ENABLED */
-        if ($_ENV['TRIAL_ENABLED']) {
+        /* premium_feature_and_trial */
+        if ($_ENV['SUBSCRIPTION_MODE'] == 'premium_feature_and_trial') {
             /* Handle just expired trial */
             if (($this->trial_status == 'active') and
                 ($this->getDaysRemainingFromTrial() <= 0)) {
@@ -75,13 +85,16 @@ class Subscription extends Eloquent
                 /* Update status in db */
                 $this->changeTrialState('ended');
 
+                /* Update dashboard cache */
+                $this->user->updateDashboardCache();
+
                 /* Track event | TRIAL ENDED */
                 $tracker = new GlobalTracker();
                 $tracker->trackAll('lazy', array(
                     'en' => 'Trial ended',
                     'el' => $this->user->email)
                 );
-            } 
+            }
 
             /* Return subscriptionInfo based on the cases */
             if ($this->isOnFreePlan()) {
@@ -93,7 +106,7 @@ class Subscription extends Eloquent
                         'TD' => false,
                         'PE' => false,
                     ];
-                
+
                 /* ==== CASE 2 === */
                 } elseif ($this->trial_status == 'active') {
                     /* Build and return subscriptionInfo */
@@ -125,7 +138,7 @@ class Subscription extends Eloquent
                         'PE' => false,
                     ];
                 }
-            
+
             /* ==== CASE 5 === */
             } else {
                 /* Build and return subscriptionInfo */
@@ -135,8 +148,8 @@ class Subscription extends Eloquent
                     'PE' => true,
                 ];
             }
-        /* TRIAL_DISABLED */
-        } else {
+        /* premium_feature_only */
+        } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'premium_feature_only') {
             /* Return subscriptionInfo based on the cases */
             /* ==== CASE 1 === */
             if ($this->isOnFreePlan()) {
@@ -146,7 +159,7 @@ class Subscription extends Eloquent
                     'TD' => false,
                     'PE' => false,
                 ];
-            
+
             /* ==== CASE 2 === */
             } else {
                 /* Build and return subscriptionInfo */
@@ -156,7 +169,70 @@ class Subscription extends Eloquent
                     'PE' => true,
                 ];
             }
-        } /* Trial enabled / disabled  */
+        /* trial_only */
+        } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'trial_only') {
+            /* Handle just expired trial */
+            if (($this->trial_status == 'active') and
+                ($this->getDaysRemainingFromTrial() <= 0)) {
+
+                /* Update status in db */
+                $this->changeTrialState('ended');
+
+                /* Update dashboard cache */
+                $this->user->updateDashboardCache();
+
+                /* Track event | TRIAL ENDED */
+                $tracker = new GlobalTracker();
+                $tracker->trackAll('lazy', array(
+                    'en' => 'Trial ended',
+                    'el' => $this->user->email)
+                );
+            }
+
+            /* Return subscriptionInfo based on the cases */
+            if ($this->isOnFreePlan()) {
+                /* ==== CASE 1 === */
+                if ($this->trial_status == 'active') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'active',
+                        'TD' => true,
+                        'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
+                        'trialEndDate'       => $this->getTrialEndDate(),
+                        'PE' => true,
+                    ];
+
+                /* ==== CASE 2 === */
+                } elseif ($this->trial_status == 'ended') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'ended',
+                        'TD' => true,
+                        'trialDaysRemaining' => $this->getDaysRemainingFromTrial(),
+                        'trialEndDate' => $this->getTrialEndDate(),
+                        'PE' => false,
+                    ];
+
+                /* ==== CASE 3 === */
+                } elseif ($this->trial_status == 'disabled') {
+                    /* Build and return subscriptionInfo */
+                    return [
+                        'TS' => 'disabled',
+                        'TD' => false,
+                        'PE' => false,
+                    ];
+                }
+
+            /* ==== CASE 4 === */
+            } else {
+                /* Build and return subscriptionInfo */
+                return [
+                    'TS' => 'disabled',
+                    'TD' => false,
+                    'PE' => true,
+                ];
+            }            
+        } /* SUBSCRIPTION_MODE  */
     }
 
     /**
@@ -265,6 +341,9 @@ class Subscription extends Eloquent
             $this->changeTrialState('disabled');
         }
 
+        /* Update dashboard cache */
+        $this->user->updateDashboardCache();
+
         /* Return the updated result */
         return $result;
     }
@@ -292,6 +371,9 @@ class Subscription extends Eloquent
             $this->changeTrialState('disabled');
             $this->save();
         }
+
+        /* Update dashboard cache */
+        $this->user->updateDashboardCache();
 
         /* Return the updated result */
         return $result;
@@ -415,9 +497,7 @@ class Subscription extends Eloquent
                 $result['errors'] |= TRUE;
                 $result['messages'] .= $error->code . ": " . $error->message . ' ';
             }
-
-            Log::info($subscriptionResult->transaction->status);
-            Log::info($subscriptionResult->transaction->status);
+            Log::error($subscriptionResult->transaction->status);
         }
 
         /* Return result */

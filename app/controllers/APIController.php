@@ -41,8 +41,7 @@ class APIController extends BaseController
      */
     public function getTest($widgetID) {
         /* Get the requested widget */
-        $generalWidget = Widget::find($widgetID);
-        $widget = $generalWidget->getSpecific();
+        $widget = Widget::find($widgetID);
 
         /* Error handling */
         if ($widget == null) {
@@ -89,7 +88,8 @@ class APIController extends BaseController
             case '1.0':
             default:
                 /* Get user and widget */
-                $user   = User::where('api_key', $apiKey)->first();
+                $settings = Settings::where('api_key', $apiKey)->first();
+                $user   = $settings->user;
                 $widget = Widget::find($widgetID);
 
                 /* Check API key */
@@ -161,7 +161,7 @@ class APIController extends BaseController
         }
 
         /* Everything is ok */
-        $widget->getSpecific()->updateData(array('entry' =>Input::all()));
+        $widget->updateData(array('entry' =>Input::all()));
         return array('status'  => TRUE,
                      'message' => 'Your data has been successfully saved.');
 

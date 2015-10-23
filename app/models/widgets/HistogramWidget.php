@@ -1,40 +1,38 @@
 <?php
 
-abstract class HistogramWidget extends CronWidget
+abstract class HistogramWidget extends DataWidget
 {
-    use NumericWidgetTrait;
-
-    protected static $cumulative   = FALSE;
     protected static $isHigherGood = TRUE;
+    use NumericWidgetTrait;
 
     /* -- Settings -- */
     private static $histogramSettings = array(
         'resolution' => array(
-            'name'       => 'Resolution',
+            'name'       => 'Time-scale',
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'days',
-            'help_text'  => 'The resolution of the chart.'
+            'help_text'  => 'Set the timescale for the X axis of the chart.'
         ),
         'name' => array(
             'name'       => 'Name',
             'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The name of the widget.'
+            'help_text'  => 'The name of the widget.',
+            'disabled'   => FALSE
         ),
         'length' => array(
             'name'       => 'Length',
-            'type'       => 'INT|min:5|max:15',
-            'validation' => 'required',
+            'type'       => 'INT',
+            'validation' => 'required|min:5',
             'default'    => 15,
-            'help_text'  => 'The number of data points on your histogram.'
+            'help_text'  => 'The number of data points on your widget.'
         ),
         'type' => array(
-            'name'       => 'Histogram type',
+            'name'       => 'Layout type',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'diff',
-            'help_text'  => 'The type of your chart.'
+            'default'    => 'chart',
+            'help_text'  => 'The layout type of your wiget.'
         ),
     );
 
@@ -50,12 +48,63 @@ abstract class HistogramWidget extends CronWidget
 
     /* -- Choice functions -- */
     public function type() {
-        $types = array('diff' => 'Differentiated');
-        if (static::$cumulative) {
-            $types['sum'] = 'Cumulative';
-        }
+        $types = array('chart' => 'Line chart', 'table' => 'Table layout');
         return $types;
     }
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        $data = $this->getData();
+        $templateData = parent::getTemplateData();
+        if ($this->isTable()) {
+            return array_merge($templateData, array(
+                'header'  => $data['header'],
+                'content' => $data['content'],
+                'data'    => $data
+            ));
+        }
+        return array_merge($templateData, array(
+            'defaultDiff'   => $this->getDiff(),
+            'format'        => $this->getFormat(),
+            'data'          => $data,
+            'hasCumulative' => $this->hasCumulative()
+        ));
+    }
+
+    /**
+     * isTable
+     * Returning whether or not using a table layout.
+     * --------------------------------------------------
+     * @return boolean
+     * --------------------------------------------------
+     */
+    protected function isTable() {
+        return $this->getSettings()['type'] == 'table';
+    }
+
+    /**
+     * setupDataManager
+     * Setting up the datamanager
+     * --------------------------------------------------
+     * @param array $options
+     * @return DataManager
+     * --------------------------------------------------
+     */
+     public function setupDataManager(array $options=array()) {
+        $settings = $this->getSettings();
+        $manager = $this->data->getManager();
+        $manager->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);
+        $manager->setLength(array_key_exists('length', $options) ? $options['length'] : $settings['length']);
+        $manager->setRange(array_key_exists('range', $options) ? $options['range'] : array());
+        $manager->setDiff(array_key_exists('diff', $options) ? $options['diff'] : FALSE);
+        return $manager;
+     }
 
     /**
      * getSettingsFields
@@ -76,22 +125,27 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function hasCumulative() {
-        return static::$cumulative;
+        return $this->data->hasCumulative();
      }
 
     /**
-     * isDifferentiated
-     * Returns whether or not the chart is differentiated.
+     * getTemplateMeta
+     * Returning data for the gridster init template.
      * --------------------------------------------------
-     * @return boolean
+     * @return array
      * --------------------------------------------------
-     */
-     public function isDifferentiated() {
-        return (static::$cumulative && $this->getSettings()['type'] == 'diff');
-     }
+    */
+    public function getTemplateMeta() {
+        $meta = parent::getTemplateMeta();
+        $meta['general']['name'] = $this->getSettings()['name'];
+        $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
+        $meta['selectors']['graph'] = '[id^=chart-container]';
+        $meta['layout'] = $this->getSettings()['type']; 
+        return $meta;
+    }
 
     /**
-     * isGreen
+     * isSuccess
      * Returns whether or not the diff is considered
      * good in the histogram
      * --------------------------------------------------
@@ -136,7 +190,18 @@ abstract class HistogramWidget extends CronWidget
         if (is_null($resolution)) {
             $resolution = $this->getSettings()['resolution'];
         }
-        return array_values($this->dataManager()->compare($resolution, $multiplier, $this->isDifferentiated()))[0];
+        $dmParams = array(
+            'resolution' => $resolution,
+            'length'     => $multiplier + 1,
+        );
+
+        $values = $this->setupDataManager($dmParams)->compare();
+
+        if (empty($values)) {
+            return 0;
+        }
+
+        return array_values($values)[0];
     }
 
     /**
@@ -150,9 +215,6 @@ abstract class HistogramWidget extends CronWidget
      */
     public function getHistory($multiplier=1, $resolution=null) {
         $currentValue = array_values($this->getLatestValues())[0];
-        if (is_null($resolution)) {
-            $resolution = $this->getSettings()['resolution'];
-        }
         $value = $currentValue - $this->getDiff($multiplier, $resolution);
         try {
             $percent = ($currentValue / $value - 1) * 100;
@@ -175,33 +237,37 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
     public function getData($postData=null) {
-
-        /* Getting range if present. */
-        if (isset($postData['range'])) {
-            $range = $postData['range'];
-        } else {
-            $range = null;
+        if ( ! is_array($postData)) {
+            $postData = array();
         }
-
-        /*$range = array(
-            'start' => Carbon::createFromFormat('Y-m-d', '2015-09-04'),
-            'end'   => Carbon::createFromFormat('Y-m-d', '2015-09-17')
-        );*/
-
-        if (isset($postData['resolution'])) {
-            $resolution = $postData['resolution'];
+        if ($this->isTable()) {
+            return $this->getTableData($postData);
         } else {
-            $resolution = $this->getSettings()['resolution'];
+            return $this->getHistogramData($postData);
         }
-
-        return $this->dataManager()->getHistogram(
-            $range, $resolution,
-            $this->getSettings()['length'],
-            $this->isDifferentiated()
-        );
     }
 
+    /**
+     * getHistogramData
+     * Returning the histogram data.
+     * --------------------------------------------------
+     * @param array $options
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getHistogramData(array $options) {
+        $dmParams = array();
+        /* Getting range if present. */
+        if (array_key_exists('range', $options)) {
+            $dmParams['range'] = $options['range'];
+        }
 
+        if (array_key_exists('resolution', $options)) {
+            $dmParams['resolution'] = $options['resolution'];
+        }
+
+        return $this->setupDataManager($dmParams)->getHistogram();
+    }
 
     /**
      * getLatestValues
@@ -211,7 +277,7 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
      public function getLatestValues() {
-        return $this->dataManager()->getLatestValues($this->isDifferentiated());
+        return $this->data->getLatestValues();
      }
 
     /**
@@ -224,11 +290,77 @@ abstract class HistogramWidget extends CronWidget
     */
     public function save(array $options=array()) {
         parent::save($options);
-        if ( ! $this->getSettings()['name'] && $this instanceof iServiceWidget) {
+        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
             $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
         }
 
         return parent::save($options);
+    }
+
+    /**
+     * getTableData
+     * Returns the data in table format.
+     * --------------------------------------------------
+     * @param array $options
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTableData(array $options) {
+        $settings = $this->getSettings();
+        $dateHeader = rtrim(ucwords($settings['resolution']), 's');
+        /* Initializing table. */
+        $tableData = array(
+            'header' => array(
+                 $dateHeader,
+                 $this->getDescriptor()->name,
+                 'Trend'
+            ),
+            'content' => array(
+            )
+        );
+
+        /* Populating table data. */
+        for ($i = $settings['length'] - 1; $i >= 0; --$i) {
+            $now = Carbon::now();
+            switch ($settings['resolution']) {
+                case 'days':   $date = $now->subDays($i)->format('M-d'); break;
+                case 'weeks':  $date = $now->subWeeks($i)->format('W'); break;
+                case 'months': $date = $now->subMonths($i)->format('M'); break;
+                case 'years':  $date = $now->subYears($i)->format('Y'); break;
+                default:$date = '';
+            }
+
+            /* Calculating data. */
+            $history = $this->getHistory($i);
+            $value = $history['value'];
+
+            if (isset($previousValue) && $previousValue != 0) {
+                $percent = ($value / $previousValue - 1) * 100;
+            } else {
+                $percent = 0;
+            }
+
+            /* Creating format for percent. */
+            $success = $this->isSuccess($percent);
+            $trendFormat = '<div class="';
+            if ($success) { $trendFormat .= 'text-success';
+            } else { $trendFormat .= 'text-danger'; }
+            $trendFormat .= '"> <span class="fa fa-arrow-';
+            if ($percent >= 0) { $trendFormat .= 'up';
+            } else { $trendFormat .= 'down'; }
+            $trendFormat .= '"> %.2f%%</div>';
+
+            array_push($tableData['content'], array(
+                $date,
+                Utilities::formatNumber($history['value'], $this->getFormat()),
+                Utilities::formatNumber($percent, $trendFormat)
+            ));
+
+            /* Saving previous value. */
+            $previousValue = $value;
+        }
+        $tableData['content'] = array_reverse($tableData['content']);
+        return $tableData;
     }
 
     /**
@@ -239,7 +371,8 @@ abstract class HistogramWidget extends CronWidget
      * --------------------------------------------------
      */
     public function hasData() {
-        return $this->dataManager()->getData() != FALSE;
+        return $this->data->decode() != FALSE;
     }
+
 }
 ?>

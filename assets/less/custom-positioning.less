@@ -26,6 +26,13 @@ body {
   bottom: @margin;
   left: @margin;
 }
+
+.position-bl-second {
+  position: fixed;
+  bottom: @margin*3;
+  left: @margin;
+}
+
 .position-bl-sm {
   position: absolute;
   bottom: @margin/5;
@@ -38,10 +45,24 @@ body {
   right: @margin;
 }
 
+.position-tr-second {
+  position: fixed;
+  top: @margin*3;
+  right: @margin;
+}
+
 .position-tr-sm {
   position: absolute;
-  top: @margin/5;
+  top: @margin/25;
   right: @margin/5;
+  z-index: 1000; 
+}
+
+.position-tr-sm-second {
+  position: absolute;
+  top: @margin;
+  right: @margin/5;
+  z-index: 1000; 
 }
 
 .position-tl {
@@ -109,6 +130,10 @@ body {
 .off-screen {
   position: absolute;
   left: -9999px;
+}
+
+.z-top-under-dropdown {
+  z-index: 999;
 }
 
 .z-top {

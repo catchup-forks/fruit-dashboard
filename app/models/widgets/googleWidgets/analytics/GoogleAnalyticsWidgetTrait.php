@@ -9,29 +9,22 @@ trait GoogleAnalyticsWidgetTrait
             'type'       => 'SCHOICEOPTGRP',
             'validation' => 'required',
         ),
-        'property' => array(
-            'name'      => 'Property',
-            'type'      => 'TEXT',
-            'hidden'    => TRUE
-        ),
     );
     private static $profile = array('profile');
-    private static $profileProperty = array('profile', 'property');
 
     /* Choices functions */
     public function profile() {
-        $properties = array();
-        $collector = new GoogleAnalyticsDataCollector($this->user());
-        foreach ($this->user()->googleAnalyticsProperties as $property) {
-            $profiles = array();
-            foreach ($collector->getProfiles($property) as $profile) {
-                $profiles[$profile->id] = $profile->name;
+        $profiles = array();
+        foreach ($this->user()->googleAnalyticsProperties()
+           ->orderBy('name')
+           ->get() as $property) {
+            $profiles[$property->name] = array();
+            foreach ($property->profiles as $profile) {
+                $profiles[$property->name][$profile->profile_id] = $profile->name;
             }
-            $properties[$property->name] = $profiles;
         }
-        return $properties;
+        return $profiles;
     }
-
 
     /**
      * getConnectorClass
@@ -74,7 +67,22 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-        return array_merge(parent::getSetupFields(), self::$profileProperty);
+        return array_merge(parent::getSetupFields(), self::$profile);
+    }
+
+    /**
+     * getProfile
+     * --------------------------------------------------
+     * Returning the corresponding profile.
+     * @return GoogleAnalyticsProperty
+     * --------------------------------------------------
+    */
+    public function getProfile(array $attributes=array('*')) {
+        $profile = $this->user()->googleAnalyticsProfiles()
+            ->where('profile_id', $this->getProfileId())
+            ->first($attributes);
+        /* Invalid profile in DB. */
+        return $profile;
     }
 
     /**
@@ -85,12 +93,12 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public function getProperty() {
-        $propertyId = $this->getSettings()['property'];
-        $property = $this->user()->googleAnalyticsProperties()->where('id', $propertyId)->first();
-        /* Invalid property in DB. */
-        if (is_null($property)) {
-            return $this->user()->googleAnalyticsProperties()->first();
+        $profile = $this->getProfile();
+        /* Invalid profile in DB. */
+        if (is_null($profile)) {
+            return null;
         }
+        $property = $this->user()->googleAnalyticsProperties()->where('property_id', $profile->property_id)->first();
         return $property;
     }
 
@@ -102,38 +110,19 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public function getDefaultName() {
-        return $this->getProperty()->name . ' - ' . $this->descriptor->name;
+        return $this->getProperty()->name . ' - ' . $this->getDescriptor()->name;
     }
 
-     /**
-      * Save | Override hidden setting.
-      * --------------------------------------------------
-      * @param array $options
-      * @return Saves the widget
-      * --------------------------------------------------
-     */
-     public function save(array $options=array()) {
-        /* Call parent save */
-        parent::save($options);
-        $settings = $this->getSettings();
-        if ( ! array_key_exists('name', $settings) || $settings['name'] == FALSE) {
-            $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
-        }
-
-        $collector = new GoogleAnalyticsDataCollector($this->user());
-        foreach ($this->user()->googleAnalyticsProperties as $property) {
-            $profiles = array();
-            foreach ($collector->getProfiles($property) as $profile) {
-                if ($profile->id == $this->getSettings()['profile']) {
-                    $this->saveSettings(array('property' => $property->id), FALSE);
-                    return parent::save();
-                }
-            }
-        }
-
-         /* Return */
-         return parent::save();
-     }
+    /**
+     * getProfileId
+     * --------------------------------------------------
+     * Returning the corresponding profile id.
+     * @return GoogleAnalyticsProperty
+     * --------------------------------------------------
+    */
+    public function getProfileId() {
+        return $this->getSettings()['profile'];
+    }
 
 }
 

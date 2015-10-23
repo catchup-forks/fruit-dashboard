@@ -27,11 +27,11 @@ class BraintreePopulateData
     private $user = null;
 
     /**
-     * The dataManagers.
+     * The dataObjects.
      *
      * @var array
      */
-    private $dataManagers = null;
+    private $dataObjects = null;
 
     /**
      * Main job handler.
@@ -43,7 +43,7 @@ class BraintreePopulateData
         $this->calculator = new BraintreeCalculator($this->user);
         $this->subscriptions = $this->calculator->getCollector()->getAllSubscriptions();
         $this->filterSubscriptions();
-        $this->dataManagers = $this->getManagers();
+        $this->dataObjects = $this->getDataObjects();
         $this->populateData();
         Log::info("Braintree data collection finished and it took " . (microtime($time) - $time) . " seconds to run.");
         $job->delete();
@@ -56,31 +56,30 @@ class BraintreePopulateData
         /* Creating data for the last 30 days. */
         $metrics = $this->getMetrics();
 
-        $this->dataManagers['braintree_mrr']->saveData($metrics['mrr']);
-        $this->dataManagers['braintree_arr']->saveData($metrics['arr']);
-        $this->dataManagers['braintree_arpu']->saveData($metrics['arpu']);
+        $this->dataObjects['braintree_mrr']->saveData($metrics['mrr']);
+        $this->dataObjects['braintree_arr']->saveData($metrics['arr']);
+        $this->dataObjects['braintree_arpu']->saveData($metrics['arpu']);
 
-        foreach ($this->dataManagers as $manager) {
-            $manager->setWidgetsState('active');
+        foreach ($this->dataObjects as $manager) {
+            $manager->setState('active');
         }
     }
 
     /**
-     * Getting the DataManagers
+     * Getting the DataObjects
      * @return array
      */
-    private function getManagers() {
-        $dataManagers = array();
+    private function getDataObjects() {
+        $dataObjects = array();
 
-        foreach ($this->user->dataManagers()->get() as $generalDataManager) {
-            $dataManager = $generalDataManager->getSpecific();
-            if ($dataManager->descriptor->category == 'braintree') {
-                /* Setting dataManager. */
-                $dataManagers[$dataManager->descriptor->type] = $dataManager;
+        foreach ($this->user->dataObjects as $dataObject) {
+            if ($dataObject->getDescriptor()->category == 'braintree') {
+                /* Setting dataObject. */
+                $dataObjects[$dataObject->getDescriptor()->type] = $dataObject;
             }
         }
 
-        return $dataManagers;
+        return $dataObjects;
     }
 
     /**

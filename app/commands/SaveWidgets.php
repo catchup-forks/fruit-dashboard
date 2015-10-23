@@ -37,15 +37,14 @@ class SaveWidgets extends Command {
      */
     public function fire()
     {
-        foreach (Widget::all() as $generalWidget) {
+        foreach (Widget::all() as $widget) {
             try {
-                $widget = $generalWidget->getSpecific();
                 if (is_null($widget->dashboard)) {
                     Log::warning("Deleted widget #" . $widget->id . " due to a broken dashboard connection.");
                     $widget->delete();
                     continue;
                 }
-                Log::info("Saving widget #" . $widget->id . " (" . $widget->descriptor->type . ")");
+                Log::info("Saving widget #" . $widget->id . " (" . $widget->getDescriptor()->type . ")");
                 $widget->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */

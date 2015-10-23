@@ -27,38 +27,23 @@
                 <h3 class="text-center">Select a group</h3>
 
                 <div class="list-group margin-top-sm">
-                  @if (count(Auth::user()->getPendingWidgetSharings()) > 0)
-                    <a href="#shared_widgets" class="list-group-item" data-selection="group" data-group="shared_widgets" data-type="shared">
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
-                        </small>
-                        Shared widgets
-                        <span class="selection-icon"> </span>
-                    </a>
-                  @endif
 
                   @foreach(SiteConstants::getWidgetDescriptorGroups() as $group)
 
-                    <a href="#{{ $group['name'] }}" class="list-group-item" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
-                      @if($group['type'] == 'service')
-                        <small>
-                          @if(Auth::user()->isServiceConnected($group['name']))
-                            <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="Connection is alive"></span>
-                          @else
-                            <span class="fa fa-circle text-danger" data-connected="false" data-redirect-url="{{ route($group['connect_route']) }}" data-toggle="tooltip" data-placement="left" title="Not connected"></span>
-                          @endif
-                        </small>
-                      @else
-                        <small>
-                          <span class="fa fa-circle text-success" data-toggle="tooltip" data-placement="left" title="You can use these."></span>
-                        </small>
-                      @endif
-                      {{ $group['display_name'] }}
+                    <a href="#{{ $group['name'] }}" class="list-group-item" data-redirect-url="{{ ($group['connect_route']) ? route($group['connect_route']) : "" }}" data-connected="{{ Auth::user()->isServiceConnected($group['name']) }}" data-selection="group" data-group="{{ $group['name'] }}" data-type="{{ $group['type'] }}">
+                      <span class="service-name">{{ $group['display_name'] }}</span>
                       {{-- This is the span for the selection icon --}}
                       <span class="selection-icon"> </span>
                     </a>
 
                   @endforeach
+
+                  @if (count(Auth::user()->getWidgetSharings()) > 0)
+                    <a href="#shared_widgets" class="list-group-item list-group-item-info" data-selection="group" data-group="shared_widgets" data-type="shared">
+                        Shared widgets
+                        <span class="selection-icon"> </span>
+                    </a>
+                  @endif
 
                 </div> <!-- /.list-group -->
 
@@ -77,10 +62,9 @@
                 <h3 class="text-center">Select a widget</h3>
 
                 <div class="list-group margin-top-sm not-visible">
-                  @foreach(Auth::user()->getPendingWidgetSharings() as $sharing)
-                      <span id="descriptor-{{ $sharing->widget->descriptor->id }}" class="list-group-item" data-widget="widget-{{ $sharing->widget->descriptor->type }}" data-selection="widget" data-group="shared_widgets">
-                        {{ $sharing->widget->descriptor->name }}
-                        <a href="{{ route('widget.share.accept', $sharing->id) }}" class="btn btn-success btn-xs pull-right">Accept </a>
+                  @foreach(Auth::user()->getWidgetSharings() as $sharing)
+                      <span id="descriptor-{{ $sharing->widget->getDescriptor()->id }}" class="list-group-item" data-widget="widget-{{ $sharing->widget->getDescriptor()->type }}" data-selection="widget" data-group="shared_widgets">
+                        {{ $sharing->widget->getDescriptor()->name }}
                         <a href="{{ route('widget.share.reject', $sharing->id) }}" class="btn btn-danger btn-xs has-margin-horizontal-sm pull-right">Reject </a>
                         {{-- This is the span for the selection icon --}}
                     </span>
@@ -116,8 +100,8 @@
 
                                 <h3 class="descriptor-name text-center">{{ $descriptor->name }}
                                 </h3> <!-- /.descriptor-name -->
-                                {{ HTML::image('img/demonstration/widget-'.$descriptor->type.'.png', $descriptor->name, array(
-                                    'class' => 'img-responsive img-rounded center-block'
+                                {{ HTML::image($descriptor->getPhotoLocation(), $descriptor->name, array(
+                                    'class' => 'opaque img-responsive img-rounded center-block'
                                 ))}}
 
                             </div> <!-- /.col-md-12 -->
@@ -272,14 +256,14 @@
         var connectPanel = $('#connect-service');
 
         var firstCheckedGroup = $('.fa-check').first().parent();
-        var groupConnectionMarker = firstCheckedGroup.find('span').first();
+        //var groupConnectionMarker = firstCheckedGroup.find('span').first();
 
-        url = groupConnectionMarker.data('redirect-url');
+        url = firstCheckedGroup.data('redirect-url');
 
         addPanel.addClass('not-visible');
         connectPanel.addClass('not-visible');
 
-        if (firstCheckedGroup.data('type') === 'service' && groupConnectionMarker.data('connected') === false) {
+        if (firstCheckedGroup.data('type') === 'service' && firstCheckedGroup.data('connected').length==0) {
           connectPanel.removeClass('not-visible');
         } else {
           addPanel.removeClass('not-visible');
@@ -323,21 +307,38 @@
       // Listen clicks on the #connect-widget-submit button.
       // Displays modal and redirects to connect service page.
       $('#connect-widget-submit').click(function(e){
-        e.preventDefault()
-        bootbox.confirm({
-          title: 'Fasten seatbelts, redirection ahead',
-          message: 'The widget you are trying to add, needs an external service connection. In order to do this, we will redirect you to their site. Are you sure?',
-          callback: function(result) {
-              if (result) {
-                // Using from extension, redirect in new tab
-                if (window!=window.top) {
-                  window.open(url,'_blank').focus();
-
-                // Using website, redirect on same tab
-                } else {
-                  window.location = url;
-                }
+        var service = '';
+        $('.service-name').each(function(index, element){
+          if($(element).next().hasClass('fa-check')) {
+            service = $(element).html();
+          }
+        });
+        e.preventDefault();
+        bootbox.dialog({
+          title: 'We need you to allow Fruit Dashboard access.',
+          message: 'To connect ' + service + ', we will redirect you to their site.',
+          buttons: {
+            cancel: {
+              label: 'Cancel',
+              className: 'btn-default',
+              callback: function(){}
+            },
+            main: {
+              label: 'Take me to ' + service,
+              className: 'btn-primary',
+              callback: function(result) {
+                if (result) {
+                  // Using from extension, redirect in new tab
+                  if (window!=window.top) {
+                    $("#add-widget-form").submit();
+                    //window.open(url,'_blank').focus();
+                  // Using website, redirect on same tab
+                  } else {
+                    $("#add-widget-form").submit();
+                  }
               }
+              }
+            }  
           }
         });
       });
@@ -359,6 +360,16 @@
           } else {
             inputDiv.fadeOut();
           }
+       });
+
+      /**
+       * @listens | element(s): $('#add-widget-submit-button') | event:click
+       * --------------------------------------------------------------------------
+       * Changes the button text to 'Loading...' when clicked
+       * --------------------------------------------------------------------------
+       */
+       $('#add-widget-submit-button').click(function() {
+          $(this).button('loading');
        });
 
       /**

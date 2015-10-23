@@ -20,7 +20,6 @@ abstract class GeneralServiceConnector
 
     abstract public function connect();
     abstract public function saveTokens(array $parameters);
-    abstract protected function populateData($criteria);
 
     /**
      * disconnect
@@ -37,18 +36,29 @@ abstract class GeneralServiceConnector
         $this->user->connections()->where('service', static::$service)->delete();
 
         /* Deleting all DataManagers */
-        foreach ($this->user->dataManagers as $dataManager) {
-            if ($dataManager->descriptor->category == static::$service) {
-                $dataManager->delete();
+        foreach ($this->user->dataObjects as $data) {
+            if ($data->getDescriptor()->category == static::$service) {
+                $data->delete();
             }
         }
 
         /* Deleting all widgets*/
         foreach ($this->user->widgets as $widget) {
-            if ($widget->descriptor->category == static::$service) {
+            if ($widget->getDescriptor()->category == static::$service) {
                 $widget->delete();
             }
         }
+    }
+
+    /**
+     * getServiceName
+     * Returns the name of the service.
+     * --------------------------------------------------
+     * @return string.
+     * --------------------------------------------------
+     */
+    public static function getServiceName() {
+        return static::$service;
     }
 
     /**
@@ -93,48 +103,80 @@ abstract class GeneralServiceConnector
     }
 
     /**
-     * Creating the dataManagers.
+     * Creating the Data objects.
      * --------------------------------------------------
      * @param array $criteria
      * @return array
      * --------------------------------------------------
      */
-    public function createDataManagers(array $criteria=array()) {
-        $dataManagers = array();
-        foreach(WidgetDescriptor::where('category', static::$service)->orderBy('number', 'asc')->get() as $descriptor) {
+    public function createDataObjects(array $criteria=array()) {
+        $dataObjects = array();
+        foreach(WidgetDescriptor::where('category', static::$service)
+            ->orderBy('number', 'asc')->get() as $descriptor) {
             /* Creating widget instance. */
-            $className = $descriptor->getDMClassName();
+            $className = $descriptor->getClassName();
 
             /* No manager class found */
-            if ( ! class_exists($className)) {
+            if ( ! class_exists($descriptor->getDMClassName())) {
                 continue;
             }
 
-            /* Deleting previous managers, if any. */
-           $settingsCriteria = json_encode($criteria);
-           $this->user->dataManagers()->where('descriptor_id', $descriptor->id)->where('settings_criteria', $settingsCriteria)->delete();
+            /* Filtering criteria for manager. */
+            $dataCriteria = array();
+            try {
+                foreach ($className::getCriteriaFields() as $field) {
+                    if (array_key_exists($field, $criteria)) {
+                        $dataCriteria[$field] = $criteria[$field];
+                    } else {
+                        throw new Exception("The criteria is not enough for this manager.", 1);
+                    }
+                }
+            } catch (Exception $e) {
+                continue;
+            }
+
+            /* Detecting previous managers. */
+            $settingsCriteria = json_encode($dataCriteria);
+            $data = $this->user->dataObjects()
+                ->where('descriptor_id', $descriptor->id)
+                ->where('criteria', $settingsCriteria)
+                ->first();
+
+            if ( ! is_null($data)) {
+                /* Data found, leaving it alone. */
+                array_push($dataObjects, $data);
+                continue;
+            }
 
             /* Creating data */
-            $data = Data::create(array('raw_value' => 'loading'));
+            $data = Data::create(array(
+                'criteria'      => $settingsCriteria,
+                'user_id'       => $this->user->id,
+                'descriptor_id' => $descriptor->id,
+                'state'         => 'loading'
+            ), FALSE);
 
-            /* Creating DataManager instance */
-            $dataManager = new $className(array(
-                'settings_criteria' => json_encode($criteria),
-                'last_updated'      => Carbon::now()
-            ));
-            $dataManager->descriptor()->associate($descriptor);
-            $dataManager->user()->associate($this->user);
-
-            /* Assigning data */
-            $dataManager->data()->associate($data);
-            $dataManager->save();
-
-            array_push($dataManagers, $dataManager);
+            /* Assigning foreign values */
+            $data->save();
+            array_push($dataObjects, $data);
         }
-
         $this->populateData($criteria);
+        return $dataObjects;
+    }
 
-        return $dataManagers;
+    /**
+     * populateData
+     * --------------------------------------------------
+     * Collecting the initial data from the service.
+     * @param array $criteria
+     * --------------------------------------------------
+     */
+    protected function populateData($criteria) {
+        Queue::push('DataPopulator', array(
+            'user_id'  => $this->user->id,
+            'criteria' => $criteria,
+            'service'  => static::$service
+        ));
     }
 
 } /* GeneralServiceConnector */

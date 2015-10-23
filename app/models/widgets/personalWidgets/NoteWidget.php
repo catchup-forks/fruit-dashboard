@@ -2,6 +2,18 @@
 
 class NoteWidget extends DataWidget implements iAjaxWidget
 {
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'data' => $this->getData()
+        ));
+    }
 
     protected function createDataScheme() {
         return array('text' => '');

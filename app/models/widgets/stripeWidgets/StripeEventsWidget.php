@@ -1,6 +1,6 @@
 <?php
 
-class StripeEventsWidget extends DataWidget implements iCronWidget
+class StripeEventsWidget extends DataWidget implements iDataWidget
 {
 
     /**
@@ -38,7 +38,7 @@ class StripeEventsWidget extends DataWidget implements iCronWidget
     */
     public function handleAjax($postData) {
         if (isset($postData['collect']) && ($postData['collect'])) {
-            $this->collectData();
+            $this->collect();
         }
         return $this->getData($postData['type']);
     }

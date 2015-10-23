@@ -1,7 +1,8 @@
 <?php
 
-class TwitterMentionsWidget extends CronWidget implements iServiceWidget
+class TwitterMentionsWidget extends DataWidget implements iServiceWidget
 {
+    use TwitterWidgetTrait;
     /* -- Settings -- */
     private static $rangeSettings = array(
         'count' => array(
@@ -12,7 +13,19 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
             'default'    => '5'
         ),
     );
-    use TwitterWidgetTrait;
+
+    /**
+     * getTemplateData
+     * Returning the mostly used values in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'data' => $this->getData(),
+        ));
+    }
 
     /**
      * getSettingsFields
@@ -35,9 +48,15 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
     */
     public function updateData(array $options=array()) {
         if (empty($options)) {
-            $this->dataManager()->collectData(array('count' => $this->getSettings()['count']));
-        } else {
-            $this->dataManager()->collectData($options);
+            $options = array(
+                'count' => $this->getSettings()['count']
+            );
+        }
+        try {
+            $this->data->collect($options);
+        } catch (ServiceException $e) {
+            Log::error('An error occurred during collecting data on #' . $this->data->id );
+            $this->data->setState('data_source_error');
         }
     }
 
@@ -51,10 +70,11 @@ class TwitterMentionsWidget extends CronWidget implements iServiceWidget
     */
     public function saveSettings(array $inputSettings, $commit=TRUE) {
         $oldSettings = $this->getSettings();
-        parent::saveSettings($inputSettings, $commit);
-        if ($this->getSettings() != $oldSettings && $this->dataExists()) {
+        $changedFields = parent::saveSettings($inputSettings, $commit);
+        if ($changedFields != FALSE && $this->dataExists()) {
             $this->updateData();
         }
+        return $changedFields;
     }
 }
 ?>

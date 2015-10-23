@@ -13,7 +13,7 @@
             <div class="panel-heading">
               <h3 class="panel-title text-center">
                 Edit the settings of the
-                <span class="text-success"><strong>{{ $widget->descriptor->name }} widget</strong></span>.
+                <span class="text-success"><strong>{{ $widget->getDescriptor()->name }} widget</strong></span>.
               </h3>
             </div> <!-- /.panel-heading -->
             <div class="panel-body">
@@ -24,18 +24,17 @@
 
                 @foreach ($widget->getSettingsFields() as $field=>$meta)
                   @if ( $widget->isSettingVisible($field))
-                  <div class="form-group">
+                  <div class="form-group" id="field-{{$field}}">
                     {{ Form::label($field, $meta['name'], array(
                         'class' => 'col-sm-3 control-label'
                       ))}}
                     <div class="col-sm-7">
+
                       @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
-                        @if (count($widget->$field()) != 1)
-                          @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                            <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
-                          @else
-                            {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control']) }}
-                          @endif
+                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                          <pre name="{{ $field }}">{{ $widget->$field() }}</pre>
+                        @else
+                          {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control', 'id' => $field . '-input']) }}
                         @endif
 
                       @elseif ($meta['type'] == "BOOL")
@@ -44,16 +43,18 @@
                         {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
+                          <pre name="{{ $field }}">{{ $widget->getSettings()[$field] }}</pre>
                         @else
-                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control']) }}
+                          {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control', 'id' => $field . '-input']) }}
                         @endif
                       @endif
-                      @if ($errors->first($field))
-                        <p class="text-danger">{{ $errors->first($field) }}</p>
-                      @elseif (array_key_exists('help_text', $meta))
-                        <p class="text-info">{{ $meta['help_text'] }}</p>
-                      @endif
+                      <div id="{{ $field }}-text">
+                        @if ($errors->first($field))
+                          <p class="text-danger">{{ $errors->first($field) }}</p>
+                        @elseif (array_key_exists('help_text', $meta))
+                          <p class="text-info">{{ $meta['help_text'] }}</p>
+                        @endif
+                      </div>
                     </div> <!-- /.col-sm-6 -->
 
                   </div> <!-- /.form-group -->
@@ -67,11 +68,11 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::select('dashboard', $dashboards, $widget->dashboard->id, ['class' => 'form-control']) }}
-                      <p class="text-info">The widget will be assigned to this dashboard.</p>
+                      <p class="text-info">The widget will be displayed on this dashboard.</p>
                     </div>
                   </div>
                 <!-- /.dashboard select -->
-                @if ($widget instanceof CronWidget)
+                @if ($widget instanceof DataWidget)
                   <!-- Update interval select -->
                   <div class="form-group">
                     {{ Form::label('update_period', 'Update (Minutes)', array(
@@ -79,13 +80,15 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::text('update_period', $widget->getUpdatePeriod(), ['class' => 'form-control']) }}
-                      <p class="text-info">The number of minutes the widget data will be updated automatically. (min. 30)</p>
+                      <p class="text-info">The number of minutes the widget data will be updated automatically (min. 30m).</p>
                     </div>
                   </div>
                 @endif
                 <!-- /.Update interval select -->
                 <hr>
-                  {{ Form::submit('Save', array('class' => 'btn btn-primary pull-right') ) }}
+                  {{ Form::submit('Save', array(
+                    'id' => 'save-settings',
+                    'class' => 'btn btn-primary pull-right') ) }}
                   <a href="{{ route('dashboard.dashboard', ['active' => $widget->dashboard->id]) }}" class="btn btn-link pull-right">Cancel</a>
               {{ Form::close() }}
             </div> <!-- /.panel-body -->
@@ -96,3 +99,56 @@
   </div> <!-- /.vertical-center -->
 
   @stop
+  @section('pageScripts')
+
+  <script type="text/javascript">
+    $(document).ready(function(){
+
+      /**
+       * @listens | element(s): $('#save-settings') | event:click
+       * --------------------------------------------------------------------------
+       * Changes the button text to 'Loading...' when clicked
+       * --------------------------------------------------------------------------
+       */
+       $('#save-settings').click(function() {
+          $(this).button('loading');
+       });
+
+       @foreach ($widget->getSettingsFields() as $field=>$meta)
+         @if ( array_key_exists('ajax_depends', $meta))
+           /* Ajax loader for {{ $field }} */
+           @if ($widget->$field() == FALSE)
+             $('#field-{{$field}}').hide();
+           @endif
+           $('#{{ $meta['ajax_depends'] }}-input').change(function () {
+             $.ajax({
+               type: 'get',
+               url: '{{ route('widget.get-ajax-setting', array(
+                 'widgetId'  => $widget->id,
+                 'fieldName' => $field,
+                 'value'     => 'field_value'
+                 )) }}'.replace('field_value', $('#{{$meta['ajax_depends']}}-input').val()),
+             }).done(function (data) {
+               @if ($meta['type'] == 'SCHOICE')
+                 $('#{{$field}}-input').empty();
+                 if (data['error']) {
+                   easyGrowl('error', data['error'], 3000);
+                 } else {
+                   $.each(data, function(id, name) {
+                     $('#{{$field}}-input').append($("<option></option>")
+                       .attr('value', id).text(name));
+                   });
+                 }
+               @else
+                $('#{{$field}}-input').val(data);
+               @endif
+              $('#field-{{$field}}').show();
+             });
+           });
+         @endif
+       @endforeach
+
+    })
+  </script>
+
+  @append
