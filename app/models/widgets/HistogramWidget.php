@@ -28,7 +28,7 @@ abstract class HistogramWidget extends DataWidget
             'help_text'  => 'The number of data points on your histogram.'
         ),
         'type' => array(
-            'name'       => 'Histogram type',
+            'name'       => 'Layout type',
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'chart',
