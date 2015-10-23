@@ -129,8 +129,6 @@ abstract class DataWidget extends Widget implements iAjaxWidget
                 $this->setState($this->data->state, FALSE);
             }
             $this->save();
-        } else if (static::getCriteriaFields() == FALSE && ! $this->dataExists()) {
-            $this->assignData();
         }
         return $changedFields;
     }
