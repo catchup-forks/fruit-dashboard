@@ -88,12 +88,13 @@ class ServiceTableWidget extends TableWidget {
     */
     public function saveSettings(array $inputSettings, $commit=TRUE) {
         $oldSettings = $this->getSettings();
-        parent::saveSettings($inputSettings, $commit);
+        $changedFields = parent::saveSettings($inputSettings, $commit);
         if ($oldSettings && $inputSettings &&
-                $inputSettings != $oldSettings &&
+                $changedFields != FALSE &&
                 $this->dataExists()) {
             $this->updateData();
         }
+        return $changedFields;
     }
 
     /**
