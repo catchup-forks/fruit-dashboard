@@ -192,7 +192,7 @@ class SettingsController extends BaseController
         $background->save();
 
         /* Update dashboard cache */
-        $this->user->updateDashboardCache();
+        Auth::user()->updateDashboardCache();
 
         /* Return */
         /* AJAX CALL */
@@ -239,7 +239,7 @@ class SettingsController extends BaseController
         $background->save();
 
         /* Update dashboard cache */
-        $this->user->updateDashboardCache();
+        Auth::user()->updateDashboardCache();
 
         /* Return */
         /* AJAX CALL */

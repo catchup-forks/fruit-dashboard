@@ -100,7 +100,7 @@ Widget stats
       }
 
       var widgetData{{ $resolution }} = {
-        'isCombined' : {{ $widget->getData(['resolution'=>$resolution])['isCombined'] }},
+        'isCombined' : @if($widget->getData(['resolution'=>$resolution])['isCombined']) true @else false @endif,
         'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
         @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
