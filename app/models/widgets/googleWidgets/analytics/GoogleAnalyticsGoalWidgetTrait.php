@@ -31,6 +31,7 @@ trait GoogleAnalyticsGoalWidgetTrait
         } else {
             /* On init using first profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
+                ->orderBy('google_analytics_properties.name')
                 ->first(array('google_analytics_profiles.id'));
             $init = TRUE;
         }
