@@ -106,6 +106,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         parent::checkIntegrity();
         if ( ! $this->dataExists() ||
             ($this->data->decode() == FALSE && $this->data->state == 'active')) {
+            $this->assignData();
             throw new WidgetException;
         }
         $this->setState($this->data->state);
