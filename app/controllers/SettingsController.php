@@ -191,6 +191,9 @@ class SettingsController extends BaseController
         /* Save object(s) */
         $background->save();
 
+        /* Update dashboard cache */
+        $this->user->updateDashboardCache();
+
         /* Return */
         /* AJAX CALL */
         if (Request::ajax()) {
@@ -234,6 +237,9 @@ class SettingsController extends BaseController
 
         /* Save object(s) */
         $background->save();
+
+        /* Update dashboard cache */
+        $this->user->updateDashboardCache();
 
         /* Return */
         /* AJAX CALL */

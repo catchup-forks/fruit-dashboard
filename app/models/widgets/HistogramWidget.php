@@ -18,7 +18,7 @@ abstract class HistogramWidget extends DataWidget
             'name'       => 'Name',
             'type'       => 'TEXT',
             'help_text'  => 'The name of the widget.',
-            'disabled'   => TRUE
+            'disabled'   => FALSE
         ),
         'length' => array(
             'name'       => 'Length',
