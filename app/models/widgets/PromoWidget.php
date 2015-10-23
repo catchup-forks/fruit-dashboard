@@ -63,7 +63,7 @@ class PromoWidget extends Widget
             /* Default GA widget. */
             return array(
                 'text' => 'Please select your Google Analytics profile',
-                'url'  => route('service.facebook.select-pages')
+                'url'  => route('service.google-analytics.select-properties')
             );
         } else if ($descriptor->category == 'facebook') {
             if ( ! $this->user()->isServiceConnected('facebook')) {
