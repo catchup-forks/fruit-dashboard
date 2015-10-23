@@ -669,6 +669,7 @@ class GeneralWidgetController extends BaseController {
                 $sharingObject->setState('accepted');
             }
         }
+        Auth::user()->updateDashboardCache();
         return Response::make('Widget shared.', 200);
     }
 
@@ -695,6 +696,7 @@ class GeneralWidgetController extends BaseController {
             if (is_null($user) || $user->id == Auth::user()->id) {
                 continue;
             }
+            $user->updateDashboardCache();
 
             /* Creating sharing object. */
             $sharing = new WidgetSharing(array(
