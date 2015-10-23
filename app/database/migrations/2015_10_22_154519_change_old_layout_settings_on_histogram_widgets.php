@@ -17,7 +17,7 @@ class ChangeOldLayoutSettingsOnHistogramWidgets extends Migration {
                 $oldType = $widget->getSettings()['type'];
                 try {
                     $widget->saveSettings(array('type' => 'chart'));
-                    Log::info('Changed type from ' . $oldType . ' to ' . 'chart');
+                    Log::info('Changed type of widget #' . $widget->id . ' from ' . $oldType . ' to ' . 'chart');
                 } catch (Exception $e) {
                     Log::warning('Could not change settings of widget #' .$widget->id . '.message:' . $e->getMessage());
                 } 
