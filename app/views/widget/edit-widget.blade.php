@@ -68,7 +68,7 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::select('dashboard', $dashboards, $widget->dashboard->id, ['class' => 'form-control']) }}
-                      <p class="text-info">The widget will be assigned to this dashboard.</p>
+                      <p class="text-info">The widget will be displayed on this dashboard.</p>
                     </div>
                   </div>
                 <!-- /.dashboard select -->
@@ -80,7 +80,7 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::text('update_period', $widget->getUpdatePeriod(), ['class' => 'form-control']) }}
-                      <p class="text-info">The number of minutes the widget data will be updated automatically. (min. 30)</p>
+                      <p class="text-info">The number of minutes the widget data will be updated automatically (min. 30m).</p>
                     </div>
                   </div>
                 @endif

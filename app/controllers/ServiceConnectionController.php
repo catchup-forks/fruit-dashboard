@@ -234,7 +234,7 @@ class ServiceConnectionController extends BaseController
     public function anyFacebookConnect() {
         if (Auth::user()->isServiceConnected('facebook')) {
             return Redirect::to($this->getReferer())
-                ->with('warning', 'You are already connected the service');
+                ->with('sucess', 'Facebook connection successful');
         }
         $connector = new FacebookConnector(Auth::user());
         if (Input::get('code', FALSE)) {
@@ -570,7 +570,7 @@ class ServiceConnectionController extends BaseController
     public function anyStripeConnect() {
         if (Auth::user()->isServiceConnected('stripe')) {
             return Redirect::back()
-                ->with('warning', 'You have already connected the service');
+                ->with('success', 'Stripe connection successful');
         }
 
         if (Input::get('code', FALSE)) {
@@ -662,7 +662,7 @@ class ServiceConnectionController extends BaseController
     private function connectGoogle($connectorClass, $returnUrl=null) {
         if (Auth::user()->isServiceConnected($connectorClass::getServiceName())) {
             return Redirect::to($this->getReferer())
-                ->with('warning', 'You have already connected the service');
+                ->with('success', 'Connection successful');
         }
         /* Creating connection credentials. */
         $connector = new $connectorClass(Auth::user());
