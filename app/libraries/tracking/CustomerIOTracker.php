@@ -51,20 +51,25 @@ class CustomerIOTracker {
             'data' => $eventData['md'],
         );
 
-        $url = 'https://track.customer.io/api/v1/customers/' . strval(Auth::user()->id) . '/events';
+        try {
+            $url = 'https://track.customer.io/api/v1/customers/' . strval(Auth::user()->id) . '/events';
 
-        /* Build session and send the request */
-        $session = curl_init();
-        curl_setopt($session, CURLOPT_URL, $url);
-        curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($session, CURLOPT_HEADER, false);
-        curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($session, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($session, CURLOPT_USERPWD, self::$site_id . ':' . self::$api_key);
-        curl_exec($session);
-        curl_close($session);
+            /* Build session and send the request */
+            $session = curl_init();
+            curl_setopt($session, CURLOPT_URL, $url);
+            curl_setopt($session, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+            curl_setopt($session, CURLOPT_HEADER, false);
+            curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($session, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($session, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($session, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($session, CURLOPT_USERPWD, self::$site_id . ':' . self::$api_key);
+            curl_exec($session);
+            curl_close($session);
+        } catch (Exception $e) {
+            Log::info('CustomerIOTracker exception');
+            Log::info($e);
+        }
 
         /* Return */
         return true;
