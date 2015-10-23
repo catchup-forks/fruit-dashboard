@@ -4,6 +4,14 @@
 abstract class DataWidget extends Widget implements iAjaxWidget
 {
     use DefaultAjaxWidgetTrait;
+
+    /**
+     * Whether or not the criteria has changed.
+     *
+     * @var bool
+     */
+    protected $criteriaChanged = FALSE;
+
     /**
      * refreshWidget
      * Refreshing the widget data.
@@ -17,30 +25,6 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         $this->setState('loading');
         $this->updateData();
         $this->setState('active');
-    }
-
-    /**
-     * save
-     * Looking for managers.
-     * --------------------------------------------------
-     * @param array $options
-     * @return null
-     * --------------------------------------------------
-    */
-    public function save(array $options=array())
-    {
-        parent::save($options);
-
-        /* Assigning data. */
-        if ($this->hasValidCriteria()) {
-            $this->assignData();
-            if ($this->state != 'setup_required') {
-                $this->setState($this->data->state, FALSE);
-            }
-            parent::save();
-        }
-
-        return TRUE;
     }
 
     /**
@@ -125,6 +109,27 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             throw new WidgetException;
         }
         $this->setState($this->data->state);
+    }
+
+    /**
+     * saveSettings
+     * Transforming settings to JSON format. (validation done by view)
+     * --------------------------------------------------
+     * @param array $inputSettings
+     * @param boolean $commit
+     * --------------------------------------------------
+    */
+    public function saveSettings(array $inputSettings, $commit=TRUE) {
+        $changedFields = parent::saveSettings($inputSettings, $commit);
+        if (array_intersect(static::getCriteriaFields(), $changedFields) &&
+                $this->hasValidCriteria()) {
+            $this->assignData();
+            if ($this->state != 'setup_required') {
+                $this->setState($this->data->state, FALSE);
+            }
+            $this->save();
+        }
+        return $changedFields;
     }
 
 }

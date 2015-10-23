@@ -247,7 +247,9 @@ class SignupWizardController extends BaseController
     public function getGoogleAnalyticsProfile() {
         /* Get the profiles of the user */
         $profiles = array();
-        foreach (Auth::user()->googleAnalyticsProperties as $property) {
+        foreach (Auth::user()->googleAnalyticsProperties()
+                   ->orderBy('name')
+                   ->get() as $property) {
             $profiles[$property->name] = array();
             foreach ($property->profiles as $profile) {
                 $profiles[$property->name][$profile->profile_id] = $profile->name;

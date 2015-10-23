@@ -229,7 +229,11 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public function getSettings() {
-        return json_decode($this->settings, 1);
+        $settings = json_decode($this->settings, 1);
+        if ( ! is_array($settings)) {
+            return array();
+        }
+        return $settings;
     }
 
     /**
@@ -450,6 +454,15 @@ class Widget extends Eloquent
         if ($commit) {
             $this->save(array('skip_settings' => TRUE));
         }
+        
+        /* Returning the changed fields. */ 
+        $changedFields = array();
+        foreach (array_diff($settings, $oldSettings) as $key=>$value) {
+            if ($value) {
+                array_push($changedFields, $key);
+            }
+        }
+        return $changedFields;
 
     }
 
@@ -589,7 +602,7 @@ class Widget extends Eloquent
     */
     public function delete() {
         /* Notify user about the change */
-        $this->user()->updateDashboardCache();
+        //$this->user()->updateDashboardCache();
         parent::delete();
     }
 }

@@ -152,7 +152,13 @@ class ServiceConnectionController extends BaseController
 
         } else {
             /* Creating connection, storing credentials. */
-            $connectData = TwitterConnector::getTwitterConnectURL();
+            try {
+                $connectData = TwitterConnector::getTwitterConnectURL();
+            } catch (ServiceException $e) {
+                return Redirect::back()
+                    ->with('error', $e->getMessage());
+
+            }
             Session::put('oauth_token', $connectData['oauth_token']);
             Session::put('oauth_token_secret', $connectData['oauth_token_secret']);
 
