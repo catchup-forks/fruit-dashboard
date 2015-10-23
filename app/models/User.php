@@ -389,12 +389,6 @@ class User extends Eloquent implements UserInterface
             $trialStatus = 'possible';
         } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'trial_only') {
             $trialStatus = 'active';
-            /* Track event | TRIAL STARTS */
-            $tracker = new GlobalTracker();
-            $tracker->trackAll('lazy', array(
-                'en' => 'Trial starts',
-                'el' => $this->email)
-            );
         }
         
         $subscription = new Subscription(array(
