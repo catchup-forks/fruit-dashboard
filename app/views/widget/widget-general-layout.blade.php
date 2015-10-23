@@ -70,11 +70,11 @@
       @include('widget.errors.widget-rendering-error')
   @elseif ($widget['instance'] instanceof SharedWidget)
       <div class="@if ($widget['instance']->getRelatedWidget()->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['instance']->getRelatedWidget()->id}}">
-    @include(
-      $widget['instance']->getRelatedWidget()->getDescriptor()->getTemplateName(),
-      ['widget' => $widget['instance']->getRelatedWidget()->getTemplateData()]
-    )
-    </div>
+        @include(
+          $widget['instance']->getRelatedWidget()->getDescriptor()->getTemplateName(),
+          ['widget' => $widget['instance']->getRelatedWidget()->getTemplateData()]
+        )
+      </div>
   @else
     @if ($widget['instance'] instanceof iAjaxWidget)
       @include('widget.widget-loading')

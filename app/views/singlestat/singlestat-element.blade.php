@@ -108,7 +108,7 @@
         <table class="table datatable">
           <thead>
             <tr>
-              <th class="col-sm-1">#</th>
+              <th class="col-sm-2"></th>
               @foreach($widget->getData([ 'resolution' => $resolution ])['labels'] as $datetime)
                 <th>{{ $datetime }}</th>
               @endforeach
@@ -117,14 +117,14 @@
           <tbody>
             @foreach ($widget->getData([ 'resolution' => $resolution ])['datasets'] as $dataset)
               <tr>
-                <td class="col-sm-1 dataset-label">
+                <td class="col-sm-2 dataset-label">
                   <span class="fa fa-square" style="color: rgb({{ $dataset['color'] }})"></span>
                   <span>{{ $dataset['name'] }}</span>
                 </td>
                 @foreach ($dataset['values'] as $value)
                   <td>{{ $value }}</td>
                 @endforeach
-              </tr> <!-- /.col-sm-1 -->
+              </tr> 
             @endforeach
           </tbody>
         </table> <!-- /.table .datatable -->
