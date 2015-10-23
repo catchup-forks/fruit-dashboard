@@ -8,11 +8,11 @@ abstract class HistogramWidget extends DataWidget
     /* -- Settings -- */
     private static $histogramSettings = array(
         'resolution' => array(
-            'name'       => 'Resolution',
+            'name'       => 'Time-scale',
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'days',
-            'help_text'  => 'The resolution of the chart.'
+            'help_text'  => 'Set the timescale for the X axis of the chart.'
         ),
         'name' => array(
             'name'       => 'Name',
@@ -25,14 +25,14 @@ abstract class HistogramWidget extends DataWidget
             'type'       => 'INT',
             'validation' => 'required|min:5',
             'default'    => 15,
-            'help_text'  => 'The number of data points on your histogram.'
+            'help_text'  => 'The number of data points on your widget.'
         ),
         'type' => array(
             'name'       => 'Layout type',
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'chart',
-            'help_text'  => 'The type of your chart.'
+            'help_text'  => 'The layout type of your wiget.'
         ),
     );
 
@@ -48,7 +48,7 @@ abstract class HistogramWidget extends DataWidget
 
     /* -- Choice functions -- */
     public function type() {
-        $types = array('chart' => 'Chart', 'table' => 'Table');
+        $types = array('chart' => 'Line chart', 'table' => 'Table layout');
         return $types;
     }
 
