@@ -330,8 +330,7 @@
                 if (result) {
                   // Using from extension, redirect in new tab
                   if (window!=window.top) {
-                    $("#add-widget-form").submit();
-                    //window.open(url,'_blank').focus();
+                    window.open(url, '_blank');
                   // Using website, redirect on same tab
                   } else {
                     $("#add-widget-form").submit();
