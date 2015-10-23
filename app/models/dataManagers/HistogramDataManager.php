@@ -214,9 +214,10 @@ abstract class HistogramDataManager extends DataManager
      */
     public function compare() {
         $histogram = $this->buildHistogram();
+        /*
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
-        }
+        } */
         
         if (count($histogram) < 1) {
             throw new WidgetException('Data not found');
@@ -232,7 +233,6 @@ abstract class HistogramDataManager extends DataManager
                 $values[$dataId] = $today[$dataId] - $value;
             }
         }
-
         return $values;
     }
 

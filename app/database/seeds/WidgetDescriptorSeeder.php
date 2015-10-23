@@ -484,8 +484,8 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_users'],
             array(
-                'name'         => 'Users',
-                'description'  => 'The total number of users.',
+                'name'         => 'Unique visitors',
+                'description'  => 'The total number of unique visitors.',
                 'type'         => 'google_analytics_users',
                 'category'     => 'google_analytics',
                 'is_premium'   => FALSE,

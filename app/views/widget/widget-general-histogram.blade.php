@@ -1,4 +1,3 @@
-@if ($widget['settings']['type'] == 'chart')
 <div class="chart-value larger-text">
   {{ Utilities::formatNumber(array_values($widget['instance']->getLatestValues())[0], $widget['format']) }}
 </div> <!-- /.chart-value -->
@@ -19,7 +18,6 @@
     <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
-@endif
 
 <p class="chart-name text-center">
   {{ $widget['settings']['name'] }}

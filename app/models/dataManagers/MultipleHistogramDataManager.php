@@ -132,9 +132,8 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
                 }
             }
         }
-        $isCombined = $this->toSingle ? 'true' : 'false' ; 
         return array(
-            'isCombined' => $isCombined,
+            'isCombined' => 'false',
             'datasets'   => self::removeEmptyDatasets(array_values($groupedData)),
             'labels'     => $datetimes
         );
@@ -306,5 +305,40 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             }
         }
         return $cleanedDataSets;
+    }
+    
+    /**
+     * compare
+     * Comparing the current value respect to period.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function compare() {
+        if ($this->toSingle) {
+            return parent::compare();
+        }
+        $this->setSingle(TRUE);
+        $values = parent::compare();
+        $this->setSingle(FALSE);
+        return $values;
+    }
+
+    /**
+     * getLatestValues
+     * Returns the current values in the dataset.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getLatestValues() {
+        if ($this->toSingle) {
+            return parent::getLatestValues();
+        }
+        $this->setSingle(TRUE);
+        $this->setDiff(FALSE);
+        $values = parent::getLatestValues();
+        $this->setSingle(FALSE);
+        return $values;
     }
 }

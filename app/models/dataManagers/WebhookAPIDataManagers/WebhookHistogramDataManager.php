@@ -20,7 +20,7 @@ class WebhookHistogramDataManager extends MultipleHistogramDataManager
 
         /* Checking the data. */
         if (is_null($data) || empty($data)) {
-            throw new ServiceException;
+            throw new ServiceException('Invalid JSON returned by URL: '. $this->getUrl());
         }
 
         return $data;
