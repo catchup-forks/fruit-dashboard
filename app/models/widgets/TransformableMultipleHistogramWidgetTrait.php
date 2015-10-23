@@ -5,9 +5,9 @@ trait TransformableMultipleHistogramWidgetTrait
     /* -- Choice functions -- */
     public function type() {
         $types = array(
-            'multiple' => 'By source',
-            'chart'    => 'Single line',
-            'table'    => 'Table'
+            'multiple' => 'Multiple line chart by source',
+            'chart'    => 'Cumulative difference chart',
+            'table'    => 'Table layout'
         );
         return $types;
     }

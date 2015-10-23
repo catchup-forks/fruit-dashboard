@@ -36,7 +36,7 @@
                           {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                         @else
                           @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                            <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
+                            <pre name="{{ $field }}">{{ $widget->getSettings()[$field] }}</pre>
                           @else
                             {{ Form::text($field, $widget->getSettings()[$field], array(
                               'class' => 'form-control' )) }}

@@ -32,7 +32,7 @@
 
                       @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          <p name="{{ $field }}" class="form-control static">{{ $widget->$field() }}</p>
+                          <pre name="{{ $field }}">{{ $widget->$field() }}</pre>
                         @else
                           {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control', 'id' => $field . '-input']) }}
                         @endif
@@ -43,7 +43,7 @@
                         {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
                         @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
-                          <p name="{{ $field }}" class="form-control static">{{ $widget->getSettings()[$field] }}</p>
+                          <pre name="{{ $field }}">{{ $widget->getSettings()[$field] }}</pre>
                         @else
                           {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control', 'id' => $field . '-input']) }}
                         @endif
@@ -68,7 +68,7 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::select('dashboard', $dashboards, $widget->dashboard->id, ['class' => 'form-control']) }}
-                      <p class="text-info">The widget will be assigned to this dashboard.</p>
+                      <p class="text-info">The widget will be displayed on this dashboard.</p>
                     </div>
                   </div>
                 <!-- /.dashboard select -->
@@ -80,7 +80,7 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::text('update_period', $widget->getUpdatePeriod(), ['class' => 'form-control']) }}
-                      <p class="text-info">The number of minutes the widget data will be updated automatically. (min. 30)</p>
+                      <p class="text-info">The number of minutes the widget data will be updated automatically (min. 30m).</p>
                     </div>
                   </div>
                 @endif

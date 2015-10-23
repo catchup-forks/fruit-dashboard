@@ -121,7 +121,7 @@ class SiteConstants {
                 'pic_url'  => 'img/demonstration/promo/twitter-mentions.png'
             ),
         ),
-        'Retention' => array(),
+        //'Retention' => array(),
         'Revenue' => array(
             array(
                 'type'     => 'stripe_mrr',

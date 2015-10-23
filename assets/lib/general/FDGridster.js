@@ -302,7 +302,7 @@ function FDGridster(gridsterOptions) {
     };
 
     if (lowestRow > options.numberOfRows) {
-      var msg = "There is a off-screen widget on your dashboard: " + options.name + ".";
+      var msg = "There is an off-screen widget on your dashboard: " + options.name + ".";
       easyGrowl('warning', msg, 10000);
     };
 
