@@ -20,7 +20,8 @@ function FDTable(widgetSelector) {
    * --------------------------------------------------------------------------
    */
   function draw(data, isHistogram) {
-    if (data) {
+    dataExists = data && data.header && data.content;
+    if (dataExists) {
       isHistogram = typeof isHistogram !== 'undefined' ? isHistogram : false;
 
       // Clear the existing table

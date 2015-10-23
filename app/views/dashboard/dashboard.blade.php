@@ -59,11 +59,7 @@
           </div> <!-- /.fill -->
 
           {{-- Here comes the dashboard content --}}
-          @if($dashboardMeta['is_locked'])
-          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}" data-lock-direction="lock">
-          @else
-          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}" data-lock-direction="unlock">
-          @endif
+          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}">
 
             {{-- Generate all the widgdets --}}
             <div class="gridster-container">
@@ -163,12 +159,6 @@
     // Initialize Carousel
     $('.carousel').carousel({
       interval: false // stops the auto-cycle
-    })
-
-    // Change the dashboard-lock on dashboard change
-    $('.carousel').on('slid.bs.carousel', function () {
-      var gridster = window['FDGridster' + $('.item.active > .gridster').attr("data-dashboard-id")];
-      gridster.setDashboardLock();
     })
 
     function showShareModal(widgetId) {
