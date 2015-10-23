@@ -16,6 +16,7 @@ class AssignDataToCountwidgets extends Migration {
             if ($widget instanceof CountWidget) {
                 try {
                     $widget->assignData();
+                    $widget->save();
                     Log::info('Data assigned to widget #' . $widget->id);
                 } catch (Exception $e) {
                     Log::error('Could not assign data to widget #' . $widget->id);
