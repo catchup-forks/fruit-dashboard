@@ -140,6 +140,7 @@ class User extends Eloquent implements UserInterface
                 ));
                 $sharingDashboard->user()->associate($this);
                 $sharingDashboard->save();
+                $this->updateDashboardCache();
             }
 
             /* Accepting all sharings. */
@@ -288,7 +289,7 @@ class User extends Eloquent implements UserInterface
                 ->with('widget', $templateData);
             try {
                 $view->render();
-            } catch (Exception $e) {
+            } catch (ServiceException $e) {
                 Log::error($e->getMessage());
                 $widget->setState('rendering_error');
             }

@@ -334,7 +334,7 @@ abstract class HistogramWidget extends DataWidget
             $history = $this->getHistory($i);
             $value = $history['value'];
 
-            if (isset($previousValue)) {
+            if (isset($previousValue) && $previousValue != 0) {
                 $percent = ($value / $previousValue - 1) * 100;
             } else {
                 $percent = 0;

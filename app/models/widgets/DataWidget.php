@@ -107,7 +107,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         if ( ! $this->dataExists() ||
             ($this->data->decode() == FALSE && $this->data->state == 'active')) {
             $this->assignData();
-            throw new WidgetException;
+            $this->setState($this->data->state);
+            $this->save();
         }
         $this->setState($this->data->state);
     }
@@ -124,11 +125,9 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         $changedFields = parent::saveSettings($inputSettings, $commit);
         if (array_intersect(static::getCriteriaFields(), $changedFields) &&
                 $this->hasValidCriteria()) {
-            if ($this->state != 'setup_required') {
-                $this->assignData();
-                $this->setState($this->data->state, FALSE);
-                $this->save();
-            }
+            $this->assignData();
+            $this->setState($this->data->state, FALSE);
+            $this->save();
         }
         return $changedFields;
     }
