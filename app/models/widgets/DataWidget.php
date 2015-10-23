@@ -124,11 +124,11 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         $changedFields = parent::saveSettings($inputSettings, $commit);
         if (array_intersect(static::getCriteriaFields(), $changedFields) &&
                 $this->hasValidCriteria()) {
-            $this->assignData();
             if ($this->state != 'setup_required') {
+                $this->assignData();
                 $this->setState($this->data->state, FALSE);
+                $this->save();
             }
-            $this->save();
         }
         return $changedFields;
     }
