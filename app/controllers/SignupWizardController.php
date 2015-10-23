@@ -66,6 +66,12 @@ class SignupWizardController extends BaseController
                 'en' => 'Sign up',
                 'el' => Auth::user()->email)
             );
+            /* Track event | TRIAL STARTS */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Trial starts',
+                'el' => Auth::user()->email)
+            );
 
             /* Redirect to next step */
             return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'));
