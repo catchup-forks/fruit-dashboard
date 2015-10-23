@@ -42,14 +42,19 @@ class KissmetricsTracker {
      * --------------------------------------------------
      */
     public function sendEvent($eventData) {
-        /* Initialize client */
-        $km = new KISSmetrics\Client(self::$api_key, KISSmetrics\Transport\Sockets::initDefault()); 
+        try {
+            /* Initialize client */
+            $km = new KISSmetrics\Client(self::$api_key, KISSmetrics\Transport\Sockets::initDefault()); 
 
-        /* Identify user and build data */
-        $km->identify(Auth::user()->email)->record($eventData['en'], $eventData['md']);       
+            /* Identify user and build data */
+            $km->identify(Auth::user()->email)->record($eventData['en'], $eventData['md']);       
 
-        /* Send event */
-        $km->submit(); 
+            /* Send event */
+            $km->submit(); 
+        } catch (Exception $e) {
+            Log::info('KissmetricsTracker exception');
+            Log::info($e);
+        }
 
         /* Return */
         return true;
