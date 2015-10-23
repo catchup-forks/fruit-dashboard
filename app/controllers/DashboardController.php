@@ -29,7 +29,7 @@ class DashboardController extends BaseController
             $cachedDashboard = $this->getFromCache();
             if ( ! is_null($cachedDashboard)) {
                 /* Some logging */
-                if (!App::environment('producion')) {
+                if ( ! App::environment('production')) {
                     Log::info("Loading dashboard from cache.");
                     Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
                 }
