@@ -131,7 +131,9 @@ class Data extends Eloquent
         if ($this->state == $state) {
             return;
         }
-        Log::info("Changing state of data #" . $this->id . ' from ' . $this->state . ' to '. $state);
+        if ( ! App::environment('production')) {
+            Log::info("Changing state of data #" . $this->id . ' from ' . $this->state . ' to '. $state);
+        }
         $this->state = $state;
         $this->save();
         /* Notifying widgets. */
