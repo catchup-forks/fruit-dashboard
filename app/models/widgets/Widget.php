@@ -589,7 +589,7 @@ class Widget extends Eloquent
     */
     public function delete() {
         /* Notify user about the change */
-        $this->user()->updateDashboardCache();
+        //$this->user()->updateDashboardCache();
         parent::delete();
     }
 }
