@@ -501,7 +501,7 @@ class WidgetDescriptorSeeder extends Seeder
             ['type' => 'google_analytics_active_users'],
             array(
                 'name'         => 'Active users',
-                'description'  => ' - FIXME - Please write something here',
+                'description'  => 'See the number of active users for your page or app.',
                 'type'         => 'google_analytics_active_users',
                 'category'     => 'google_analytics',
                 'is_premium'   => FALSE,
@@ -517,7 +517,7 @@ class WidgetDescriptorSeeder extends Seeder
             ['type' => 'google_analytics_goal_completion'],
             array(
                 'name'         => 'Goal completion',
-                'description'  => 'The total number of completions for the requested goal number.',
+                'description'  => 'The number of goal completions for the selected goal.',
                 'type'         => 'google_analytics_goal_completion',
                 'category'     => 'google_analytics',
                 'is_premium'   => FALSE,
@@ -533,7 +533,7 @@ class WidgetDescriptorSeeder extends Seeder
             ['type' => 'google_analytics_top_sources'],
             array(
                 'name'        => 'Top sources',
-                'description' => '',
+                'description' => 'Display the top sources of your traffic.',
                 'type'        => 'google_analytics_top_sources',
                 'category'    => 'google_analytics',
                 'is_premium'  => FALSE,
@@ -549,7 +549,7 @@ class WidgetDescriptorSeeder extends Seeder
             ['type' => 'google_analytics_conversions'],
             array(
                 'name'        => 'Conversions',
-                'description' => '',
+                'description' => 'Display the conversion for a goal specified by you.',
                 'type'        => 'google_analytics_conversions',
                 'category'    => 'google_analytics',
                 'is_premium'  => FALSE,
