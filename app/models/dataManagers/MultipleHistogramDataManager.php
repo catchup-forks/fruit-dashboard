@@ -128,12 +128,12 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
             array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
             foreach (self::getEntryValues($entry) as $dataId => $value) {
                 if (array_key_exists($dataId, $groupedData)) {
-                    array_push($groupedData[$dataId]['values'], $value);
+                    array_push($groupedData[$dataId]['values'], (int)$value);
                 }
             }
         }
         return array(
-            'isCombined' => 'false',
+            'isCombined' => false,
             'datasets'   => self::removeEmptyDatasets(array_values($groupedData)),
             'labels'     => $datetimes
         );
