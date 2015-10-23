@@ -474,7 +474,7 @@ class Widget extends Eloquent
     }
 
 
-   /* -- Eloquent overridden methods -- */
+    /* -- Eloquent overridden methods -- */
     /**
      * Overriding save to add descriptor automatically.
      *
@@ -584,6 +584,14 @@ class Widget extends Eloquent
         return str_replace('_widget', '', $lowercase);
     }
 
+    /**
+     * Overriding delete to update the user's cache.
+    */
+    public function delete() {
+        /* Notify user about the change */
+        $this->user()->updateDashboardCache();
+        parent::delete();
+    }
 }
 
 ?>
