@@ -18,9 +18,7 @@ function FDGridster(gridsterOptions) {
   // Public functions
   this.init   = init;
   this.build  = build;
-  this.lock   = lock;
-  this.unlock = unlock;
-  this.setDashboardLock = setDashboardLock;
+  this.handleLock = handleLock;
 
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
@@ -74,16 +72,13 @@ function FDGridster(gridsterOptions) {
                   {draggable: getDraggingOptions()}
               );
 
-    // Create gridster.js object and lock / unlock
-    if (options.isLocked) {
-      gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster').disable();
-      lock();
-    } else {
-      gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
-      unlock();
-    };
+    // Create gridster.js
+    gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
 
-    setDashboardLock();
+    // Handle lock based on the default options if this is the active gridster
+    if ($(options.namespace).parent().hasClass('active')) {
+      handleLock();
+    }
 
     // Return
     return this;
@@ -126,63 +121,141 @@ function FDGridster(gridsterOptions) {
   }
 
   /**
-   * @function handleHover
+   * @function handleLock
    * --------------------------------------------------------------------------
-   * Handles the hover display based on locking.
+   * This function handles the lock / unlock process based on the gridser
+   *    options.isLocked parameter
+   * @param {boolean} (sendAjax) true: sends ajax update
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function handleHover(isLocked) {
-    var hoverableSelector = options.namespace + ' *[data-hover="hover-unlocked"]';
-    if (isLocked) {
-      $.each($(hoverableSelector), function(){
-        $(this).children(":first").css('display', 'none');
-      });
-      $(options.widgetsSelector).removeClass('can-hover');
-    } else {
-      $.each($(hoverableSelector), function(){
-        $(this).children(":first").css('display', '');
-      });
-      $(options.widgetsSelector).addClass('can-hover');
-    };
+  function handleLock(sendAjax) {
+    // set sendAjax false by default
+    sendAjax = sendAjax || false;
 
+    // Handle Lock icon
+    lockIcon(options.isLocked);
+    
+    // Handle Gridster
+    lockGridster(options.isLocked);
+
+    // Handle Ajax
+    if (sendAjax) {
+       lockAjax(options.isLocked);
+    }
   }
 
-
   /**
-   * @function lock
+   * @function lockIcon
    * --------------------------------------------------------------------------
-   * Locks the actual gridster object
+   * Sets the lock parameters for a given dashboard
+   * @param {boolean} (toState) true: to lock, false: to unlock
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function lock() {
+  function lockIcon(toState) {
+    // This is funny warlock... he-he-he
+    var lock = $(options.lockIconSelector);
+    
+    // Set the Dashboard ID
+    lock.attr('data-dashboard-id', options.id);
+    
+    // Hide shown tooltip.
+    lock.tooltip('hide');
+
+    // Lock
+    if (toState) {
+      // Set the icon
+      lock.children('span').attr('class', 'fa fa-fw fa-lock fa-2x fa-inverse color-hovered');
+      // Set the tooltip
+      lock.attr('title', 'This dashboard is locked. Click to unlock.');
+      // Set the direction
+      lock.attr('data-lock-direction', 'unlock');
+
+    // Unlock
+    } else {
+      // Set the icon
+      lock.children('span').attr('class', 'fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered');
+      // Set the tooltip
+      lock.attr('title', 'This dashboard is unlocked. Click to lock.');
+      // Set the direction
+      lock.attr('data-lock-direction', 'lock');
+    };
+
+    // Reinitialize tooltip
+    lock.tooltip('fixTitle');  
+  }
+
+  /**
+   * @function lockGridster
+   * --------------------------------------------------------------------------
+   * Handles the gridster options (hover, drag, resize) based on the requested state
+   * @param {boolean} (toState) true: to lock, false: to unlock
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function lockGridster(toState) {
+    // Lock
+    if (toState) {
       // Disable resize
       gridster.disable_resize();
       // Disable gridster movement
       gridster.disable();
       // Hide hoverable elements.
-      handleHover(true);
+      $(options.namespace + ' ' + options.widgetsSelector).each(function(){
+        $(this).removeClass('can-hover');
+      });
 
-      options.isLocked = 1;
-  }
-
-  /**
-   * @function unlock
-   * --------------------------------------------------------------------------
-   * Unlocks the actual gridster object
-   * @return {null} None
-   * --------------------------------------------------------------------------
-   */
-  function unlock() {
+    // Unlock
+    } else {
       // Enable resize
       gridster.enable_resize();
       // Enable gridster movement
       gridster.enable();
       // Show hoverable elements.
-      handleHover(false);
+      $(options.namespace + ' ' + options.widgetsSelector).each(function(){
+        $(this).addClass('can-hover');
+      });
+    }
+  }
 
-      options.isLocked = 0;
+  /**
+   * @function lockAjax
+   * --------------------------------------------------------------------------
+   * Calls the locking method to save state in the database. 
+   *    Reverts the whole process on fail.
+   * @param {boolean} (toState) true: to lock, false: to unlock
+   * @return {null} None
+   * --------------------------------------------------------------------------
+   */
+  function lockAjax(toState) {
+    // Initialize variables based on the direction
+    if (toState) {
+      var url = options.lockUrl;
+      var successmsg = "You successfully locked the dashboard."
+      var errormsg = "Something went wrong, we couldn't lock your dashboard."
+    } else {
+      var url = options.unlockUrl;
+      var successmsg = "You successfully unlocked the dashboard."
+      var errormsg = "Something went wrong, we couldn't unlock your dashboard."
+    };
+
+    // Call ajax function
+    $.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: url,
+          data: null,
+          success: function(data) {
+            easyGrowl('success', successmsg, 3000);
+          },
+          error: function() {
+            easyGrowl('error', errormsg, 3000);
+            // Revert the process
+            options.isLocked = !toState;
+            handleLock();
+          }
+      });
   }
 
   /**
@@ -292,8 +365,10 @@ function FDGridster(gridsterOptions) {
    * --------------------------------------------------------------------------
    */
   function getOverflow(widgetsOptions) {
+    // Initialize
     var lowestRow = 0;
 
+    // Get the lowest row
     for (var i = widgetsOptions.length - 1; i >= 0; i--) {
       var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey) - 1;
       if (localRowMax > lowestRow) {
@@ -301,122 +376,15 @@ function FDGridster(gridsterOptions) {
       }
     };
 
+    // Send warning if there is an off screen widget
     if (lowestRow > options.numberOfRows) {
       var msg = "There is an off-screen widget on your dashboard: " + options.name + ".";
       easyGrowl('warning', msg, 10000);
     };
 
+    // Return
     return this;
-  }
-
-  /**
-   * @function toggleDashboardLock
-   * --------------------------------------------------------------------------
-   * Toggles the lock option for the given dashboard
-   * @return {null} None
-   * --------------------------------------------------------------------------
-   */
-  function toggleDashboardLock() {
-    // Change gridster
-    changeGridster();
-
-    // Change lock icon
-    setDashboardLock();
-
-    // Call ajax
-    callLockToggleAjax();
-  }
-
-/**
- * @function setDashboardLock
- * --------------------------------------------------------------------------
- * Sets the lock parameters for a given dashboard
- * @param  {boolean} fixTooltips | fix on true
- * @return {null} None
- * --------------------------------------------------------------------------
- */
-function setDashboardLock(fixTooltips) {
-  fixTooltips = typeof fixTooltips !== 'undefined' ? fixTooltips : true;
-  var lock = $('#dashboard-lock');
-
-  // Hide shown tooltip.
-  lock.tooltip('hide');
-
-  if (options.isLocked==1) {
-    // Set the lock icon
-    lock.children('span').attr('class', 'fa fa-fw fa-lock fa-2x fa-inverse color-hovered');
-    // Set the tooltip text
-    lock.attr('title', 'This dashboard is locked. Click to unlock.');
-    // Set the lock direction
-    lock.attr('data-lock-direction', 'lock');
-    // Set the dashboard lock direction
-    $(options.gridsterSelector).attr("data-lock-direction", 'lock');
-
-  } else {
-    // Set the lock icon
-    lock.children('span').attr('class', 'fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered');
-    // Set the tooltip text
-    lock.attr('title', 'This dashboard is unlocked. Click to lock.');
-    // Set the lock direction
-    lock.attr('data-lock-direction', 'unlock');
-    // Set the dashboard lock direction
-    $(options.gridsterSelector).attr("data-lock-direction", 'unlock');
-  };
-
-  if (fixTooltips) {
-    // Reinitialize tooltip
-    lock.tooltip('fixTitle');  
-  }
-  
-  // Set the Dashboard ID
-  lock.attr('data-dashboard-id', options.id);
-}
-
-  function changeGridster() {
-    if (options.isLocked==0) {
-      lock();
-    } else {
-      unlock();
-    };
-  }
-
-  /**
-   * @function callLockToggleAjax
-   * --------------------------------------------------------------------------
-   * Calls the locking method to save state in the database. Reverts the whole
-   *    process on fail.
-   * @return {null} None
-   * --------------------------------------------------------------------------
-   */
-  function callLockToggleAjax() {
-    // Initialize variables based on the direction
-    if (options.isLocked==1) {
-      var url = "/dashboard/lock/" + options.id;
-      var successmsg = "You successfully locked the dashboard."
-      var errormsg = "Something went wrong, we couldn't lock your dashboard."
-    } else {
-      var url = "/dashboard/unlock/" + options.id;
-      var successmsg = "You successfully unlocked the dashboard."
-      var errormsg = "Something went wrong, we couldn't unlock your dashboard."
-    };
-
-    // Call ajax function
-    $.ajax({
-      type: "POST",
-      dataType: 'json',
-      url: url,
-          data: null,
-          success: function(data) {
-            easyGrowl('success', successmsg, 3000);
-          },
-          error: function() {
-            easyGrowl('error', errormsg, 3000);
-            // Revert the process
-            changeGridster();
-            setDashboardLock();
-          }
-      });
-  }
+  } 
 
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
@@ -425,18 +393,51 @@ function setDashboardLock(fixTooltips) {
   /**
    * @event $(".widget-delete").click
    * --------------------------------------------------------------------------
-   *
+   * Handles the delete widget click
    * --------------------------------------------------------------------------
    */
   $(".widget-delete").click(function(e) {
     deleteWidget($(this).attr("data-id"));
   });
 
-  $('#dashboard-lock').click(function() {
+  /**
+   * @event $(options.lockIconSelector).click
+   * --------------------------------------------------------------------------
+   * Handles the click on the lock icon
+   * --------------------------------------------------------------------------
+   */
+  $(options.lockIconSelector).click(function() {
     if($(this).attr("data-dashboard-id") == options.id) {
-      // Call  the function
-      toggleDashboardLock();
+      // Set isLocked
+      options.isLocked = $(this).attr("data-lock-direction") == 'lock' ? true : false;
+      // Handle lock process, and send ajax
+      handleLock(true);
     }
   });
+
+  /**
+   * @event $(document).ready()
+   * --------------------------------------------------------------------------
+   * Sets dashboard-lock icon ID to the currently active dashboard
+   * --------------------------------------------------------------------------
+   */
+  $(document).ready(function () {
+    if ($(options.namespace).parent().hasClass('active')) {
+      $(options.lockIconSelector).attr("data-dashboard-id", options.id);
+    };
+  });
+
+  /**
+   * @event $('.carousel').on('slid.bs.carousel')
+   * --------------------------------------------------------------------------
+   * Change the dashboard-lock icon ID on dashboard change
+   * --------------------------------------------------------------------------
+   */
+  $('.carousel').on('slid.bs.carousel', function () {
+    if ($(options.namespace).parent().hasClass('active')) {
+      $(options.lockIconSelector).attr("data-dashboard-id", options.id);
+      handleLock();
+    };
+  })
 
 } // FDGridster
