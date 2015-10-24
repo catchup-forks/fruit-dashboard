@@ -61,7 +61,7 @@ class Background extends Eloquent
         /* Check environment */
         $relDir = '/img/backgrounds-production/';
         $absDir = public_path() . $relDir;
-        if ((!file_exists($absDir)) or (!App::environment('local'))) {
+        if ((!file_exists($absDir)) or (!App::environment('production'))) {
             $relDir = '/img/backgrounds/';
             $absDir = public_path() . $relDir;
         }
