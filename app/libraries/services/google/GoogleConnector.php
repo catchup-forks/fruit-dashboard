@@ -128,9 +128,7 @@ abstract class GoogleConnector extends GeneralServiceConnector
                 $connection = $this->getConnection();
             }
             $this->client->setAccessToken($connection->access_token);
-        } catch (Exception $e) {
-            $this->disconnect();
-        }
+        } catch (Exception $e) {throw new ServiceException('google connection error'); }
     }
 
     /**

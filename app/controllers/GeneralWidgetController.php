@@ -497,6 +497,11 @@ class GeneralWidgetController extends BaseController {
     private function getWidget($widgetID) {
         $widget = Widget::find($widgetID);
 
+        // Widget not found.
+        if ($widget === null) {
+            throw new WidgetDoesNotExist("Widget not found", 1);
+        }
+
         /* User cross check. */
         if ($widget->user()->id != Auth::user()->id &&
                 ! Auth::user()->widgetSharings()
@@ -506,10 +511,6 @@ class GeneralWidgetController extends BaseController {
             throw new WidgetDoesNotExist("You do not own this widget, nor is it shared with you.", 1);
         }
 
-        // Widget not found.
-        if ($widget === null) {
-            throw new WidgetDoesNotExist("Widget not found", 1);
-        }
         return $widget;
     }
 
