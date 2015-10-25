@@ -32,9 +32,10 @@ class CollectData extends Command {
         $time = microtime(TRUE);
         $errors = 0;
         $i = 0;
-        foreach (Data::all() as $data) {
-            if (Carbon::now()->diffInMinutes($data->updated_at) >= $data->update_period) {
-                $i++;
+        foreach (DB::table('data')->lists('id') as $dataId) {
+            $data = Data::find($dataId);
+            if (Carbon::now()->diffInMinutes($data->updated_at) >= $data->update_period || $data->state == 'data_source_error') {
+				$i++;
                 try {
                     $data->collect();
                 } catch (ServiceException $e) {
