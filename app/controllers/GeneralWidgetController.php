@@ -669,7 +669,10 @@ class GeneralWidgetController extends BaseController {
                 $sharingObject->setState('accepted');
             }
         }
+
+        /* Updating user's cache. */
         Auth::user()->updateDashboardCache();
+
         return Response::make('Widget shared.', 200);
     }
 
@@ -696,16 +699,20 @@ class GeneralWidgetController extends BaseController {
             if (is_null($user) || $user->id == Auth::user()->id) {
                 continue;
             }
-            $user->updateDashboardCache();
 
             /* Creating sharing object. */
             $sharing = new WidgetSharing(array(
                 'state' => 'not_seen'
             ));
+
+            /* Adding foreign keys. */
             $sharing->srcUser()->associate(Auth::user());
             $sharing->user()->associate($user);
             $sharing->widget()->associate($widget);
             $sharing->save();
+        
+            /* Right now auto accept sharings. */
+            $user->handleWidgetSharings();
         }
 
         /* Everything OK, return response with 200 status code */

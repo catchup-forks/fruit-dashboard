@@ -49,9 +49,6 @@ class DashboardController extends BaseController
         /* Check the default dashboard and create if not exists */
         $user->checkOrCreateDefaultDashboard();
 
-        /* Handle the widget sharings. */
-        $user->handleWidgetSharings();
-
         /* Check onboarding state */
         if ($user->settings->onboarding_state != 'finished') {
             return View::make('dashboard.dashboard-onboarding-not-finished', array(

@@ -11,7 +11,12 @@ class QuoteDataManager extends DataManager
      */
     public function collect($options=array()) {
         /* Getting the JSON from GoogleSpreadsheet. */
-        $file = file_get_contents($this->getQuoteSpreadsheetUri());
+        try {
+            $file = file_get_contents($this->getQuoteSpreadsheetUri());
+        } catch (Exception $e) {
+            throw new ServiceException('Could not update the quotes.');
+        }
+
         $decoded_data = json_decode($file);
 
         /* Not updating if there was no answer. */
