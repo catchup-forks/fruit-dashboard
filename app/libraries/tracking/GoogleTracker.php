@@ -65,7 +65,7 @@ class GoogleTracker {
             ]);
         } catch (Exception $e) {
             Log::info('GoogleTracker exception');
-            Log::info($e);
+            Log::info($e->getMessage());
         }
         
         //$response = SiteFunctions::postUrl($url);

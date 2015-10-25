@@ -96,7 +96,7 @@ abstract class HistogramWidget extends DataWidget
      * @return DataManager
      * --------------------------------------------------
      */
-     public function setupDataManager(array $options=array()) {
+    public function setupDataManager(array $options=array()) {
         $settings = $this->getSettings();
         $manager = $this->data->getManager();
         $manager->setResolution(array_key_exists('resolution', $options) ? $options['resolution'] : $settings['resolution']);

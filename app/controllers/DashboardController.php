@@ -89,7 +89,10 @@ class DashboardController extends BaseController
         }
 
         /* Saving the cache, and returning the view. */
-        $this->saveToCache($renderedView);
+        $sessionKeys = array_keys(Session::all());
+        if ( ! (in_array('error', $sessionKeys) || in_array('success', $sessionKeys))) {
+            $this->saveToCache($renderedView);
+        }
         return $renderedView;
 
     }

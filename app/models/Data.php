@@ -93,9 +93,7 @@ class Data extends Eloquent
      * --------------------------------------------------
      */
     public function newFromBuilder($attributes=array()) {
-        $data = new Data;
-        $data->exists = TRUE;
-        $data->setRawAttributes((array) $attributes, true);
+        $data = parent::newFromBuilder($attributes);
 
         if ( ! empty($attributes->descriptor_id)) {
             /* Creating manager if descriptor is set. */

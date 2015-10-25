@@ -53,7 +53,7 @@ class KissmetricsTracker {
             $km->submit(); 
         } catch (Exception $e) {
             Log::info('KissmetricsTracker exception');
-            Log::info($e);
+            Log::info($e->getMessage());
         }
 
         /* Return */
