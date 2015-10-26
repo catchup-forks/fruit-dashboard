@@ -25,6 +25,10 @@ class Widget extends Eloquent
     public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() {
+        $dashboard = $this->dashboard;
+        if (is_null($dashboard)) {
+            throw new WidgetException('Dashboard #' . $this->dashboard_id . ' not found');
+        }
         return User::remember(120)->find($this->dashboard->user_id);
     }
 

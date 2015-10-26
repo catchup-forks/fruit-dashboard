@@ -117,6 +117,7 @@ class Dashboard extends Eloquent
     public function delete() {
         /* Notify user about the change */
         $this->user->updateDashboardCache();
+        $this->widgets()->delete();
         parent::delete();
     }
 }
