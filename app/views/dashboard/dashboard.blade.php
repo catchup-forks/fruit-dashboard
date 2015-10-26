@@ -192,6 +192,8 @@
             /* Resetting values */
             $('#email-addresses').val('');
             $('#widget-id').val(0);
+
+            easyGrowl('success', "You successfully share the widget.", 3000);
            });
           return
         } else {
