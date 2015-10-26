@@ -9,8 +9,8 @@
 <script type="text/javascript">
   // Set table data
   var widgetData{{ $widget['id'] }} = {
-    'header': [@foreach ($widget['header'] as $head)'{{ $head }}',@endforeach],
-    'content': [@foreach ($widget['content'] as $row)[@foreach ($row as $col)'{{ $col }}',@endforeach],@endforeach]
+    'header': [@foreach ($widget['data']['header'] as $head)'{{ $head }}',@endforeach],
+    'content': [@foreach ($widget['data']['content'] as $row)[@foreach ($row as $col)'{{ $col }}',@endforeach],@endforeach]
   }
 </script>
 @append

@@ -3,6 +3,12 @@
 /* This class is responsible for histogram data collection. */
 abstract class MultipleHistogramDataManager extends HistogramDataManager
 {
+    /**
+     * The number of top datasets shown.
+     *
+     * @var bool
+     */
+    private static $maxValues = 5;
 
     /**
      * Whether or not we should transform to single histogram.
@@ -298,13 +304,20 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      */
     private static function removeEmptyDatasets($datasets) {
         $hasData = FALSE;
+        /* Removing empty datasets to boost performance of the sorting. */
         $cleanedDataSets = array();
         foreach ($datasets as $dataset) {
             if ((count($dataset['values']) > 0) && (max($dataset['values']) > 0)) {
                 array_push($cleanedDataSets, $dataset);
             }
         }
-        return $cleanedDataSets;
+        /* Sorting the array. */
+        usort($cleanedDataSets, function ($a, $b) {
+            return array_sum($a['values']) < array_sum($b['values']);
+        });
+    
+        /* Returning the first N values. */
+        return array_slice($cleanedDataSets, 0, self::$maxValues);
     }
     
     /**

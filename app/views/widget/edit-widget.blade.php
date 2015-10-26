@@ -80,7 +80,11 @@
                       ))}}
                     <div class="col-sm-7">
                       {{ Form::text('update_period', $widget->getUpdatePeriod(), ['class' => 'form-control']) }}
-                      <p class="text-info">The number of minutes the widget data will be updated automatically (min. 30m).</p>
+                        @if ($errors->first('update_period'))
+                          <p class="text-danger">{{ $errors->first('update_period') }}</p>
+                        @else
+                          <p class="text-info">The number of minutes the widget data will be updated automatically (min. 30m).</p>
+                        @endif
                     </div>
                   </div>
                 @endif

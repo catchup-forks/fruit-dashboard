@@ -405,9 +405,22 @@ class Widget extends Eloquent
             }
         }
 
-        // Return.
-        return $validationArray;
+        /* Adding custom validation. */
+        return $this->customValidator($validationArray, $data);
     }
+
+    /**
+     * customValidator
+     * Adding extra validation rules based on settings.
+     * --------------------------------------------------
+     * @param array $validationArray
+     * @param array $inputData
+     * @return array $validationArray
+     * --------------------------------------------------
+     */
+    protected function customValidator($validationArray, $inputData) {       
+        return $validationArray;
+     }
 
     /**
      * premiumUserCheck

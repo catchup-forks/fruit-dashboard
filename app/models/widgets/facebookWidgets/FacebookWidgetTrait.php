@@ -85,13 +85,13 @@ trait FacebookWidgetTrait
     }
 
     /**
-     * getDefaultName
+     * getServiceSpecificName
      * Returning the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getDefaultName() {
+    public function getServiceSpecificName() {
         return $this->getPage()->name . ' - ' . $this->getDescriptor()->name;
     }
 }

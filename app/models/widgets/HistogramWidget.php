@@ -17,8 +17,7 @@ abstract class HistogramWidget extends DataWidget
         'name' => array(
             'name'       => 'Name',
             'type'       => 'TEXT',
-            'help_text'  => 'The name of the widget.',
-            'disabled'   => FALSE
+            'help_text'  => 'The name of the widget.'
         ),
         'length' => array(
             'name'       => 'Length',
@@ -53,6 +52,17 @@ abstract class HistogramWidget extends DataWidget
     }
 
     /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields() {
+        return array_merge(parent::getSettingsFields(), self::$histogramSettings);
+     }
+
+    /**
      * getTemplateData
      * Returning the mostly used values in the template.
      * --------------------------------------------------
@@ -60,21 +70,37 @@ abstract class HistogramWidget extends DataWidget
      * --------------------------------------------------
      */
     public function getTemplateData() {
-        $data = $this->getData();
         $templateData = parent::getTemplateData();
-        if ($this->isTable()) {
-            return array_merge($templateData, array(
-                'header'  => $data['header'],
-                'content' => $data['content'],
-                'data'    => $data
-            ));
+        /* Adding default data for this widget type. */
+        $histogramTemplateData = array(
+            'data' => $this->getData(),
+            'name' => $this->getName()
+        );
+
+        if ( ! $this->isTable()) {
+            /* Populating chart layout data. */
+            $histogramTemplateData['defaultDiff']   = $this->getDiff();
+            $histogramTemplateData['format']        = $this->getFormat();
+            $histogramTemplateData['hsaCumulative'] = $this->hasCumulative();
         }
-        return array_merge($templateData, array(
-            'defaultDiff'   => $this->getDiff(),
-            'format'        => $this->getFormat(),
-            'data'          => $data,
-            'hasCumulative' => $this->hasCumulative()
-        ));
+
+        return array_merge($templateData, $histogramTemplateData);
+    }
+
+    /**
+     * getName
+     * Returning the name of the widget.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    protected function getName() {
+        $name = '';
+        if ($this instanceof iServiceWidget) {
+            $name = $this->getServiceSpecificName();
+        }
+        $name .= ' ' . $this->getSettings()['name'];
+        return $name;
     }
 
     /**
@@ -104,17 +130,6 @@ abstract class HistogramWidget extends DataWidget
         $manager->setRange(array_key_exists('range', $options) ? $options['range'] : array());
         $manager->setDiff(array_key_exists('diff', $options) ? $options['diff'] : FALSE);
         return $manager;
-     }
-
-    /**
-     * getSettingsFields
-     * Returns the SettingsFields
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$histogramSettings);
      }
 
     /**
@@ -281,23 +296,6 @@ abstract class HistogramWidget extends DataWidget
      }
 
     /**
-     * save
-     * Adding name property if not set.
-     * --------------------------------------------------
-     * @param array $options
-     * @return null
-     * --------------------------------------------------
-    */
-    public function save(array $options=array()) {
-        parent::save($options);
-        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
-            $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
-        }
-
-        return parent::save($options);
-    }
-
-    /**
      * getTableData
      * Returns the data in table format.
      * --------------------------------------------------
@@ -374,5 +372,37 @@ abstract class HistogramWidget extends DataWidget
         return $this->data->decode() != FALSE;
     }
 
+    /**
+     * saveSettings
+     * Collecting new data on change.
+     * --------------------------------------------------
+     * @param array $inputSettings
+     * @param boolean $commit
+     * --------------------------------------------------
+    */
+    public function saveSettings(array $inputSettings, $commit=TRUE) {
+        $changedFields = parent::saveSettings($inputSettings, $commit);
+        if ($this->getSettings()['name'] == '') {
+            $this->saveSettings(array('name' => $this->getDescriptor()->name), $commit);
+        }
+        return $changedFields;
+    }
+
+    /**
+     * customValidator
+     * Adding extra validation rules based on settings.
+     * --------------------------------------------------
+     * @param array $validationArray
+     * @param array $inputData
+     * @return array $validationArray
+     * --------------------------------------------------
+     */
+    protected function customValidator($validationArray, $inputData) {       
+        /* On table layout setting maximum values. */
+        if ($inputData['type'] == 'table') {
+            $validationArray['length'] .= '|max:15';
+        }
+        return $validationArray;
+     }
 }
 ?>

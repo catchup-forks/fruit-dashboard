@@ -12,16 +12,30 @@ abstract class TableWidget extends DataWidget
         ),
     );
 
+   /**
+    * getSettingsFields
+    * Returns the SettingsFields
+    * --------------------------------------------------
+    * @return array
+    * --------------------------------------------------
+    */
+    public static function getSettingsFields() {
+       return array_merge(parent::getSettingsFields(), self::$tableSettings);
+    }
+
     /**
-     * getSettingsFields
-     * Returns the SettingsFields
+     * getTemplateData
+     * Returning the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$tableSettings);
-     }
+    public function getTemplateData() {
+        return array_merge(parent::getTemplateData(), array(
+            'name' => $this->getName(),
+        ));
+    }
+
 
     /**
      * getHeader
@@ -46,20 +60,35 @@ abstract class TableWidget extends DataWidget
     }
 
     /**
-     * save
-     * Adding name property if not set.
+     * getName
+     * Returning the name of the widget.
      * --------------------------------------------------
-     * @param array $options
-     * @return null
+     * @return string
+     * --------------------------------------------------
+     */
+    protected function getName() {
+        $name = '';
+        if ($this instanceof iServiceWidget) {
+            $name = $this->getServiceSpecificName();
+        }
+        $name .= ' ' . $this->getSettings()['name'];
+        return $name;
+    }
+
+    /**
+     * saveSettings
+     * Collecting new data on change.
+     * --------------------------------------------------
+     * @param array $inputSettings
+     * @param boolean $commit
      * --------------------------------------------------
     */
-    public function save(array $options=array()) {
-        parent::save($options);
-        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
-            $this->saveSettings(array('name' => $this->getDefaultName()), FALSE);
+    public function saveSettings(array $inputSettings, $commit=TRUE) {
+        $changedFields = parent::saveSettings($inputSettings, $commit);
+        if ($this->getSettings()['name'] == '') {
+            $this->saveSettings(array('name' => $this->getDescriptor()->name), $commit);
         }
-
-        return parent::save($options);
+        return $changedFields;
     }
 }
 

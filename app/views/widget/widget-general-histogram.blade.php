@@ -20,7 +20,7 @@
 </div> <!-- /.chart-diff-data -->
 
 <p class="chart-name text-center">
-  {{ $widget['settings']['name'] }}
+  {{ $widget['name'] }}
 </p> <!-- /.chart-name -->
 
 <div id="chart-container-{{ $widget['id'] }}" class="clickable">
