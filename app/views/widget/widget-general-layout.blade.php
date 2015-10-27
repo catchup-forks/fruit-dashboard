@@ -3,11 +3,11 @@
      data-col="{{ $widget['position']->col }}"
      data-sizex="{{ $widget['position']->size_x }}"
      data-sizey="{{ $widget['position']->size_y }}"
-     data-min-sizex="{{ $widget['instance']->getMinCols() }}"
-     data-min-sizey="{{ $widget['instance']->getMinRows() }}"
+     data-min-sizex="{{ $widget['min_cols'] }}"
+     data-min-sizey="{{ $widget['min_rows'] }}"
      class="gridster-widget can-hover">
 
-     @if ($widget['instance'] instanceof SharedWidget)
+     @if (is_subclass_of($widget['className'], 'SharedWidget'))
       <div class="position-tr-sm-second">
         <span class="fa fa-share-alt text-white display-hovered drop-shadow" data-toggle="tooltip" title="This widget is shared with you" data-placement="left"></span>
       </div> <!-- /.position-tr-sm-second -->
@@ -29,7 +29,7 @@
         </li>
 
         {{-- REFRESH --}}
-        @if ($widget['instance'] instanceof iAjaxWidget)
+         @if (is_subclass_of($widget['className'], 'iAjaxWidget'))
           <li>
             <a href="#" id="widget-refresh-{{$widget['id']}}" title="refresh widget content">
               <span class="fa fa-refresh"> </span>
@@ -39,7 +39,7 @@
         @endif
 
         {{-- SHARE --}}
-        @if ( ! $widget['instance'] instanceof SharedWidget && ! $widget['instance'] instanceof PromoWidget)
+        @if ( ! is_subclass_of($widget['className'], 'SharedWidget') && ! is_subclass_of($widget['className'], 'PromoWidget'))
         <li>
           <a href="#" id="share-{{$widget['id']}}" onclick="showShareModal({{$widget['id']}})">
             <span class="fa fa-share-alt"> </span>
@@ -59,24 +59,21 @@
 
       </ul>
     </div>
-
-  @if ($widget['instance']->premiumUserCheck() === 0)
-     @include('widget.widget-premium-not-allowed', ['feature' => 'hello'])
-  @elseif ($widget['state'] == 'setup_required')
+  @if ($widget['state'] == 'setup_required')
       @include('widget.errors.widget-setup-required')
   @elseif ($widget['state'] == 'data_source_error')
       @include('widget.errors.widget-data-source-error')
   @elseif ($widget['state'] == 'rendering_error')
       @include('widget.errors.widget-rendering-error')
-  @elseif ($widget['instance'] instanceof SharedWidget)
-      <div class="@if ($widget['instance']->getRelatedWidget()->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['instance']->getRelatedWidget()->id}}">
+  @elseif (is_subclass_of($widget['className'], 'SharedWidget'))
+      <div class="@if ($widget['relatedWidget']->state == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['relatedWidget']->id}}">
         @include(
-          $widget['instance']->getRelatedWidget()->getDescriptor()->getTemplateName(),
-          ['widget' => $widget['instance']->getRelatedWidget()->getTemplateData()]
+          $widget['relatedWidget']->getDescriptor()->getTemplateName(),
+          ['widget' => $widget['relatedWidget']->getTemplateData()]
         )
       </div>
   @else
-    @if ($widget['instance'] instanceof iAjaxWidget)
+    @if (is_subclass_of($widget['className'], 'iAjaxWidget'))
       @include('widget.widget-loading')
       <div class="@if ($widget['state'] == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['id']}}">
     @endif
@@ -84,7 +81,7 @@
       @include($widget['descriptor']->getTemplateName())
     @endif
     <!-- Adding loading on DataWidget -->
-    @if ($widget['instance'] instanceof iAjaxWidget)
+    @if (is_subclass_of($widget['className'], 'iAjaxWidget'))
       </div>
     @endif
 

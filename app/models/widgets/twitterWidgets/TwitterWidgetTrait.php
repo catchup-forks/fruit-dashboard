@@ -33,7 +33,7 @@ trait TwitterWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return '@' . $this->getUser() . ' - ' . $this->getDescriptor()->name;
+        return '@' . $this->getUser();
     }
 }
 

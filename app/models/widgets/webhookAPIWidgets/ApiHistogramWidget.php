@@ -37,7 +37,9 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      */
     public function getTemplateData() {
         if ( ! $this->hasData()) {
-            return self::getDefaultTemplateData($this);
+            return array_merge(self::getDefaultTemplateData($this), array(
+                'hasData' => $this->hasData()
+            ));
         } 
         return parent::getTemplateData();
     }
@@ -108,26 +110,6 @@ class ApiHistogramWidget extends MultipleHistogramWidget
          /* Return */
          return parent::save();
      }
-
-    /**
-     * hasData
-     * Returns whether or not there's data in the histogram.
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-     */
-     public function hasData() {
-
-         $data = $this->data->decode();
-         if ($data == FALSE) {
-             return FALSE;
-          }
-          if ( ( ! array_key_exists('datasets', $data)) ||
-              ($data['datasets'] == FALSE)) {
-              return FALSE ;
-          }
-          return TRUE;
-    }
 
 }
 ?>

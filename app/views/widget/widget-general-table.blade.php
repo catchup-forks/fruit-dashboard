@@ -1,6 +1,6 @@
 <div class="widget-inner">
   <div class="widget-heading larger-text">
-    {{ $title }}
+    {{ $widget['name'] }}
   </div> <!-- /.widget-heading -->
   <table class="table table-condensed table-bordered"></table>
 </div> <!-- /.widget-inner -->

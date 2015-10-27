@@ -45,7 +45,7 @@ abstract class TableWidget extends DataWidget
      * --------------------------------------------------
      */
     public function getHeader() {
-        return $this->data->getHeader();
+        return $this->dataManager->getHeader();
     }
 
     /**
@@ -56,7 +56,7 @@ abstract class TableWidget extends DataWidget
      * --------------------------------------------------
      */
     public function getContent() {
-        return $this->data->getContent();
+        return $this->dataManager->getContent();
     }
 
     /**
@@ -68,7 +68,7 @@ abstract class TableWidget extends DataWidget
      */
     protected function getName() {
         $name = '';
-        if ($this instanceof iServiceWidget) {
+        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
             $name = $this->getServiceSpecificName();
         }
         $name .= ' ' . $this->getSettings()['name'];

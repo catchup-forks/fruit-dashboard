@@ -66,8 +66,21 @@ abstract class DataManager
      * initialize
      * Default initializer
      */
-    public function initialize() {
+    public function initialize()
+    {
         $this->collect();
+    }
+
+    /**
+     * build
+     * Returning the decoded values.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public function build()
+    {
+        return $this->data;
     }
 
     /**
@@ -77,7 +90,7 @@ abstract class DataManager
      * @param array $data
      * --------------------------------------------------
      */
-     public function save($data=null)
+     protected function save($data=null)
      {
         if ( ! is_null($data)) {
             $this->data = $data;

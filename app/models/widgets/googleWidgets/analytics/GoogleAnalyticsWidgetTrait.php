@@ -112,7 +112,7 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return $this->getProperty()->name . ' - ';
+        return $this->getProperty()->name;
     }
 
     /**

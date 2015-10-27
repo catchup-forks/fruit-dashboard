@@ -22,7 +22,6 @@ class Widget extends Eloquent
     public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
 
     /* -- Relations -- */
-    public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() {
         $dashboard = $this->dashboard;
@@ -206,11 +205,14 @@ class Widget extends Eloquent
     public static function getDefaultTemplateData($widget) {
         return array(
             'settings'   => $widget->getSettings(),
-            'instance'   => $widget,
             'id'         => $widget->id,
             'state'      => $widget->state,
             'position'   => $widget->getPosition(),
-            'descriptor' => $widget->getDescriptor()
+            'descriptor' => $widget->getDescriptor(),
+            'min_cols'   => $widget->getMinCols(),
+            'min_rows'   => $widget->getMinRows(),
+            'className'  => get_class($widget),
+            'state'      => $widget->state
         );
     }
 
@@ -557,6 +559,9 @@ class Widget extends Eloquent
         $instance = new $className;
         $instance->exists = TRUE;
         $instance->setRawAttributes((array) $attributes, true);
+        if (method_exists($instance, 'onCreate')) {
+            $instance->onCreate();
+        }
         return $instance;
     }
 

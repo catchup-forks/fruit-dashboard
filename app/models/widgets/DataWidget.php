@@ -5,12 +5,43 @@ abstract class DataWidget extends Widget implements iAjaxWidget
 {
     use DefaultAjaxWidgetTrait;
 
+    /* -- Relations -- */
+    protected function dataObject() { return $this->belongsTo('Data', 'data_id'); }
+
     /**
      * Whether or not the criteria has changed.
      *
      * @var bool
      */
     protected $criteriaChanged = FALSE;
+
+    /**
+     * The DM. Used to communicate with the DB data.
+     *
+     * @var DataManager
+     */
+    protected $dataManager = NULL;
+
+    /**
+     * setupDataManager
+     * Setting up the datamanager
+     * --------------------------------------------------
+     * @return DataManager
+     * --------------------------------------------------
+     */
+    protected function setupDataManager() 
+    {
+        $dataObject = $this->dataObject()->first(Data::getMetaFields());
+
+        if ($dataObject) {
+            $manager = $dataObject->getManager();
+
+            return $manager;
+        }
+
+        return NULL;
+    }
+
 
     /**
      * refreshWidget
@@ -21,20 +52,34 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     */
     public function refreshWidget()
     {
-        /* Setting to loading, and waiting for the collector to finish. */
         $this->setState('loading');
+    
         $this->updateData();
+    
         $this->setState('active');
     }
 
     /**
      * assignData
      * Assigning the data to the widget.
+     * --------------------------------------------------
+     * @param boolean $commit
+     * @return boolean
+     * --------------------------------------------------
      */
-    public function assignData()
+    public function assignData($commit=TRUE)
     {
-        $this->data()
-            ->associate($this->getDescriptor()->getDataObject($this));
+        if ( ! $this->hasValidCriteria()) {
+            return FALSE;
+        }
+        
+        $dataObject = $this->getDescriptor()->getDataObject($this);
+
+        $this->dataObject()->associate($dataObject);
+
+        $this->setState($dataObject->state, $commit);
+
+        return TRUE;
     }
 
     /**
@@ -48,10 +93,10 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     public function updateData(array $options=array())
     {
         try {
-            $this->data->collect($options);
+            $this->dataManager->collect($options);
         } catch (ServiceException $e) {
-            Log::error('An error occurred during collecting data on #' . $this->data->id );
-            $this->data->setState('data_source_error');
+            Log::error('An error occurred during collecting data on #' . $this->data_id );
+            $this->dataObject->setState('data_source_error');
         }
     }
 
@@ -64,7 +109,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     */
     public function setUpdatePeriod($interval)
     {
-        $this->data->setUpdatePeriod($interval);
+        $this->dataObject->setUpdatePeriod($interval);
     }
 
     /**
@@ -76,16 +121,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     */
     public function getUpdatePeriod()
     {
-        return $this->data->update_period;
-    }
-
-    /**
-     * getData
-     * Passing the job to the dataObject.
-     */
-    public function getData($postData=null)
-    {
-        return $this->data->decode();
+        return $this->dataObject->update_period;
     }
 
     /**
@@ -94,7 +130,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      */
     public function dataExists()
     {
-        return ! is_null($this->data);
+        return ! is_null($this->data_id);
     }
 
     /**
@@ -104,32 +140,48 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     public function checkIntegrity()
     {
         parent::checkIntegrity();
-        if ( ! $this->dataExists() ||
-            ($this->data->decode() == FALSE && $this->data->state == 'active')) {
-            $this->assignData();
-            $this->setState($this->data->state);
-            $this->save();
+
+        if ( ! $this->dataExists() && $this->assignData() == FALSE) {
+            throw new WidgetException;
         }
-        $this->setState($this->data->state);
+        dd($this);
+
+        $this->setState($this->dataObject->state);
+
+        dd($this);
     }
 
     /**
      * saveSettings
-     * Transforming settings to JSON format. (validation done by view)
+     * Assigning data if criteria has changed.
      * --------------------------------------------------
      * @param array $inputSettings
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=TRUE) 
+    {
         $changedFields = parent::saveSettings($inputSettings, $commit);
-        if (array_intersect(static::getCriteriaFields(), $changedFields) &&
-                $this->hasValidCriteria()) {
-            $this->assignData();
-            $this->setState($this->data->state, FALSE);
-            $this->save();
+
+        if (array_intersect(static::getCriteriaFields(), $changedFields)) {
+            $this->assignData($commit);
         }
+
         return $changedFields;
+    }
+
+    /**
+     * onCreate
+     * Creating dataManager.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    protected function onCreate() 
+    {
+        if ($this->dataExists()) {
+            $this->dataManager = $this->setupDataManager();
+        }
     }
 
 }

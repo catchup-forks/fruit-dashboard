@@ -31,7 +31,7 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'data' => $this->getData()
+            'quote' => $this->dataManager->build()
         ));
     }
 

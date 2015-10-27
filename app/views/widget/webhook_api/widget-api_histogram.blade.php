@@ -1,4 +1,4 @@
-@if ($widget['instance']->hasData() == FALSE)
+@if ( ! $widget['hasData'])
   <div id="widget-loading-{{ $widget['id'] }}" class="widget-inner fill">
     <p class="text-center">
       <h4 class="text-center">{{ $widget['settings']['name'] }} (id: {{ $widget['id'] }})</h4>
@@ -20,7 +20,7 @@
 
 @section('widgetScripts')
 <script type="text/javascript">
-  @if ($widget['instance']->hasData() == FALSE)
+  @if ( ! $widget['hasData'])
     var widgetData{{ $widget['id'] }} = {};
     function copyToClipboard(url) {
         var $temp = $("<input>");

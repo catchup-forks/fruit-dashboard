@@ -92,7 +92,7 @@ trait FacebookWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return $this->getPage()->name . ' - ' . $this->getDescriptor()->name;
+        return $this->getPage()->name;
     }
 }
 

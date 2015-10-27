@@ -201,10 +201,10 @@ class User extends Eloquent implements UserInterface
                 try {
                     $templateData = $widget->getTemplateData();
                 } catch (Exception $e) {
-                    /* Something went wrong during data population. */
+                    /* Something went wrong during rendering. */
                     Log::error($e->getMessage());
-                    $widget->setState('rendering_error');
                     /* Falling back to default template data. */
+                    $widget->setState('rendering_error');
                     $templateData = Widget::getDefaultTemplateData($widget);
                 }
             } else {
@@ -223,7 +223,6 @@ class User extends Eloquent implements UserInterface
         if(isset($existsActiveDashboard) && !$existsActiveDashboard) {
             unset($params['activeDashboard']);
         }
-
         return View::make('dashboard.dashboard', $params)
             ->with('dashboards', $dashboards);
     }
@@ -249,7 +248,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkWidgetsIntegrity() {
-        foreach ($this->widgets()->with('data')->get() as $widget) {
+        foreach ($this->widgets as $widget) {
             try {
                 $widget->checkIntegrity();
             } catch (WidgetFatalException $e) {
@@ -276,7 +275,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function turnOffBrokenWidgets() {
-        foreach ($this->widgets()->with('data')->get() as $widget) {
+        foreach ($this->widgets as $widget) {
             if ($widget instanceof SharedWidget) {
                 continue;
             }
@@ -289,7 +288,7 @@ class User extends Eloquent implements UserInterface
                 ->with('widget', $templateData);
             try {
                 $view->render();
-            } catch (ServiceException $e) {
+            } catch (Exception $e) {
                 Log::error($e->getMessage());
                 $widget->setState('rendering_error');
             }
