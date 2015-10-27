@@ -144,11 +144,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         if ( ! $this->dataExists() && $this->assignData() == FALSE) {
             throw new WidgetException;
         }
-        dd($this);
 
         $this->setState($this->dataObject->state);
-
-        dd($this);
     }
 
     /**
