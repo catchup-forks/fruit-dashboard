@@ -46,6 +46,7 @@ class User extends Eloquent implements UserInterface
     public function widgets() {
         return $this->hasManyThrough('Widget', 'Dashboard');
     }
+
     public function googleAnalyticsProfiles() {
         return $this->hasManyThrough(
             'GoogleAnalyticsProfile',
@@ -194,7 +195,7 @@ class User extends Eloquent implements UserInterface
         }
 
         /* Populating widget data. */
-        foreach ($this->widgets()->with('dashboard')->get() as $widget) {
+        foreach ($this->widgets as $widget) {
             /* Getting template data for the widget. */
             if ($widget->renderable()) {
                 /* Widget is loading, no data is available yet. */
@@ -223,21 +224,9 @@ class User extends Eloquent implements UserInterface
         if(isset($existsActiveDashboard) && !$existsActiveDashboard) {
             unset($params['activeDashboard']);
         }
+
         return View::make('dashboard.dashboard', $params)
             ->with('dashboards', $dashboards);
-    }
-
-    /**
-     * checkDataIntegrity
-     * --------------------------------------------------
-     * Checking the overall integrity of the user's data.
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function checkDataIntegrity() {
-        foreach ($this->dataObjects as $data) {
-            $data->checkIntegrity();
-        }
     }
 
     /**
@@ -497,5 +486,6 @@ class User extends Eloquent implements UserInterface
         /* Return */
         return $dashboard;
     }
+
 
 }

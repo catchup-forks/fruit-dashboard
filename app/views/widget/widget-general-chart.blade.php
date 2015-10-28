@@ -13,7 +13,6 @@
     <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget['currentDiff'], $widget['format']) }}</span>
   </div> <!-- /.chart-diff -->
 
-
   <div class="chart-diff-dimension smaller-text">
     <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->

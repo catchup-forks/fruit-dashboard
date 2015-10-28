@@ -288,7 +288,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'twitter_followers'],
             array(
-                'name'        => 'Followers chart',
+                'name'        => 'Followers',
                 'description' => 'Followers chart',
                 'type'        => 'twitter_followers',
                 'category'    => 'twitter',
@@ -338,7 +338,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_likes'],
             array(
-                'name'        => 'Likes chart',
+                'name'        => 'Likes',
                 'description' => 'The total number of people who have liked your Page.',
                 'type'        => 'facebook_likes',
                 'category'    => 'facebook',
@@ -354,7 +354,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_engaged_users'],
             array(
-                'name'        => 'Engaged users chart',
+                'name'        => 'Engaged users',
                 'description' => 'The number of people who engaged with your Page. Engagement includes any click or story created.',
                 'type'        => 'facebook_engaged_users',
                 'category'    => 'facebook',
@@ -386,7 +386,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_page_impressions'],
             array(
-                'name'         => 'Page impressions chart',
+                'name'         => 'Page impressions',
                 'description'  => 'The number of people who have seen any content associated with your Page',
                 'type'         => 'facebook_page_impressions',
                 'category'     => 'facebook',
@@ -403,7 +403,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_bounce_rate'],
             array(
-                'name'        => 'Bounce rate chart',
+                'name'        => 'Bounce rate',
                 'description' => 'The percentage of single-page session (i.e., session in which the person left your property from the first page).',
                 'type'        => 'google_analytics_bounce_rate',
                 'category'    => 'google_analytics',
@@ -419,7 +419,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_sessions'],
             array(
-                'name'        => 'Sessions chart',
+                'name'        => 'Sessions',
                 'description' => 'The total number of sessions',
                 'type'        => 'google_analytics_sessions',
                 'category'    => 'google_analytics',

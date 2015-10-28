@@ -109,14 +109,12 @@ class Data extends Eloquent
     public function newFromBuilder($attributes=array()) {
         $data = parent::newFromBuilder($attributes);
 
-        if ( ! empty($attributes->descriptor_id)) {
-            /* Creating manager if descriptor is set. */
-            $className = WidgetDescriptor::find($attributes->descriptor_id)
-                ->getDMClassName();
-            if(class_exists($className)) {
-                $data->manager = new $className($data);
-            }
-        }
+        /* Creating manager if descriptor is set. */
+        $className = WidgetDescriptor::find($attributes->descriptor_id)
+            ->getDMClassName();
+
+        $data->manager = new $className($data);
+
         return $data;
     }
 
@@ -183,12 +181,10 @@ class Data extends Eloquent
      * Checking the data integrity.
     */
     public function checkIntegrity() {
-        $decodedData = json_decode($this->raw_value, 1);
-        if ($this->state == 'loading') {
-            /* Data population is underway */
-            $this->setWidgetsState('loading');
 
-        } else if ( ! is_array($decodedData) || empty($decodedData) ) {
+        $decodedData = json_decode($this->raw_value, 1);
+        
+        if ( ! is_array($decodedData) || empty($decodedData) ) {
             /* No json in data, this is a problem. */
             try {
                 $this->manager->initialize();
@@ -238,11 +234,14 @@ class Data extends Eloquent
         $raw_value = DB::table('data')
             ->where('id', $this->id)
             ->pluck('raw_value');
-
+    
+        /* Running JSON decoder. */
         $data = json_decode($raw_value, 1);
+
         if ( ! is_array($data)) {
             return array();
         }
+
         return $data;
     }
 
@@ -270,18 +269,20 @@ class Data extends Eloquent
     public function __call($method, $args) {
         return call_user_func_array(array(&$this->manager, $method), $args);
     }
+
     /**
+     * save
      * Overriding save to add descriptor automatically.
-     *
+     * --------------------------------------------------
      * @return the saved object.
      * @throws DescriptorDoesNotExist
+     * --------------------------------------------------
     */
     public function save(array $options=array()) {
         /* Notify user about the change */
         $this->user()->updateDashboardCache();
         return parent::save($options);
     }
-
 }
 
 ?>

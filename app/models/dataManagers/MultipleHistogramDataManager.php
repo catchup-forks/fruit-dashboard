@@ -324,15 +324,16 @@ abstract class MultipleHistogramDataManager extends HistogramDataManager
      * compare
      * Comparing the current value respect to period.
      * --------------------------------------------------
+     * @param int $count
      * @return array
      * --------------------------------------------------
      */
-    public function compare() {
+    public function compare($count) {
         if ($this->toSingle) {
-            return parent::compare();
+            return parent::compare($count);
         }
         $this->setSingle(TRUE);
-        $values = parent::compare();
+        $values = parent::compare($count);
         $this->setSingle(FALSE);
         return $values;
     }

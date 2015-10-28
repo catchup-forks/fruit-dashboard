@@ -27,14 +27,17 @@ trait HistogramTableLayoutTrait
             )
         );
 
+
+
         /* Populating table data. */
-        for ($i = $this->getLength() - 1; $i >= 0; --$i) {
+        for ($i = $this->getLength(); $i > 0; --$i) {
+            $diff = $i - 1;
             $now = Carbon::now();
             switch ($settings['resolution']) {
-                case 'days':   $date = $now->subDays($i)->format('M-d'); break;
-                case 'weeks':  $date = $now->subWeeks($i)->format('W'); break;
-                case 'months': $date = $now->subMonths($i)->format('M'); break;
-                case 'years':  $date = $now->subYears($i)->format('Y'); break;
+                case 'days':   $date = $now->subDays($diff)->format('M-d'); break;
+                case 'weeks':  $date = $now->subWeeks($diff)->format('W'); break;
+                case 'months': $date = $now->subMonths($diff)->format('M'); break;
+                case 'years':  $date = $now->subYears($diff)->format('Y'); break;
                 default:$date = '';
             }
 
@@ -81,7 +84,7 @@ trait HistogramTableLayoutTrait
      */
     protected function setupTableDataManager($manager) 
     {
-        //$manager->setDiff(TRUE);
+        $manager->setDiff(TRUE);
     }
 
     /**

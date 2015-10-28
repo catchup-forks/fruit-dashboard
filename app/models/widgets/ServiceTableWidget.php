@@ -133,7 +133,7 @@ class ServiceTableWidget extends TableWidget {
      * getData
      * Passing the job to the dataObject.
      */
-    public function getData($postData=null)
+    public function getData(array $postData=array())
     {
         $data = $this->data->decode();
         if (array_key_exists('header', $data)) {

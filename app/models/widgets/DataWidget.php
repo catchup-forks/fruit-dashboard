@@ -3,8 +3,6 @@
 /* All classes that have interaction with data. */
 abstract class DataWidget extends Widget implements iAjaxWidget
 {
-    use DefaultAjaxWidgetTrait;
-
     /* -- Relations -- */
     protected function dataObject() { return $this->belongsTo('Data', 'data_id'); }
 
@@ -23,63 +21,53 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     protected $dataManager = NULL;
 
     /**
-     * setupDataManager
-     * Setting up the datamanager
+     * handleAjax
+     * Handling general ajax request.
      * --------------------------------------------------
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupDataManager() 
-    {
-        $dataObject = $this->dataObject()->first(Data::getMetaFields());
-
-        if ($dataObject) {
-            $manager = $dataObject->getManager();
-
-            return $manager;
-        }
-
-        return NULL;
-    }
-
-
-    /**
-     * refreshWidget
-     * Refreshing the widget data.
-     * --------------------------------------------------
-     * @return string
+     * @param array $postData
+     * @return mixed
      * --------------------------------------------------
     */
-    public function refreshWidget()
-    {
-        $this->setState('loading');
-    
-        $this->updateData();
-    
-        $this->setState('active');
+    public function handleAjax($postData) {
+        if (isset($postData['state_query']) && $postData['state_query']) {
+            /* Got state query signal */
+            if ($this->state == 'loading') {
+                return array('ready' => FALSE);
+            } else if($this->state == 'active') {
+                /* Rerendering the widget */
+                $view = View::make($this->getDescriptor()->getTemplateName())
+                    ->with('widget', $this->getTemplateData());
+                return array(
+                    'ready' => TRUE,
+                    'data'  => $this->getData($postData),
+                    'html'  => $view->render()
+                );
+            } else {
+                return array('ready' => FALSE);
+            }
+        }
+        if (isset($postData['refresh_data']) && $postData['refresh_data']) {
+            /* Refresh signal */
+            try {
+                $this->refreshWidget();
+            } catch (ServiceException $e) {
+                Log::error($e->getMessage());
+                return array('status'  => FALSE,
+                             'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
+            }
+        }
     }
 
     /**
-     * assignData
-     * Assigning the data to the widget.
+     * buildData
+     * Calling the manager's build.
      * --------------------------------------------------
-     * @param boolean $commit
-     * @return boolean
+     * @return array
      * --------------------------------------------------
      */
-    public function assignData($commit=TRUE)
+    protected function buildData() 
     {
-        if ( ! $this->hasValidCriteria()) {
-            return FALSE;
-        }
-        
-        $dataObject = $this->getDescriptor()->getDataObject($this);
-
-        $this->dataObject()->associate($dataObject);
-
-        $this->setState($dataObject->state, $commit);
-
-        return TRUE;
+        return $this->dataManager->build();
     }
 
     /**
@@ -98,6 +86,87 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             Log::error('An error occurred during collecting data on #' . $this->data_id );
             $this->dataObject->setState('data_source_error');
         }
+    }
+
+    /**
+     * refreshWidget
+     * Refreshing the widget data.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+    */
+    protected function refreshWidget()
+    {
+        $this->setState('loading');
+    
+        $this->updateData();
+    
+        $this->setState('active');
+    }
+
+
+    /**
+     * setupDataManager
+     * Setting up the datamanager
+     * --------------------------------------------------
+     * @return DataManager
+     * --------------------------------------------------
+     */
+    protected function setupDataManager() 
+    {
+        $dataObject = $this->dataObject;
+
+        if ($dataObject) {
+            $manager = $dataObject->getManager();
+
+            return $manager;
+        }
+
+        return NULL;
+    }
+
+    /**
+     * assignData
+     * Assigning the data to the widget.
+     * --------------------------------------------------
+     * @param boolean $commit
+     * @return boolean
+     * --------------------------------------------------
+     */
+    protected function assignData($commit=TRUE)
+    {
+        if ( ! $this->hasValidCriteria()) {
+            return FALSE;
+        }
+        
+        $dataObject = $this->getDescriptor()->getDataObject($this);
+
+        if (is_null($dataObject)) {
+            return FALSE;
+        }
+
+        $this->dataObject()->associate($dataObject);
+
+        $this->setState($dataObject->state, FALSE);
+
+        if ($commit) {
+            $this->save();
+        }
+
+        return TRUE;
+    }
+
+    /**
+     * getData
+     * Returning the filtered data by the manager.
+     * --------------------------------------------------
+     * @param array $options
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getData(array $options=array())
+    {
+        return $this->dataManager->build($options);
     }
 
     /**
@@ -125,15 +194,6 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * dataExists
-     * Returns whether or not there is dat in the DB.
-     */
-    public function dataExists()
-    {
-        return ! is_null($this->data_id);
-    }
-
-    /**
      * checkIntegrity
      * adding data integrity check.
     */
@@ -144,6 +204,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         if ( ! $this->dataExists() && $this->assignData() == FALSE) {
             throw new WidgetException;
         }
+
+        $this->dataObject->checkIntegrity();
 
         $this->setState($this->dataObject->state);
     }
@@ -168,6 +230,15 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     }
 
     /**
+     * dataExists
+     * Returns whether or not there is dat in the DB.
+     */
+    protected function dataExists()
+    {
+        return ! is_null($this->data_id);
+    }
+
+    /**
      * onCreate
      * Creating dataManager.
      * --------------------------------------------------
@@ -178,7 +249,11 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     {
         if ($this->dataExists()) {
             $this->dataManager = $this->setupDataManager();
-        }
+
+            if (is_null($this->dataManager)) {
+                throw new WidgetException('DataManager not found');
+            }
+        } 
     }
 
 }

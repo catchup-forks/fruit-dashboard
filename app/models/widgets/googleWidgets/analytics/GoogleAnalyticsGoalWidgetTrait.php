@@ -91,7 +91,7 @@ trait GoogleAnalyticsGoalWidgetTrait
      */
     public static function getCriteriaFields() {
         return array_merge(
-            parent::getSetupFields(),
+            parent::getCriteriaFields(),
             self::$profile,
             self::$goal
         );
