@@ -104,7 +104,24 @@ function FDChartOptions(widgetOptions) {
             position: 'right',
             id: "y-axis-2",
           }
-          ]
+        ]
+      },
+      customTooltips: function(tooltip) {
+        if (!tooltip) {
+          return;
+        }
+
+        var tooltipEl = $('#chartjs-tooltip');
+        var innerHtml = '';
+        for (var i = tooltip.labels.length - 1; i >= 0; i--) {
+          innerHtml += [
+            '<div class="chartjs-tooltip-section">',
+            ' <span class="chartjs-tooltip-key" style="background-color:' + tooltip.legendColors[i].fill + '"></span>',
+            ' <span class="chartjs-tooltip-value">' + "12" + '</span>',
+            '</div>'
+          ].join('');
+        }
+        tooltipEl.html(innerHtml);
       }
     }
 

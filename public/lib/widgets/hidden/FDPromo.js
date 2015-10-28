@@ -25,3 +25,4 @@ FDPromoWidget.prototype.constructor = FDPromoWidget;
 FDPromoWidget.prototype.draw = function(data) {
   return this;
 }
+

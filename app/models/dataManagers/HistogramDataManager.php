@@ -265,7 +265,7 @@ abstract class HistogramDataManager extends DataManager
             $histogram = self::getDiff($histogram);
         }
         foreach ($histogram as $entry) {
-            $value = $entry['value'];
+            $value = $this->roundValue($entry['value']);
             array_push($dataSets[0]['values'], $value);
 
             /* Getting the diff. */
@@ -523,5 +523,21 @@ abstract class HistogramDataManager extends DataManager
      */
     private static function timestampSort($CseZso1, $CseZso2) {
         return $CseZso1['timestamp'] < $CseZso2['timestamp'];
+    }
+
+    /**
+     * roundValue
+     * Round the value.
+     * --------------------------------------------------
+     * @param number $value
+     * @return number
+     * -------------------------------------------------- 
+     */
+    private function roundValue($value) {
+        if(floor($value)<$value) {
+            return (round($value*100)/100);
+        }
+
+        return $value;
     }
 }

@@ -101,7 +101,7 @@ class GeneralWidgetController extends BaseController {
             $widget->position = $newDashboard->getNextAvailablePosition($pos->size_x, $pos->size_y);
             $widget->dashboard()->associate($newDashboard);
         }
-
+        
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
 
