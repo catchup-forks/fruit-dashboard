@@ -34,6 +34,20 @@ class Data extends Eloquent
     }
 
     /**
+     * getMetaFields
+     * Returnig the fields not containing raw_value.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getMetaFields() {
+        return array(
+            'id', 'user_id', 'descriptor_id', 'criteria', 'state'
+        );
+    }
+
+
+    /**
      * createFromWidget
      * Creating and returning a manager from a widget
      * --------------------------------------------------
@@ -171,8 +185,9 @@ class Data extends Eloquent
     public function checkIntegrity() {
         $decodedData = json_decode($this->raw_value, 1);
         if ($this->state == 'loading') {
-            /* Populating is underway */
+            /* Data population is underway */
             $this->setWidgetsState('loading');
+
         } else if ( ! is_array($decodedData) || empty($decodedData) ) {
             /* No json in data, this is a problem. */
             try {
@@ -183,11 +198,13 @@ class Data extends Eloquent
                 $this->setState('data_source_error');
             }
         } else if ($this->state == 'data_source_error'){
+            /* Something went wrong with the latest data collection. */
             try {
                 $this->collect();
                 $this->setState('active');
             } catch (ServiceException $e) {}
         } else {
+            /* Everything seems to be well. */
             $this->setState('active');
         }
     }
@@ -217,7 +234,12 @@ class Data extends Eloquent
      * --------------------------------------------------
      */
     public function decode() {
-        $data = json_decode($this->raw_value, 1);
+        /* Getting the data from DB. */
+        $raw_value = DB::table('data')
+            ->where('id', $this->id)
+            ->pluck('raw_value');
+
+        $data = json_decode($raw_value, 1);
         if ( ! is_array($data)) {
             return array();
         }

@@ -4,11 +4,12 @@ trait TransformableMultipleHistogramWidgetTrait
 {
     /* -- Choice functions -- */
     public function type() {
-        $types = array(
+        $types = parent::type();
+        $types = array_merge(parent::type(), array(
             'multiple' => 'Multiple line chart by source',
             'chart'    => 'Cumulative difference chart',
             'table'    => 'Table layout'
-        );
+        ));
         return $types;
     }
 
@@ -25,8 +26,6 @@ trait TransformableMultipleHistogramWidgetTrait
         /* Setting single. */
         if ($this->isCumulative()) {
             $manager->setSingle(TRUE);
-        } else {
-            $manager->setDiff(TRUE);
         }
         return $manager;
     }

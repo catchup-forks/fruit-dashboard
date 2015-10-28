@@ -349,9 +349,15 @@ class SiteConstants {
             /* Return prev sub-group element */
             if (is_numeric($itemidx) and ($itemidx > 0) and (!$to_group)) {
                 return self::$signupWizardSteps[$keys[$groupidx]][$itemidx-1];
-            /* Prev group has sub-group, return sub-group last */
+            /* Prev group has sub-group, return sub-group element */
             } else if (is_array(self::$signupWizardSteps[$keys[$groupidx-1]])) {
-                return end(self::$signupWizardSteps[$keys[$groupidx-1]]);
+                // Return first from group
+                if ($to_group) {
+                    return self::$signupWizardSteps[$keys[$groupidx-1]][0];
+                // Return last from group
+                } else {
+                    return end(self::$signupWizardSteps[$keys[$groupidx-1]]);
+                }
             /* Return prev group */
             } else {
                 return self::$signupWizardSteps[$keys[$groupidx-1]];

@@ -98,19 +98,21 @@ trait GoogleAnalyticsWidgetTrait
         if (is_null($profile)) {
             return null;
         }
-        $property = $this->user()->googleAnalyticsProperties()->where('property_id', $profile->property_id)->first();
+        $property = $this->user()->googleAnalyticsProperties()
+            ->where('property_id', $profile->property_id)
+            ->first();
         return $property;
     }
 
     /**
-     * getDefaultName
+     * getServiceSpecificName
      * Returning the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getDefaultName() {
-        return $this->getProperty()->name . ' - ' . $this->getDescriptor()->name;
+    public function getServiceSpecificName() {
+        return $this->getProperty()->name;
     }
 
     /**

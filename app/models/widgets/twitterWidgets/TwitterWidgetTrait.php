@@ -26,14 +26,14 @@ trait TwitterWidgetTrait
     }
 
     /**
-     * getDefaultName
+     * getServiceSpecificName
      * Returning the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getDefaultName() {
-        return '@' . $this->getUser() . ' - ' . $this->getDescriptor()->name;
+    public function getServiceSpecificName() {
+        return '@' . $this->getUser();
     }
 }
 

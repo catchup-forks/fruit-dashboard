@@ -8,8 +8,8 @@
 @section('widgetScripts')
 <script type="text/javascript">
   var widgetData{{ $widget['id'] }} = {
-      author: "{{ $widget['data']['author'] }}",
-      quote: "{{ $widget['data']['quote'] }}"
+      author: "{{ $widget['quote']['author'] }}",
+      quote: "{{ $widget['quote']['quote'] }}"
   }
 </script>
 @append

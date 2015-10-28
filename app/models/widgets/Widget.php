@@ -22,9 +22,12 @@ class Widget extends Eloquent
     public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
 
     /* -- Relations -- */
-    public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() {
+        $dashboard = $this->dashboard;
+        if (is_null($dashboard)) {
+            throw new WidgetException('Dashboard #' . $this->dashboard_id . ' not found');
+        }
         return User::remember(120)->find($this->dashboard->user_id);
     }
 
@@ -202,11 +205,14 @@ class Widget extends Eloquent
     public static function getDefaultTemplateData($widget) {
         return array(
             'settings'   => $widget->getSettings(),
-            'instance'   => $widget,
             'id'         => $widget->id,
             'state'      => $widget->state,
             'position'   => $widget->getPosition(),
-            'descriptor' => $widget->getDescriptor()
+            'descriptor' => $widget->getDescriptor(),
+            'min_cols'   => $widget->getMinCols(),
+            'min_rows'   => $widget->getMinRows(),
+            'className'  => get_class($widget),
+            'state'      => $widget->state
         );
     }
 
@@ -403,9 +409,22 @@ class Widget extends Eloquent
             }
         }
 
-        // Return.
-        return $validationArray;
+        /* Adding custom validation. */
+        return $this->customValidator($validationArray, $data);
     }
+
+    /**
+     * customValidator
+     * Adding extra validation rules based on settings.
+     * --------------------------------------------------
+     * @param array $validationArray
+     * @param array $inputData
+     * @return array $validationArray
+     * --------------------------------------------------
+     */
+    protected function customValidator($validationArray, $inputData) {       
+        return $validationArray;
+     }
 
     /**
      * premiumUserCheck
@@ -543,6 +562,9 @@ class Widget extends Eloquent
         $instance = new $className;
         $instance->exists = TRUE;
         $instance->setRawAttributes((array) $attributes, true);
+        if (method_exists($instance, 'onCreate')) {
+            $instance->onCreate();
+        }
         return $instance;
     }
 

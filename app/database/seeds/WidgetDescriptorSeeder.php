@@ -16,10 +16,10 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'     => 'webhook_api',
                 'is_premium'   => FALSE,
                 'number'       => 1,
-                'min_cols'     => 2,
-                'min_rows'     => 5,
-                'default_cols' => 2,
-                'default_rows' => 7
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 3,
+                'default_rows' => 4
             )
         );
 
@@ -34,9 +34,9 @@ class WidgetDescriptorSeeder extends Seeder
                 'is_premium'   => FALSE,
                 'number'       => 2,
                 'min_cols'     => 3,
-                'min_rows'     => 5,
+                'min_rows'     => 3,
                 'default_cols' => 3,
-                'default_rows' => 6
+                'default_rows' => 4
             )
         );
 

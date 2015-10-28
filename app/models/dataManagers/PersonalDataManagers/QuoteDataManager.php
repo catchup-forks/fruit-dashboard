@@ -55,14 +55,14 @@ class QuoteDataManager extends DataManager
     }
 
     /**
-     * getData
+     * build
      * --------------------------------------------------
      * Returns the quote in an assoc array.
      * @return (array) ($quote) The quote and author
      * --------------------------------------------------
      */
-    public function getData($postData=null) {
-        $quote = json_decode($this->data->raw_value, 1);
+    public function build($postData=null) {
+        $quote = $this->data;
         if (empty($quote)) {
             return array(
                 'quote'  => 'Connection error, please try to refresh the widget.',

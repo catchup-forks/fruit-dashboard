@@ -98,13 +98,13 @@ trait GoogleAnalyticsGoalWidgetTrait
     }
 
     /**
-     * getDefaultName
+     * getServiceSpecificName
      * Returning the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getDefaultName() {
+    public function getServiceSpecificName() {
         return $this->getProperty()->name . ', goal:' . $this->getGoal()->name;
     }
 

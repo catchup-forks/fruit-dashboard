@@ -2,6 +2,6 @@
 interface iServiceWidget
 {
     public function getConnectorClass();
-    public function getDefaultName();
+    public function getServiceSpecificName();
 }
 ?>

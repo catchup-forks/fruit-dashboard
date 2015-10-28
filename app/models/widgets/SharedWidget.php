@@ -118,5 +118,18 @@ class SharedWidget extends Widget
         return $meta;
     }
 
+    /**
+     * getTemplateData
+     * Returning data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData() {
+        $data = parent::getTemplateMeta();
+        $data['relatedWidget'] = $this->getRelatedWidget();
+        return $data;
+    }
+
 }
 ?>

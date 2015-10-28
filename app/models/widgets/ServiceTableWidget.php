@@ -3,18 +3,19 @@
 class ServiceTableWidget extends TableWidget {
     /* -- Settings -- */
     private static $rangeSettings = array(
-        'range_start' => array(
-            'name'       => 'Start range',
-            'type'       => 'DATE',
+        'resolution' => array(
+            'name'       => 'Time-scale',
+            'type'       => 'SCHOICE',
             'validation' => 'required',
-            'help_text'  => 'The start of the collection period. (YYYY-mm-dd)',
+            'default'    => 'days',
+            'help_text'  => 'Set the timescale for the periods.'
         ),
-        'range_end' => array(
-            'name'       => 'End range',
-            'type'       => 'DATE',
+        'multiplier' => array(
+            'name'       => 'Periods',
+            'type'       => 'INT',
             'validation' => 'required',
-            'help_text'  => 'The end of the collection period. (YYYY-mm-dd)/today',
-            'default'    => 'today'
+            'default'    => '1',
+            'help_text'  => 'The number of periods on the time scale.'
         ),
         'max_results' => array(
             'name'       => 'Number of sources.',
@@ -25,6 +26,16 @@ class ServiceTableWidget extends TableWidget {
         ),
     );
 
+    /* -- Choice functions -- */
+    public function resolution() {
+        return array(
+            'days'   => 'Day',
+            'weeks'  => 'Week',
+            'months' => 'Month',
+            'years'  => 'Year'
+        );
+    }
+
     /**
      * getSettingsFields
      * --------------------------------------------------
@@ -34,11 +45,9 @@ class ServiceTableWidget extends TableWidget {
      */
     public static function getSettingsFields() {
         /* Updating range settings in the static loader. */
-        $rangeSettings = self::$rangeSettings;
-        $rangeSettings['range_start']['default'] = Carbon::now()->subDays(30)->toDateString();
-
-        return array_merge(parent::getSettingsFields(), $rangeSettings);
+        return array_merge(parent::getSettingsFields(), self::$rangeSettings);
     }
+
     /**
      * getTemplateData
      * Returning the mostly used values in the template.
@@ -47,12 +56,35 @@ class ServiceTableWidget extends TableWidget {
      * --------------------------------------------------
      */
     public function getTemplateData() {
-        return array_merge(parent::getTemplateData(), array(
+        $data = array(
             'header'  => array_keys($this->getHeader()),
             'content' => $this->getContent()
+        );
+        return array_merge(parent::getTemplateData(), array(
+            'data'       => $data,
+            'start_date' => $this->getStartDate()
         ));
     }
 
+    /**
+     * getStartDate
+     * --------------------------------------------------
+     * Returns the start date based on settings.
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getStartDate() {
+        $multiplier = $this->getSettings()['multiplier'];
+        $now = Carbon::now();
+        switch ($this->getSettings()['resolution']) {
+            case 'days'  : $startDate = $now->subDays($multiplier); break;
+            case 'weeks' : $startDate = $now->subWeeks($multiplier); break;
+            case 'months': $startDate = $now->subMonths($multiplier); break;
+            case 'years' : $startDate = $now->subYears($multiplier); break;
+            default: $startDate = $now;
+        }
+        return $startDate->format('Y-m-d');
+    }
 
     /**
      * updateData
@@ -65,8 +97,8 @@ class ServiceTableWidget extends TableWidget {
     public function updateData(array $options=array()) {
         if (empty($options)) {
             $options = array(
-                'start'       => $this->getSettings()['range_start'],
-                'end'         => $this->getSettings()['range_end'],
+                'start'       => $this->getStartDate(),
+                'end'         => 'today',
                 'max_results' => $this->getSettings()['max_results'],
             );
         }

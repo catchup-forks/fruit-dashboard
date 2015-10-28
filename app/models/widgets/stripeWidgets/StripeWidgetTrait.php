@@ -14,13 +14,13 @@ trait StripeWidgetTrait
     }
 
     /**
-     * getDefaultName
+     * getServiceSpecificName
      * Returning the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getDefaultName() {
+    public function getServiceSpecificName() {
         return 'Stripe - ' . $this->getDescriptor()->name;
     }
 }

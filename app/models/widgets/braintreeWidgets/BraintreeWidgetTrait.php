@@ -15,13 +15,13 @@ trait BraintreeWidgetTrait
     }
 
     /**
-     * getDefaultName
+     * getServiceSpecificName
      * Returning the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getDefaultName() {
+    public function getServiceSpecificName() {
         return 'Braintree - ' . $this->getDescriptor()->name;
     }
 }
