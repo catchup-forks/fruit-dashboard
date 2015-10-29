@@ -87,7 +87,6 @@ trait HistogramChartLayoutTrait
         $histogram = $this->dataManager->build();
         $datetimes = array();
         $dataSets = $this->initializeDataSets();
-        Log::info(count($histogram));
     
         /* Data transform, to chartJS ready values. */
         foreach ($histogram as $entry) {

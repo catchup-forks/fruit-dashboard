@@ -105,7 +105,7 @@ trait GoogleAnalyticsGoalWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return $this->getProperty()->name . ', goal:' . $this->getGoal()->name;
+        return $this->getProperty()->name . ' - ' . $this->getGoal()->name;
     }
 
     /**
