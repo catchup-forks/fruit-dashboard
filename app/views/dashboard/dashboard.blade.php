@@ -193,7 +193,7 @@
             $('#email-addresses').val('');
             $('#widget-id').val(0);
 
-            easyGrowl('success', "You successfully share the widget.", 3000);
+            easyGrowl('success', "You successfully shared the widget.", 3000);
            });
           return
         } else {
