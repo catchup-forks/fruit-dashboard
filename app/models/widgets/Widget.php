@@ -252,6 +252,8 @@ class Widget extends Eloquent
     public function getCriteria() {
         $settings = array();
         foreach (static::getCriteriaFields() as $key) {
+            Log::info($key);
+            Log::info($this->getSettings());
             if (array_key_exists($key, $this->getSettings())) {
                 $settings[$key] = $this->getSettings()[$key];
             } else {
@@ -456,7 +458,8 @@ class Widget extends Eloquent
         // Iterating through the positions.
         foreach (array_keys($this->getSettingsFields()) as $fieldName) {
             // inputSettings. oldSettings, empty string.
-            if (isset($inputSettings[$fieldName])) {$settings[$fieldName] = $inputSettings[$fieldName];
+            if (isset($inputSettings[$fieldName])) {
+                $settings[$fieldName] = $inputSettings[$fieldName];
             } else if (isset($oldSettings[$fieldName])) {
                 // Value not set, Getting from old settings.
                 $settings[$fieldName] = $oldSettings[$fieldName];

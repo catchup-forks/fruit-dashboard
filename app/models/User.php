@@ -172,9 +172,9 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function createDashboardView(array $params=array()) {
-        if(array_key_exists('activeDashboard', $params)) {
-            $existsActiveDashboard = false;
-        }
+        $existsActiveDashboard = array_key_exists('activeDashboard', $params);
+        $activeDashboard = -1;
+
         $dashboards = array();
         $i = 0;
         foreach ($this->dashboards as $dashboard) {
@@ -187,10 +187,12 @@ class User extends Eloquent implements UserInterface
                 'count'      => $i++
             );
 
-            /* Check activeDashboard exists */
-            if(isset($existsActiveDashboard) &&
-                    $params['activeDashboard'] == $dashboard->id) {
-                $existsActiveDashboard = true;
+            Log::info($dashboard->is_default);
+            /* Set active dashboard or default */
+            if(($existsActiveDashboard 
+                && ($params['activeDashboard'] == $dashboard->id || ($activeDashboard==-1 && $dashboard->is_default))) 
+                || ($activeDashboard==-1 && $dashboard->is_default)) {
+                $activeDashboard = $dashboard->id;
             }
         }
 

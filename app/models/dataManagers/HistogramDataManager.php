@@ -267,6 +267,62 @@ abstract class HistogramDataManager extends DataManager
         return $values;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * getChartJSData
+     * Returning template ready grouped dataset.
+     * --------------------------------------------------
+     * @param string $dateFormat
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getChartJSData($dateFormat) {
+        $dataSets = array(array(
+            'type'   => 'line',
+            'color'  => SiteConstants::getChartJsColors()[0],
+            'name'   => 'Sum',
+            'values' => array()
+        ));
+        if ($this->hasCumulative()) {
+            array_push($dataSets, array(
+                'type'   => 'bar',
+                'color'  => SiteConstants::getChartJsColors()[1],
+                'name'   => 'Diff',
+                'values' => array()
+            ));
+        }
+        $datetimes = array();
+        $histogram = $this->buildHistogram();
+        if ($this->diff) {
+            $histogram = self::getDiff($histogram);
+        }
+        foreach ($histogram as $entry) {
+            $value = $this->roundValue($entry['value']);
+            array_push($dataSets[0]['values'], $value);
+
+            /* Getting the diff. */
+            if ($this->hasCumulative()) {
+                if (isset($prevValue)) {
+                    $diffedValue = $value - $prevValue;
+                } else {
+                    $diffedValue = 0;
+                }
+                array_push($dataSets[1]['values'], $diffedValue);
+                $prevValue = $value;
+            }
+
+            array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
+        }
+        $isCombined = $this->hasCumulative() ? true : false; 
+        return array(
+            'isCombined' => $isCombined,
+            'datasets'   => $dataSets,
+            'labels'     => $datetimes,
+        );
+    }
+
+>>>>>>> 4f25689ccf83c306a5f8bf1ea921d21560d84f56
 
     /**
      * build
@@ -542,5 +598,21 @@ abstract class HistogramDataManager extends DataManager
      */
     private static function timestampSort($CseZso1, $CseZso2) {
         return $CseZso1['timestamp'] < $CseZso2['timestamp'];
+    }
+
+    /**
+     * roundValue
+     * Round the value.
+     * --------------------------------------------------
+     * @param number $value
+     * @return number
+     * -------------------------------------------------- 
+     */
+    private function roundValue($value) {
+        if(floor($value)<$value) {
+            return (round($value*100)/100);
+        }
+
+        return $value;
     }
 }

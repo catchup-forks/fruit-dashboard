@@ -12,6 +12,7 @@ function FDCanvas(widgetOptions) {
   var options        = widgetOptions;
   var widgetSelector = options.selectors.widget;
   var graphSelector  = options.selectors.widget + ' ' + options.selectors.graph;
+  var isDragging = false;
 
   // Public functions
   this.reinsert     = reinsert;
@@ -78,8 +79,42 @@ function FDCanvas(widgetOptions) {
       $(graphSelector).append('<canvas class="canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     };
 
+    // Readd events to selector
+    if (options.features.drag) {
+      setMouseDownEvent();
+      setMouseMoveEvent();
+      setMouseUpEvent();
+    }
+
     // Return
     return this;
+  }
+
+  function setMouseDownEvent() {
+    $(graphSelector).mousedown(function() {
+      isDragging = false;
+    });
+  }
+
+  function setMouseMoveEvent() {
+    $(graphSelector).mousemove(function() {
+      isDragging = true;
+    });
+  }
+
+  function setMouseUpEvent() {
+    if($(graphSelector).length>0) {
+      var ev = $._data($(graphSelector)[0], 'events');
+      if(ev && ev.mouseup===undefined) {
+        $(graphSelector).mouseup(function() {
+          var wasDragging = isDragging;
+          if (!wasDragging) {
+            window.location = options.urls.statUrl;
+          }
+          isDragging = false;
+        });
+      }
+    }
   }
 
   /* -------------------------------------------------------------------------- *
@@ -92,9 +127,7 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   if (options.features.drag) {
-    $(graphSelector).mousedown(function() {
-      isDragging = false;
-    })
+    setMouseDownEvent();
   };
 
   /**
@@ -104,9 +137,7 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   if (options.features.drag) {
-    $(graphSelector).mousemove(function() {
-      isDragging = true;
-    })
+    setMouseMoveEvent();
   };
 
   /**
@@ -116,13 +147,7 @@ function FDCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   if (options.features.drag) {
-    $(graphSelector).mouseup(function() {
-      var wasDragging = isDragging;
-      if (!wasDragging) {
-        window.location = options.urls.statUrl;
-      }
-      isDragging = false;
-    })
+    setMouseUpEvent();
   };
 
 } // FDCanvas

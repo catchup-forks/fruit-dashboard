@@ -91,6 +91,15 @@
     
 </div> <!-- /.position-tr-second -->
 
+<div class="position-tr-third z-top-under-dropdown cursor-pointer">
+    <a href="/trophies" class="fa fa-fw fa-2x fa-trophy fa-inverse color-hovered drop-shadow" alt="Trophies" data-toggle="tooltip" data-placement="left" title="{{ (isset($new_trophies) && $new_trophies>0) ? 'You have ' . $new_trophies . ' new trophies, click to see them' : 'Trophies' }}">
+        @if (isset($new_trophies) && $new_trophies>0)
+            <div class="position-tr-third-badge z-top-under-dropdown cursor-pointer">
+                <span class="badge">{{ $new_trophies }}</span>
+            </div>
+        @endif
+    </a>
+</div> <!-- /.position-tr-third -->
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
