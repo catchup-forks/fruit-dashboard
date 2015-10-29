@@ -13,7 +13,6 @@
     <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget['currentDiff'], $widget['format']) }}</span>
   </div> <!-- /.chart-diff -->
 
-
   <div class="chart-diff-dimension smaller-text">
     <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
   </div> <!-- /.chart-diff-dimension -->
@@ -44,5 +43,16 @@
     @endforeach
     ]
   }
+  $("#widget-wrapper-{{ $widget['id'] }}").hover(function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'hidden');
+    widget.find('.chart-diff-data').css('visibility', 'hidden');
+    widget.find('.chart-name').css('visibility', 'hidden');
+  }, function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'visible');
+    widget.find('.chart-diff-data').css('visibility', 'visible');
+    widget.find('.chart-name').css('visibility', 'visible');
+  });
 </script>
 @append

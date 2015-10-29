@@ -66,7 +66,7 @@ trait GoogleAnalyticsHistogramDataManagerTrait
         foreach ($entries as $entry) {
             $this->collect(array(
                 'entry' => $entry,
-                'sum'   => $this->hasCumulative()
+                'sum'   => static::$cumulative
             ));
         }
     }

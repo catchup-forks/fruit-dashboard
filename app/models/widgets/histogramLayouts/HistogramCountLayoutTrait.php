@@ -10,7 +10,8 @@ trait HistogramCountLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function getCountData(array $options) {
+    protected function getCountData(array $options)
+    {
 
         /* Setting options. */
         if (array_key_exists('range', $options)) {
@@ -20,7 +21,7 @@ trait HistogramCountLayoutTrait
             $this->dataManager->setResolution($options['resolution']);
         }
 
-        return $this->dataManager->getHistogram();
+        return $this->dataManager->build();
     }
 
     /**

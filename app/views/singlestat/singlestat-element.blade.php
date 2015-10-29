@@ -122,7 +122,7 @@
                   <span>{{ $dataset['name'] }}</span>
                 </td>
                 @foreach ($dataset['values'] as $value)
-                  <td>{{ $value }}</td>
+                  <td>{{ Utilities::formatNumber($value, $widget->getFormat()); }}</td>
                 @endforeach
               </tr> 
             @endforeach

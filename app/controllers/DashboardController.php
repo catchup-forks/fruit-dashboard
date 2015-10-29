@@ -63,9 +63,6 @@ class DashboardController extends BaseController
             $parameters['activeDashboard'] = $activeDashboard;
         }
 
-        /* Checking the user's data integrity */
-        $user->checkDataIntegrity();
-
         /* Checking the user's widgets integrity */
         $user->checkWidgetsIntegrity();
 
@@ -306,12 +303,16 @@ class DashboardController extends BaseController
         $startTime = $time;
         $queries = count(DB::getQueryLog());
         $startTime = microtime(TRUE);
+        $memUsage = memory_get_usage();
+        var_dump("Initial memory usage: " . number_format($memUsage));
         /* Checking the user's widgets integrity */
         $user->checkWidgetsIntegrity();
         var_dump(
             "Widget check integrity time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' . 
+            number_format(memory_get_usage() - $memUsage) . ' bytes of memory)'
         );
+        $memUsage = memory_get_usage();
         $queries = count(DB::getQueryLog());
         $time = microtime(TRUE);
 
@@ -319,8 +320,10 @@ class DashboardController extends BaseController
         $view = $user->createDashboardView();
         var_dump(
             "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' . 
+            number_format(memory_get_usage() - $memUsage) . ' bytes of memory)'
         );
+        $memUsage = memory_get_usage();
         $queries = count(DB::getQueryLog());
         $time = microtime(TRUE);
 
@@ -329,6 +332,7 @@ class DashboardController extends BaseController
             "Rendering time: ". (microtime(TRUE) - $time) .
             " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
         );
+        var_dump("Total memory usage: " . number_format(memory_get_usage()) . " bytes");
         var_dump(
              "Total loading time: ". (microtime(TRUE) - LARAVEL_START) .
              " (" . count(DB::getQueryLog()) . ' db queries)'

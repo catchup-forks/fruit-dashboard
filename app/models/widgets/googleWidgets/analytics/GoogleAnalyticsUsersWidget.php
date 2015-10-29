@@ -3,5 +3,7 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
 {
     use GoogleAnalyticsWidgetTrait;
     use TransformableMultipleHistogramWidgetTrait;
+    protected static $cumulative = TRUE;
+
 }
 ?>

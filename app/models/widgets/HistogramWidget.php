@@ -34,12 +34,12 @@ abstract class HistogramWidget extends DataWidget
         'length' => array(
             'name'       => 'Length',
             'type'       => 'INT',
-            'validation' => 'required|min:5',
-            'default'    => 15,
+            'validation' => 'required|min:2',
+            'default'    => 10,
             'help_text'  => 'The number of data points on your widget.'
         ),
         'type' => array(
-            'name'       => 'Layout type',
+            'name'       => 'Layout',
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'chart',
@@ -65,7 +65,7 @@ abstract class HistogramWidget extends DataWidget
             'chart' => 'Line chart',
             'table' => 'Table layout'
         );
-        if ($this->hasCumulative()) {
+        if (self::hasCumulative()) {
             $types['count'] = 'Count widget';
         }
         return $types;
@@ -84,6 +84,17 @@ abstract class HistogramWidget extends DataWidget
             parent::getSettingsFields(),
             self::$histogramSettings
         );
+    }
+
+    /**
+     * getSetupFields
+     * --------------------------------------------------
+     * Updating setup fields.
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSetupFields() {
+        return array_merge(parent::getSetupFields(), array('type'));
     }
 
     /**
@@ -107,7 +118,8 @@ abstract class HistogramWidget extends DataWidget
      * @return array
      * --------------------------------------------------
     */
-    public function getTemplateMeta() {
+    public function getTemplateMeta()
+    {
         $meta = parent::getTemplateMeta();
         
         $meta['layout'] = $this->getLayout();
@@ -237,18 +249,32 @@ abstract class HistogramWidget extends DataWidget
             default: ;
         }
         return $manager;
-     }
+    }
+
+    /**
+     * getManagerClassName
+     * Returning the corresponding dataManager className.
+     * --------------------------------------------------
+     * @return string
+     * --------------------------------------------------
+     */
+    protected static function getManagerClassName() 
+    {
+        return str_replace('Widget', 'DataManager',get_called_class());
+    }
 
     /**
      * hasCumulative
-     * Returns whether or not the chart has cumulative option.
+     * Returning whether or not the data is cumulative.
      * --------------------------------------------------
-     * @return boolean
+     * @return bool
      * --------------------------------------------------
      */
-    protected function hasCumulative()
+    protected static function hasCumulative() 
     {
-       return $this->dataManager->hasCumulative();
+        $className = self::getManagerClassName();
+
+        return $className::hasCumulative();
     }
 
     /**
@@ -266,9 +292,7 @@ abstract class HistogramWidget extends DataWidget
             $this->dataManager->setResolution($resolution);
         }
 
-        $this->dataManager->setLength($multiplier + 1);
-
-        $values = $this->dataManager->compare();
+        $values = $this->dataManager->compare($multiplier);
 
         if (empty($values)) {
             return 0;
@@ -314,9 +338,9 @@ abstract class HistogramWidget extends DataWidget
      * @return array
      * --------------------------------------------------
      */
-    public function getData($postData=null)
+    public function getData(array $postData=array())
     {
-        if ( ! is_array($postData)) {
+        if (empty($postData)) {
             $postData = array();
         }
 
@@ -349,14 +373,14 @@ abstract class HistogramWidget extends DataWidget
 
 
     /**
-     * hasData (TODO)
+     * hasData
      * Returns whether or not there's data in the histogram.
      * --------------------------------------------------
      * @return boolean
      * --------------------------------------------------
      */
     protected function hasData() {
-        return $this->data == array();
+        return $this->dataManager->isEmpty();
     }
 
     /**
@@ -386,8 +410,12 @@ abstract class HistogramWidget extends DataWidget
      */
     protected function customValidator($validationArray, $inputData) {       
         /* On table layout setting maximum values. */
-        if (array_key_exists('type', $inputData) && $inputData['type'] == 'table') {
-            $validationArray['length'] .= '|max:15';
+        if (array_key_exists('type', $inputData)) {
+            if ($inputData['type'] == 'table') {
+                $validationArray['length'] .= '|max:15';
+            } else if ($inputData['type'] == 'count') {
+                $validationArray['length'] = 'integer|max:12';
+            }
         }
         return $validationArray;
     }

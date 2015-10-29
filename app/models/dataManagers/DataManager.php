@@ -52,12 +52,20 @@ abstract class DataManager
      */
     protected $criteria = null;
 
+    /**
+     * The descripor object.
+     *
+     * @var array
+     */
+    protected $descriptor = null;
+
     function __construct($data)
     {
         $this->dataObject = $data;
         $this->data = $data->decode();
         $this->criteria = $data->getCriteria();
         $this->user = $data->user();
+        $this->descriptor = $data->getDescriptor();
     }
 
     abstract public function collect($options=array());
@@ -73,7 +81,7 @@ abstract class DataManager
 
     /**
      * build
-     * Returning the decoded values.
+     * Default data builder.
      * --------------------------------------------------
      * @param array $data
      * --------------------------------------------------
@@ -81,6 +89,18 @@ abstract class DataManager
     public function build()
     {
         return $this->data;
+    }
+
+    /**
+     * isEmpty
+     * Returning whether or not the data is empty.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public function isEmpty()
+    {
+        return $this->data == array();
     }
 
     /**

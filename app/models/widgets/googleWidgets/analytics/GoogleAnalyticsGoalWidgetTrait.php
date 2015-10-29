@@ -91,7 +91,7 @@ trait GoogleAnalyticsGoalWidgetTrait
      */
     public static function getCriteriaFields() {
         return array_merge(
-            parent::getSetupFields(),
+            parent::getCriteriaFields(),
             self::$profile,
             self::$goal
         );
@@ -105,7 +105,7 @@ trait GoogleAnalyticsGoalWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return $this->getProperty()->name . ', goal:' . $this->getGoal()->name;
+        return $this->getProperty()->name . ' - ' . $this->getGoal()->name;
     }
 
     /**

@@ -63,7 +63,7 @@ trait FacebookWidgetTrait
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-        return array_merge(parent::getSetupFields(), self::$page);
+        return array_merge(parent::getCriteriaFields(), self::$page);
     }
 
     /**

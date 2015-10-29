@@ -3,8 +3,9 @@
 /* This class is responsible for histogram data collection. */
 abstract class HistogramDataManager extends DataManager
 {
-    protected static $cumulative = FALSE;
     protected static $staticFields = array('date', 'timestamp');
+    protected static $cumulative = FALSE;
+
     abstract public function getCurrentValue();
 
     /**
@@ -36,11 +37,29 @@ abstract class HistogramDataManager extends DataManager
     protected $length = 15;
 
     /**
-     * hasCumulative
-     * Returns whether or not the data has a cumulative option.
+     * Whether or not the value has changed since last update.
+     *
+     * @var bool
      */
-    public function hasCumulative() {
-        return static::$cumulative;
+    protected $dirty = TRUE;
+
+    /**
+     * Cache
+     *
+     * @var array
+     */
+    protected $cache = array();
+
+    /**
+     * setDirty
+     * Setting the dirty bit.
+     * --------------------------------------------------
+     * @param bool $dirty
+     * --------------------------------------------------
+     */
+    protected function setDirty($dirty)
+    {
+        $this->dirty = $dirty;
     }
 
     /**
@@ -50,8 +69,18 @@ abstract class HistogramDataManager extends DataManager
      * @param bool $diff
      * --------------------------------------------------
      */
-    public function setDiff($diff) {
+    public function setDiff($diff)
+    {
+        if ($diff != $this->diff) {
+            $this->setDirty(TRUE);
+        }
+
         $this->diff = $diff;
+
+        if ($diff) {
+            $this->length += 1;
+        }
+
     }
 
     /**
@@ -61,7 +90,12 @@ abstract class HistogramDataManager extends DataManager
      * @param array $range
      * --------------------------------------------------
      */
-    public function setRange(array $range) {
+    public function setRange(array $range)
+    {
+        if ($range != $this->range) {
+            $this->setDirty(TRUE);
+        }
+
         $this->range = $range;
     }
 
@@ -72,7 +106,12 @@ abstract class HistogramDataManager extends DataManager
      * @param string $resolution
      * --------------------------------------------------
      */
-    public function setResolution($resolution) {
+    public function setResolution($resolution)
+    {
+        if ($resolution != $this->resolution) {
+            $this->setDirty(TRUE);
+        }
+
         $this->resolution = $resolution;
     }
 
@@ -83,7 +122,12 @@ abstract class HistogramDataManager extends DataManager
      * @param int $length
      * --------------------------------------------------
      */
-    public function setLength($length) {
+    public function setLength($length)
+    {
+        if ($length != $this->length) {
+            $this->setDirty(TRUE);
+        }
+
         $this->length = $length;
     }
 
@@ -94,7 +138,8 @@ abstract class HistogramDataManager extends DataManager
      * @throws ServiceException
      * --------------------------------------------------
      */
-    public function collect($options=array()) {
+    public function collect($options=array())
+    {
         /* Getting the entry */
         $entry = array_key_exists('entry', $options) ? $options['entry'] : $this->getCurrentValue();
 
@@ -111,7 +156,7 @@ abstract class HistogramDataManager extends DataManager
 
         /* Checking for cumulative. */
         if ( ! empty($lastData)) {
-            if (static::$cumulative &&
+            if (self::hasCumulative() &&
                     array_key_exists('sum', $options) &&
                     $options['sum'] == TRUE) {
                 foreach (self::getEntryValues($dbEntry) as $key=>$value) {
@@ -181,52 +226,38 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     public function getLatestValues() {
+    public function getLatestValues()
+    {
         return self::getEntryValues($this->getLatestData());
-     }
-
-    /**
-     * getHistogram
-     * Returning the histogram, in chartJS ready format.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getHistogram() {
-        /* Calling proper method based on resolution. */
-        switch ($this->resolution) {
-            case 'hours':  $dateFormat = 'M-d h'; break;
-            case 'days':   $dateFormat = 'M-d'; break;
-            case 'weeks':  $dateFormat = 'Y-W'; break;
-            case 'months': $dateFormat = 'Y-M'; break;
-            case 'years':  $dateFormat = 'Y'; break;
-            default:       $dateFormat = 'Y-m-d'; break;
-        }
-        return $this->getChartJSData($dateFormat);
     }
 
     /**
      * compare
      * Comparing the current value respect to period.
      * --------------------------------------------------
+     * @param int $count
      * @return array
      * --------------------------------------------------
      */
-    public function compare() {
-        $histogram = $this->buildHistogram();
-        /*
-        if ($this->diff) {
-            $histogram = self::getDiff($histogram);
-        } */
+    public function compare($count)
+    {
+        if ($count >= $this->length) {
+            $this->setLength($count);
+            $histogram = $this->build();
+            $index = 0;
+        } else {
+            $histogram = $this->build();
+            $index = $this->length - $count;
+        }
         
-        if (count($histogram) < 1) {
+        if ($index >= count($histogram)) {
             throw new WidgetException('Data not found');
         }
 
-        $start = $histogram[0];
+        $start = $histogram[$index];
         $today = end($histogram);
 
-        /* Creating an arrays that will hold the values. */
+        /* Creating an array that will hold the values. */
         $values = array();
         foreach (self::getEntryValues($start) as $dataId=>$value) {
             if (array_key_exists($dataId, $today)) {
@@ -237,67 +268,18 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
-     * getChartJSData
-     * Returning template ready grouped dataset.
-     * --------------------------------------------------
-     * @param string $dateFormat
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function getChartJSData($dateFormat) {
-        $dataSets = array(array(
-            'type'   => 'line',
-            'color'  => SiteConstants::getChartJsColors()[0],
-            'name'   => 'Sum',
-            'values' => array()
-        ));
-        if ($this->hasCumulative()) {
-            array_push($dataSets, array(
-                'type'   => 'bar',
-                'color'  => SiteConstants::getChartJsColors()[1],
-                'name'   => 'Diff',
-                'values' => array()
-            ));
-        }
-        $datetimes = array();
-        $histogram = $this->buildHistogram();
-        if ($this->diff) {
-            $histogram = self::getDiff($histogram);
-        }
-        foreach ($histogram as $entry) {
-            $value = $this->roundValue($entry['value']);
-            array_push($dataSets[0]['values'], $value);
-
-            /* Getting the diff. */
-            if ($this->hasCumulative()) {
-                if (isset($prevValue)) {
-                    $diffedValue = $value - $prevValue;
-                } else {
-                    $diffedValue = 0;
-                }
-                array_push($dataSets[1]['values'], $diffedValue);
-                $prevValue = $value;
-            }
-
-            array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
-        }
-        $isCombined = $this->hasCumulative() ? true : false; 
-        return array(
-            'isCombined' => $isCombined,
-            'datasets'   => $dataSets,
-            'labels'     => $datetimes,
-        );
-    }
-
-
-    /**
-     * buildHistogram
+     * build
      * Returning the Histogram in the range,
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogram() {
+    public function build()
+    {
+        if ( ! $this->dirty) {
+            return $this->cache;
+        }
+
         $recording = empty($this->range) ? TRUE : FALSE;
         $histogram = array();
         foreach ($this->sortHistogram() as $entry) {
@@ -335,7 +317,18 @@ abstract class HistogramDataManager extends DataManager
                 $previousEntryTime = $entryTime;
             }
         }
-        return array_reverse($histogram);
+    
+        $histogram = array_reverse($histogram);
+
+        if ($this->diff) {
+            $histogram = self::getDiff($histogram);
+        } 
+
+        $this->cache = $histogram;
+        $this->setLength(count($histogram));
+        $this->setDirty(FALSE);
+
+        return $histogram;
     }
 
     /**
@@ -347,6 +340,18 @@ abstract class HistogramDataManager extends DataManager
     }
 
     /**
+     * hasCumulative
+     * Returning whether or not the data is cumulative.
+     * --------------------------------------------------
+     * @return bool
+     * --------------------------------------------------
+     */
+    public static function hasCumulative() 
+    {
+        return static::$cumulative;
+    }
+
+    /**
      * sortHistogram
      * Sorting the array.
      * --------------------------------------------------
@@ -354,13 +359,16 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    protected function sortHistogram($desc=TRUE) {
+    protected function sortHistogram($desc=TRUE)
+    {
         $fullHistogram = $this->getEntries();
+
         if (is_array($fullHistogram)) {
             usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
         } else {
             $fullHistogram = array();
         }
+
         return $desc ? $fullHistogram : array_reverse($fullHistogram);
     }
 
@@ -373,13 +381,16 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function formatData($date, $data) {
+    protected function formatData($date, $data)
+    {
         if (is_array($data) && ! empty($data)) {
             $data = array_values($data)[0];
         }
+
         if ( ! is_numeric($data)) {
             return null;
         }
+
         return array('value' => $data, 'timestamp' => $date->getTimestamp());
      }
 
@@ -390,11 +401,10 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-     protected function getLatestData() {
-        $histogram = $this->sortHistogram(FALSE);
-        if ($this->diff) {
-            $histogram = self::getDiff($histogram);
-        }
+    protected function getLatestData()
+    {
+        $histogram = $this->build(FALSE);
+
         /* Handle empty data */
         if (empty($histogram)) {
             return array();
@@ -437,8 +447,10 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    protected static function getDiff(array $data) {
+    protected static function getDiff(array $data)
+    {
         $differentiatedArray = array();
+
         foreach ($data as $entry) {
             /* Copying entry. */
             $diffValue = 0;
@@ -455,9 +467,11 @@ abstract class HistogramDataManager extends DataManager
             }
             $lastEntry = $entry;
         }
+
         if (count($differentiatedArray) <= 0) {
             return array($lastEntry);
         }
+
         return $differentiatedArray;
 
     }
@@ -471,16 +485,20 @@ abstract class HistogramDataManager extends DataManager
      * @return array
      * --------------------------------------------------
      */
-    protected static final function getEntryValues($entry) {
-        if (! is_array($entry)) {
+    protected static final function getEntryValues($entry)
+    {
+        if ( ! is_array($entry)) {
             return $entry;
         }
+
         $values = $entry;
+
         foreach ($entry as $key=>$value) {
             if (in_array($key, static::$staticFields)) {
                 unset($values[$key]);
             }
         }
+
         return $values;
     }
 
