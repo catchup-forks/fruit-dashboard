@@ -186,7 +186,6 @@ class User extends Eloquent implements UserInterface
                 'count'      => $i++
             );
 
-            Log::info($dashboard->is_default);
             /* Set active dashboard or default */
             if(($existsActiveDashboard 
                 && ($params['activeDashboard'] == $dashboard->id || ($activeDashboard==-1 && $dashboard->is_default))) 
@@ -194,6 +193,8 @@ class User extends Eloquent implements UserInterface
                 $activeDashboard = $dashboard->id;
             }
         }
+
+        //dd($dashboards);
 
         /* Populating widget data. */
         foreach ($this->widgets()->with('dashboard')->get() as $widget) {
