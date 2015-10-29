@@ -90,18 +90,39 @@ function FDCanvas(widgetOptions) {
     return this;
   }
 
+  /**
+   * @function setMouseDownEvent
+   * --------------------------------------------------------------------------
+   * Set mouse down event
+   * @return none
+   * --------------------------------------------------------------------------
+   */
   function setMouseDownEvent() {
     $(graphSelector).mousedown(function() {
       isDragging = false;
     });
   }
 
+  /**
+   * @function setMouseMoveEvent
+   * --------------------------------------------------------------------------
+   * Set mouse move event
+   * @return none
+   * --------------------------------------------------------------------------
+   */
   function setMouseMoveEvent() {
     $(graphSelector).mousemove(function() {
       isDragging = true;
     });
   }
 
+  /**
+   * @function setMouseUpEvent
+   * --------------------------------------------------------------------------
+   * Set mouse up event
+   * @return none
+   * --------------------------------------------------------------------------
+   */
   function setMouseUpEvent() {
     if($(graphSelector).length>0) {
       var ev = $._data($(graphSelector)[0], 'events');
