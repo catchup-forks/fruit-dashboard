@@ -252,8 +252,6 @@ class Widget extends Eloquent
     public function getCriteria() {
         $settings = array();
         foreach (static::getCriteriaFields() as $key) {
-            Log::info($key);
-            Log::info($this->getSettings());
             if (array_key_exists($key, $this->getSettings())) {
                 $settings[$key] = $this->getSettings()[$key];
             } else {

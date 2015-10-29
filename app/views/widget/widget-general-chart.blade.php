@@ -43,5 +43,16 @@
     @endforeach
     ]
   }
+  $("#widget-wrapper-{{ $widget['id'] }}").hover(function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'hidden');
+    widget.find('.chart-diff-data').css('visibility', 'hidden');
+    widget.find('.chart-name').css('visibility', 'hidden');
+  }, function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'visible');
+    widget.find('.chart-diff-data').css('visibility', 'visible');
+    widget.find('.chart-name').css('visibility', 'visible');
+  });
 </script>
 @append
