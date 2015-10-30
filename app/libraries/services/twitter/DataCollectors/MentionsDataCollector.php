@@ -1,19 +1,24 @@
 <?php
 
-class TwitterMentionsDataManager extends ArticleDataManager
+class MentionsDataCollector extends DataCollector
 {
     /**
      * collect
      * Creating data for the widget.
+     * --------------------------------------------------
      * @param array $options.
+     * --------------------------------------------------
      */
-    public function collect($options=array()) {
+    public function collect($options=array())
+    {
         if (array_key_exists('count', $options)) {
             $count = $options['count'];
         } else {
             $count = 5;
         }
+
         $this->clearData();
+
         foreach ($this->getMentions($count) as $mention) {
             $article = array(
                 'title'    => '@' . $mention->user->screen_name,
@@ -24,6 +29,7 @@ class TwitterMentionsDataManager extends ArticleDataManager
                 'id'       => $mention->id_str,
                 'name'     => $mention->user->name
             );
+
             $this->addArticle($article);
         }
     }
@@ -36,7 +42,8 @@ class TwitterMentionsDataManager extends ArticleDataManager
      * @return TwitterDataCollector
      * --------------------------------------------------
      */
-    private function getMentions($count) {
+    private function getMentions($count)
+    {
         $collector = new TwitterDataCollector($this->user);
         return $collector->getMentions($count);
     }
@@ -49,14 +56,56 @@ class TwitterMentionsDataManager extends ArticleDataManager
      * @return boolean
      * --------------------------------------------------
      */
-    protected static function isValidArticle($article) {
-        $valid = parent::isValidArticle($article);
-        if ( ! $valid) {
-            return FALSE;
+    protected static function isValidArticle($article)
+    {
+        if ( ! (array_key_exists('title', $article) &&
+            array_key_exists('text', $article))) {
+            return FALSe;
         }
         if (array_key_exists('hashtags', $article) && array_key_exists('created', $article) && array_key_exists('id', $article)) {
             return TRUE;
         }
         return FALSE;
+    }
+
+    /**
+     * clearData
+     * Delets all articles.
+     */
+    public function clearData()
+    {
+        $this->save(array());
+    }
+
+    /**
+     * addArticle
+     * Adds a new article to the dataset.
+     * --------------------------------------------------
+     * @param array $article
+     * --------------------------------------------------
+     */
+    public function addArticle($article)
+    {
+        /* Checking article validity. */
+        if ( ! static::isValidArticle($article)) {
+            return;
+        }
+        /* Appending article to the current ones. */
+        $articles = $this->getArticles();
+        array_push($articles, $article);
+
+        /* Saving data. */
+        $this->save($articles);
+    }
+
+    /**
+     * getArticles
+     * Returns the articles from data.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getArticles() {
+        return $this->data;
     }
 }
