@@ -9,7 +9,8 @@ trait GAGoalDataCollectorTrait
      * @return GoogleAnalyticsGoal
      * --------------------------------------------------
     */
-    public function getGoal() {
+    public function getGoal()
+    {
         $profile = $this->getProfile(array('google_analytics_profiles.id'));
         if (is_null($profile)) {
             return null;
@@ -24,7 +25,8 @@ trait GAGoalDataCollectorTrait
      * @return int
      * --------------------------------------------------
     */
-    public function getGoalId() {
+    public function getGoalId()
+    {
         return $this->criteria['goal'];
     }
 

@@ -25,7 +25,7 @@ trait GAHistogramBySourceDataCollectorTrait
      * Creating, and saving data.
      */
     public function initialize()
-{
+    {
         /* Getting initial values. */
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();

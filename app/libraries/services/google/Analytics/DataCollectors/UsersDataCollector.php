@@ -6,7 +6,8 @@ class UsersDataCollector extends MultipleHistogramDataCollector
 
     protected static $metrics = array('users');
 
-    public function getCurrentValue() {
+    public function getCurrentValue()
+    {
         return $this->getCollector()->getUsers($this->getProfileId());
     }
 }

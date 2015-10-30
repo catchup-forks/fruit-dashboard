@@ -11,7 +11,8 @@ class ActiveUsersDataCollector extends MultipleHistogramDataCollector
         '30dayUsers'
     );
 
-    public function getCurrentValue() {
+    public function getCurrentValue()
+    {
         /* Getting the page from settings. */
         return $this->getCollector()->getActiveUsers(
             $this->getProfileId(),
@@ -27,7 +28,8 @@ class ActiveUsersDataCollector extends MultipleHistogramDataCollector
      * @return array
      * --------------------------------------------------
      */
-    public function getOptionalParams() {
+    public function getOptionalParams()
+    {
         return array('dimensions' => 'ga:date');
     }
 
@@ -35,7 +37,8 @@ class ActiveUsersDataCollector extends MultipleHistogramDataCollector
      * initialize
      * Running custom initializer for this DM.
      */
-    public function initialize() {
+    public function initialize()
+    {
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();
         $data = array();

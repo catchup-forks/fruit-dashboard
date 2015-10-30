@@ -1,27 +1,37 @@
 <?php
 
-trait FacebookHistogramDataManagerTrait
+trait FBHistogramDataCollectorTrait
 {
-    use FacebookDataManagerTrait;
+    use FBDataCollectorTrait;
 
     /**
      * getCurrentValue
      * Return the current value.
      */
-    public function getCurrentValue() {
+    public function getCurrentValue()
+    {
         /* Getting the page from settings. */
-        return $this->getCollector()->getInsightCurrentValue($this->getPageId(), static::$insight, static::$period);
+        return $this->getCollector()->getInsightCurrentValue(
+            $this->getPageId(),
+            static::$insight,
+            static::$period
+        );
     }
 
     /**
      * initialize
      * Creating, and saving data.
      */
-    public function initialize() {
+    public function initialize()
+    {
         try {
             $data = array();
-            foreach ($this->getCollector()->getPopulateHistogram($this->getPageId(), static::$insight)[0]['values'] as $dailyData) {
-                $date = Carbon::createFromTimestamp(strtotime($dailyData['end_time']));
+            foreach ($this->getCollector()->getPopulateHistogram(
+                $this->getPageId(),
+                static::$insight)[0]['values'] as $dailyData) {
+                $date = Carbon::createFromTimestamp(
+                    strtotime($dailyData['end_time'])
+                );
                 array_push($data, array(
                     'value'     => $dailyData['value'],
                     'timestamp' => $date->getTimestamp()
@@ -41,7 +51,8 @@ trait FacebookHistogramDataManagerTrait
      * @return FacebookDataCollector
      * --------------------------------------------------
      */
-    private function getCollector() {
+    private function getCollector()
+    {
         $collector = new FacebookDataCollector($this->user);
         return $collector;
     }

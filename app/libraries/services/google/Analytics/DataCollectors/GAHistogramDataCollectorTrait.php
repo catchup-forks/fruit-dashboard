@@ -8,7 +8,8 @@ trait GAHistogramDataCollectorTrait
      * initialize
      * Creating, and saving data.
      */
-    public function initialize() {
+    public function initialize()
+    {
         /* Getting data required for the requests. */
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();
@@ -49,7 +50,8 @@ trait GAHistogramDataCollectorTrait
      * @param array $data
      * --------------------------------------------------
     */
-    protected function saveHistogram(array $data) {
+    protected function saveHistogram(array $data)
+    {
         /* Transformation */
         $entries = array();
         foreach ($data as $metricName=>$values) {

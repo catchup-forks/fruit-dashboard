@@ -6,7 +6,8 @@ class SessionsDataCollector extends MultipleHistogramDataCollector
 
     protected static $metrics = array('sessions');
 
-    public function getCurrentValue() {
+    public function getCurrentValue()
+    {
         return $this->getCollector()->getSessions($this->getProfileId());
     }
 }

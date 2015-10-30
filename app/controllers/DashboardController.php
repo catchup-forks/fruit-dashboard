@@ -23,7 +23,7 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        foreach (DataDescriptor::where('category', 'google_analytics')->get() as $descriptor) {
+        foreach (DataDescriptor::where('category', 'facebook')->get() as $descriptor) {
             $className = $descriptor->getCollectorClassName(); 
             var_dump($className::getCriteriaFields());
         }

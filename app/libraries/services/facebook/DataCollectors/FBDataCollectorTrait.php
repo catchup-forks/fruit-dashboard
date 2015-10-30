@@ -1,6 +1,6 @@
 <?php
 
-trait FacebookDataManagerTrait
+trait FBDataCollectorTrait
 {
     /**
      * getPage
@@ -9,7 +9,8 @@ trait FacebookDataManagerTrait
      * @return FacebookPage
      * --------------------------------------------------
     */
-    public function getPage() {
+    public function getPage()
+    {
         return FacebookPage::find($this->getPageId());
     }
 
@@ -20,8 +21,22 @@ trait FacebookDataManagerTrait
      * @return string
      * --------------------------------------------------
     */
-    public function getPageId() {
+    public function getPageId()
+    {
         return $this->criteria['page'];
     }
+
+    /**
+     * getCriteriaFields
+     * Return the criteria fields for this collector.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public static function getCriteriaFields()
+    {
+        return array_merge(parent::getCriteriaFields(), array('page'));
+    }
+
 }
 ?>

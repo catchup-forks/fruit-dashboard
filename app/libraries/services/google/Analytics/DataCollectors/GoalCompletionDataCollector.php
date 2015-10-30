@@ -2,11 +2,13 @@
 
 class GoalCompletionDataCollector extends MultipleHistogramDataCollector
 {
-    use GAHistogramBySourceDataCollectorTrait, GAGoalDataCollectorTrait {
+    use GAHistogramBySourceDataCollectorTrait, GAGoalDataCollectorTrait
+    {
         GAGoalDataCollectorTrait::getCriteriaFields insteadof GAHistogramBySourceDataCollectorTrait;
     }
 
-    public function getCurrentValue() {
+    public function getCurrentValue()
+    {
         return $this->getCollector()->getGoalCompletions($this->getProfileId(), $this->getGoalId());
     }
 
@@ -17,7 +19,8 @@ class GoalCompletionDataCollector extends MultipleHistogramDataCollector
      * @return array
      * --------------------------------------------------
      */
-    public function getMetricNames() {
+    public function getMetricNames()
+    {
         return array('goal' . $this->criteria['goal'] . 'Completions');
     }
 }
