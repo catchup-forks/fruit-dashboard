@@ -7,7 +7,7 @@ class GoogleAnalyticsSessionsCountWidget extends CountWidget implements iService
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------

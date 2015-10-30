@@ -5,7 +5,7 @@ trait HistogramChartLayoutTrait
 
     /**
      * getChartData
-     * Returning the chart data.
+     * Return the chart data.
      * --------------------------------------------------
      * @param array $options
      * @return array
@@ -29,12 +29,12 @@ trait HistogramChartLayoutTrait
 
     /**
      * getChartTemplateData
-     * Returning all values that are used in templates.
+     * Return all values that are used in templates.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartTemplateData() 
+    protected function getChartTemplateData()
     {
         /* Chart specific data. */
         return array(
@@ -46,13 +46,13 @@ trait HistogramChartLayoutTrait
 
     /**
      * getChartTemplateMeta
-     * Returning the url, and selector.
+     * Return the url, and selector.
      * --------------------------------------------------
      * @param array $meta
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartTemplateMeta($meta) 
+    protected function getChartTemplateMeta($meta)
     {
         /* Chart specific data. */
         $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
@@ -68,14 +68,14 @@ trait HistogramChartLayoutTrait
      * @return DataManager
      * --------------------------------------------------
      */
-    protected function setupChartDataManager($manager) 
+    protected function setupChartDataManager($manager)
     {
         //$manager->setDiff(TRUE);
     }
 
     /**
      * getChartJSData
-     * Returning template ready grouped dataset.
+     * Return template ready grouped dataset.
      * --------------------------------------------------
      * @param string $dateFormat
      * @return array
@@ -87,7 +87,7 @@ trait HistogramChartLayoutTrait
         $histogram = $this->dataManager->build();
         $datetimes = array();
         $dataSets = $this->initializeDataSets();
-    
+
         /* Data transform, to chartJS ready values. */
         foreach ($histogram as $entry) {
             /* Adding value */
@@ -101,7 +101,7 @@ trait HistogramChartLayoutTrait
                 $diffedValue = 0;
             }
             array_push($dataSets[1]['values'], $diffedValue);
-        
+
             /* Adding formatted datetimes. */
             array_push(
                 $datetimes,
@@ -121,7 +121,7 @@ trait HistogramChartLayoutTrait
 
     /**
      * initializeDataSets
-     * Returning the default arrays for chartJS data. 
+     * Return the default arrays for chartJS data.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -146,7 +146,7 @@ trait HistogramChartLayoutTrait
 
     /**
      * getDateFormat
-     * Returning the dateFormat, based on resolution.
+     * Return the dateFormat, based on resolution.
      * --------------------------------------------------
      * @param string $resolution
      * @return array
@@ -159,12 +159,12 @@ trait HistogramChartLayoutTrait
         }
 
         switch ($resolution) {
-            case 'hours':  return 'M-d h'; 
-            case 'days':   return 'M-d'; 
-            case 'weeks':  return 'Y-W'; 
-            case 'months': return 'Y-M'; 
-            case 'years':  return 'Y'; 
-            default:       return 'Y-m-d'; 
+            case 'hours':  return 'M-d h';
+            case 'days':   return 'M-d';
+            case 'weeks':  return 'Y-W';
+            case 'months': return 'Y-M';
+            case 'years':  return 'Y';
+            default:       return 'Y-m-d';
         }
     }
 }

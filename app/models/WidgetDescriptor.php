@@ -20,7 +20,7 @@ class WidgetDescriptor extends Eloquent
 
     /**
      * getClassName
-     * Returning the specific widgetClass Name
+     * Return the specific widgetClass Name
      * --------------------------------------------------
      * @return string The widget class Name
      * --------------------------------------------------
@@ -31,7 +31,7 @@ class WidgetDescriptor extends Eloquent
 
     /**
      * find
-     * Returning the model based on id.
+     * Return the model based on id.
      * --------------------------------------------------
      * @param int $id
      * @param array $columns
@@ -45,7 +45,7 @@ class WidgetDescriptor extends Eloquent
 
     /**
      * getDMClassName
-     * Returning the specific DataManager class Name
+     * Return the specific DataManager class Name
      * --------------------------------------------------
      * @return string The widget class Name
      * --------------------------------------------------
@@ -57,7 +57,7 @@ class WidgetDescriptor extends Eloquent
     /**
      * getTemplateName
      * --------------------------------------------------
-     * Returning the location of the blade template.
+     * Return the location of the blade template.
      * @return string
      * --------------------------------------------------
     */
@@ -67,7 +67,7 @@ class WidgetDescriptor extends Eloquent
 
     /**
      * getDataObject
-     * Returning the corresponding Data object.
+     * Return the corresponding Data object.
      * --------------------------------------------------
      * @param Widget $widget
      * @param bool firstRun
@@ -103,7 +103,7 @@ class WidgetDescriptor extends Eloquent
 
     /**
      * getPhotoLocation
-     * Returning the url of the demonstration photo.
+     * Return the url of the demonstration photo.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------

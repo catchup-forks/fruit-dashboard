@@ -6,7 +6,7 @@ trait FacebookHistogramDataManagerTrait
 
     /**
      * getCurrentValue
-     * Returning the current value.
+     * Return the current value.
      */
     public function getCurrentValue() {
         /* Getting the page from settings. */
@@ -36,7 +36,7 @@ trait FacebookHistogramDataManagerTrait
 
     /**
      * getCollector
-     * Returning a data collector
+     * Return a data collector
      * --------------------------------------------------
      * @return FacebookDataCollector
      * --------------------------------------------------

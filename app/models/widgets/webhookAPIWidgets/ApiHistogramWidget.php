@@ -30,7 +30,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -40,7 +40,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             return array_merge(self::getDefaultTemplateData($this), array(
                 'hasData' => $this->hasData()
             ));
-        } 
+        }
         return parent::getTemplateData();
     }
 

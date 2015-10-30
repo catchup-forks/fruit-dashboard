@@ -30,7 +30,7 @@ class TwitterMentionsDataManager extends ArticleDataManager
 
     /**
      * getMentions
-     * Returning the mentions from twitter.
+     * Return the mentions from twitter.
      * --------------------------------------------------
      * @param $count
      * @return TwitterDataCollector

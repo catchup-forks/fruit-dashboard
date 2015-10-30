@@ -13,7 +13,7 @@ class GoogleAnalyticsGoalCompletionDataManager extends MultipleHistogramDataMana
 
     /**
      * getMetricNames
-     * Returning the names of the metric used by the DM.
+     * Return the names of the metric used by the DM.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------

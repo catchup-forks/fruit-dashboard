@@ -48,7 +48,7 @@ abstract class HistogramWidget extends DataWidget
     );
 
     /* -- Choice functions -- */
-    public function resolution() 
+    public function resolution()
     {
         return array(
             'days'   => 'Daily',
@@ -59,7 +59,7 @@ abstract class HistogramWidget extends DataWidget
     }
 
     /* -- Choice functions -- */
-    public function type() 
+    public function type()
     {
         $types = array(
             'chart' => 'Line chart',
@@ -78,7 +78,7 @@ abstract class HistogramWidget extends DataWidget
      * @return array
      * --------------------------------------------------
      */
-    public static function getSettingsFields() 
+    public static function getSettingsFields()
     {
         return array_merge(
             parent::getSettingsFields(),
@@ -113,7 +113,7 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getTemplateMeta
-     * Returning data for the gridster init template.
+     * Return data for the gridster init template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -121,7 +121,7 @@ abstract class HistogramWidget extends DataWidget
     public function getTemplateMeta()
     {
         $meta = parent::getTemplateMeta();
-        
+
         $meta['layout'] = $this->getLayout();
         $meta['general']['name'] = $this->getName();
 
@@ -132,19 +132,19 @@ abstract class HistogramWidget extends DataWidget
             case 'chart': return $this->getChartTemplateMeta($meta); break;
             default: return $this->getChartTemplateMeta($meta);
         }
-    
+
         /* Merging and returning the data. */
         return $meta;
     }
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function getTemplateData() 
+    public function getTemplateData()
     {
         /* Getting parent data. */
         $templateData = parent::getTemplateData();
@@ -157,7 +157,7 @@ abstract class HistogramWidget extends DataWidget
             'format'  => $this->getFormat(),
             'hasData' => $this->hasData()
         );
-        
+
         /* Deciding which data we'll need. */
         switch ($this->getLayout()) {
             case 'table': $layoutSpecificData = $this->getTableTemplateData(); break;
@@ -176,12 +176,12 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getName
-     * Returning the name of the widget.
+     * Return the name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected function getName() 
+    protected function getName()
     {
         $name = '';
         if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
@@ -193,36 +193,36 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getLayout
-     * Returning the layout of the widget.
+     * Return the layout of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected function getLayout() 
+    protected function getLayout()
     {
         return $this->getSettings()['type'];
     }
-    
+
     /**
      * getResolution
-     * Returning the resolution of the widget.
+     * Return the resolution of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected function getResolution() 
+    protected function getResolution()
     {
         return $this->getSettings()['resolution'];
     }
 
     /**
      * getLength
-     * Returning the length of the widget.
+     * Return the length of the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
      */
-    protected function getLength() 
+    protected function getLength()
     {
         return $this->getSettings()['length'];
     }
@@ -234,7 +234,7 @@ abstract class HistogramWidget extends DataWidget
      * @return DataManager
      * --------------------------------------------------
      */
-    protected function setupDataManager() 
+    protected function setupDataManager()
     {
         $manager = parent::setupDataManager();
 
@@ -253,24 +253,24 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getManagerClassName
-     * Returning the corresponding dataManager className.
+     * Return the corresponding dataManager className.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected static function getManagerClassName() 
+    protected static function getManagerClassName()
     {
         return str_replace('Widget', 'DataManager',get_called_class());
     }
 
     /**
      * hasCumulative
-     * Returning whether or not the data is cumulative.
+     * Return whether or not the data is cumulative.
      * --------------------------------------------------
      * @return bool
      * --------------------------------------------------
      */
-    protected static function hasCumulative() 
+    protected static function hasCumulative()
     {
         $className = self::getManagerClassName();
 
@@ -303,7 +303,7 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getHistory
-     * Returning the historical data compared to the latest.
+     * Return the historical data compared to the latest.
      * --------------------------------------------------
      * @param int $multiplier
      * @param string $resolution
@@ -332,7 +332,7 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getData
-     * Returning the data based on layout.
+     * Return the data based on layout.
      * --------------------------------------------------
      * @param array $postData
      * @return array
@@ -362,7 +362,7 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getLatestValues
-     * Returning the last values in the histogram.
+     * Return the last values in the histogram.
      * --------------------------------------------------
      * @return float
      * --------------------------------------------------
@@ -408,7 +408,7 @@ abstract class HistogramWidget extends DataWidget
      * @return array $validationArray
      * --------------------------------------------------
      */
-    protected function customValidator($validationArray, $inputData) {       
+    protected function customValidator($validationArray, $inputData) {
         /* On table layout setting maximum values. */
         if (array_key_exists('type', $inputData)) {
             if ($inputData['type'] == 'table') {

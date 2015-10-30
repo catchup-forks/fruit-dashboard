@@ -5,7 +5,7 @@ trait GoogleAnalyticsGoalDataManagerTrait
     /**
      * getGoal
      * --------------------------------------------------
-     * Returning the corresponding goal.
+     * Return the corresponding goal.
      * @return GoogleAnalyticsGoal
      * --------------------------------------------------
     */
@@ -20,7 +20,7 @@ trait GoogleAnalyticsGoalDataManagerTrait
     /**
      * getGoalId
      * --------------------------------------------------
-     * Returning the corresponding goal id.
+     * Return the corresponding goal id.
      * @return int
      * --------------------------------------------------
     */

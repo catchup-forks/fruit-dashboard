@@ -23,6 +23,12 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
+        Data::create(array(
+            'user_id'  => 1,
+            'criteria'     => json_encode(array('profile' => 85953960)),
+            'descriptor_id' => 65
+        ));
+        exit(94);
         /* No caching in local development */
         if ( ! App::environment('local')) {
             /* Trying to load from cache. */
@@ -34,7 +40,7 @@ class DashboardController extends BaseController
                     Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
                 }
 
-                /* Returning the cached dashboard. */
+                /* Return the cached dashboard. */
                 return $cachedDashboard;
             }
         }
@@ -298,6 +304,7 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     private function showOptimizeLog($user) {
+        exit(94);
         var_dump(' -- DEBUG LOG --');
         $time = microtime(TRUE);
         $startTime = $time;
@@ -309,7 +316,7 @@ class DashboardController extends BaseController
         $user->checkWidgetsIntegrity();
         var_dump(
             "Widget check integrity time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' . 
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' .
             number_format(memory_get_usage() - $memUsage) . ' bytes of memory)'
         );
         $memUsage = memory_get_usage();
@@ -320,7 +327,7 @@ class DashboardController extends BaseController
         $view = $user->createDashboardView();
         var_dump(
             "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
-            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' . 
+            " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' .
             number_format(memory_get_usage() - $memUsage) . ' bytes of memory)'
         );
         $memUsage = memory_get_usage();

@@ -15,7 +15,7 @@ trait StripeWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------

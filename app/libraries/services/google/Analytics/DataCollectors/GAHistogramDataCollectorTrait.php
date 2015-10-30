@@ -49,7 +49,7 @@ trait GAHistogramDataCollectorTrait
      * @param array $data
      * --------------------------------------------------
     */
-    public function saveHistogram(array $data) {
+    protected function saveHistogram(array $data) {
         /* Transformation */
         $entries = array();
         foreach ($data as $metricName=>$values) {
@@ -66,7 +66,7 @@ trait GAHistogramDataCollectorTrait
         foreach ($entries as $entry) {
             $this->collect(array(
                 'entry' => $entry,
-                'sum'   => static::$cumulative
+                'sum'   => $this->isCumulative()
             ));
         }
     }

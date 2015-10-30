@@ -1,66 +1,75 @@
 <?php
 
-trait GoogleAnalyticsDataManagerTrait
+trait GADataCollectorTrait
 {
     /**
      * getCollector
-     * Returning a data collector
+     * Return a data collector
      * --------------------------------------------------
      * @return FacebookDataCollector
      * --------------------------------------------------
      */
-    protected function getCollector() {
+    protected function getCollector()
+    {
         $collector = new GoogleAnalyticsDataCollector($this->user);
+
         return $collector;
     }
 
     /**
      * getMetricNames
-     * Returning the names of the metric used by the DM.
+     * Return the names of the metric used by the DM.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function getMetricNames() {
+    public function getMetricNames()
+    {
         return static::$metrics;
     }
 
     /**
      * getOptionalParams
-     * Returning the optional parameters used by the DM.
+     * Return the optional parameters used by the DM.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function getOptionalParams() {
+    public function getOptionalParams()
+    {
         return array();
     }
 
     /**
      * getProperty
      * --------------------------------------------------
-     * Returning the corresponding property.
+     * Return the corresponding property.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    public function getProperty() {
-        $profile = $this->getProfile();
+    public function getProperty()
+    {
+        $profile = $this->getProfile(array('property_id'));
         /* Invalid profile in DB. */
         if (is_null($profile)) {
             return null;
         }
-        $property = $this->user->googleAnalyticsProperties()->where('property_id', $profile->property_id)->first();
+
+        $property = $this->user->googleAnalyticsProperties()
+            ->where('property_id', $profile->property_id)->first();
+
         return $property;
     }
 
     /**
      * getProfile
      * --------------------------------------------------
-     * Returning the corresponding profile.
+     * Return the corresponding profile.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    public function getProfile(array $attributes=array('*')) {
+    public function getProfile(array $attributes=array('*'))
+    {
         $profile = $this->user->googleAnalyticsProfiles()
             ->where('profile_id', $this->getProfileId())
             ->first($attributes);
@@ -71,11 +80,12 @@ trait GoogleAnalyticsDataManagerTrait
     /**
      * getProfileId
      * --------------------------------------------------
-     * Returning the corresponding profile id.
+     * Return the corresponding profile id.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
-    public function getProfileId() {
+    public function getProfileId()
+    {
         return $this->criteria['profile'];
     }
 }

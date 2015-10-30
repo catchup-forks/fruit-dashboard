@@ -14,7 +14,7 @@ class Utilities {
 
     /**
      * underscoreToCamelCase
-     * Returning a string in CamelCase.
+     * Return a string in CamelCase.
      * --------------------------------------------------
      * @param string $input
      * @param boolean $keepSpace

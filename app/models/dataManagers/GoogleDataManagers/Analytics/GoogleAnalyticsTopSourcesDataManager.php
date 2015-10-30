@@ -15,7 +15,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 
     /**
      * getOptionalParams
-     * Returning the optional parameters used by the DM.
+     * Return the optional parameters used by the DM.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -100,7 +100,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 
     /**
      * createOptions
-     * Returning a valid options array.
+     * Return a valid options array.
      * --------------------------------------------------
      * @param array $iOptions
      * @return array
@@ -116,7 +116,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 
     /**
      * getOption
-     * Returning either default, or provided option.
+     * Return either default, or provided option.
      * --------------------------------------------------
      * @param array $options
      * @param string $key
@@ -132,7 +132,7 @@ class GoogleAnalyticsTopSourcesDataManager extends TableDataManager
 
     /**
      * getDimensions
-     * Returning the dimensions in GA format.
+     * Return the dimensions in GA format.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------

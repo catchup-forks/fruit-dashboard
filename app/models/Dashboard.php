@@ -18,7 +18,7 @@ class Dashboard extends Eloquent
 
     /**
      * getNextAvailablePosition
-     * Returning the next available position to the dashboard.
+     * Return the next available position to the dashboard.
      * --------------------------------------------------
      * @param $desiredX The desired cols.
      * @param $desiredY The desired rows.

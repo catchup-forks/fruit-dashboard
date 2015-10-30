@@ -24,7 +24,7 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------

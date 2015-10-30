@@ -69,7 +69,7 @@ trait FacebookWidgetTrait
     /**
      * getPage
      * --------------------------------------------------
-     * Returning the corresponding page.
+     * Return the corresponding page.
      * @return FacebookPage
      * @throws FacebookNotConnected
      * --------------------------------------------------
@@ -86,7 +86,7 @@ trait FacebookWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------

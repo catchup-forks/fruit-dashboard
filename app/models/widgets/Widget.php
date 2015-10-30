@@ -1,4 +1,5 @@
 <?php
+
 /* Main widget class */
 class Widget extends Eloquent
 {
@@ -44,7 +45,7 @@ class Widget extends Eloquent
 
     /**
      * getMinRows
-     * Returning the minimum rows required for the widget.
+     * Return the minimum rows required for the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -55,7 +56,7 @@ class Widget extends Eloquent
 
     /**
      * getMinCols
-     * Returning the minimum rows required for the widget.
+     * Return the minimum rows required for the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -71,10 +72,12 @@ class Widget extends Eloquent
      * @return int
      * --------------------------------------------------
     */
-    public function renderable() {
+    public function renderable()
+    {
         if ($this->state == 'active') {
             return TRUE;
         }
+
         return FALSE;
     }
 
@@ -114,7 +117,7 @@ class Widget extends Eloquent
 
     /**
      * getErrorCodes
-     * Returning the error codes.
+     * Return the error codes.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -158,7 +161,7 @@ class Widget extends Eloquent
 
     /**
      * getTemplateMeta
-     * Returning data for the gridster init template.
+     * Return data for the gridster init template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -197,7 +200,7 @@ class Widget extends Eloquent
 
     /**
      * getDefaultTemplateData
-     * Returning all meta data about the widget.
+     * Return all meta data about the widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -218,7 +221,7 @@ class Widget extends Eloquent
 
     /**
      * getTemplateData
-     * Returning all data that should be passed to the template.
+     * Return all data that should be passed to the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -244,7 +247,7 @@ class Widget extends Eloquent
 
     /**
      * getCriteria
-     * Returning the settings that makes a difference among widgets.
+     * Return the settings that makes a difference among widgets.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -420,9 +423,10 @@ class Widget extends Eloquent
      * @return array $validationArray
      * --------------------------------------------------
      */
-    protected function customValidator($validationArray, $inputData) {       
+    protected function customValidator($validationArray, $inputData)
+    {
         return $validationArray;
-     }
+    }
 
     /**
      * premiumUserCheck
@@ -432,7 +436,7 @@ class Widget extends Eloquent
      * @return int 1: user is premium, -1 fails, 0 default
      * --------------------------------------------------
      */
-     public function premiumUserCheck() {       
+     public function premiumUserCheck() {
         /* Premium users can see everything. */
         if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
             return 1;
@@ -474,8 +478,8 @@ class Widget extends Eloquent
         if ($commit) {
             $this->save(array('skip_settings' => TRUE));
         }
-        
-        /* Returning the changed fields. */ 
+
+        /* Return the changed fields. */
         $changedFields = array();
         foreach (array_diff($settings, $oldSettings) as $key=>$value) {
             if ($value) {
@@ -563,14 +567,15 @@ class Widget extends Eloquent
         if (method_exists($instance, 'onCreate')) {
             $instance->onCreate();
         }
+        exit(94);
         return $instance;
     }
 
     /**
      * getErrorMessage
-     * Returning the corresponding error.
+     * Return the corresponding error.
      * --------------------------------------------------
-     * @return string 
+     * @return string
      * --------------------------------------------------
      */
     public function getErrorMessage() {
@@ -578,7 +583,7 @@ class Widget extends Eloquent
         if (strpos('error_', $state) === 0) {
             $errorCodes = $this->getErrorCodes();
             $key = substr($state, strpos($state, '_') + 1);
-            
+
             if (array_key_exists($key, $errorCodes)) {
                 return $errorCodes[$key];
             }
@@ -606,7 +611,7 @@ class Widget extends Eloquent
 
     /**
      * getType
-     * Returning the underscored type of the widget.
+     * Return the underscored type of the widget.
      * Only in generalwidget, where the descriptor is
      * still unknown.
      * --------------------------------------------------

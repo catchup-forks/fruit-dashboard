@@ -101,7 +101,7 @@ class GeneralWidgetController extends BaseController {
             $widget->position = $newDashboard->getNextAvailablePosition($pos->size_x, $pos->size_y);
             $widget->dashboard()->associate($newDashboard);
         }
-        
+
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
 
@@ -462,14 +462,14 @@ class GeneralWidgetController extends BaseController {
         if ( ! is_null($sharing)) {
             $sharing->reject();
         }
-    
+
         /* Deleting widgets with this sharing. */
         foreach (Auth::user()->widgets as $widget) {
             if ($widget instanceof SharedWidget &&
                     $widget->getSharingId() == $sharing->id) {
                 $widget->delete();
             }
-        } 
+        }
 
         if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
             return Redirect::route('dashboard.dashboard');
@@ -603,7 +603,7 @@ class GeneralWidgetController extends BaseController {
             return Response::json(array('error' => 'Descriptor not found'));
         }
 
-        /* Returning widget descriptor description. */
+        /* Return widget descriptor description. */
         return Response::json(array(
             'description' => $descriptor->description,
             'name'        => $descriptor->name,
@@ -711,7 +711,7 @@ class GeneralWidgetController extends BaseController {
             $sharing->user()->associate($user);
             $sharing->widget()->associate($widget);
             $sharing->save();
-        
+
             /* Right now auto accept sharings. */
             $user->handleWidgetSharings();
         }

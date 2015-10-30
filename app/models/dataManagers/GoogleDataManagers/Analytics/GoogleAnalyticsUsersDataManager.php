@@ -1,6 +1,6 @@
 <?php
 
-class GoogleAnalyticsUsersDataManager extends MultipleHistogramDataManager
+class GoogleAnalyticsUsersDataCollector extends HistogramDataCollector
 {
     use GoogleAnalyticsHistogramBySourceDataManagerTrait;
 

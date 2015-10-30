@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder {
         /* CONFIG::ALL */
         $this->call('PlanSeeder');
         $this->call('WidgetDescriptorSeeder');
+        $this->call('DataDescriptorSeeder');
 
         /* CONFIG::LOCAL ONLY */
         if (App::environment('local')) {

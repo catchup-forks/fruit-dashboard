@@ -99,7 +99,7 @@ trait GoogleAnalyticsGoalWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
@@ -111,7 +111,7 @@ trait GoogleAnalyticsGoalWidgetTrait
     /**
      * getGoal
      * --------------------------------------------------
-     * Returning the corresponding goal.
+     * Return the corresponding goal.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */

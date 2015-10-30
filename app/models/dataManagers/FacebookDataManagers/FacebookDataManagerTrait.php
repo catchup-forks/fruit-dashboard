@@ -5,7 +5,7 @@ trait FacebookDataManagerTrait
     /**
      * getPage
      * --------------------------------------------------
-     * Returning the corresponding page.
+     * Return the corresponding page.
      * @return FacebookPage
      * --------------------------------------------------
     */
@@ -16,7 +16,7 @@ trait FacebookDataManagerTrait
     /**
      * getPageId
      * --------------------------------------------------
-     * Returning the facebook page id.
+     * Return the facebook page id.
      * @return string
      * --------------------------------------------------
     */

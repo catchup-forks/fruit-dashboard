@@ -2,6 +2,9 @@
 
 class Data extends Eloquent
 {
+    /* Collector functions. */
+    private static $collectorFunctions = array('initialize', 'collect');
+
     /* Escaping eloquent's plural naming. */
     protected $table = 'data';
 
@@ -23,29 +26,15 @@ class Data extends Eloquent
     protected $manager = null;
 
     /* -- Relations -- */
-    public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id'); }
+    public function descriptor() { return $this->belongsTo('DataDescriptor', 'descriptor_id'); }
     public function user() {
         return User::remember(120)->find($this->user_id);
     }
-    public function widgets() { return $this->hasMany('Widget'); }
+
     /* Optimized method, not using DB query */
     public function getDescriptor() {
-        return WidgetDescriptor::find($this->descriptor_id);
+        return DataDescriptor::find($this->descriptor_id);
     }
-
-    /**
-     * getMetaFields
-     * Returnig the fields not containing raw_value.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public static function getMetaFields() {
-        return array(
-            'id', 'user_id', 'descriptor_id', 'criteria', 'state'
-        );
-    }
-
 
     /**
      * createFromWidget
@@ -64,6 +53,7 @@ class Data extends Eloquent
         /* Creating manager. */
         return self::create(array(
             'user_id'       => $widget->user()->id,
+            /* TO CHANGE. */
             'descriptor_id' => $widget->getDescriptor()->id,
             'criteria'      => json_encode($widget->getCriteria())
         ));
@@ -100,27 +90,8 @@ class Data extends Eloquent
     }
 
     /**
-     * newFromBuilder
-     * Override the base Model function to create a manager.
-     * --------------------------------------------------
-     * @param array $attributes
-     * --------------------------------------------------
-     */
-    public function newFromBuilder($attributes=array()) {
-        $data = parent::newFromBuilder($attributes);
-
-        /* Creating manager if descriptor is set. */
-        $className = WidgetDescriptor::find($attributes->descriptor_id)
-            ->getDMClassName();
-
-        $data->manager = new $className($data);
-
-        return $data;
-    }
-
-    /**
      * getCriteria
-     * Returning the settings that makes a difference among widgets.
+     * Return the settings that makes a difference among widgets.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -146,22 +117,7 @@ class Data extends Eloquent
         }
         $this->state = $state;
         $this->save();
-        /* Notifying widgets. */
-        $this->setWidgetsState($state);
     }
-
-    /**
-     * setWidgetsState
-     * Setting the corresponding widgets state.
-     * --------------------------------------------------
-     * @param string $state
-     * --------------------------------------------------
-     */
-     public function setWidgetsState($state) {
-        foreach ($this->widgets as $widget) {
-            $widget->setState($state);
-        }
-     }
 
     /**
      * setUpdatePeriod
@@ -183,11 +139,11 @@ class Data extends Eloquent
     public function checkIntegrity() {
 
         $decodedData = json_decode($this->raw_value, 1);
-        
+
         if ( ! is_array($decodedData) || empty($decodedData) ) {
             /* No json in data, this is a problem. */
             try {
-                $this->manager->initialize();
+                $this->initialize();
                 $this->setState('active');
             } catch (ServiceException $e) {
                 Log::error($e->getMessage());
@@ -206,25 +162,8 @@ class Data extends Eloquent
     }
 
     /**
-     * Delete
-     * Deleting the data as well.
-     */
-     public function delete() {
-        $this->widgets()->delete();
-        return parent::delete();
-    }
-
-    /**
-     * getManager
-     * Returns the manager object.
-     */
-    public function getManager() {
-        return $this->manager;
-    }
-
-    /**
      * decode
-     * Returning the raw data json decoded.
+     * Return the raw data json decoded.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -234,7 +173,7 @@ class Data extends Eloquent
         $raw_value = DB::table('data')
             ->where('id', $this->id)
             ->pluck('raw_value');
-    
+
         /* Running JSON decoder. */
         $data = json_decode($raw_value, 1);
 
@@ -267,7 +206,25 @@ class Data extends Eloquent
      * --------------------------------------------------
      */
     public function __call($method, $args) {
-        return call_user_func_array(array(&$this->manager, $method), $args);
+        /* Collector functions passed to specific collector */
+        if (in_array($method, self::$collectorFunctions)) {
+            $collector = $this->createCollector();
+            return call_user_func_array(array($collector, $method), $args);
+        }
+        throw new Exception('Method does not exist');
+    }
+
+    /**
+     * createCollector
+     * Creating a dataCollector instance.
+     * --------------------------------------------------
+     * @return DataCollector.
+     * --------------------------------------------------
+    */
+    private function createCollector() {
+        $className = $this->getDescriptor()->getCollectorClassName();
+        $collector = new $className($this);
+        return $collector;
     }
 
     /**

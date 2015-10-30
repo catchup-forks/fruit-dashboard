@@ -25,7 +25,7 @@ abstract class TableWidget extends DataWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -39,7 +39,7 @@ abstract class TableWidget extends DataWidget
 
     /**
      * getHeader
-     * Returning the table header
+     * Return the table header
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -50,7 +50,7 @@ abstract class TableWidget extends DataWidget
 
     /**
      * getContent
-     * Returning the table articles.
+     * Return the table articles.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -61,7 +61,7 @@ abstract class TableWidget extends DataWidget
 
     /**
      * getName
-     * Returning the name of the widget.
+     * Return the name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------

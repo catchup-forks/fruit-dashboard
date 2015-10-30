@@ -1,13 +1,27 @@
 <?php
 
-class WebhookHistogramDataManager extends MultipleHistogramDataManager
+class WebhookDataCollector extends MultipleHistogramDataCollector
 {
-    use WebhookDataManager;
+    /**
+     * Return the json from the url.
+     * --------------------------------------------------
+     * @return array/null
+     * --------------------------------------------------
+     */
+    private function getJson()
+    {
+        try {
+            $json = file_get_contents($this->criteria['url']);
+        } catch (Exception $e) {
+            return null;
+        }
+        return json_decode($json, TRUE);
+    }
 
     /**
      * getUrl
      * --------------------------------------------------
-     * Returning the corresponding url.
+     * Return the corresponding url.
      * @return string
      * --------------------------------------------------
     */

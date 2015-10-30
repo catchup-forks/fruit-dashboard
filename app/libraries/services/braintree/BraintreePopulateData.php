@@ -83,7 +83,7 @@ class BraintreePopulateData
     }
 
     /**
-     * Returning all metrics in an array.
+     * Return all metrics in an array.
      *
      * @return array.
     */

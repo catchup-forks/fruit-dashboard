@@ -247,7 +247,7 @@ class SiteConstants {
     /**
      * getChartJsColors:
      * --------------------------------------------------
-     * Returning colors for chartJS
+     * Return colors for chartJS
      * @return (array) ($chartJsColors) chartJsColors
      * --------------------------------------------------
      */
@@ -258,7 +258,7 @@ class SiteConstants {
     /**
      * getSlackColors:
      * --------------------------------------------------
-     * Returning colors for slack
+     * Return colors for slack
      * @return (array) ($slackColors) slackColors
      * --------------------------------------------------
      */
@@ -269,7 +269,7 @@ class SiteConstants {
     /**
      * getSlackColor:
      * --------------------------------------------------
-     * Returning the corresponging color
+     * Return the corresponging color
      * @param int $i
      * @return string
      * --------------------------------------------------
@@ -283,7 +283,7 @@ class SiteConstants {
     /**
      * getSingleStatHistoryDiffs:
      * --------------------------------------------------
-     * Returning the single stat diffs
+     * Return the single stat diffs
      * @return (array) ($singleStatHistoryDiffs)
      * --------------------------------------------------
      */

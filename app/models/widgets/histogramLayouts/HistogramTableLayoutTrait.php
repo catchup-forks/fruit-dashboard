@@ -27,8 +27,6 @@ trait HistogramTableLayoutTrait
             )
         );
 
-
-
         /* Populating table data. */
         for ($i = $this->getLength(); $i > 0; --$i) {
             $diff = $i - 1;
@@ -51,7 +49,7 @@ trait HistogramTableLayoutTrait
                 $percent = 0;
             }
 
-            /* Creating format for percent. */
+            /* Create format for percent. */
             $success = static::isSuccess($percent);
             $trendFormat = '<div class="';
             if ($success) { $trendFormat .= 'text-success';
@@ -82,14 +80,14 @@ trait HistogramTableLayoutTrait
      * @return DataManager
      * --------------------------------------------------
      */
-    protected function setupTableDataManager($manager) 
+    protected function setupTableDataManager($manager)
     {
         $manager->setDiff(TRUE);
     }
 
     /**
      * getTableTemplateMeta
-     * Returning the default meta.
+     * Return the default meta.
      * --------------------------------------------------
      * @param array $meta
      * @return DataManager

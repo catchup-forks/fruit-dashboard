@@ -3,6 +3,7 @@
 trait GoogleAnalyticsHistogramBySourceDataManagerTrait
 {
     use GoogleAnalyticsHistogramDataManagerTrait;
+
     /**
      * getOptionalParams
      * Returns the optional parameters globally used,

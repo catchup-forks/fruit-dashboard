@@ -472,7 +472,7 @@ class ServiceConnectionController extends BaseController
 
     /**
      * getGoogleAnalyticsGoals
-     * Returning the goals for the selected profile
+     * Return the goals for the selected profile
      * --------------------------------------------------
      * @param int $profileId
      * --------------------------------------------------

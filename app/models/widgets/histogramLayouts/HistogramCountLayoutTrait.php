@@ -4,7 +4,7 @@ trait HistogramCountLayoutTrait
 {
     /**
      * getCountData
-     * Returning the count data.
+     * Return the count data.
      * --------------------------------------------------
      * @param array $options
      * @return array
@@ -31,7 +31,7 @@ trait HistogramCountLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function getStartDate() 
+    protected function getStartDate()
     {
         $multiplier = $this->getSettings()['length'];
         $now = Carbon::now();
@@ -46,12 +46,12 @@ trait HistogramCountLayoutTrait
 
     /**
      * getCountTemplateData
-     * Returning all values that are used in templates.
+     * Return all values that are used in templates.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    protected function getCountTemplateData() 
+    protected function getCountTemplateData()
     {
         $countTemplateData = array(
             'description'  => '',
@@ -69,13 +69,13 @@ trait HistogramCountLayoutTrait
 
     /**
      * getCountTemplateMeta
-     * Returning the selector.
+     * Return the selector.
      * --------------------------------------------------
      * @param array $meta
      * @return array
      * --------------------------------------------------
      */
-    protected function getCountTemplateMeta($meta) 
+    protected function getCountTemplateMeta($meta)
     {
         /* Chart specific data. */
         $meta['selectors']['count'] = 'count-' . $this->id;
@@ -90,7 +90,7 @@ trait HistogramCountLayoutTrait
      * @return DataManager
      * --------------------------------------------------
      */
-    protected function setupCountDataManager($manager) 
+    protected function setupCountDataManager($manager)
     {
     }
 
