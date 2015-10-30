@@ -18,16 +18,15 @@ class DashboardController extends BaseController
     /**
      * anyDashboard
      * --------------------------------------------------
-     * returns the user dashboard, or redirects to signup wizard
+     * Returns the user dashboard, or redirects to signup wizard
      * @return Renders the dashboard page
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        Data::create(array(
-            'user_id'  => 1,
-            'criteria'     => json_encode(array('profile' => 85953960)),
-            'descriptor_id' => 65
-        ));
+        foreach (DataDescriptor::where('category', 'google_analytics')->get() as $descriptor) {
+            $className = $descriptor->getCollectorClassName(); 
+            var_dump($className::getCriteriaFields());
+        }
         exit(94);
         /* No caching in local development */
         if ( ! App::environment('local')) {

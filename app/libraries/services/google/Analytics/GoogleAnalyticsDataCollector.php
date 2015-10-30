@@ -312,6 +312,26 @@ class GoogleAnalyticsDataCollector
    }
 
     /**
+     * getNewUsers
+     * Return the number of users.
+     * --------------------------------------------------
+     * @param string $profileId
+     * @return array
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    public function getNewUsers($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today',
+            array('newUsers'), array(
+                'dimensions'  => 'ga:source'
+            )
+        )['newUsers'];
+    }
+    
+    /**
      * getUsers
      * Return the number of users.
      * --------------------------------------------------
@@ -325,10 +345,10 @@ class GoogleAnalyticsDataCollector
             $profileId,
             SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
             'today',
-            array('newUsers'), array(
+            array('users'), array(
                 'dimensions'  => 'ga:source'
             )
-        )['newUsers'];
+        )['users'];
    }
 
     /**

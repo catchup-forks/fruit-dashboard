@@ -29,6 +29,18 @@ trait GADataCollectorTrait
     }
 
     /**
+     * getCriteriaFields
+     * Return the criteria fields for this collector.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public static function getCriteriaFields()
+    {
+        return array_merge(parent::getCriteriaFields(), array('profile'));
+    }
+
+    /**
      * getOptionalParams
      * Return the optional parameters used by the DM.
      * --------------------------------------------------

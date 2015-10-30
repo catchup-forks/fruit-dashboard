@@ -1,8 +1,7 @@
 <?php
-
-trait GoogleAnalyticsHistogramBySourceDataManagerTrait
+trait GAHistogramBySourceDataCollectorTrait
 {
-    use GoogleAnalyticsHistogramDataManagerTrait;
+    use GAHistogramDataCollectorTrait;
 
     /**
      * getOptionalParams
@@ -12,7 +11,8 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
      * @return array
      * --------------------------------------------------
      */
-    public function getOptionalParams() {
+    public function getOptionalParams()
+	{
         $metric = $this->getMetricNames()[0];
         return array(
             'dimensions'  => 'ga:source',
@@ -24,7 +24,8 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
      * initialize
      * Creating, and saving data.
      */
-    public function initialize() {
+    public function initialize()
+{
         /* Getting initial values. */
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();
@@ -42,7 +43,6 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
     
         /* Saving initial data */
         $this->saveInitialData($data, $end->getTimestamp());
-
         /* Collecting diff data. */
         $params = $this->getOptionalParams();
         $params['dimensions'] .= ',ga:date';
@@ -55,10 +55,8 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
             $metrics, $params, TRUE
         );
         $this->saveDiffData($data, $start, $end);
-
         return;
     }
-
     /**
      * saveInitialData
      * Transforming and saving the initial data.
@@ -73,7 +71,6 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
         $entry['timestamp'] = $timestamp;
         $this->save(self::transformData(array($entry)));
     }
-
     /**
      * saveDiffData
      * Transforming and saving the initial data.
@@ -104,7 +101,6 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
             $entries[$date][$source] = $value;
         }
         $diff = $end->diffInDays($start);
-
         /* Populating previous values. */
         $end->addDay();
         for ($i = 0; $i < $diff; ++$i) {
@@ -122,10 +118,9 @@ trait GoogleAnalyticsHistogramBySourceDataManagerTrait
         
         /* Creating DB ready entries. */ 
         foreach ($entries as $entry) {
-            $this->collect(array('entry' => $entry, 'sum' => TRUE));
+            $this->collect(array('entry' => $entry, 'sum' => $this->isCumulative()));
         }
     
     }
-
 }
 ?>

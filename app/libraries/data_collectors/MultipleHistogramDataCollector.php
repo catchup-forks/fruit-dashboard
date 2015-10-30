@@ -122,4 +122,49 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
         }
         parent::save($data);
     }
+
+	/**
+     * transformData
+     * Creating the final DB-ready json
+     * --------------------------------------------------
+     * @param array ($histogramData)
+     * @return array
+     * --------------------------------------------------
+     */
+    protected static function transformData($histogramData) {
+        $dbData = array(
+            'datasets' => array(),
+            'data'     => array()
+        );
+        /* Saving empty histogram. */
+        if (empty($histogramData)) {
+            return json_encode($dbData);
+        }
+        $i = 0;
+        foreach ($histogramData as $entry) {
+            /* Creating the new entry */
+            $newEntry = array();
+            /* Iterating through the entry. */
+            foreach ($entry as $key=>$value) {
+                if (in_array($key, static::$staticFields)) {
+                    /* In static fields */
+                    $newEntry[$key] = $value;
+                } else {
+                    /* In dataset */
+                    if ( ! array_key_exists($key, $dbData['datasets'])) {
+                        $dbData['datasets'][$key] = 'data_' . $i++;
+                    }
+                    $dataSetKey = $dbData['datasets'][$key];
+                    $newEntry[$dataSetKey] = is_numeric($value) ? $value : 0;
+                }
+            }
+            /* Final integrity check. */
+            if ( ! array_key_exists('timestamp', $newEntry)) {
+                $newEntry['timestamp'] = time();
+            }
+            array_push($dbData['data'], $newEntry);
+        }
+        return $dbData;
+    }
+
 }

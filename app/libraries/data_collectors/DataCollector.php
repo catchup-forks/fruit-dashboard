@@ -38,6 +38,18 @@ abstract class DataCollector
      */
     protected $descriptorAttributes = null;
 
+    /**
+     * getCriteriaFields
+     * Return the criteria fields for this collector.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public static function getCriteriaFields()
+    {
+        return array();
+    }
+
     public function __construct($data)
     {
         $this->data_id = $data->id;

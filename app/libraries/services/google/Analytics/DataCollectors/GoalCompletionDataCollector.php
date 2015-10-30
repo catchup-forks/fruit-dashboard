@@ -1,13 +1,12 @@
 <?php
 
-class GoogleAnalyticsGoalCompletionDataManager extends MultipleHistogramDataManager
+class GoalCompletionDataCollector extends MultipleHistogramDataCollector
 {
-    use GoogleAnalyticsGoalDataManagerTrait;
-    use GoogleAnalyticsHistogramBySourceDataManagerTrait;
+    use GAHistogramBySourceDataCollectorTrait, GAGoalDataCollectorTrait {
+        GAGoalDataCollectorTrait::getCriteriaFields insteadof GAHistogramBySourceDataCollectorTrait;
+    }
 
-    protected static $cumulative = TRUE;
     public function getCurrentValue() {
-        /* Getting the page from settings. */
         return $this->getCollector()->getGoalCompletions($this->getProfileId(), $this->getGoalId());
     }
 

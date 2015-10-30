@@ -1,6 +1,6 @@
 <?php
 
-trait GoogleAnalyticsGoalDataManagerTrait
+trait GAGoalDataCollectorTrait
 {
     /**
      * getGoal
@@ -26,6 +26,18 @@ trait GoogleAnalyticsGoalDataManagerTrait
     */
     public function getGoalId() {
         return $this->criteria['goal'];
+    }
+
+    /**
+     * getCriteriaFields
+     * Return the criteria fields for this collector.
+     * --------------------------------------------------
+     * @param array $data
+     * --------------------------------------------------
+     */
+    public static final function getCriteriaFields()
+    {
+        return array_merge(parent::getCriteriaFields(), array('profile', 'goal'));
     }
 }
 ?>

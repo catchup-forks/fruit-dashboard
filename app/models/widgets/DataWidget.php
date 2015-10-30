@@ -102,7 +102,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     {
         /* Running the query. */
         $dataObjects = Data::whereIn('data_descriptors.type', $this->getDataTypes())
-            ->where('criteria', json_encode($this->getCriteria()))
+            ->where('criteria', json_encode($this->getCriteria())) // Will not work
             ->where('data_descriptors.category', $this->getDescriptor()->category)
             ->where('user_id', $this->user_id)
             ->get();
