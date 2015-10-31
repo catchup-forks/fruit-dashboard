@@ -84,6 +84,45 @@ class DataDescriptorSeeder extends Seeder
                 'attributes' => '{"cumulative": "false"}'
         ));
 
+        /* Stripe descriptors */
+        DataDescriptor::create(array(
+                'type'       => 'mrr',
+                'category'   => 'stripe',
+        ));
+        DataDescriptor::create(array(
+                'type'       => 'arr',
+                'category'   => 'stripe',
+        ));
+        DataDescriptor::create(array(
+                'type'       => 'arpu',
+                'category'   => 'stripe',
+            ));
+
+        /* Braintree descriptors */
+        DataDescriptor::create(array(
+                'type'       => 'mrr',
+                'category'   => 'braintree',
+        ));
+        DataDescriptor::create(array(
+                'type'       => 'arr',
+                'category'   => 'braintree',
+        ));
+        DataDescriptor::create(array(
+                'type'       => 'arpu',
+                'category'   => 'braintree',
+        ));
+
+        /* Other descriptors */
+        DataDescriptor::create(array(
+                'type'       => 'webhook',
+                'category'   => 'webhook_api',
+                'attributes' => '{"cumulative": "false"}'
+        ));
+        DataDescriptor::create(array(
+                'type'       => 'api',
+                'category'   => 'webhook_api',
+                'attributes' => '{"cumulative": "false"}'
+        ));
 
         Log::info('DataDescriptorSeeder | All WidgetDescriptors updated.');
     }

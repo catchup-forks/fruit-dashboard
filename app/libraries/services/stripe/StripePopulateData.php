@@ -62,9 +62,9 @@ class StripePopulateData
         /* Creating data for the last DAYS days. */
         $metrics = $this->getMetrics();
 
-        $this->dataObjects['stripe_mrr']->saveData($metrics['mrr']);
-        $this->dataObjects['stripe_arr']->saveData($metrics['arr']);
-        $this->dataObjects['stripe_arpu']->saveData($metrics['arpu']);
+        $this->dataObjects['mrr']->saveData($metrics['mrr']);
+        $this->dataObjects['arr']->saveData($metrics['arr']);
+        $this->dataObjects['arpu']->saveData($metrics['arpu']);
 
         foreach ($this->dataObjects as $manager) {
             $manager->setState('active');
@@ -105,6 +105,7 @@ class StripePopulateData
             /* Calculating the date to mirror. */
             $date = Carbon::now()->subDays($i);
             $this->mirrorDay($date->toDateString());
+
             array_push($mrr, array(
                 'value'     => $this->calculator->getMrr(),
                 'timestamp' => $date->getTimestamp()

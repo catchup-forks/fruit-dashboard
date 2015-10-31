@@ -1,7 +1,7 @@
 <?php
 
 /* This class is responsible for data collection. */
-class StripeMrrDataManager extends HistogramDataManager
+class StripeMrrDataCollector extends HistogramDataCollector
 {
     public function getCurrentValue() {
         $stripeCalculator = new StripeCalculator($this->user);

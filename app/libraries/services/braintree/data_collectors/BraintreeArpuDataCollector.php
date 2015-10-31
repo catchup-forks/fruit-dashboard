@@ -1,10 +1,10 @@
 <?php
 
-class BraintreeArrDataManager extends HistogramDataManager
+class BraintreeArpuDataCollector extends HistogramDataCollector
 {
     public function getCurrentValue() {
         $braintreeCalculator = new BraintreeCalculator($this->user);
-        return $braintreeCalculator->getArr(TRUE);
+        return $braintreeCalculator->getArpu(TRUE);
     }
 
 }

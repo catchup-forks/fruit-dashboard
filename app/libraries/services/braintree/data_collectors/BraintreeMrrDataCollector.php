@@ -1,6 +1,6 @@
 <?php
 
-class BraintreeMrrDataManager extends HistogramDataManager
+class BraintreeMrrDataCollector extends HistogramDataCollector
 {
     public function getCurrentValue() {
         $braintreeCalculator = new BraintreeCalculator($this->user);

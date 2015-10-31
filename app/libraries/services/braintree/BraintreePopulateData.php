@@ -56,9 +56,9 @@ class BraintreePopulateData
         /* Creating data for the last 30 days. */
         $metrics = $this->getMetrics();
 
-        $this->dataObjects['braintree_mrr']->saveData($metrics['mrr']);
-        $this->dataObjects['braintree_arr']->saveData($metrics['arr']);
-        $this->dataObjects['braintree_arpu']->saveData($metrics['arpu']);
+        $this->dataObjects['mrr']->saveData($metrics['mrr']);
+        $this->dataObjects['arr']->saveData($metrics['arr']);
+        $this->dataObjects['arpu']->saveData($metrics['arpu']);
 
         foreach ($this->dataObjects as $manager) {
             $manager->setState('active');
