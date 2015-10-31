@@ -22,9 +22,10 @@
                 $widget->id),
                 'class' => 'form-horizontal' )) }}
 
-                @foreach ($widget->getSettingsFields() as $field=>$meta)
+                @foreach ($widget->getSettingsFields() as $fieldSet=>$fields)
+                @foreach ($fields as $field=>$meta)
                   @if ( $widget->isSettingVisible($field))
-                  <div class="form-group" id="field-{{$field}}">
+                    <div class="form-group" id="field-{{$field}}">
                     {{ Form::label($field, $meta['name'], array(
                         'class' => 'col-sm-3 control-label'
                       ))}}
@@ -61,6 +62,7 @@
                   @endif
 
                 @endforeach
+                @endforeach
                 <!-- dashboard select -->
                   <div class="form-group">
                     {{ Form::label('dashboard', 'Dashboard', array(
@@ -72,23 +74,6 @@
                     </div>
                   </div>
                 <!-- /.dashboard select -->
-                @if ($widget instanceof DataWidget)
-                  <!-- Update interval select -->
-                  <div class="form-group">
-                    {{ Form::label('update_period', 'Update (Minutes)', array(
-                        'class' => 'col-sm-3 control-label'
-                      ))}}
-                    <div class="col-sm-7">
-                      {{ Form::text('update_period', $widget->getUpdatePeriod(), ['class' => 'form-control']) }}
-                        @if ($errors->first('update_period'))
-                          <p class="text-danger">{{ $errors->first('update_period') }}</p>
-                        @else
-                          <p class="text-info">The number of minutes the widget data will be updated automatically (min. 30m).</p>
-                        @endif
-                    </div>
-                  </div>
-                @endif
-                <!-- /.Update interval select -->
                 <hr>
                   {{ Form::submit('Save', array(
                     'id' => 'save-settings',

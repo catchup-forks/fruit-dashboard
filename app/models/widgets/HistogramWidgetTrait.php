@@ -5,6 +5,13 @@ trait HistogramWidgetTrait
     use HistogramDataTrait;
 
     /**
+     * Whether or not the increasing value means good.
+     *
+     * @var bool
+     */
+    protected static $isHigherGood = TRUE;
+
+    /**
      * Whether or not using a diffed values.
      *
      * @var bool
@@ -164,13 +171,14 @@ trait HistogramWidgetTrait
     }
 
     /**
-     * build
+     * buildHistogram
      * Return the Histogram in the range,
      * --------------------------------------------------
+     * @param array $entries
      * @return array
      * --------------------------------------------------
     */
-    public function build()
+    public function buildHistogram($entries)
     {
         if ( ! $this->dirty) {
             return $this->cache;
@@ -178,7 +186,7 @@ trait HistogramWidgetTrait
 
         $recording = empty($this->range) ? TRUE : FALSE;
         $histogram = array();
-        foreach ($this->sortHistogram() as $entry) {
+        foreach (self::sortHistogram($entries) as $entry) {
             $entryTime = self::getEntryTime($entry);
             /* Range conditions */
             if ( ! empty($this->range)) {
@@ -229,7 +237,7 @@ trait HistogramWidgetTrait
 
     /**
      * isBreakPoint
-     * Checks if the entry is a breakpoint in the histogram.
+     * Check if the entry is a breakpoint in the histogram.
      * --------------------------------------------------
      * @param Carbon $entryTime
      * @param Carbon $previousEntryTime
@@ -254,44 +262,18 @@ trait HistogramWidgetTrait
     }
 
     /**
-     * sortHistogram
-     * Sorting the array.
+     * isSuccess
+     * Returns whether or not the value is considered
+     * good in the histogram
      * --------------------------------------------------
-     * @param boolean $desc
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function sortHistogram($desc=TRUE)
-    {
-        $fullHistogram = $this->getEntries();
-
-        if (is_array($fullHistogram)) {
-            usort($fullHistogram, array('HistogramDataManager', 'timestampSort'));
-        } else {
-            $fullHistogram = array();
-        }
-
-        return $desc ? $fullHistogram : array_reverse($fullHistogram);
-    }
-
-    /**
-     * getLatestData
-     * Return the last data in the histogram.
-     * --------------------------------------------------
-     * @return array
+     * @param numeric $value
+     * @return boolean
      * --------------------------------------------------
      */
-    protected function getLatestData()
+    public static function isSuccess($value)
     {
-        $histogram = $this->build(FALSE);
-
-        /* Handle empty data */
-        if (empty($histogram)) {
-            return array();
-        } else {
-            return end($histogram);
-        }
-
+        return  ($value < 0) xor static::$isHigherGood;
     }
+
 }
 ?>

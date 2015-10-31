@@ -562,6 +562,22 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
+            ['type' => 'google_analytics_users_chart'],
+            array(
+                'name'        => 'Users',
+                'description' => 'Displays the number of users on a chart..',
+                'type'        => 'google_analytics_users_chart',
+                'category'    => 'google_analytics',
+                'is_premium'  => FALSE,
+                'number'       => 11,
+                'min_cols'     => 3,
+                'min_rows'     => 3,
+                'default_cols' => 6,
+                'default_rows' => 6
+            )
+        );
+
+        WidgetDescriptor::updateOrCreate(
             ['type' => 'shared'],
             array(
                 'name'         => 'Shared widget',

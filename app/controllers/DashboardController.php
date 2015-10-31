@@ -23,11 +23,6 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     public function anyDashboard() {
-        foreach (DataDescriptor::where('category', 'twitter')->get() as $descriptor) {
-            $className = $descriptor->getCollectorClassName(); 
-            var_dump($className::getCriteriaFields());
-        }
-        exit(94);
         /* No caching in local development */
         if ( ! App::environment('local')) {
             /* Trying to load from cache. */
@@ -303,7 +298,6 @@ class DashboardController extends BaseController
      * --------------------------------------------------
      */
     private function showOptimizeLog($user) {
-        exit(94);
         var_dump(' -- DEBUG LOG --');
         $time = microtime(TRUE);
         $startTime = $time;

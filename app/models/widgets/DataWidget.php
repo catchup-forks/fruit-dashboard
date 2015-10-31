@@ -100,19 +100,46 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      */
     protected function onCreate()
     {
-        /* Running the query. */
-        $dataObjects = Data::whereIn('data_descriptors.type', $this->getDataTypes())
-            ->where('criteria', json_encode($this->getCriteria())) // Will not work
-            ->where('data_descriptors.category', $this->getDescriptor()->category)
-            ->where('user_id', $this->user_id)
-            ->get();
-
-        if (count($dataObjects) != count($this->getDataTypes())) {
-            throw new WidgetException('Insuficcient data for this widget.');
+        if ( ! $this->hasValidCriteria()) {
+            return;
         }
-
-        foreach ($dataObjects as $dataObject) {
-            $this->data[$dataType] = $dataObject->decode();
+        /* Assigning the data. */
+        foreach ($this->getDataObjects() as $dataObject) {
+            $this->data[$dataObject->type] = $dataObject->decode();
         }
     }
+
+    /**
+     * getDataObjects
+     * Return the corresponding data objects.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    private function getDataObjects() {
+        $dataObjects = array();
+        $widgetCriteria = $this->getCriteria();
+
+        /* Getting the corresponding data objects, with one optimized query. */
+        foreach ($this->user()->dataObjects()
+            ->join('data_descriptors', 'data_descriptors.id', '=' , 'data.descriptor_id')
+            ->where('data_descriptors.category', $this->getDescriptor()->category)
+            ->whereIn('data_descriptors.type', static::getDataTypes())
+            ->get(array('data.id', 'data.criteria', 'data_descriptors.type')) as $dataObject) {
+            /* Filtering criteria. */
+            $dataCriteria = $dataObject->getCriteria();
+            if (count(array_intersect($dataCriteria, $widgetCriteria)) ==
+                count($dataCriteria)) {
+                array_push($dataObjects, $dataObject);
+            }
+        }
+
+        if (count($dataObjects) != count(static::getDataTypes())) {
+            throw new WidgetException('Insuficcient data available.');
+        }
+
+        return $dataObjects;
+    }
+
+
 }

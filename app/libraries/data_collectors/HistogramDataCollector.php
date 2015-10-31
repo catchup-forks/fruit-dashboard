@@ -15,7 +15,7 @@ abstract class HistogramDataCollector extends DataCollector
      * --------------------------------------------------
      */
     protected function isCumulative() {
-        if ( ! array_key_exists('cummulative', $this->descriptorAttributes)) {
+        if ( ! array_key_exists('cumulative', $this->descriptorAttributes)) {
             return FALSE;
         }
         return $this->descriptorAttributes['cumulative'];

@@ -72,11 +72,6 @@ class GeneralWidgetController extends BaseController {
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
-        /* Adding update_period on DataWidget */
-        if ($widget instanceof DataWidget) {
-            $validatorArray['update_period'] = 'required|integer|min:23';
-        }
-
         /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
@@ -104,11 +99,6 @@ class GeneralWidgetController extends BaseController {
 
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
-
-        /* Adding update_period on DataWidget */
-        if ($widget instanceof DataWidget) {
-            $widget->setUpdatePeriod(Input::get('update_period'));
-        }
 
         /* Track event | EDIT WIDGET */
         $tracker = new GlobalTracker();
@@ -140,7 +130,7 @@ class GeneralWidgetController extends BaseController {
         return View::make('widget.setup-widget')
             ->with('widget', $widget)
             ->with('settings', array_intersect_key(
-                $widget->getSettingsFields(),
+                $widget->getFlatSettingsFields(),
                 array_flip($widget->getSetupFields())
             ));
     }

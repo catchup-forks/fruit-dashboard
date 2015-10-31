@@ -14,11 +14,6 @@ class Widget extends Eloquent
     );
     public $timestamps = FALSE;
 
-    /* These variables will be overwritten, with late static binding. */
-    protected static $settingsFields   = array();
-    protected static $setupSettings    = array();
-    protected static $criteriaSettings = array();
-
     /* Use only for association. */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
 
@@ -112,7 +107,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getSettingsFields() {
-        return self::$settingsFields;
+        return array();
     }
 
     /**
@@ -134,7 +129,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getSetupFields() {
-        return self::$setupSettings;
+        return array();
     }
 
     /**
@@ -145,7 +140,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getCriteriaFields() {
-        return self::$criteriaSettings;
+        return array();
     }
 
     /**
@@ -282,15 +277,34 @@ class Widget extends Eloquent
     }
 
     /**
+     * getFlatSettingsFields
+     * Return the settings fields as a flat array.
+     * --------------------------------------------------
+     * @param string $state
+     * --------------------------------------------------
+    */
+    public static function getFlatSettingsFields()
+    {
+        $settings = array();
+
+        foreach (static::getSettingsFields() as $dataSet=>$fields) {
+            $settings = array_merge($settings, $fields);
+        }
+
+        return $settings;
+    }
+
+    /**
      * isSettingVisible
-     * Checking if the given field is visible.
+     * Check if the given field is visible.
      * --------------------------------------------------
      * @param string $fieldName
      * @return bool
      * --------------------------------------------------
     */
-    public function isSettingVisible($fieldName) {
-        $settingsFields = $this->getSettingsFields();
+    public function isSettingVisible($fieldName)
+    {
+        $settingsFields = static::getFlatSettingsFields();
         if ( ! array_key_exists($fieldName, $settingsFields)) {
             /* Key doesn't exist. Don't even try to render it. */
             return FALSE;
@@ -363,7 +377,7 @@ class Widget extends Eloquent
     public function getSettingsValidationArray(array $fields, array $data) {
         $validationArray = array();
 
-        foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
+        foreach ($this->getFlatSettingsFields() as $fieldName=>$fieldMeta) {
             // Not validating fields that are not present.
             if (!in_array($fieldName, $fields) || ! $this->isSettingVisible($fieldName)) {
                 continue;
@@ -456,18 +470,19 @@ class Widget extends Eloquent
     public function saveSettings(array $inputSettings, $commit=TRUE) {
         $settings = array();
         $oldSettings = $this->getSettings();
+        $settingsMeta = $this->getFlatSettingsFields();
 
         // Iterating through the positions.
-        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
+        foreach (array_keys($settingsMeta) as $fieldName) {
             // inputSettings. oldSettings, empty string.
             if (isset($inputSettings[$fieldName])) {
                 $settings[$fieldName] = $inputSettings[$fieldName];
             } else if (isset($oldSettings[$fieldName])) {
                 // Value not set, Getting from old settings.
                 $settings[$fieldName] = $oldSettings[$fieldName];
-            } else if (isset($this->getSettingsFields()[$fieldName]['default'])) {
+            } else if (isset($settingsMeta[$fieldName]['default'])) {
                 // Value not set, default found.
-                $settings[$fieldName] = $this->getSettingsFields()[$fieldName]['default'];
+                $settings[$fieldName] = $settingsMeta[$fieldName]['default'];
             } else {
                 $settings[$fieldName] = "";
             }
@@ -567,7 +582,6 @@ class Widget extends Eloquent
         if (method_exists($instance, 'onCreate')) {
             $instance->onCreate();
         }
-        exit(94);
         return $instance;
     }
 
@@ -602,7 +616,7 @@ class Widget extends Eloquent
         } else if ( ! $this->hasValidCriteria()) {
             throw new WidgetFatalException;
         }
-        foreach ($this->getSettingsFields() as $key=>$meta) {
+        foreach ($this->getFlatSettingsFields() as $key=>$meta) {
             if ( ! array_key_exists($key, $settings)) {
                 throw new WidgetException;
             }

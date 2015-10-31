@@ -1,39 +1,78 @@
 <?php
-class GoogleAnalyticsUsersChartWidget extends Widget implements iServiceWidget
+class GoogleAnalyticsUsersChartWidget extends DataWidget implements iServiceWidget
 {
-    use ChartWidgetTrait;
+    /* Data format definer. */
+    use NumericWidgetTrait;
+
+    /* Histogram layout data handler.  */
     use HistogramWidgetTrait;
+
+    /* Chart data transformer. */
+    use MultipleChartWidgetTrait;
+    
+    /* Service settings. */
     use GoogleAnalyticsWidgetTrait;
 
-    protected function getDataTypes()
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields()
+    {
+        return array(
+            'Chart settings'            => static::$chartSettings,
+            'Google Analytics Settings' => static::$profileSettings
+        );
+    }
+
+    /**
+     * getDataTypes
+     * Return the used data types.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    protected static function getDataTypes()
     {
         return array('new_users', 'users');
     }
 
+    /**
+     * getTemplateData
+     * Return all values used in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
     public function getTemplateData()
     {
-        $chart = $this->buildChart();
-
-        return array(
-            'data'          => array(
-                'dataSets'   => $chart->getDataSets(),
-                'labels'     => $chart->getLabels(),
-                'isCombined' => $chart->getIsCombined(),
-            ),
-            'currentDiff'   => $this->getDiff(),
-            'currentValue'  => $this->getLatestValues(),
-            'hasCumulative' => true/false
-        );
+        $this->setDiff(TRUE);
+        return array_merge(parent::getTemplateData(), array(
+            'data'          => $this->buildChartData(),
+            'currentDiff'   => array(0),
+            'currentValue'  => array(0),
+            'format'        => $this->getFormat(),
+        ));
     }
 
-    private function buildChart()
+    /**
+     * buildChartData
+     * Build the chart data.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    private function buildChartData()
     {
         /* Building the histograms. */
-        $newUsers = $this->buildHistogram($this->data['new_users']);
-        $users    = $this->buildHistogram($this->data['users']);
+        $users = $this->buildHistogram(
+            $this->transformToSingle($this->data['new_users']['data'])
+        );
 
-        foreach ($newUsers as $entry) {
-        }
+        return $this->getChartJSData($users, 'Y-m-d', TRUE);
     }
 }
 ?>

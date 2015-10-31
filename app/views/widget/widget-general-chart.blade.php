@@ -10,16 +10,16 @@
   @else
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
-    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber($widget['currentDiff'], $widget['format']) }}</span>
+    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber(array_values($widget['currentDiff'])[0], $widget['format']) }}</span>
   </div> <!-- /.chart-diff -->
 
   <div class="chart-diff-dimension smaller-text">
-    <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small>
+    <small>(a {{ rtrim($widget['settings']['resolution'], 's') }} ago)</small> 
   </div> <!-- /.chart-diff-dimension -->
 </div> <!-- /.chart-diff-data -->
 
 <p class="chart-name text-center">
-  {{ $widget['name'] }}
+  {{ $widget['settings']['name'] }}
 </p> <!-- /.chart-name -->
 
 <div id="chart-container-{{ $widget['id'] }}" class="clickable">
