@@ -43,6 +43,14 @@
                 </div> <!-- /.col-xs-2 -->
               @endforeach
             </div> <!-- /.row -->
+            <div class="row">
+              <div class="col-xs-1"></div>
+              @foreach(array(0,1,2,3,4) as $value)
+                <div class="col-xs-2 text-center">
+                  <a href="#">How to reach this?</a>
+                </div> <!-- /.col-xs-2 -->
+              @endforeach
+            </div> <!-- /.row -->
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-xs-12 -->
@@ -73,6 +81,14 @@
                       </h4>
                     </div> <!-- /.caption -->
                   </div> <!-- /.thumbnail -->
+                </div> <!-- /.col-xs-2 -->
+              @endforeach
+            </div> <!-- /.row -->
+            <div class="row">
+              <div class="col-xs-1"></div>
+              @foreach(array(0,1,2,3,4) as $value)
+                <div class="col-xs-2 text-center">
+                  <a href="#">How to reach this?</a>
                 </div> <!-- /.col-xs-2 -->
               @endforeach
             </div> <!-- /.row -->
@@ -109,6 +125,14 @@
                 </div> <!-- /.col-xs-2 -->
               @endforeach
             </div> <!-- /.row -->
+            <div class="row">
+              <div class="col-xs-1"></div>
+              @foreach(array(0,1,2,3,4) as $value)
+                <div class="col-xs-2 text-center">
+                  <a href="#">How to reach this?</a>
+                </div> <!-- /.col-xs-2 -->
+              @endforeach
+            </div> <!-- /.row -->
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-xs-12 -->
@@ -139,6 +163,14 @@
                       </h4>
                     </div> <!-- /.caption -->
                   </div> <!-- /.thumbnail -->
+                </div> <!-- /.col-xs-2 -->
+              @endforeach
+            </div> <!-- /.row -->
+            <div class="row">
+              <div class="col-xs-1"></div>
+              @foreach(array(0,1,2,3,4) as $value)
+                <div class="col-xs-2 text-center">
+                  <a href="#">How to reach this?</a>
                 </div> <!-- /.col-xs-2 -->
               @endforeach
             </div> <!-- /.row -->
@@ -175,6 +207,14 @@
                 </div> <!-- /.col-xs-2 -->
               @endforeach
             </div> <!-- /.row -->
+            <div class="row">
+              <div class="col-xs-1"></div>
+              @foreach(array(0,1,2,3,4) as $value)
+                <div class="col-xs-2 text-center">
+                  <a href="#">How to reach this?</a>
+                </div> <!-- /.col-xs-2 -->
+              @endforeach
+            </div> <!-- /.row -->
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->
       </div> <!-- /.col-xs-12 -->
@@ -190,7 +230,7 @@
           <div class="panel-body">
             <div class="row">
               <div class="col-xs-4">
-                <div class="thumbnail">
+                <div class="thumbnail" style="padding-bottom: 10%">
                   <span class="fa-stack fa-5x trophy">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-trophy fa-stack-1x fa-inverse"></i>                   
@@ -198,13 +238,13 @@
                   <div class="caption">
                     <h4 class="text-center">
                       <strong>Full stack</strong><br></br>
-                      <span>Added every tool [1 financial, 1 user count, 1 web analytics, 1 social]</span>
+                      <span>Added every tool</span>
                     </h4>
                   </div> <!-- /.caption -->
                 </div> <!-- /.thumbnail -->
               </div> <!-- /.col-xs-4 -->
               <div class="col-xs-4">
-                <div class="thumbnail">
+                <div class="thumbnail" style="padding-bottom: 10%">
                   <span class="fa-stack fa-5x trophy">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-trophy fa-stack-1x fa-inverse"></i>                   
@@ -218,7 +258,7 @@
                 </div> <!-- /.thumbnail -->
               </div> <!-- /.col-xs-4 -->  
               <div class="col-xs-4">
-                <div class="thumbnail">
+                <div class="thumbnail" style="padding-bottom: 5%">
                   <span class="fa-stack fa-5x trophy">
                     <i class="fa fa-circle fa-stack-2x"></i>
                     <i class="fa fa-trophy fa-stack-1x fa-inverse"></i>                   
@@ -231,6 +271,13 @@
                   </div> <!-- /.caption -->
                 </div> <!-- /.thumbnail -->
               </div> <!-- /.col-xs-4 -->
+            </div> <!-- /.row -->
+            <div class="row">
+              @foreach(array(0,1,2) as $value)
+                <div class="col-xs-4 text-center">
+                  <a href="#">How to reach this?</a>
+                </div> <!-- /.col-xs-2 -->
+              @endforeach
             </div> <!-- /.row -->
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->

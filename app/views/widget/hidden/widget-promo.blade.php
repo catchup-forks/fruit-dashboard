@@ -1,5 +1,5 @@
 <h4 id="promo-{{ $widget['id'] }}" class="no-margin-top has-margin-vertical-sm">
-  <a href="#" onclick="setLocation{{ $widget['id'] }}()">
+  <a href="#">
     {{ HTML::image(
       $widget['settings']['photo_location'],
       $widget['relatedDescriptor']->name, array(
@@ -11,13 +11,8 @@
 
 @section('widgetScripts')
 <script type="text/javascript">
-  function setLocation{{ $widget['id'] }}(){
-    url = "{{ $widget['connectionMeta']['url'] }}?createDashboard=1";
-    if (window!=window.top) {
-      window.open(url, '_blank');
-    } else {
-      window.location = url;
-    }
+  var widgetData{{ $widget['id'] }} = {
+    url: "{{ $widget['connectionMeta']['url'] }}?createDashboard=1"
   }
 </script>
 @append
