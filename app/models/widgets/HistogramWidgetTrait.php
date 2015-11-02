@@ -19,6 +19,13 @@ trait HistogramWidgetTrait
     protected $diff = FALSE;
 
     /**
+     * The currently active histogram.
+     *
+     * @var array
+     */
+    protected $activeHistogram = array();
+
+    /**
      * The chart's resolution.
      *
      * @var string
@@ -55,7 +62,7 @@ trait HistogramWidgetTrait
 
     /**
      * setDirty
-     * Setting the dirty bit.
+     * Set the dirty bit.
      * --------------------------------------------------
      * @param bool $dirty
      * --------------------------------------------------
@@ -63,6 +70,20 @@ trait HistogramWidgetTrait
     protected function setDirty($dirty)
     {
         $this->dirty = $dirty;
+    }
+
+    /**
+     * setActiveHistogram
+     * Set the active histogram.
+     * --------------------------------------------------
+     * @param bool $dirty
+     * --------------------------------------------------
+     */
+    protected function setActiveHistogram($histogram)
+    {
+        $this->activeHistogram = $histogram;
+
+        $this->setDirty(TRUE);
     }
 
     /**
@@ -136,29 +157,16 @@ trait HistogramWidgetTrait
 
     /**
      * compare
-     * Comparing the current value respect to period.
+     * Compare the current value respect to period.
      * --------------------------------------------------
      * @param int $count
      * @return array
      * --------------------------------------------------
      */
-    public function compare($count)
+    protected function compare($count)
     {
-        if ($count >= $this->length) {
-            $this->setLength($count);
-            $histogram = $this->build();
-            $index = 0;
-        } else {
-            $histogram = $this->build();
-            $index = $this->length - $count;
-        }
-
-        if ($index >= count($histogram)) {
-            throw new WidgetException('Data not found');
-        }
-
-        $start = $histogram[$index];
-        $today = end($histogram);
+        $start = $this->getValueAt($count);
+        $today = $this->getLatestValues();
 
         /* Creating an array that will hold the values. */
         $values = array();
@@ -167,7 +175,40 @@ trait HistogramWidgetTrait
                 $values[$dataId] = $today[$dataId] - $value;
             }
         }
+
         return $values;
+    }
+
+    /**
+     * getValueAt
+     * Return the value at the count resolution.
+     * --------------------------------------------------
+     * @param int $count
+     * @return array
+     * --------------------------------------------------
+     */
+    private function getValueAt($count)
+    {
+        /* Saving length. */
+        $origLength = $this->length;
+
+        if ($count >= $this->length) {
+            /* Not in range. */
+            $this->setLength($count);
+            $histogram = $this->buildHistogram();
+            $index = 0;
+        } else {
+            $histogram = $this->buildHistogram();
+            $index = $this->length - $count;
+        }
+
+        if ($index >= count($histogram)) {
+            throw new WidgetException('Data not found');
+        }
+
+        /* Reset length. */
+        $this->setLength($count);
+        return $histogram[$index];
     }
 
     /**
@@ -178,15 +219,17 @@ trait HistogramWidgetTrait
      * @return array
      * --------------------------------------------------
     */
-    public function buildHistogram($entries)
+    public function buildHistogram()
     {
+        /* Using cache. */
         if ( ! $this->dirty) {
             return $this->cache;
         }
 
         $recording = empty($this->range) ? TRUE : FALSE;
         $histogram = array();
-        foreach (self::sortHistogram($entries) as $entry) {
+
+        foreach (self::sortHistogram($this->activeHistogram) as $entry) {
             $entryTime = self::getEntryTime($entry);
             /* Range conditions */
             if ( ! empty($this->range)) {
@@ -227,10 +270,11 @@ trait HistogramWidgetTrait
         if ($this->diff) {
             $histogram = self::getDiff($histogram);
         }
-
+        
+        /* Setting cache, resetting length. */
         $this->cache = $histogram;
-        $this->setLength(count($histogram));
         $this->setDirty(FALSE);
+        $this->setLength(count($histogram));
 
         return $histogram;
     }
@@ -259,6 +303,48 @@ trait HistogramWidgetTrait
             return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
         return FALSE;
+    }
+
+    /**
+     * getLatestValues
+     * Return the latest values in the histogram.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getLatestValues()
+    {
+        $histogram = $this->buildHistogram();
+
+        if (empty($histogram)) {
+            return array();
+        }
+
+        return end($histogram);
+    }
+
+
+    /**
+     * getHistory
+     * Returning the historical data compared to the latest.
+     * --------------------------------------------------
+     * @param int $multiplier
+     * @param string $resolution
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getHistory($multiplier=1, $resolution=null) {
+
+        try {
+            $percent = ($currentValue / $value - 1) * 100;
+        } catch (Exception $e) {
+            $percent = 'inf';
+        }
+        return array(
+            'value'   => $value,
+            'percent' => $percent,
+            'success' => $this->isSuccess($percent)
+        );
     }
 
     /**

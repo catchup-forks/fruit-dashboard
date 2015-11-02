@@ -1,6 +1,10 @@
 <?php
+
 class GoogleAnalyticsUsersChartWidget extends DataWidget implements iServiceWidget
 {
+    /* Data selector. */
+    protected static $dataTypes = array('users');
+
     /* Data format definer. */
     use NumericWidgetTrait;
 
@@ -29,18 +33,6 @@ class GoogleAnalyticsUsersChartWidget extends DataWidget implements iServiceWidg
     }
 
     /**
-     * getDataTypes
-     * Return the used data types.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-    */
-    protected static function getDataTypes()
-    {
-        return array('new_users', 'users');
-    }
-
-    /**
      * getTemplateData
      * Return all values used in the template.
      * --------------------------------------------------
@@ -49,7 +41,6 @@ class GoogleAnalyticsUsersChartWidget extends DataWidget implements iServiceWidg
     */
     public function getTemplateData()
     {
-        $this->setDiff(TRUE);
         return array_merge(parent::getTemplateData(), array(
             'data'          => $this->buildChartData(),
             'currentDiff'   => array(0),
@@ -68,11 +59,8 @@ class GoogleAnalyticsUsersChartWidget extends DataWidget implements iServiceWidg
     private function buildChartData()
     {
         /* Building the histograms. */
-        $users = $this->buildHistogram(
-            $this->transformToSingle($this->data['new_users']['data'])
-        );
-
-        return $this->getChartJSData($users, 'Y-m-d', TRUE);
+        $this->setActiveHistogram($this->transformToSingle($this->data['new_users']['data']));
+        return $this->getChartJSData('Y-m-d', TRUE);
     }
 }
 ?>

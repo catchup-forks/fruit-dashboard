@@ -41,34 +41,64 @@ class Data extends Eloquent
      * Creating and returning a manager from a widget
      * --------------------------------------------------
      * @param Widget $widget
+     * @param string $category
+     * @param string $dataType
      * @return array
      * --------------------------------------------------
      */
-    public static function createFromWidget($widget) {
-        /* Only datawidgets are relevant */
-        if ( ! $widget instanceof DataWidget) {
-            return null;
+    public static function createFromWidget($widget, $category, $dataType)
+    {
+        /* Finding the corresponding descriptor. */
+        $user = $widget->user();
+        $criteria = $widget->getCriteria();
+        $descriptor = DataDescriptor::where('type', $dataType)
+            ->where('category', $category)
+            ->first();
+
+        if (is_null($descriptor) || self::exists($user, $descriptor->id, $criteria)) {
+            /* Skip creation, if the descriptor is not found, or the data already exists. */
+            return;
         }
 
-        /* Creating manager. */
+        /* Creating data. */
         return self::create(array(
             'user_id'       => $widget->user()->id,
-            /* TO CHANGE. */
-            'descriptor_id' => $widget->getDescriptor()->id,
-            'criteria'      => json_encode($widget->getCriteria())
+            'descriptor_id' => $descriptor->id,
+            'criteria'      => json_encode($criteria)
         ));
     }
 
     /**
+     * exists
+     * Return whether or not a data with this criteria exists.
+     * --------------------------------------------------
+     * @param User $user
+     * @param int $descriptorId
+     * @param array $criteria 
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function exists($user, $descriptorId, $criteria)
+    {
+        return is_null($user->dataObjects()
+            ->where('descriptor_id', $descriptorId)
+            ->where('criteria', json_encode($criteria))
+            ->first()
+        );
+    }
+
+    /**
      * create
-     * Adding initializeData on creation.
+     * Add initialize on creation.
      * --------------------------------------------------
      * @param array $attributes
      * @param bool $initialize,
      * @return array
      * --------------------------------------------------
      */
-    public static function create(array $attributes, $initialize=TRUE) {
+    public static function create(array $attributes, $initialize=TRUE)
+    {
+
         if ( ! array_key_exists('raw_value', $attributes)) {
             $attributes['raw_value'] = json_encode(array());
         }
@@ -77,7 +107,8 @@ class Data extends Eloquent
 
         /* Reinitializing data. (This will create the manager) */
         $data = Data::find($data->id);
-        if ($initialize) {
+
+        if ( ! $initialize) {
             try {
                 $data->initialize();
                 $data->setState('active');
@@ -96,8 +127,8 @@ class Data extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getCriteria() {
-        /* Criteria integrity check required. */
+    public function getCriteria()
+    {
         return json_decode($this->criteria, 1);
     }
 
@@ -108,14 +139,18 @@ class Data extends Eloquent
      * @param string $state
      * --------------------------------------------------
     */
-    public function setState($state) {
+    public function setState($state)
+    {
         if ($this->state == $state) {
             return;
         }
+
         if ( ! App::environment('production')) {
             Log::info("Changing state of data #" . $this->id . ' from ' . $this->state . ' to '. $state);
         }
+
         $this->state = $state;
+
         $this->save();
     }
 
@@ -127,7 +162,8 @@ class Data extends Eloquent
      * @return array
      * --------------------------------------------------
      */
-    public function setUpdatePeriod($updatePeriod) {
+    public function setUpdatePeriod($updatePeriod)
+    {
         $this->update_period = $updatePeriod;
         $this->save();
     }
@@ -136,8 +172,8 @@ class Data extends Eloquent
      * checkIntegrity
      * Checking the data integrity.
     */
-    public function checkIntegrity() {
-
+    public function checkIntegrity()
+    {
         $decodedData = json_decode($this->raw_value, 1);
 
         if ( ! is_array($decodedData) || empty($decodedData) ) {
@@ -168,7 +204,8 @@ class Data extends Eloquent
      * @return array
      * --------------------------------------------------
      */
-    public function decode() {
+    public function decode()
+    {
         /* Getting the data from DB. */
         $raw_value = DB::table('data')
             ->where('id', $this->id)
@@ -205,7 +242,8 @@ class Data extends Eloquent
      * @param array $args
      * --------------------------------------------------
      */
-    public function __call($method, $args) {
+    public function __call($method, $args)
+    {
         /* Collector functions passed to specific collector */
         if (in_array($method, self::$collectorFunctions)) {
             $collector = $this->createCollector();
@@ -221,7 +259,8 @@ class Data extends Eloquent
      * @return DataCollector.
      * --------------------------------------------------
     */
-    private function createCollector() {
+    private function createCollector()
+    {
         $className = $this->getDescriptor()->getCollectorClassName();
         $collector = new $className($this);
         return $collector;
@@ -235,7 +274,8 @@ class Data extends Eloquent
      * @throws DescriptorDoesNotExist
      * --------------------------------------------------
     */
-    public function save(array $options=array()) {
+    public function save(array $options=array())
+    {
         /* Notify user about the change */
         $this->user()->updateDashboardCache();
         return parent::save($options);

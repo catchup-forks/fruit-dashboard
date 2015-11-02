@@ -66,42 +66,6 @@ class WidgetDescriptor extends Eloquent
     }
 
     /**
-     * getDataObject
-     * Return the corresponding Data object.
-     * --------------------------------------------------
-     * @param Widget $widget
-     * @param bool firstRun
-     * @return Data
-     * --------------------------------------------------
-    */
-    public function getDataObject($widget, $firstRun=TRUE) {
-        /* Manager class exists, and widget has been set up */
-        $data = $widget->user()->dataObjects()
-            ->where('descriptor_id', $this->id)->get();
-
-        foreach ($data as $iData) {
-            if ($iData->getCriteria() == $widget->getCriteria()) {
-                return $iData;
-            }
-        }
-
-        /* No data found */
-        if ($widget instanceof iServiceWidget && $firstRun) {
-            /* It's a service widget. */
-            /* Creating all related data. */
-            $connectorClass = $widget->getConnectorClass();
-            $connector = new $connectorClass($widget->user());
-            $connector->createDataObjects($widget->getCriteria());
-
-            /* Calling getDataObject again, there should be a match now. */
-            return $this->getDataObject($widget, FALSE);
-        } else {
-            /* Creating a manager. */
-            return Data::createFromWidget($widget);
-        }
-    }
-
-    /**
      * getPhotoLocation
      * Return the url of the demonstration photo.
      * --------------------------------------------------

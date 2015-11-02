@@ -4,18 +4,38 @@
 abstract class DataWidget extends Widget implements iAjaxWidget
 {
     /**
-     * Whether or not the criteria has changed.
+     * An array of the used data types, criteria is being matched automatically.
+     * Use late static binding.
      *
-     * @var bool
+     * @var array
      */
-    protected $criteriaChanged = FALSE;
+    protected static $dataTypes = array();
 
     /**
-     * An array of the data.
+     * An array of the decoded data.
      *
      * @var array
      */
     protected $data = array();
+
+    /**
+     * An array of the data ids.
+     *
+     * @var array
+     */
+    protected $dataIds = array();
+
+    /**
+     * getDataTypes
+     * Return the used data types.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    protected static function getDataTypes()
+    {
+        return static::$dataTypes;
+    }
 
     /**
      * handleAjax
@@ -25,7 +45,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return mixed
      * --------------------------------------------------
     */
-    public function handleAjax($postData) {
+    public function handleAjax($postData)
+    {
         if (isset($postData['state_query']) && $postData['state_query']) {
             /* Got state query signal */
             if ($this->state == 'loading') {
@@ -56,26 +77,6 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * updateData
-     * Refreshing the widget data.
-     * --------------------------------------------------
-     * @param array options
-     * @return string
-     * --------------------------------------------------
-    */
-    public function updateData(array $options=array())
-    {
-
-        /* TODO
-        try {
-            $this->dataManager->collect($options);
-        } catch (ServiceException $e) {
-            Log::error('An error occurred during collecting data on #' . $this->data_id );
-            $this->dataObject->setState('data_source_error');
-        } */
-    }
-
-    /**
      * refreshWidget
      * Refreshing the widget data.
      * --------------------------------------------------
@@ -87,6 +88,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         $this->setState('loading');
 
         $this->updateData();
+
+        $this->populateData();
 
         $this->setState('active');
     }
@@ -101,11 +104,62 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     protected function onCreate()
     {
         if ( ! $this->hasValidCriteria()) {
+            $this->setState('setup_required');
             return;
         }
-        /* Assigning the data. */
+
+        try {
+            /* Assigning the data. */
+            $this->populateData();
+        } catch (WidgetException $e) {
+            /* Not enough data found. */
+            $this->createDataObjects();
+
+            /* Trying to reiniailize. */
+            $this->populateData();
+        }
+
+    }
+
+    /**
+     * createDataObjects
+     * Creating the data objects, if they did not exist.
+     * --------------------------------------------------
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    private function createDataObjects()
+    {
+        if ($this instanceof iServiceWidget) {
+            /* Creating all related data. */
+            $connectorClass = $this->getConnectorClass();
+            $connector = new $connectorClass($this->user());
+
+            $connector->createDataObjects($this->getCriteria());
+        } else {
+            /* Default widget creating data. */
+            foreach (static::getDataTypes() as $dataType) {
+                Data::createFromWidget(
+                    $this,
+                    $this->getDescriptor()->category,
+                    $dataType
+                );
+            }
+        }
+    }
+
+    /**
+     * populateData
+     * Populating the data.
+     * --------------------------------------------------
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    private function populateData()
+    {
         foreach ($this->getDataObjects() as $dataObject) {
             $this->data[$dataObject->type] = $dataObject->decode();
+            array_push($this->dataIds, $dataObject->id);
         }
     }
 
@@ -113,10 +167,11 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * getDataObjects
      * Return the corresponding data objects.
      * --------------------------------------------------
-     * @param array $attributes
+     * @throws WidgetException
      * --------------------------------------------------
      */
-    private function getDataObjects() {
+    private function getDataObjects()
+    {
         $dataObjects = array();
         $widgetCriteria = $this->getCriteria();
 
@@ -140,6 +195,30 @@ abstract class DataWidget extends Widget implements iAjaxWidget
 
         return $dataObjects;
     }
+
+    /**
+     * updateData
+     * Running collection on all related data.
+     * --------------------------------------------------
+     * @param array options
+     * @return string
+     * --------------------------------------------------
+    */
+    private function updateData(array $options=array())
+    {
+        foreach ($this->dataIds as $dataId) {
+            $dataObject = Data::find($dataId);
+
+            try {
+                $dataObject->collect();
+            } catch (ServiceException $e) {
+                Log::error('An error occurred during collecting data on #' . $dataId );
+
+                $dataObject->setState('data_source_error');
+            } 
+        }
+    }
+
 
 
 }

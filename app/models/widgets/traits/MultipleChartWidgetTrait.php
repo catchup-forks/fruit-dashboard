@@ -5,25 +5,6 @@ trait MultipleChartWidgetTrait
     use ChartWidgetTrait;
 
     /**
-     * Whether or not summing the values.
-     *
-     * @var bool
-     */
-    protected $toSingle = FALSE;
-
-    /**
-     * setSingle
-     * Set the toSingle varibale.
-     * --------------------------------------------------
-     * @param boolean $single
-     * --------------------------------------------------
-     */
-    public function setSingle($single)
-    {
-        $this->toSingle = $single;
-    }
-
-    /**
      * transformToSingle
      * Summarize the values to create a single histogram.
      * --------------------------------------------------
@@ -34,13 +15,16 @@ trait MultipleChartWidgetTrait
     protected static function transformToSingle(array $entries)
     {
         $histogram = array();
+
         foreach ($entries as $entry) {
             $newEntry = array(
                 'timestamp' => $entry['timestamp'],
                 'value'     => array_sum(static::getEntryValues($entry))
             );
+
             array_push($histogram, $newEntry);
         }
+
         return $histogram;  
     }
 

@@ -37,8 +37,25 @@ trait ChartWidgetTrait
     }
 
     /**
+     * getTemplateData
+     * Return all values used in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData()
+    {
+        return array_merge(parent::getTemplateData(), array(
+            'data'          => $this->buildChartData(),
+            'currentDiff'   => array(0),
+            'currentValue'  => array(0),
+            'format'        => $this->getFormat(),
+        ));
+    }
+
+    /**
      * getChartJSData
-     * Returning template ready grouped dataset.
+     * Return template ready grouped dataset.
      * --------------------------------------------------
 	 * @param array $data
      * @param string $dateFormat
@@ -46,7 +63,7 @@ trait ChartWidgetTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartJSData($histogram, $dateFormat, $cumulative=FALSE) {
+    protected function getChartJSData($dateFormat, $cumulative=FALSE) {
         $dataSets = array(array(
             'type'   => 'bar',
             'color'  => SiteConstants::getChartJsColors()[0],
@@ -64,7 +81,7 @@ trait ChartWidgetTrait
         }
         $datetimes = array();
 
-        foreach ($histogram as $entry) {
+        foreach ($this->buildHistogram() as $entry) {
             $value = $entry['value'];
             array_push($dataSets[0]['values'], $value);
             /* Getting the diff. */
