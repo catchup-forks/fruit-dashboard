@@ -30,7 +30,7 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget['id'] }} = {
-    'isCombined' : @if($widget['data']['isCombined']) true @else false @endif,
+    'isCombined' : {{$widget['data']['isCombined']}},
     'labels': [@foreach ($widget['data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
     @foreach ($widget['data']['datasets'] as $dataset)

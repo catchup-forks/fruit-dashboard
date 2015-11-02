@@ -46,7 +46,7 @@ trait ChartWidgetTrait
     public function getTemplateData()
     {
         return array_merge(parent::getTemplateData(), array(
-            'data'          => $this->buildChartData(),
+            'data'          => $this->getChartJSData('Y-m-d', TRUE),
             'currentDiff'   => array(0),
             'currentValue'  => array(0),
             'format'        => $this->getFormat(),
@@ -65,7 +65,7 @@ trait ChartWidgetTrait
      */
     protected function getChartJSData($dateFormat, $cumulative=FALSE) {
         $dataSets = array(array(
-            'type'   => 'bar',
+            'type'   => 'line',
             'color'  => SiteConstants::getChartJsColors()[0],
             'name'   => $this->getSettings()['name'],
             'values' => array()
@@ -73,7 +73,7 @@ trait ChartWidgetTrait
 
         if ($cumulative) {
             array_push($dataSets, array(
-                'type'   => 'line',
+                'type'   => 'bar',
                 'color'  => SiteConstants::getChartJsColors()[1],
                 'name'   => 'Difference',
                 'values' => array()

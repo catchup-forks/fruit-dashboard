@@ -190,24 +190,22 @@ trait HistogramWidgetTrait
     private function getValueAt($count)
     {
         /* Saving length. */
-        $origLength = $this->length;
+        $histogram = $this->buildHistogram();
 
         if ($count >= $this->length) {
             /* Not in range. */
+            $origLength = $this->length;
             $this->setLength($count);
             $histogram = $this->buildHistogram();
             $index = 0;
         } else {
-            $histogram = $this->buildHistogram();
             $index = $this->length - $count;
         }
 
-        if ($index >= count($histogram)) {
-            throw new WidgetException('Data not found');
-        }
-
         /* Reset length. */
-        $this->setLength($count);
+        if (isset($origLength)) {
+            $this->setLength($origLength);
+        }
         return $histogram[$index];
     }
 
@@ -224,6 +222,10 @@ trait HistogramWidgetTrait
         /* Using cache. */
         if ( ! $this->dirty) {
             return $this->cache;
+        }
+
+        if (empty($this->activeHistogram)) {
+            throw new WidgetException('Active histogram is not set or is empty');
         }
 
         $recording = empty($this->range) ? TRUE : FALSE;
@@ -268,6 +270,7 @@ trait HistogramWidgetTrait
         $histogram = array_reverse($histogram);
 
         if ($this->diff) {
+            /* Applying diff. */
             $histogram = self::getDiff($histogram);
         }
         
@@ -333,12 +336,23 @@ trait HistogramWidgetTrait
      * @return array
      * --------------------------------------------------
      */
-    public function getHistory($multiplier=1, $resolution=null) {
+    public function getHistory($multiplier=1, $resolution=null)
+    {
+        if ( ! is_null($resolution)) {
+            $oldResolution = $this->resolution;
+        }
+
+        $value = array_values($this->getValueAt($multiplier))[0];
 
         try {
             $percent = ($currentValue / $value - 1) * 100;
         } catch (Exception $e) {
             $percent = 'inf';
+        }
+
+        if (isset($oldResolution)) {
+            /* Resetting resolution if necessary. */
+            $this->setResolution($oldResolution);
         }
         return array(
             'value'   => $value,

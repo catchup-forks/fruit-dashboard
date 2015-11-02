@@ -388,6 +388,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Calculating values for rendering. */
         $values = array();
+        $widget->buildChartData();
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
             $values[$resolution] = array();
             foreach ($multipliers as $multiplier) {
