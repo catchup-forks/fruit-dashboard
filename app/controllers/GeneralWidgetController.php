@@ -388,7 +388,10 @@ class GeneralWidgetController extends BaseController {
 
         /* Calculating values for rendering. */
         $values = array();
+        /* SINGLE STAT TEMPLATE REQUIRES REFACTORING!! */
+        /* PROBABLY WILL NEED TO ADD SETUPWIDGET FOR LENGTH, RESOLUTION, ETC... */
         $widget->buildChartData();
+
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
             $values[$resolution] = array();
             foreach ($multipliers as $multiplier) {
