@@ -19,7 +19,7 @@ class SiteConstants {
     private static $widgetMargin      = 5;
 
     /* Trial period */
-    private static $trialPeriodInDays = 30;
+    private static $trialPeriodInDays = 21;
 
     /* Signup wizard */
     private static $signupWizardSteps = array(
