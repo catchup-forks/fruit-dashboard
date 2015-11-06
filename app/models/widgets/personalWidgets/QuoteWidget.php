@@ -1,7 +1,10 @@
 <?php
 
-class QuoteWidget extends DataWidget implements iAjaxWidget
+class QuoteWidget extends DataWidget 
 {
+    /* Data selector. */
+    protected static $dataTypes = array('quote');
+
     /* -- Settings -- */
     private static $quoteSettings = array(
         'type' => array(
@@ -31,7 +34,7 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'quote' => $this->dataManager->build()
+            'quote' => $this->getQuote()
         ));
     }
 
@@ -42,9 +45,10 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$quoteSettings);
-     }
+    public static function getSettingsFields()
+    {
+        return array(self::$quoteSettings);
+    }
 
     /**
      * getCriteriaFields
@@ -64,9 +68,27 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSetupFields() {
+    public static function getSetupFields() {
         return array_merge(parent::getSetupFields(), self::$typeSettings);
-     }
+    }
+
+    /**
+     * getQuote
+     * --------------------------------------------------
+     * Returns the quote in an assoc array.
+     * @return (array) ($quote) The quote and author
+     * --------------------------------------------------
+     */
+    public function getQuote($postData=null) {
+        $quote = $this->data['quote'];
+        if (empty($quote)) {
+            return array(
+                'quote'  => 'Connection error, please try to refresh the widget.',
+                'author' => 'Server');
+        }
+        return $quote;
+    }
+
 }
 
 ?>

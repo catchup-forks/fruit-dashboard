@@ -91,25 +91,18 @@ class ApiHistogramWidget extends MultipleHistogramWidget
                           $this->id));
      }
 
-     /**
-      * Save | Override to save the URL
-      * --------------------------------------------------
-      * @param array $options
-      * @return Saves the widget
-      * --------------------------------------------------
+    /**
+     * saveSettings
+     * Override to save the URL
+     * --------------------------------------------------
+     * @param array $inputSettings
+     * @param boolean $commit
+     * --------------------------------------------------
      */
-     public function save(array $options=array()) {
-         /* Call parent save */
-         parent::save($options);
-
-         /* Add URL value to settings */
-         $this->saveSettings(array(
-            'url' => $this->getWidgetApiUrl(),
-         ), FALSE);
-
-         /* Return */
-         return parent::save();
-     }
+     public function saveSettings(array $inputSettings, $commit=TRUE) {
+         $inputSettings['url'] = $this->getWidgetApiUrl();
+         return parent::saveSettings($inputSettings, $commit);
+    }
 
 }
 ?>

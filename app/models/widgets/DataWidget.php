@@ -218,7 +218,4 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             } 
         }
     }
-
-
-
 }

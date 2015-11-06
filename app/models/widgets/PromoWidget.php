@@ -125,9 +125,11 @@ class PromoWidget extends Widget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$promoSettings);
-     }
+    public static function getSettingsFields()
+    {
+        return array(self::$promoSettings);
+    }
+
 
     /**
      * getTemplateData

@@ -40,7 +40,7 @@ class ClockWidget extends Widget
      * --------------------------------------------------
      */
      public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$clockSettings);
+        return array(self::$clockSettings);
      }
 }
 

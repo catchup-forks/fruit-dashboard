@@ -247,16 +247,20 @@ class Widget extends Eloquent
      * @return array
      * --------------------------------------------------
     */
-    public function getCriteria() {
-        $settings = array();
+    public function getCriteria()
+    {
+        $crSettings = array();
+        $settings = $this->getSettings();
+
         foreach (static::getCriteriaFields() as $key) {
-            if (array_key_exists($key, $this->getSettings())) {
-                $settings[$key] = $this->getSettings()[$key];
+            if (array_key_exists($key, $settings)) {
+                $crSettings[$key] = $settings[$key];
             } else {
                 return array();
             }
         }
-        return $settings;
+
+        return $crSettings;
     }
 
     /**
@@ -512,16 +516,22 @@ class Widget extends Eloquent
      * @return boolean
      * --------------------------------------------------
     */
-    public function hasValidCriteria() {
+    public function hasValidCriteria()
+    {
         $criteriaFields = static::getCriteriaFields();
+
         if (empty($criteriaFields)) {
             return TRUE;
         }
+
         $criteria = $this->getCriteria();
+
         foreach ($criteriaFields as $setting) {
-            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == '')
+            if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == '') {
                 return FALSE;
+            }
         }
+
         return TRUE;
     }
 
@@ -533,7 +543,8 @@ class Widget extends Eloquent
      * @return the saved object.
      * @throws DescriptorDoesNotExist
     */
-    public function save(array $options=array()) {
+    public function save(array $options=array())
+    {
         /* Notify user about the change */
         $this->user()->updateDashboardCache();
 

@@ -1,6 +1,6 @@
 <?php
 
-class GoogleAnalyticsUsersChartWidget extends DataWidget implements iServiceWidget
+class GoogleAnalyticsUsersWidget extends DataWidget implements iServiceWidget
 {
     /* Data selector. */
     protected static $dataTypes = array('users');

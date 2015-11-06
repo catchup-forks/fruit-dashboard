@@ -80,9 +80,9 @@ class Data extends Eloquent
      */
     public static function exists($user, $descriptorId, $criteria)
     {
-        return is_null($user->dataObjects()
+        return ! is_null($user->dataObjects()
             ->where('descriptor_id', $descriptorId)
-            ->where('criteria', json_encode($criteria))
+            ->where('criteria', json_encode($criteria)) // Criteria breakdown required.
             ->first()
         );
     }
@@ -98,17 +98,17 @@ class Data extends Eloquent
      */
     public static function create(array $attributes, $initialize=TRUE)
     {
-
         if ( ! array_key_exists('raw_value', $attributes)) {
             $attributes['raw_value'] = json_encode(array());
         }
+
         $attributes['state'] = 'loading';
         $data = parent::create($attributes);
 
         /* Reinitializing data. (This will create the manager) */
         $data = Data::find($data->id);
 
-        if ( ! $initialize) {
+        if ($initialize) {
             try {
                 $data->initialize();
                 $data->setState('active');
