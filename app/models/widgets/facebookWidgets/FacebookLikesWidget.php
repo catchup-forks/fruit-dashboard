@@ -1,19 +1,13 @@
 <?php
 
-class FacebookLikesWidget extends DataWidget implements iServiceWidget
+class FacebookLikesWidget extends HistogramWidget implements iServiceWidget
 {
     /* Data selector. */
     protected static $dataTypes = array('likes');
 
-    /* Data format definer. */
-    use NumericWidgetTrait;
+    /* Data attribute. */
+    protected static $isCumulative = TRUE;
 
-    /* Histogram layout data handler.  */
-    use HistogramWidgetTrait;
-
-    /* Chart data transformer. */
-    use ChartWidgetTrait;
-    
     /* Service settings. */
     use FacebookWidgetTrait;
 
@@ -26,10 +20,9 @@ class FacebookLikesWidget extends DataWidget implements iServiceWidget
      */
     public static function getSettingsFields()
     {
-        return array(
-            'Chart settings'    => static::$chartSettings,
+        return array_merge(parent::getSettingsFields(), array(
             'Facebook settings' => static::$pageSettings
-        );
+        ));
     }
 
     /**
@@ -39,10 +32,10 @@ class FacebookLikesWidget extends DataWidget implements iServiceWidget
      * @return array
      * --------------------------------------------------
     */
-    public function buildChartData()
+    protected function buildChartData()
     {
         /* Building the histogram. */
-        $this->setActiveHistogram($this->data['likes']);
+        return $this->data['likes'];
     }
 }
 ?>

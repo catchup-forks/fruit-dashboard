@@ -5,6 +5,13 @@ trait HistogramWidgetTrait
     use HistogramDataTrait;
 
     /**
+     * Whether or not the chart is cumulative.
+     *
+     * @var bool
+     */
+    protected static $isCumulative = FALSE;
+
+    /**
      * Whether or not the increasing value means good.
      *
      * @var bool
@@ -163,7 +170,7 @@ trait HistogramWidgetTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function compare($count)
+    protected function compare($count=1)
     {
         $start = $this->getValueAt($count);
         $today = $this->getLatestValues();

@@ -15,13 +15,13 @@ trait HistogramChartLayoutTrait
     {
         /* Setting options. */
         if (array_key_exists('range', $options)) {
-            $this->dataManager->setRange($options['range']);
+            $this->setRange($options['range']);
         }
         if (array_key_exists('length', $options)) {
-            $this->dataManager->setLength($options['length']);
+            $this->setLength($options['length']);
         }
         if (array_key_exists('resolution', $options)) {
-            $this->dataManager->setResolution($options['resolution']);
+            $this->setResolution($options['resolution']);
         }
 
         return $this->getChartJSData($this->dateFormat());
@@ -38,9 +38,9 @@ trait HistogramChartLayoutTrait
     {
         /* Chart specific data. */
         return array(
-            'currentDiff'   => $this->getDiff(),
+            'currentDiff'   => $this->compare(),
             'currentValue'  => $this->getLatestValues(),
-            'hasCumulative' => $this->hasCumulative()
+            'hasCumulative' => static::$isCumulative
         );
     }
 
@@ -61,19 +61,6 @@ trait HistogramChartLayoutTrait
     }
 
     /**
-     * setupChartDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @param DataManager $manager
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupChartDataManager($manager)
-    {
-        //$manager->setDiff(TRUE);
-    }
-
-    /**
      * getChartJSData
      * Return template ready grouped dataset.
      * --------------------------------------------------
@@ -84,12 +71,11 @@ trait HistogramChartLayoutTrait
     protected function getChartJSData($dateFormat)
     {
         /* Data init. */
-        $histogram = $this->dataManager->build();
         $datetimes = array();
         $dataSets = $this->initializeDataSets();
 
         /* Data transform, to chartJS ready values. */
-        foreach ($histogram as $entry) {
+        foreach ($this->buildHistogram() as $entry) {
             /* Adding value */
             $value = $entry['value'];
             array_push($dataSets[0]['values'], $value);
@@ -145,7 +131,7 @@ trait HistogramChartLayoutTrait
     }
 
     /**
-     * getDateFormat
+     * dateFormat
      * Return the dateFormat, based on resolution.
      * --------------------------------------------------
      * @param string $resolution

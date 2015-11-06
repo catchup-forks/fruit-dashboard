@@ -15,13 +15,13 @@ trait HistogramCountLayoutTrait
 
         /* Setting options. */
         if (array_key_exists('range', $options)) {
-            $this->dataManager->setRange($options['range']);
+            $this->setRange($options['range']);
         }
         if (array_key_exists('resolution', $options)) {
-            $this->dataManager->setResolution($options['resolution']);
+            $this->setResolution($options['resolution']);
         }
 
-        return $this->dataManager->build();
+        return $this->buildHistogram();
     }
 
     /**
@@ -56,7 +56,7 @@ trait HistogramCountLayoutTrait
         $countTemplateData = array(
             'description'  => '',
             'startDate'    => $this->getStartDate(),
-            'currentDiff'  => $this->getDiff(),
+            'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
         if ($this instanceof iServiceWidget) {
@@ -81,17 +81,4 @@ trait HistogramCountLayoutTrait
         $meta['selectors']['count'] = 'count-' . $this->id;
         return $meta;
     }
-
-    /**
-     * setupCountDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @param DataManager $manager
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupCountDataManager($manager)
-    {
-    }
-
 }

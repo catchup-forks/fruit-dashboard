@@ -2,15 +2,13 @@
 
 abstract class HistogramWidget extends DataWidget
 {
-    /**
-     * Whether or not the increasing value means good.
-     *
-     * @var bool
-     */
-    protected static $isHigherGood = TRUE;
+    abstract protected function buildChartData();
 
-    /* Loading the numeric traits. */
+    /* Data format definer. */
     use NumericWidgetTrait;
+
+    /* Histogram layout data handler.  */
+    use HistogramWidgetTrait;
 
     /* Loading layout traits. */
     use HistogramTableLayoutTrait;
@@ -65,7 +63,7 @@ abstract class HistogramWidget extends DataWidget
             'chart' => 'Line chart',
             'table' => 'Table layout'
         );
-        if (self::hasCumulative()) {
+        if (static::$isCumulative) {
             $types['count'] = 'Count widget';
         }
         return $types;
@@ -82,7 +80,7 @@ abstract class HistogramWidget extends DataWidget
     {
         return array_merge(
             parent::getSettingsFields(),
-            self::$histogramSettings
+            array('Data settings' => self::$histogramSettings)
         );
     }
 
@@ -96,20 +94,6 @@ abstract class HistogramWidget extends DataWidget
     public static function getSetupFields() {
         return array_merge(parent::getSetupFields(), array('type'));
     }
-
-    /**
-     * isSuccess
-     * Returns whether or not the value is considered
-     * good in the histogram
-     * --------------------------------------------------
-     * @param numeric $value
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public static function isSuccess($value)
-    {
-        return  ($value < 0) xor static::$isHigherGood;
-     }
 
     /**
      * getTemplateMeta
@@ -155,7 +139,7 @@ abstract class HistogramWidget extends DataWidget
             'name'    => $this->getName(),
             'layout'  => $this->getLayout(),
             'format'  => $this->getFormat(),
-            'hasData' => $this->hasData()
+            'hasData' => empty($this->activeHistogram)
         );
 
         /* Deciding which data we'll need. */
@@ -228,109 +212,6 @@ abstract class HistogramWidget extends DataWidget
     }
 
     /**
-     * setupDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupDataManager()
-    {
-        $manager = parent::setupDataManager();
-
-        /* Default initializers. */
-        $manager->setResolution($this->getResolution());
-        $manager->setLength($this->getLength());
-
-        switch ($this->getLayout()) {
-            case 'table': $this->setupTableDataManager($manager); break;
-            case 'count': $this->setupCountDataManager($manager); break;
-            case 'chart': $this->setupChartDataManager($manager); break;
-            default: ;
-        }
-        return $manager;
-    }
-
-    /**
-     * getManagerClassName
-     * Return the corresponding dataManager className.
-     * --------------------------------------------------
-     * @return string
-     * --------------------------------------------------
-     */
-    protected static function getManagerClassName()
-    {
-        return str_replace('Widget', 'DataManager',get_called_class());
-    }
-
-    /**
-     * hasCumulative
-     * Return whether or not the data is cumulative.
-     * --------------------------------------------------
-     * @return bool
-     * --------------------------------------------------
-     */
-    protected static function hasCumulative()
-    {
-        $className = self::getManagerClassName();
-
-        return $className::hasCumulative();
-    }
-
-    /**
-     * getDiff
-     * Comparing the current value to some historical.
-     * --------------------------------------------------
-     * @param int $multiplier
-     * @param string $resolution
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getDiff($multiplier=1, $resolution=null)
-    {
-        if (isset($resolution)) {
-            $this->dataManager->setResolution($resolution);
-        }
-
-        $values = $this->dataManager->compare($multiplier);
-
-        if (empty($values)) {
-            return 0;
-        }
-
-        return $values;
-    }
-
-    /**
-     * getHistory
-     * Return the historical data compared to the latest.
-     * --------------------------------------------------
-     * @param int $multiplier
-     * @param string $resolution
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getHistory($multiplier=1, $resolution=null)
-    {
-        /* Collecting values. */
-        $currentValue = array_values($this->getLatestValues())[0];
-        $value = $currentValue - array_values(
-            $this->getDiff($multiplier, $resolution))[0];
-
-        try {
-            $percent = ($currentValue / $value - 1) * 100;
-        } catch (Exception $e) {
-            $percent = 'inf';
-        }
-
-        return array(
-            'value'   => $value,
-            'percent' => $percent,
-            'success' => static::isSuccess($percent)
-        );
-    }
-
-    /**
      * getData
      * Return the data based on layout.
      * --------------------------------------------------
@@ -338,7 +219,7 @@ abstract class HistogramWidget extends DataWidget
      * @return array
      * --------------------------------------------------
      */
-    public function getData(array $postData=array())
+    protected function getData(array $postData=array())
     {
         if (empty($postData)) {
             $postData = array();
@@ -350,6 +231,9 @@ abstract class HistogramWidget extends DataWidget
             $layout = $this->getLayout();
         }
 
+        /* Building the histogram. */
+        $this->setActiveHistogram($this->buildChartData());
+
         switch ($layout) {
             case 'table': return $this->getTableData($postData); break;
             case 'count': return $this->getCountData($postData); break;
@@ -358,29 +242,6 @@ abstract class HistogramWidget extends DataWidget
         }
 
         return NULL;
-    }
-
-    /**
-     * getLatestValues
-     * Return the last values in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
-     */
-     public function getLatestValues() {
-        return $this->dataManager->getLatestValues();
-     }
-
-
-    /**
-     * hasData
-     * Returns whether or not there's data in the histogram.
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-     */
-    protected function hasData() {
-        return $this->dataManager->isEmpty();
     }
 
     /**
@@ -419,27 +280,5 @@ abstract class HistogramWidget extends DataWidget
         }
         return $validationArray;
     }
-
-    /**
-     * premiumUserCheck (DEPRECATED)
-     * Returns whether or not the resolution is a premium feature.
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function premiumUserCheck()
-    {
-        $passed = parent::premiumUserCheck();
-
-        if ($passed === 0) {
-            /* Further validation required. */
-            if (static::getSettingsFields()['resolution']['default'] != $this->getSettings()['resolution']) {
-                return -1;
-            }
-        }
-
-        return $passed;
-    }
-
 }
 ?>

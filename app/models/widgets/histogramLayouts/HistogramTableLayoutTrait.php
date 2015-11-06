@@ -2,7 +2,10 @@
 
 trait HistogramTableLayoutTrait
 {
+    /* Dummies */
+    protected function getTableTemplateMeta() {return array();}
     protected function getTableTemplateData() {return array();}
+
     /**
      * getTableData
      * Returns the data in table format.
@@ -11,7 +14,7 @@ trait HistogramTableLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    public function getTableData(array $options)
+    protected function getTableData(array $options)
     {
         $settings = $this->getSettings();
         $dateHeader = rtrim(ucwords($this->getResolution()), 's');
@@ -71,30 +74,4 @@ trait HistogramTableLayoutTrait
         $tableData['content'] = array_reverse($tableData['content']);
         return $tableData;
     }
-
-    /**
-     * setupTableDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @param DataManager $manager
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupTableDataManager($manager)
-    {
-        $manager->setDiff(TRUE);
-    }
-
-    /**
-     * getTableTemplateMeta
-     * Return the default meta.
-     * --------------------------------------------------
-     * @param array $meta
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function getTableTemplateMeta($meta) {
-        return $meta;
-    }
-
 }

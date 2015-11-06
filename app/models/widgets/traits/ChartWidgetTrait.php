@@ -57,51 +57,94 @@ trait ChartWidgetTrait
      * getChartJSData
      * Return template ready grouped dataset.
      * --------------------------------------------------
-	 * @param array $data
      * @param string $dateFormat
-     * @param boolean $cumulative
      * @return array
      * --------------------------------------------------
      */
-    protected function getChartJSData($dateFormat, $cumulative=FALSE) {
-        $dataSets = array(array(
-            'type'   => 'line',
-            'color'  => SiteConstants::getChartJsColors()[0],
-            'name'   => $this->getSettings()['name'],
-            'values' => array()
-        ));
+    protected function getChartJSData($dateFormat)
+    {
+        /* Data init. */
+        $datetimes = array();
+        $dataSets = $this->initializeDataSets();
 
-        if ($cumulative) {
-            array_push($dataSets, array(
+        /* Data transform, to chartJS ready values. */
+        foreach ($this->builgHistogram() as $entry) {
+            /* Adding value */
+            $value = $entry['value'];
+            array_push($dataSets[0]['values'], $value);
+
+            /* Adding diff. */
+            if (isset($prevValue)) {
+                $diffedValue = $value - $prevValue;
+            } else {
+                $diffedValue = 0;
+            }
+            array_push($dataSets[1]['values'], $diffedValue);
+
+            /* Adding formatted datetimes. */
+            array_push(
+                $datetimes,
+                Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat)
+            );
+
+            /* Saving value. */
+            $prevValue = $value;
+        }
+
+        return array(
+            'isCombined' => true,
+            'datasets'   => $dataSets,
+            'labels'     => $datetimes,
+        );
+    }
+
+    /**
+     * initializeDataSets
+     * Return the default arrays for chartJS data.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function initializeDataSets()
+    {
+        return array(
+            array(
+                'type'   => 'line',
+                'color'  => SiteConstants::getChartJsColors()[0],
+                'name'   => $this->getDescriptor()->name,
+                'values' => array()
+            ),
+            array(
                 'type'   => 'bar',
                 'color'  => SiteConstants::getChartJsColors()[1],
                 'name'   => 'Difference',
                 'values' => array()
-            ));
-        }
-        $datetimes = array();
-
-        foreach ($this->buildHistogram() as $entry) {
-            $value = $entry['value'];
-            array_push($dataSets[0]['values'], $value);
-            /* Getting the diff. */
-            if ($cumulative) {
-                if (isset($prevValue)) {
-                    $diffedValue = $value - $prevValue;
-                } else {
-                    $diffedValue = 0;
-                }
-                array_push($dataSets[1]['values'], $diffedValue);
-                $prevValue = $value;
-            }
-            array_push($datetimes, Carbon::createFromTimestamp($entry['timestamp'])->format($dateFormat));
-        }
-        $isCombined = $cumulative ? 'true': 'false'; 
-        return array(
-            'isCombined' => $isCombined,
-            'datasets'   => $dataSets,
-            'labels'     => $datetimes,
+            )
         );
+    }
+
+    /**
+     * getDateFormat
+     * Return the dateFormat, based on resolution.
+     * --------------------------------------------------
+     * @param string $resolution
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function dateFormat($resolution=null)
+    {
+        if (is_null($resolution)) {
+            $resolution = $this->getResolution();
+        }
+
+        switch ($resolution) {
+            case 'hours':  return 'M-d h';
+            case 'days':   return 'M-d';
+            case 'weeks':  return 'Y-W';
+            case 'months': return 'Y-M';
+            case 'years':  return 'Y';
+            default:       return 'Y-m-d';
+        }
     }
 }
 ?>
