@@ -25,7 +25,7 @@ abstract class TableWidget extends DataWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -39,36 +39,36 @@ abstract class TableWidget extends DataWidget
 
     /**
      * getHeader
-     * Returning the table header
+     * Return the table header
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
     public function getHeader() {
-        return $this->data->getHeader();
+        return $this->dataManager->getHeader();
     }
 
     /**
      * getContent
-     * Returning the table articles.
+     * Return the table articles.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
     public function getContent() {
-        return $this->data->getContent();
+        return $this->dataManager->getContent();
     }
 
     /**
      * getName
-     * Returning the name of the widget.
+     * Return the name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
     protected function getName() {
         $name = '';
-        if ($this instanceof iServiceWidget) {
+        if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
             $name = $this->getServiceSpecificName();
         }
         $name .= ' ' . $this->getSettings()['name'];

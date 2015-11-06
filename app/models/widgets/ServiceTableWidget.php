@@ -50,7 +50,7 @@ class ServiceTableWidget extends TableWidget {
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -133,7 +133,7 @@ class ServiceTableWidget extends TableWidget {
      * getData
      * Passing the job to the dataObject.
      */
-    public function getData($postData=null)
+    public function getData(array $postData=array())
     {
         $data = $this->data->decode();
         if (array_key_exists('header', $data)) {

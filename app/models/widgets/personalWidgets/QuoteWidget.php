@@ -24,14 +24,14 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'data' => $this->getData()
+            'quote' => $this->dataManager->build()
         ));
     }
 

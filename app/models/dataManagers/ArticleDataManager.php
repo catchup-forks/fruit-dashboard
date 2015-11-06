@@ -33,7 +33,8 @@ abstract class ArticleDataManager extends DataManager
      * clearData
      * Delets all articles.
      */
-    public function clearData() {
+    public function clearData()
+    {
         $this->save(array());
     }
 

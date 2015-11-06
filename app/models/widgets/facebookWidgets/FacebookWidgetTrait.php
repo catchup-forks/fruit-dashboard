@@ -63,13 +63,13 @@ trait FacebookWidgetTrait
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-        return array_merge(parent::getSetupFields(), self::$page);
+        return array_merge(parent::getCriteriaFields(), self::$page);
     }
 
     /**
      * getPage
      * --------------------------------------------------
-     * Returning the corresponding page.
+     * Return the corresponding page.
      * @return FacebookPage
      * @throws FacebookNotConnected
      * --------------------------------------------------
@@ -86,13 +86,13 @@ trait FacebookWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return $this->getPage()->name . ' - ' . $this->getDescriptor()->name;
+        return $this->getPage()->name;
     }
 }
 

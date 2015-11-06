@@ -38,17 +38,6 @@ trait GoogleAnalyticsWidgetTrait
     }
 
     /**
-     * getSettingsFields
-     * --------------------------------------------------
-     * Returns the updated settings fields
-     * @return array
-     * --------------------------------------------------
-     */
-    public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$profileSettings);
-    }
-
-    /**
      * getSetupFields
      * --------------------------------------------------
      * Updating setup fields.
@@ -67,13 +56,13 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getCriteriaFields() {
-        return array_merge(parent::getSetupFields(), self::$profile);
+        return array_merge(parent::getCriteriaFields(), self::$profile);
     }
 
     /**
      * getProfile
      * --------------------------------------------------
-     * Returning the corresponding profile.
+     * Return the corresponding profile.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
@@ -88,7 +77,7 @@ trait GoogleAnalyticsWidgetTrait
     /**
      * getProperty
      * --------------------------------------------------
-     * Returning the corresponding property.
+     * Return the corresponding property.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
      */
@@ -106,19 +95,19 @@ trait GoogleAnalyticsWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return $this->getProperty()->name . ' - ';
+        return $this->getProperty()->name;
     }
 
     /**
      * getProfileId
      * --------------------------------------------------
-     * Returning the corresponding profile id.
+     * Return the corresponding profile id.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */

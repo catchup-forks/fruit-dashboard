@@ -72,11 +72,6 @@ class GeneralWidgetController extends BaseController {
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
-        /* Adding update_period on DataWidget */
-        if ($widget instanceof DataWidget) {
-            $validatorArray['update_period'] = 'required|integer|min:23';
-        }
-
         /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
@@ -104,11 +99,6 @@ class GeneralWidgetController extends BaseController {
 
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
-
-        /* Adding update_period on DataWidget */
-        if ($widget instanceof DataWidget) {
-            $widget->setUpdatePeriod(Input::get('update_period'));
-        }
 
         /* Track event | EDIT WIDGET */
         $tracker = new GlobalTracker();
@@ -140,7 +130,7 @@ class GeneralWidgetController extends BaseController {
         return View::make('widget.setup-widget')
             ->with('widget', $widget)
             ->with('settings', array_intersect_key(
-                $widget->getSettingsFields(),
+                $widget->getFlatSettingsFields(),
                 array_flip($widget->getSetupFields())
             ));
     }
@@ -398,6 +388,10 @@ class GeneralWidgetController extends BaseController {
 
         /* Calculating values for rendering. */
         $values = array();
+        /* SINGLE STAT TEMPLATE REQUIRES REFACTORING!! */
+        /* PROBABLY WILL NEED TO ADD SETUPWIDGET FOR LENGTH, RESOLUTION, ETC... */
+        $widget->buildChartData();
+
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
             $values[$resolution] = array();
             foreach ($multipliers as $multiplier) {
@@ -462,14 +456,14 @@ class GeneralWidgetController extends BaseController {
         if ( ! is_null($sharing)) {
             $sharing->reject();
         }
-    
+
         /* Deleting widgets with this sharing. */
         foreach (Auth::user()->widgets as $widget) {
             if ($widget instanceof SharedWidget &&
                     $widget->getSharingId() == $sharing->id) {
                 $widget->delete();
             }
-        } 
+        }
 
         if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
             return Redirect::route('dashboard.dashboard');
@@ -603,7 +597,7 @@ class GeneralWidgetController extends BaseController {
             return Response::json(array('error' => 'Descriptor not found'));
         }
 
-        /* Returning widget descriptor description. */
+        /* Return widget descriptor description. */
         return Response::json(array(
             'description' => $descriptor->description,
             'name'        => $descriptor->name,
@@ -711,7 +705,7 @@ class GeneralWidgetController extends BaseController {
             $sharing->user()->associate($user);
             $sharing->widget()->associate($widget);
             $sharing->save();
-        
+
             /* Right now auto accept sharings. */
             $user->handleWidgetSharings();
         }

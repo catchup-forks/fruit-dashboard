@@ -46,6 +46,7 @@ class User extends Eloquent implements UserInterface
     public function widgets() {
         return $this->hasManyThrough('Widget', 'Dashboard');
     }
+
     public function googleAnalyticsProfiles() {
         return $this->hasManyThrough(
             'GoogleAnalyticsProfile',
@@ -171,9 +172,9 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function createDashboardView(array $params=array()) {
-        if(array_key_exists('activeDashboard', $params)) {
-            $existsActiveDashboard = false;
-        }
+        $existsActiveDashboard = array_key_exists('activeDashboard', $params);
+        $activeDashboard = -1;
+
         $dashboards = array();
         $i = 0;
         foreach ($this->dashboards as $dashboard) {
@@ -186,25 +187,26 @@ class User extends Eloquent implements UserInterface
                 'count'      => $i++
             );
 
-            /* Check activeDashboard exists */
-            if(isset($existsActiveDashboard) &&
-                    $params['activeDashboard'] == $dashboard->id) {
-                $existsActiveDashboard = true;
+            /* Set active dashboard or default */
+            if(($existsActiveDashboard 
+                && ($params['activeDashboard'] == $dashboard->id || ($activeDashboard==-1 && $dashboard->is_default))) 
+                || ($activeDashboard==-1 && $dashboard->is_default)) {
+                $activeDashboard = $dashboard->id;
             }
         }
 
         /* Populating widget data. */
-        foreach ($this->widgets()->with('dashboard')->get() as $widget) {
+        foreach ($this->widgets as $widget) {
             /* Getting template data for the widget. */
             if ($widget->renderable()) {
                 /* Widget is loading, no data is available yet. */
                 try {
                     $templateData = $widget->getTemplateData();
                 } catch (Exception $e) {
-                    /* Something went wrong during data population. */
+                    /* Something went wrong during rendering. */
                     Log::error($e->getMessage());
-                    $widget->setState('rendering_error');
                     /* Falling back to default template data. */
+                    $widget->setState('rendering_error');
                     $templateData = Widget::getDefaultTemplateData($widget);
                 }
             } else {
@@ -229,19 +231,6 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
-     * checkDataIntegrity
-     * --------------------------------------------------
-     * Checking the overall integrity of the user's data.
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function checkDataIntegrity() {
-        foreach ($this->dataObjects as $data) {
-            $data->checkIntegrity();
-        }
-    }
-
-    /**
      * checkWidgetsIntegrity
      * --------------------------------------------------
      * Checking the overall integrity of the user's widgets.
@@ -249,7 +238,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function checkWidgetsIntegrity() {
-        foreach ($this->widgets()->with('data')->get() as $widget) {
+        foreach ($this->widgets as $widget) {
             try {
                 $widget->checkIntegrity();
             } catch (WidgetFatalException $e) {
@@ -276,7 +265,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function turnOffBrokenWidgets() {
-        foreach ($this->widgets()->with('data')->get() as $widget) {
+        foreach ($this->widgets as $widget) {
             if ($widget instanceof SharedWidget) {
                 continue;
             }
@@ -289,7 +278,7 @@ class User extends Eloquent implements UserInterface
                 ->with('widget', $templateData);
             try {
                 $view->render();
-            } catch (ServiceException $e) {
+            } catch (Exception $e) {
                 Log::error($e->getMessage());
                 $widget->setState('rendering_error');
             }
@@ -498,5 +487,6 @@ class User extends Eloquent implements UserInterface
         /* Return */
         return $dashboard;
     }
+
 
 }

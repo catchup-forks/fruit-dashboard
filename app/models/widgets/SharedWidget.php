@@ -29,7 +29,7 @@ class SharedWidget extends Widget
 
     /**
      * getMinRows
-     * Returning the minimum rows required for the widget.
+     * Return the minimum rows required for the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -40,7 +40,7 @@ class SharedWidget extends Widget
 
     /**
      * getMinCols
-     * Returning the minimum rows required for the widget.
+     * Return the minimum rows required for the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -62,7 +62,7 @@ class SharedWidget extends Widget
 
     /**
      * getRelatedWidget
-     * Returning the corresponding widget.
+     * Return the corresponding widget.
      * --------------------------------------------------
      * @return Widget
      * --------------------------------------------------
@@ -80,7 +80,7 @@ class SharedWidget extends Widget
 
     /**
      * getSharingId
-     * Returning the sharing id.
+     * Return the sharing id.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -91,7 +91,7 @@ class SharedWidget extends Widget
 
     /**
      * getTemplateMeta
-     * Returning data for the gridster init template.
+     * Return data for the gridster init template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -116,6 +116,19 @@ class SharedWidget extends Widget
         $meta['data']['init'] = 'widgetData' . $related->id;
 
         return $meta;
+    }
+
+    /**
+     * getTemplateData
+     * Return data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData() {
+        $data = parent::getTemplateMeta();
+        $data['relatedWidget'] = $this->getRelatedWidget();
+        return $data;
     }
 
 }

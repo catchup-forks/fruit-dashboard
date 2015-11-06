@@ -109,20 +109,20 @@
           <thead>
             <tr>
               <th class="col-sm-2"></th>
-              @foreach($widget->getData([ 'resolution' => $resolution ])['labels'] as $datetime)
+              @foreach($widget->getData(['layout' => 'chart', 'resolution' => $resolution, 'length' => 15 ])['labels'] as $datetime)
                 <th>{{ $datetime }}</th>
               @endforeach
             </tr>
           </thead>
           <tbody>
-            @foreach ($widget->getData([ 'resolution' => $resolution ])['datasets'] as $dataset)
+            @foreach ($widget->getData(['layout' => 'chart', 'resolution' => $resolution, 'length' => 15])['datasets'] as $dataset)
               <tr>
                 <td class="col-sm-2 dataset-label">
                   <span class="fa fa-square" style="color: rgb({{ $dataset['color'] }})"></span>
                   <span>{{ $dataset['name'] }}</span>
                 </td>
                 @foreach ($dataset['values'] as $value)
-                  <td>{{ $value }}</td>
+                  <td>{{ Utilities::formatNumber($value, $widget->getFormat()); }}</td>
                 @endforeach
               </tr> 
             @endforeach

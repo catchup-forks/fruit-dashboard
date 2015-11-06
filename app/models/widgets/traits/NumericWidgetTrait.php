@@ -6,7 +6,7 @@ trait NumericWidgetTrait
 
     /**
      * getFormat
-     * Returning the string format of the data.
+     * Return the string format of the data.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------

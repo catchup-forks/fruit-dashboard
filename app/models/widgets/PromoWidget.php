@@ -99,7 +99,7 @@ class PromoWidget extends Widget
             throw new WidgetFatalException;
         }
 
-        /* Creating criteria based on the service. */
+        /* Create criteria based on the service. */
         if ($descriptor->type == 'google_analytics_goal_completion' ||
                 $descriptor->type == 'google_analytics_conversions') {
             $criteria = $this->getGoalCriteria();
@@ -131,7 +131,7 @@ class PromoWidget extends Widget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -172,7 +172,7 @@ class PromoWidget extends Widget
 
     /**
      * getRelatedDescriptor
-     * Returning the related descriptor.
+     * Return the related descriptor.
      * --------------------------------------------------
      * @return WidgetDescriptor
      * --------------------------------------------------
@@ -183,7 +183,7 @@ class PromoWidget extends Widget
 
     /**
      * getGoalCriteria
-     * Returning the criteria a the GA goal widget.
+     * Return the criteria a the GA goal widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -214,7 +214,7 @@ class PromoWidget extends Widget
 
     /**
      * getProfileCriteria
-     * Returning the criteria a GA widget.
+     * Return the criteria a GA widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -233,7 +233,7 @@ class PromoWidget extends Widget
 
     /**
      * getFacebookCriteria
-     * Returning the criteria a Facebook widget.
+     * Return the criteria a Facebook widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -251,7 +251,7 @@ class PromoWidget extends Widget
 
     /**
      * getTwitterCriteria
-     * Returning the criteria a Twitter widget.
+     * Return the criteria a Twitter widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------

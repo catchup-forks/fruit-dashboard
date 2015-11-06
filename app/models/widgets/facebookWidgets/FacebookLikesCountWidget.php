@@ -7,7 +7,7 @@ class FacebookLikesCountWidget extends CountWidget implements iServiceWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------

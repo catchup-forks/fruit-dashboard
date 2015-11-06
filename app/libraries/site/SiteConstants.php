@@ -109,9 +109,9 @@ class SiteConstants {
                 'pic_url'  => 'img/demonstration/promo/facebook-likes-chart.png'
             ),
             array(
-                'type'     => 'twitter_followers_count',
+                'type'     => 'twitter_followers',
                 'position' => '{"col":4,"row":1,"size_x":3,"size_y":5}',
-                'settings' => array('period' => 'days', 'multiplier' => 1),
+                'settings' => array('type' => 'count', 'length' => 1),
                 'pic_url'  => 'img/demonstration/promo/twitter-followers-count.png'
             ),
             array(
@@ -247,7 +247,7 @@ class SiteConstants {
     /**
      * getChartJsColors:
      * --------------------------------------------------
-     * Returning colors for chartJS
+     * Return colors for chartJS
      * @return (array) ($chartJsColors) chartJsColors
      * --------------------------------------------------
      */
@@ -258,7 +258,7 @@ class SiteConstants {
     /**
      * getSlackColors:
      * --------------------------------------------------
-     * Returning colors for slack
+     * Return colors for slack
      * @return (array) ($slackColors) slackColors
      * --------------------------------------------------
      */
@@ -269,7 +269,7 @@ class SiteConstants {
     /**
      * getSlackColor:
      * --------------------------------------------------
-     * Returning the corresponging color
+     * Return the corresponging color
      * @param int $i
      * @return string
      * --------------------------------------------------
@@ -283,7 +283,7 @@ class SiteConstants {
     /**
      * getSingleStatHistoryDiffs:
      * --------------------------------------------------
-     * Returning the single stat diffs
+     * Return the single stat diffs
      * @return (array) ($singleStatHistoryDiffs)
      * --------------------------------------------------
      */

@@ -1,4 +1,5 @@
 <?php
+
 /* Main widget class */
 class Widget extends Eloquent
 {
@@ -13,16 +14,10 @@ class Widget extends Eloquent
     );
     public $timestamps = FALSE;
 
-    /* These variables will be overwritten, with late static binding. */
-    protected static $settingsFields   = array();
-    protected static $setupSettings    = array();
-    protected static $criteriaSettings = array();
-
     /* Use only for association. */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
 
     /* -- Relations -- */
-    public function data() { return $this->belongsTo('Data', 'data_id'); }
     public function dashboard() { return $this->belongsTo('Dashboard'); }
     public function user() {
         $dashboard = $this->dashboard;
@@ -45,7 +40,7 @@ class Widget extends Eloquent
 
     /**
      * getMinRows
-     * Returning the minimum rows required for the widget.
+     * Return the minimum rows required for the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -56,7 +51,7 @@ class Widget extends Eloquent
 
     /**
      * getMinCols
-     * Returning the minimum rows required for the widget.
+     * Return the minimum rows required for the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
@@ -72,10 +67,12 @@ class Widget extends Eloquent
      * @return int
      * --------------------------------------------------
     */
-    public function renderable() {
+    public function renderable()
+    {
         if ($this->state == 'active') {
             return TRUE;
         }
+
         return FALSE;
     }
 
@@ -110,12 +107,12 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getSettingsFields() {
-        return self::$settingsFields;
+        return array();
     }
 
     /**
      * getErrorCodes
-     * Returning the error codes.
+     * Return the error codes.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -132,7 +129,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getSetupFields() {
-        return self::$setupSettings;
+        return array();
     }
 
     /**
@@ -143,7 +140,7 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getCriteriaFields() {
-        return self::$criteriaSettings;
+        return array();
     }
 
     /**
@@ -159,7 +156,7 @@ class Widget extends Eloquent
 
     /**
      * getTemplateMeta
-     * Returning data for the gridster init template.
+     * Return data for the gridster init template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -198,7 +195,7 @@ class Widget extends Eloquent
 
     /**
      * getDefaultTemplateData
-     * Returning all meta data about the widget.
+     * Return all meta data about the widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -206,17 +203,20 @@ class Widget extends Eloquent
     public static function getDefaultTemplateData($widget) {
         return array(
             'settings'   => $widget->getSettings(),
-            'instance'   => $widget,
             'id'         => $widget->id,
             'state'      => $widget->state,
             'position'   => $widget->getPosition(),
-            'descriptor' => $widget->getDescriptor()
+            'descriptor' => $widget->getDescriptor(),
+            'min_cols'   => $widget->getMinCols(),
+            'min_rows'   => $widget->getMinRows(),
+            'className'  => get_class($widget),
+            'state'      => $widget->state
         );
     }
 
     /**
      * getTemplateData
-     * Returning all data that should be passed to the template.
+     * Return all data that should be passed to the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -242,7 +242,7 @@ class Widget extends Eloquent
 
     /**
      * getCriteria
-     * Returning the settings that makes a difference among widgets.
+     * Return the settings that makes a difference among widgets.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -277,15 +277,34 @@ class Widget extends Eloquent
     }
 
     /**
+     * getFlatSettingsFields
+     * Return the settings fields as a flat array.
+     * --------------------------------------------------
+     * @param string $state
+     * --------------------------------------------------
+    */
+    public static function getFlatSettingsFields()
+    {
+        $settings = array();
+
+        foreach (static::getSettingsFields() as $dataSet=>$fields) {
+            $settings = array_merge($settings, $fields);
+        }
+
+        return $settings;
+    }
+
+    /**
      * isSettingVisible
-     * Checking if the given field is visible.
+     * Check if the given field is visible.
      * --------------------------------------------------
      * @param string $fieldName
      * @return bool
      * --------------------------------------------------
     */
-    public function isSettingVisible($fieldName) {
-        $settingsFields = $this->getSettingsFields();
+    public function isSettingVisible($fieldName)
+    {
+        $settingsFields = static::getFlatSettingsFields();
         if ( ! array_key_exists($fieldName, $settingsFields)) {
             /* Key doesn't exist. Don't even try to render it. */
             return FALSE;
@@ -358,7 +377,7 @@ class Widget extends Eloquent
     public function getSettingsValidationArray(array $fields, array $data) {
         $validationArray = array();
 
-        foreach ($this->getSettingsFields() as $fieldName=>$fieldMeta) {
+        foreach ($this->getFlatSettingsFields() as $fieldName=>$fieldMeta) {
             // Not validating fields that are not present.
             if (!in_array($fieldName, $fields) || ! $this->isSettingVisible($fieldName)) {
                 continue;
@@ -418,9 +437,10 @@ class Widget extends Eloquent
      * @return array $validationArray
      * --------------------------------------------------
      */
-    protected function customValidator($validationArray, $inputData) {       
+    protected function customValidator($validationArray, $inputData)
+    {
         return $validationArray;
-     }
+    }
 
     /**
      * premiumUserCheck
@@ -430,7 +450,7 @@ class Widget extends Eloquent
      * @return int 1: user is premium, -1 fails, 0 default
      * --------------------------------------------------
      */
-     public function premiumUserCheck() {       
+     public function premiumUserCheck() {
         /* Premium users can see everything. */
         if ($this->user()->subscription->getSubscriptionInfo()['PE']) {
             return 1;
@@ -450,17 +470,19 @@ class Widget extends Eloquent
     public function saveSettings(array $inputSettings, $commit=TRUE) {
         $settings = array();
         $oldSettings = $this->getSettings();
+        $settingsMeta = $this->getFlatSettingsFields();
 
         // Iterating through the positions.
-        foreach (array_keys($this->getSettingsFields()) as $fieldName) {
+        foreach (array_keys($settingsMeta) as $fieldName) {
             // inputSettings. oldSettings, empty string.
-            if (isset($inputSettings[$fieldName])) {$settings[$fieldName] = $inputSettings[$fieldName];
+            if (isset($inputSettings[$fieldName])) {
+                $settings[$fieldName] = $inputSettings[$fieldName];
             } else if (isset($oldSettings[$fieldName])) {
                 // Value not set, Getting from old settings.
                 $settings[$fieldName] = $oldSettings[$fieldName];
-            } else if (isset($this->getSettingsFields()[$fieldName]['default'])) {
+            } else if (isset($settingsMeta[$fieldName]['default'])) {
                 // Value not set, default found.
-                $settings[$fieldName] = $this->getSettingsFields()[$fieldName]['default'];
+                $settings[$fieldName] = $settingsMeta[$fieldName]['default'];
             } else {
                 $settings[$fieldName] = "";
             }
@@ -471,8 +493,8 @@ class Widget extends Eloquent
         if ($commit) {
             $this->save(array('skip_settings' => TRUE));
         }
-        
-        /* Returning the changed fields. */ 
+
+        /* Return the changed fields. */
         $changedFields = array();
         foreach (array_diff($settings, $oldSettings) as $key=>$value) {
             if ($value) {
@@ -557,14 +579,17 @@ class Widget extends Eloquent
         $instance = new $className;
         $instance->exists = TRUE;
         $instance->setRawAttributes((array) $attributes, true);
+        if (method_exists($instance, 'onCreate')) {
+            $instance->onCreate();
+        }
         return $instance;
     }
 
     /**
      * getErrorMessage
-     * Returning the corresponding error.
+     * Return the corresponding error.
      * --------------------------------------------------
-     * @return string 
+     * @return string
      * --------------------------------------------------
      */
     public function getErrorMessage() {
@@ -572,7 +597,7 @@ class Widget extends Eloquent
         if (strpos('error_', $state) === 0) {
             $errorCodes = $this->getErrorCodes();
             $key = substr($state, strpos($state, '_') + 1);
-            
+
             if (array_key_exists($key, $errorCodes)) {
                 return $errorCodes[$key];
             }
@@ -591,7 +616,7 @@ class Widget extends Eloquent
         } else if ( ! $this->hasValidCriteria()) {
             throw new WidgetFatalException;
         }
-        foreach ($this->getSettingsFields() as $key=>$meta) {
+        foreach ($this->getFlatSettingsFields() as $key=>$meta) {
             if ( ! array_key_exists($key, $settings)) {
                 throw new WidgetException;
             }
@@ -600,7 +625,7 @@ class Widget extends Eloquent
 
     /**
      * getType
-     * Returning the underscored type of the widget.
+     * Return the underscored type of the widget.
      * Only in generalwidget, where the descriptor is
      * still unknown.
      * --------------------------------------------------

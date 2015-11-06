@@ -31,7 +31,7 @@ class BraintreeCalculator
     /**
      * getCollector
      * --------------------------------------------------
-     * Returning the data collector instance.
+     * Return the data collector instance.
      * @return the data collector.
      * --------------------------------------------------
     */

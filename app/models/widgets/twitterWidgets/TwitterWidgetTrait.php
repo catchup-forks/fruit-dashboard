@@ -5,7 +5,7 @@ trait TwitterWidgetTrait
 
     /**
      * getUser
-     * Returning the name of the twitter user.
+     * Return the name of the twitter user.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
@@ -27,13 +27,13 @@ trait TwitterWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return '@' . $this->getUser() . ' - ' . $this->getDescriptor()->name;
+        return '@' . $this->getUser();
     }
 }
 

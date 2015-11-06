@@ -3,14 +3,78 @@
 /* All classes that have interaction with data. */
 abstract class DataWidget extends Widget implements iAjaxWidget
 {
-    use DefaultAjaxWidgetTrait;
+    /**
+     * An array of the used data types, criteria is being matched automatically.
+     * Use late static binding.
+     *
+     * @var array
+     */
+    protected static $dataTypes = array();
 
     /**
-     * Whether or not the criteria has changed.
+     * An array of the decoded data.
      *
-     * @var bool
+     * @var array
      */
-    protected $criteriaChanged = FALSE;
+    protected $data = array();
+
+    /**
+     * An array of the data ids.
+     *
+     * @var array
+     */
+    protected $dataIds = array();
+
+    /**
+     * getDataTypes
+     * Return the used data types.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    protected static function getDataTypes()
+    {
+        return static::$dataTypes;
+    }
+
+    /**
+     * handleAjax
+     * Handling general ajax request.
+     * --------------------------------------------------
+     * @param array $postData
+     * @return mixed
+     * --------------------------------------------------
+    */
+    public function handleAjax($postData)
+    {
+        if (isset($postData['state_query']) && $postData['state_query']) {
+            /* Got state query signal */
+            if ($this->state == 'loading') {
+                return array('ready' => FALSE);
+            } else if($this->state == 'active') {
+                /* Rerendering the widget */
+                $view = View::make($this->getDescriptor()->getTemplateName())
+                    ->with('widget', $this->getTemplateData());
+                return array(
+                    'ready' => TRUE,
+                    'data'  => $this->getData($postData),
+                    'html'  => $view->render()
+                );
+            } else {
+                return array('ready' => FALSE);
+            }
+        }
+        if (isset($postData['refresh_data']) && $postData['refresh_data']) {
+            /* Refresh signal */
+            try {
+                $this->refreshWidget();
+            } catch (ServiceException $e) {
+                Log::error($e->getMessage());
+                return array('status'  => FALSE,
+                             'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
+            }
+        }
+    }
 
     /**
      * refreshWidget
@@ -19,117 +83,142 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return string
      * --------------------------------------------------
     */
-    public function refreshWidget()
+    protected function refreshWidget()
     {
-        /* Setting to loading, and waiting for the collector to finish. */
         $this->setState('loading');
+
         $this->updateData();
+
+        $this->populateData();
+
         $this->setState('active');
     }
 
     /**
-     * assignData
-     * Assigning the data to the widget.
+     * onCreate
+     * Creating dataManager.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
      */
-    public function assignData()
+    protected function onCreate()
     {
-        $this->data()
-            ->associate($this->getDescriptor()->getDataObject($this));
+        if ( ! $this->hasValidCriteria()) {
+            $this->setState('setup_required');
+            return;
+        }
+
+        try {
+            /* Assigning the data. */
+            $this->populateData();
+        } catch (WidgetException $e) {
+            /* Not enough data found. */
+            $this->createDataObjects();
+
+            /* Trying to reiniailize. */
+            $this->populateData();
+        }
+
+    }
+
+    /**
+     * createDataObjects
+     * Creating the data objects, if they did not exist.
+     * --------------------------------------------------
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    private function createDataObjects()
+    {
+        if ($this instanceof iServiceWidget) {
+            /* Creating all related data. */
+            $connectorClass = $this->getConnectorClass();
+            $connector = new $connectorClass($this->user());
+
+            $connector->createDataObjects($this->getCriteria());
+        } else {
+            /* Default widget creating data. */
+            foreach (static::getDataTypes() as $dataType) {
+                Data::createFromWidget(
+                    $this,
+                    $this->getDescriptor()->category,
+                    $dataType
+                );
+            }
+        }
+    }
+
+    /**
+     * populateData
+     * Populating the data.
+     * --------------------------------------------------
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    private function populateData()
+    {
+        foreach ($this->getDataObjects() as $dataObject) {
+            $this->data[$dataObject->type] = $dataObject->decode();
+            array_push($this->dataIds, $dataObject->id);
+        }
+    }
+
+    /**
+     * getDataObjects
+     * Return the corresponding data objects.
+     * --------------------------------------------------
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    private function getDataObjects()
+    {
+        $dataObjects = array();
+        $widgetCriteria = $this->getCriteria();
+
+        /* Getting the corresponding data objects, with one optimized query. */
+        foreach ($this->user()->dataObjects()
+            ->join('data_descriptors', 'data_descriptors.id', '=' , 'data.descriptor_id')
+            ->where('data_descriptors.category', $this->getDescriptor()->category)
+            ->whereIn('data_descriptors.type', static::getDataTypes())
+            ->get(array('data.id', 'data.criteria', 'data_descriptors.type')) as $dataObject) {
+            /* Filtering criteria. */
+            $dataCriteria = $dataObject->getCriteria();
+            if (count(array_intersect($dataCriteria, $widgetCriteria)) ==
+                count($dataCriteria)) {
+                array_push($dataObjects, $dataObject);
+            }
+        }
+
+        if (count($dataObjects) != count(static::getDataTypes())) {
+            throw new WidgetException('Insuficcient data available.');
+        }
+
+        return $dataObjects;
     }
 
     /**
      * updateData
-     * Refreshing the widget data.
+     * Running collection on all related data.
      * --------------------------------------------------
      * @param array options
      * @return string
      * --------------------------------------------------
     */
-    public function updateData(array $options=array())
+    private function updateData(array $options=array())
     {
-        try {
-            $this->data->collect($options);
-        } catch (ServiceException $e) {
-            Log::error('An error occurred during collecting data on #' . $this->data->id );
-            $this->data->setState('data_source_error');
+        foreach ($this->dataIds as $dataId) {
+            $dataObject = Data::find($dataId);
+
+            try {
+                $dataObject->collect();
+            } catch (ServiceException $e) {
+                Log::error('An error occurred during collecting data on #' . $dataId );
+
+                $dataObject->setState('data_source_error');
+            } 
         }
     }
 
-    /**
-     * setUpdatePeriod
-     * Setting the data collection period.
-     * --------------------------------------------------
-     * @param int interval
-     * --------------------------------------------------
-    */
-    public function setUpdatePeriod($interval)
-    {
-        $this->data->setUpdatePeriod($interval);
-    }
 
-    /**
-     * getUpdatePeriod
-     * Setting the data collection period.
-     * --------------------------------------------------
-     * @return int
-     * --------------------------------------------------
-    */
-    public function getUpdatePeriod()
-    {
-        return $this->data->update_period;
-    }
-
-    /**
-     * getData
-     * Passing the job to the dataObject.
-     */
-    public function getData($postData=null)
-    {
-        return $this->data->decode();
-    }
-
-    /**
-     * dataExists
-     * Returns whether or not there is dat in the DB.
-     */
-    public function dataExists()
-    {
-        return ! is_null($this->data);
-    }
-
-    /**
-     * checkIntegrity
-     * adding data integrity check.
-    */
-    public function checkIntegrity()
-    {
-        parent::checkIntegrity();
-        if ( ! $this->dataExists() ||
-            ($this->data->decode() == FALSE && $this->data->state == 'active')) {
-            $this->assignData();
-            $this->setState($this->data->state);
-            $this->save();
-        }
-        $this->setState($this->data->state);
-    }
-
-    /**
-     * saveSettings
-     * Transforming settings to JSON format. (validation done by view)
-     * --------------------------------------------------
-     * @param array $inputSettings
-     * @param boolean $commit
-     * --------------------------------------------------
-    */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
-        $changedFields = parent::saveSettings($inputSettings, $commit);
-        if (array_intersect(static::getCriteriaFields(), $changedFields) &&
-                $this->hasValidCriteria()) {
-            $this->assignData();
-            $this->setState($this->data->state, FALSE);
-            $this->save();
-        }
-        return $changedFields;
-    }
 
 }
