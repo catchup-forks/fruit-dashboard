@@ -18,13 +18,6 @@ class Data extends Eloquent
         'state'
     );
 
-    /**
-     * The DataManager object.
-     *
-     * @var DataManager
-     */
-    protected $manager = null;
-
     /* -- Relations -- */
     public function descriptor() { return $this->belongsTo('DataDescriptor', 'descriptor_id'); }
     public function user() {
@@ -74,7 +67,7 @@ class Data extends Eloquent
      * --------------------------------------------------
      * @param User $user
      * @param int $descriptorId
-     * @param array $criteria 
+     * @param array $criteria
      * @return array
      * --------------------------------------------------
      */
@@ -96,7 +89,7 @@ class Data extends Eloquent
      * @return array
      * --------------------------------------------------
      */
-    public static function create(array $attributes, $initialize=TRUE)
+    public static function create(array $attributes, $initialize=true)
     {
         if ( ! array_key_exists('raw_value', $attributes)) {
             $attributes['raw_value'] = json_encode(array());

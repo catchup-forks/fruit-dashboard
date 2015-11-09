@@ -14,7 +14,7 @@ class BraintreePlan extends Eloquent
 
 
     // -- Options -- //
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function subscriptions() {return $this->hasMany('BraintreeSubscription', 'plan_id'); }

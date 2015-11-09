@@ -7,7 +7,7 @@
  */
 class DashboardController extends BaseController
 {
-    const OPTIMIZE = FALSE;
+    const OPTIMIZE = false;
 
     /**
      * ================================================== *
@@ -31,7 +31,7 @@ class DashboardController extends BaseController
                 /* Some logging */
                 if ( ! App::environment('production')) {
                     Log::info("Loading dashboard from cache.");
-                    Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+                    Log::info("Rendering time:" . (microtime(true) - LARAVEL_START));
                 }
 
                 /* Return the cached dashboard. */
@@ -74,7 +74,7 @@ class DashboardController extends BaseController
             $renderedView = $view->render();
 
             if ( ! App::environment('producion')) {
-                Log::info("Rendering time:" . (microtime(TRUE) - LARAVEL_START));
+                Log::info("Rendering time:" . (microtime(true) - LARAVEL_START));
             }
         } catch (Exception $e) {
             /* Error occured, trying to find the widget. */
@@ -116,7 +116,7 @@ class DashboardController extends BaseController
         /* Get the dashboard */
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
         /* Track event | DELETE DASHBOARD */
@@ -130,7 +130,7 @@ class DashboardController extends BaseController
         $dashboard->delete();
 
         /* Return. */
-        return Response::json(TRUE);
+        return Response::json(true);
     }
 
     /**
@@ -142,14 +142,14 @@ class DashboardController extends BaseController
     public function anyLockDashboard($dashboardId) {
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
-        $dashboard->is_locked = TRUE;
+        $dashboard->is_locked = true;
         $dashboard->save();
 
         /* Return. */
-        return Response::json(TRUE);
+        return Response::json(true);
     }
 
     /**
@@ -161,14 +161,14 @@ class DashboardController extends BaseController
     public function anyUnlockDashboard($dashboardId) {
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
-        $dashboard->is_locked = FALSE;
+        $dashboard->is_locked = false;
         $dashboard->save();
 
         /* Return. */
-        return Response::json(TRUE);
+        return Response::json(true);
     }
 
     /**
@@ -179,21 +179,21 @@ class DashboardController extends BaseController
      */
     public function anyMakeDefault($dashboardId) {
         // Make is_default false for all dashboards
-        foreach (Auth::user()->dashboards()->where('is_default', TRUE)->get() as $oldDashboard) {
-            $oldDashboard->is_default = FALSE;
+        foreach (Auth::user()->dashboards()->where('is_default', true)->get() as $oldDashboard) {
+            $oldDashboard->is_default = false;
             $oldDashboard->save();
         }
 
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
-        $dashboard->is_default = TRUE;
+        $dashboard->is_default = true;
         $dashboard->save();
 
         /* Return. */
-        return Response::json(TRUE);
+        return Response::json(true);
     }
 
     /**
@@ -203,19 +203,19 @@ class DashboardController extends BaseController
     public function postRenameDashboard($dashboardId) {
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
         $newName = Input::get('dashboard_name');
         if (is_null($newName)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
         $dashboard->name = $newName;
         $dashboard->save();
 
         /* Return. */
-        return Response::json(TRUE);
+        return Response::json(true);
     }
 
     /**
@@ -225,13 +225,13 @@ class DashboardController extends BaseController
     public function postCreateDashboard() {
         $name = Input::get('dashboard_name');
         if (empty($name)) {
-            return Response::json(FALSE);
+            return Response::json(false);
         }
 
         /* Creating dashboard. */
         $dashboard = new Dashboard(array(
             'name'       => $name,
-            'background' => TRUE,
+            'background' => true,
             'number'     => Auth::user()->dashboards->max('number') + 1
         ));
         $dashboard->user()->associate(Auth::user());
@@ -245,7 +245,7 @@ class DashboardController extends BaseController
         );
 
         /* Return. */
-        return Response::json(TRUE);
+        return Response::json(true);
     }
 
     /**
@@ -283,10 +283,10 @@ class DashboardController extends BaseController
     private function getDashboard($dashboardId) {
         $dashboard = Dashboard::find($dashboardId);
         if (is_null($dashboard)) {
-            return NULL;
+            return null;
         }
         if ($dashboard->user != Auth::user()) {
-            return NULL;
+            return null;
         }
         return $dashboard;
     }
@@ -299,42 +299,42 @@ class DashboardController extends BaseController
      */
     private function showOptimizeLog($user) {
         var_dump(' -- DEBUG LOG --');
-        $time = microtime(TRUE);
+        $time = microtime(true);
         $startTime = $time;
         $queries = count(DB::getQueryLog());
-        $startTime = microtime(TRUE);
+        $startTime = microtime(true);
         $memUsage = memory_get_usage();
         var_dump("Initial memory usage: " . number_format($memUsage));
         /* Checking the user's widgets integrity */
         $user->checkWidgetsIntegrity();
         var_dump(
-            "Widget check integrity time: ". (microtime(TRUE) - $time) .
+            "Widget check integrity time: ". (microtime(true) - $time) .
             " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' .
             number_format(memory_get_usage() - $memUsage) . ' bytes of memory)'
         );
         $memUsage = memory_get_usage();
         $queries = count(DB::getQueryLog());
-        $time = microtime(TRUE);
+        $time = microtime(true);
 
         /* Creating view */
         $view = $user->createDashboardView();
         var_dump(
-            "Dashboards/widgets data loading time: ". (microtime(TRUE) - $time) .
+            "Dashboards/widgets data loading time: ". (microtime(true) - $time) .
             " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' .
             number_format(memory_get_usage() - $memUsage) . ' bytes of memory)'
         );
         $memUsage = memory_get_usage();
         $queries = count(DB::getQueryLog());
-        $time = microtime(TRUE);
+        $time = microtime(true);
 
         $view->render();
         var_dump(
-            "Rendering time: ". (microtime(TRUE) - $time) .
+            "Rendering time: ". (microtime(true) - $time) .
             " (" . (count(DB::getQueryLog()) - $queries ). ' db queries)'
         );
         var_dump("Total memory usage: " . number_format(memory_get_usage()) . " bytes");
         var_dump(
-             "Total loading time: ". (microtime(TRUE) - LARAVEL_START) .
+             "Total loading time: ". (microtime(true) - LARAVEL_START) .
              " (" . count(DB::getQueryLog()) . ' db queries)'
         );
         var_dump(DB::getQueryLog());
@@ -370,7 +370,7 @@ class DashboardController extends BaseController
             $renderedView,
             SiteConstants::getDashboardCacheMinutes()
         );
-        $user->update_cache = FALSE;
+        $user->update_cache = false;
         $user->save();
     }
 

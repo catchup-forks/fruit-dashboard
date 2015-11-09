@@ -152,7 +152,7 @@ abstract class GeneralServiceConnector
                 'criteria'      => $settingsCriteria,
                 'user_id'       => $this->user->id,
                 'descriptor_id' => $descriptor->id
-            ), FALSE);
+            ), false);
 
             /* Assigning foreign values */
             $data->save();

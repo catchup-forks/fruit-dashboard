@@ -8,7 +8,7 @@ class DataDescriptor extends Eloquent
         'type',
         'attributes'
     );
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function dataObjects() {return $this->hasMany('Data', 'descriptor_id');}
@@ -53,7 +53,7 @@ class DataDescriptor extends Eloquent
     public function getAttributes()
     {
         /* I <3 you Eloquent. */
-        return json_decode($this->attributes['attributes'], TRUE);
+        return json_decode($this->attributes['attributes'], true);
     }
 
 }

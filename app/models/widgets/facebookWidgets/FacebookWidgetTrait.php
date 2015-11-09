@@ -35,14 +35,18 @@ trait FacebookWidgetTrait
 
     /**
      * getSettingsFields
+     * Returns the SettingsFields
      * --------------------------------------------------
-     * Returns the updated settings fields
      * @return array
      * --------------------------------------------------
      */
-    public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$pageSettings);
+    public static function getSettingsFields()
+    {
+        return array_merge(parent::getSettingsFields(), array(
+            'Facebook settings' => static::$pageSettings
+        ));
     }
+
 
     /**
      * getSetupFields

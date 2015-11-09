@@ -11,7 +11,7 @@ class Background extends Eloquent
         'number',
         'url',
     );
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     /* -- Relations -- */
     public function user() { return $this->belongsTo('User'); }
@@ -69,12 +69,12 @@ class Background extends Eloquent
         /* get the number of background images & collect them in an array */
         $i = 0;
         self::$backgroundFiles = array();
-        
+
         /* Iterate through files and add them to the list */
         if ($handle = opendir($absDir)) {
             while (($filename = readdir($handle)) !== false) {
-                if (!in_array($filename, array('.', '..')) && 
-                    !is_dir($absDir. $filename) && 
+                if (!in_array($filename, array('.', '..')) &&
+                    !is_dir($absDir. $filename) &&
                     !(substr($filename, 0, 1 ) === ".")) {
                         self::$backgroundFiles = array_add(self::$backgroundFiles, $i, $relDir.$filename);
                         $i++;
@@ -98,7 +98,7 @@ class Background extends Eloquent
      * @return Changes the URL of the user
      * --------------------------------------------------
      */
-    public function changeUrl() {     
+    public function changeUrl() {
         /* URL already exists, get the next */
         if ($this->url != null) {
             /* Check for overflow */
@@ -109,7 +109,7 @@ class Background extends Eloquent
                 /* get the next picture */
                 $this->number += 1;
             }
-            
+
             /* Get url and save */
             $this->url = self::$backgroundFiles[$this->number];
             $this->save();
@@ -122,7 +122,7 @@ class Background extends Eloquent
             $this->save();
         }
         /* Return */
-        return TRUE;
+        return true;
     }
 
     /**

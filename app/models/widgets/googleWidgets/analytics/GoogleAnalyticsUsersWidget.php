@@ -9,11 +9,11 @@ class GoogleAnalyticsUsersWidget extends DataWidget implements iServiceWidget
     use NumericWidgetTrait;
 
     /* Histogram layout data handler.  */
-    use HistogramWidgetTrait;
+    use MultipleHistogramWidgetTrait;
 
     /* Chart data transformer. */
     use MultipleChartWidgetTrait;
-    
+
     /* Service settings. */
     use GoogleAnalyticsWidgetTrait;
 
@@ -46,7 +46,7 @@ class GoogleAnalyticsUsersWidget extends DataWidget implements iServiceWidget
             $this->transformToSingle($this->data['users']['data'])
         );
 
-        return $this->getChartJSData('Y-m-d', TRUE);
+        return $this->getChartJSData('Y-m-d', true);
     }
 }
 ?>

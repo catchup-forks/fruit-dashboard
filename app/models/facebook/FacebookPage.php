@@ -9,7 +9,7 @@ class FacebookPage extends Eloquent
     );
 
     // -- Options -- //
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function user() { return $this->belongsTo('User'); }

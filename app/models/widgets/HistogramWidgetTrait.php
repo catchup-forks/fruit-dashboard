@@ -1,29 +1,22 @@
 <?php
 
-trait HistogramWidgetTrait
+trait HistogramWidgetTrait 
 {
     use HistogramDataTrait;
-
-    /**
-     * Whether or not the chart is cumulative.
-     *
-     * @var bool
-     */
-    protected static $isCumulative = FALSE;
 
     /**
      * Whether or not the increasing value means good.
      *
      * @var bool
      */
-    protected static $isHigherGood = TRUE;
+    protected static $isHigherGood = true;
 
     /**
      * Whether or not using a diffed values.
      *
      * @var bool
      */
-    protected $diff = FALSE;
+    protected $diff = false;
 
     /**
      * The currently active histogram.
@@ -58,7 +51,7 @@ trait HistogramWidgetTrait
      *
      * @var bool
      */
-    protected $dirty = TRUE;
+    protected $dirty = true;
 
     /**
      * Cache
@@ -90,7 +83,7 @@ trait HistogramWidgetTrait
     {
         $this->activeHistogram = $histogram;
 
-        $this->setDirty(TRUE);
+        $this->setDirty(true);
     }
 
     /**
@@ -103,7 +96,7 @@ trait HistogramWidgetTrait
     public function setDiff($diff)
     {
         if ($diff != $this->diff) {
-            $this->setDirty(TRUE);
+            $this->setDirty(true);
         }
 
         $this->diff = $diff;
@@ -124,7 +117,7 @@ trait HistogramWidgetTrait
     public function setRange(array $range)
     {
         if ($range != $this->range) {
-            $this->setDirty(TRUE);
+            $this->setDirty(true);
         }
 
         $this->range = $range;
@@ -140,7 +133,7 @@ trait HistogramWidgetTrait
     public function setResolution($resolution)
     {
         if ($resolution != $this->resolution) {
-            $this->setDirty(TRUE);
+            $this->setDirty(true);
         }
 
         $this->resolution = $resolution;
@@ -156,7 +149,7 @@ trait HistogramWidgetTrait
     public function setLength($length)
     {
         if ($length != $this->length) {
-            $this->setDirty(TRUE);
+            $this->setDirty(true);
         }
 
         $this->length = $length;
@@ -235,7 +228,7 @@ trait HistogramWidgetTrait
             throw new WidgetException('Active histogram is not set or is empty');
         }
 
-        $recording = empty($this->range) ? TRUE : FALSE;
+        $recording = empty($this->range) ? true : false;
         $histogram = array();
 
         foreach (self::sortHistogram($this->activeHistogram) as $entry) {
@@ -244,7 +237,7 @@ trait HistogramWidgetTrait
             if ( ! empty($this->range)) {
                 if (($entryTime <= $this->range['end']) && !$recording) {
                     /* Reached the start of the period -> start recording. */
-                    $recording = TRUE;
+                    $recording = true;
                 } else if (($entryTime <= $this->range['start']) && $recording) {
                     /* Reached the end of the period -> stop recording. */
                     break;
@@ -252,12 +245,12 @@ trait HistogramWidgetTrait
             }
 
             if ($recording) {
-                $push = FALSE;
+                $push = false;
                 if ( ! isset($previousEntryTime)) {
                     /* First element always makes it to the final histogram. */
-                    $push = TRUE;
+                    $push = true;
                 } else if ($this->isBreakPoint($entryTime, $previousEntryTime)){
-                    $push = TRUE;
+                    $push = true;
                 }
 
                 if ($push) {
@@ -280,10 +273,10 @@ trait HistogramWidgetTrait
             /* Applying diff. */
             $histogram = self::getDiff($histogram);
         }
-        
+
         /* Setting cache, resetting length. */
         $this->cache = $histogram;
-        $this->setDirty(FALSE);
+        $this->setDirty(false);
         $this->setLength(count($histogram));
 
         return $histogram;
@@ -312,7 +305,7 @@ trait HistogramWidgetTrait
         } else if ($this->resolution == 'years') {
             return $entryTime->format('Y') !== $previousEntryTime->format('Y');
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -383,4 +376,3 @@ trait HistogramWidgetTrait
     }
 
 }
-?>

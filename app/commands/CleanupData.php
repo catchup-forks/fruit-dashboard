@@ -28,7 +28,7 @@ class CleanupData extends Command {
     public function fire()
     {
         Log::info("Data cleanup started at " . Carbon::now()->toDateTimeString());
-        $time = microtime(TRUE);
+        $time = microtime(true);
         $allDeletionCount = 0;
         foreach (Data::all() as $data) {
             try {
@@ -40,6 +40,6 @@ class CleanupData extends Command {
 
             }
         }
-        Log::info('Data cleanup finished with ' . $allDeletionCount . ' deletions. It took ' . ( microtime(TRUE) - $time) . ' seconds to run.');
+        Log::info('Data cleanup finished with ' . $allDeletionCount . ' deletions. It took ' . ( microtime(true) - $time) . ' seconds to run.');
     }
 }

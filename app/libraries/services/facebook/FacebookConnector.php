@@ -215,7 +215,7 @@ class FacebookConnector extends GeneralServiceConnector
             throw new ServiceException("Selected page not found.", 1);
         }
         /* Setting page to active. */
-        $page->active = TRUE;
+        $page->active = true;
         $page->save();
 
         return parent::createDataObjects($criteria);

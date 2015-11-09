@@ -6,6 +6,6 @@ class StripeArrDataCollector extends HistogramDataCollector
 {
     public function getCurrentValue() {
         $stripeCalculator = new StripeCalculator($this->user);
-        return $stripeCalculator->getArr(TRUE);
+        return $stripeCalculator->getArr(true);
     }
 }

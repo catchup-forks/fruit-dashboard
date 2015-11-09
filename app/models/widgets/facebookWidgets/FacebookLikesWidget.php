@@ -6,24 +6,13 @@ class FacebookLikesWidget extends HistogramWidget implements iServiceWidget
     protected static $dataTypes = array('likes');
 
     /* Data attribute. */
-    protected static $isCumulative = TRUE;
+    protected static $isCumulative = true;
 
     /* Service settings. */
     use FacebookWidgetTrait;
 
-    /**
-     * getSettingsFields
-     * Returns the SettingsFields
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public static function getSettingsFields()
-    {
-        return array_merge(parent::getSettingsFields(), array(
-            'Facebook settings' => static::$pageSettings
-        ));
-    }
+    /* Histogram data representation. */
+    use HistogramWidgetTrait;
 
     /**
      * buildChartData

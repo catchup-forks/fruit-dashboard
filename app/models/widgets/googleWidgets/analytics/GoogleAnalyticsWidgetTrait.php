@@ -38,6 +38,22 @@ trait GoogleAnalyticsWidgetTrait
     }
 
     /**
+     * getSettingsFields
+     * --------------------------------------------------
+     * Returns the updated settings fields
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields() {
+        return array_merge(
+            parent::getSettingsFields(), array(
+                'Google Analytics settings' => self::$profileSettings,
+            )
+        );
+    }
+
+
+    /**
      * getSetupFields
      * --------------------------------------------------
      * Updating setup fields.

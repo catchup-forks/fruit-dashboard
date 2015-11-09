@@ -21,7 +21,7 @@ class Utilities {
      * @return string
      * --------------------------------------------------
     */
-    public static function underscoreToCamelCase($input, $keepSpace=FALSE) {
+    public static function underscoreToCamelCase($input, $keepSpace=false) {
         $output = ucwords(str_replace('_',' ', $input));
         return $keepSpace ? $output : str_replace(' ', '', $output);
     }
@@ -35,7 +35,7 @@ class Utilities {
      * @return string
      * --------------------------------------------------
     */
-    public static function dashToCamelCase($input, $keepSpace=FALSE) {
+    public static function dashToCamelCase($input, $keepSpace=false) {
         $output = ucwords(str_replace('-',' ', $input));
         return $keepSpace ? $output : str_replace(' ', '', $output);
     }
@@ -63,7 +63,7 @@ class Utilities {
      * @param boolean $autoload
      * --------------------------------------------------
      */
-    public function classUses($class, $trait, $autoload=TRUE) {
+    public function classUses($class, $trait, $autoload=true) {
         $traits = [];
 
         /* Get traits of all parent classes. */

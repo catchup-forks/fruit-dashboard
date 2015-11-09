@@ -10,7 +10,7 @@ class Dashboard extends Eloquent
         'is_locked',
         'is_default'
     );
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function widgets() {return $this->hasMany('Widget');}
@@ -80,11 +80,11 @@ class Dashboard extends Eloquent
             $y2Overlap = (($yEnd) > $rectangle['startY']);
 
             if ($x1Overlap && $x2Overlap && $y1Overlap && $y2Overlap) {
-                return FALSE;
+                return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
     public function save(array $options=array()) {
@@ -103,12 +103,12 @@ class Dashboard extends Eloquent
     */
     private function inGrid($rectangle) {
         if ($rectangle['endX'] > SiteConstants::getGridNumberOfCols()) {
-            return FALSE;
+            return false;
         }
         if ($rectangle['endY'] > SiteConstants::getGridNumberOfRows()) {
-            return FALSE;
+            return false;
         }
-        return TRUE;
+        return true;
     }
 
     /**

@@ -15,18 +15,18 @@ class AddIsDefaultToDashboardRenameLockedToIsLocked extends Migration {
 		Schema::table('dashboards', function(Blueprint $table)
 		{
 			// Add is_default
-			$table->boolean('is_default')->default(FALSE);
+			$table->boolean('is_default')->default(false);
 
 			// Rename locked to is_locked
 			$table->dropColumn('locked');
-			$table->boolean('is_locked')->default(FALSE);
+			$table->boolean('is_locked')->default(false);
 		});
 
 		// Make default dashboard for existing users
 		foreach (User::all() as $user) {
 			$dashboard = $user->dashboards->first();
 			if ($dashboard != null) {
-				$dashboard->is_default = TRUE;
+				$dashboard->is_default = true;
 				$dashboard->save();
 			} else {
 				/* Create new dashboard */
@@ -34,7 +34,7 @@ class AddIsDefaultToDashboardRenameLockedToIsLocked extends Migration {
 				    'name'       => 'Personal dashboard',
 				    'background' => 'On',
 				    'number'     => 1,
-				    'is_default' => TRUE
+				    'is_default' => true
 				));
 				$dashboard->user()->associate($user);
 

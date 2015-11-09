@@ -1,8 +1,10 @@
 <?php
 
-/* All classes that have interaction with data. */
+/** All classes that have interaction with data. */
 abstract class DataWidget extends Widget implements iAjaxWidget
 {
+    abstract protected function getData(array $postData=array());
+
     /**
      * An array of the used data types, criteria is being matched automatically.
      * Use late static binding.
@@ -50,18 +52,18 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         if (isset($postData['state_query']) && $postData['state_query']) {
             /* Got state query signal */
             if ($this->state == 'loading') {
-                return array('ready' => FALSE);
+                return array('ready' => false);
             } else if($this->state == 'active') {
                 /* Rerendering the widget */
                 $view = View::make($this->getDescriptor()->getTemplateName())
                     ->with('widget', $this->getTemplateData());
                 return array(
-                    'ready' => TRUE,
+                    'ready' => true,
                     'data'  => $this->getData($postData),
                     'html'  => $view->render()
                 );
             } else {
-                return array('ready' => FALSE);
+                return array('ready' => false);
             }
         }
         if (isset($postData['refresh_data']) && $postData['refresh_data']) {
@@ -70,7 +72,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
                 $this->refreshWidget();
             } catch (ServiceException $e) {
                 Log::error($e->getMessage());
-                return array('status'  => FALSE,
+                return array('status'  => false,
                              'message' => 'We couldn\'t refresh your data, because the service is unavailable.');
             }
         }
@@ -215,7 +217,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
                 Log::error('An error occurred during collecting data on #' . $dataId );
 
                 $dataObject->setState('data_source_error');
-            } 
+            }
         }
     }
 }

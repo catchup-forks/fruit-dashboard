@@ -46,7 +46,7 @@ trait ChartWidgetTrait
     public function getTemplateData()
     {
         return array_merge(parent::getTemplateData(), array(
-            'data'          => $this->getChartJSData('Y-m-d', TRUE),
+            'data'          => $this->getChartJSData('Y-m-d', true),
             'currentDiff'   => array(0),
             'currentValue'  => array(0),
             'format'        => $this->getFormat(),

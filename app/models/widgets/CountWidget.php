@@ -105,7 +105,7 @@ abstract class CountWidget extends DataWidget implements iAjaxWidget
         $dataManager = $this->data->getManager();
         if ($dataManager instanceof MultipleHistogramDataManager) {
             /* If the manager is multiple use single transformation. */
-            $dataManager->setSingle(TRUE);
+            $dataManager->setSingle(true);
         }
 
         $dataManager->setResolution($settings['period']);

@@ -12,7 +12,7 @@ class WidgetDescriptor extends Eloquent
         'min_cols', 'min_rows',
         'default_cols', 'default_rows'
     );
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function widgets() {return $this->hasMany('Widget', 'descriptor_id');}

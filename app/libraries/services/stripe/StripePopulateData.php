@@ -44,7 +44,7 @@ class StripePopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
-        $time = microtime(TRUE);
+        $time = microtime(true);
         Log::info("Starting Stripe data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->dataObjects = $this->getDataObjects();
         $this->calculator = new StripeCalculator($this->user);
@@ -150,14 +150,14 @@ class StripePopulateData
     private function filterEvents() {
         $filteredEvents = array();
         foreach ($this->events as $key=>$event) {
-            $save = FALSE;
+            $save = false;
             foreach (Static::$allowedEventTypes as $type) {
                 if ($save) {
                     /* Save already set, going on. */
                     break;
                 }
                 if ($event['type'] == $type) {
-                    $save = TRUE;
+                    $save = true;
                 }
             }
             if ($save) {

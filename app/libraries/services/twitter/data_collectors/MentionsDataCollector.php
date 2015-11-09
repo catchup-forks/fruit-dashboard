@@ -63,9 +63,9 @@ class MentionsDataCollector extends DataCollector
             return FALSe;
         }
         if (array_key_exists('hashtags', $article) && array_key_exists('created', $article) && array_key_exists('id', $article)) {
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**

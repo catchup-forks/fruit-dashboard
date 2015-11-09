@@ -15,7 +15,7 @@ class WebhookDataCollector extends MultipleHistogramDataCollector
         } catch (Exception $e) {
             return null;
         }
-        return json_decode($json, TRUE);
+        return json_decode($json, true);
     }
 
     /**

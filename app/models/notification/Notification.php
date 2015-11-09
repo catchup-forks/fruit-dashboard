@@ -40,7 +40,7 @@ class Notification extends Eloquent
     public function newFromBuilder($attributes=array()) {
         $className = ucfirst($attributes->type).'Notification';
         $instance = new $className;
-        $instance->exists = TRUE;
+        $instance->exists = true;
         $instance->setRawAttributes((array) $attributes, true);
         return $instance;
     }

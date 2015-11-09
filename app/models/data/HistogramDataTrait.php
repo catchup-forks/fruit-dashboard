@@ -121,7 +121,7 @@ trait HistogramDataTrait
      * @return array
      * --------------------------------------------------
      */
-    protected static function sortHistogram(array $entries, $desc=TRUE) {
+    protected static function sortHistogram(array $entries, $desc=true) {
         if (is_array($entries)) {
             usort($entries, array('self', 'timestampSort'));
         } else {
@@ -129,6 +129,5 @@ trait HistogramDataTrait
         }
         return $desc ? $entries : array_reverse($entries);
     }
-
 }
 ?>

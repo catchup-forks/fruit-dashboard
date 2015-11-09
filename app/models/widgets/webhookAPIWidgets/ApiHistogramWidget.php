@@ -8,7 +8,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             'name'       => 'POST url',
             'type'       => 'TEXT',
             'help_text'  => 'The widget data will be posted to this url.',
-            'disabled'   => TRUE
+            'disabled'   => true
         ),
         'name' => array(
             'name'       => 'Name',
@@ -99,7 +99,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      * @param boolean $commit
      * --------------------------------------------------
      */
-     public function saveSettings(array $inputSettings, $commit=TRUE) {
+     public function saveSettings(array $inputSettings, $commit=true) {
          $inputSettings['url'] = $this->getWidgetApiUrl();
          return parent::saveSettings($inputSettings, $commit);
     }

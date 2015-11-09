@@ -22,7 +22,7 @@ class APIController extends BaseController
     public function postData($apiVersion = null, $apiKey = null, $widgetID = null) {
         /* Check API version */
         if (!in_array($apiVersion, SiteConstants::getApiVersions())) {
-            return Response::json(array('status'  => FALSE,
+            return Response::json(array('status'  => false,
                                         'message' => 'This API version is not supported.'));
         }
 
@@ -94,19 +94,19 @@ class APIController extends BaseController
 
                 /* Check API key */
                 if (is_null($user)) {
-                    return array('status'  => FALSE,
+                    return array('status'  => false,
                                  'message' => 'Your API key is invalid.');
                 }
 
                 /* Check Widget ID */
                 if (is_null($widget)) {
-                    return array('status'  => FALSE,
+                    return array('status'  => false,
                                  'message' => 'Your Widget ID is invalid.');
                 }
 
                 /* Check if the widget belongs to the user */
                 if ($user->id != $widget->user()->id) {
-                    return array('status'  => FALSE,
+                    return array('status'  => false,
                                  'message' => 'Your Url is invalid (api key and widget id doesn\'t match).');
                 }
 
@@ -125,44 +125,44 @@ class APIController extends BaseController
     private function saveWidgetData($widget) {
         /* Check if timestamp exists */
         if (is_null(Input::get('timestamp')) && is_null(Input::get('date'))) {
-            return array('status'  => FALSE,
+            return array('status'  => false,
                          'message' => "You must provide a 'timestamp' or a 'date' attribute for your data.");
         } else if (Input::get('timestamp')) {
             try {
                 $date = Carbon::createFromTimeStamp(Input::get('timestamp'));
             } catch (Exception $e) {
-                return array('status'  => FALSE,
+                return array('status'  => false,
                              'message' => "Your 'timestamp' is not a valid timestamp.");
             }
         } else if (Input::get('date')) {
             try {
                 $date = Carbon::parse(Input::get('date'));
             } catch (Exception $e) {
-                return array('status'  => FALSE,
+                return array('status'  => false,
                              'message' => "Your 'date' is not a valid date.");
             }
         }
 
 
         /* Check all other data */
-        $hasData = FALSE;
+        $hasData = false;
         foreach (Input::except('timestamp', 'date') as $key => $value) {
             if ( ! is_numeric($value)) {
-                return array('status'  => FALSE,
+                return array('status'  => false,
                              'message' => "You have to provide numbers for the graph values. The value of '". $key ."' is not a number.");
             } else if ( ! $hasData) {
-                $hasData = TRUE;
+                $hasData = true;
             }
         }
 
         if ( ! $hasData) {
-            return array('status'  => FALSE,
+            return array('status'  => false,
                          'message' => "You have to provide at least one dataset.");
         }
 
         /* Everything is ok */
         $widget->updateData(array('entry' =>Input::all()));
-        return array('status'  => TRUE,
+        return array('status'  => true,
                      'message' => 'Your data has been successfully saved.');
 
     }

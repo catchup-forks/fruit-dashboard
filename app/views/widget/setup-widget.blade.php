@@ -35,7 +35,7 @@
                           {{ Form::hidden($field, 0)}}
                           {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                         @else
-                          @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                          @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == true))
                             <pre name="{{ $field }}">{{ $widget->getSettings()[$field] }}</pre>
                           @else
                             {{ Form::text($field, $widget->getSettings()[$field], array(
@@ -84,7 +84,7 @@
        @foreach ($settings as $field=>$meta)
          @if ( array_key_exists('ajax_depends', $meta))
            /* Ajax loader for {{ $field }} */
-           @if ($widget->$field() == FALSE)
+           @if ($widget->$field() == false)
              $('#field-{{$field}}').hide();
            @endif
            $('#{{ $meta['ajax_depends'] }}-input').change(function () {

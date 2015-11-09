@@ -22,7 +22,7 @@ class CreateBackgroundsTable extends Migration {
                   ->references('id')->on('users')
                   ->onDelete('cascade');
 
-            $table->boolean('is_enabled')->default(TRUE);
+            $table->boolean('is_enabled')->default(true);
             $table->integer('number')->nullable();
             $table->string('url')->nullable();
 		});
@@ -56,7 +56,7 @@ class CreateBackgroundsTable extends Migration {
 		// Create background_enabled in settings
 		Schema::table('settings', function(Blueprint $table)
 		{
-			$table->boolean('background_enabled')->default(TRUE);
+			$table->boolean('background_enabled')->default(true);
 		});
 	}
 

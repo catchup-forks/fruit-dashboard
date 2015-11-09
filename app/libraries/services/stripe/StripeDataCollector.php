@@ -42,7 +42,7 @@ class StripeDataCollector
         // Connecting to stripe, and making query.
         try {
             $decodedData = json_decode(
-                $this->loadJSON(\Stripe\Plan::all()), TRUE);
+                $this->loadJSON(\Stripe\Plan::all()), true);
         } catch (\Stripe\Error\Authentication $e) {
             // Access token expired. Calling handler.
             $this->getNewAccessToken();
@@ -93,7 +93,7 @@ class StripeDataCollector
         foreach ($this->getCustomers() as $customer) {
             $decodedData = json_decode(
                 $this->loadJSON(\Stripe\Customer::retrieve($customer['id'])->subscriptions->all()),
-                TRUE);
+                true);
             foreach($decodedData['data'] as $subscription) {
                $new_subscription = new StripeSubscription(array(
                     'subscription_id' => $subscription['id'],
@@ -162,7 +162,7 @@ class StripeDataCollector
     public function getCustomers() {
         $rawData = array();
         $decodedData = array();
-        $hasMore = TRUE;
+        $hasMore = true;
         $startingAfter = null;
         $depth = 0;
 
@@ -178,7 +178,7 @@ class StripeDataCollector
                     $rawData = \Stripe\Customer::all(array("limit" => 100));
                 }
                 /* Adding objects to collection. */
-                $currentData = json_decode($this->loadJSON($rawData), TRUE);
+                $currentData = json_decode($this->loadJSON($rawData), true);
                 $decodedData = array_merge($decodedData, $currentData['data']);
 
             } catch (\Stripe\Error\Authentication $e) {
@@ -188,7 +188,7 @@ class StripeDataCollector
             $hasMore = $currentData['has_more'];
             if ($depth++ > 10) {
                 Log::warning('Reached limit of iterations on stripe customer collection. ');
-                $hasMore = FALSE;
+                $hasMore = false;
             }
             $startingAfter = end($currentData['data'])['id'];
         }
@@ -215,7 +215,7 @@ class StripeDataCollector
         /* Connecting to stripe, and making query. */
         $rawData = array();
         $decodedData = array();
-        $hasMore = TRUE;
+        $hasMore = true;
         $startingAfter = null;
         $depth = 0;
 
@@ -231,7 +231,7 @@ class StripeDataCollector
                     $rawData = \Stripe\Event::all(array("limit" => 100));
                 }
                 /* Adding objects to collection. */
-                $currentData = json_decode($this->loadJSON($rawData), TRUE);
+                $currentData = json_decode($this->loadJSON($rawData), true);
                 if ( ! is_null($currentData)) {
                     $decodedData = array_merge($decodedData, $currentData['data']);
                 }
@@ -243,7 +243,7 @@ class StripeDataCollector
             $hasMore = $currentData['has_more'];
             if ($depth++ > 10) {
                 Log::warning('Reached limit of iterations on stripe event collection. ');
-                $hasMore = FALSE;
+                $hasMore = false;
             }
             if (!is_null($currentData['data'])) {
                 $startingAfter = end($currentData['data'])['id'];

@@ -120,11 +120,11 @@ class GoogleAnalyticsDataCollector
             $goal->profile()->associate($profile);
 
             /* Finding a match. */
-            $exists = FALSE;
+            $exists = false;
             foreach ($profile->goals as $prevGoal) {
                 if ($goal->goal_id == $prevGoal->goal_id &&
                     $goal->name == $prevGoal->name) {
-                    $exists = TRUE;
+                    $exists = true;
                 }
             }
             if ( ! $exists ) {
@@ -177,7 +177,7 @@ class GoogleAnalyticsDataCollector
      * @throws ServiceException
      * --------------------------------------------------
      */
-    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array(), $rawReturn=FALSE) {
+    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array(), $rawReturn=false) {
         $useDimensions = array_key_exists('dimensions', $optParams);
         $metricsData = array();
 
@@ -330,7 +330,7 @@ class GoogleAnalyticsDataCollector
             )
         )['newUsers'];
     }
-    
+
     /**
      * getUsers
      * Return the number of users.

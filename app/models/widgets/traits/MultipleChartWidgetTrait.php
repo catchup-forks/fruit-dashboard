@@ -25,7 +25,7 @@ trait MultipleChartWidgetTrait
             array_push($histogram, $newEntry);
         }
 
-        return $histogram;  
+        return $histogram;
     }
 
     /**
@@ -38,7 +38,7 @@ trait MultipleChartWidgetTrait
      */
     private static function removeEmptyDatasets($datasets)
     {
-        $hasData = FALSE;
+        $hasData = false;
         $cleanedDataSets = array();
         foreach ($datasets as $dataset) {
             if ((count($dataset['values']) > 0) && (max($dataset['values']) > 0)) {

@@ -12,7 +12,7 @@ class Widget extends Eloquent
         'settings',
         'position'
     );
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     /* Use only for association. */
     public function descriptor() { return $this->belongsTo('WidgetDescriptor', 'descriptor_id');}
@@ -70,10 +70,10 @@ class Widget extends Eloquent
     public function renderable()
     {
         if ($this->state == 'active') {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -270,7 +270,7 @@ class Widget extends Eloquent
      * @param string $state
      * --------------------------------------------------
     */
-    public function setState($state, $commit=TRUE) {
+    public function setState($state, $commit=true) {
         if ($this->state == $state) {
             return;
         }
@@ -311,27 +311,27 @@ class Widget extends Eloquent
         $settingsFields = static::getFlatSettingsFields();
         if ( ! array_key_exists($fieldName, $settingsFields)) {
             /* Key doesn't exist. Don't even try to render it. */
-            return FALSE;
+            return false;
         }
         $fieldMeta = $settingsFields[$fieldName];
         if (array_key_exists('hidden', $fieldMeta) &&
-                $fieldMeta['hidden'] == TRUE) {
-            return FALSE;
+                $fieldMeta['hidden'] == true) {
+            return false;
         }
 
         if (array_key_exists('ajax', $fieldMeta) &&
-                $fieldMeta['ajax'] == TRUE) {
-            return TRUE;
+                $fieldMeta['ajax'] == true) {
+            return true;
         }
 
         /* Don't show singleChoice if there's only one value */
         if (($fieldMeta['type'] == 'SCHOICE' ||
                 $fieldMeta['type'] == 'SCHOICEOPTGRP') &&
                  count($this->$fieldName()) == 1) {
-            return FALSE;
+            return false;
         }
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -471,7 +471,7 @@ class Widget extends Eloquent
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=true) {
         $settings = array();
         $oldSettings = $this->getSettings();
         $settingsMeta = $this->getFlatSettingsFields();
@@ -495,7 +495,7 @@ class Widget extends Eloquent
         $this->settings = json_encode($settings);
 
         if ($commit) {
-            $this->save(array('skip_settings' => TRUE));
+            $this->save(array('skip_settings' => true));
         }
 
         /* Return the changed fields. */
@@ -521,18 +521,18 @@ class Widget extends Eloquent
         $criteriaFields = static::getCriteriaFields();
 
         if (empty($criteriaFields)) {
-            return TRUE;
+            return true;
         }
 
         $criteria = $this->getCriteria();
 
         foreach ($criteriaFields as $setting) {
             if ( ! array_key_exists($setting, $criteria) || $criteria[$setting] == '') {
-                return FALSE;
+                return false;
             }
         }
 
-        return TRUE;
+        return true;
     }
 
 
@@ -562,10 +562,10 @@ class Widget extends Eloquent
         }
 
         // Saving settings by option.
-        if ( ! array_key_exists('skip_settings', $options) || $options['skip_settings'] == FALSE) {
-            $commit = FALSE;
+        if ( ! array_key_exists('skip_settings', $options) || $options['skip_settings'] == false) {
+            $commit = false;
             if (is_null($this->settings)) {
-                $commit = TRUE;
+                $commit = true;
             }
             $this->saveSettings(array(), $commit);
         }
@@ -585,14 +585,19 @@ class Widget extends Eloquent
      * --------------------------------------------------
      */
     public function newFromBuilder($attributes=array()) {
+        /* Instantiating widget. */
         $className = WidgetDescriptor::find($attributes->descriptor_id)
             ->getClassName();
         $instance = new $className;
-        $instance->exists = TRUE;
+
+        /* Setting attributes. */
+        $instance->exists = true;
         $instance->setRawAttributes((array) $attributes, true);
+
         if (method_exists($instance, 'onCreate')) {
             $instance->onCreate();
         }
+
         return $instance;
     }
 

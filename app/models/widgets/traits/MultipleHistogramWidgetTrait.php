@@ -2,14 +2,23 @@
 
 trait MultipleHistogramWidgetTrait
 {
-    use HistogramWidgetTrait;
+    use HistogramWidgetTrait {
+        HistogramWidgetTrait::setActiveHistogram as _setActiveHistogram;
+    }
 
     /**
      * Whether or not summing the values.
      *
      * @var bool
      */
-    protected $toSingle = FALSE;
+    protected $toSingle = false;
+
+    /**
+     * The currently active histogram datasets.
+     *
+     * @var array
+     */
+    protected $dataSets = array();
 
     /**
      * setSingle
@@ -21,6 +30,32 @@ trait MultipleHistogramWidgetTrait
     public function setSingle($single)
     {
         $this->toSingle = $single;
+    }
+
+    /**
+     * setActiveHistogram
+     * Set the active histogram.
+     * --------------------------------------------------
+     * @param bool $dirty
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    protected function setActiveHistogram($histogram)
+    {
+        if ($this->toSingle) {
+            return $this->_setActiveHistogram($histogram);
+        }
+
+        if ( ! array_key_exists('datasets', $histogram) ||
+             ! array_key_exists('data', $histogram)) {
+            throw new WidgetException('data, or dataset not found.');
+        }
+
+        $this->activeHistogram = $histogram['data'];
+
+        $this->dataSets = $histogram['datasets'];
+
+        $this->setDirty(true);
     }
 
     /**
@@ -41,27 +76,83 @@ trait MultipleHistogramWidgetTrait
             );
             array_push($histogram, $newEntry);
         }
-        return $histogram;  
+        return $histogram;
     }
 
     /**
-     * removeEmptyDatasets
-     * Return the datasets, removing the empty ones.
+     * transformDatasets
+     * Return the datasets as an array, where keys are
+     * datasets.
      * --------------------------------------------------
-     * @param array $datasets
      * @return array
      * --------------------------------------------------
      */
-    private static function removeEmptyDatasets($datasets)
+    protected function transformeDatasets()
     {
-        $hasData = FALSE;
-        $cleanedDataSets = array();
-        foreach ($datasets as $dataset) {
-            if ((count($dataset['values']) > 0) && (max($dataset['values']) > 0)) {
-                array_push($cleanedDataSets, $dataset);
+        /* Initializing transformed data sets. */
+        $transformedDatasets = array();
+        foreach ($this->dataSets as $dataset=>$id) {
+            $transformedDatasets[$id] = array();
+        }
+
+        /* Populating the array. */
+        foreach ($this->activeHistogram as $entry) {
+            foreach ($entry as $key=>$value) {
+
+                /* Omitting static fields. */
+                if (in_array($key, static::$staticFields)) {
+                    continue;
+                }
+
+                if (array_key_exists($key, $transformedDatasets)) {
+                    array_push($transformedDatasets[$key], $value);
+                }
+
             }
         }
-        return $cleanedDataSets;
+
+        return $transformedDatasets;
+    }
+
+    /**
+     * getDatasetName
+     * Return the dataset name based on id.
+     * --------------------------------------------------
+     * @param string $key
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getDatasetName($key)
+    {
+        return array_flip($this->dataSets)[$key];
+    }
+
+    /**
+     * filterDatasets
+     * Returning the non-empty datasets, max=n.
+     * --------------------------------------------------
+     * @param int $n
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function filterDatasets($n=5)
+    {
+        /* Creating data, value pairs. */
+        $filteredDatasets = array();
+        foreach ($this->transformeDatasets() as $dataset=>$values) {
+
+            $sum = array_sum($values);
+
+            if ($sum > 0) {
+                $filteredDatasets[$dataset] = $sum;
+            }
+        }
+
+        /* Sorting the array revers. */
+        arsort($filteredDatasets);
+
+        /* Selecting the top results. */
+        return array_keys(array_slice($filteredDatasets, 0, $n));
     }
 }
 ?>

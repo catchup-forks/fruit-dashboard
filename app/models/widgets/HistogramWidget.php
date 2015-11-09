@@ -7,9 +7,6 @@ abstract class HistogramWidget extends DataWidget
     /* Data format definer. */
     use NumericWidgetTrait;
 
-    /* Histogram layout data handler.  */
-    use HistogramWidgetTrait;
-
     /* Loading layout traits. */
     use HistogramTableLayoutTrait;
     use HistogramCountLayoutTrait;
@@ -56,7 +53,6 @@ abstract class HistogramWidget extends DataWidget
         );
     }
 
-    /* -- Choice functions -- */
     public function type()
     {
         $types = array(
@@ -82,17 +78,6 @@ abstract class HistogramWidget extends DataWidget
             parent::getSettingsFields(),
             array('Data settings' => self::$histogramSettings)
         );
-    }
-
-    /**
-     * getSetupFields
-     * --------------------------------------------------
-     * Updating setup fields.
-     * @return array
-     * --------------------------------------------------
-     */
-    public static function getSetupFields() {
-        return array_merge(parent::getSetupFields(), array('type'));
     }
 
     /**
@@ -241,7 +226,7 @@ abstract class HistogramWidget extends DataWidget
             default: return $this->getChartData($postData);
         }
 
-        return NULL;
+        return null;
     }
 
     /**
@@ -252,7 +237,7 @@ abstract class HistogramWidget extends DataWidget
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=true) {
         $changedFields = parent::saveSettings($inputSettings, $commit);
         if ($this->getSettings()['name'] == '') {
             $this->saveSettings(array('name' => $this->getDescriptor()->name), $commit);

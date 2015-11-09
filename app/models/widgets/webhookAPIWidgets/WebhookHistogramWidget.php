@@ -89,7 +89,7 @@ class WebhookHistogramWidget extends DataWidget
     {
         /* Building the histograms. */
         $this->setActiveHistogram($this->transformToSingle($this->data['webhook']['data']));
-        return $this->getChartJSData('Y-m-d', TRUE);
+        return $this->getChartJSData('Y-m-d', true);
     }
 }
 ?>

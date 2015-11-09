@@ -1,6 +1,6 @@
 <div class="widget-inner fill" id="widget-loading-{{ $widget['id'] }}">
   <div class="widget-heading larger-text">
-    {{ Utilities::underscoreToCamelCase($widget['descriptor']->type, TRUE) }}
+    {{ Utilities::underscoreToCamelCase($widget['descriptor']->type, true) }}
   </div> <!-- /.widget-heading -->
   <p class="lead text-center">
     This widget has invalid settings, that can't be recovered.

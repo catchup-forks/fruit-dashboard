@@ -3,6 +3,6 @@ class GoogleAnalyticsBounceRateWidget extends HistogramWidget implements iServic
 {
     use GoogleAnalyticsWidgetTrait;
     protected static $format       = '%.2f%%';
-    protected static $isHigherGood = FALSE;
+    protected static $isHigherGood = false;
 }
 ?>

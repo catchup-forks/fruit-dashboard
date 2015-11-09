@@ -15,7 +15,7 @@ class AddUpdateCachePropertyToUser extends Migration {
         Schema::table('users', function(Blueprint $table)
         {
             // Add column
-            $table->boolean('update_cache')->default(TRUE);
+            $table->boolean('update_cache')->default(true);
         });
     }
 

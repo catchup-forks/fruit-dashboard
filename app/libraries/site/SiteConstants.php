@@ -448,7 +448,7 @@ class SiteConstants {
     public static function getServiceMeta($service) {
         return array(
             'name'             => $service,
-            'display_name'     => Utilities::underscoreToCamelCase($service, TRUE),
+            'display_name'     => Utilities::underscoreToCamelCase($service, true),
             'type'             => 'service',
             'disconnect_route' => 'service.' . $service . '.disconnect',
             'connect_route'    => 'service.' . $service . '.connect',
@@ -631,11 +631,11 @@ class SiteConstants {
      * --------------------------------------------------
      * Returns whether or not to delete the hourly data.
      * @param $entryTime
-     * @return boolean: TRUE->keep FALSE->delete
+     * @return boolean: true->keep false->delete
      * --------------------------------------------------
      */
     public static function cleanupPolicy($entryTime) {
-        return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+        return $entryTime->diffInWeeks(Carbon::now(), false) < 2;
     }
 
     /**

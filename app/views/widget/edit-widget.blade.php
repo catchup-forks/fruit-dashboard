@@ -32,7 +32,7 @@
                     <div class="col-sm-7">
 
                       @if ($meta['type'] == "SCHOICE" || $meta['type'] == "SCHOICEOPTGRP")
-                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == true))
                           <pre name="{{ $field }}">{{ $widget->$field() }}</pre>
                         @else
                           {{ Form::select($field, $widget->$field(), $widget->getSettings()[$field], ['class' => 'form-control', 'id' => $field . '-input']) }}
@@ -43,7 +43,7 @@
                         {{ Form::hidden($field, 0)}}
                         {{ Form::checkbox($field, 1, $widget->getSettings()[$field]) }}
                       @else
-                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == TRUE))
+                        @if ((array_key_exists('disabled', $meta) && $meta['disabled'] == true))
                           <pre name="{{ $field }}">{{ $widget->getSettings()[$field] }}</pre>
                         @else
                           {{ Form::text($field, $widget->getSettings()[$field], ['class' => 'form-control', 'id' => $field . '-input']) }}
@@ -106,7 +106,7 @@
        @foreach ($widget->getSettingsFields() as $field=>$meta)
          @if ( array_key_exists('ajax_depends', $meta))
            /* Ajax loader for {{ $field }} */
-           @if ($widget->$field() == FALSE)
+           @if ($widget->$field() == false)
              $('#field-{{$field}}').hide();
            @endif
            $('#{{ $meta['ajax_depends'] }}-input').change(function () {

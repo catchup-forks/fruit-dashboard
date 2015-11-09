@@ -16,7 +16,7 @@ abstract class HistogramDataCollector extends DataCollector
      */
     protected function isCumulative() {
         if ( ! array_key_exists('cumulative', $this->descriptorAttributes)) {
-            return FALSE;
+            return false;
         }
         return $this->descriptorAttributes['cumulative'];
     }
@@ -41,14 +41,14 @@ abstract class HistogramDataCollector extends DataCollector
             return;
         }
 
-        $currentData = $this->sortHistogram($this->getEntries(), FALSE);
+        $currentData = $this->sortHistogram($this->getEntries(), false);
         $lastData = end($currentData);
 
         /* Checking for cumulative. */
         if ( ! empty($lastData)) {
             if ($this->isCumulative() &&
                     array_key_exists('sum', $options) &&
-                    $options['sum'] == TRUE) {
+                    $options['sum'] == true) {
                 foreach (self::getEntryValues($dbEntry) as $key=>$value) {
                     if (array_key_exists($key, $lastData)) {
                         $dbEntry[$key] += $lastData[$key];
@@ -60,7 +60,7 @@ abstract class HistogramDataCollector extends DataCollector
                 array_pop($currentData);
             }
         }
-        if (self::getEntryValues($dbEntry) != FALSE) {
+        if (self::getEntryValues($dbEntry) != false) {
             array_push($currentData, $dbEntry);
             $this->save($currentData);
         }

@@ -19,7 +19,7 @@ class IframeWidget extends Widget
         'pointer_events' => array(
             'name'       => 'Pointer events',
             'type'       => 'BOOL',
-            'default'    => FALSE,
+            'default'    => false,
             'help_text'  => 'If you set this, you won\'t be able to move the widget, but will be able to navigate in the iframe'
         ),
    );

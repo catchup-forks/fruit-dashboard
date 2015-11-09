@@ -8,13 +8,13 @@ class SharedWidget extends Widget
             'name'       => 'Related widget',
             'type'       => 'INT',
             'validation' => 'required',
-            'hidden'     => TRUE
+            'hidden'     => true
         ),
         'sharing_object' => array(
             'name'       => 'Sharing object',
             'type'       => 'INT',
             'validation' => 'required',
-            'hidden'     => TRUE
+            'hidden'     => true
         ),
     );
 

@@ -275,7 +275,7 @@ class GeneralWidgetController extends BaseController {
             return Redirect::route('widget.add')->with('error', 'Something went wrong, please try again.');
         }
         /* If widget has no setup fields, redirect to dashboard automatically */
-        if ($widget->getSetupFields() == FALSE) {
+        if ($widget->getSetupFields() == false) {
             return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
@@ -306,7 +306,7 @@ class GeneralWidgetController extends BaseController {
             /* Create new dashboard and associate */
             $dashboard = new Dashboard(array(
                 'name'       => $newDashboardName,
-                'background' => TRUE,
+                'background' => true,
                 'number'     => Auth::user()->dashboards->max('number') + 1
             ));
             $dashboard->user()->associate(Auth::user());
@@ -334,7 +334,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* If widget has no setup fields, redirect to dashboard automatically */
-        if ($widget->getSetupFields() == FALSE) {
+        if ($widget->getSetupFields() == false) {
             return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
@@ -359,7 +359,7 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
         $widget->state = 'active';
-        $widget->saveSettings(array('resolution' => $resolution), TRUE);
+        $widget->saveSettings(array('resolution' => $resolution), true);
 
         /* Rendering view. */
         return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
@@ -390,6 +390,7 @@ class GeneralWidgetController extends BaseController {
         $values = array();
         /* SINGLE STAT TEMPLATE REQUIRES REFACTORING!! */
         /* PROBABLY WILL NEED TO ADD SETUPWIDGET FOR LENGTH, RESOLUTION, ETC... */
+        /* isCombined, label, dataset for each resolution, class_name, resolution. */
         $widget->buildChartData();
 
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
@@ -547,7 +548,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Get widgets data */
-        $widgets = json_decode($_POST['positioning'], TRUE);
+        $widgets = json_decode($_POST['positioning'], true);
 
         /* Iterate through all widgets */
         foreach ($widgets as $widgetData){

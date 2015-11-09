@@ -38,7 +38,7 @@ class BraintreePopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
-        $time = microtime(TRUE);
+        $time = microtime(true);
         Log::info("Starting Braintree data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->calculator = new BraintreeCalculator($this->user);
         $this->subscriptions = $this->calculator->getCollector()->getAllSubscriptions();

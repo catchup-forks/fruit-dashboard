@@ -30,7 +30,7 @@ trait GAHistogramBySourceDataCollectorTrait
         $collector = $this->getCollector();
         $profileId = $this->getProfileId();
         $metrics   = $this->getMetricNames();
-    
+
         /* Querying initial data. */
         $start = SiteConstants::getGoogleAnalyticsLaunchDate();
         $end = Carbon::now()->subDays(SiteConstants::getServicePopulationPeriod()['google_analytics']);
@@ -40,19 +40,19 @@ trait GAHistogramBySourceDataCollectorTrait
             $metrics,
             $this->getOptionalParams()
         );
-    
+
         /* Saving initial data */
         $this->saveInitialData($data, $end->getTimestamp());
         /* Collecting diff data. */
         $params = $this->getOptionalParams();
         $params['dimensions'] .= ',ga:date';
-        
+
         $start = $end;
         $end = Carbon::now();
         $data = $collector->getMetrics(
             $profileId,
             $start->toDateString(), $end->toDateString(),
-            $metrics, $params, TRUE
+            $metrics, $params, true
         );
         $this->saveDiffData($data, $start, $end);
         return;
@@ -61,7 +61,7 @@ trait GAHistogramBySourceDataCollectorTrait
      * saveInitialData
      * Transforming and saving the initial data.
      * --------------------------------------------------
-     * @param array $data   
+     * @param array $data
      * @param Carbon $timestamp
      * --------------------------------------------------
      */
@@ -75,7 +75,7 @@ trait GAHistogramBySourceDataCollectorTrait
      * saveDiffData
      * Transforming and saving the initial data.
      * --------------------------------------------------
-     * @param array $data   
+     * @param array $data
      * @param Carbon $start
      * @param Carbon $end
      * --------------------------------------------------
@@ -89,14 +89,14 @@ trait GAHistogramBySourceDataCollectorTrait
             $source = $dataPoint[0];
             $date   = $dataPoint[1];
             $value  = $dataPoint[2];
-            
+
             /* Creating date attribute if did not exist. */
             if ( ! array_key_exists($date, $entries)) {
                 $entries[$date] = array(
                     'timestamp' => strtotime($date)
                 );
             }
-            
+
             /* Adding source value. */
             $entries[$date][$source] = $value;
         }
@@ -112,15 +112,15 @@ trait GAHistogramBySourceDataCollectorTrait
                 );
             }
         }
-    
+
         /* Sorting the entries by date. */
         ksort($entries);
-        
-        /* Creating DB ready entries. */ 
+
+        /* Creating DB ready entries. */
         foreach ($entries as $entry) {
             $this->collect(array('entry' => $entry, 'sum' => $this->isCumulative()));
         }
-    
+
     }
 }
 ?>

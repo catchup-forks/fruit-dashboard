@@ -6,10 +6,13 @@ class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
     protected static $dataTypes = array('followers');
 
     /* Data attribute. */
-    protected static $isCumulative = TRUE;
+    protected static $isCumulative = true;
 
     /* Service settings. */
     use TwitterWidgetTrait;
+
+    /* Histogram data representation. */
+    use HistogramWidgetTrait;
 
     /**
      * buildChartData

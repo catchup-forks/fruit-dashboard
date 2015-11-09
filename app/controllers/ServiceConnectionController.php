@@ -130,7 +130,7 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
         }
-        else if (Input::get('oauth_verifier', FALSE) && Input::get('oauth_token', FALSE)) {
+        else if (Input::get('oauth_verifier', false) && Input::get('oauth_token', false)) {
             $connector = new TwitterConnector(Auth::user());
             try {
                 $connector->saveTokens(array(
@@ -237,7 +237,7 @@ class ServiceConnectionController extends BaseController
                 ->with('sucess', 'Facebook connection successful');
         }
         $connector = new FacebookConnector(Auth::user());
-        if (Input::get('code', FALSE)) {
+        if (Input::get('code', false)) {
             /* Oauth ready. */
             try {
                 $connector->saveTokens();
@@ -270,7 +270,7 @@ class ServiceConnectionController extends BaseController
                     ->with('success', $message);
             }
 
-        } else if (Input::get('error', FALSE)) {
+        } else if (Input::get('error', false)) {
             /* User declined */
             return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
@@ -334,7 +334,7 @@ class ServiceConnectionController extends BaseController
 
         return View::make('service.facebook.select-pages', array(
                 'pages' => $pages,
-                'cancelRoute' => $this->getReferer(FALSE),
+                'cancelRoute' => $this->getReferer(false),
             ));
     }
 
@@ -465,7 +465,7 @@ class ServiceConnectionController extends BaseController
 
         return View::make('service.google_analytics.select-properties', array(
                    'profiles'      => $profiles,
-                   'cancelRoute'   => $this->getReferer(FALSE),
+                   'cancelRoute'   => $this->getReferer(false),
                    'activeProfile' => $activeProfile
                 ));
     }
@@ -573,7 +573,7 @@ class ServiceConnectionController extends BaseController
                 ->with('success', 'Stripe connection successful');
         }
 
-        if (Input::get('code', FALSE)) {
+        if (Input::get('code', false)) {
             /* Oauth ready. */
             $connector = new StripeConnector(Auth::user());
             try {
@@ -603,7 +603,7 @@ class ServiceConnectionController extends BaseController
             return Redirect::to($this->getReferer())
                 ->with('success', 'Stripe connection successful');
 
-        } else if (Input::get('error', FALSE)) {
+        } else if (Input::get('error', false)) {
             /* User declined */
             return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
@@ -666,7 +666,7 @@ class ServiceConnectionController extends BaseController
         }
         /* Creating connection credentials. */
         $connector = new $connectorClass(Auth::user());
-        if (Input::get('code', FALSE)) {
+        if (Input::get('code', false)) {
             try {
                 $connector->saveTokens(array('auth_code' => Input::get('code')));
             } catch (GoogleConnectFailed $e) {
@@ -702,7 +702,7 @@ class ServiceConnectionController extends BaseController
                     ->with('success', 'Google connection successful');
             }
 
-        } else if (Input::get('error', FALSE)) {
+        } else if (Input::get('error', false)) {
             /* User declined */
             return Redirect::to($this->getReferer())
                 ->with('error', 'You\'ve declined the request.');
@@ -779,7 +779,7 @@ class ServiceConnectionController extends BaseController
      * @return Returns the saved route from session.
      * --------------------------------------------------
      */
-    private function getReferer($forget=TRUE) {
+    private function getReferer($forget=true) {
         if (Session::has('addWidgetMeta')) {
             /* We came from add widget. */
             $meta = Session::pull('addWidgetMeta');
