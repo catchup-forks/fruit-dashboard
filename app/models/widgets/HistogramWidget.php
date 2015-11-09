@@ -232,5 +232,20 @@ abstract class HistogramWidget extends DataWidget
         return $this->$fn($postData);
     }
 
+    /**
+     * onCreate
+     * Applying settings.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    protected function onCreate()
+    {
+        parent::onCreate();
+
+        $this->setResolution($this->getResolution());
+        $this->setLength($this->getLength());
+    }
+
 }
 ?>

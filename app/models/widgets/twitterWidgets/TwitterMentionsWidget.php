@@ -2,7 +2,11 @@
 
 class TwitterMentionsWidget extends DataWidget implements iServiceWidget
 {
+    /* Data selector. */
+    protected static $dataTypes = array('mentions');
+
     use TwitterWidgetTrait;
+
     /* -- Settings -- */
     private static $rangeSettings = array(
         'count' => array(
@@ -13,6 +17,18 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
             'default'    => '5'
         ),
     );
+
+    /**
+     * getData
+     * Return the tweets as an array.
+     * --------------------------------------------------
+     * @param array $postData
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getData(array $postData=array()) {
+        return $this->data['mentions'];
+    }
 
     /**
      * getTemplateData

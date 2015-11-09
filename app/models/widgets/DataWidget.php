@@ -98,7 +98,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
 
     /**
      * onCreate
-     * Creating dataManager.
+     * Creating assigning data.
      * --------------------------------------------------
      * @param array $attributes
      * --------------------------------------------------

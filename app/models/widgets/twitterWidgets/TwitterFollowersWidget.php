@@ -11,16 +11,31 @@ class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
     /* Service settings. */
     use TwitterWidgetTrait;
 
+    /* Histogram data representation. */
+    use HistogramTableLayoutTrait;
+    use HistogramCountLayoutTrait;
+    use HistogramChartLayoutTrait;
+    use HistogramWidgetTrait;
+
+    /* -- Choice functions -- */
+    public function type()
+    {
+        return array(
+            'chart'  => 'Chart',
+            'table'  => 'Table',
+            'count'  => 'Count'
+        );
+    }
+
     /**
-     * buildChartData
-     * Build the chart data.
+     * buildHistogramEntries
+     * Build the histogram data.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    protected function buildChartData()
+    protected function buildHistogramEntries() 
     {
-        /* Building the histogram. */
         return $this->data['followers'];
     }
 }

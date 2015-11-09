@@ -59,6 +59,7 @@ trait HistogramCountLayoutTrait
             'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
+
         if ($this instanceof iServiceWidget) {
             $countTemplateData['footer'] = $this->getServiceSpecificName();
         } else {
