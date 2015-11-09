@@ -11,9 +11,6 @@ class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
     /* Service settings. */
     use TwitterWidgetTrait;
 
-    /* Histogram data representation. */
-    use HistogramWidgetTrait;
-
     /**
      * buildChartData
      * Build the chart data.

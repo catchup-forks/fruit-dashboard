@@ -28,23 +28,6 @@ trait HistogramChartLayoutTrait
     }
 
     /**
-     * getChartTemplateData
-     * Return all values that are used in templates.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function getChartTemplateData()
-    {
-        /* Chart specific data. */
-        return array(
-            'currentDiff'   => $this->compare(),
-            'currentValue'  => $this->getLatestValues(),
-            'hasCumulative' => static::$isCumulative
-        );
-    }
-
-    /**
      * getChartTemplateMeta
      * Return the url, and selector.
      * --------------------------------------------------
@@ -54,9 +37,10 @@ trait HistogramChartLayoutTrait
      */
     protected function getChartTemplateMeta($meta)
     {
-        /* Chart specific data. */
+        /* Adding extra values. */
         $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
         $meta['selectors']['graph'] = '[id^=chart-container]';
+
         return $meta;
     }
 
@@ -98,10 +82,12 @@ trait HistogramChartLayoutTrait
             $prevValue = $value;
         }
 
-        return array(
-            'isCombined' => true,
-            'datasets'   => $dataSets,
-            'labels'     => $datetimes,
+         return array(
+            'isCombined'   => 'true',
+            'datasets'     => $dataSets,
+            'labels'       => $datetimes,
+            'currentDiff'  => $this->compare(),
+            'currentValue' => $this->getLatestValues()
         );
     }
 

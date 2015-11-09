@@ -2,15 +2,10 @@
 
 abstract class HistogramWidget extends DataWidget
 {
-    abstract protected function buildChartData();
+    abstract public function type();
 
     /* Data format definer. */
     use NumericWidgetTrait;
-
-    /* Loading layout traits. */
-    use HistogramTableLayoutTrait;
-    use HistogramCountLayoutTrait;
-    use HistogramChartLayoutTrait;
 
     /* -- Settings -- */
     private static $histogramSettings = array(
@@ -53,18 +48,6 @@ abstract class HistogramWidget extends DataWidget
         );
     }
 
-    public function type()
-    {
-        $types = array(
-            'chart' => 'Line chart',
-            'table' => 'Table layout'
-        );
-        if (static::$isCumulative) {
-            $types['count'] = 'Count widget';
-        }
-        return $types;
-    }
-
     /**
      * getSettingsFields
      * Returns the SettingsFields
@@ -94,16 +77,13 @@ abstract class HistogramWidget extends DataWidget
         $meta['layout'] = $this->getLayout();
         $meta['general']['name'] = $this->getName();
 
-        /* Deciding which data we'll need. */
-        switch ($this->getLayout()) {
-            case 'table': return $this->getTableTemplateMeta($meta); break;
-            case 'count': return $this->getCountTemplateMeta($meta); break;
-            case 'chart': return $this->getChartTemplateMeta($meta); break;
-            default: return $this->getChartTemplateMeta($meta);
-        }
+        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_meta');
+        if ( method_exists($this, $fn)) {
+            return $this->$fn($meta);
+        } 
 
-        /* Merging and returning the data. */
         return $meta;
+
     }
 
     /**
@@ -127,19 +107,10 @@ abstract class HistogramWidget extends DataWidget
             'hasData' => empty($this->activeHistogram)
         );
 
-        /* Deciding which data we'll need. */
-        switch ($this->getLayout()) {
-            case 'table': $layoutSpecificData = $this->getTableTemplateData(); break;
-            case 'count': $layoutSpecificData = $this->getCountTemplateData(); break;
-            case 'chart': $layoutSpecificData = $this->getChartTemplateData(); break;
-            default: $layoutSpecificData = $this->getChartTemplateData();
-        }
-
         /* Merging and returning the data. */
         return array_merge(
             $templateData,
-            $histogramTemplateData,
-            $layoutSpecificData
+            $histogramTemplateData
         );
     }
 
@@ -197,39 +168,6 @@ abstract class HistogramWidget extends DataWidget
     }
 
     /**
-     * getData
-     * Return the data based on layout.
-     * --------------------------------------------------
-     * @param array $postData
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function getData(array $postData=array())
-    {
-        if (empty($postData)) {
-            $postData = array();
-        }
-
-        if (array_key_exists('layout', $postData)) {
-            $layout = $postData['layout'];
-        } else {
-            $layout = $this->getLayout();
-        }
-
-        /* Building the histogram. */
-        $this->setActiveHistogram($this->buildChartData());
-
-        switch ($layout) {
-            case 'table': return $this->getTableData($postData); break;
-            case 'count': return $this->getCountData($postData); break;
-            case 'chart': return $this->getChartData($postData); break;
-            default: return $this->getChartData($postData);
-        }
-
-        return null;
-    }
-
-    /**
      * saveSettings
      * Collecting new data on change.
      * --------------------------------------------------
@@ -265,5 +203,34 @@ abstract class HistogramWidget extends DataWidget
         }
         return $validationArray;
     }
+
+    /**
+     * getData
+     * Build the chart data.
+     * --------------------------------------------------
+     * @param array $postData
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function getData(array $postData=array())
+    {
+        if (empty($postData)) {
+            $postData = array();
+        }
+
+        if (array_key_exists('layout', $postData)) {
+            $layout = $postData['layout'];
+        } else {
+            $layout = $this->getLayout();
+        }
+
+        /* Building the histogram. */
+        $this->setActiveHistogram($this->buildHistogramEntries());
+
+        /* Creating getData function name. */
+        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_data');
+        return $this->$fn($postData);
+    }
+
 }
 ?>

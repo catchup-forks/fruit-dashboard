@@ -2,25 +2,27 @@
 
 class FacebookEngagedUsersWidget extends HistogramWidget implements iServiceWidget
 {
-    /* Data selector. */
-    protected static $dataTypes = array('engaged_users');
-
     /* Service settings. */
     use FacebookWidgetTrait;
 
     /* Histogram data representation. */
     use HistogramWidgetTrait;
 
+    /* Data selector. */
+    protected static $dataTypes = array('engaged_users');
+
+    /* Data attribute. */
+    protected static $isCumulative = false;
+
     /**
-     * buildChartData
-     * Build the chart data.
+     * buildHistogramEntries
+     * Build the histogram data.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    protected function buildChartData()
+    protected function buildHistogramEntries() 
     {
-        /* Building the histogram. */
         return $this->data['engaged_users'];
     }
 }

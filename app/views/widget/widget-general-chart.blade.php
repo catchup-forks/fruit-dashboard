@@ -1,16 +1,16 @@
 <div class="chart-value larger-text">
-  {{ Utilities::formatNumber(array_values($widget['currentValue'])[0], $widget['format']) }}
+  {{ Utilities::formatNumber(array_values($widget['data']['currentValue'])[0], $widget['format']) }}
 </div> <!-- /.chart-value -->
 
 <div class="chart-diff-data text-center">
 
-  <div class="chart-diff @if($widget['className']::isSuccess($widget['currentDiff'])) text-success @else text-danger @endif">
-  @if ($widget['currentDiff'] >= 0)
+  <div class="chart-diff @if($widget['className']::isSuccess($widget['data']['currentDiff'])) text-success @else text-danger @endif">
+  @if ($widget['data']['currentDiff'] >= 0)
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
   @else
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
-    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber(array_values($widget['currentDiff'])[0], $widget['format']) }}</span>
+    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber(array_values($widget['data']['currentDiff'])[0], $widget['format']) }}</span>
   </div> <!-- /.chart-diff -->
 
   <div class="chart-diff-dimension smaller-text">

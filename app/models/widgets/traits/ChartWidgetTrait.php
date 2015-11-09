@@ -68,7 +68,7 @@ trait ChartWidgetTrait
         $dataSets = $this->initializeDataSets();
 
         /* Data transform, to chartJS ready values. */
-        foreach ($this->builgHistogram() as $entry) {
+        foreach ($this->buildHistogram() as $entry) {
             /* Adding value */
             $value = $entry['value'];
             array_push($dataSets[0]['values'], $value);
@@ -109,13 +109,13 @@ trait ChartWidgetTrait
     {
         return array(
             array(
-                'type'   => 'line',
+                'type'   => 'bar',
                 'color'  => SiteConstants::getChartJsColors()[0],
                 'name'   => $this->getDescriptor()->name,
                 'values' => array()
             ),
             array(
-                'type'   => 'bar',
+                'type'   => 'line',
                 'color'  => SiteConstants::getChartJsColors()[1],
                 'name'   => 'Difference',
                 'values' => array()

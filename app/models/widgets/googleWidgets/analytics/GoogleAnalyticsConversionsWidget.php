@@ -2,7 +2,6 @@
 
 /**  
  * A table of the number of conversions.
- *
 */
 class GoogleAnalyticsConversionsWidget extends TableWidget implements iServiceWidget
 {

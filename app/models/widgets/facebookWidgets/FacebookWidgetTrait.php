@@ -2,6 +2,11 @@
 
 trait FacebookWidgetTrait
 {
+    /* Histogram data representation. */
+    use HistogramTableLayoutTrait;
+    use HistogramCountLayoutTrait;
+    use HistogramChartLayoutTrait;
+
     /* -- Settings -- */
     private static $pageSettings = array(
         'page' => array(
@@ -13,7 +18,16 @@ trait FacebookWidgetTrait
     );
     private static $page = array('page');
 
-    /* Choices functions */
+    /* -- Choice functions -- */
+    public function type()
+    {
+        return array(
+            'chart'  => 'Chart',
+            'table'  => 'Table',
+            'count'  => 'Count'
+        );
+    }
+
     public function page() {
         $pages = array();
         foreach ($this->user()->facebookPages as $page) {

@@ -15,15 +15,14 @@ class FacebookLikesWidget extends HistogramWidget implements iServiceWidget
     use HistogramWidgetTrait;
 
     /**
-     * buildChartData
-     * Build the chart data.
+     * buildHistogramEntries
+     * Build the histogram data.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    protected function buildChartData()
+    protected function buildHistogramEntries() 
     {
-        /* Building the histogram. */
         return $this->data['likes'];
     }
 }
