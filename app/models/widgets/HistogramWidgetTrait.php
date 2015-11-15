@@ -206,7 +206,8 @@ trait HistogramWidgetTrait
         if (isset($origLength)) {
             $this->setLength($origLength);
         }
-        return $histogram[$index];
+
+        return self::getEntryValues($histogram[$index]);
     }
 
     /**
@@ -374,5 +375,4 @@ trait HistogramWidgetTrait
     {
         return  ($value < 0) xor static::$isHigherGood;
     }
-
 }

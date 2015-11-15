@@ -87,7 +87,7 @@ trait MultipleHistogramWidgetTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function transformeDatasets()
+    protected function transformDatasets()
     {
         /* Initializing transformed data sets. */
         $transformedDatasets = array();
@@ -139,7 +139,7 @@ trait MultipleHistogramWidgetTrait
     {
         /* Creating data, value pairs. */
         $filteredDatasets = array();
-        foreach ($this->transformeDatasets() as $dataset=>$values) {
+        foreach ($this->transformDatasets() as $dataset=>$values) {
 
             $sum = array_sum($values);
 
@@ -155,4 +155,5 @@ trait MultipleHistogramWidgetTrait
         return array_keys(array_slice($filteredDatasets, 0, $n));
     }
 }
+
 ?>

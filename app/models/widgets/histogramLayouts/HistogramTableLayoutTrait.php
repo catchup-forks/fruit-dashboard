@@ -2,10 +2,6 @@
 
 trait HistogramTableLayoutTrait
 {
-    /* Dummies */
-    protected function getTableTemplateMeta() {return array();}
-    protected function getTableTemplateData() {return array();}
-
     /**
      * getTableData
      * Returns the data in table format.

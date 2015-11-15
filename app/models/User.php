@@ -202,7 +202,7 @@ class User extends Eloquent implements UserInterface
                 /* Widget is loading, no data is available yet. */
                 try {
                     $templateData = $widget->getTemplateData();
-                } catch (Exception $e) {
+                } catch (ServiceException $e) {
                     /* Something went wrong during rendering. */
                     Log::error($e->getMessage());
                     /* Falling back to default template data. */

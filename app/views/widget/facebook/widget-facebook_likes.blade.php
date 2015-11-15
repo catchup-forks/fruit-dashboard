@@ -1,1 +1,1 @@
-@include('widget.widget-general-chart')
+@include('widget.widget-general-histogram')

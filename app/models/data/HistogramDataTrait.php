@@ -38,7 +38,6 @@ trait HistogramDataTrait
         }
 
         return $differentiatedArray;
-
     }
 
     /**
@@ -98,20 +97,6 @@ trait HistogramDataTrait
         return Carbon::now();
     }
 
-    /**
-     * timestampSort
-     * Comparing two timestamps. (buildHistogram())
-     * --------------------------------------------------
-     * @param array $CseZso1
-     * @param array $CseZso2
-     * @return boolean
-     * --------------------------------------------------
-     */
-    protected static function timestampSort($CseZso1, $CseZso2)
-    {
-        return $CseZso1['timestamp'] < $CseZso2['timestamp'];
-    }
-
 	/**
      * sortHistogram
      * Sorting the array.
@@ -128,6 +113,20 @@ trait HistogramDataTrait
             $entries = array();
         }
         return $desc ? $entries : array_reverse($entries);
+    }
+
+    /**
+     * timestampSort
+     * Comparing two timestamps. (buildHistogram())
+     * --------------------------------------------------
+     * @param array $CseZso1
+     * @param array $CseZso2
+     * @return boolean
+     * --------------------------------------------------
+     */
+    protected static function timestampSort($CseZso1, $CseZso2)
+    {
+        return $CseZso1['timestamp'] < $CseZso2['timestamp'];
     }
 }
 ?>

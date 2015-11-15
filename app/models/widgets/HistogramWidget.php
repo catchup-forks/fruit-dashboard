@@ -14,7 +14,8 @@ abstract class HistogramWidget extends DataWidget
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'days',
-            'help_text'  => 'Set the timescale for the X axis of the chart.'
+            'help_text'  => 'Set the timescale for the X axis of the chart.',
+            'hidden'     => true
         ),
         'name' => array(
             'name'       => 'Name',
