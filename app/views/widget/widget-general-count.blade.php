@@ -1,4 +1,4 @@
-<div id="count-{{ $widget['id'] }}" class="text-center" data-toggle="tooltip" data-placement="bottom" title="
+<div id="count-{{ $widget['id'] }}" class="flex-child text-center" data-toggle="tooltip" data-placement="bottom" title="
 
    {{ $widget['description'] }} is
     <strong>

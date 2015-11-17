@@ -12,6 +12,9 @@ function FDWidget(widgetOptions) {
   var widgetSelector  = options.selectors.widget;
   var widgetClass     = 'FD' + options.general.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
   var specific        = new window[widgetClass](options);
+  
+  var delayTime       = 1000;
+  var delayTimer      = function(){};
 
   // For debugging
   var logging = false;
@@ -153,6 +156,18 @@ function FDWidget(widgetOptions) {
     if (logging) { console.log('...done | Removing widget #' + options.general.id); }
   }
 
+  /**
+   * @function changeLayout
+   * --------------------------------------------------------------------------
+   * Redraws the widget content.
+   * @param "string" | the name of the layout
+   * @return {changes the layout}
+   * --------------------------------------------------------------------------
+   */
+  function changeLayout(string) {
+    console.log('layout changed to ' + string);
+  };
+
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
    * -------------------------------------------------------------------------- */
@@ -176,6 +191,50 @@ function FDWidget(widgetOptions) {
    */
   $(widgetSelector).resize(function() {
     reinit();
+  });
+
+  /**
+   * @event $(options.selectors.layout).mouseleave
+   * --------------------------------------------------------------------------
+   * Stops the layout changing process.
+   * Reverts to default layout.   
+   * --------------------------------------------------------------------------
+   */
+  $(options.selectors.layout).mouseleave(function() {
+    if (logging) { console.log("stopped the timer"); }
+    clearTimeout(delayTimer);
+    // Change the layout back to the default here
+  });
+
+  /**
+   * @event $(options.selectors.layout*).mouseenter
+   * --------------------------------------------------------------------------
+   * Starts the layout change process with a timeout.
+   * Resets any other concurrent layout changing processes.
+   * --------------------------------------------------------------------------
+   */
+  $(options.selectors.layout + "> .element").mouseenter(function() {
+    if (logging) { console.log("entered: " + $(this).data('layout')); }
+    if (logging) { console.log("reset the timer"); }
+    clearTimeout(delayTimer);
+    if (logging) { console.log("started the timer"); }
+    delayTimer = setTimeout(changeLayout, delayTime, $(this).data('layout'));
+  });
+
+  /**
+   * @event $(options.selectors.layout*).click
+   * --------------------------------------------------------------------------
+   * Sets the new default layout for the widget.
+   * --------------------------------------------------------------------------
+   */
+  $(options.selectors.layout + "> .element").click(function() {
+    // Call ajax set to default here
+    if (logging) { console.log("clicked: " + $(this).data('layout')); }
+    // Remove the active class, if any.
+    $(options.selectors.layout + "> div.active").removeClass('active');
+    // Add the active class for the clicked element.
+    $(this).addClass("active");
+
   });
 
   /**
