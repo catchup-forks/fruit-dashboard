@@ -10,6 +10,8 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
 
     /* Histogram data representation. */
     use MultipleHistogramChartLayoutTrait;
+    use HistogramTableLayoutTrait;
+    use HistogramCountLayoutTrait;
 
     /* Data selector. */
     protected static $dataTypes = array('users');
@@ -21,9 +23,10 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
     public function type()
     {
         return array(
-            'chart'  => 'Chart',
-            'table'  => 'Table',
-            'count'  => 'Count'
+            'chart'          => 'By source',
+            'combined_chart' => 'Diff + line',
+            'table'          => 'Table',
+            'count'          => 'Count'
         );
     }
 
@@ -36,7 +39,88 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
     */
     protected function buildHistogramEntries() 
     {
-        return $this->data['users'];
+        /* Setting up the widget default settings. */
+        $this->layoutSetup();
+
+        /* Setting active histogram. */
+        if ($this->toSingle) {
+            /* Transforming to single. */
+            return $this->transformToSingle($this->data['users']['data']);
+        } else {
+            /* Multi layout. */
+            return $this->data['users'];
+        }
+    }
+
+    /**
+     * layoutSetup
+     * Set up the widget based on the layout.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    private function layoutSetup()
+    {
+        switch ($this->getLayout()) {
+            case 'chart':
+                $this->setDiff(true);
+            break;
+            case 'combined_chart':
+                $this->setSingle(true);
+            break;
+            case 'count':
+                $this->setSingle(true);
+            break;
+            case 'table':
+                $this->setSingle(true);
+            break;
+            default: break;
+        }
+    }
+
+    /**
+     * __call
+     * Map some functions, on single/multiple layouts.
+     * --------------------------------------------------
+     * @param string name
+     * @param array args
+     * @return mixed
+     * --------------------------------------------------
+    */
+    public function __call($name, $args)
+    {
+        /* Removing Combined from the function name. */
+        $fn = str_replace('Combined', '', $name);
+        if ($fn != $name && method_exists($this, $fn)) {
+            /* Calling corresponding function. */
+            return call_user_func_array(array(&$this, $fn), $args);
+        }
+
+        return parent::__call($name, $args);
+    }
+
+    /**
+     * getCountDescription
+     * --------------------------------------------------
+     * Return the description for the count widget.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getCountDescription()
+    {
+        return 'The number of users on your property ' . $this->getProperty()->name;
+    }
+
+    /**
+     * getCountFooter
+     * --------------------------------------------------
+     * Return the footer for the count widget.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getCountFooter()
+    {
+        return $this->getProperty()->name;
     }
 }
 ?>

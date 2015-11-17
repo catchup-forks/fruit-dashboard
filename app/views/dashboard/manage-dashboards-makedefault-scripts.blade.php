@@ -85,15 +85,21 @@ function callMakeDefaultAjax(oldID, newID) {
     type: "POST",
     dataType: 'json',
     url: url,
-        data: null,
-        success: function(data) {
-          easyGrowl('success', successmsg, 3000);
-        },
-        error: function() {
-          easyGrowl('error', errormsg, 3000);
-          // Revert the process
-          changeLockIcon(newID, oldID);
-        }
-    });
+    data: null,
+    success: function(data) {
+      if(data) {
+        easyGrowl('success', successmsg, 3000);
+      } else {
+        easyGrowl('error', errormsg, 3000);
+        // Revert the process
+        changeDefaultIcon(newID, oldID);
+      }
+    },
+    error: function() {
+      easyGrowl('error', errormsg, 3000);
+      // Revert the process
+      changeDefaultIcon(newID, oldID);
+    }
+  });
 }
 </script>

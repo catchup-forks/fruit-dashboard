@@ -285,9 +285,11 @@ class DashboardController extends BaseController
         if (is_null($dashboard)) {
             return null;
         }
-        if ($dashboard->user != Auth::user()) {
-            return null;
+
+        if ($dashboard->user->id != Auth::user()->id) {
+            return NULL;
         }
+        
         return $dashboard;
     }
     /**

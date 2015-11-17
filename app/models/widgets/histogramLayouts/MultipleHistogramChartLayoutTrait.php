@@ -2,9 +2,9 @@
 
 trait MultipleHistogramChartLayoutTrait
 {
+    protected static $maxDataSets = 5;
     use HistogramChartLayoutTrait {
         HistogramChartLayoutTrait::getChartJSData as _getChartJSData;
-        HistogramChartLayoutTrait::initializeDataSets as _initializeDataSets;
     }
 
     /**
@@ -17,9 +17,13 @@ trait MultipleHistogramChartLayoutTrait
      */
     protected function getChartJSData($dateFormat)
     {
+        if ($this->toSingle) {
+            return $this->_getChartJSData($dateFormat);
+        }
+
         /* Data init. */
         $datetimes = array();
-        $dataSets = $this->initializeDataSets();
+        $dataSets = $this->initializeMultiDataSets();
 
         /* Data transform, to chartJS ready values. */
         foreach ($this->buildHistogram() as $entry) {
@@ -39,7 +43,7 @@ trait MultipleHistogramChartLayoutTrait
 
         return array(
             'isCombined'   => 'false',
-            'datasets'     => $dataSets,
+            'datasets'     => self::removeEmptyDatasets($dataSets),
             'labels'       => $datetimes,
             'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
@@ -53,7 +57,7 @@ trait MultipleHistogramChartLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function initializeDataSets()
+    protected function initializeMultiDataSets()
     {
         $dataSets = array();
         $i = 0;
@@ -69,5 +73,30 @@ trait MultipleHistogramChartLayoutTrait
         }
 
         return $dataSets;
+    }
+
+    /**
+     * removeEmptyDatasets
+     * Return the datasets, removing the empty ones.
+     * --------------------------------------------------
+     * @param array $datasets
+     * @return array
+     * --------------------------------------------------
+     */
+    private static function removeEmptyDatasets($datasets)
+    {
+        $hasData = false;
+        $cleanedDataSets = array();
+        foreach ($datasets as $dataset) {
+            if ((count($dataset['values']) > 0) && (max($dataset['values']) > 0)) {
+                array_push($cleanedDataSets, $dataset);
+            }
+        }
+        
+        usort($cleanedDataSets, function($a, $b) {
+            return array_sum($a['values']) < array_sum($b['values']);
+        });
+
+        return array_slice($cleanedDataSets, 0, static::$maxDataSets);
     }
 }

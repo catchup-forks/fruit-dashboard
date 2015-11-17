@@ -74,8 +74,10 @@ trait MultipleHistogramWidgetTrait
                 'timestamp' => $entry['timestamp'],
                 'value'     => array_sum(static::getEntryValues($entry))
             );
+
             array_push($histogram, $newEntry);
         }
+
         return $histogram;
     }
 

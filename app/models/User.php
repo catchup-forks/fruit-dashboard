@@ -195,6 +195,8 @@ class User extends Eloquent implements UserInterface
             }
         }
 
+        //dd($dashboards);
+
         /* Populating widget data. */
         foreach ($this->widgets as $widget) {
             /* Getting template data for the widget. */

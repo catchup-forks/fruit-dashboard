@@ -27,25 +27,5 @@ trait MultipleChartWidgetTrait
 
         return $histogram;
     }
-
-    /**
-     * removeEmptyDatasets
-     * Return the datasets, removing the empty ones.
-     * --------------------------------------------------
-     * @param array $datasets
-     * @return array
-     * --------------------------------------------------
-     */
-    private static function removeEmptyDatasets($datasets)
-    {
-        $hasData = false;
-        $cleanedDataSets = array();
-        foreach ($datasets as $dataset) {
-            if ((count($dataset['values']) > 0) && (max($dataset['values']) > 0)) {
-                array_push($cleanedDataSets, $dataset);
-            }
-        }
-        return $cleanedDataSets;
-    }
 }
 ?>
