@@ -193,24 +193,26 @@ function FDWidget(widgetOptions) {
     reinit();
   });
 
+  /* MERGE CONFLICT FIXME */
+  // /**
+  //  * @event $(options.selectors.wrapper).hover
+  //  * --------------------------------------------------------------------------
+  //  * Shows / hides the non chart numbers on hover
+  //  * --------------------------------------------------------------------------
+  //  */
+  // $(options.selectors.wrapper).hover(function(e){
+  //   var widget = $(e.currentTarget);
+  //   widget.find('.chart-value').css('visibility', 'hidden');
+  //   widget.find('.chart-diff-data').css('visibility', 'hidden');
+  //   widget.find('.chart-name').css('visibility', 'hidden');
+  // }, function(e){
+  //   var widget = $(e.currentTarget);
+  //   widget.find('.chart-value').css('visibility', 'visible');
+  //   widget.find('.chart-diff-data').css('visibility', 'visible');
+  //   widget.find('.chart-name').css('visibility', 'visible');
+  // });
+
   /**
-<<<<<<< HEAD
-   * @event $(options.selectors.wrapper).hover
-   * --------------------------------------------------------------------------
-   * Shows / hides the non chart numbers on hover
-   * --------------------------------------------------------------------------
-   */
-  $(options.selectors.wrapper).hover(function(e){
-    var widget = $(e.currentTarget);
-    widget.find('.chart-value').css('visibility', 'hidden');
-    widget.find('.chart-diff-data').css('visibility', 'hidden');
-    widget.find('.chart-name').css('visibility', 'hidden');
-  }, function(e){
-    var widget = $(e.currentTarget);
-    widget.find('.chart-value').css('visibility', 'visible');
-    widget.find('.chart-diff-data').css('visibility', 'visible');
-    widget.find('.chart-name').css('visibility', 'visible');
-=======
    * @event $(options.selectors.layout).mouseleave
    * --------------------------------------------------------------------------
    * Stops the layout changing process.
@@ -251,8 +253,6 @@ function FDWidget(widgetOptions) {
     $(options.selectors.layout + "> div.active").removeClass('active');
     // Add the active class for the clicked element.
     $(this).addClass("active");
-
->>>>>>> development
   });
 
   /**
