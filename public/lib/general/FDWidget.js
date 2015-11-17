@@ -201,7 +201,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   $(options.selectors.layout).mouseleave(function() {
-    console.log("stopped the timer");
+    if (logging) { console.log("stopped the timer"); }
     clearTimeout(delayTimer);
     // Change the layout back to the default here
   });
@@ -214,10 +214,10 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   $(options.selectors.layout + "> .element").mouseenter(function() {
-    console.log("entered: " + $(this).data('layout'));
-    console.log("reset the timer");
+    if (logging) { console.log("entered: " + $(this).data('layout')); }
+    if (logging) { console.log("reset the timer"); }
     clearTimeout(delayTimer);
-    console.log("started the timer");
+    if (logging) { console.log("started the timer"); }
     delayTimer = setTimeout(changeLayout, delayTime, $(this).data('layout'));
   });
 
@@ -229,7 +229,7 @@ function FDWidget(widgetOptions) {
    */
   $(options.selectors.layout + "> .element").click(function() {
     // Call ajax set to default here
-    console.log("clicked: " + $(this).data('layout'));
+    if (logging) { console.log("clicked: " + $(this).data('layout')); }
     // Remove the active class, if any.
     $(options.selectors.layout + "> div.active").removeClass('active');
     // Add the active class for the clicked element.

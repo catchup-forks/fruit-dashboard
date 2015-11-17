@@ -6,6 +6,38 @@
   border-radius: @padding;
 }
 
+.flex-container {
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  // -webkit-align-items: center;
+  // align-items: center;
+  // justify-content: center;
+  // align-content: center;
+  background-color: @white;
+  background-color: fade(@white, @alpha);
+  padding: @padding;
+  .rounded;
+}
+
+.flex-child {
+  margin: auto;
+  padding-left: 6*@padding;
+  padding-right: 6*@padding;
+}
+
+// .flex-child-table {
+//   position: absolute;
+//   top:0;
+//   bottom:0;
+//   left:0;
+//   right:0;
+//   margin: auto;
+// }
+
 .widget-inner {
   background-color: @white;
   background-color: fade(@white, @alpha);
