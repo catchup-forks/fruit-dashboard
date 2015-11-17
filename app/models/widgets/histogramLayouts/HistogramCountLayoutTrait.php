@@ -66,19 +66,4 @@ trait HistogramCountLayoutTrait
 
         return $countTemplateData;
     }
-
-    /**
-     * getCountTemplateMeta
-     * Return the selector.
-     * --------------------------------------------------
-     * @param array $meta
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function getCountTemplateMeta($meta)
-    {
-        /* Chart specific data. */
-        $meta['selectors']['count'] = 'count-' . $this->id;
-        return $meta;
-    }
 }

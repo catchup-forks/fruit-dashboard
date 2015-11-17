@@ -28,23 +28,6 @@ trait HistogramChartLayoutTrait
     }
 
     /**
-     * getChartTemplateMeta
-     * Return the url, and selector.
-     * --------------------------------------------------
-     * @param array $meta
-     * @return array
-     * --------------------------------------------------
-     */
-    protected function getChartTemplateMeta($meta)
-    {
-        /* Adding extra values. */
-        $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
-        $meta['selectors']['graph'] = '[id^=chart-container]';
-
-        return $meta;
-    }
-
-    /**
      * getChartJSData
      * Return template ready grouped dataset.
      * --------------------------------------------------
