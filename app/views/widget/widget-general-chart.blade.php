@@ -22,7 +22,7 @@
   {{ $widget['settings']['name'] }}
 </p> <!-- /.chart-name -->
 
-<div id="chart-container-{{ $widget['id'] }}" class="clickable">
+<div id="chart-container-{{ $widget['id'] }}">
   <canvas class="chart chart-line"></canvas>
 </div>
 

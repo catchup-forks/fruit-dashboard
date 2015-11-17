@@ -281,8 +281,6 @@ function FDChartOptions(widgetOptions) {
       return;
     }
 
-    $(tooltip._chart.canvas).css('cursor', 'pointer');
-
     // Set caret Position
     tooltipEl.removeClass('above below no-transform');
     if (tooltip._view.yAlign) {
