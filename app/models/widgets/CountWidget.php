@@ -34,7 +34,7 @@ abstract class CountWidget extends DataWidget implements iAjaxWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -50,7 +50,7 @@ abstract class CountWidget extends DataWidget implements iAjaxWidget
 
     /**
      * getTemplateMeta
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -93,7 +93,7 @@ abstract class CountWidget extends DataWidget implements iAjaxWidget
 
     /**
      * getData
-     * Returning the current value.
+     * Return the current value.
      * --------------------------------------------------
      * @param array $postData
      * @return array
@@ -105,7 +105,7 @@ abstract class CountWidget extends DataWidget implements iAjaxWidget
         $dataManager = $this->data->getManager();
         if ($dataManager instanceof MultipleHistogramDataManager) {
             /* If the manager is multiple use single transformation. */
-            $dataManager->setSingle(TRUE);
+            $dataManager->setSingle(true);
         }
 
         $dataManager->setResolution($settings['period']);

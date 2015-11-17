@@ -43,7 +43,7 @@ class TwitterConnector extends GeneralServiceConnector
 
         /* Getting a request token. */
         $tries = 0;
-        $ready = FALSE;
+        $ready = false;
         while ( ! $ready && $tries < 4) {
             try {
                 $requestToken = $connection->oauth(
@@ -51,7 +51,7 @@ class TwitterConnector extends GeneralServiceConnector
                         'oauth_callback' => route('service.twitter.connect')
                     )
                 );
-                $ready = TRUE;
+                $ready = true;
             } catch (Exception $e) {
                 sleep(3);
                 $tries++;

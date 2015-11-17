@@ -120,11 +120,11 @@ class GoogleAnalyticsDataCollector
             $goal->profile()->associate($profile);
 
             /* Finding a match. */
-            $exists = FALSE;
+            $exists = false;
             foreach ($profile->goals as $prevGoal) {
                 if ($goal->goal_id == $prevGoal->goal_id &&
                     $goal->name == $prevGoal->name) {
-                    $exists = TRUE;
+                    $exists = true;
                 }
             }
             if ( ! $exists ) {
@@ -177,7 +177,7 @@ class GoogleAnalyticsDataCollector
      * @throws ServiceException
      * --------------------------------------------------
      */
-    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array(), $rawReturn=FALSE) {
+    public function getMetrics($profileId, $start, $end, array $metrics, array $optParams=array(), $rawReturn=false) {
         $useDimensions = array_key_exists('dimensions', $optParams);
         $metricsData = array();
 
@@ -193,7 +193,7 @@ class GoogleAnalyticsDataCollector
         $rows = $results->getRows();
 
         if ($rawReturn) {
-            return $rows;    
+            return $rows;
         } else if (count($rows) > 0) {
             /* Populating metricsData. */
             if ($useDimensions) {
@@ -263,7 +263,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getAvgSessionDuration
-     * Returning the number of sessions.
+     * Return the number of sessions.
      * --------------------------------------------------
      * @param string $profileId
      * @return array
@@ -278,7 +278,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getSessionsPerUser
-     * Returning the number of sessions per user.
+     * Return the number of sessions per user.
      * --------------------------------------------------
      * @param string $profileId
      * @return array
@@ -293,7 +293,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getSessions
-     * Returning the number of sessions.
+     * Return the number of sessions.
      * --------------------------------------------------
      * @param string $profileId
      * @return array
@@ -312,8 +312,28 @@ class GoogleAnalyticsDataCollector
    }
 
     /**
+     * getNewUsers
+     * Return the number of users.
+     * --------------------------------------------------
+     * @param string $profileId
+     * @return array
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    public function getNewUsers($profileId) {
+        return $this->getMetrics(
+            $profileId,
+            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'today',
+            array('newUsers'), array(
+                'dimensions'  => 'ga:source'
+            )
+        )['newUsers'];
+    }
+
+    /**
      * getUsers
-     * Returning the number of users.
+     * Return the number of users.
      * --------------------------------------------------
      * @param string $profileId
      * @return array
@@ -325,15 +345,15 @@ class GoogleAnalyticsDataCollector
             $profileId,
             SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
             'today',
-            array('newUsers'), array(
+            array('users'), array(
                 'dimensions'  => 'ga:source'
             )
-        )['newUsers'];
+        )['users'];
    }
 
     /**
      * getGoalCompletions
-     * Returning the number of goal completions.
+     * Return the number of goal completions.
      * --------------------------------------------------
      * @param string $profileId
      * @param string $goalId
@@ -355,7 +375,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getBounceRate
-     * Returning the percentage of bounce rate.
+     * Return the percentage of bounce rate.
      * --------------------------------------------------
      * @param string $profileId
      * @return array
@@ -371,7 +391,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getActiveUsers
-     * Returning the active users (multiple).
+     * Return the active users (multiple).
      * --------------------------------------------------
      * @param string $profileId
      * @param $metricNames
@@ -426,7 +446,7 @@ class GoogleAnalyticsDataCollector
 
     /**
      * getAccountIds
-     * Returning the first account id.
+     * Return the first account id.
      */
     private function getAccountIds() {
         /* Getting accounts */

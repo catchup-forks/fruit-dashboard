@@ -29,7 +29,7 @@ class CollectData extends Command {
     {
         /* Iterating through the managers. */
         Log::info("Data collection started at " . Carbon::now()->toDateTimeString());
-        $time = microtime(TRUE);
+        $time = microtime(true);
         $errors = 0;
         $i = 0;
         foreach (DB::table('data')->lists('id') as $dataId) {
@@ -49,6 +49,6 @@ class CollectData extends Command {
                 }
             }
         }
-        Log::info('Data collection finished with ' . $errors . ' errors (of ' . $i . ') It took ' . ( microtime(TRUE) - $time) . ' seconds to run.');
+        Log::info('Data collection finished with ' . $errors . ' errors (of ' . $i . ') It took ' . ( microtime(true) - $time) . ' seconds to run.');
     }
 }

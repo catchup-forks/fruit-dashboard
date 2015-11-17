@@ -1,17 +1,17 @@
 <?php
 
 /**
-* -------------------------------------------------------------------------- 
-* SiteFunctions: 
+* --------------------------------------------------------------------------
+* SiteFunctions:
 *       Class for the global site functions.
 * Usage:
 *       PHP     | $returnValue = SiteFunctions::functionName();
 *       BLADE   | {{ SiteFunctions::functionName() }}
-* -------------------------------------------------------------------------- 
+* --------------------------------------------------------------------------
 */
 class SiteFunctions {
     /* -- Class properties -- */
-    
+
     /**
      * ================================================== *
      *                   PUBLIC SECTION                   *
@@ -32,24 +32,24 @@ class SiteFunctions {
         /* Build request */
         $request = curl_init($url['endpoint']);
         curl_setopt($request, CURLOPT_POSTFIELDS, http_build_query($url['params']));
-        curl_setopt($request, CURLOPT_HEADER,           FALSE);
-        curl_setopt($request, CURLOPT_POST,             TRUE);
-        curl_setopt($request, CURLOPT_FOLLOWLOCATION,   TRUE);
-        curl_setopt($request, CURLOPT_RETURNTRANSFER,   TRUE);
-        //curl_setopt($request, CURLOPT_FRESH_CONNECT,    TRUE);
+        curl_setopt($request, CURLOPT_HEADER,           false);
+        curl_setopt($request, CURLOPT_POST,             true);
+        curl_setopt($request, CURLOPT_FOLLOWLOCATION,   true);
+        curl_setopt($request, CURLOPT_RETURNTRANSFER,   true);
+        //curl_setopt($request, CURLOPT_FRESH_CONNECT,    true);
         //curl_setopt($request, CURLOPT_TIMEOUT_MS,       10);
 
         // TODO: Additional error handling
         $respCode = curl_getinfo($request, CURLINFO_HTTP_CODE);
-        
+
         /* Get response */
-        $response = json_decode(curl_exec($request), TRUE);
-        
+        $response = json_decode(curl_exec($request), true);
+
         /* Close connection*/
         curl_close($request);
 
         /* Return response */
         return $response;
     }
-    
+
 } /* SiteFunctions */

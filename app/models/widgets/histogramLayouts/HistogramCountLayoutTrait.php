@@ -2,9 +2,12 @@
 
 trait HistogramCountLayoutTrait
 {
+    abstract protected function getCountDescription();
+    abstract protected function getCountFooter();
+
     /**
      * getCountData
-     * Returning the count data.
+     * Return the count data.
      * --------------------------------------------------
      * @param array $options
      * @return array
@@ -15,13 +18,13 @@ trait HistogramCountLayoutTrait
 
         /* Setting options. */
         if (array_key_exists('range', $options)) {
-            $this->dataManager->setRange($options['range']);
+            $this->setRange($options['range']);
         }
         if (array_key_exists('resolution', $options)) {
-            $this->dataManager->setResolution($options['resolution']);
+            $this->setResolution($options['resolution']);
         }
 
-        return $this->dataManager->build();
+        return $this->buildHistogram();
     }
 
     /**
@@ -31,7 +34,7 @@ trait HistogramCountLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function getStartDate() 
+    protected function getStartDate()
     {
         $multiplier = $this->getSettings()['length'];
         $now = Carbon::now();
@@ -46,52 +49,36 @@ trait HistogramCountLayoutTrait
 
     /**
      * getCountTemplateData
-     * Returning all values that are used in templates.
+     * Return all values that are used in templates.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    protected function getCountTemplateData() 
+    protected function getCountTemplateData()
     {
         $countTemplateData = array(
-            'description'  => '',
+            'description'  => $this->getCountDescription(),
+            'footer'       => $this->getCountFooter(),
             'startDate'    => $this->getStartDate(),
-            'currentDiff'  => $this->getDiff(),
+            'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
-        if ($this instanceof iServiceWidget) {
-            $countTemplateData['footer'] = $this->getServiceSpecificName();
-        } else {
-            $countTemplateData['footer'] = '';
-        }
+
         return $countTemplateData;
     }
 
     /**
      * getCountTemplateMeta
-     * Returning the selector.
+     * Return the selector.
      * --------------------------------------------------
      * @param array $meta
      * @return array
      * --------------------------------------------------
      */
-    protected function getCountTemplateMeta($meta) 
+    protected function getCountTemplateMeta($meta)
     {
         /* Chart specific data. */
         $meta['selectors']['count'] = 'count-' . $this->id;
         return $meta;
     }
-
-    /**
-     * setupCountDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @param DataManager $manager
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupCountDataManager($manager) 
-    {
-    }
-
 }

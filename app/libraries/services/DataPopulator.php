@@ -36,7 +36,7 @@ class DataPopulator
     public function fire($job, $data) {
         /* Init */
         Log::info("Starting data collection at " . Carbon::now()->toDateTimeString());
-        $time = microtime(TRUE);
+        $time = microtime(true);
         $this->user     = User::find($data['user_id']);
         $this->criteria = $data['criteria'];
         $this->service  = $data['service'];
@@ -51,7 +51,7 @@ class DataPopulator
         $this->activate();
 
         /* Finish */
-        Log::info("Data collection finished and it took " . (microtime(TRUE) - $time) . " seconds to run.");
+        Log::info("Data collection finished and it took " . (microtime(true) - $time) . " seconds to run.");
 
         $job->delete();
     }
@@ -61,7 +61,7 @@ class DataPopulator
      */
     protected function populate() {
         foreach ($this->dataObjects as $data) {
-            if ($data->decode() == FALSE) {
+            if ($data->decode() == false) {
                 try {
                     $data->initialize();
                     $data->setState('active');

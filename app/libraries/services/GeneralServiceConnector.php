@@ -111,13 +111,12 @@ abstract class GeneralServiceConnector
      */
     public function createDataObjects(array $criteria=array()) {
         $dataObjects = array();
-        foreach(WidgetDescriptor::where('category', static::$service)
-            ->orderBy('number', 'asc')->get() as $descriptor) {
+        foreach(DataDescriptor::where('category', static::$service)->get() as $descriptor) {
             /* Creating widget instance. */
-            $className = $descriptor->getClassName();
+            $className = $descriptor->getCollectorClassName();
 
             /* No manager class found */
-            if ( ! class_exists($descriptor->getDMClassName())) {
+            if ( ! class_exists($className)) {
                 continue;
             }
 
@@ -152,15 +151,16 @@ abstract class GeneralServiceConnector
             $data = Data::create(array(
                 'criteria'      => $settingsCriteria,
                 'user_id'       => $this->user->id,
-                'descriptor_id' => $descriptor->id,
-                'state'         => 'loading'
-            ), FALSE);
+                'descriptor_id' => $descriptor->id
+            ), false);
 
             /* Assigning foreign values */
             $data->save();
             array_push($dataObjects, $data);
         }
+
         $this->populateData($criteria);
+
         return $dataObjects;
     }
 

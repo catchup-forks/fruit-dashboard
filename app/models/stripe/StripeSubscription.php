@@ -17,7 +17,7 @@ class StripeSubscription extends Eloquent
     );
 
     // -- Options -- //
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function plan() { return $this->belongsTo('StripePlan', 'plan_id'); }

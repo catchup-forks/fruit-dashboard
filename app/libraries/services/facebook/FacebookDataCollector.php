@@ -111,7 +111,7 @@ class FacebookDataCollector
 
     /**
      * getInsightCurrentValue
-     * Returning the current value of an insight.
+     * Return the current value of an insight.
      * --------------------------------------------------
      * @param int $page
      * @param string $insight
@@ -130,7 +130,7 @@ class FacebookDataCollector
 
     /**
      * getPopulateHistogram
-     * Returning histogram values for connector back.
+     * Return histogram values for connector back.
      * --------------------------------------------------
      * @param int $pageId
      * @param string $insight

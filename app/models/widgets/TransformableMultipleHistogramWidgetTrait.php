@@ -25,12 +25,12 @@ trait TransformableMultipleHistogramWidgetTrait
         $manager = parent::setupDataManager($options);
         /* Setting single. */
         if ($this->isCumulative()) {
-            $manager->setSingle(TRUE);
+            $manager->setSingle(true);
         }
         return $manager;
     }
 
-    
+
     /**
      * isCumulative
      * Returns whether or not the widget is cumulative.

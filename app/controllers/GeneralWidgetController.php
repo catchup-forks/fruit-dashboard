@@ -72,11 +72,6 @@ class GeneralWidgetController extends BaseController {
         );
         $validatorArray['dashboard'] = 'required|in:' . implode(',', $dashboardIds);
 
-        /* Adding update_period on DataWidget */
-        if ($widget instanceof DataWidget) {
-            $validatorArray['update_period'] = 'required|integer|min:23';
-        }
-
         /* Validate inputs */
         $validator = forward_static_call_array(
             array('Validator', 'make'),
@@ -101,14 +96,9 @@ class GeneralWidgetController extends BaseController {
             $widget->position = $newDashboard->getNextAvailablePosition($pos->size_x, $pos->size_y);
             $widget->dashboard()->associate($newDashboard);
         }
-        
+
         /* Validation succeeded, ready to save */
         $widget->saveSettings(Input::all());
-
-        /* Adding update_period on DataWidget */
-        if ($widget instanceof DataWidget) {
-            $widget->setUpdatePeriod(Input::get('update_period'));
-        }
 
         /* Track event | EDIT WIDGET */
         $tracker = new GlobalTracker();
@@ -140,7 +130,7 @@ class GeneralWidgetController extends BaseController {
         return View::make('widget.setup-widget')
             ->with('widget', $widget)
             ->with('settings', array_intersect_key(
-                $widget->getSettingsFields(),
+                $widget->getFlatSettingsFields(),
                 array_flip($widget->getSetupFields())
             ));
     }
@@ -285,7 +275,7 @@ class GeneralWidgetController extends BaseController {
             return Redirect::route('widget.add')->with('error', 'Something went wrong, please try again.');
         }
         /* If widget has no setup fields, redirect to dashboard automatically */
-        if ($widget->getSetupFields() == FALSE) {
+        if ($widget->getSetupFields() == false) {
             return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
@@ -316,7 +306,7 @@ class GeneralWidgetController extends BaseController {
             /* Create new dashboard and associate */
             $dashboard = new Dashboard(array(
                 'name'       => $newDashboardName,
-                'background' => TRUE,
+                'background' => true,
                 'number'     => Auth::user()->dashboards->max('number') + 1
             ));
             $dashboard->user()->associate(Auth::user());
@@ -344,7 +334,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* If widget has no setup fields, redirect to dashboard automatically */
-        if ($widget->getSetupFields() == FALSE) {
+        if ($widget->getSetupFields() == false) {
             return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
@@ -369,7 +359,7 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
         $widget->state = 'active';
-        $widget->saveSettings(array('resolution' => $resolution), TRUE);
+        $widget->saveSettings(array('resolution' => $resolution), true);
 
         /* Rendering view. */
         return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
@@ -398,6 +388,11 @@ class GeneralWidgetController extends BaseController {
 
         /* Calculating values for rendering. */
         $values = array();
+        /* SINGLE STAT TEMPLATE REQUIRES REFACTORING!! */
+        /* PROBABLY WILL NEED TO ADD SETUPWIDGET FOR LENGTH, RESOLUTION, ETC... */
+        /* isCombined, label, dataset for each resolution, class_name, resolution. */
+        $widget->buildChartData();
+
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
             $values[$resolution] = array();
             foreach ($multipliers as $multiplier) {
@@ -462,14 +457,14 @@ class GeneralWidgetController extends BaseController {
         if ( ! is_null($sharing)) {
             $sharing->reject();
         }
-    
+
         /* Deleting widgets with this sharing. */
         foreach (Auth::user()->widgets as $widget) {
             if ($widget instanceof SharedWidget &&
                     $widget->getSharingId() == $sharing->id) {
                 $widget->delete();
             }
-        } 
+        }
 
         if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
             return Redirect::route('dashboard.dashboard');
@@ -553,7 +548,7 @@ class GeneralWidgetController extends BaseController {
         }
 
         /* Get widgets data */
-        $widgets = json_decode($_POST['positioning'], TRUE);
+        $widgets = json_decode($_POST['positioning'], true);
 
         /* Iterate through all widgets */
         foreach ($widgets as $widgetData){
@@ -603,7 +598,7 @@ class GeneralWidgetController extends BaseController {
             return Response::json(array('error' => 'Descriptor not found'));
         }
 
-        /* Returning widget descriptor description. */
+        /* Return widget descriptor description. */
         return Response::json(array(
             'description' => $descriptor->description,
             'name'        => $descriptor->name,
@@ -711,7 +706,7 @@ class GeneralWidgetController extends BaseController {
             $sharing->user()->associate($user);
             $sharing->widget()->associate($widget);
             $sharing->save();
-        
+
             /* Right now auto accept sharings. */
             $user->handleWidgetSharings();
         }

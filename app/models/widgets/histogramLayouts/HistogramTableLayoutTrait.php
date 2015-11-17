@@ -2,7 +2,6 @@
 
 trait HistogramTableLayoutTrait
 {
-    protected function getTableTemplateData() {return array();}
     /**
      * getTableData
      * Returns the data in table format.
@@ -11,7 +10,7 @@ trait HistogramTableLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    public function getTableData(array $options)
+    protected function getTableData(array $options)
     {
         $settings = $this->getSettings();
         $dateHeader = rtrim(ucwords($this->getResolution()), 's');
@@ -26,8 +25,6 @@ trait HistogramTableLayoutTrait
             'content' => array(
             )
         );
-
-
 
         /* Populating table data. */
         for ($i = $this->getLength(); $i > 0; --$i) {
@@ -51,7 +48,7 @@ trait HistogramTableLayoutTrait
                 $percent = 0;
             }
 
-            /* Creating format for percent. */
+            /* Create format for percent. */
             $success = static::isSuccess($percent);
             $trendFormat = '<div class="';
             if ($success) { $trendFormat .= 'text-success';
@@ -73,30 +70,4 @@ trait HistogramTableLayoutTrait
         $tableData['content'] = array_reverse($tableData['content']);
         return $tableData;
     }
-
-    /**
-     * setupTableDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @param DataManager $manager
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupTableDataManager($manager) 
-    {
-        $manager->setDiff(TRUE);
-    }
-
-    /**
-     * getTableTemplateMeta
-     * Returning the default meta.
-     * --------------------------------------------------
-     * @param array $meta
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function getTableTemplateMeta($meta) {
-        return $meta;
-    }
-
 }

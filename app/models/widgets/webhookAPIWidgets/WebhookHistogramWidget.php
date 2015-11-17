@@ -1,7 +1,19 @@
 <?php
 
-class WebhookHistogramWidget extends MultipleHistogramWidget
+class WebhookHistogramWidget extends DataWidget
 {
+    /* Data selector. */
+    protected static $dataTypes = array('webhook');
+
+    /* Data format definer. */
+    use NumericWidgetTrait;
+
+    /* Histogram layout data handler.  */
+    use HistogramWidgetTrait;
+
+    /* Chart data transformer. */
+    use MultipleChartWidgetTrait;
+
     /* -- Settings -- */
     private static $webhookSettings = array(
         'url' => array(
@@ -10,22 +22,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
             'validation' => 'required',
             'help_text'  => 'The widget data will be populated from data on this url.'
         ),
-        'name' => array(
-            'name'       => 'Name',
-            'type'       => 'TEXT',
-            'help_text'  => 'The name of the widget.',
-        ),
-   );
-
-    /* The settings to setup in the setup-wizard. */
-    private static $webhookSetupFields = array('name', 'url');
-    private static $webhookCriteriaFields = array('url');
-
-    /* -- Choice functions --
-    public function resolution() {
-        $hourly = array('hours' => 'Hourly');
-        return array_merge($hourly, parent::resolution());
-    }*/
+    );
 
     /**
      * getSettingsFields
@@ -34,9 +31,13 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$webhookSettings);
-     }
+    public static function getSettingsFields()
+    {
+        return array(
+            'Chart settings'   => static::$chartSettings,
+            'Webhook settings' => static::$webhookSettings
+        );
+    }
 
     /**
      * getSetupFields
@@ -46,7 +47,7 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      * --------------------------------------------------
      */
      public static function getSetupFields() {
-        return array_merge(parent::getSetupFields(), self::$webhookSetupFields);
+        return array_merge(parent::getSetupFields(), array('url'));
      }
 
     /**
@@ -57,7 +58,38 @@ class WebhookHistogramWidget extends MultipleHistogramWidget
      * --------------------------------------------------
      */
      public static function getCriteriaFields() {
-        return array_merge(parent::getCriteriaFields(), self::$webhookCriteriaFields);
+        return array_merge(parent::getSetupFields(), array('url'));
      }
+
+    /**
+     * getTemplateData
+     * Return all values used in the template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateData()
+    {
+        return array_merge(parent::getTemplateData(), array(
+            'data'          => $this->buildChartData(),
+            'currentDiff'   => array(0),
+            'currentValue'  => array(0),
+            'format'        => $this->getFormat(),
+        ));
+    }
+
+    /**
+     * buildChartData
+     * Build the chart data.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    private function buildChartData()
+    {
+        /* Building the histograms. */
+        $this->setActiveHistogram($this->transformToSingle($this->data['webhook']['data']));
+        return $this->getChartJSData('Y-m-d', true);
+    }
 }
 ?>

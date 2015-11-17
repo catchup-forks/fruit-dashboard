@@ -98,7 +98,7 @@ class PaymentController extends BaseController
             $result = $subscription->cancelSubscription();
 
             /* Check errors */
-            if ($result['errors'] == TRUE) {
+            if ($result['errors'] == true) {
                 /* Return with errors */
                 return Redirect::route('payment.subscribe', $planID)
                     ->with('error', $result['messages']);
@@ -115,7 +115,7 @@ class PaymentController extends BaseController
         $result = $subscription->createSubscription(Input::get('payment_method_nonce'), $plan);
 
         /* Check errors */
-        if ($result['errors'] == FALSE) {
+        if ($result['errors'] == false) {
             /* Track event | CHANGED TO PREMIUM PLAN */
             $tracker = new GlobalTracker();
             $tracker->trackAll('lazy', array(
@@ -158,7 +158,7 @@ class PaymentController extends BaseController
         $result = $subscription->cancelSubscription();
 
         /* Check errors */
-        if ($result['errors'] == FALSE) {
+        if ($result['errors'] == false) {
             /* Track event | CHANGED TO FREE PLAN */
             $tracker = new GlobalTracker();
             $tracker->trackAll('lazy', array(

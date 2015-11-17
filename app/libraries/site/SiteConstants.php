@@ -19,7 +19,7 @@ class SiteConstants {
     private static $widgetMargin      = 5;
 
     /* Trial period */
-    private static $trialPeriodInDays = 30;
+    private static $trialPeriodInDays = 21;
 
     /* Signup wizard */
     private static $signupWizardSteps = array(
@@ -247,7 +247,7 @@ class SiteConstants {
     /**
      * getChartJsColors:
      * --------------------------------------------------
-     * Returning colors for chartJS
+     * Return colors for chartJS
      * @return (array) ($chartJsColors) chartJsColors
      * --------------------------------------------------
      */
@@ -258,7 +258,7 @@ class SiteConstants {
     /**
      * getSlackColors:
      * --------------------------------------------------
-     * Returning colors for slack
+     * Return colors for slack
      * @return (array) ($slackColors) slackColors
      * --------------------------------------------------
      */
@@ -269,7 +269,7 @@ class SiteConstants {
     /**
      * getSlackColor:
      * --------------------------------------------------
-     * Returning the corresponging color
+     * Return the corresponging color
      * @param int $i
      * @return string
      * --------------------------------------------------
@@ -283,7 +283,7 @@ class SiteConstants {
     /**
      * getSingleStatHistoryDiffs:
      * --------------------------------------------------
-     * Returning the single stat diffs
+     * Return the single stat diffs
      * @return (array) ($singleStatHistoryDiffs)
      * --------------------------------------------------
      */
@@ -448,7 +448,7 @@ class SiteConstants {
     public static function getServiceMeta($service) {
         return array(
             'name'             => $service,
-            'display_name'     => Utilities::underscoreToCamelCase($service, TRUE),
+            'display_name'     => Utilities::underscoreToCamelCase($service, true),
             'type'             => 'service',
             'disconnect_route' => 'service.' . $service . '.disconnect',
             'connect_route'    => 'service.' . $service . '.connect',
@@ -631,11 +631,11 @@ class SiteConstants {
      * --------------------------------------------------
      * Returns whether or not to delete the hourly data.
      * @param $entryTime
-     * @return boolean: TRUE->keep FALSE->delete
+     * @return boolean: true->keep false->delete
      * --------------------------------------------------
      */
     public static function cleanupPolicy($entryTime) {
-        return $entryTime->diffInWeeks(Carbon::now(), FALSE) < 2;
+        return $entryTime->diffInWeeks(Carbon::now(), false) < 2;
     }
 
     /**

@@ -38,7 +38,7 @@ class BraintreePopulateData
      */
     public function fire($job, $data) {
         $this->user = User::find($data['user_id']);
-        $time = microtime(TRUE);
+        $time = microtime(true);
         Log::info("Starting Braintree data collection for user #". $this->user->id . " at " . Carbon::now()->toDateTimeString());
         $this->calculator = new BraintreeCalculator($this->user);
         $this->subscriptions = $this->calculator->getCollector()->getAllSubscriptions();
@@ -56,9 +56,9 @@ class BraintreePopulateData
         /* Creating data for the last 30 days. */
         $metrics = $this->getMetrics();
 
-        $this->dataObjects['braintree_mrr']->saveData($metrics['mrr']);
-        $this->dataObjects['braintree_arr']->saveData($metrics['arr']);
-        $this->dataObjects['braintree_arpu']->saveData($metrics['arpu']);
+        $this->dataObjects['mrr']->saveData($metrics['mrr']);
+        $this->dataObjects['arr']->saveData($metrics['arr']);
+        $this->dataObjects['arpu']->saveData($metrics['arpu']);
 
         foreach ($this->dataObjects as $manager) {
             $manager->setState('active');
@@ -83,7 +83,7 @@ class BraintreePopulateData
     }
 
     /**
-     * Returning all metrics in an array.
+     * Return all metrics in an array.
      *
      * @return array.
     */

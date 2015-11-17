@@ -2,20 +2,10 @@
 
 abstract class HistogramWidget extends DataWidget
 {
-    /**
-     * Whether or not the increasing value means good.
-     *
-     * @var bool
-     */
-    protected static $isHigherGood = TRUE;
+    abstract public function type();
 
-    /* Loading the numeric traits. */
+    /* Data format definer. */
     use NumericWidgetTrait;
-
-    /* Loading layout traits. */
-    use HistogramTableLayoutTrait;
-    use HistogramCountLayoutTrait;
-    use HistogramChartLayoutTrait;
 
     /* -- Settings -- */
     private static $histogramSettings = array(
@@ -24,7 +14,8 @@ abstract class HistogramWidget extends DataWidget
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'days',
-            'help_text'  => 'Set the timescale for the X axis of the chart.'
+            'help_text'  => 'Set the timescale for the X axis of the chart.',
+            'hidden'     => true
         ),
         'name' => array(
             'name'       => 'Name',
@@ -48,7 +39,7 @@ abstract class HistogramWidget extends DataWidget
     );
 
     /* -- Choice functions -- */
-    public function resolution() 
+    public function resolution()
     {
         return array(
             'days'   => 'Daily',
@@ -58,19 +49,6 @@ abstract class HistogramWidget extends DataWidget
         );
     }
 
-    /* -- Choice functions -- */
-    public function type() 
-    {
-        $types = array(
-            'chart' => 'Line chart',
-            'table' => 'Table layout'
-        );
-        if (self::hasCumulative()) {
-            $types['count'] = 'Count widget';
-        }
-        return $types;
-    }
-
     /**
      * getSettingsFields
      * Returns the SettingsFields
@@ -78,42 +56,17 @@ abstract class HistogramWidget extends DataWidget
      * @return array
      * --------------------------------------------------
      */
-    public static function getSettingsFields() 
+    public static function getSettingsFields()
     {
         return array_merge(
             parent::getSettingsFields(),
-            self::$histogramSettings
+            array('Data settings' => self::$histogramSettings)
         );
     }
 
     /**
-     * getSetupFields
-     * --------------------------------------------------
-     * Updating setup fields.
-     * @return array
-     * --------------------------------------------------
-     */
-    public static function getSetupFields() {
-        return array_merge(parent::getSetupFields(), array('type'));
-    }
-
-    /**
-     * isSuccess
-     * Returns whether or not the value is considered
-     * good in the histogram
-     * --------------------------------------------------
-     * @param numeric $value
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public static function isSuccess($value)
-    {
-        return  ($value < 0) xor static::$isHigherGood;
-     }
-
-    /**
      * getTemplateMeta
-     * Returning data for the gridster init template.
+     * Return data for the gridster init template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -121,30 +74,27 @@ abstract class HistogramWidget extends DataWidget
     public function getTemplateMeta()
     {
         $meta = parent::getTemplateMeta();
-        
+
         $meta['layout'] = $this->getLayout();
         $meta['general']['name'] = $this->getName();
 
-        /* Deciding which data we'll need. */
-        switch ($this->getLayout()) {
-            case 'table': return $this->getTableTemplateMeta($meta); break;
-            case 'count': return $this->getCountTemplateMeta($meta); break;
-            case 'chart': return $this->getChartTemplateMeta($meta); break;
-            default: return $this->getChartTemplateMeta($meta);
-        }
-    
-        /* Merging and returning the data. */
+        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_meta');
+        if ( method_exists($this, $fn)) {
+            return $this->$fn($meta);
+        } 
+
         return $meta;
+
     }
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
-    public function getTemplateData() 
+    public function getTemplateData()
     {
         /* Getting parent data. */
         $templateData = parent::getTemplateData();
@@ -155,16 +105,15 @@ abstract class HistogramWidget extends DataWidget
             'name'    => $this->getName(),
             'layout'  => $this->getLayout(),
             'format'  => $this->getFormat(),
-            'hasData' => $this->hasData()
+            'hasData' => empty($this->activeHistogram)
         );
-        
-        /* Deciding which data we'll need. */
-        switch ($this->getLayout()) {
-            case 'table': $layoutSpecificData = $this->getTableTemplateData(); break;
-            case 'count': $layoutSpecificData = $this->getCountTemplateData(); break;
-            case 'chart': $layoutSpecificData = $this->getChartTemplateData(); break;
-            default: $layoutSpecificData = $this->getChartTemplateData();
-        }
+
+        /* Getting layout specific data, if any. */
+        $layoutSpecificData = array();
+        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_data');
+        if (method_exists($this, $fn)) {
+            $layoutSpecificData = $this->$fn();
+        } 
 
         /* Merging and returning the data. */
         return array_merge(
@@ -176,12 +125,12 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getName
-     * Returning the name of the widget.
+     * Return the name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected function getName() 
+    protected function getName()
     {
         $name = '';
         if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
@@ -193,194 +142,38 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getLayout
-     * Returning the layout of the widget.
+     * Return the layout of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected function getLayout() 
+    protected function getLayout()
     {
         return $this->getSettings()['type'];
     }
-    
+
     /**
      * getResolution
-     * Returning the resolution of the widget.
+     * Return the resolution of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    protected function getResolution() 
+    protected function getResolution()
     {
         return $this->getSettings()['resolution'];
     }
 
     /**
      * getLength
-     * Returning the length of the widget.
+     * Return the length of the widget.
      * --------------------------------------------------
      * @return int
      * --------------------------------------------------
      */
-    protected function getLength() 
+    protected function getLength()
     {
         return $this->getSettings()['length'];
-    }
-
-    /**
-     * setupDataManager
-     * Setting up the datamanager
-     * --------------------------------------------------
-     * @return DataManager
-     * --------------------------------------------------
-     */
-    protected function setupDataManager() 
-    {
-        $manager = parent::setupDataManager();
-
-        /* Default initializers. */
-        $manager->setResolution($this->getResolution());
-        $manager->setLength($this->getLength());
-
-        switch ($this->getLayout()) {
-            case 'table': $this->setupTableDataManager($manager); break;
-            case 'count': $this->setupCountDataManager($manager); break;
-            case 'chart': $this->setupChartDataManager($manager); break;
-            default: ;
-        }
-        return $manager;
-    }
-
-    /**
-     * getManagerClassName
-     * Returning the corresponding dataManager className.
-     * --------------------------------------------------
-     * @return string
-     * --------------------------------------------------
-     */
-    protected static function getManagerClassName() 
-    {
-        return str_replace('Widget', 'DataManager',get_called_class());
-    }
-
-    /**
-     * hasCumulative
-     * Returning whether or not the data is cumulative.
-     * --------------------------------------------------
-     * @return bool
-     * --------------------------------------------------
-     */
-    protected static function hasCumulative() 
-    {
-        $className = self::getManagerClassName();
-
-        return $className::hasCumulative();
-    }
-
-    /**
-     * getDiff
-     * Comparing the current value to some historical.
-     * --------------------------------------------------
-     * @param int $multiplier
-     * @param string $resolution
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getDiff($multiplier=1, $resolution=null)
-    {
-        if (isset($resolution)) {
-            $this->dataManager->setResolution($resolution);
-        }
-
-        $values = $this->dataManager->compare($multiplier);
-
-        if (empty($values)) {
-            return 0;
-        }
-
-        return $values;
-    }
-
-    /**
-     * getHistory
-     * Returning the historical data compared to the latest.
-     * --------------------------------------------------
-     * @param int $multiplier
-     * @param string $resolution
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getHistory($multiplier=1, $resolution=null)
-    {
-        /* Collecting values. */
-        $currentValue = array_values($this->getLatestValues())[0];
-        $value = $currentValue - array_values(
-            $this->getDiff($multiplier, $resolution))[0];
-
-        try {
-            $percent = ($currentValue / $value - 1) * 100;
-        } catch (Exception $e) {
-            $percent = 'inf';
-        }
-
-        return array(
-            'value'   => $value,
-            'percent' => $percent,
-            'success' => static::isSuccess($percent)
-        );
-    }
-
-    /**
-     * getData
-     * Returning the data based on layout.
-     * --------------------------------------------------
-     * @param array $postData
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getData(array $postData=array())
-    {
-        if (empty($postData)) {
-            $postData = array();
-        }
-
-        if (array_key_exists('layout', $postData)) {
-            $layout = $postData['layout'];
-        } else {
-            $layout = $this->getLayout();
-        }
-
-        switch ($layout) {
-            case 'table': return $this->getTableData($postData); break;
-            case 'count': return $this->getCountData($postData); break;
-            case 'chart': return $this->getChartData($postData); break;
-            default: return $this->getChartData($postData);
-        }
-
-        return NULL;
-    }
-
-    /**
-     * getLatestValues
-     * Returning the last values in the histogram.
-     * --------------------------------------------------
-     * @return float
-     * --------------------------------------------------
-     */
-     public function getLatestValues() {
-        return $this->dataManager->getLatestValues();
-     }
-
-
-    /**
-     * hasData
-     * Returns whether or not there's data in the histogram.
-     * --------------------------------------------------
-     * @return boolean
-     * --------------------------------------------------
-     */
-    protected function hasData() {
-        return $this->dataManager->isEmpty();
     }
 
     /**
@@ -391,7 +184,7 @@ abstract class HistogramWidget extends DataWidget
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=true) {
         $changedFields = parent::saveSettings($inputSettings, $commit);
         if ($this->getSettings()['name'] == '') {
             $this->saveSettings(array('name' => $this->getDescriptor()->name), $commit);
@@ -408,7 +201,7 @@ abstract class HistogramWidget extends DataWidget
      * @return array $validationArray
      * --------------------------------------------------
      */
-    protected function customValidator($validationArray, $inputData) {       
+    protected function customValidator($validationArray, $inputData) {
         /* On table layout setting maximum values. */
         if (array_key_exists('type', $inputData)) {
             if ($inputData['type'] == 'table') {
@@ -421,24 +214,46 @@ abstract class HistogramWidget extends DataWidget
     }
 
     /**
-     * premiumUserCheck (DEPRECATED)
-     * Returns whether or not the resolution is a premium feature.
+     * getData
+     * Build the chart data.
      * --------------------------------------------------
-     * @return boolean
+     * @param array $postData
+     * @return array
      * --------------------------------------------------
-     */
-    public function premiumUserCheck()
+    */
+    protected function getData(array $postData=array())
     {
-        $passed = parent::premiumUserCheck();
-
-        if ($passed === 0) {
-            /* Further validation required. */
-            if (static::getSettingsFields()['resolution']['default'] != $this->getSettings()['resolution']) {
-                return -1;
-            }
+        if (empty($postData)) {
+            $postData = array();
         }
 
-        return $passed;
+        if (array_key_exists('layout', $postData)) {
+            $layout = $postData['layout'];
+        } else {
+            $layout = $this->getLayout();
+        }
+
+        /* Building the histogram. */
+        $this->setActiveHistogram($this->buildHistogramEntries());
+
+        /* Creating getData function name. */
+        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_data');
+        return $this->$fn($postData);
+    }
+
+    /**
+     * onCreate
+     * Applying settings.
+     * --------------------------------------------------
+     * @param array $attributes
+     * --------------------------------------------------
+     */
+    protected function onCreate()
+    {
+        parent::onCreate();
+
+        $this->setResolution($this->getResolution());
+        $this->setLength($this->getLength());
     }
 
 }

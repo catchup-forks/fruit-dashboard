@@ -27,7 +27,7 @@ class BraintreeConnector extends GeneralServiceConnector
     /**
      * getAuthFields
      * --------------------------------------------------
-     * Returning the static authFields variable.
+     * Return the static authFields variable.
      * @return authFields
      * --------------------------------------------------
      */

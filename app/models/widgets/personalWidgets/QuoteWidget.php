@@ -1,7 +1,10 @@
 <?php
 
-class QuoteWidget extends DataWidget implements iAjaxWidget
+class QuoteWidget extends DataWidget 
 {
+    /* Data selector. */
+    protected static $dataTypes = array('quote');
+
     /* -- Settings -- */
     private static $quoteSettings = array(
         'type' => array(
@@ -24,14 +27,14 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'quote' => $this->dataManager->build()
+            'quote' => $this->getData()
         ));
     }
 
@@ -42,9 +45,10 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$quoteSettings);
-     }
+    public static function getSettingsFields()
+    {
+        return array(self::$quoteSettings);
+    }
 
     /**
      * getCriteriaFields
@@ -64,9 +68,27 @@ class QuoteWidget extends DataWidget implements iAjaxWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSetupFields() {
+    public static function getSetupFields() {
         return array_merge(parent::getSetupFields(), self::$typeSettings);
-     }
+    }
+
+    /**
+     * getData
+     * --------------------------------------------------
+     * Returns the quote in an assoc array.
+     * @return (array) ($quote) The quote and author
+     * --------------------------------------------------
+     */
+    public function getData(array $postData=array()) {
+        $quote = $this->data['quote'];
+        if (empty($quote)) {
+            return array(
+                'quote'  => 'Connection error, please try to refresh the widget.',
+                'author' => 'Server');
+        }
+        return $quote;
+    }
+
 }
 
 ?>

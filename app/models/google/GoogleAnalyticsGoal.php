@@ -10,7 +10,7 @@ class GoogleAnalyticsGoal extends Eloquent
     );
 
     // -- Options -- //
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function profile() { return $this->belongsTo('GoogleAnalyticsProfile', 'profile_id'); }

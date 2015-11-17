@@ -9,7 +9,7 @@ class TableDataManagerTests extends TestCase {
      */
     public function testBasicExample()
     {
-        $this->assertTrue(TRUE);
+        $this->assertTrue(true);
     }
 
 }

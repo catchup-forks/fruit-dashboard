@@ -64,7 +64,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
             if (is_null($goal)) {
                 throw new ServiceException("Selected goal not found.", 1);
             }
-            $goal->active = TRUE;
+            $goal->active = true;
             $goal->save();
 
 			/* Sending tracking event. */
@@ -75,7 +75,7 @@ class GoogleAnalyticsConnector extends GoogleConnector {
             );
         }
         /* Setting profile to active. */
-        $profile->active = TRUE;
+        $profile->active = true;
         $profile->save();
 
         return parent::createDataObjects($criteria);

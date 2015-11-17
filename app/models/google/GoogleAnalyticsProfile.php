@@ -10,7 +10,7 @@ class GoogleAnalyticsProfile extends Eloquent
     );
 
     // -- Options -- //
-    public $timestamps = FALSE;
+    public $timestamps = false;
 
     // -- Relations -- //
     public function property() { return $this->belongsTo('GoogleAnalyticsProperty', 'property_id'); }

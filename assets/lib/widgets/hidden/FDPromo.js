@@ -69,13 +69,25 @@ FDPromoWidget.prototype.setMouseMoveEvent = function() {
 }
 
 FDPromoWidget.prototype.setMouseUpEvent = function() {
+<<<<<<< HEAD
+=======
+  var url = this.widgetData.url;
+>>>>>>> 5852714487ae7829e17b338c840b097d2f8053d0
   if($(this.promoSelector).length>0) {
     var ev = $._data($(this.promoSelector)[0], 'events');
     if(ev && ev.mouseup===undefined) {
       $(this.promoSelector).mouseup(function() {
         var wasDragging = isDragging;
         if (!wasDragging) {
+<<<<<<< HEAD
           //window.location = options.urls.statUrl;
+=======
+          if (window!=window.top) {
+            window.open(url, '_blank');
+          } else {
+            window.location = url;
+          }
+>>>>>>> 5852714487ae7829e17b338c840b097d2f8053d0
         }
         isDragging = false;
       });

@@ -8,7 +8,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             'name'       => 'POST url',
             'type'       => 'TEXT',
             'help_text'  => 'The widget data will be posted to this url.',
-            'disabled'   => TRUE
+            'disabled'   => true
         ),
         'name' => array(
             'name'       => 'Name',
@@ -30,7 +30,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -40,7 +40,7 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             return array_merge(self::getDefaultTemplateData($this), array(
                 'hasData' => $this->hasData()
             ));
-        } 
+        }
         return parent::getTemplateData();
     }
 
@@ -91,25 +91,18 @@ class ApiHistogramWidget extends MultipleHistogramWidget
                           $this->id));
      }
 
-     /**
-      * Save | Override to save the URL
-      * --------------------------------------------------
-      * @param array $options
-      * @return Saves the widget
-      * --------------------------------------------------
+    /**
+     * saveSettings
+     * Override to save the URL
+     * --------------------------------------------------
+     * @param array $inputSettings
+     * @param boolean $commit
+     * --------------------------------------------------
      */
-     public function save(array $options=array()) {
-         /* Call parent save */
-         parent::save($options);
-
-         /* Add URL value to settings */
-         $this->saveSettings(array(
-            'url' => $this->getWidgetApiUrl(),
-         ), FALSE);
-
-         /* Return */
-         return parent::save();
-     }
+     public function saveSettings(array $inputSettings, $commit=true) {
+         $inputSettings['url'] = $this->getWidgetApiUrl();
+         return parent::saveSettings($inputSettings, $commit);
+    }
 
 }
 ?>

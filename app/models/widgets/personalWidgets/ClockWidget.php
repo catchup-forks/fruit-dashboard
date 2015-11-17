@@ -21,7 +21,7 @@ class ClockWidget extends Widget
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -40,7 +40,7 @@ class ClockWidget extends Widget
      * --------------------------------------------------
      */
      public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$clockSettings);
+        return array(self::$clockSettings);
      }
 }
 

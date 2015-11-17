@@ -49,7 +49,7 @@ class Subscription extends Eloquent
      *     TD: Trial badge displayed    (true | false)
      *     PE: Premium feature enabled  (true | false)
      * --------------------------------------------------------------------
-     * Cases @param SUBSCRIPTION_MODE: 
+     * Cases @param SUBSCRIPTION_MODE:
      *     premium_feature_and_trial     |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
      * 1) No premium functionality added |  possible  |  false  |  false  |
@@ -60,13 +60,13 @@ class Subscription extends Eloquent
      * 4) Unsubscribed from Premium plan |  disabled  |  false  |  false  |
      * 5) Subscribed to Premium plan     |  disabled  |  false  |  true   |
      * --------------------------------------------------------------------
-     * Cases @param SUBSCRIPTION_MODE:          
+     * Cases @param SUBSCRIPTION_MODE:
      *     premium_feature_only          |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
      * 1) Is on free plan                |  disabled  |  false  |  false  |
      * 2) Subscribed to Premium plan     |  disabled  |  false  |  true   |
      * --------------------------------------------------------------------
-     * Cases @param SUBSCRIPTION_MODE          
+     * Cases @param SUBSCRIPTION_MODE
      *     trial_only                    |     TS     |   TD    |   PE    |
      * --------------------------------------------------------------------
      * 1) Remaining days > 0             |   active   |  true   |  true   |
@@ -231,7 +231,7 @@ class Subscription extends Eloquent
                     'TD' => false,
                     'PE' => true,
                 ];
-            }            
+            }
         } /* SUBSCRIPTION_MODE  */
     }
 
@@ -326,18 +326,18 @@ class Subscription extends Eloquent
      */
     public function createSubscription($paymentMethodNonce, $newPlan) {
         /* Initialize variables */
-        $result = ['errors' => FALSE, 'messages' => ''];
+        $result = ['errors' => false, 'messages' => ''];
 
         /* Get customer and update Braintree payment fields */
         $result = $this->getBraintreeCustomer($paymentMethodNonce);
 
         /* Create new Braintree subscription and update in DB */
-        if ($result['errors'] == FALSE) {
+        if ($result['errors'] == false) {
             $result = $this->createBraintreeSubscription($newPlan);
         }
 
         /* If everything went OK, it means that the trial period has ended */
-        if ($result['errors'] == FALSE) {
+        if ($result['errors'] == false) {
             $this->changeTrialState('disabled');
         }
 
@@ -356,12 +356,12 @@ class Subscription extends Eloquent
      */
     public function cancelSubscription() {
         /* Initialize variables */
-        $result = ['errors' => FALSE, 'messages' => ''];
+        $result = ['errors' => false, 'messages' => ''];
 
         /* Get customer and update Braintree payment fields */
         $result = $this->cancelBraintreeSubscription();
 
-        if ($result['errors'] == FALSE) {
+        if ($result['errors'] == false) {
             /* Get the free plan */
             $freePlan = Plan::getFreePlan();
 
@@ -394,7 +394,7 @@ class Subscription extends Eloquent
      */
     private function getBraintreeCustomer($paymentMethodNonce) {
         /* Initialize variables */
-        $result = ['errors' => FALSE, 'messages' => ''];
+        $result = ['errors' => false, 'messages' => ''];
 
         /* Get or create the Braintree customer */
         /* Get existing customer */
@@ -419,7 +419,7 @@ class Subscription extends Eloquent
             /* Card verification failed */
             if (!$paymentMethodResult->success) {
                 $verification = $paymentMethodResult->creditCardVerification;
-                $result['errors'] |= TRUE;
+                $result['errors'] |= true;
                 $result['messages'] .= 'Sorry, your credit card cannot be verified. ' . $verification->processorResponseText;
             } else {
                 /* Update braintree customer and payment information */
@@ -451,7 +451,7 @@ class Subscription extends Eloquent
             } else {
                 /* Get and store errors */
                 foreach($customerResult->errors->deepAll() AS $error) {
-                    $result['errors'] |= TRUE;
+                    $result['errors'] |= true;
                     $result['messages'] .= $error->code . ": " . $error->message . ' ';
                 }
             }
@@ -472,7 +472,7 @@ class Subscription extends Eloquent
         /* The function assumes, that everything is OK to charge the user on Braintree */
 
         /* Initialize variables */
-        $result = ['errors' => FALSE, 'messages' => ''];
+        $result = ['errors' => false, 'messages' => ''];
 
         /* Create Braintree subscription */
         $subscriptionResult = Braintree_Subscription::create([
@@ -494,7 +494,7 @@ class Subscription extends Eloquent
         } else {
             /* Get and store errors */
             foreach($subscriptionResult->errors->deepAll() AS $error) {
-                $result['errors'] |= TRUE;
+                $result['errors'] |= true;
                 $result['messages'] .= $error->code . ": " . $error->message . ' ';
             }
             Log::error($subscriptionResult->transaction->status);
@@ -512,7 +512,7 @@ class Subscription extends Eloquent
      */
     private function cancelBraintreeSubscription() {
         /* Initialize variables */
-        $result = ['errors' => FALSE, 'messages' => ''];
+        $result = ['errors' => false, 'messages' => ''];
 
         /* Cancel braintree subscription */
         $cancellationResult = Braintree_Subscription::cancel($this->braintree_subscription_id);
@@ -525,7 +525,7 @@ class Subscription extends Eloquent
                 if ($error->code == SiteConstants::getBraintreeErrorCodes()['Subscription has already been canceled']) {
                     continue;
                 } else {
-                    $result['errors'] |= TRUE;
+                    $result['errors'] |= true;
                     $result['messages'] .= $error->code . ": " . $error->message . ' ';
                 }
             }

@@ -2,6 +2,11 @@
 
 trait FacebookWidgetTrait
 {
+    /* Histogram data representation. */
+    use HistogramTableLayoutTrait;
+    use HistogramCountLayoutTrait;
+    use HistogramChartLayoutTrait;
+
     /* -- Settings -- */
     private static $pageSettings = array(
         'page' => array(
@@ -11,9 +16,19 @@ trait FacebookWidgetTrait
             'help_text'  => 'The widget uses this facebook page for data representation.'
         )
     );
+
     private static $page = array('page');
 
-    /* Choices functions */
+    /* -- Choice functions -- */
+    public function type()
+    {
+        return array(
+            'chart'  => 'Chart',
+            'table'  => 'Table',
+            'count'  => 'Count'
+        );
+    }
+
     public function page() {
         $pages = array();
         foreach ($this->user()->facebookPages as $page) {
@@ -35,14 +50,18 @@ trait FacebookWidgetTrait
 
     /**
      * getSettingsFields
+     * Returns the SettingsFields
      * --------------------------------------------------
-     * Returns the updated settings fields
      * @return array
      * --------------------------------------------------
      */
-    public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$pageSettings);
+    public static function getSettingsFields()
+    {
+        return array_merge(parent::getSettingsFields(), array(
+            'Facebook settings' => static::$pageSettings
+        ));
     }
+
 
     /**
      * getSetupFields
@@ -69,7 +88,7 @@ trait FacebookWidgetTrait
     /**
      * getPage
      * --------------------------------------------------
-     * Returning the corresponding page.
+     * Return the corresponding page.
      * @return FacebookPage
      * @throws FacebookNotConnected
      * --------------------------------------------------
@@ -86,12 +105,24 @@ trait FacebookWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
+        return $this->getPage()->name;
+    }
+
+    /**
+     * getCountFooter
+     * --------------------------------------------------
+     * Return the footer for the count widget.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getCountFooter()
+    {
         return $this->getPage()->name;
     }
 }

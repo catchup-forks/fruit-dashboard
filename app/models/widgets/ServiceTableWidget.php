@@ -50,7 +50,7 @@ class ServiceTableWidget extends TableWidget {
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -118,11 +118,11 @@ class ServiceTableWidget extends TableWidget {
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=true) {
         $oldSettings = $this->getSettings();
         $changedFields = parent::saveSettings($inputSettings, $commit);
         if ($oldSettings && $inputSettings &&
-                $changedFields != FALSE &&
+                $changedFields != false &&
                 $this->dataExists()) {
             $this->updateData();
         }

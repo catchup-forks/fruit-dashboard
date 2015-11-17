@@ -19,10 +19,10 @@ class StripeEventsWidget extends DataWidget implements iDataWidget
         $filteredEvents = array_filter(
             $events,
             function ($e) use ($selector) {
-                if (strpos($e['type'], $selector) !== FALSE) {
-                    return TRUE;
+                if (strpos($e['type'], $selector) !== false) {
+                    return true;
                 }
-                return FALSE;
+                return false;
             }
         );
         return array_values($filteredEvents);

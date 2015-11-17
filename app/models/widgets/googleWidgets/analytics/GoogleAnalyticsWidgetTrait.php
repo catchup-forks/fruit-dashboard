@@ -45,8 +45,13 @@ trait GoogleAnalyticsWidgetTrait
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$profileSettings);
+        return array_merge(
+            parent::getSettingsFields(), array(
+                'Google Analytics settings' => self::$profileSettings,
+            )
+        );
     }
+
 
     /**
      * getSetupFields
@@ -73,7 +78,7 @@ trait GoogleAnalyticsWidgetTrait
     /**
      * getProfile
      * --------------------------------------------------
-     * Returning the corresponding profile.
+     * Return the corresponding profile.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */
@@ -88,7 +93,7 @@ trait GoogleAnalyticsWidgetTrait
     /**
      * getProperty
      * --------------------------------------------------
-     * Returning the corresponding property.
+     * Return the corresponding property.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
      */
@@ -106,7 +111,7 @@ trait GoogleAnalyticsWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
@@ -118,7 +123,7 @@ trait GoogleAnalyticsWidgetTrait
     /**
      * getProfileId
      * --------------------------------------------------
-     * Returning the corresponding profile id.
+     * Return the corresponding profile id.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */

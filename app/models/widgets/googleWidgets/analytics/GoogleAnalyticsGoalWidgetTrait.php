@@ -17,7 +17,7 @@ trait GoogleAnalyticsGoalWidgetTrait
 
     /* Choices functions */
     public function goal($profileId=null) {
-        $init = FALSE;
+        $init = false;
         if ($profileId) {
             /* Have specific profile. */
             $profile = $this->user()->googleAnalyticsProfiles()
@@ -33,7 +33,7 @@ trait GoogleAnalyticsGoalWidgetTrait
             $profile = $this->user()->googleAnalyticsProfiles()
                 ->orderBy('google_analytics_properties.name')
                 ->first(array('google_analytics_profiles.id'));
-            $init = TRUE;
+            $init = true;
         }
 
         if (is_null($profile)) {
@@ -61,9 +61,12 @@ trait GoogleAnalyticsGoalWidgetTrait
      */
     public static function getSettingsFields() {
         return array_merge(
-            parent::getSettingsFields(),
-            self::$profileSettings,
-            self::$goalSettings
+            parent::getSettingsFields(), array(
+                'Google Analytics settings' => array_merge(
+                    self::$profileSettings,
+                    self::$goalSettings
+                )
+            )
         );
     }
 
@@ -99,7 +102,7 @@ trait GoogleAnalyticsGoalWidgetTrait
 
     /**
      * getServiceSpecificName
-     * Returning the default name of the widget.
+     * Return the default name of the widget.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
@@ -111,7 +114,7 @@ trait GoogleAnalyticsGoalWidgetTrait
     /**
      * getGoal
      * --------------------------------------------------
-     * Returning the corresponding goal.
+     * Return the corresponding goal.
      * @return GoogleAnalyticsProperty
      * --------------------------------------------------
     */

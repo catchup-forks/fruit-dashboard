@@ -1,9 +1,42 @@
 <?php
+
 class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidget
 {
+    /* Service settings. */
     use GoogleAnalyticsWidgetTrait;
-    use TransformableMultipleHistogramWidgetTrait;
-    protected static $cumulative = TRUE;
 
+    /* Histogram data representation. */
+    use MultipleHistogramWidgetTrait;
+
+    /* Histogram data representation. */
+    use MultipleHistogramChartLayoutTrait;
+
+    /* Data selector. */
+    protected static $dataTypes = array('users');
+
+    /* Data attribute. */
+    protected static $isCumulative = true;
+
+    /* -- Choice functions -- */
+    public function type()
+    {
+        return array(
+            'chart'  => 'Chart',
+            'table'  => 'Table',
+            'count'  => 'Count'
+        );
+    }
+
+    /**
+     * buildHistogramEntries
+     * Build the histogram data.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function buildHistogramEntries() 
+    {
+        return $this->data['users'];
+    }
 }
 ?>

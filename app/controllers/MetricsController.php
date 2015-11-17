@@ -201,7 +201,7 @@ class MetricsController extends BaseController
                 $data[$serviceMeta['display_name']] = 0;
                 $initialServices[$serviceMeta['name']] = array(
                     'display_name' => $serviceMeta['display_name'],
-                    'value' => FALSE
+                    'value' => false
                 );
             }
 
@@ -215,7 +215,7 @@ class MetricsController extends BaseController
                     if (array_key_exists($key, $currentServices)) {
                         /* Check active connection */
                         if ($widget->state == 'active') {
-                            $currentServices[$key]['value'] = TRUE;
+                            $currentServices[$key]['value'] = true;
                         }
                     }
                 }
@@ -231,13 +231,13 @@ class MetricsController extends BaseController
             $data[$service] = 0;
             /* Iterate through all users */
             foreach (User::all() as $user) {
-                $serviceActive = FALSE;
+                $serviceActive = false;
                 /* Iterate through the widgets of the user */
                 foreach ($user->widgets as $widget) {
                     /* Check active connection */
                     if (($widget->getDescriptor()->category == $service) and
                         ($widget->state == 'active')) {
-                        $serviceActive = TRUE;
+                        $serviceActive = true;
                     }
 
                 }

@@ -8,20 +8,20 @@ class PromoWidget extends Widget
             'name'       => 'Related descriptor',
             'type'       => 'INT',
             'validation' => 'required',
-            'hidden'     => TRUE
+            'hidden'     => true
         ),
         'widget_settings' => array(
             'name'       => 'Settings of the widget that will be created',
             'type'       => 'string',
             'default'    => '[]',
-            'hidden'     => TRUE
+            'hidden'     => true
         ),
         'photo_location' => array(
             'name'       => 'The location of the photo of the widget.',
             'type'       => 'string',
             'default'    => '',
             'validation' => 'required',
-            'hidden'     => TRUE
+            'hidden'     => true
         )
     );
 
@@ -99,7 +99,7 @@ class PromoWidget extends Widget
             throw new WidgetFatalException;
         }
 
-        /* Creating criteria based on the service. */
+        /* Create criteria based on the service. */
         if ($descriptor->type == 'google_analytics_goal_completion' ||
                 $descriptor->type == 'google_analytics_conversions') {
             $criteria = $this->getGoalCriteria();
@@ -125,13 +125,15 @@ class PromoWidget extends Widget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$promoSettings);
-     }
+    public static function getSettingsFields()
+    {
+        return array(self::$promoSettings);
+    }
+
 
     /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -172,7 +174,7 @@ class PromoWidget extends Widget
 
     /**
      * getRelatedDescriptor
-     * Returning the related descriptor.
+     * Return the related descriptor.
      * --------------------------------------------------
      * @return WidgetDescriptor
      * --------------------------------------------------
@@ -183,7 +185,7 @@ class PromoWidget extends Widget
 
     /**
      * getGoalCriteria
-     * Returning the criteria a the GA goal widget.
+     * Return the criteria a the GA goal widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -191,19 +193,19 @@ class PromoWidget extends Widget
     private function getGoalCriteria() {
         /* Getting active profile. */
         $profile = $this->user()->googleAnalyticsProfiles()
-            ->where('active', TRUE)
+            ->where('active', true)
             ->first(array(
                 'google_analytics_profiles.id',
                 'google_analytics_profiles.profile_id'
             ));
         if (is_null($profile)) {
-            return NULL;
+            return null;
         }
 
         /* Getting active goal. */
-        $goal = $profile->goals()->where('active', TRUE)->first();
+        $goal = $profile->goals()->where('active', true)->first();
         if (is_null($goal)) {
-            return NULL;
+            return null;
         }
 
         return array(
@@ -214,7 +216,7 @@ class PromoWidget extends Widget
 
     /**
      * getProfileCriteria
-     * Returning the criteria a GA widget.
+     * Return the criteria a GA widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -222,9 +224,9 @@ class PromoWidget extends Widget
     private function getProfileCriteria() {
         /* Getting active profile. */
         $profile = $this->user()->googleAnalyticsProfiles()
-            ->where('active', TRUE)->first();
+            ->where('active', true)->first();
         if (is_null($profile)) {
-            return NULL;
+            return null;
         }
         return array(
             'profile' => $profile->profile_id
@@ -233,16 +235,16 @@ class PromoWidget extends Widget
 
     /**
      * getFacebookCriteria
-     * Returning the criteria a Facebook widget.
+     * Return the criteria a Facebook widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
      */
     private function getFacebookCriteria() {
         /* Getting active profile. */
-        $page = $this->user()->facebookPages()->where('active', TRUE)->first();
+        $page = $this->user()->facebookPages()->where('active', true)->first();
         if (is_null($page)) {
-            return NULL;
+            return null;
         }
         return array(
             'page' => $page->id
@@ -251,7 +253,7 @@ class PromoWidget extends Widget
 
     /**
      * getTwitterCriteria
-     * Returning the criteria a Twitter widget.
+     * Return the criteria a Twitter widget.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -259,9 +261,9 @@ class PromoWidget extends Widget
     private function getTwitterCriteria() {
         /* Getting active profile. */
         $twitterUser = $this->user()->twitterUsers()
-            ->where('active', TRUE)->first();
+            ->where('active', true)->first();
         if (is_null($twitterUser)) {
-            return NULL;
+            return null;
         }
         return array();
     }

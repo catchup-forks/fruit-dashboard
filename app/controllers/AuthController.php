@@ -14,7 +14,7 @@ class AuthController extends BaseController
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
-    
+
     /**
      * getSignin
      * --------------------------------------------------
@@ -27,7 +27,7 @@ class AuthController extends BaseController
         if (Auth::check()) {
             return Redirect::route('dashboard.dashboard');
         }
-        
+
         /* Render the page */
         return View::make('auth.signin');
     }
@@ -51,11 +51,11 @@ class AuthController extends BaseController
 
         /* Everything is OK */
         if ((!$validator->fails()) and (Auth::attempt(Input::only('email', 'password')))) {
-            
+
             /* Track event | SIGN IN */
             $tracker = new GlobalTracker();
             $tracker->trackAll('lazy', array(
-                'en' => 'Sign in', 
+                'en' => 'Sign in',
                 'el' => Auth::user()->email)
             );
 
@@ -65,7 +65,7 @@ class AuthController extends BaseController
             } else {
                 $message = 'Welcome back.';
             }
-            
+
             /* Redirect to dashboard */
             return Redirect::route('dashboard.dashboard')
                     ->with('success', $message);
@@ -104,7 +104,7 @@ class AuthController extends BaseController
     public function postCheckExistingEmail()
     {
         /* Initialize status */
-        $status = TRUE;
+        $status = true;
 
         $checkedEmail = Input::json()->get('email');
         $existingUser = User::where('email', $checkedEmail)->count();

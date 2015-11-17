@@ -22,7 +22,7 @@ class TimerWidget extends Widget
      * --------------------------------------------------
      */
      public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$timerSettings);
+        return array(self::$timerSettings);
      }
 
     /**

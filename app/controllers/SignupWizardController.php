@@ -92,7 +92,7 @@ class SignupWizardController extends BaseController
      */
     public function anyFacebookLogin() {
         /* Oauth ready. */
-        if (Input::get('code', FALSE)) {
+        if (Input::get('code', false)) {
             $userInfo = FacebookConnector::loginWithFacebook();
             if ($userInfo['isNew']) {
                 return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'))
@@ -102,7 +102,7 @@ class SignupWizardController extends BaseController
                     ->with('success', 'Welcome back, '. $userInfo['user']->name. '!');
             }
         /* User declined */
-        } else if (Input::get('error', FALSE)) {
+        } else if (Input::get('error', false)) {
             return Redirect::route('auth.signin')
                 ->with('error', 'Sorry, we couldn\'t log you in. Please try again.');
         }
@@ -135,7 +135,7 @@ class SignupWizardController extends BaseController
             $settings->save();
 
             /* Redirect to the dashboard*/
-            return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
+            return Redirect::route('dashboard.dashboard', array('tour' => true));
         } else {
             /* Set onboarding state */
             $settings->onboarding_state = $step;
@@ -181,7 +181,7 @@ class SignupWizardController extends BaseController
             $settings->save();
 
             /* Redirect to the dashboard*/
-            return Redirect::route('dashboard.dashboard', array('tour' => TRUE));
+            return Redirect::route('dashboard.dashboard', array('tour' => true));
         } else {
             /* Set onboarding state */
             $settings->onboarding_state = $nextStep;

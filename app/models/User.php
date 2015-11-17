@@ -63,7 +63,7 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      */
     public function updateDashboardCache() {
-        $this->update_cache = TRUE;
+        $this->update_cache = true;
         $this->save();
     }
 
@@ -97,9 +97,9 @@ class User extends Eloquent implements UserInterface
             ->orWhere('state', 'auto_created')
             ->get();
         if (count($sharings) > 0) {
-            return TRUE;
+            return true;
         }
-        return FALSE;
+        return false;
     }
 
     /**
@@ -134,10 +134,10 @@ class User extends Eloquent implements UserInterface
                 /* Dashboard does not exists, creating it automatically. */
                 $sharingDashboard = new Dashboard(array(
                     'name'       => SiteConstants::getSharedWidgetsDashboardName(),
-                    'background' => TRUE,
+                    'background' => true,
                     'number'     => $this->dashboards->count() + 1,
-                    'is_locked'  => FALSE,
-                    'is_default' => FALSE
+                    'is_locked'  => false,
+                    'is_default' => false
                 ));
                 $sharingDashboard->user()->associate($this);
                 $sharingDashboard->save();
@@ -188,8 +188,8 @@ class User extends Eloquent implements UserInterface
             );
 
             /* Set active dashboard or default */
-            if(($existsActiveDashboard 
-                && ($params['activeDashboard'] == $dashboard->id || ($activeDashboard==-1 && $dashboard->is_default))) 
+            if(($existsActiveDashboard
+                && ($params['activeDashboard'] == $dashboard->id || ($activeDashboard==-1 && $dashboard->is_default)))
                 || ($activeDashboard==-1 && $dashboard->is_default)) {
                 $activeDashboard = $dashboard->id;
             }
@@ -204,7 +204,7 @@ class User extends Eloquent implements UserInterface
                 /* Widget is loading, no data is available yet. */
                 try {
                     $templateData = $widget->getTemplateData();
-                } catch (Exception $e) {
+                } catch (ServiceException $e) {
                     /* Something went wrong during rendering. */
                     Log::error($e->getMessage());
                     /* Falling back to default template data. */
@@ -241,6 +241,9 @@ class User extends Eloquent implements UserInterface
      */
     public function checkWidgetsIntegrity() {
         foreach ($this->widgets as $widget) {
+            /* By default giving every widget a change. */
+            $widget->setState('active');
+
             try {
                 $widget->checkIntegrity();
             } catch (WidgetFatalException $e) {
@@ -253,6 +256,7 @@ class User extends Eloquent implements UserInterface
                     $widget->checkIntegrity();
                 } catch (WidgetException $e) {
                     /* Did not help. */
+                    Log::warning($e->getMessage());
                     $widget->setState('setup_required');
                 }
             }
@@ -298,9 +302,9 @@ class User extends Eloquent implements UserInterface
      */
     public function checkOrCreateDefaultDashboard() {
         /* Get the dashboard and return if exists */
-        if ($this->dashboards()->where('is_default', TRUE)->count()) {
+        if ($this->dashboards()->where('is_default', true)->count()) {
             /* Return */
-            return $this->dashboards()->where('is_default', TRUE)->first();
+            return $this->dashboards()->where('is_default', true)->first();
 
         /* Default dashboard doesn't exist */
         } else {
@@ -308,7 +312,7 @@ class User extends Eloquent implements UserInterface
             if ($this->dashboards()->count()) {
                 /* Make the first default */
                 $dashboard = $this->dashboards()->first();
-                $dashboard->is_default = TRUE;
+                $dashboard->is_default = true;
                 $dashboard->save();
 
                 /* Return */
@@ -320,9 +324,9 @@ class User extends Eloquent implements UserInterface
                 $dashboard = new Dashboard(array(
                     'name'       => 'Default dashboard',
                     'number'     => 1,
-                    'background' => TRUE,
-                    'is_default' => TRUE,
-                    'is_locked'  => FALSE
+                    'background' => true,
+                    'is_default' => true,
+                    'is_locked'  => false
                 ));
                 $dashboard->user()->associate($this);
                 $dashboard->save();
@@ -381,7 +385,7 @@ class User extends Eloquent implements UserInterface
         } elseif ($_ENV['SUBSCRIPTION_MODE'] == 'trial_only') {
             $trialStatus = 'active';
         }
-        
+
         $subscription = new Subscription(array(
             'status'       => 'active',
             'trial_status' => $trialStatus,
@@ -400,34 +404,6 @@ class User extends Eloquent implements UserInterface
      * Creating the default dashboards for the user.
      */
     private function createDefaultDashboards() {
-        /* Make ARRRR dashboards */
-        foreach (SiteConstants::getAutoDashboards() as $name=>$widgets) {
-            $dashboard = new Dashboard(array(
-                'name'       => $name . ' dashboard',
-                'background' => TRUE,
-                'number'     => $this->dashboards->max('number') + 1
-            ));
-            $dashboard->user()->associate($this);
-            $dashboard->save();
-            foreach ($widgets as $widgetMeta) {
-                $descriptor = WidgetDescriptor::where('type', $widgetMeta['type'])->first();
-                /* Creating widget instance. */
-                $widget = new PromoWidget(array(
-                    'position' => $widgetMeta['position'],
-                    'state'    => 'active'
-                ));
-                $widget->dashboard()->associate($dashboard);
-
-                /* Saving settings. */
-                $settings = array_key_exists('settings', $widgetMeta) ? $widgetMeta['settings'] : array ();
-                $widget->saveSettings(array(
-                    'widget_settings'    => json_encode($settings),
-                    'related_descriptor' => $descriptor->id,
-                    'photo_location'     => $widgetMeta['pic_url']
-                ));
-            }
-        }
-
         /* Make personal dashboard */
         $this->makePersonalAutoDashboard('auto', null);
     }
@@ -448,7 +424,7 @@ class User extends Eloquent implements UserInterface
             'name'       => 'Personal dashboard',
             'background' => 'On',
             'number'     => $this->dashboards->max('number') + 1,
-            'is_default' => FALSE
+            'is_default' => false
         ));
         $dashboard->user()->associate($this);
         $dashboard->save();

@@ -10,7 +10,7 @@ class TodoListWidget extends DataWidget
     /**
      * createDataScheme
      * --------------------------------------------------
-     * Returning a deafult scheme for the data.
+     * Return a deafult scheme for the data.
      * @return string, the note text.
      * --------------------------------------------------
     */

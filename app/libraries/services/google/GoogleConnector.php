@@ -34,7 +34,7 @@ abstract class GoogleConnector extends GeneralServiceConnector
 
     /**
      * createClient
-     * Returning a google client.
+     * Return a google client.
      * --------------------------------------------------
      * @return Google_Client object.
      * --------------------------------------------------

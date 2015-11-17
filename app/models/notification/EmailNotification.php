@@ -31,7 +31,7 @@ class EmailNotification extends Notification
         $tracker->sendEvent($eventData);
 
         /* Return */
-        return TRUE;
+        return true;
     }
 
     /**

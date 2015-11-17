@@ -2,7 +2,11 @@
 
 class TwitterMentionsWidget extends DataWidget implements iServiceWidget
 {
+    /* Data selector. */
+    protected static $dataTypes = array('mentions');
+
     use TwitterWidgetTrait;
+
     /* -- Settings -- */
     private static $rangeSettings = array(
         'count' => array(
@@ -15,8 +19,20 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
     );
 
     /**
+     * getData
+     * Return the tweets as an array.
+     * --------------------------------------------------
+     * @param array $postData
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getData(array $postData=array()) {
+        return $this->data['mentions'];
+    }
+
+    /**
      * getTemplateData
-     * Returning the mostly used values in the template.
+     * Return the mostly used values in the template.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
@@ -68,10 +84,10 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
      * @param boolean $commit
      * --------------------------------------------------
     */
-    public function saveSettings(array $inputSettings, $commit=TRUE) {
+    public function saveSettings(array $inputSettings, $commit=true) {
         $oldSettings = $this->getSettings();
         $changedFields = parent::saveSettings($inputSettings, $commit);
-        if ($changedFields != FALSE && $this->dataExists()) {
+        if ($changedFields != false && $this->dataExists()) {
             $this->updateData();
         }
         return $changedFields;

@@ -84,7 +84,7 @@ class SettingsController extends BaseController
     private function changeUserName($postData)
     {
         /* Initialize status */
-        $status = TRUE;
+        $status = true;
 
         /* Get the user and necessary object(s) */
         $user = Auth::user();
@@ -130,7 +130,7 @@ class SettingsController extends BaseController
     private function changeUserEmail($postData)
     {
         /* Initialize status */
-        $status = TRUE;
+        $status = true;
 
         /* Get the user and necessary object(s) */
         $user = Auth::user();
@@ -177,7 +177,7 @@ class SettingsController extends BaseController
     private function changeBackgroundEnabled($postData)
     {
         /* Initialize status */
-        $status = TRUE;
+        $status = true;
 
         /* Get the user and necessary object(s) */
         $background = Auth::user()->background;
@@ -227,7 +227,7 @@ class SettingsController extends BaseController
     private function changeBackground($postData)
     {
         /* Initialize status */
-        $status = TRUE;
+        $status = true;
 
         /* Get the user and necessary object(s) */
         $background = Auth::user()->background;
