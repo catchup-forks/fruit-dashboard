@@ -6,8 +6,8 @@
  */
 function FDGoogleAnalyticsConversionsWidget(widgetOptions) {
   // Call parent constructor
-  FDTableWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDGoogleAnalyticsConversionsWidget.prototype = Object.create(FDTableWidget.prototype);
+FDGoogleAnalyticsConversionsWidget.prototype = Object.create(FDVisualizer.prototype);
 FDGoogleAnalyticsConversionsWidget.prototype.constructor = FDGoogleAnalyticsConversionsWidget;

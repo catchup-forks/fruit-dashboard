@@ -6,10 +6,10 @@
  */
 function FDBraintreeArpuWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDBraintreeArpuWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDBraintreeArpuWidget.prototype = Object.create(FDVisualizer.prototype);
 FDBraintreeArpuWidget.prototype.constructor = FDBraintreeArpuWidget;
 
 

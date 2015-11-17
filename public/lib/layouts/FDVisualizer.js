@@ -46,24 +46,15 @@ var FDVisualizer = function(widgetOptions) {
   * --------------------------------------------------------------------------
   */
 FDVisualizer.prototype.init = function() {
+  if (this.debug) {console.log('[I] ----- Drawing widget ' + this.options.general.id + ' | ' + this.options.general.type)};
   // Check initial data validity and update
   this.updateData(window[this.options.data.init]);
   // Check initial layout validity and updat
   this.updateLayout(this.options.layout);
   // Call the draw function based on the current layout and data
   this.callDraw(this.options.layout);
-
-   // if(this.options.layout=='chart' || this.options.layout == 'multiple') {
-   //   if (this.data.isCombined) {
-   //    this.chart.draw('combined', this.data);
-   //   } else {
-   //    this.chart.draw('line', this.data); 
-   //   }
-   //  } else if(this.options.layout=='table') {
-   //    this.table.draw(this.data, true);
-   //  } 
-   
-   return this;
+  // Return   
+  return this;
 };
 
 /**

@@ -6,10 +6,10 @@
  */
 function FDBraintreeMrrWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDBraintreeMrrWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDBraintreeMrrWidget.prototype = Object.create(FDVisualizer.prototype);
 FDBraintreeMrrWidget.prototype.constructor = FDBraintreeMrrWidget;
 
 

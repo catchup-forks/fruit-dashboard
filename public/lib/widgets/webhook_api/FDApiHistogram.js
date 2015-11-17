@@ -6,8 +6,8 @@
  */
 function FDApiHistogramWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDApiHistogramWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDApiHistogramWidget.prototype = Object.create(FDVisualizer.prototype);
 FDApiHistogramWidget.prototype.constructor = FDApiHistogramWidget;
