@@ -108,10 +108,18 @@ abstract class HistogramWidget extends DataWidget
             'hasData' => empty($this->activeHistogram)
         );
 
+        /* Getting layout specific data, if any. */
+        $layoutSpecificData = array();
+        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_data');
+        if (method_exists($this, $fn)) {
+            $layoutSpecificData = $this->$fn();
+        } 
+
         /* Merging and returning the data. */
         return array_merge(
             $templateData,
-            $histogramTemplateData
+            $histogramTemplateData,
+            $layoutSpecificData
         );
     }
 

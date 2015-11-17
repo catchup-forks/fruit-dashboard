@@ -16,6 +16,7 @@ trait FacebookWidgetTrait
             'help_text'  => 'The widget uses this facebook page for data representation.'
         )
     );
+
     private static $page = array('page');
 
     /* -- Choice functions -- */
@@ -110,6 +111,18 @@ trait FacebookWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
+        return $this->getPage()->name;
+    }
+
+    /**
+     * getCountFooter
+     * --------------------------------------------------
+     * Return the footer for the count widget.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getCountFooter()
+    {
         return $this->getPage()->name;
     }
 }
