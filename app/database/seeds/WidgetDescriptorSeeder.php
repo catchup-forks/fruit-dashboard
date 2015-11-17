@@ -484,7 +484,7 @@ class WidgetDescriptorSeeder extends Seeder
         WidgetDescriptor::updateOrCreate(
             ['type' => 'google_analytics_users'],
             array(
-                'name'         => 'Unique visitors',
+                'name'         => 'Users',
                 'description'  => 'The total number of unique visitors.',
                 'type'         => 'google_analytics_users',
                 'category'     => 'google_analytics',
@@ -554,22 +554,6 @@ class WidgetDescriptorSeeder extends Seeder
                 'category'    => 'google_analytics',
                 'is_premium'  => false,
                 'number'       => 10,
-                'min_cols'     => 3,
-                'min_rows'     => 3,
-                'default_cols' => 6,
-                'default_rows' => 6
-            )
-        );
-
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'google_analytics_users_chart'],
-            array(
-                'name'        => 'Users',
-                'description' => 'Displays the number of users on a chart..',
-                'type'        => 'google_analytics_users_chart',
-                'category'    => 'google_analytics',
-                'is_premium'  => false,
-                'number'       => 11,
                 'min_cols'     => 3,
                 'min_rows'     => 3,
                 'default_cols' => 6,

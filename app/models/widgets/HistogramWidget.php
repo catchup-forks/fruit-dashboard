@@ -79,7 +79,7 @@ abstract class HistogramWidget extends DataWidget
         $meta['general']['name'] = $this->getName();
 
         $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_meta');
-        if ( method_exists($this, $fn)) {
+        if (method_exists($this, $fn)) {
             return $this->$fn($meta);
         } 
 
@@ -101,25 +101,22 @@ abstract class HistogramWidget extends DataWidget
 
         /* Adding default data for this widget type. */
         $histogramTemplateData = array(
-            'data'    => $this->getData(),
-            'name'    => $this->getName(),
-            'layout'  => $this->getLayout(),
-            'format'  => $this->getFormat(),
-            'hasData' => empty($this->activeHistogram)
+            'name'          => $this->getName(),
+            'defaultLayout' => $this->getLayout(),
+            'layout' => $this->getLayout(), // Remove on merge
+            'format'        => $this->getFormat(),
+            'hasData'       => empty($this->activeHistogram)
         );
 
-        /* Getting layout specific data, if any. */
-        $layoutSpecificData = array();
-        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_data');
-        if (method_exists($this, $fn)) {
-            $layoutSpecificData = $this->$fn();
-        } 
-
+        /* Adding all layout data. */
+        foreach ($this->type() as $layout=>$name) {
+            $histogramTemplateData[$layout . '_data'] = $this->getData(array('layout' => $layout));
+        }
+        
         /* Merging and returning the data. */
         return array_merge(
             $templateData,
-            $histogramTemplateData,
-            $layoutSpecificData
+            $histogramTemplateData
         );
     }
 
@@ -137,6 +134,7 @@ abstract class HistogramWidget extends DataWidget
             $name = $this->getServiceSpecificName();
         }
         $name .= ' - ' . $this->getSettings()['name'];
+
         return $name;
     }
 
@@ -205,7 +203,9 @@ abstract class HistogramWidget extends DataWidget
         /* On table layout setting maximum values. */
         if (array_key_exists('type', $inputData)) {
             if ($inputData['type'] == 'table') {
+                /* Table rows must be less than 15. */
                 $validationArray['length'] .= '|max:15';
+
             } else if ($inputData['type'] == 'count') {
                 $validationArray['length'] = 'integer|max:12';
             }
@@ -237,7 +237,8 @@ abstract class HistogramWidget extends DataWidget
         $this->setActiveHistogram($this->buildHistogramEntries());
 
         /* Creating getData function name. */
-        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_data');
+        $fn = 'get' . Utilities::underScoreToCamelCase($layout . '_data');
+
         return $this->$fn($postData);
     }
 
