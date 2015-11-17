@@ -13,6 +13,9 @@ function FDWidget(widgetOptions) {
   var widgetClass     = 'FD' + options.general.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
   var specific        = new window[widgetClass](options);
 
+  //DEBUG
+  var vis = new FDVisualizer(widgetOptions);
+
   // For debugging
   var logging = false;
 

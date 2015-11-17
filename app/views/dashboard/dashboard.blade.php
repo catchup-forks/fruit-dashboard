@@ -128,7 +128,7 @@
 @section('pageScripts')
   <!-- FDJSlibs merged -->
   {{ Minify::javascriptDir('/lib/general') }}
-  {{ Minify::javascriptDir('/lib/widget-wrapper') }}
+  {{ Minify::javascriptDir('/lib/layouts') }}
   {{ Minify::javascriptDir('/lib/widgets') }}
   <!-- FDJSlibs merged -->
   

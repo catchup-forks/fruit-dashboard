@@ -40,7 +40,7 @@
 
 @section('pageScripts')
     <!-- FDJSlibs -->
-    {{ Minify::javascriptDir('/lib/widget-wrapper')->withFullUrl() }}
+    {{ Minify::javascriptDir('/lib/layouts')->withFullUrl() }}
     {{ Minify::javascriptDir('/lib/widgets')->withFullUrl() }}
     <!-- FDJSlibs -->
 @append
