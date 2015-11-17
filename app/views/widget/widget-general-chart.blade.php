@@ -1,16 +1,16 @@
 <div class="chart-value larger-text">
-  {{ Utilities::formatNumber(array_values($widget['data']['currentValue'])[0], $widget['format']) }}
+  {{ Utilities::formatNumber(array_values($widget[$widget['layout'].'_data']['currentValue'])[0], $widget['format']) }}
 </div> <!-- /.chart-value -->
 
 <div class="chart-diff-data text-center">
 
-  <div class="chart-diff @if($widget['className']::isSuccess($widget['data']['currentDiff'])) text-success @else text-danger @endif">
-  @if ($widget['data']['currentDiff'] >= 0)
+  <div class="chart-diff @if($widget['className']::isSuccess($widget[$widget['layout'].'_data']['currentDiff'])) text-success @else text-danger @endif">
+  @if ($widget[$widget['layout'].'_data']['currentDiff'] >= 0)
       <span class="fa fa-arrow-up chart-diff-icon"> </span>
   @else
       <span class="fa fa-arrow-down chart-diff-icon"> </span>
   @endif
-    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber(array_values($widget['data']['currentDiff'])[0], $widget['format']) }}</span>
+    <span class="chart-diff-value larger-text">{{ Utilities::formatNumber(array_values($widget[$widget['layout'].'_data']['currentDiff'])[0], $widget['format']) }}</span>
   </div> <!-- /.chart-diff -->
 
   <div class="chart-diff-dimension smaller-text">
@@ -30,10 +30,10 @@
 <script type="text/javascript">
   // Set chart data
   var widgetData{{ $widget['id'] }} = {
-    'isCombined' : {{$widget['data']['isCombined']}},
-    'labels': [@foreach ($widget['data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
+    'isCombined' : {{$widget[$widget['layout'].'_data']['isCombined']}},
+    'labels': [@foreach ($widget[$widget['layout'].'_data']['labels'] as $datetime) "{{$datetime}}", @endforeach],
     'datasets': [
-    @foreach ($widget['data']['datasets'] as $dataset)
+    @foreach ($widget[$widget['layout'].'_data']['datasets'] as $dataset)
       {
           'type' : '{{ $dataset['type'] }}',
           'values' : [{{ implode(',', $dataset['values']) }}],

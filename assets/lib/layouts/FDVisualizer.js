@@ -16,12 +16,15 @@ var FDVisualizer = function(widgetOptions) {
   this.data    = {};
   // Initialize possible layouts
   this.possibleLayouts = [
-    {name: 'count',             engine: 'this.count'},
-    {name: 'diff',              engine: 'this.diff'},
-    {name: 'single-line',       engine: 'this.chart'},
-    {name: 'multi-line',        engine: 'this.chart'},
-    {name: 'combined-bar-line', engine: 'this.chart'},
-    {name: 'table',             engine: 'this.table'},
+    {name: 'count',             engine: 'count'},
+    {name: 'diff',              engine: 'diff'},
+    // FIXME: REMOVE CHART AFTER LAYOUT REDESING
+    {name: 'chart',             engine: 'chart'},
+    // -------------------
+    {name: 'single-line',       engine: 'chart'},
+    {name: 'multi-line',        engine: 'chart'},
+    {name: 'combined-bar-line', engine: 'chart'},
+    {name: 'table',             engine: 'table'},
   ]
   //this.count = new FDCount(this.options);
   //this.diff  = new FDDiff(this.options);
@@ -137,18 +140,24 @@ FDVisualizer.prototype.refresh = function(layout, data) {
  * --------------------------------------------------------------------------
  */
 FDVisualizer.prototype.updateData = function(data) {
-  console.log(data)
-  if (data.length) {
-    // ---- debug -----------------------------------------------------------
-    this.data = data;
-    if (this.debug) {console.log('[S] Data refreshed.' + this.options.data.init)};
-    if (this.debug) {console.log(data)};
-    // ----------------------------------------------------------------------
-  } else {
+  // Helper to check empty data
+  var isEmpty = function(obj) {
+    for (var key in obj) return false; return true;
+  }
+
+  // Silent fail on epty data
+  if (isEmpty(data)) {
     // ---- debug -----------------------------------------------------------
     if (this.debug) {console.log('[E] The supplied data is empty.')};
     // ----------------------------------------------------------------------
+  } else {
+    this.data = data;
+    // ---- debug -----------------------------------------------------------
+    if (this.debug) {console.log('[S] Data refreshed to the following:')};
+    if (this.debug) {console.log(data)};
+    // ----------------------------------------------------------------------
   }
+  // Return
   return this;
 }
 
@@ -193,7 +202,7 @@ FDVisualizer.prototype.callDraw = function(layout) {
   // Enable change only to possible layouts
   if (layoutArray.length) {
     // Call draw for the selected engine
-    this[layoutArray.engine].draw(this.data)
+    this[layoutArray[0].engine].draw(this.data)
     // ---- debug -----------------------------------------------------------
     if (this.debug) {console.log('[S] Draw called with layout: ' + layout)};
     // ----------------------------------------------------------------------
