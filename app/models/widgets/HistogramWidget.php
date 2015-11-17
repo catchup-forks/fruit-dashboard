@@ -105,12 +105,13 @@ abstract class HistogramWidget extends DataWidget
             'defaultLayout' => $this->getLayout(),
             'layout' => $this->getLayout(), // Remove on merge
             'format'        => $this->getFormat(),
-            'hasData'       => empty($this->activeHistogram)
+            'hasData'       => empty($this->activeHistogram),
+            'data'          => array()
         );
 
         /* Adding all layout data. */
         foreach ($this->type() as $layout=>$name) {
-            $histogramTemplateData[$layout . '_data'] = $this->getData(array('layout' => $layout));
+            $histogramTemplateData['data'][$layout] = $this->getData(array('layout' => $layout));
         }
         
         /* Merging and returning the data. */

@@ -5,3 +5,10 @@
 @else
   @include('widget.widget-general-chart')
 @endif
+
+@section('widgetScripts')
+<script type="text/javascript">
+  // Set Widget default data
+  var widgetData{{ $widget['id'] }} = {{ json_encode($widget['data']) }}
+</script>
+@append

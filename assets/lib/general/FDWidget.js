@@ -13,9 +13,6 @@ function FDWidget(widgetOptions) {
   var widgetClass     = 'FD' + options.general.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
   var specific        = new window[widgetClass](options);
 
-  //DEBUG
-  var vis = new FDVisualizer(widgetOptions);
-
   // For debugging
   var logging = false;
 
@@ -174,11 +171,29 @@ function FDWidget(widgetOptions) {
   /**
    * @event $(selector).resize
    * --------------------------------------------------------------------------
-   *
+   * Hadles the resize event
    * --------------------------------------------------------------------------
    */
   $(widgetSelector).resize(function() {
     reinit();
+  });
+
+  /**
+   * @event $(options.selectors.wrapper).hover
+   * --------------------------------------------------------------------------
+   * Shows / hides the non chart numbers on hover
+   * --------------------------------------------------------------------------
+   */
+  $(options.selectors.wrapper).hover(function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'hidden');
+    widget.find('.chart-diff-data').css('visibility', 'hidden');
+    widget.find('.chart-name').css('visibility', 'hidden');
+  }, function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'visible');
+    widget.find('.chart-diff-data').css('visibility', 'visible');
+    widget.find('.chart-name').css('visibility', 'visible');
   });
 
   /**

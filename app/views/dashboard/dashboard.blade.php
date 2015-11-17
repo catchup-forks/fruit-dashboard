@@ -148,11 +148,11 @@
   <!-- /Send acquisition event -->
   @endif
 
-  <!-- Init FDChartOptions -->
+  <!-- Init FDGlobalChartOptions -->
   <script type="text/javascript">
-      new FDChartOptions({data:{page: 'dashboard'}}).init();
+      new FDGlobalChartOptions({data:{page: 'dashboard'}}).init();
   </script>
-  <!-- /Init FDChartOptions -->
+  <!-- /Init FDGlobalChartOptions -->
 
   <!-- Dashboard etc scripts -->
   <script type="text/javascript">
