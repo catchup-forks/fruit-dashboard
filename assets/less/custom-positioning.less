@@ -83,10 +83,31 @@ body {
   left: @margin;
 }
 
-.position-tl-sm {
+.layout-chooser {
   position: absolute;
-  top: @margin/5;
-  left: @margin/5;
+  top: 0;
+  height: 100%;
+}
+
+.layout-chooser > .element {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  padding-left: @margin/5;
+  height: 25%;
+  width: 28px;
+  border-bottom: 1px solid fade(@gridster-bg, @alpha);
+  &:last-child{
+      border-bottom: 0;
+  }
+}
+
+.element:hover{
+  background-color: fade(@gridster-bg, @alpha);
 }
 
 .position-br {
