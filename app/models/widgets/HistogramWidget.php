@@ -77,14 +77,11 @@ abstract class HistogramWidget extends DataWidget
 
         $meta['layout'] = $this->getLayout();
         $meta['general']['name'] = $this->getName();
-
-        $fn = 'get' . Utilities::underScoreToCamelCase($this->getLayout() . '_template_meta');
-        if (method_exists($this, $fn)) {
-            return $this->$fn($meta);
-        } 
+        $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
+        $meta['selectors']['graph'] = '[id^=chart-container]';
+        $meta['selectors']['count'] = 'count-' . $this->id;
 
         return $meta;
-
     }
 
     /**
@@ -103,7 +100,6 @@ abstract class HistogramWidget extends DataWidget
         $histogramTemplateData = array(
             'name'          => $this->getName(),
             'defaultLayout' => $this->getLayout(),
-            'layout' => $this->getLayout(), // Remove on merge
             'format'        => $this->getFormat(),
             'hasData'       => empty($this->activeHistogram)
         );
