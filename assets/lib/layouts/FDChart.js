@@ -720,105 +720,103 @@ function FDChartHandler(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                              OTHER FUNCTIONS                               *
    * -------------------------------------------------------------------------- */
-
   function customTooltip(tooltip) {
-    return;
-    // // Tooltip Element
-    // var tooltipEl = $('#chartjs-tooltip');
+    // Tooltip Element
+    var tooltipEl = $('#chartjs-tooltip');
 
-    // if (!tooltipEl[0]) {
-    //   $('body').append('<div id="chartjs-tooltip"></div>');
-    //   tooltipEl = $('#chartjs-tooltip');
-    // }
+    if (!tooltipEl[0]) {
+      $('body').append('<div id="chartjs-tooltip"></div>');
+      tooltipEl = $('#chartjs-tooltip');
+    }
 
-    // // Hide if no tooltip
-    // if (!tooltip._view.opacity) {
-    //   tooltipEl.css({
-    //     opacity: 0
-    //   });
-    //   $('.chartjs-wrap canvas').each(function(index, el) {
-    //     $(el).css('cursor', 'default');
-    //   });
-    //   return;
-    // }
+    // Hide if no tooltip
+    if (!tooltip._view.opacity) {
+      tooltipEl.css({
+        opacity: 0
+      });
+      $('.chartjs-wrap canvas').each(function(index, el) {
+        $(el).css('cursor', 'default');
+      });
+      return;
+    }
 
-    // $(tooltip._chart.canvas).css('cursor', 'pointer');
+    $(tooltip._chart.canvas).css('cursor', 'pointer');
 
-    // // Set caret Position
-    // tooltipEl.removeClass('above below no-transform');
-    // if (tooltip._view.yAlign) {
-    //   tooltipEl.addClass(tooltip._view.yAlign);
-    // } else {
-    //   tooltipEl.addClass('no-transform');
-    // }
+    // Set caret Position
+    tooltipEl.removeClass('above below no-transform');
+    if (tooltip._view.yAlign) {
+      tooltipEl.addClass(tooltip._view.yAlign);
+    } else {
+      tooltipEl.addClass('no-transform');
+    }
 
-    // // Set Text
-    // if (tooltip._view.text) {
-    //   tooltipEl.html(tooltip._view.text);
-    // } else if (tooltip._view.labels) {
-    //   var innerHtml = '<div class="title">' + tooltip._view.title + '</div>';
+    // Set Text
+    if (tooltip._view.text) {
+      tooltipEl.html(tooltip._view.text);
+    } else if (tooltip._view.labels) {
+      var innerHtml = '<div class="title">' + tooltip._view.title + '</div>';
 
-    //   // Sort
-    //   var colors = [];
-    //   var labels = [];
-    //   var numbers = [];
-    //   if(tooltip._view.labels.length>0) {
-    //     colors.push(tooltip._view.legendColors[0].fill);
-    //     labels.push(tooltip._view.labels[0]);
-    //     numbers.push(parseFloat(labels[0].split(' ')[1]));
-    //     for (var i=1; i<tooltip._view.labels.length; i++) {
-    //       var number = parseFloat(tooltip._view.labels[i].split(' ')[1]);
-    //       var sorted = false;
-    //       for (var j=0; j<i; j++) {
-    //         if(!sorted && number>numbers[j]) {
-    //           colors.splice(j, 0, tooltip._view.legendColors[i].fill);
-    //           labels.splice(j, 0, tooltip._view.labels[i]);
-    //           numbers.splice(j, 0, number);
-    //           sorted = true;
-    //         }
-    //       }
-    //       if(!sorted) {
-    //         colors.push(tooltip._view.legendColors[i].fill);
-    //         labels.push(tooltip._view.labels[i]);
-    //         numbers.push(number);
-    //       }
-    //     }
-    //   }      
+      // Sort
+      var colors = [];
+      var labels = [];
+      var numbers = [];
+      if(tooltip._view.labels.length>0) {
+        colors.push(tooltip._view.legendColors[0].fill);
+        labels.push(tooltip._view.labels[0]);
+        numbers.push(parseFloat(labels[0].split(' ')[1]));
+        for (var i=1; i<tooltip._view.labels.length; i++) {
+          var number = parseFloat(tooltip._view.labels[i].split(' ')[1]);
+          var sorted = false;
+          for (var j=0; j<i; j++) {
+            if(!sorted && number>numbers[j]) {
+              colors.splice(j, 0, tooltip._view.legendColors[i].fill);
+              labels.splice(j, 0, tooltip._view.labels[i]);
+              numbers.splice(j, 0, number);
+              sorted = true;
+            }
+          }
+          if(!sorted) {
+            colors.push(tooltip._view.legendColors[i].fill);
+            labels.push(tooltip._view.labels[i]);
+            numbers.push(number);
+          }
+        }
+      }      
 
-    //   for (var i=0; i<tooltip._view.labels.length; i++) {
-    //     innerHtml += [
-    //       '<div class="section">',
-    //       '   <span class="chartjs-tooltip-key" style="background-color:' + colors[i] + '"></span>',
-    //       '   <span class="chartjs-tooltip-value">' + labels[i] + '</span>',
-    //       '</div>'
-    //     ].join('');
-    //   }
-    //   tooltipEl.html(innerHtml);
-    // }
+      for (var i=0; i<tooltip._view.labels.length; i++) {
+        innerHtml += [
+          '<div class="section">',
+          '   <span class="chartjs-tooltip-key" style="background-color:' + colors[i] + '"></span>',
+          '   <span class="chartjs-tooltip-value">' + labels[i] + '</span>',
+          '</div>'
+        ].join('');
+      }
+      tooltipEl.html(innerHtml);
+    }
 
-    // // Find Y Location on page
-    // var top = 0;
-    // if (tooltip._view.yAlign) {
-    //   if (tooltip._view.yAlign == 'above') {
-    //     top = tooltip._view.y - tooltip._view.caretHeight - tooltip._view.caretPadding;
-    //   } else {
-    //     top = tooltip._view.y + tooltip._view.caretHeight + tooltip._view.caretPadding;
-    //   }
-    // }
+    // Find Y Location on page
+    var top = 0;
+    if (tooltip._view.yAlign) {
+      if (tooltip._view.yAlign == 'above') {
+        top = tooltip._view.y - tooltip._view.caretHeight - tooltip._view.caretPadding;
+      } else {
+        top = tooltip._view.y + tooltip._view.caretHeight + tooltip._view.caretPadding;
+      }
+    }
 
-    // var offset = $(tooltip._chart.canvas).offset();
+    var offset = $(tooltip._chart.canvas).offset();
 
-    // // Display, position, and set styles for font
-    // tooltipEl.css({
-    //   opacity: 1,
-    //   width: tooltip._view.width ? (tooltip._view.width + 'px') : 'auto',
-    //   left: offset.left + tooltip._view.x + 'px',
-    //   top: offset.top + top + 'px',
-    //   fontFamily: tooltip._view._fontFamily,
-    //   fontSize: tooltip._view.fontSize,
-    //   fontStyle: tooltip._view._fontStyle,
-    //   padding: tooltip._view.yPadding + 'px ' + tooltip._view.xPadding + 'px',
-    // });
+    // Display, position, and set styles for font
+    tooltipEl.css({
+      opacity: 1,
+      width: tooltip._view.width ? (tooltip._view.width + 'px') : 'auto',
+      left: offset.left + tooltip._view.x + 'px',
+      top: offset.top + top + 'px',
+      fontFamily: tooltip._view._fontFamily,
+      fontSize: tooltip._view.fontSize,
+      fontStyle: tooltip._view._fontStyle,
+      padding: tooltip._view.yPadding + 'px ' + tooltip._view.xPadding + 'px',
+    });
   }
 
 } // FDChartHandler
