@@ -2,6 +2,9 @@
 
 trait HistogramCountLayoutTrait
 {
+    abstract protected function getCountDescription();
+    abstract protected function getCountFooter();
+
     /**
      * getCountData
      * Return the count data.
@@ -54,17 +57,13 @@ trait HistogramCountLayoutTrait
     protected function getCountTemplateData()
     {
         $countTemplateData = array(
-            'description'  => '',
+            'description'  => $this->getCountDescription(),
+            'footer'       => $this->getCountFooter(),
             'startDate'    => $this->getStartDate(),
             'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
 
-        if ($this instanceof iServiceWidget) {
-            $countTemplateData['footer'] = $this->getServiceSpecificName();
-        } else {
-            $countTemplateData['footer'] = '';
-        }
         return $countTemplateData;
     }
 
