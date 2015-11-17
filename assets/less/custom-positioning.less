@@ -100,14 +100,18 @@ body {
   padding-left: @margin/5;
   height: 25%;
   width: 28px;
-  border-bottom: 1px solid fade(@gridster-bg, @alpha);
+  border-bottom: 1px solid fade(@gridster-bg, @alpha*2);
   &:last-child{
       border-bottom: 0;
   }
 }
 
-.element:hover{
-  background-color: fade(@gridster-bg, @alpha);
+.layout-chooser > .element.active {
+  background-color: fade(@gridster-bg, @alpha*2);
+}
+
+.element:hover {
+  background-color: fade(@gridster-bg, @alpha*2);
 }
 
 .position-br {
