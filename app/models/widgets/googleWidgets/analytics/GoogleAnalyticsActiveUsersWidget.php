@@ -1,4 +1,5 @@
 <?php
+
 class GoogleAnalyticsActiveUsersWidget extends HistogramWidget implements iServiceWidget
 {
     /* Service settings. */
