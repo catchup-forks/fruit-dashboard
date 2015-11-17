@@ -80,7 +80,7 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
 
     /**
      * __call
-     * Map some functions, on single/multiple layouts.
+     * Map some functions that are needed to be called. 
      * --------------------------------------------------
      * @param string name
      * @param array args
@@ -89,11 +89,10 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
     */
     public function __call($name, $args)
     {
-        /* Removing Combined from the function name. */
-        $fn = str_replace('Combined', '', $name);
-        if ($fn != $name && method_exists($this, $fn)) {
-            /* Calling corresponding function. */
-            return call_user_func_array(array(&$this, $fn), $args);
+        switch ($name) {
+        case 'getCombinedChartData':
+            return call_user_func_array(array(&$this, 'getChartData'), $args);
+            break;
         }
 
         return parent::__call($name, $args);

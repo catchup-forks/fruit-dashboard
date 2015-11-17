@@ -34,7 +34,7 @@ abstract class HistogramWidget extends DataWidget
             'type'       => 'SCHOICE',
             'validation' => 'required',
             'default'    => 'chart',
-            'help_text'  => 'The layout type of your wiget.'
+            'help_text'  => 'The layout type of your widget.'
         ),
     );
 
@@ -78,8 +78,14 @@ abstract class HistogramWidget extends DataWidget
         $meta['layout'] = $this->getLayout();
         $meta['general']['name'] = $this->getName();
         $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
+        
+        /* Chart specific meta. */
         $meta['selectors']['graph'] = '[id^=chart-container]';
-        $meta['selectors']['count'] = 'count-' . $this->id;
+    
+        /* Count specific meta. */
+        if (in_array('count', $this->type())) {
+            $meta['selectors']['count'] = 'count-' . $this->id;
+        }
 
         return $meta;
     }
