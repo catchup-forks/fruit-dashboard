@@ -201,11 +201,11 @@ FDVisualizer.prototype.callDraw = function(layout) {
   
   // Enable change only to possible layouts
   if (layoutArray.length) {
-    // Call draw for the selected engine
-    this[layoutArray[0].engine].draw(this.data)
     // ---- debug -----------------------------------------------------------
     if (this.debug) {console.log('[S] Draw called with layout: ' + layout)};
     // ----------------------------------------------------------------------
+    // Call draw for the selected engine
+    this[layoutArray[0].engine].draw(layout, this.data[layout])
   } else {
     // ---- debug -----------------------------------------------------------
     if (this.debug) {console.log('[E] Invalid layout option supplied for draw: ' + layout)};
