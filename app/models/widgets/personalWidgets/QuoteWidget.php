@@ -34,7 +34,7 @@ class QuoteWidget extends DataWidget
      */
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
-            'quote' => $this->getQuote()
+            'quote' => $this->getData()
         ));
     }
 
@@ -73,13 +73,13 @@ class QuoteWidget extends DataWidget
     }
 
     /**
-     * getQuote
+     * getData
      * --------------------------------------------------
      * Returns the quote in an assoc array.
      * @return (array) ($quote) The quote and author
      * --------------------------------------------------
      */
-    public function getQuote($postData=null) {
+    public function getData(array $postData=array()) {
         $quote = $this->data['quote'];
         if (empty($quote)) {
             return array(

@@ -402,34 +402,6 @@ class User extends Eloquent implements UserInterface
      * Creating the default dashboards for the user.
      */
     private function createDefaultDashboards() {
-        /* Make ARRRR dashboards */
-        foreach (SiteConstants::getAutoDashboards() as $name=>$widgets) {
-            $dashboard = new Dashboard(array(
-                'name'       => $name . ' dashboard',
-                'background' => true,
-                'number'     => $this->dashboards->max('number') + 1
-            ));
-            $dashboard->user()->associate($this);
-            $dashboard->save();
-            foreach ($widgets as $widgetMeta) {
-                $descriptor = WidgetDescriptor::where('type', $widgetMeta['type'])->first();
-                /* Creating widget instance. */
-                $widget = new PromoWidget(array(
-                    'position' => $widgetMeta['position'],
-                    'state'    => 'active'
-                ));
-                $widget->dashboard()->associate($dashboard);
-
-                /* Saving settings. */
-                $settings = array_key_exists('settings', $widgetMeta) ? $widgetMeta['settings'] : array ();
-                $widget->saveSettings(array(
-                    'widget_settings'    => json_encode($settings),
-                    'related_descriptor' => $descriptor->id,
-                    'photo_location'     => $widgetMeta['pic_url']
-                ));
-            }
-        }
-
         /* Make personal dashboard */
         $this->makePersonalAutoDashboard('auto', null);
     }
