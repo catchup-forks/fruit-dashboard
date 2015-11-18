@@ -9,86 +9,44 @@
 
 @section('pageContent')
 
-<div id="dashboards" class="carousel slide">
-
-    @if (count($dashboards) > 1)
-      {{-- Include navigation dots for each dashboard. --}}
-      <ol class="carousel-indicators">
-
-        @foreach ($dashboards as $dashboardId => $dashboardMeta)
-          {{-- Set active dashboard. Get from backend or make the default --}}
-          @if (isset($activeDashboard))
-            @if ($dashboardId == $activeDashboard)
-              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
-            @else
-              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
-            @endif
-          @else
-            @if($dashboardMeta['is_default'])
-              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow active"></li>
-            @else
-              <li data-target="#dashboards" data-slide-to="{{ $dashboardMeta['count'] }}" data-toggle="tooltip" data-placement="top" title="{{ $dashboardMeta['name']}}" class="drop-shadow"></li>
-            @endif
-          @endif
-        @endforeach
-
-      </ol>
-    @endif
-
-    {{-- Make a wrapper for dashboards --}}
-    <div class="carousel-inner">
-
+<div id="dashboards">
+  <div id="menu-container">
+    <input id="toggle" type="checkbox"><label for="toggle"><i class="fa fa-bars fa-2x fa-inverse"></i></label>
+    <div class="content"> 
       @foreach ($dashboards as $dashboardId => $dashboardMeta)
-
-          {{-- Set active dashboard. Get from backend or make the default --}}
-          @if (isset($activeDashboard))
-            @if ($dashboardId == $activeDashboard)
-              <div class="item active">
-            @else
-              <div class="item">
-            @endif
-          @else
-            @if($dashboardMeta['is_default'])
-              <div class="item active">
-            @else
-              <div class="item">
-            @endif
-          @endif
-
+        {{-- Set active dashboard. Get from backend or make the default --}}
+        @if (isset($activeDashboard) ? ($dashboardId == $activeDashboard) : $dashboardMeta['is_default'])
           <div class="fill" @if(Auth::user()->background->is_enabled) style="background-image:url({{ Auth::user()->background->url }});" @endif>
           </div> <!-- /.fill -->
 
           {{-- Here comes the dashboard content --}}
           <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}">
-
             {{-- Generate all the widgdets --}}
             <div class="gridster-container">
-
               @foreach ($dashboardMeta['widgets'] as $widget)
-
                 @include('widget.widget-general-layout', ['widget' => $widget['templateData']])
-
               @endforeach
-
             </div> <!-- /.gridster-container -->
-
           </div> <!-- /.gridster -->
-
-        </div> <!-- /.item -->
-
+        @endif 
       @endforeach
-
-    </div> <!-- /.carousel-inner -->
-
-    @if (count($dashboards) > 1)
-    {{-- Set the navigational controls on sides. --}}
-    <a class="left carousel-control" href="#dashboards" data-slide="prev">
-        <span class="icon-prev"></span>
-    </a>
-    <a class="right carousel-control" href="#dashboards" data-slide="next">
-        <span class="icon-next"></span>
-    </a>
-    @endif
+    </div>
+    <div id="cssmenu">
+      <ul>
+        <li><a href="{{ route('dashboard.dashboard') }}">Home</a></li>
+        @foreach ($dashboards as $dashboardId => $dashboardMeta)
+          <li class="active has-sub"><a href="?active={{ $dashboardId }}">{{ $dashboardMeta['name'] }}</a>
+            <ul>
+              @foreach ($dashboardMeta['widgets'] as $widget)
+                <li><a href="#">{{ $widget['templateData']['className'] }}</a></li>
+              @endforeach
+            </ul>
+          </li>
+        @endforeach
+        <li><a href="#">Shared widgets</a></li>
+      </ul>
+    </div>
+  </div>
 
 </div> <!-- /#dashboards -->
 
@@ -147,6 +105,33 @@
   </script>
   <!-- /Send acquisition event -->
   @endif
+
+  <script>
+    (function($){
+      $(document).ready(function(){
+
+      $('#cssmenu li.active').addClass('open').children('ul').show();
+        $('#cssmenu li.has-sub>a').on('click', function(){
+          $(this).removeAttr('href');
+          var element = $(this).parent('li');
+          if (element.hasClass('open')) {
+            element.removeClass('open');
+            element.find('li').removeClass('open');
+            element.find('ul').slideUp(200);
+          }
+          else {
+            element.addClass('open');
+            element.children('ul').slideDown(200);
+            element.siblings('li').children('ul').slideUp(200);
+            element.siblings('li').removeClass('open');
+            element.siblings('li').find('li').removeClass('open');
+            element.siblings('li').find('ul').slideUp(200);
+          }
+        });
+
+      });
+    })(jQuery);
+  </script>
 
   <!-- Init FDChartOptions -->
   <script type="text/javascript">

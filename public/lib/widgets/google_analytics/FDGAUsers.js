@@ -1,14 +1,14 @@
 /**
- * @class FDGoogleAnalyticsUsersChartWidget
+ * @class FDGoogleAnalyticsUsersWidget
  * --------------------------------------------------------------------------
- * Class function for the GoogleAnalyticsUsersChart Widget
+ * Class function for the GoogleAnalyticsUsers Widget
  * --------------------------------------------------------------------------
  */
-function FDGoogleAnalyticsUsersChartWidget(widgetOptions) {
+function FDGoogleAnalyticsUsersWidget(widgetOptions) {
   // Call parent constructor
   FDHistogramWidget.call(this, widgetOptions);
 };
 
-FDGoogleAnalyticsUsersChartWidget.prototype = Object.create(FDHistogramWidget.prototype);
-FDGoogleAnalyticsUsersChartWidget.prototype.constructor = FDGoogleAnalyticsUsersChartWidget;
+FDGoogleAnalyticsUsersWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDGoogleAnalyticsUsersWidget.prototype.constructor = FDGoogleAnalyticsUsersWidget;
 

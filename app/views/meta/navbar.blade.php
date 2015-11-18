@@ -1,37 +1,3 @@
-<!-- if not on dashboard display the home button -->
-@if (!Request::is('dashboard'))
-    <div class="position-tl drop-shadow z-top">
-      <a href="{{ route('dashboard.dashboard') }}" alt="Dashboard" title="Dashboard">
-        <span class="fa fa-fw fa-home fa-2x fa-inverse color-hovered"></span>
-      </a>
-    </div>
-@endif
-
-<!-- add new widget button -->
-<div class="position-bl drop-shadow z-top">
-  <a href="{{ URL::route('widget.add') }}" alt="New widget" title="Add new widget" data-toggle="tooltip" data-placement="right">
-    <span class="fa fa-fw fa-plus-circle fa-2x fa-inverse color-hovered"></span>
-  </a>
-</div>
-
-@if (Request::is('dashboard'))
-    <!-- dashboard lock icon -->
-    <div id="dashboard-lock" class="position-br drop-shadow z-top" alt="Dashboard lock" title="" data-toggle="tooltip" data-placement="left" data-dashboard-id="" data-lock-direction="">
-        <span class="fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered"> </span>
-    </div>
-    <!-- /dashboard lock icon -->
-
-    <!-- new shared widget notification -->
-    @if(Auth::user()->hasUnseenWidgetSharings())
-        <div class="position-bl-second drop-shadow z-top">
-          <a href="#" onclick="goToDashboard(@if(isset($dashboards)) {{ count($dashboards)-1 }} @endif );" alt="New shared widget" title="You have a new shared widget on your dashboard. Click to see." data-toggle="tooltip" data-placement="right">
-            <span class="fa fa-fw fa-share-square-o fa-2x fa-inverse color-hovered"></span>
-          </a>
-        </div>
-    @endif
-@endif
-
-
 <!-- dropdown menu icon -->
 <div class="btn-group position-tr z-top cursor-pointer">
 
