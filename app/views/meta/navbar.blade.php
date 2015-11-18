@@ -62,6 +62,11 @@
             </li>
         @endif
         <li>
+            <a href="http://fruitdashboard.tryfruit.com/community/" onclick="trackAll('lazy', {'en': 'clicked_on_community', 'el': '{{ Auth::user()->email }}', });" target="_blank">
+                <span class="fa fa-street-view"></span> Join the Community
+            </a>
+        </li>
+        <li>
             <a href="https://fruitdashboard.uservoice.com/" target="blank">
                 <span class="fa fa-bullhorn"></span> Feedback
             </a>
@@ -86,20 +91,20 @@
 </div> <!-- /.btn-group -->
 
 <div class="position-tr-second z-top-under-dropdown cursor-pointer">
-
-<a href="http://fruitdashboard.tryfruit.com/community/" class="fa fa-fw fa-2x fa-street-view fa-inverse color-hovered drop-shadow" alt="Community" data-toggle="tooltip" data-placement="left" title="Join our community" onclick="trackAll('lazy', {'en': 'clicked_on_community', 'el': '{{ Auth::user()->email }}', });" target="_blank"></a>
-    
+   
 </div> <!-- /.position-tr-second -->
 
-<div class="position-tr-third z-top-under-dropdown cursor-pointer">
-    <a href="/trophies" class="fa fa-fw fa-2x fa-trophy fa-inverse color-hovered drop-shadow" alt="Trophies" data-toggle="tooltip" data-placement="left" title="{{ (isset($new_trophies) && $new_trophies>0) ? 'You have ' . $new_trophies . ' new trophies, click to see them' : 'Trophies' }}">
-        @if (isset($new_trophies) && $new_trophies>0)
-            <div class="position-tr-third-badge z-top-under-dropdown cursor-pointer">
-                <span class="badge">{{ $new_trophies }}</span>
-            </div>
-        @endif
-    </a>
-</div> <!-- /.position-tr-third -->
+@if (App::environment('local'))
+    <div class="position-tr-third z-top-under-dropdown cursor-pointer">
+        <a href="/trophies" class="fa fa-fw fa-2x fa-trophy fa-inverse color-hovered drop-shadow" alt="Trophies" data-toggle="tooltip" data-placement="left" title="{{ (isset($new_trophies) && $new_trophies>0) ? 'You have ' . $new_trophies . ' new trophies, click to see them' : 'Trophies' }}">
+            @if (isset($new_trophies) && $new_trophies>0)
+                <div class="position-tr-third-badge z-top-under-dropdown cursor-pointer">
+                    <span class="badge">{{ $new_trophies }}</span>
+                </div>
+            @endif
+        </a>
+    </div> <!-- /.position-tr-third -->
+@endif
 
 <!-- Display the Remaining Days counter -->
 @if (Auth::user()->subscription->getSubscriptionInfo()['TD'])
