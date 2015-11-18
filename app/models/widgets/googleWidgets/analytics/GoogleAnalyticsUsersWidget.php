@@ -23,16 +23,48 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
     public function type()
     {
         return array(
-            'chart'          => 'By source',
-            'combined_chart' => 'Diff + line',
-            'table'          => 'Table',
-            'count'          => 'Count'
+            'multi-line'        => 'User count by sources',
+            'combined-bar-line' => 'Sum users and difference by time',
+            'table'             => 'Table layout',
+            'count'             => 'Sum user count'
         );
-        // 'multi-line'        => 'User count by sources',
-        // 'combined-bar-line' => 'Sum users and difference by time',
-        // 'table'             => 'Table layout',
-        // 'count'             => 'Sum user count'
-        // 'diff'              => 'Diff'
+    }
+
+    /* The layout function map. */
+    protected static $functionMap = array(
+        'multi-line'        => 'getChartData',
+        'combined-bar-line' => 'getChartData',
+        'table'             => 'getTableData',
+        'count'             => 'getCountData',
+    );
+
+    /**
+     * layoutSetup
+     * Set up the widget based on the layout.
+     * --------------------------------------------------
+     * @param layout
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function layoutSetup($layout)
+    {
+        switch ($layout) {
+            case 'multi-line':
+                $this->setDiff(true);
+            break;
+            case 'combined-bar-line':
+                $this->setSingle(true);
+            break;
+            case 'table':
+                $this->setSingle(true);
+            break;
+            case 'count':
+                $this->setSingle(true);
+            break;
+            default: break;
+        }
+
+        $this->setActiveHistogram($this->buildHistogramEntries());
     }
 
     /**
@@ -42,11 +74,8 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogramEntries() 
+    private function buildHistogramEntries() 
     {
-        /* Setting up the widget default settings. */
-        $this->layoutSetup();
-
         /* Setting active histogram. */
         if ($this->toSingle) {
             /* Transforming to single. */
@@ -57,31 +86,6 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
         }
     }
 
-    /**
-     * layoutSetup
-     * Set up the widget based on the layout.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-    */
-    private function layoutSetup()
-    {
-        switch ($this->getLayout()) {
-            case 'chart':
-                $this->setDiff(true);
-            break;
-            case 'combined_chart':
-                $this->setSingle(true);
-            break;
-            case 'count':
-                $this->setSingle(true);
-            break;
-            case 'table':
-                $this->setSingle(true);
-            break;
-            default: break;
-        }
-    }
 
     /**
      * __call

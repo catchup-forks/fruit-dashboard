@@ -3,6 +3,7 @@
 abstract class HistogramWidget extends DataWidget
 {
     abstract public function type();
+    abstract protected function layoutSetup($layout);
 
     /* Data format definer. */
     use NumericWidgetTrait;
@@ -238,10 +239,10 @@ abstract class HistogramWidget extends DataWidget
         }
 
         /* Building the histogram. */
-        $this->setActiveHistogram($this->buildHistogramEntries());
+        $this->layoutSetup($layout);
 
         /* Creating getData function name. */
-        $fn = 'get' . Utilities::underScoreToCamelCase($layout . '_data');
+        $fn = static::$functionMap[$layout];
         return $this->$fn($postData);
     }
 
@@ -259,6 +260,5 @@ abstract class HistogramWidget extends DataWidget
         $this->setResolution($this->getResolution());
         $this->setLength($this->getLength());
     }
-
 }
 ?>

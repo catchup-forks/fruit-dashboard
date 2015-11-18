@@ -14,9 +14,6 @@ class GoogleAnalyticsTopSourcesWidget extends DataWidget implements iServiceWidg
     /* Service settings. */
     use GoogleAnalyticsWidgetTrait;
 
-    /* Chart data transformer. */
-    use MultipleChartWidgetTrait;
-
     /**
      * getSettingsFields
      * Returns the SettingsFields

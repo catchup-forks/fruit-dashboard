@@ -29,6 +29,37 @@ trait FacebookWidgetTrait
         );
     }
 
+    /* The layout function map. */
+    protected static $functionMap = array(
+        'chart' => 'getChartData',
+        'table' => 'getTableData',
+        'count' => 'getCountData',
+    );
+
+    /**
+     * layoutSetup
+     * Set up the widget based on the layout.
+     * --------------------------------------------------
+     * @param layout
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function layoutSetup($layout)
+    {
+        switch ($layout) {
+            case 'chart':
+                $this->setDiff(true);
+            break;
+            case 'count':
+            break;
+            case 'table':
+            break;
+            default: break;
+        }
+
+        $this->setActiveHistogram($this->buildHistogramEntries());
+    }
+
     public function page() {
         $pages = array();
         foreach ($this->user()->facebookPages as $page) {
