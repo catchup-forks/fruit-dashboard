@@ -222,6 +222,7 @@ trait HistogramWidgetTrait
     {
         /* Using cache. */
         if ( ! $this->dirty) {
+            Log::info("Using cache for widget " . $this->id);
             return $this->cache;
         }
 
