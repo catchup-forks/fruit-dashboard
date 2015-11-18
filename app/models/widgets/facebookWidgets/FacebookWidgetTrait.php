@@ -23,17 +23,17 @@ trait FacebookWidgetTrait
     public function type()
     {
         return array(
-            'chart'  => 'Chart',
-            'table'  => 'Table',
-            'count'  => 'Count'
+            'combined-bar-line'  => 'Chart',
+            'table'              => 'Table',
+            'count'              => 'Count'
         );
     }
 
     /* The layout function map. */
     protected static $functionMap = array(
-        'chart' => 'getChartData',
-        'table' => 'getTableData',
-        'count' => 'getCountData',
+        'combined-bar-line' => 'getChartData',
+        'table'             => 'getTableData',
+        'count'             => 'getCountData',
     );
 
     /**
@@ -46,17 +46,6 @@ trait FacebookWidgetTrait
     */
     protected function layoutSetup($layout)
     {
-        switch ($layout) {
-            case 'chart':
-                $this->setDiff(true);
-            break;
-            case 'count':
-            break;
-            case 'table':
-            break;
-            default: break;
-        }
-
         $this->setActiveHistogram($this->buildHistogramEntries());
     }
 
