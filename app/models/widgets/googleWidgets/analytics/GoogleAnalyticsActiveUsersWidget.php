@@ -15,16 +15,32 @@ class GoogleAnalyticsActiveUsersWidget extends HistogramWidget implements iServi
     protected static $dataTypes = array('active_users');
 
     /* Data attribute. */
-    protected static $isCumulative = true;
+    protected static $isCumulative = false;
 
     /* -- Choice functions -- */
     public function type()
     {
         return array(
-            'chart'  => 'Chart',
-            'table'  => 'Table',
-            'count'  => 'Count'
+            'multi-line' => 'User count by sources',
         );
+    }
+
+    /* The layout function map. */
+    protected static $functionMap = array(
+        'multi-line' => 'getChartData',
+    );
+
+    /**
+     * layoutSetup
+     * Set up the widget based on the layout.
+     * --------------------------------------------------
+     * @param layout
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function layoutSetup($layout)
+    {
+        $this->setActiveHistogram($this->buildHistogramEntries());
     }
 
     /**
@@ -34,7 +50,7 @@ class GoogleAnalyticsActiveUsersWidget extends HistogramWidget implements iServi
      * @return array
      * --------------------------------------------------
     */
-    protected function buildHistogramEntries() 
+    private function buildHistogramEntries() 
     {
         return $this->data['active_users'];
     }

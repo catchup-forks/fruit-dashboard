@@ -2,11 +2,6 @@
 
 trait FacebookWidgetTrait
 {
-    /* Histogram data representation. */
-    use HistogramTableLayoutTrait;
-    use HistogramCountLayoutTrait;
-    use HistogramChartLayoutTrait;
-
     /* -- Settings -- */
     private static $pageSettings = array(
         'page' => array(
@@ -18,23 +13,6 @@ trait FacebookWidgetTrait
     );
 
     private static $page = array('page');
-
-    /* -- Choice functions -- */
-    public function type()
-    {
-        return array(
-            'combined-bar-line'  => 'Chart',
-            'table'              => 'Table',
-            'count'              => 'Count'
-        );
-    }
-
-    /* The layout function map. */
-    protected static $functionMap = array(
-        'combined-bar-line' => 'getChartData',
-        'table'             => 'getTableData',
-        'count'             => 'getCountData',
-    );
 
     /**
      * layoutSetup

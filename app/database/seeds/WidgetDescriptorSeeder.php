@@ -351,22 +351,6 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['type' => 'facebook_likes_count'],
-            array(
-                'name'        => 'Likes count',
-                'description' => 'The total number of people who have liked your Page.',
-                'type'        => 'facebook_likes_count',
-                'category'    => 'facebook',
-                'is_premium'  => false,
-                'number'      => 2,
-                'min_cols'     => 2,
-                'min_rows'     => 2,
-                'default_cols' => 2,
-                'default_rows' => 2
-            )
-        );
-
-        WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_page_impressions'],
             array(
                 'name'         => 'Page impressions',
