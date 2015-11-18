@@ -37,7 +37,12 @@ trait FBHistogramDataCollectorTrait
                     'timestamp' => $date->getTimestamp()
                 ));
             }
-            $this->save($data);
+            foreach ($data as $entry) {
+                $this->collect(array(
+                    'entry' => $entry,
+                    'sum'   => $this->isCumulative()
+                ));
+            }
         } catch (ServiceException $e) {
             Log::error('Facebook connection error. ' . $e->getMessage());
             $this->delete();

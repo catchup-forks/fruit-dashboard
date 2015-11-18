@@ -67,6 +67,7 @@ trait HistogramTableLayoutTrait
             /* Saving previous value. */
             $previousValue = $value;
         }
+
         $tableData['content'] = array_reverse($tableData['content']);
         return $tableData;
     }
