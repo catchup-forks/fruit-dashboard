@@ -34,7 +34,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * @return array
      * --------------------------------------------------
     */
-    protected static function getDataTypes()
+    protected function getDataTypes()
     {
         return static::$dataTypes;
     }

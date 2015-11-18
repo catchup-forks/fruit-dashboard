@@ -34,7 +34,6 @@ abstract class HistogramWidget extends DataWidget
             'name'       => 'Layout',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'default'    => 'chart',
             'help_text'  => 'The layout type of your widget.'
         ),
     );
@@ -62,6 +61,19 @@ abstract class HistogramWidget extends DataWidget
         return array_merge(
             parent::getSettingsFields(),
             array('Data settings' => self::$histogramSettings)
+        );
+    }
+
+    /**
+     * getSetupFields
+     * --------------------------------------------------
+     * Updating setup fields.
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSetupFields() {
+        return array_merge(
+            parent::getSetupFields(), array('type')
         );
     }
 

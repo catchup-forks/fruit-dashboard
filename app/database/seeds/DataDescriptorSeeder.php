@@ -4,7 +4,6 @@ class DataDescriptorSeeder extends Seeder
 {
     public function run()
     {
-
         /* DataDescriptors */
 
         /* Google analytics descriptors */
@@ -16,7 +15,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'new_users',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "true"}'
+                'attributes' => '{"cumulative": true}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -26,7 +25,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'users',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "true"}'
+                'attributes' => '{"cumulative": true}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -36,7 +35,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'sessions',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "true"}'
+                'attributes' => '{"cumulative": true}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -46,7 +45,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'goal_completion',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "true"}'
+                'attributes' => '{"cumulative": true}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -56,7 +55,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'active_users',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": false}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -66,7 +65,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'bounce_rate',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": false}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -76,7 +75,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'avg_session_duration',
                 'category'   => 'google_analytics',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": false}'
         ));
 
         /* Facebook descriptors */
@@ -88,17 +87,17 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'likes',
                 'category'   => 'facebook',
-                'attributes' => '{"cumulative": "true"}'
+                'attributes' => '{"cumulative": false}' // Facebook likes is naturally cumulative on the source.
         ));
         DataDescriptor::updateOrCreate(
             array(
                 'type'     => 'page_impressions',
-                'category' => 'facebook'
+                'category' => 'facebook',
             ),
             array(
                 'type'       => 'page_impressions',
                 'category'   => 'facebook',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": true}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -108,19 +107,19 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'engaged_users',
                 'category'   => 'facebook',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": true}'
         ));
 
         /* Twitter descriptors */
         DataDescriptor::updateOrCreate(
             array(
                 'type'     => 'followers',
-                'category' => 'twitter'
+                'category' => 'twitter',
+                'attributes' => '{"cumulative": false}' // Facebook likes is naturally cumulative on the source.
             ),
             array(
                 'type'       => 'followers',
                 'category'   => 'twitter',
-                'attributes' => '{"cumulative": "true"}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -141,7 +140,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'webhook',
                 'category'   => 'webhook_api',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": false}'
         ));
         DataDescriptor::updateOrCreate(
             array(
@@ -151,7 +150,7 @@ class DataDescriptorSeeder extends Seeder
             array(
                 'type'       => 'api',
                 'category'   => 'webhook_api',
-                'attributes' => '{"cumulative": "false"}'
+                'attributes' => '{"cumulative": false}'
         ));
 
         /* Stripe descriptors */

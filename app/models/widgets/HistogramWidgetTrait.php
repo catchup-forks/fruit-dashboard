@@ -327,7 +327,6 @@ trait HistogramWidgetTrait
         return end($histogram);
     }
 
-
     /**
      * getHistory
      * Returning the historical data compared to the latest.

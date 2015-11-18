@@ -301,23 +301,6 @@ class WidgetDescriptorSeeder extends Seeder
             )
         );
 
-        /* Social widgets | TWITTER */
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'twitter_followers_count'],
-            array(
-                'name'        => 'Followers count',
-                'description' => 'Followers count',
-                'type'        => 'twitter_followers_count',
-                'category'    => 'twitter',
-                'is_premium'  => false,
-                'number'       => 2,
-                'min_cols'     => 2,
-                'min_rows'     => 2,
-                'default_cols' => 2,
-                'default_rows' => 2
-            )
-        );
-
         WidgetDescriptor::updateOrCreate(
             ['type' => 'twitter_mentions'],
             array(
@@ -368,22 +351,6 @@ class WidgetDescriptorSeeder extends Seeder
         );
 
         WidgetDescriptor::updateOrCreate(
-            ['type' => 'facebook_likes_count'],
-            array(
-                'name'        => 'Likes count',
-                'description' => 'The total number of people who have liked your Page.',
-                'type'        => 'facebook_likes_count',
-                'category'    => 'facebook',
-                'is_premium'  => false,
-                'number'      => 2,
-                'min_cols'     => 2,
-                'min_rows'     => 2,
-                'default_cols' => 2,
-                'default_rows' => 2
-            )
-        );
-
-        WidgetDescriptor::updateOrCreate(
             ['type' => 'facebook_page_impressions'],
             array(
                 'name'         => 'Page impressions',
@@ -429,22 +396,6 @@ class WidgetDescriptorSeeder extends Seeder
                 'min_rows'     => 3,
                 'default_cols' => 3,
                 'default_rows' => 4
-            )
-        );
-
-        WidgetDescriptor::updateOrCreate(
-            ['type' => 'google_analytics_sessions_count'],
-            array(
-                'name'        => 'Sessions count',
-                'description' => 'The total number of sessions',
-                'type'        => 'google_analytics_sessions_count',
-                'category'    => 'google_analytics',
-                'is_premium'  => false,
-                'number'       => 3,
-                'min_cols'     => 2,
-                'min_rows'     => 2,
-                'default_cols' => 2,
-                'default_rows' => 2
             )
         );
 

@@ -53,12 +53,15 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
                 $this->setDiff(true);
             break;
             case 'combined-bar-line':
+                $this->setDiff(false);
                 $this->setSingle(true);
             break;
             case 'table':
+                $this->setDiff(false);
                 $this->setSingle(true);
             break;
             case 'count':
+                $this->setDiff(false);
                 $this->setSingle(true);
             break;
             default: break;
@@ -84,27 +87,6 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
             /* Multi layout. */
             return $this->data['users'];
         }
-    }
-
-
-    /**
-     * __call
-     * Map some functions that are needed to be called. 
-     * --------------------------------------------------
-     * @param string name
-     * @param array args
-     * @return mixed
-     * --------------------------------------------------
-    */
-    public function __call($name, $args)
-    {
-        switch ($name) {
-        case 'getCombinedChartData':
-            return call_user_func_array(array(&$this, 'getChartData'), $args);
-            break;
-        }
-
-        return parent::__call($name, $args);
     }
 
     /**
