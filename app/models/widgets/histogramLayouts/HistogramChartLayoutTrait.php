@@ -40,6 +40,7 @@ trait HistogramChartLayoutTrait
         /* Data init. */
         $datetimes = array();
         $dataSets = $this->initializeDataSets();
+        Log::info($dataSets);
 
         /* Data transform, to chartJS ready values. */
         foreach ($this->buildHistogram() as $entry) {
@@ -47,13 +48,15 @@ trait HistogramChartLayoutTrait
             $value = $entry['value'];
             array_push($dataSets[0]['values'], $value);
 
-            /* Adding diff. */
-            if (isset($prevValue)) {
-                $diffedValue = $value - $prevValue;
-            } else {
-                $diffedValue = 0;
+            if (static::$isCumulative) {
+                /* Adding diff. */
+                if (isset($prevValue)) {
+                    $diffedValue = $value - $prevValue;
+                } else {
+                    $diffedValue = 0;
+                }
+                array_push($dataSets[1]['values'], $diffedValue);
             }
-            array_push($dataSets[1]['values'], $diffedValue);
 
             /* Adding formatted datetimes. */
             array_push(
@@ -66,7 +69,7 @@ trait HistogramChartLayoutTrait
         }
 
          return array(
-            'isCombined'   => 'true',
+            'isCombined'   => static::$isCumulative ? 'true' : 'false',
             'datasets'     => $dataSets,
             'labels'       => $datetimes,
             'currentDiff'  => $this->compare(),
@@ -83,20 +86,26 @@ trait HistogramChartLayoutTrait
      */
     protected function initializeDataSets()
     {
-        return array(
+        $datasets = array(
             array(
                 'type'   => 'line',
                 'color'  => SiteConstants::getChartJsColors()[0],
                 'name'   => $this->getDescriptor()->name,
                 'values' => array()
-            ),
-            array(
+            )
+        );
+
+        if (static::$isCumulative) {
+            array_push($datasets, array(
                 'type'   => 'bar',
                 'color'  => SiteConstants::getChartJsColors()[1],
                 'name'   => 'Difference',
                 'values' => array()
-            )
-        );
+                )
+            );
+        }
+
+        return $datasets;
     }
 
     /**
