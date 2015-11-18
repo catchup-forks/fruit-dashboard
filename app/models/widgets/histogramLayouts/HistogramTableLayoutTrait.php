@@ -68,6 +68,28 @@ trait HistogramTableLayoutTrait
             $previousValue = $value;
         }
         $tableData['content'] = array_reverse($tableData['content']);
+        
+        /* Make single HTML table string from header and from content */
+        $tmpHeader = '<thead>';
+        foreach ($tableData['header'] as $header) {
+           $tmpHeader .= '<th>'.$header.'</th>';
+        }
+        $tmpHeader .= '</thead>';
+        $tmpContent = '<tbody>';
+        foreach ($tableData['content'] as $rowNum => $row) {
+            $tmpContent .= '<tr>';
+            foreach ($row as $colNum => $col) {
+                $tmpContent .= '<td>'.$col.'</td>';
+            }
+            $tmpContent .= '</tr>';
+        }
+        $tmpContent .= '</tbody>';
+
+        /* Replace tableData with the HTML */
+        $tableData['header'] = $tmpHeader;
+        $tableData['content'] = $tmpContent;
+
+        /* Return */
         return $tableData;
     }
 }

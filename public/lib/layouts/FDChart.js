@@ -28,6 +28,8 @@ function FDChart(widgetOptions) {
   function draw(layout, data) {
     // Automatically change the layout to the supplied
     options.layout = layout;
+    options.selectors.activeLayout = '#widget-layout-' + layout + '-' + options.general.id;
+    chartCanvas.updateActiveLayout(options.selectors.activeLayout);
 
     // Validate data
     if (!validateData(data)) { 
@@ -75,13 +77,10 @@ function FDChart(widgetOptions) {
    * @function clear
    * --------------------------------------------------------------------------
    * Clears the previous chart
-   * @param {string} layout | the chart layout
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function clear(layout) {
-    // Update active layout for canvas
-    chartCanvas.updateActiveLayout(layout);
+  function clear() {
     // Reinsert canvas
     chartCanvas.reinsert();
   }
@@ -181,8 +180,6 @@ function FDChartCanvas(widgetOptions) {
   function reinsert() {
     // Get the canvas size
     canvasSize = size();
-    console.log(options.selectors.activeLayout);
-    console.log(size());
     // Delete current canvas
     $(options.selectors.activeLayout).empty();
     // Add new canvas
@@ -204,9 +201,9 @@ function FDChartCanvas(widgetOptions) {
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function updateActiveLayout(layout) {
+  function updateActiveLayout(activeLayout) {
     // Update activeLayout selector
-    options.selectors.activeLayout = '#widget-layout-' + layout + '-' + options.general.id;
+    options.selectors.activeLayout = activeLayout;
     // Return
     return this;
   }
