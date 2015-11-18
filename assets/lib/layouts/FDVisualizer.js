@@ -20,6 +20,7 @@ var FDVisualizer = function(widgetOptions) {
     {name: 'diff',              engine: 'diff'},
     // FIXME: REMOVE CHART AFTER LAYOUT REDESING
     {name: 'chart',             engine: 'chart'},
+    {name: 'combined_chart',    engine: 'chart'},
     // -------------------
     {name: 'single-line',       engine: 'chart'},
     {name: 'multi-line',        engine: 'chart'},
@@ -62,8 +63,7 @@ FDVisualizer.prototype.init = function() {
   * Reinitializes the widget with the given layout or with the default
   * This function doesn't save the layout, only redraws the widget.
   * --------------------------------------------------------------------------
-  * @param [optional] {string} layout | The new layout, one of the followings:
-  *    count / diff / single-line / multi-line / combined-bar-line / table
+  * @param [optional] {string} layout | The new layout, one of this.possibleLayouts
   * @return {this}
   * --------------------------------------------------------------------------
   */
@@ -75,17 +75,6 @@ FDVisualizer.prototype.reinit = function(layout) {
     // Layout not supplied, call the default
     this.callDraw(this.options.layout);
   }
-
-  // if(this.options.layout=='chart' || this.options.layout == 'multiple') {
-  //   if (this.data.isCombined) {
-  //     this.chart.draw('combined', this.data);
-  //   } else {
-  //     this.chart.draw('line', this.data); 
-  //   }
-  // } else if(this.options.layout=='table') {
-  //   this.table.draw(this.data, true);
-  // }
-  
   // Return
   return this;
 };
@@ -95,8 +84,7 @@ FDVisualizer.prototype.reinit = function(layout) {
  * Refreshes the widget with the given layout and data
  * All parameters are optional, but if supplied, they will be saved.
  * --------------------------------------------------------------------------
- * @param [optional] {string} layout | The new layout, one of the followings:
- *    count / diff / single-line / multi-line / combined-bar-line / table
+ * @param [optional] {string} layout | The new layout, one of this.possibleLayouts
  * @param [optional] {dictionary} data | the chart data
  * @return {this}
  * --------------------------------------------------------------------------
@@ -108,17 +96,7 @@ FDVisualizer.prototype.refresh = function(layout, data) {
   if (layout) { this.updateLayout(layout); }
   // Call the draw function based on the current layout and data
   this.callDraw(this.options.layout);
-  
-  // if(this.options.layout=='chart' || this.options.layout == 'multiple') {
-  //   if (this.data.isCombined) {
-  //     this.chart.draw('combined', this.data);
-  //   } else {
-  //     this.chart.draw('line', this.data); 
-  //   }
-  // } else if(this.options.layout=='table') {
-  //   this.table.draw(this.data, true);
-  // }
-
+  //Return
   return this;
 }
 
@@ -156,8 +134,7 @@ FDVisualizer.prototype.updateData = function(data) {
  * @function updateLayout
  * --------------------------------------------------------------------------
  * Transforms the data to ChartJS format and stores it
- * @param {string} layout | The new layout, one of the followings
- *   count / diff / single-line / multi-line / combined-bar-line / table
+ * @param {string} layout | The new layout, one ofthis.possibleLayouts
  * @return {this} stores the new layout
  * --------------------------------------------------------------------------
  */
@@ -181,17 +158,26 @@ FDVisualizer.prototype.updateLayout = function(layout) {
   * @function callDraw
   * Calls the draw function based on the given layout
   * --------------------------------------------------------------------------
-  * @param {string} layout | The layout, one of the followings
-  *   count / diff / single-line / multi-line / combined-bar-line / table
+  * @param {string} layout | The layout, one of this.possibleLayouts
   * @return {this}
   * --------------------------------------------------------------------------
   */
 FDVisualizer.prototype.callDraw = function(layout) {
-  // Get layout engine
+  // Hide all layouts
+  $(this.options.selectors.layoutsWrapper).children().each(function() {
+    $(this).removeClass('active').hide();
+  });
+
+  // Get new layout engine
   layoutArray = this.possibleLayouts.filter(function(obj) { return obj.name === layout; })
   
   // Enable change only to possible layouts
   if (layoutArray.length) {
+    // ---- debug -----------------------------------------------------------
+    if (this.debug) {console.log('[S] Changing active layout to ' + layout)};
+    // ----------------------------------------------------------------------
+    // Show new layout
+    $(this.options.selectors.layoutsWrapper).find("[id*='"+ layout +"']").first().addClass('active').show();
     // ---- debug -----------------------------------------------------------
     if (this.debug) {console.log('[S] Draw called with layout: ' + layout)};
     // ----------------------------------------------------------------------
@@ -202,7 +188,6 @@ FDVisualizer.prototype.callDraw = function(layout) {
     if (this.debug) {console.log('[E] Invalid layout option supplied for draw: ' + layout)};
     // ----------------------------------------------------------------------
   }
-
   // Return
   return this;
 };

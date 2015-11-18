@@ -26,8 +26,8 @@
 <div class="flex-container">
   <div id="widget-layouts-wrapper-{{ $widget['id'] }}">
     @foreach ($widget['possibleLayouts'] as $layout => $name)
-      <div id="widget-layout-{{ $layout }}" @if ($layout==$widget['defaultLayout']) class="active" @endif>
-        @include('widget.widget-general-'.$layout)
+      <div id="widget-layout-{{ $layout }}-{{ $widget['id'] }}" @if ($layout==$widget['defaultLayout']) class="active" @endif>
+        @include('widget.widget-general-'.$layout, array('layout' => $layout))
       </div>
     @endforeach
   </div>

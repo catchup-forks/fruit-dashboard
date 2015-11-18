@@ -231,6 +231,10 @@ function FDChartHandler(widgetOptions) {
       case 'chart':
         chartType = 'line';
         break;
+      case 'combined_chart':
+        chartType = 'bar';
+        break;
+      // ENDFIXME
       case 'single-line':
         chartType = 'line';
         break;
@@ -273,6 +277,10 @@ function FDChartHandler(widgetOptions) {
           case 'chart':
             $.extend(chartOptions, getChartOptionsSingleStat(data));
             break;
+          case 'combined_chart':
+            $.extend(chartOptions, getCombinedBarLineOptionsSingleStat(data));
+            break;
+          //ENDFIXME
           case 'single-line':
             $.extend(chartOptions, getSingleLineOptionsSingleStat(data));
             break;
@@ -294,6 +302,10 @@ function FDChartHandler(widgetOptions) {
           case 'chart':
             $.extend(chartOptions, getChartOptionsDashboard(data));
             break;
+          case 'combined_chart':
+            $.extend(chartOptions, getCombinedBarLineOptionsDashboard(data));
+            break;
+          // ENDFIXME
           case 'single-line':
             $.extend(chartOptions, getSingleLineOptionsDashboard(data));
             break;
@@ -333,6 +345,10 @@ function FDChartHandler(widgetOptions) {
           case 'chart':
             transformedData = transformChartDataSingleStat(data);
             break;
+          case 'combined_chart':
+            transformedData = transformCombinedBarLineDataSingleStat(data);
+            break;
+          // ENDFIXME
           case 'single-line':
             transformedData = transformSingleLineDataSingleStat(data);
             break;
@@ -354,6 +370,10 @@ function FDChartHandler(widgetOptions) {
           case 'chart':
             transformedData = transformChartDataDashboard(data);
             break;
+          case 'combined_chart':
+            transformedData = transformCombinedBarLineDataDashboard(data);
+            break;
+          //ENDFIXME
           case 'single-line':
             transformedData = transformSingleLineDataDashboard(data);
             break;
