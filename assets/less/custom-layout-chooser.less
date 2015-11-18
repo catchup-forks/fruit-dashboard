@@ -17,7 +17,7 @@
   padding-left: @margin/5;
   height: 25%;
   width: 28px;
-  border-bottom: 1px solid fade(@active, @alpha*2);
+  border-bottom: 1px solid fade(@color-1, @alpha);
   &:first-child {
     -webkit-border-top-left-radius: @padding;
     -moz-border-top-left-radius: @padding;
@@ -34,9 +34,9 @@
 }
 
 .layout-chooser > .element.active {
-  background-color: fade(@active, @alpha*2);
+  background-color: fade(@color-2, @alpha);
 }
 
 .element:hover {
-  background-color: fade(@active, @alpha*2);
+  background-color: fade(@color-1, @alpha);
 }

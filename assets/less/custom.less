@@ -56,6 +56,21 @@
   border-radius: @radius;
 }
 
+.has-padding ( @padding-size: @padding, @multiplier: 1 ){
+  padding: @padding-size*@multiplier;
+}
+
+// GENERAL CLASSES (later to be converted to mixins)
+
+.background-white {
+  background-color: @white;
+  background-color: fade(@white, @alpha/1.2);
+}
+
+.text-shadow {
+  text-shadow: 1px 1px 3px #141414;
+}
+
 // HTML, BODY
 
 body {
