@@ -2,14 +2,24 @@
 
 @alpha:                     85%;
 @darken:                    25%;
-@white:                     #fff;
-@chart-color:               rgb(105 ,153, 209);
 @panel-bg:                  #fff;
-@gridster-bg:               rgb(230,230,230);
-@active:                    rgb(156, 199, 242);
 @padding:                   5px;
 @margin:                    25px;
 @carousel-control-width:    5%;
+
+// COLOR PALETTE
+
+@color-primary:             rgb(57,163,205);
+@color-secondary:           rgb(111,170,1);
+
+@color-1:                   rgb(191,192,194); // lightest
+@color-2:                   rgb(114,114,114); // neutral
+@color-3:                   rgb(54,48,50); // darkest
+
+@white:                     #fff;
+@chart-color:               rgb(105 ,153, 209);
+@gridster-bg:               rgb(230,230,230);
+@active:                    rgb(156, 199, 242);
 
 // IMPORTS
 
@@ -27,6 +37,24 @@
 @import "custom-twitter.less";
 @import "custom-single-stat.less";
 @import "custom-trophies.less";
+@import "custom-layout-chooser.less";
+@import "custom-count.less";
+
+// MIXINS
+
+// .gradient ( @dir: top, @startColor: #eee, @endColor: white ) {
+//   background-color: @startColor;
+//   background: -webkit-linear-gradient(@dir, @startColor 0%, @endColor 100%);
+//   background: -moz-linear-gradient(@dir, @startColor 0%, @endColor 100%);
+//   background: -ms-linear-gradient(@dir, @startColor 0%, @endColor 100%);
+//   background: -o-linear-gradient(@dir, @startColor 0%, @endColor 100%);
+// }
+
+.rounded (@radius: @padding) {
+  -webkit-border-radius: @radius;
+  -moz-border-radius: @radius;
+  border-radius: @radius;
+}
 
 // HTML, BODY
 

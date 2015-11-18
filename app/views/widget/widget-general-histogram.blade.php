@@ -30,8 +30,8 @@
         @include('widget.widget-general-'.$layout, ['layout' => $layout])
       </div>
     @endforeach
-  </div>
-</div> <!-- /.widget-inner -->
+  </div> <!-- /#widget-layout-wrapper-{{ $widget['id']}} -->
+</div> <!-- /.flex-container -->
 
 @section('widgetScripts')
 <script type="text/javascript">
