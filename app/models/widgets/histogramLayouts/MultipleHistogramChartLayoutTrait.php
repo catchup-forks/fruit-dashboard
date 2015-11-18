@@ -2,7 +2,9 @@
 
 trait MultipleHistogramChartLayoutTrait
 {
+    /* The maximum number of datasets on a multiple widget. */
     protected static $maxDataSets = 5;
+
     use HistogramChartLayoutTrait {
         HistogramChartLayoutTrait::getChartJSData as _getChartJSData;
     }
@@ -57,7 +59,7 @@ trait MultipleHistogramChartLayoutTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function initializeMultiDataSets()
+    private function initializeMultiDataSets()
     {
         $dataSets = array();
         $i = 0;

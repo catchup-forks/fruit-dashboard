@@ -112,7 +112,8 @@ abstract class HistogramWidget extends DataWidget
 
         /* Adding all layout data. */
         foreach ($this->type() as $layout=>$name) {
-            $histogramTemplateData[$layout . '_data'] = $this->getData(array('layout' => $layout));
+            $histogramTemplateData[$layout . '_data'] = 
+                $this->getData(array('layout' => $layout));
         }
         
         /* Merging and returning the data. */
@@ -240,7 +241,6 @@ abstract class HistogramWidget extends DataWidget
 
         /* Creating getData function name. */
         $fn = 'get' . Utilities::underScoreToCamelCase($layout . '_data');
-
         return $this->$fn($postData);
     }
 
