@@ -80,7 +80,7 @@ abstract class HistogramWidget extends DataWidget
         $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
         
         /* Chart specific meta. */
-        $meta['selectors']['graph'] = '[id^='.$this->getLayout().'-container]';
+        $meta['selectors']['activeLayout'] = '#widget-layout-' . $this->getLayout() . '-' . $this->id;
     
         /* Count specific meta. */
         if (in_array('count', $this->type())) {

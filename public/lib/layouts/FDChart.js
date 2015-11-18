@@ -37,6 +37,8 @@ function FDChart(widgetOptions) {
     // Clear the existing chart
     clear();
 
+    // Update active layout for canvas
+    chartCanvas.updateActiveLayout(layout);
     // Get Canvas context and validate
     var canvasContext = chartCanvas.get2dContext();
     if (canvasContext) {
@@ -120,12 +122,11 @@ function FDChartCanvas(widgetOptions) {
   * -------------------------------------------------------------------------- */
   // Private variables
   var options        = widgetOptions;
-  var widgetSelector = options.selectors.widget;
-  var graphSelector  = options.selectors.widget + ' ' + options.selectors.graph;
 
   // Public functions
   this.reinsert     = reinsert;
   this.get2dContext = get2dContext;
+  this.updateActiveLayout = updateActiveLayout;
 
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
@@ -149,8 +150,8 @@ function FDChartCanvas(widgetOptions) {
     };
 
     // Return
-    return {'width': $(widgetSelector).first().width()-widthMargin,
-            'height': $(widgetSelector).first().height()-heightMargin};
+    return {'width': $(options.selectors.widget).first().width()-widthMargin,
+            'height': $(options.selectors.widget).first().height()-heightMargin};
   }
 
   /**
@@ -161,8 +162,8 @@ function FDChartCanvas(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function get2dContext() {
-    if ($(graphSelector).find('canvas').length) {
-      return $(graphSelector).find('canvas')[0].getContext("2d");
+    if ($(options.selectors.activeLayout).find('canvas').length) {
+      return $(options.selectors.activeLayout).find('canvas')[0].getContext("2d");
     } else {
       return false;
     };
@@ -180,17 +181,33 @@ function FDChartCanvas(widgetOptions) {
     // Get the canvas size
     canvasSize = size();
     // Delete current canvas
-    $(graphSelector).empty();
+    $(options.selectors.activeLayout).empty();
     // Add new canvas
     if (options.data.page == 'dashboard') {
-      $(graphSelector).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+      $(options.selectors.activeLayout).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     } else if (options.data.page == 'singlestat') {
-      $(graphSelector).append('<canvas class="canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+      $(options.selectors.activeLayout).append('<canvas class="canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     };
 
     // Return
     return this;
   }
+
+  /**
+   * @function updateActiveLayout
+   * --------------------------------------------------------------------------
+   * Updates the active layout selector
+   * @param {string} lyaout | The new layout
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function updateActiveLayout(layout) {
+    // Update activeLayout selector
+    options.selectors.activeLayout = '#widget-layout-' + layout + '-' + options.general.id;
+    // Return
+    return this;
+  }
+
 } // FDChartCanvas
 
 
