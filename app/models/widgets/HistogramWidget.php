@@ -104,11 +104,12 @@ abstract class HistogramWidget extends DataWidget
 
         /* Adding default data for this widget type. */
         $histogramTemplateData = array(
-            'name'          => $this->getName(),
-            'defaultLayout' => $this->getLayout(),
-            'format'        => $this->getFormat(),
-            'hasData'       => empty($this->activeHistogram),
-            'data'          => array()
+            'name'            => $this->getName(),
+            'defaultLayout'   => $this->getLayout(),
+            'possibleLayouts' => $this->type(),
+            'format'          => $this->getFormat(),
+            'hasData'         => empty($this->activeHistogram),
+            'data'            => array()
         );
 
         /* Adding all layout data. */
