@@ -6,9 +6,9 @@
  */
 function FDStripeArrWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDStripeArrWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDStripeArrWidget.prototype = Object.create(FDVisualizer.prototype);
 FDStripeArrWidget.prototype.constructor = FDStripeArrWidget;
 

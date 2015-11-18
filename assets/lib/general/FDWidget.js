@@ -12,9 +12,12 @@ function FDWidget(widgetOptions) {
   var widgetSelector  = options.selectors.widget;
   var widgetClass     = 'FD' + options.general.type.replace(/_/g,' ').replace(/\w+/g, function (g) { return g.charAt(0).toUpperCase() + g.substr(1).toLowerCase(); }).replace(/ /g,'') + 'Widget';
   var specific        = new window[widgetClass](options);
+  
+  var delayTime       = 1000;
+  var delayTimer      = function(){};
 
-  // For debugging
-  var logging = false;
+  // Debug
+  var debug = true;
 
   // Public functions
   this.send    = send;
@@ -49,20 +52,20 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function send(data, callback) {
-    if (logging) { console.log('Sending data for widget #' + options.general.id); }
-    if (logging) { console.log(data); }
+    if (debug) { console.log('Sending data for widget #' + options.general.id); }
+    if (debug) { console.log(data); }
 
     $.ajax({
       type: "POST",
       data: data,
       url: options.urls.postUrl,
     }).done(function(data) {
-        if (logging) { console.log('...response arrived | Sending data for widget #' + options.general.id); }
-        if (logging) { console.log(data); }
+        if (debug) { console.log('...response arrived | Sending data for widget #' + options.general.id); }
+        if (debug) { console.log(data); }
         callback(data);
-        if (logging) { console.log('...callback executed | Sending data for widget #' + options.general.id); }
+        if (debug) { console.log('...callback executed | Sending data for widget #' + options.general.id); }
     });
-    if (logging) { console.log('...done | Sending data for widget #' + options.general.id); }
+    if (debug) { console.log('...done | Sending data for widget #' + options.general.id); }
   }
 
   /**
@@ -73,7 +76,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function load() {
-    if (logging) { console.log('Loading data for widget #' + options.general.id); }
+    if (debug) { console.log('Loading data for widget #' + options.general.id); }
     var done = false;
 
     // Poll the state until the data is ready
@@ -94,7 +97,7 @@ function FDWidget(widgetOptions) {
       });
     }
     pollState();
-    if (logging) { console.log('...done | Loading data for widget #' + options.general.id); }
+    if (debug) { console.log('...done | Loading data for widget #' + options.general.id); }
   };
 
   /**
@@ -105,7 +108,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function refresh() {
-    if (logging) { console.log('Refreshing data for widget #' + options.general.id); }
+    if (debug) { console.log('Refreshing data for widget #' + options.general.id); }
     // Show loading state
     $(options.selectors.wrapper).hide();
     $(options.selectors.loading).show();
@@ -113,7 +116,7 @@ function FDWidget(widgetOptions) {
     send({'refresh_data': true}, function(){});
     // Poll widget state, and load if finished
     load();
-    if (logging) { console.log('...done | Refreshing data for widget #' + options.general.id); }
+    if (debug) { console.log('...done | Refreshing data for widget #' + options.general.id); }
   };
 
   /**
@@ -124,9 +127,9 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function reinit() {
-    if (logging) { console.log('ReInitializing widget #' + options.general.id); }
+    if (debug) { console.log('ReInitializing widget #' + options.general.id); }
     specific.reinit();
-    if (logging) { console.log('...done | ReInitializing widget #' + options.general.id); }
+    if (debug) { console.log('...done | ReInitializing widget #' + options.general.id); }
   };
 
   /**
@@ -137,7 +140,7 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   function remove() {
-    if (logging) { console.log('Removing widget #' + options.general.id); }
+    if (debug) { console.log('Removing widget #' + options.general.id); }
     // Call ajax
     $.ajax({
       type: "POST",
@@ -150,8 +153,27 @@ function FDWidget(widgetOptions) {
         easyGrowl('error', "Something went wrong, we couldn't delete your widget. Please try again.", 3000);
       }
     });
-    if (logging) { console.log('...done | Removing widget #' + options.general.id); }
+    if (debug) { console.log('...done | Removing widget #' + options.general.id); }
   }
+
+  /**
+   * @function changeLayout
+   * --------------------------------------------------------------------------
+   * Redraws the widget content.
+   * @param {string} layout | the name of the layout
+   * @return {changes the layout}
+   * --------------------------------------------------------------------------
+   */
+  function changeLayout(layout, save) {
+    var save = save || false;
+    if (save) { 
+      specific.reinit(layout);
+      if (debug) {console.log('[S] Layout changed to ' + layout + ' temporarily');}
+    } else {
+      specific.refresh(layout);
+      if (debug) {console.log('[S] Layout changed to ' + layout + ' permanently');}
+    }
+  };
 
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
@@ -171,7 +193,7 @@ function FDWidget(widgetOptions) {
   /**
    * @event $(selector).resize
    * --------------------------------------------------------------------------
-   *
+   * Hadles the resize event
    * --------------------------------------------------------------------------
    */
   $(widgetSelector).resize(function() {
@@ -179,15 +201,68 @@ function FDWidget(widgetOptions) {
   });
 
   /**
-   * @event $('.carousel').on('slid.bs.carousel')
+   * @event $(options.selectors.wrapper).hover
    * --------------------------------------------------------------------------
-   * Refreshes the widget on carousel slid
+   * Shows / hides the non chart numbers on hover
    * --------------------------------------------------------------------------
    */
-  $('.carousel').on('slid.bs.carousel', function () {
-    reinit();
-  })
+  $(options.selectors.wrapper).hover(function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'hidden');
+    widget.find('.chart-diff-data').css('visibility', 'hidden');
+    widget.find('.chart-name').css('visibility', 'hidden');
+  }, function(e){
+    var widget = $(e.currentTarget);
+    widget.find('.chart-value').css('visibility', 'visible');
+    widget.find('.chart-diff-data').css('visibility', 'visible');
+    widget.find('.chart-name').css('visibility', 'visible');
+  });
 
+  /**
+   * @event $(options.selectors.layoutSelector).mouseleave
+   * --------------------------------------------------------------------------
+   * Stops the layout changing process.
+   * Reverts to default layout.   
+   * --------------------------------------------------------------------------
+   */
+  // $(options.selectors.layoutSelector).mouseleave(function() {
+  //   if (debug) { console.log("stopped the timer"); }
+  //   clearTimeout(delayTimer);
+  //   // Change the layout back to the default here
+  //   reinit();
+  // });
+
+  /**
+   * @event $(options.selectors.layoutSelector*).mouseenter
+   * --------------------------------------------------------------------------
+   * Starts the layout change process with a timeout.
+   * Resets any other concurrent layout changing processes.
+   * --------------------------------------------------------------------------
+   */
+  // $(options.selectors.layoutSelector + "> .element").mouseenter(function() {
+  //   if (debug) { console.log("entered: " + $(this).data('layout')); }
+  //   if (debug) { console.log("reset the timer"); }
+  //   clearTimeout(delayTimer);
+  //   if (debug) { console.log("started the timer"); }
+  //   delayTimer = setTimeout(changeLayout, delayTime, $(this).data('layout'));
+  // });
+
+  /**
+   * @event $(options.selectors.layoutSelector*).click
+   * --------------------------------------------------------------------------
+   * Sets the new default layout for the widget.
+   * --------------------------------------------------------------------------
+   */
+  $(options.selectors.layoutSelector + "> .element").click(function() {
+    // Call ajax set to default here
+    if (debug) { console.log("[I] Clicked layout change on widget #" + options.general.id + " | " + $(this).data('layout'));}
+    // Remove the active class, if any.
+    $(options.selectors.layoutSelector + "> div.active").removeClass('active');
+    // Add the active class for the clicked element.
+    $(this).addClass("active");
+    // Change the current layout
+    changeLayout($(this).data('layout'));
+  });
 } // FDWidget
 
 /* -------------------------------------------------------------------------- *

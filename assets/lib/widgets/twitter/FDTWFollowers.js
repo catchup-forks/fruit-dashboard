@@ -6,8 +6,8 @@
  */
 function FDTwitterFollowersWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDTwitterFollowersWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDTwitterFollowersWidget.prototype = Object.create(FDVisualizer.prototype);
 FDTwitterFollowersWidget.prototype.constructor = FDTwitterFollowersWidget;

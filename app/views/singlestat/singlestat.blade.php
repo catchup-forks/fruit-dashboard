@@ -64,15 +64,15 @@ Widget stats
   @section('pageScripts')
   <!-- FDJSlibs merged -->
   {{ Minify::javascriptDir('/lib/general') }}
-  {{ Minify::javascriptDir('/lib/widget-wrapper') }}
+  {{ Minify::javascriptDir('/lib/layouts') }}
   {{ Minify::javascriptDir('/lib/widgets') }}
   <!-- FDJSlibs merged -->
 
-  <!-- Init FDChartOptions -->
+  <!-- Init FDGlobalChartOptions -->
   <script type="text/javascript">
-      new FDChartOptions({data:{page: 'singlestat'}}).init();
+      new FDGlobalChartOptions({data:{page: 'singlestat'}}).init();
   </script>
-  <!-- /Init FDChartOptions -->
+  <!-- /Init FDGlobalChartOptions -->
 
   <script type="text/javascript">
     @foreach ($widget->resolution() as $resolution=>$value)

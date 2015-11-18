@@ -6,9 +6,9 @@
  */
 function FDWebhookHistogramWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDWebhookHistogramWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDWebhookHistogramWidget.prototype = Object.create(FDVisualizer.prototype);
 FDWebhookHistogramWidget.prototype.constructor = FDWebhookHistogramWidget;
 

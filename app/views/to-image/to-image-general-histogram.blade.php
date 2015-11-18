@@ -32,7 +32,7 @@
     </div> <!-- /.chart-diff-dimension -->
   </div> <!-- /.chart-diff-data -->
 
-  <div id="chart-container-{{ $widget['id'] }}" class="clickable">
+  <div id="chart-container-{{ $widget['id'] }}">
     <canvas class="chart chart-line"></canvas>
   </div>
 </div>
@@ -40,7 +40,7 @@
 
 @section('pageScripts')
     <!-- FDJSlibs -->
-    {{ Minify::javascriptDir('/lib/widget-wrapper')->withFullUrl() }}
+    {{ Minify::javascriptDir('/lib/layouts')->withFullUrl() }}
     {{ Minify::javascriptDir('/lib/widgets')->withFullUrl() }}
     <!-- FDJSlibs -->
 @append

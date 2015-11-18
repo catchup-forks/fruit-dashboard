@@ -80,7 +80,7 @@ abstract class HistogramWidget extends DataWidget
         $meta['urls']['statUrl'] = route('widget.singlestat', $this->id);
         
         /* Chart specific meta. */
-        $meta['selectors']['graph'] = '[id^=chart-container]';
+        $meta['selectors']['activeLayout'] = '#widget-layout-' . $this->getLayout() . '-' . $this->id;
     
         /* Count specific meta. */
         if (in_array('count', $this->type())) {
@@ -104,16 +104,17 @@ abstract class HistogramWidget extends DataWidget
 
         /* Adding default data for this widget type. */
         $histogramTemplateData = array(
-            'name'          => $this->getName(),
-            'defaultLayout' => $this->getLayout(),
-            'format'        => $this->getFormat(),
-            'hasData'       => empty($this->activeHistogram)
+            'name'            => $this->getName(),
+            'defaultLayout'   => $this->getLayout(),
+            'possibleLayouts' => $this->type(),
+            'format'          => $this->getFormat(),
+            'hasData'         => empty($this->activeHistogram),
+            'data'            => array()
         );
 
         /* Adding all layout data. */
         foreach ($this->type() as $layout=>$name) {
-            $histogramTemplateData[$layout . '_data'] = 
-                $this->getData(array('layout' => $layout));
+            $histogramTemplateData['data'][$layout] = $this->getData(array('layout' => $layout));
         }
         
         /* Merging and returning the data. */

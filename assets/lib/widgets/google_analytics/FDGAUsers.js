@@ -6,9 +6,9 @@
  */
 function FDGoogleAnalyticsUsersWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDGoogleAnalyticsUsersWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDGoogleAnalyticsUsersWidget.prototype = Object.create(FDVisualizer.prototype);
 FDGoogleAnalyticsUsersWidget.prototype.constructor = FDGoogleAnalyticsUsersWidget;
 

@@ -6,8 +6,8 @@
  */
 function FDFacebookPageImpressionsWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDFacebookPageImpressionsWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDFacebookPageImpressionsWidget.prototype = Object.create(FDVisualizer.prototype);
 FDFacebookPageImpressionsWidget.prototype.constructor = FDFacebookPageImpressionsWidget;

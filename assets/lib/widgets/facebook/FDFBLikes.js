@@ -6,8 +6,8 @@
  */
 function FDFacebookLikesWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDFacebookLikesWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDFacebookLikesWidget.prototype = Object.create(FDVisualizer.prototype);
 FDFacebookLikesWidget.prototype.constructor = FDFacebookLikesWidget;

@@ -6,8 +6,8 @@
  */
 function FDGoogleAnalyticsTopSourcesWidget(widgetOptions) {
   // Call parent constructor
-  FDTableWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDGoogleAnalyticsTopSourcesWidget.prototype = Object.create(FDTableWidget.prototype);
+FDGoogleAnalyticsTopSourcesWidget.prototype = Object.create(FDVisualizer.prototype);
 FDGoogleAnalyticsTopSourcesWidget.prototype.constructor = FDGoogleAnalyticsTopSourcesWidget;

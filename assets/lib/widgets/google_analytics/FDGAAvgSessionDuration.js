@@ -6,8 +6,8 @@
  */
 function FDGoogleAnalyticsAvgSessionDurationWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDGoogleAnalyticsAvgSessionDurationWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDGoogleAnalyticsAvgSessionDurationWidget.prototype = Object.create(FDVisualizer.prototype);
 FDGoogleAnalyticsAvgSessionDurationWidget.prototype.constructor = FDGoogleAnalyticsAvgSessionDurationWidget;

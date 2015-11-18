@@ -28,6 +28,11 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
             'table'          => 'Table',
             'count'          => 'Count'
         );
+        // 'multi-line'        => 'User count by sources',
+        // 'combined-bar-line' => 'Sum users and difference by time',
+        // 'table'             => 'Table layout',
+        // 'count'             => 'Sum user count'
+        // 'diff'              => 'Diff'
     }
 
     /**

@@ -6,9 +6,9 @@
  */
 function FDFacebookEngagedUsersWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDFacebookEngagedUsersWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDFacebookEngagedUsersWidget.prototype = Object.create(FDVisualizer.prototype);
 FDFacebookEngagedUsersWidget.prototype.constructor = FDFacebookEngagedUsersWidget;
 

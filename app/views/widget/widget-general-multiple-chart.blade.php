@@ -23,7 +23,7 @@
     </div> <!-- /.chart-diff-dimension -->
   </div> <!-- /.chart-diff-data -->
 @endif
-<div id="chart-container-{{ $widget['id'] }}" class="clickable">
+<div id="chart-container-{{ $widget['id'] }}">
   <canvas class="chart chart-line"></canvas>
 </div>
 

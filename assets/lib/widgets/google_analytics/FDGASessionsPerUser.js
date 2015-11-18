@@ -6,8 +6,8 @@
  */
 function FDGoogleAnalyticsSessionsPerUserWidget(widgetOptions) {
   // Call parent constructor
-  FDHistogramWidget.call(this, widgetOptions);
+  FDVisualizer.call(this, widgetOptions);
 };
 
-FDGoogleAnalyticsSessionsPerUserWidget.prototype = Object.create(FDHistogramWidget.prototype);
+FDGoogleAnalyticsSessionsPerUserWidget.prototype = Object.create(FDVisualizer.prototype);
 FDGoogleAnalyticsSessionsPerUserWidget.prototype.constructor = FDGoogleAnalyticsSessionsPerUserWidget;
