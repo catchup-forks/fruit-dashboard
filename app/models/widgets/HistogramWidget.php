@@ -129,7 +129,7 @@ abstract class HistogramWidget extends DataWidget
         foreach ($this->type() as $layout=>$name) {
             $histogramTemplateData['data'][$layout] = $this->getData(array('layout' => $layout));
         }
-        
+
         /* Merging and returning the data. */
         return array_merge(
             $templateData,

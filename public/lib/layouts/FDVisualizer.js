@@ -27,7 +27,7 @@ var FDVisualizer = function(widgetOptions) {
     {name: 'combined-bar-line', engine: 'chart'},
     {name: 'table',             engine: 'table'},
   ]
-  //this.count = new FDCount(this.options);
+  this.count = new FDCount(this.options);
   //this.diff  = new FDDiff(this.options);
   this.chart = new FDChart(this.options);
   this.table = new FDTable(this.options);
