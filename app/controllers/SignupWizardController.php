@@ -327,6 +327,26 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * STEP | getInstallExtension
+     * --------------------------------------------------
+     * @return Handles the extra process for getInstallExtension
+     * --------------------------------------------------
+     */
+    public function getInstallExtension() {
+        return array();
+    }
+
+    /**
+     * STEP | postInstallExtension
+     * --------------------------------------------------
+     * @return Handles the extra process for postInstallExtension
+     * --------------------------------------------------
+     */
+    public function postInstallExtension() {
+        return array();
+    }
+
+    /**
      * STEP | getSocialConnections
      * --------------------------------------------------
      * @return Handles the extra process for getSocialConnections
