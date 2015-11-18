@@ -35,10 +35,8 @@ function FDChart(widgetOptions) {
     }
 
     // Clear the existing chart
-    clear();
+    clear(layout);
 
-    // Update active layout for canvas
-    chartCanvas.updateActiveLayout(layout);
     // Get Canvas context and validate
     var canvasContext = chartCanvas.get2dContext();
     if (canvasContext) {
@@ -77,10 +75,13 @@ function FDChart(widgetOptions) {
    * @function clear
    * --------------------------------------------------------------------------
    * Clears the previous chart
+   * @param {string} layout | the chart layout
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function clear() {
+  function clear(layout) {
+    // Update active layout for canvas
+    chartCanvas.updateActiveLayout(layout);
     // Reinsert canvas
     chartCanvas.reinsert();
   }
@@ -180,6 +181,8 @@ function FDChartCanvas(widgetOptions) {
   function reinsert() {
     // Get the canvas size
     canvasSize = size();
+    console.log(options.selectors.activeLayout);
+    console.log(size());
     // Delete current canvas
     $(options.selectors.activeLayout).empty();
     // Add new canvas
