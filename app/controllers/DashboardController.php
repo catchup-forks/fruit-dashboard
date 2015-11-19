@@ -22,27 +22,8 @@ class DashboardController extends BaseController
      * @return Renders the dashboard page
      * --------------------------------------------------
      */
-    public function anyDashboard() {
-        /* No caching in local development */
-        if ( ! App::environment('local')) {
-            /* Trying to load from cache. */
-            $cachedDashboard = $this->getFromCache();
-            if ( ! is_null($cachedDashboard)) {
-                /* Some logging */
-                if ( ! App::environment('production')) {
-                    Log::info("Loading dashboard from cache.");
-                    Log::info("Rendering time:" . (microtime(true) - LARAVEL_START));
-                }
-
-                /* Return the cached dashboard. */
-                return $cachedDashboard;
-            }
-        }
-        if (self::OPTIMIZE) {
-            return $this->showOptimizeLog(Auth::user());
-            exit(94);
-        }
-
+    public function anyDashboard($dashboardId=null)
+    {
         /* Get the current user */
         $user = Auth::user();
 
@@ -56,18 +37,47 @@ class DashboardController extends BaseController
                 ));
         }
 
-        /* Get active dashboard, if the url contains it */
-        $parameters = array();
-        $activeDashboard = Input::get('active');
-        if ($activeDashboard) {
-            $parameters['activeDashboard'] = $activeDashboard;
+        if (self::OPTIMIZE) {
+            return $this->showOptimizeLog($user);
+            exit(94);
+        }
+
+        $dashboard = $user->dashboards()->find($dashboardId);
+        if (is_null($dashboard)) {
+            /* Using default dashboard, if the dashboard is not set. */
+            $dashboard = $user->dashboards()
+                ->where('is_default', true)
+                ->first();
+
+            if (is_null($dashboard)) {
+                /* No default dashboard found, selecting first. */
+                $dashboard = $user->dashboards()->first();
+            }
+
+            $dashboardId = $dashboard->id;
+        } 
+
+        /* No caching in local development */
+        if ( ! App::environment('local')) {
+            /* Trying to load from cache. */
+            $cachedDashboard = $this->getCache($dashboardId);
+            if ( ! is_null($cachedDashboard)) {
+                /* Some logging */
+                if ( ! App::environment('production')) {
+                    Log::info("Loading dashboard from cache.");
+                    Log::info("Rendering time:" . (microtime(true) - LARAVEL_START));
+                }
+
+                /* Return the cached dashboard. */
+                return $cachedDashboard;
+            }
         }
 
         /* Checking the user's widgets integrity */
-        $user->checkWidgetsIntegrity();
+        $dashboard->checkWidgetsIntegrity();
 
         /* Creating view */
-        $view = $user->createDashboardView($parameters);
+        $view = $dashboard->createView();
 
         try {
             /* Trying to render the view. */
@@ -78,16 +88,17 @@ class DashboardController extends BaseController
             }
         } catch (Exception $e) {
             /* Error occured, trying to find the widget. */
-            $user->turnOffBrokenWidgets();
+            $dashboard->turnOffBrokenWidgets();
             /* Recreating view. */
-            $renderedView= $user->createDashboardView($parameters)->render();
+            $renderedView= $dashboard->createView()->render();
         }
 
         /* Saving the cache, and returning the view. */
         $sessionKeys = array_keys(Session::all());
         if ( ! (in_array('error', $sessionKeys) || in_array('success', $sessionKeys))) {
-            $this->saveToCache($renderedView);
+            $this->saveToCache($renderedView, $dashboardId);
         }
+
         return $renderedView;
 
     }
@@ -344,16 +355,17 @@ class DashboardController extends BaseController
     }
 
     /**
-     * getFromCache
+     * getCache
      * Returns the dashboard if it's cached.
      * --------------------------------------------------
+     * @param int dashboardId
      * @return View/null
      * --------------------------------------------------
      */
-    private function getFromCache() {
+    private function getCache($dashboardId) {
         $user = Auth::user();
         if ( ! $user->update_cache) {
-            return Cache::get($this->getDashboardCacheKey());
+            return Cache::get($this->getDashboardCacheKey($dashboardId));
         }
         return;
     }
@@ -362,13 +374,14 @@ class DashboardController extends BaseController
      * saveToCache
      * Saving the dashboard to cache.
      * --------------------------------------------------
+     * @param int $dashboardId
      * @param string $renderedView
      * --------------------------------------------------
      */
-    private function saveToCache($renderedView) {
+    private function saveToCache($renderedView, $dashboardId) {
         $user = Auth::user();
         Cache::put(
-            $this->getDashboardCacheKey(),
+            $this->getDashboardCacheKey($dashboardId),
             $renderedView,
             SiteConstants::getDashboardCacheMinutes()
         );
@@ -380,11 +393,12 @@ class DashboardController extends BaseController
      * getDashboardCacheKey
      * Returns the cache key for the user's dashboard.
      * --------------------------------------------------
+     * @param int $dashboardId
      * @return string
      * --------------------------------------------------
      */
-    private function getDashboardCacheKey() {
-        return 'dashboard_' . Auth::user()->id;
+    private function getDashboardCacheKey($dashboardId) {
+        return Auth::user()->id . '_dashboard_' . $dashboardId;
     }
 
 } /* DashboardController */

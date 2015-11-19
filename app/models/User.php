@@ -164,135 +164,6 @@ class User extends Eloquent implements UserInterface
     }
 
     /**
-     * createDashboardView
-     * --------------------------------------------------
-     * Creating a dashboard view.
-     * @param array $params
-     * @return View
-     * --------------------------------------------------
-     */
-    public function createDashboardView(array $params=array()) {
-        $existsActiveDashboard = array_key_exists('activeDashboard', $params);
-        $activeDashboard = -1;
-
-        $dashboards = array();
-        $i = 0;
-        foreach ($this->dashboards as $dashboard) {
-            /* Creating dashboard array. */
-            $dashboards[$dashboard->id] = array(
-                'name'       => $dashboard->name,
-                'is_locked'  => $dashboard->is_locked,
-                'is_default' => $dashboard->is_default,
-                'widgets'    => array(),
-                'count'      => $i++
-            );
-
-            /* Set active dashboard or default */
-            if(($existsActiveDashboard
-                && ($params['activeDashboard'] == $dashboard->id || ($activeDashboard==-1 && $dashboard->is_default)))
-                || ($activeDashboard==-1 && $dashboard->is_default)) {
-                $activeDashboard = $dashboard->id;
-            }
-        }
-
-        //dd($dashboards);
-
-        /* Populating widget data. */
-        foreach ($this->widgets as $widget) {
-            /* Getting template data for the widget. */
-            if ($widget->renderable()) {
-                /* Widget is loading, no data is available yet. */
-                try {
-                    $templateData = $widget->getTemplateData();
-                } catch (ServiceException $e) {
-                    /* Something went wrong during rendering. */
-                    Log::error($e->getMessage());
-                    /* Falling back to default template data. */
-                    $widget->setState('rendering_error');
-                    $templateData = Widget::getDefaultTemplateData($widget);
-                }
-            } else {
-                $templateData = Widget::getDefaultTemplateData($widget);
-            }
-            /* Adding widget to the dashboard array. */
-            if (array_key_exists($widget->dashboard_id, $dashboards)) {
-                array_push($dashboards[$widget->dashboard_id]['widgets'], array(
-                    'meta'         => $widget->getTemplateMeta(),
-                    'templateData' => $templateData
-                ));
-            }
-        }
-
-        /* Set default dashboard if activeDashboard not exists */
-        if(isset($existsActiveDashboard) && !$existsActiveDashboard) {
-            unset($params['activeDashboard']);
-        }
-
-        return View::make('dashboard.dashboard', $params)
-            ->with('dashboards', $dashboards);
-    }
-
-    /**
-     * checkWidgetsIntegrity
-     * --------------------------------------------------
-     * Checking the overall integrity of the user's widgets.
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function checkWidgetsIntegrity() {
-        foreach ($this->widgets as $widget) {
-            /* By default giving every widget a change. */
-            $widget->setState('active');
-
-            try {
-                $widget->checkIntegrity();
-            } catch (WidgetFatalException $e) {
-                /* Cannot recover widget. */
-                $widget->setState('setup_required');
-            } catch (WidgetException $e) {
-                /* A simple save might help. */
-                $widget->save();
-                try {
-                    $widget->checkIntegrity();
-                } catch (WidgetException $e) {
-                    /* Did not help. */
-                    Log::warning($e->getMessage());
-                    $widget->setState('setup_required');
-                }
-            }
-        }
-    }
-
-    /**
-     * turnOffBrokenWidgets
-     * --------------------------------------------------
-     * Setting all broken widget's state.
-     * @return boolean
-     * --------------------------------------------------
-     */
-    public function turnOffBrokenWidgets() {
-        foreach ($this->widgets as $widget) {
-            if ($widget instanceof SharedWidget) {
-                continue;
-            }
-            if ($widget->renderable()) {
-                $templateData = $widget->getTemplateData();
-            } else {
-                $templateData = Widget::getDefaultTemplateData($widget);
-            }
-            $view = View::make($widget->getDescriptor()->getTemplateName())
-                ->with('widget', $templateData);
-            try {
-                $view->render();
-            } catch (Exception $e) {
-                Log::error($e->getMessage());
-                $widget->setState('rendering_error');
-            }
-        }
-    }
-
-
-    /**
      * checkOrCreateDefaultDashboard
      * --------------------------------------------------
      * Checks if the user has a default dashboard, and
@@ -405,11 +276,11 @@ class User extends Eloquent implements UserInterface
      */
     private function createDefaultDashboards() {
         /* Make personal dashboard */
-        $this->makePersonalAutoDashboard('auto', null);
+        $this->makeBigPictureDashboard('auto', null);
     }
 
     /**
-     * makePersonalAutoDashboard
+     * makeBigPictureDashboard
      * creates a new Dashboard object and personal widgets
      * optionally from the POST data
      * --------------------------------------------------
@@ -418,49 +289,16 @@ class User extends Eloquent implements UserInterface
      * @return (Dashboard) ($dashboard) The new Dashboard object
      * --------------------------------------------------
      */
-    private function makePersonalAutoDashboard($mode, $widgetdata) {
+    private function makeBigPictureDashboard($mode, $widgetdata) {
         /* Create new dashboard */
         $dashboard = new Dashboard(array(
-            'name'       => 'Personal dashboard',
-            'background' => 'On',
-            'number'     => $this->dashboards->max('number') + 1,
-            'is_default' => false
+            'name'       => 'Big Picture',
+            'background' => 'Off',
+            'number'     => 1,
+            'is_default' => true
         ));
         $dashboard->user()->associate($this);
         $dashboard->save();
-
-        /* Create clock widget */
-        if (($mode == 'auto') or
-            array_key_exists('widget-clock', $widgetdata)) {
-            $clockwidget = new ClockWidget(array(
-                'state'    => 'active',
-                'position' => '{"row":1,"col":3,"size_x":8,"size_y":3}',
-            ));
-            $clockwidget->dashboard()->associate($dashboard);
-            $clockwidget->save();
-        }
-
-        /* Create greetings widget */
-        if (($mode == 'auto') or
-            array_key_exists('widget-greetings', $widgetdata)) {
-            $greetingswidget = new GreetingsWidget(array(
-                'state'    => 'active',
-                'position' => '{"row":4,"col":3,"size_x":8,"size_y":1}',
-            ));
-            $greetingswidget->dashboard()->associate($dashboard);
-            $greetingswidget->save();
-        }
-
-        /* Create quote widget */
-        if (($mode == 'auto') or
-            array_key_exists('widget-quote', $widgetdata)) {
-            $quotewidget = new QuoteWidget(array(
-                'state'    => 'active',
-                'position' => '{"row":10,"col":1,"size_x":12,"size_y":2}',
-            ));
-            $quotewidget->dashboard()->associate($dashboard);
-            $quotewidget->saveSettings(array('type' => 'inspirational'));
-        }
 
         /* Return */
         return $dashboard;

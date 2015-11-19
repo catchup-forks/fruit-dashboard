@@ -120,6 +120,113 @@ class Dashboard extends Eloquent
         $this->widgets()->delete();
         parent::delete();
     }
+
+    /**
+     * checkWidgetsIntegrity
+     * Checking the overall integrity of the user's widgets.
+     * --------------------------------------------------
+     * @param Dashboard $dashboard
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function checkWidgetsIntegrity() {
+        foreach ($this->widgets as $widget) {
+            /* By default giving every widget a change. */
+            $widget->setState('active');
+
+            try {
+                $widget->checkIntegrity();
+            } catch (WidgetFatalException $e) {
+                /* Cannot recover widget. */
+                $widget->setState('setup_required');
+            } catch (WidgetException $e) {
+                /* A simple save might help. */
+                $widget->save();
+                try {
+                    $widget->checkIntegrity();
+                } catch (WidgetException $e) {
+                    /* Did not help. */
+                    Log::warning($e->getMessage());
+                    $widget->setState('setup_required');
+                }
+            }
+        }
+    }
+
+    /**
+     * turnOffBrokenWidgets
+     * --------------------------------------------------
+     * Setting all broken widget's state.
+     * @return boolean
+     * --------------------------------------------------
+     */
+    public function turnOffBrokenWidgets() {
+        foreach ($this->widgets as $widget) {
+            if ($widget instanceof SharedWidget) {
+                continue;
+            }
+            if ($widget->renderable()) {
+                $templateData = $widget->getTemplateData();
+            } else {
+                $templateData = Widget::getDefaultTemplateData($widget);
+            }
+            $view = View::make($widget->getDescriptor()->getTemplateName())
+                ->with('widget', $templateData);
+            try {
+                $view->render();
+            } catch (Exception $e) {
+                Log::error($e->getMessage());
+                $widget->setState('rendering_error');
+            }
+        }
+    }
+
+    /**
+     * createView
+     * Creating a dashboard view.
+     * --------------------------------------------------
+     * @param array $params
+     * @return View
+     * --------------------------------------------------
+     */
+    public function createView() {
+        $dashboard = array(
+            'name'       => $this->name,
+            'is_locked'  => $this->is_locked,
+            'is_default' => $this->is_default,
+            'widgets'    => array(),
+        );
+
+        /* Populating widget data. */
+        foreach ($this->widgets as $widget) {
+
+            /* Getting template data for the widget. */
+            if ($widget->renderable()) {
+                try {
+                    $templateData = $widget->getTemplateData();
+                } catch (ServiceException $e) {
+                    /* Something went wrong during data build. */
+                    Log::error($e->getMessage());
+                    $widget->setState('rendering_error');
+                    /* Falling back to default template data. */
+                    $templateData = Widget::getDefaultTemplateData($widget);
+                }
+            } else {
+                /* The widget is not renderable. */
+                $templateData = Widget::getDefaultTemplateData($widget);
+            }
+
+            /* Adding widget to the dashboard array. */
+            array_push($dashboard['widgets'], array(
+                'meta'         => $widget->getTemplateMeta(),
+                'templateData' => $templateData
+            ));
+        }
+
+        return View::make('dashboard.dashboard_dummy')
+            ->with('dashboard', $dashboard);
+    }
+
 }
 
 ?>
