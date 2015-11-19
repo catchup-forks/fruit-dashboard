@@ -386,6 +386,13 @@ class GeneralWidgetController extends BaseController {
                 ->with('error', $e->getMessage());
         }
 
+        /* Track event | SINGLESTAT VIEWED */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'SingleStat viewed',
+            'el' => $widget->getDescriptor()->type)
+        );
+
         /* Calculating values for rendering. */
         $values = array();
         /* SINGLE STAT TEMPLATE REQUIRES REFACTORING!! */
