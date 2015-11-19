@@ -286,23 +286,38 @@ class User extends Eloquent implements UserInterface
      * --------------------------------------------------
      * @param (string)  ($mode) 'auto' or 'manual'
      * @param (array)   ($widgetdata) Personal widgets data
-     * @return (Dashboard) ($dashboard) The new Dashboard object
      * --------------------------------------------------
      */
     private function makeBigPictureDashboard($mode, $widgetdata) {
         /* Create new dashboard */
-        $dashboard = new Dashboard(array(
-            'name'       => 'Big Picture',
-            'background' => 'Off',
-            'number'     => 1,
-            'is_default' => true
-        ));
-        $dashboard->user()->associate($this);
-        $dashboard->save();
+        foreach (SiteConstants::getAutoDashboards() as $dashboardName=>$widgets) {
+            $dashboard = new Dashboard(array(
+                'name'       => $dashboardName,
+                'background' => 'Off',
+                'number'     => 1,
+                'is_default' => true
+            ));
+            $dashboard->user()->associate($this);
+            $dashboard->save();
 
-        /* Return */
-        return $dashboard;
+            /* Adding promo widgets. */
+            foreach ($widgets as $widgetMeta) {
+                $descriptor = WidgetDescriptor::where('type', $widgetMeta['type'])->first();
+                /* Creating widget instance. */
+                $widget = new PromoWidget(array(
+                    'position' => $widgetMeta['position'],
+                    'state'    => 'active'
+                ));
+                $widget->dashboard()->associate($dashboard);
+
+                /* Saving settings. */
+                $settings = array_key_exists('settings', $widgetMeta) ? $widgetMeta['settings'] : array ();
+                $widget->saveSettings(array(
+                    'widget_settings'    => json_encode($settings),
+                    'related_descriptor' => $descriptor->id,
+                    'photo_location'     => $widgetMeta['pic_url']
+                ));
+            }
+        }
     }
-
-
 }

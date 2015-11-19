@@ -77,95 +77,42 @@ class SiteConstants {
 
     /* Auto dashboards */
     private static $autoDashboards = array(
-        'Acquisition' => array(
+        'Big Picture' => array(
             array(
                 'type'     => 'google_analytics_users',
                 'position' => '{"row":1,"col":1,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'chart'),
+                'settings' => array(
+                    'type' => self::LAYOUT_COMBINED_BAR_LINE,
+                    'length' => 5
+                ),
                 'pic_url'  => 'img/demonstration/promo/unique-visitors-chart.png'
-            ),
-            array(
-                'type'     => 'google_analytics_users',
-                'position' => '{"row":6,"col":1,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'table', 'length' => 5),
-                'pic_url'  => 'img/demonstration/promo/unique-visitors-table.png'
             ),
             array(
                 'type'     => 'google_analytics_goal_completion',
                 'position' => '{"row":1,"col":4,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'chart'),
+                'settings' => array(
+                    'type' => self::LAYOUT_COMBINED_BAR_LINE,
+                    'length' => 5
+                ),
                 'pic_url'  => 'img/demonstration/promo/goal-completions-chart.png'
             ),
             array(
-                'type'     => 'google_analytics_goal_completion',
-                'position' => '{"row":6,"col":4,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'table', 'length' => 5),
-                'pic_url'  => 'img/demonstration/promo/goal-completions-table.png'
-            ),
-            array(
-                'type'     => 'google_analytics_conversions',
-                'position' => '{"row":1,"col":8,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'table', 'length' => 5),
-                'pic_url'  => 'img/demonstration/promo/conversions-table.png'
-            ),
-        ),
-        'Activation' => array(
-            array(
                 'type'     => 'facebook_likes',
-                'position' => '{"col":1,"row":1,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'chart'),
+                'position' => '{"col":6,"row":1,"size_x":3,"size_y":5}',
+                'settings' => array(
+                    'type' => self::LAYOUT_COMBINED_BAR_LINE,
+                    'length' => 5
+                ),
                 'pic_url'  => 'img/demonstration/promo/facebook-likes-chart.png'
             ),
             array(
                 'type'     => 'twitter_followers',
-                'position' => '{"col":4,"row":1,"size_x":3,"size_y":5}',
-                'settings' => array('type' => 'count', 'length' => 1),
+                'position' => '{"col":6,"row":4,"size_x":3,"size_y":5}',
+                'settings' => array(
+                    'type' => self::LAYOUT_COUNT,
+                    'length' => 1
+                ),
                 'pic_url'  => 'img/demonstration/promo/twitter-followers-count.png'
-            ),
-            array(
-                'type'     => 'twitter_mentions',
-                'position' => '{"col":7,"row":1,"size_x":3,"size_y":5}',
-                'settings' => array('count' => 5),
-                'pic_url'  => 'img/demonstration/promo/twitter-mentions.png'
-            ),
-        ),
-        //'Retention' => array(),
-        'Revenue' => array(
-            array(
-                'type'     => 'stripe_mrr',
-                'position' => '{"col":1,"row":1,"size_x":4,"size_y":5}',
-                'settings' => array('type' => 'chart'),
-                'pic_url'  => 'img/demonstration/promo/monthly-recurring-revenue-chart.png'
-            ),
-            array(
-                'type'     => 'stripe_arr',
-                'position' => '{"col":5,"row":1,"size_x":4,"size_y":5}',
-                'settings' => array('type' => 'chart'),
-                'pic_url'  => 'img/demonstration/promo/annual-recurring-revenue-chart.png'
-            ),
-            array(
-                'type'     => 'stripe_arpu',
-                'position' => '{"col":9,"row":1,"size_x":4,"size_y":5}',
-                'settings' => array('type' => 'chart'),
-                'pic_url'  => 'img/demonstration/promo/average-revenue-per-user-chart.png'
-            ),
-            array(
-                'type'     => 'braintree_mrr',
-                'position' => '{"col":1,"row":6,"size_x":4,"size_y":5}',
-                'settings' => array('type' => 'chart'),
-                'pic_url'  => 'img/demonstration/promo/monthly-recurring-revenue-chart.png'
-            ),
-            array(
-                'type'     => 'braintree_arr',
-                'position' => '{"col":5,"row":6,"size_x":4,"size_y":5}',
-                'settings' => array('type' => 'chart'),
-                'pic_url'  => 'img/demonstration/promo/annual-recurring-revenue-chart.png'
-            ),
-            array(
-                'type'     => 'braintree_arpu',
-                'position' => '{"col":9,"row":6,"size_x":4,"size_y":5}',
-                'settings' => array('type' => 'chart'),
-                'pic_url'  => 'img/demonstration/promo/average-revenue-per-user-chart.png'
             ),
         ),
         //'Referral' => array()

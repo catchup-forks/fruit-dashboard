@@ -192,6 +192,7 @@ class Dashboard extends Eloquent
     public function createView() {
         $dashboard = array(
             'name'       => $this->name,
+            'id'         => $this->id,
             'is_locked'  => $this->is_locked,
             'is_default' => $this->is_default,
             'widgets'    => array(),

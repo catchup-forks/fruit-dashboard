@@ -12,33 +12,29 @@ var gridsterGlobalOptions = {
 };
 
 // Create FDGridster objects
-@foreach ($dashboards as $dashboard_id => $dashboard)
-  var gridsterOptions{{ $dashboard_id }} = $.extend({},
-    gridsterGlobalOptions,
-    {
-      id:   '{{ $dashboard_id }}',
-      name: '{{ $dashboard["name"] }}',
-      namespace:        '#gridster-{{ $dashboard_id }}',
-      gridsterSelector: 'div.gridster-container',
-      widgetsSelector:  'div.gridster-widget',
-      isLocked:  {{ $dashboard["is_locked"] }},
-      lockUrl:   "{{ route('dashboard.lock', $dashboard_id) }}",
-      unlockUrl: "{{ route('dashboard.unlock', $dashboard_id) }}",
-    }
-  );
-  var widgetsOptions{{ $dashboard_id }} = [
-    @foreach ($dashboard['widgets'] as $widget) {{ json_encode($widget['meta']) }}, @endforeach
-  ];
+var gridsterOptions{{ $dashboard['id'] }} = $.extend({},
+gridsterGlobalOptions,
+{
+  id:   '{{ $dashboard['id'] }}',
+  name: '{{ $dashboard["name"] }}',
+  namespace:        '#gridster-{{ $dashboard['id'] }}',
+  gridsterSelector: 'div.gridster-container',
+  widgetsSelector:  'div.gridster-widget',
+  isLocked:  {{ $dashboard["is_locked"] }},
+  lockUrl:   "{{ route('dashboard.lock', $dashboard['id']) }}",
+  unlockUrl: "{{ route('dashboard.unlock', $dashboard['id']) }}",
+}
+);
+var widgetsOptions{{ $dashboard['id'] }} = [
+@foreach ($dashboard['widgets'] as $widget) {{ json_encode($widget['meta']) }}, @endforeach
+];
 
-  var FDGridster{{ $dashboard_id }} = new FDGridster(gridsterOptions{{ $dashboard_id }});
-@endforeach
+var FDGridster{{ $dashboard['id'] }} = new FDGridster(gridsterOptions{{ $dashboard['id'] }});
 
 
 // Initialize FDGridster objects on DOM load
 $(document).ready(function() {
-  @foreach ($dashboards as $dashboard_id=>$dashboard)
-    FDGridster{{ $dashboard_id }}.init().build(widgetsOptions{{ $dashboard_id }});
-  @endforeach
+  //FDGridster{{ $dashboard['id'] }}.init().build(widgetsOptions{{ $dashboard['id'] }});
 });
 
 // Fade in the current gridster
