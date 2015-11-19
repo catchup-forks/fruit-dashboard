@@ -14,6 +14,13 @@ Route::group([
         'uses'   => 'DashboardController@anyDashboard'
     ]);
 
+    /* Same route as above with parameter. */
+    Route::any('active/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.dashboard',
+        'uses'   => 'DashboardController@anyDashboard'
+    ]);
+
     Route::get('manage', [
         'before' => 'auth',
         'as'     => 'dashboard.manage',
