@@ -278,7 +278,7 @@ class MetricsController extends BaseController
         /* Get the user count for the provided step */
         } else {
             $stepCount = Settings::where('onboarding_state', $step)->count();
-            $data[$step] = $widgetcount;
+            $data[$step] = $stepCount;
         }
 
         /* Return json */
