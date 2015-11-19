@@ -21,7 +21,7 @@
               </sup>
             </span>
             <h1 class="text-center">
-              Chrome extension
+              Install Chrome extension
             </h1>
             
             <div class="row margin-top">
@@ -35,7 +35,7 @@
                         <small>Install the Chrome extension to access Fruit Dashboard on your new tab.</small>
                       </p>
 
-                      <a href="https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp" id="install-button" class="btn btn-primary btn-block margin-top connect-redirect" target="_blank">Install Extension</a>
+                      <a href="https://chrome.google.com/webstore/detail/cgmdkfkbilmbclifhmfgabbkkcfjcicp" id="install-button" class="btn btn-primary btn-block margin-top connect-redirect" target="_blank" onclick="trackAll('lazy', {'en': 'clicked_on_install_extension', 'el': '{{ Auth::user()->email }}', });">Install Extension</a>
                       <p id="installed-p" class="text-success text-center lead margin-top">
                         <span class="fa fa-check"> </span> Extension installed
                       </p>
@@ -66,7 +66,7 @@
   @section('pageScripts')
 
   <script type="text/javascript">
-    if (chrome.app.isInstalled) {
+    if (window != window.top) {
       $('#install-button').hide();
       $('#installed-p').show();
     } else {
