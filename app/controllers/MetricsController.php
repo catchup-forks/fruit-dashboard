@@ -251,6 +251,41 @@ class MetricsController extends BaseController
     }
 
     /**
+     * getSignupWizardStepCount
+     * --------------------------------------------------
+     * @return Returns the number of widgets
+     *          by different services in json
+     * --------------------------------------------------
+     */
+    public function getSignupWizardStepCount($step) {
+        /* Build basic data */
+        $data = $this->buildBasicData();
+
+        /* Get the user count for all steps */
+        if ($step == 'all') {
+            /* Get the first step */
+            $currentStep = SiteConstants::getSignupWizardStep('first');
+            /* Get the count for the current step, and get next step */
+            while ($currentStep != SiteConstants::getSignupWizardStep('last')) {
+                $stepCount = Settings::where('onboarding_state', $currentStep)->count();
+                $data[$currentStep] = $stepCount;
+                $currentStep = SiteConstants::getSignupWizardStep('next', $currentStep);
+            }
+            /* Add the last step as well */
+            $stepCount = Settings::where('onboarding_state', $currentStep)->count();
+            $data[$currentStep] = $stepCount;
+            
+        /* Get the user count for the provided step */
+        } else {
+            $stepCount = Settings::where('onboarding_state', $step)->count();
+            $data[$step] = $widgetcount;
+        }
+
+        /* Return json */
+        return Response::json($data);
+    }
+
+    /**
      * ================================================== *
      *                   PRIVATE SECTION                  *
      * ================================================== *

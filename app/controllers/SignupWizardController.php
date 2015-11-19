@@ -134,12 +134,26 @@ class SignupWizardController extends BaseController
             $settings->onboarding_state = 'finished';
             $settings->save();
 
+            /* Track event | SIGNUPWIZARD LOADED STEP */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'SignupWizard step loaded',
+                'el' => $settings->onboarding_state)
+            );
+
             /* Redirect to the dashboard*/
             return Redirect::route('dashboard.dashboard', array('tour' => true));
         } else {
             /* Set onboarding state */
             $settings->onboarding_state = $step;
             $settings->save();
+
+            /* Track event | SIGNUPWIZARD LOADED STEP */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'SignupWizard step loaded',
+                'el' => $settings->onboarding_state)
+            );
 
             /* Get responsible function */
             $stepFunction = 'get'. Utilities::dashToCamelCase($step);

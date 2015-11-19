@@ -32,4 +32,9 @@ Route::group([
         'as'     => 'metrics.hasWidget',
         'uses'   => 'MetricsController@getHasActiveWidgetCount'
     ]);
+
+    Route::get('signupwizard/{step}', [
+        'as'     => 'metrics.getSignupWizardStepCount',
+        'uses'   => 'MetricsController@getSignupWizardStepCount'
+    ]);
 });
