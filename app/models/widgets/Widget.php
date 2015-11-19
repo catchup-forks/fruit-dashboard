@@ -187,6 +187,7 @@ class Widget extends Eloquent
                 'refresh' => '#widget-refresh-' . $this->id,
                 'layoutSelector' => '#widget-layout-selector-' . $this->id,
                 'layoutsWrapper' => '#widget-layouts-wrapper-' . $this->id,
+                'chartWrapper' => '#chart-wrapper-' . $this->id,
             ),
             'data' => array(
                 'page' => 'dashboard',

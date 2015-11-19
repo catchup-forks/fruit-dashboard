@@ -68,6 +68,13 @@ class SiteConstants {
     /* Dashboard cache */
     private static $dashboardCacheMinutes = 60;
 
+    /* Widget layouts. */
+    const LAYOUT_COMBINED_BAR_LINE = 'combined-bar-line';
+    const LAYOUT_TABLE             = 'table';
+    const LAYOUT_COUNT             = 'count';
+    const LAYOUT_MULTI_LINE        = 'multi-line';
+    const LAYOUT_SINGLE_LINE       = 'single-line';
+
     /* Auto dashboards */
     private static $autoDashboards = array(
         'Acquisition' => array(

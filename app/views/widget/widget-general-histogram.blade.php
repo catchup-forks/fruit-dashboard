@@ -2,19 +2,15 @@
   @foreach ($widget['possibleLayouts'] as $layout => $name)
     <div class="element" data-layout="{{ $layout }}">
       <!-- FIXME FIX ICONS-->
-      @if ($layout == 'chart')
+      @if ($layout == SiteConstants::LAYOUT_SINGLE_LINE)
         <i class="fa fa-bar-chart fa-fw text-white drop-shadow"></i>
-      @elseif ($layout == 'combined_chart')
+      @elseif ($layout == SiteConstants::LAYOUT_MULTI_LINE)
         <i class="fa fa-bar-chart fa-fw text-white drop-shadow"></i>
-      @elseif ($layout == 'single-line')
+      @elseif ($layout == SiteConstants::LAYOUT_COMBINED_BAR_LINE)
         <i class="fa fa-bar-chart fa-fw text-white drop-shadow"></i>
-      @elseif ($layout == 'multi-line')
-        <i class="fa fa-bar-chart fa-fw text-white drop-shadow"></i>
-      @elseif ($layout == 'combined-bar-line')
-        <i class="fa fa-bar-chart fa-fw text-white drop-shadow"></i>
-      @elseif ($layout == 'table')
+      @elseif ($layout == SiteConstants::LAYOUT_TABLE)
         <i class="fa fa-table fa-fw text-white drop-shadow"></i>
-      @elseif ($layout == 'count')
+      @elseif ($layout == SiteConstants::LAYOUT_COUNT)
         <i class="fa fa-database fa-fw text-white drop-shadow"></i>
       @elseif ($layout == 'diff')
         <i class="fa fa-balance-scale fa-fw text-white drop-shadow">
@@ -30,8 +26,8 @@
         @include('widget.widget-general-'.$layout, ['layout' => $layout])
       </div>
     @endforeach
-  </div>
-</div> <!-- /.widget-inner -->
+  </div> <!-- /#widget-layout-wrapper-{{ $widget['id']}} -->
+</div> <!-- /.flex-container -->
 
 @section('widgetScripts')
 <script type="text/javascript">

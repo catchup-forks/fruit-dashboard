@@ -21,13 +21,13 @@ class GoogleAnalyticsActiveUsersWidget extends HistogramWidget implements iServi
     public function type()
     {
         return array(
-            'multi-line' => 'User count by sources',
+            SiteConstants::LAYOUT_MULTI_LINE => 'User count by sources',
         );
     }
 
     /* The layout function map. */
     protected static $functionMap = array(
-        'multi-line' => 'getChartData',
+        SiteConstants::LAYOUT_MULTI_LINE => 'getChartData',
     );
 
     /**
@@ -40,19 +40,7 @@ class GoogleAnalyticsActiveUsersWidget extends HistogramWidget implements iServi
     */
     protected function layoutSetup($layout)
     {
-        $this->setActiveHistogram($this->buildHistogramEntries());
-    }
-
-    /**
-     * buildHistogramEntries
-     * Build the histogram data.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-    */
-    private function buildHistogramEntries() 
-    {
-        return $this->data['active_users'];
+        $this->setActiveHistogram($this->data['active_users']);
     }
 }
 ?>

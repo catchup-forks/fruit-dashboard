@@ -181,12 +181,12 @@ function FDChartCanvas(widgetOptions) {
     // Get the canvas size
     canvasSize = size();
     // Delete current canvas
-    $(options.selectors.activeLayout).empty();
+    $(options.selectors.chartWrapper).empty();
     // Add new canvas
     if (options.data.page == 'dashboard') {
-      $(options.selectors.activeLayout).append('<canvas class="chart chart-line" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+      $(options.selectors.chartWrapper).append('<canvas class="chart" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     } else if (options.data.page == 'singlestat') {
-      $(options.selectors.activeLayout).append('<canvas class="canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
+      $(options.selectors.chartWrapper).append('<canvas class="canvas-auto" height="' + canvasSize.height +'" width="' + canvasSize.width + '"></canvas>');
     };
 
     // Return
@@ -262,7 +262,7 @@ function FDChartHandler(widgetOptions) {
         chartType = 'bar';
         break;
       default:
-        if (debug) {console.log('[E] No getChartType behaviour is defined to this layout: ' + layout)};
+        if (debug) {console.log('[E] No getChartType behaviour is defined to this layout: ' + options.layout)};
         break;
     }
     // Return
@@ -308,7 +308,7 @@ function FDChartHandler(widgetOptions) {
             $.extend(chartOptions, getCombinedBarLineOptionsSingleStat(data));
             break;
           default:
-            if (debug) {console.log('[E] No getChartOptions behaviour is defined to this layout: ' + layout)};
+            if (debug) {console.log('[E] No getChartOptions behaviour is defined to this layout: ' + options.layout)};
             break;
         }
         break;
@@ -333,7 +333,7 @@ function FDChartHandler(widgetOptions) {
             $.extend(chartOptions, getCombinedBarLineOptionsDashboard(data));
             break;
           default:
-            if (debug) {console.log('[E] No getChartOptions behaviour is defined to this layout: ' + layout)};
+            if (debug) {console.log('[E] No getChartOptions behaviour is defined to this layout: ' + options.layout)};
             break;
         }
         break;
@@ -376,7 +376,7 @@ function FDChartHandler(widgetOptions) {
             transformedData = transformCombinedBarLineDataSingleStat(data);
             break;
           default:
-            if (debug) {console.log('[E] No transformChartData behaviour is defined to this layout: ' + layout)};
+            if (debug) {console.log('[E] No transformChartData behaviour is defined to this layout: ' + options.layout)};
             break;
         }
         break;
@@ -401,7 +401,7 @@ function FDChartHandler(widgetOptions) {
             transformedData = transformCombinedBarLineDataDashboard(data);
             break;
           default:
-            if (debug) {console.log('[E] No transformChartData behaviour is defined to this layout: ' + layout)};
+            if (debug) {console.log('[E] No transformChartData behaviour is defined to this layout: ' + options.layout)};
             break;
         }
         break;
@@ -776,8 +776,6 @@ function FDChartHandler(widgetOptions) {
       });
       return;
     }
-
-    $(tooltip._chart.canvas).css('cursor', 'pointer');
 
     // Set caret Position
     tooltipEl.removeClass('above below no-transform');

@@ -1,0 +1,42 @@
+// LAYOUT CHOOSER
+
+.layout-chooser {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.layout-chooser > .element {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+  align-items: center;
+  padding-left: @margin/5;
+  height: 25%;
+  width: 28px;
+  border-bottom: 1px solid fade(@color-1, @alpha);
+  &:first-child {
+    -webkit-border-top-left-radius: @padding;
+    -moz-border-top-left-radius: @padding;
+    border-top-left-radius: @padding;
+  }
+  &:nth-child(4) {
+    -webkit-border-bottom-left-radius: @padding;
+    -moz-border-bottom-left-radius: @padding;
+    border-bottom-left-radius: @padding;
+  }
+  &:last-child {
+    border-bottom: 0;
+  }
+}
+
+.layout-chooser > .element.active {
+  background-color: fade(@color-2, @alpha);
+}
+
+.element:hover {
+  background-color: fade(@color-1, @alpha);
+}

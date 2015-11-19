@@ -23,17 +23,17 @@ class FacebookLikesWidget extends HistogramWidget implements iServiceWidget
     public function type()
     {
         return array(
-            'combined-bar-line'  => 'Chart',
-            'table'              => 'Table',
-            'count'              => 'Count'
+            SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'Chart',
+            SiteConstants::LAYOUT_TABLE             => 'Table',
+            SiteConstants::LAYOUT_COUNT             => 'Sum page likes'
         );
     }
 
     /* The layout function map. */
     protected static $functionMap = array(
-        'combined-bar-line' => 'getChartData',
-        'table'             => 'getTableData',
-        'count'             => 'getCountData',
+        SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'getChartData',
+        SiteConstants::LAYOUT_TABLE             => 'getTableData',
+        SiteConstants::LAYOUT_COUNT             => 'getCountData'
     );
 
 

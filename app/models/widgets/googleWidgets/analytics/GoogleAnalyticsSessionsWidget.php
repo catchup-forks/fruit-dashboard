@@ -22,19 +22,19 @@ class GoogleAnalyticsSessionsWidget extends HistogramWidget implements iServiceW
     public function type()
     {
         return array(
-            'multi-line'        => 'Session count by sources',
-            'combined-bar-line' => 'Sum sessions and difference by time',
-            'table'             => 'Table layout',
-            'count'             => 'Sum sessions count'
+            SiteConstants::LAYOUT_MULTI_LINE        => 'Sessions count by sources',
+            SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'Sum session and difference by time',
+            SiteConstants::LAYOUT_TABLE             => 'Table layout',
+            SiteConstants::LAYOUT_COUNT             => 'Sum session count'
         );
     }
 
     /* The layout function map. */
     protected static $functionMap = array(
-        'multi-line'        => 'getChartData',
-        'combined-bar-line' => 'getChartData',
-        'table'             => 'getTableData',
-        'count'             => 'getCountData',
+        SiteConstants::LAYOUT_MULTI_LINE        => 'getChartData',
+        SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'getChartData',
+        SiteConstants::LAYOUT_TABLE             => 'getTableData',
+        SiteConstants::LAYOUT_COUNT             => 'getCountData',
     );
 
     /**
@@ -48,22 +48,22 @@ class GoogleAnalyticsSessionsWidget extends HistogramWidget implements iServiceW
     protected function layoutSetup($layout)
     {
         switch ($layout) {
-            case 'multi-line':
-                $this->setDiff(true);
+        case SiteConstants::LAYOUT_MULTI_LINE:
+            $this->setDiff(true);
             break;
-            case 'combined-bar-line':
-                $this->setDiff(false);
-                $this->setSingle(true);
+        case SiteConstants::LAYOUT_COMBINED_BAR_LINE:
+            $this->setDiff(false);
+            $this->setSingle(true);
             break;
-            case 'table':
-                $this->setDiff(false);
-                $this->setSingle(true);
+        case SiteConstants::LAYOUT_TABLE:
+            $this->setDiff(false);
+            $this->setSingle(true);
             break;
-            case 'count':
-                $this->setDiff(false);
-                $this->setSingle(true);
+        case SiteConstants::LAYOUT_COUNT:
+            $this->setDiff(false);
+            $this->setSingle(true);
             break;
-            default: break;
+        default: break;
         }
 
         $this->setActiveHistogram($this->buildHistogramEntries());

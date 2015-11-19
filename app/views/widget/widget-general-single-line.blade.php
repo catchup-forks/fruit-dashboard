@@ -1,1 +1,3 @@
-<canvas class="chart chart-line"></canvas>
+<div id="chart-wrapper-{{ $widget['id'] }}">
+  <canvas class="chart"></canvas>
+</div>

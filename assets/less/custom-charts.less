@@ -1,44 +1,22 @@
 // CHARTS
 
-.rounded {
-  -webkit-border-radius: @padding;
-  -moz-border-radius: @padding;
-  border-radius: @padding;
-}
-
-.background-white {
-  background-color: @white;
-  background-color: fade(@white, @alpha/1.2);
-}
-
-.has-padding {
-  padding: @padding;
-}
-
-.text-shadow {
-  text-shadow: 1px 1px 3px #141414;
-}
-
-.chart {
-  margin: @margin/5;
-  .has-padding;
-  .rounded;
-}
-
 .chart-value {
   position: absolute;
   top: @margin/5;
-  left: @margin/2.5;
+  right: @margin/2.5;
   .has-padding;
 }
 
 .chart-name {
   position: absolute;
-  bottom: @margin/5;
+  bottom: 0;
   width: 50%;
   left: 25%;
-  color: @white;
-  .text-shadow;
+  .background-white;
+  .has-padding;
+  .rounded;
+  // color: @white;
+  // .text-shadow;
 }
 
 .chart-value {
