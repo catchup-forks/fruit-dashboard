@@ -4,12 +4,12 @@
   var tour = {
     id: "introduction",
     steps: [
-      {
-        title: "New widget",
-        content: "Add a new widget (e.g. your Facebook page likes) by clicking the + sign.",
-        target: document.querySelector(".fa-plus-circle"),
-        placement: "top"
-      },
+      // {
+      //   title: "New widget",
+      //   content: "Add a new widget (e.g. your Facebook page likes) by clicking the + sign.",
+      //   target: document.querySelector(".fa-plus-circle"),
+      //   placement: "top"
+      // },
       {
         title: "Hover widget",
         content: "You can move, setup & delete a widget by hovering it.",
@@ -18,30 +18,14 @@
         xOffset: "center",
         arrowOffset: "center"
       },
-      {
-        title: "Dashboard indicators",
-        content: "Clicking these dots take you to one of your dashboards.",
-        target: document.querySelector("ol > li"),
-        placement: "top",
-        xOffset: "center",
-        arrowOffset: "center"
-      },
-      {
-        title: "Lock dashboard",
-        content: "You can lock or unlock the grid on your dashboard.",
-        target: document.querySelector("#dashboard-lock"),
-        placement: "left",
-        yOffset: -150,
-        arrowOffset: 80
-      },
-      {
-        title: "Navigation",
-        content: "You can navigate between your dashboards by clicking the sides of the page.",
-        target: document.querySelector(".carousel-control.right"),
-        placement: "left",
-        yOffset: "center",
-        arrowOffset: "center"
-      },
+      // {
+      //   title: "Lock dashboard",
+      //   content: "You can lock or unlock the grid on your dashboard.",
+      //   target: document.querySelector("#dashboard-lock"),
+      //   placement: "left",
+      //   yOffset: -150,
+      //   arrowOffset: 80
+      // },
       {
         title: "Settings",
         content: "More stuff here.",
@@ -56,19 +40,11 @@
     var newTour = {};
     $.extend(true, newTour, tour);
 
-    // Check if the user has more than one dashboard
-    if ($(".carousel-control")[0] == null) {
-      // POP the carousel and dashboard indicators steps, if there is only one dashboard
-      newTour['steps'].splice(4,1);
-      newTour['steps'].splice(2,1);
-    }
-
-    // Check if the dashboard has any widget
-    if ($(".item.active > .gridster > .gridster-container > .gridster-widget")[0] == null) {
-      // POP the widget step, if there are no widgets on the dashboard
-      newTour['steps'].splice(1,1);
-    }
-
+    // // Check if the dashboard has any widget
+    // if ($(".item.active > .gridster > .gridster-container > .gridster-widget")[0] == null) {
+    //   // POP the widget step, if there are no widgets on the dashboard
+    //   newTour['steps'].splice(1,1);
+    // }
 
     // Start tour
     hopscotch.startTour(newTour);
