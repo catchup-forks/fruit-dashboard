@@ -709,6 +709,13 @@ class GeneralWidgetController extends BaseController {
 
             /* Right now auto accept sharings. */
             $user->handleWidgetSharings();
+
+            /* Track event | SHARED A WIDGET */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Shared a widget',
+                'el' => $widget->getDescriptor()->type)
+            );
         }
 
         /* Everything OK, return response with 200 status code */
