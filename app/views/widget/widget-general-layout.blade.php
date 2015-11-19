@@ -78,7 +78,7 @@
       <div class="@if ($widget['state'] == 'loading') not-visible @endif fill" id="widget-wrapper-{{$widget['id']}}">
     @endif
     @if ($widget['state'] != 'loading')
-      @include($widget['descriptor']->getTemplateName())
+      @include($widget['descriptor']['templateName'])
     @endif
     <!-- Adding loading on DataWidget -->
     @if (is_subclass_of($widget['className'], 'iAjaxWidget'))

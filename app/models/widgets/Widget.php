@@ -204,12 +204,16 @@ class Widget extends Eloquent
      * --------------------------------------------------
     */
     public static function getDefaultTemplateData($widget) {
+        $descriptor = $widget->getDescriptor();
         return array(
             'settings'   => $widget->getSettings(),
             'id'         => $widget->id,
             'state'      => $widget->state,
             'position'   => $widget->getPosition(),
-            'descriptor' => $widget->getDescriptor(),
+            'descriptor' => array(
+                'name'         => $descriptor->name,
+                'templateName' => $descriptor->getTemplateName()
+            ),
             'min_cols'   => $widget->getMinCols(),
             'min_rows'   => $widget->getMinRows(),
             'className'  => get_class($widget),

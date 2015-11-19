@@ -37,11 +37,6 @@ class DashboardController extends BaseController
                 ));
         }
 
-        if (self::OPTIMIZE) {
-            return $this->showOptimizeLog($user);
-            exit(94);
-        }
-
         $dashboard = $user->dashboards()->find($dashboardId);
         if (is_null($dashboard)) {
             /* Using default dashboard, if the dashboard is not set. */
@@ -56,6 +51,12 @@ class DashboardController extends BaseController
 
             $dashboardId = $dashboard->id;
         } 
+    
+        /* For debug purposes. */
+        if (self::OPTIMIZE) {
+            return $this->showOptimizeLog($dashboard);
+            exit(94);
+        }
 
         /* No caching in local development */
         if ( ! App::environment('local')) {
@@ -307,10 +308,10 @@ class DashboardController extends BaseController
      * showOptimizeLog
      * Renders the status log.
      * --------------------------------------------------
-     * @param User $user
+     * @param Dashboard $dashboard
      * --------------------------------------------------
      */
-    private function showOptimizeLog($user) {
+    private function showOptimizeLog($dashboard) {
         var_dump(' -- DEBUG LOG --');
         $time = microtime(true);
         $startTime = $time;
@@ -319,7 +320,7 @@ class DashboardController extends BaseController
         $memUsage = memory_get_usage();
         var_dump("Initial memory usage: " . number_format($memUsage));
         /* Checking the user's widgets integrity */
-        $user->checkWidgetsIntegrity();
+        $dashboard->checkWidgetsIntegrity();
         var_dump(
             "Widget check integrity time: ". (microtime(true) - $time) .
             " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' .
@@ -330,7 +331,7 @@ class DashboardController extends BaseController
         $time = microtime(true);
 
         /* Creating view */
-        $view = $user->createDashboardView();
+        $view = $dashboard->createView();
         var_dump(
             "Dashboards/widgets data loading time: ". (microtime(true) - $time) .
             " (" . (count(DB::getQueryLog()) - $queries ). ' db queries ' .

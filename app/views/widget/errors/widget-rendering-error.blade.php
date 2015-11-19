@@ -1,6 +1,6 @@
 <div class="widget-inner fill" id="widget-loading-{{ $widget['id'] }}">
   <div class="widget-heading larger-text">
-    {{ Utilities::underscoreToCamelCase($widget['descriptor']->type, true) }}
+    {{ $widget['descriptor']['name'] }}
   </div> <!-- /.widget-heading -->
   <p class="lead text-center">
     There was an issue while rendering your widget

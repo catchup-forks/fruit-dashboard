@@ -13,7 +13,9 @@
     <div class="col-md-12">
       <div class="panel panel-default panel-transparent">
         <div class="panel-body">
-         {{ var_dump($dashboard); }}
+          <pre>
+ {{ var_dump($dashboard); }}
+          </pre>
         </div>
       </div>
     </div>
