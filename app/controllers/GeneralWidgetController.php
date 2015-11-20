@@ -703,7 +703,7 @@ class GeneralWidgetController extends BaseController {
         try {
             $widget = $this->getWidget($widgetId);
             if ( ! $widget instanceof HistogramWidget) {
-                /* Only applyies to Histogram widgets. */
+                /* Only applies to Histogram widgets. */
                 throw new WidgetDoesNotExist('Widget type is not histogram.', 1);
             }
         } catch (WidgetDoesNotExist $e) {
@@ -714,33 +714,9 @@ class GeneralWidgetController extends BaseController {
             return Response::json(array('error' => 'Invalid layout'));
         }
 
-        /* valid parameters, saving settings. */
+        /* Valid parameters, saving settings. */
         $widget->saveSettings(array('type' => $layout));
         return Response::json(array('success' => 'Layout saved'));
-    }
-
-    /**
-     * getAjaxSetting
-     * --------------------------------------------------
-     * Returns the widget's settings in ajax.
-     * @param int $widgetId
-     * @param string $fieldName
-     * @param mixed $value
-     * --------------------------------------------------
-     */
-    public function getAjaxSetting($widgetId, $fieldName, $value) {
-        /* Selecing the widget */
-        try {
-            $widget = $this->getWidget($widgetId);
-        } catch (WidgetDoesNotExist $e) {
-            return Response::json(array('error' => $e));
-        }
-
-        try {
-            return Response::json($widget->$fieldName($value));
-        } catch (Exception $e) {
-            return Response::json( array('error' => $e->getMessage()));
-        }
     }
 
     /**
