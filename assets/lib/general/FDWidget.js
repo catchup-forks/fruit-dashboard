@@ -219,35 +219,6 @@ function FDWidget(widgetOptions) {
   });
 
   /**
-   * @event $(options.selectors.layoutSelector).mouseleave
-   * --------------------------------------------------------------------------
-   * Stops the layout changing process.
-   * Reverts to default layout.   
-   * --------------------------------------------------------------------------
-   */
-  // $(options.selectors.layoutSelector).mouseleave(function() {
-  //   if (debug) { console.log("stopped the timer"); }
-  //   clearTimeout(delayTimer);
-  //   // Change the layout back to the default here
-  //   reinit();
-  // });
-
-  /**
-   * @event $(options.selectors.layoutSelector*).mouseenter
-   * --------------------------------------------------------------------------
-   * Starts the layout change process with a timeout.
-   * Resets any other concurrent layout changing processes.
-   * --------------------------------------------------------------------------
-   */
-  // $(options.selectors.layoutSelector + "> .element").mouseenter(function() {
-  //   if (debug) { console.log("entered: " + $(this).data('layout')); }
-  //   if (debug) { console.log("reset the timer"); }
-  //   clearTimeout(delayTimer);
-  //   if (debug) { console.log("started the timer"); }
-  //   delayTimer = setTimeout(changeLayout, delayTime, $(this).data('layout'));
-  // });
-
-  /**
    * @event $(options.selectors.layoutSelector*).click
    * --------------------------------------------------------------------------
    * Sets the new default layout for the widget.
