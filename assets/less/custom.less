@@ -1,10 +1,13 @@
-// VARIABLES
+// CONSTANTS
 
 @alpha:                     85%;
 @darken:                    25%;
+@margin:                    25px;
+@menu-width:                250px;
 @panel-bg:                  #fff;
 @padding:                   5px;
-@margin:                    25px;
+
+@menu-item-border-radius:   5px;
 
 // COLOR PALETTE
 
@@ -57,6 +60,23 @@
 
 .has-padding ( @padding-size: @padding, @multiplier: 1 ){
   padding: @padding-size*@multiplier;
+}
+
+.border-top-radius(@radius) {
+  border-top-right-radius: @radius;
+   border-top-left-radius: @radius;
+}
+.border-right-radius(@radius) {
+  border-bottom-right-radius: @radius;
+     border-top-right-radius: @radius;
+}
+.border-bottom-radius(@radius) {
+  border-bottom-right-radius: @radius;
+   border-bottom-left-radius: @radius;
+}
+.border-left-radius(@radius) {
+  border-bottom-left-radius: @radius;
+     border-top-left-radius: @radius;
 }
 
 // GENERAL CLASSES (later to be converted to mixins)

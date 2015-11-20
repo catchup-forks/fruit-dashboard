@@ -8,6 +8,38 @@
 @stop
 
 @section('pageContent')
+  
+  <div class="menu">
+    <div class="menu-group">
+
+      {{-- FOR EACH DASHBOARD || IF ACTIVE --> ADD CLASS ACTIVE --}}
+      <a href="#" class="menu-item">
+        Menu text
+      </a> <!-- /.menu-item -->
+      {{-- ENDFOREACH --}}
+        
+        <a href="#" class="menu-item menu-subitem">
+          submenu text  
+        </a> <!-- /.menu-subitem -->
+        <a href="#" class="menu-item menu-subitem">
+          another one with a rather long generated name 
+        </a> <!-- /.menu-subitem -->
+
+      {{-- FOR MOCKUP --> DELETE --}}
+      <a href="#" class="menu-item">
+        Middle one
+      </a> <!-- /.menu-item -->
+      <a href="#" class="menu-item active">
+        Active one
+      </a> <!-- /.menu-item -->
+      <a href="#" class="menu-item">
+        Other menu text
+      </a> <!-- /.menu-item -->
+      {{-- ENDFOR MOCKUP --}}
+
+    </div> <!-- /.menu-group -->
+  </div> <!-- /.menu -->
+  
   <div id="gridster-{{ $dashboard['id'] }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard['id'] }}">
 
     {{-- Generate all the widgdets --}}
