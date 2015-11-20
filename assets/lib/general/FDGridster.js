@@ -70,7 +70,7 @@ function FDGridster(gridsterOptions) {
               );
 
     // Create gridster.js
-    gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
+    //gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
 
     // Handle lock based on the default options if this is the active gridster
     // if ($(options.namespace).parent().hasClass('active')) {

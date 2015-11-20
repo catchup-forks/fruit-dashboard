@@ -68,13 +68,13 @@ Route::group([
         'uses'   => 'GeneralWidgetController@getAddWidgetWithData'
     ]);
 
-    Route::get('{widgetID}/stats', [
+    Route::get('/stats/{widgetID}', [
         'before' => 'auth',
         'as'    => 'widget.singlestat',
         'uses'  => 'GeneralWidgetController@getSinglestat',
     ]);
 
-    Route::any('{widgetID}/pin-to-dashboard/{resolution}', [
+    Route::any('/pin-to-dashboard/{widgetID}{resolution}', [
         'before' => 'auth',
         'as'    => 'widget.pin-to-dashboard',
         'uses'  => 'GeneralWidgetController@anyPinToDashboard',
@@ -86,10 +86,10 @@ Route::group([
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ]);
 
-    Route::post('{widgetID}/save-layout/{layout}', [
+    Route::any('/save-layout/{widgetId}/{layout}', [
         'before' => 'auth',
         'as'    => 'widget.save-layout',
-        'uses'  => 'GeneralWidgetController@saveWidgetPosition',
+        'uses'  => 'GeneralWidgetController@saveLayout',
     ]);
 
     Route::post('get/descriptor/', [

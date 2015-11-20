@@ -59,16 +59,6 @@
       </div> <!-- /.col-md-6 -->
     </div> <!-- /.row -->
 
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-default panel-transparent">
-          <div class="panel-body text-center">
-            Not a member yet? <a href="{{ URL::route('signup') }}">Sign up</a>!
-          </div> <!-- /.panel-body -->
-        </div> <!-- /.panel -->
-      </div> <!-- /.col-md-6 -->
-    </div> <!-- /.row -->
-
   </div> <!-- /.container -->
 </div> <!-- /.vertical-center -->
 

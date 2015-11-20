@@ -44,11 +44,6 @@ class DashboardController extends BaseController
                 ->where('is_default', true)
                 ->first();
 
-            if (is_null($dashboard)) {
-                /* No default dashboard found, selecting first. */
-                $dashboard = $user->dashboards()->first();
-            }
-
             $dashboardId = $dashboard->id;
         } 
     

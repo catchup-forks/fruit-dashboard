@@ -34,7 +34,7 @@ var FDGridster{{ $dashboard['id'] }} = new FDGridster(gridsterOptions{{ $dashboa
 
 // Initialize FDGridster objects on DOM load
 $(document).ready(function() {
-  //FDGridster{{ $dashboard['id'] }}.init().build(widgetsOptions{{ $dashboard['id'] }});
+  FDGridster{{ $dashboard['id'] }}.init().build(widgetsOptions{{ $dashboard['id'] }});
 });
 
 // Fade in the current gridster
