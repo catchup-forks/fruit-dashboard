@@ -448,6 +448,7 @@ class GeneralWidgetController extends BaseController {
         if (count(Auth::user()->getPendingWidgetSharings()) == 0) {
             return Redirect::route('dashboard.dashboard');
         }
+
         /* Everything OK, return response with 200 status code */
         return Redirect::route('widget.add');
     }
@@ -535,6 +536,57 @@ class GeneralWidgetController extends BaseController {
     }
 
     /**
+     * addWidget
+     * Adding a widget and returning it
+     * --------------------------------------------------
+     * @param WidgetDescriptor $descriptor
+     * @param Dashboard $dashboard
+     * --------------------------------------------------
+     */
+    private function addWidget($descriptor, $dashboard) {
+        if (is_null($descriptor)) {
+            throw new DescriptorDoesNotExist;
+        }
+        if (is_null($dashboard)) {
+            throw new DescriptorDoesNotExist;
+        }
+
+        /* Create new widget instance */
+        $className = $descriptor->getClassName();
+
+        /* Looking for a connection */
+        if (in_array($descriptor->category, SiteConstants::getServices())) {
+            $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
+            if ( ! $connected) {
+                throw new ServiceException;
+            }
+        }
+
+        /* Create widget */
+        $widget = new $className(array('state' => 'active'));
+
+        /* Associate the widget to the dashboard */
+        $widget->dashboard()->associate($dashboard);
+
+        /* Finding position. */
+        $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
+
+        /* Associate descriptor and save */
+        $options = array();
+
+        $widget->save($options);
+
+        /* Track event | ADD WIDGET */
+        $tracker = new GlobalTracker();
+        $tracker->trackAll('lazy', array(
+            'en' => 'Add widget',
+            'el' => $className)
+        );
+
+        return $widget;
+    }
+
+    /**
      * ================================================== *
      *                   AJAX FUNCTIONS                   *
      * ================================================== *
@@ -593,7 +645,7 @@ class GeneralWidgetController extends BaseController {
      */
     public function getWidgetDescriptor() {
         /* Escaping invalid data. */
-        if (!Input::get('descriptorID')) {
+        if ( ! Input::get('descriptorID')) {
             return Response::json(array('error' => 'Descriptor not found'));
         }
 
@@ -611,6 +663,60 @@ class GeneralWidgetController extends BaseController {
             'name'        => $descriptor->name,
             'type'        => $descriptor->type,
         ));
+    }
+
+    /**
+     * getAjaxSetting
+     * --------------------------------------------------
+     * Returns the widget's settings in ajax.
+     * @param int $widgetId
+     * @param string $fieldName
+     * @param mixed $value
+     * --------------------------------------------------
+     */
+    public function getAjaxSetting($widgetId, $fieldName, $value) {
+        /* Selecing the widget */
+        try {
+            $widget = $this->getWidget($widgetId);
+        } catch (WidgetDoesNotExist $e) {
+            return Response::json(array('error' => $e));
+        }
+
+        try {
+            return Response::json($widget->$fieldName($value));
+        } catch (Exception $e) {
+            return Response::json( array('error' => $e->getMessage()));
+        }
+    }
+
+    /**
+     * saveLayout
+     * --------------------------------------------------
+     * Saves the specific layout.
+     * @param int $widgetId
+     * @param string $layout
+     * @return json 
+     * --------------------------------------------------
+     */
+    public function saveLayout($widgetId, $layout) {
+        /* Selecing the widget */
+        try {
+            $widget = $this->getWidget($widgetId);
+            if ( ! $widget instanceof HistogramWidget) {
+                /* Only applyies to Histogram widgets. */
+                throw new WidgetDoesNotExist('Widget type is not histogram.', 1);
+            }
+        } catch (WidgetDoesNotExist $e) {
+            return Response::json(array('error' => $e));
+        }
+
+        if ( ! array_key_exists($layout, $widget->type())) {
+            return Response::json(array('error' => 'Invalid layout'));
+        }
+
+        /* valid parameters, saving settings. */
+        $widget->saveSettings(array('type' => $layout));
+        return Response::json(array('success' => 'Layout saved'));
     }
 
     /**
@@ -784,57 +890,6 @@ class GeneralWidgetController extends BaseController {
         //Image::loadFile($htmlpath)->save($pngpath);
         //return $view;
         return Image::loadFile($htmlpath)->download('widget.png');
-    }
-
-    /**
-     * addWidget
-     * Adding a widget and returning it
-     * --------------------------------------------------
-     * @param WidgetDescriptor $descriptor
-     * @param Dashboard $dashboard
-     * --------------------------------------------------
-     */
-    private function addWidget($descriptor, $dashboard) {
-        if (is_null($descriptor)) {
-            throw new DescriptorDoesNotExist;
-        }
-        if (is_null($dashboard)) {
-            throw new DescriptorDoesNotExist;
-        }
-
-        /* Create new widget instance */
-        $className = $descriptor->getClassName();
-
-        /* Looking for a connection */
-        if (in_array($descriptor->category, SiteConstants::getServices())) {
-            $connected = Connection::where('user_id', Auth::user()->id)->where('service', $descriptor->category)->first();
-            if ( ! $connected) {
-                throw new ServiceException;
-            }
-        }
-
-        /* Create widget */
-        $widget = new $className(array('state' => 'active'));
-
-        /* Associate the widget to the dashboard */
-        $widget->dashboard()->associate($dashboard);
-
-        /* Finding position. */
-        $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
-
-        /* Associate descriptor and save */
-        $options = array();
-
-        $widget->save($options);
-
-        /* Track event | ADD WIDGET */
-        $tracker = new GlobalTracker();
-        $tracker->trackAll('lazy', array(
-            'en' => 'Add widget',
-            'el' => $className)
-        );
-
-        return $widget;
     }
 
 } /* GeneralWidgetController */

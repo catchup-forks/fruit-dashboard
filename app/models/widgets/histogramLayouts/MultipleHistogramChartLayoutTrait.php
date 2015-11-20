@@ -45,7 +45,7 @@ trait MultipleHistogramChartLayoutTrait
 
         return array(
             'isCombined'   => 'false',
-            'datasets'     => self::removeEmptyDatasets($dataSets),
+            'datasets'     => self::selectTopDatasets($dataSets),
             'labels'       => $datetimes,
             'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
@@ -78,14 +78,14 @@ trait MultipleHistogramChartLayoutTrait
     }
 
     /**
-     * removeEmptyDatasets
+     * selectTopDatasets
      * Return the datasets, removing the empty ones.
      * --------------------------------------------------
      * @param array $datasets
      * @return array
      * --------------------------------------------------
      */
-    private static function removeEmptyDatasets($datasets)
+    private static function selectTopDatasets($datasets)
     {
         $hasData = false;
         $cleanedDataSets = array();

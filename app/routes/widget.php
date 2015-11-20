@@ -86,6 +86,12 @@ Route::group([
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ]);
 
+    Route::post('{widgetID}/save-layout/{layout}', [
+        'before' => 'auth',
+        'as'    => 'widget.save-layout',
+        'uses'  => 'GeneralWidgetController@saveWidgetPosition',
+    ]);
+
     Route::post('get/descriptor/', [
         'before' => 'auth',
         'as'    => 'widget.get-descriptor',
