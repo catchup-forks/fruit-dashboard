@@ -15,7 +15,7 @@
     </p> <!-- /.lead -->
   </div> <!-- /.widget-inner -->
 @else
-    @include('widget.widget-general-multiple-histogram')
+    @include('widget.widget-general-histogram')
 @endif
 
 @section('widgetScripts')
