@@ -54,7 +54,7 @@ return array(
 	|
 	*/
 
-	'from' => $_ENV['DEFAULT_FROM'],
+	'from' => json_decode($_ENV['DEFAULT_FROM']),
 
 	/*
 	|--------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 @extends('meta.base-user-signout')
 
   @section('pageTitle')
-    Sign in
+    Reset password
   @stop
 
 @section('pageContent')
@@ -32,42 +32,27 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-heading">
             <h3 class="panel-title text-center">
-              Sign in to your account
+              Reset your password
             </h3>
           </div> <!-- /.panel-heading -->
           <div class="panel-body">
 
             <!-- Form -->
-            {{ Form::open(array('route' => 'auth.signin', 'id' => 'signin-form_id' )) }}
+            {{ Form::open(array('route' => 'auth.doReset')) }}
 
             <form autocomplete="off">
-              <!-- Chrome only fills the first two input fields. -->
-              <!-- By adding these two hidden ones Chrome autofill can be hidden. -->
-              <input style="display:none">
-              <input type="password" style="display:none">
-              <!-- End of Chrome autofill hack. -->
+              {{ Form::hidden('token', $token); }}
+              {{ Form::hidden('email', $email); }}
+              {{ Form::password('password', array('placeholder' => 'new password', 'class' => 'form-control form-group input-lg col-sm-12')) }}
 
-              {{ Form::text('email', Input::old('email'), array('autofocus' => true, 'placeholder' => 'email@provider.com', 'class' => 'form-control form-group input-lg col-sm-12', 'id' => 'email_id')) }}
+              {{ Form::password('password_confirmation', array('placeholder' => 'password confirmation', 'class' => 'form-control form-group input-lg col-sm-12')) }}
 
-              {{ Form::password('password', array('placeholder' => 'password', 'class' => 'form-control form-group input-lg col-sm-12 no-margin', 'id' => 'password_id')) }}
-              <div class="row no-margin">
-                <a href="{{ route('auth.remind') }}" class="pull-right">Forgot password</a>
-              </div>
-
-              {{ Form::submit('Sign in' , array(
-                'id' => 'id_submit',
-                'class' => 'btn btn-primary pull-right margin-top-sm')) }}
-
+              {{ Form::submit('Reset password' , array(
+                'class' => 'btn btn-primary pull-right')) }}
               {{ Form::close() }}
 
             </form>
             <!-- /Form -->
-
-            <a href="{{ route('signup-wizard.facebook-login') }}">
-              <button class="btn btn-primary margin-top-sm">
-                 <span class="fa fa-facebook"> | </span> Login with facebook
-              </button>
-            </a>
 
           </div> <!-- /.panel-body -->
         </div> <!-- /.panel -->

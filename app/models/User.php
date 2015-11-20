@@ -2,11 +2,16 @@
 
 use Illuminate\Auth\UserTrait;
 use Illuminate\Auth\UserInterface;
+use Illuminate\Auth\Reminders\RemindableInterface;
+use Illuminate\Auth\Reminders\RemindableTrait;
 
-class User extends Eloquent implements UserInterface
+class User extends Eloquent implements UserInterface, RemindableInterface
 {
     /* UserTrait implements the functions from UserInterface */
     use UserTrait;
+
+    /* RemindableTrait implements the functions from RemindableInterface */
+    use RemindableTrait;
 
     /* -- Fields -- */
     protected $guarded = array(

@@ -726,7 +726,7 @@ class GeneralWidgetController extends BaseController {
      * @param  (int)  ($widgetID) The ID of the widget
      * @return Json with status code
      * --------------------------------------------------
-     */
+    */
     public function ajaxHandler($widgetID) {
         /* Getting widget */
         try {

@@ -18,6 +18,26 @@ Route::group([
         'uses'   => 'AuthController@postSignin'
     ]);
 
+    Route::get('remind', [
+        'as'     => 'auth.remind',
+        'uses'   => 'RemindersController@getRemind'
+    ]);
+
+    Route::post('remind', [
+        'as'     => 'auth.doRemind',
+        'uses'   => 'RemindersController@postRemind'
+    ]);
+
+    Route::get('reset/{token}', [
+        'as'     => 'auth.reset',
+        'uses'   => 'RemindersController@getReset'
+    ]);
+
+    Route::post('reset', [
+        'as'     => 'auth.doReset',
+        'uses'   => 'RemindersController@postReset'
+    ]);
+
     Route::any('signout', [
         'as'     => 'auth.signout',
         'uses'   => 'AuthController@anySignout'

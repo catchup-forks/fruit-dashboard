@@ -227,7 +227,6 @@ class Dashboard extends Eloquent
         return View::make('dashboard.dashboard_dummy')
             ->with('dashboard', $dashboard);
     }
-
 }
 
 ?>
