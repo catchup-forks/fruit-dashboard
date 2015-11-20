@@ -1,6 +1,6 @@
 <div id="widget-layout-selector-{{ $widget['id'] }}" class="layout-chooser display-hovered">
   @foreach ($widget['possibleLayouts'] as $layout => $name)
-    <div class="element" data-layout="{{ $layout }}">
+    <div class="element @if ($layout==$widget['defaultLayout']) active @endif" data-layout="{{ $layout }}">
       <!-- FIXME FIX ICONS-->
       @if ($layout == SiteConstants::LAYOUT_SINGLE_LINE)
         <i class="fa fa-bar-chart fa-fw text-white drop-shadow"></i>

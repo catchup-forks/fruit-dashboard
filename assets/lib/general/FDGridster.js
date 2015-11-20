@@ -18,7 +18,7 @@ function FDGridster(gridsterOptions) {
   // Public functions
   this.init   = init;
   this.build  = build;
-  this.handleLock = handleLock;
+  // this.handleLock = handleLock;
 
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
@@ -49,9 +49,6 @@ function FDGridster(gridsterOptions) {
       widgets.push({'id': widgetsOptions[i].general.id, 'widget': widget});
     };
 
-    // Look for off-screen widgets on dashboard.
-    getOverflow(widgetsOptions);
-
     // return
     return this;
   }
@@ -76,9 +73,9 @@ function FDGridster(gridsterOptions) {
     gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
 
     // Handle lock based on the default options if this is the active gridster
-    if ($(options.namespace).parent().hasClass('active')) {
-      handleLock();
-    }
+    // if ($(options.namespace).parent().hasClass('active')) {
+    //   handleLock();
+    // }
 
     // Return
     return this;
@@ -129,21 +126,21 @@ function FDGridster(gridsterOptions) {
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function handleLock(sendAjax) {
-    // set sendAjax false by default
-    sendAjax = sendAjax || false;
+  // function handleLock(sendAjax) {
+  //   // set sendAjax false by default
+  //   sendAjax = sendAjax || false;
 
-    // Handle Lock icon
-    lockIcon(options.isLocked);
+  //   // Handle Lock icon
+  //   lockIcon(options.isLocked);
     
-    // Handle Gridster
-    lockGridster(options.isLocked);
+  //   // Handle Gridster
+  //   lockGridster(options.isLocked);
 
-    // Handle Ajax
-    if (sendAjax) {
-       lockAjax(options.isLocked);
-    }
-  }
+  //   // Handle Ajax
+  //   if (sendAjax) {
+  //      lockAjax(options.isLocked);
+  //   }
+  // }
 
   /**
    * @function lockIcon
@@ -153,38 +150,38 @@ function FDGridster(gridsterOptions) {
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function lockIcon(toState) {
-    // This is funny warlock... he-he-he
-    var lock = $(options.lockIconSelector);
+  // function lockIcon(toState) {
+  //   // This is funny warlock... he-he-he
+  //   var lock = $(options.lockIconSelector);
     
-    // Set the Dashboard ID
-    lock.attr('data-dashboard-id', options.id);
+  //   // Set the Dashboard ID
+  //   lock.attr('data-dashboard-id', options.id);
     
-    // Hide shown tooltip.
-    lock.tooltip('hide');
+  //   // Hide shown tooltip.
+  //   lock.tooltip('hide');
 
-    // Lock
-    if (toState) {
-      // Set the icon
-      lock.children('span').attr('class', 'fa fa-fw fa-lock fa-2x fa-inverse color-hovered');
-      // Set the tooltip
-      lock.attr('title', 'This dashboard is locked. Click to unlock.');
-      // Set the direction
-      lock.attr('data-lock-direction', 'unlock');
+  //   // Lock
+  //   if (toState) {
+  //     // Set the icon
+  //     lock.children('span').attr('class', 'fa fa-fw fa-lock fa-2x fa-inverse color-hovered');
+  //     // Set the tooltip
+  //     lock.attr('title', 'This dashboard is locked. Click to unlock.');
+  //     // Set the direction
+  //     lock.attr('data-lock-direction', 'unlock');
 
-    // Unlock
-    } else {
-      // Set the icon
-      lock.children('span').attr('class', 'fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered');
-      // Set the tooltip
-      lock.attr('title', 'This dashboard is unlocked. Click to lock.');
-      // Set the direction
-      lock.attr('data-lock-direction', 'lock');
-    };
+  //   // Unlock
+  //   } else {
+  //     // Set the icon
+  //     lock.children('span').attr('class', 'fa fa-fw fa-unlock-alt fa-2x fa-inverse color-hovered');
+  //     // Set the tooltip
+  //     lock.attr('title', 'This dashboard is unlocked. Click to lock.');
+  //     // Set the direction
+  //     lock.attr('data-lock-direction', 'lock');
+  //   };
 
-    // Reinitialize tooltip
-    lock.tooltip('fixTitle');  
-  }
+  //   // Reinitialize tooltip
+  //   lock.tooltip('fixTitle');  
+  // }
 
   /**
    * @function lockGridster
@@ -194,30 +191,30 @@ function FDGridster(gridsterOptions) {
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function lockGridster(toState) {
-    // Lock
-    if (toState) {
-      // Disable resize
-      gridster.disable_resize();
-      // Disable gridster movement
-      gridster.disable();
-      // Hide hoverable elements.
-      $(options.namespace + ' ' + options.widgetsSelector).each(function(){
-        $(this).removeClass('can-hover');
-      });
+  // function lockGridster(toState) {
+  //   // Lock
+  //   if (toState) {
+  //     // Disable resize
+  //     gridster.disable_resize();
+  //     // Disable gridster movement
+  //     gridster.disable();
+  //     // Hide hoverable elements.
+  //     $(options.namespace + ' ' + options.widgetsSelector).each(function(){
+  //       $(this).removeClass('can-hover');
+  //     });
 
-    // Unlock
-    } else {
-      // Enable resize
-      gridster.enable_resize();
-      // Enable gridster movement
-      gridster.enable();
-      // Show hoverable elements.
-      $(options.namespace + ' ' + options.widgetsSelector).each(function(){
-        $(this).addClass('can-hover');
-      });
-    }
-  }
+  //   // Unlock
+  //   } else {
+  //     // Enable resize
+  //     gridster.enable_resize();
+  //     // Enable gridster movement
+  //     gridster.enable();
+  //     // Show hoverable elements.
+  //     $(options.namespace + ' ' + options.widgetsSelector).each(function(){
+  //       $(this).addClass('can-hover');
+  //     });
+  //   }
+  // }
 
   /**
    * @function lockAjax
@@ -228,35 +225,35 @@ function FDGridster(gridsterOptions) {
    * @return {null} None
    * --------------------------------------------------------------------------
    */
-  function lockAjax(toState) {
-    // Initialize variables based on the direction
-    if (toState) {
-      var url = options.lockUrl;
-      var successmsg = "You successfully locked the dashboard."
-      var errormsg = "Something went wrong, we couldn't lock your dashboard."
-    } else {
-      var url = options.unlockUrl;
-      var successmsg = "You successfully unlocked the dashboard."
-      var errormsg = "Something went wrong, we couldn't unlock your dashboard."
-    };
+  // function lockAjax(toState) {
+  //   // Initialize variables based on the direction
+  //   if (toState) {
+  //     var url = options.lockUrl;
+  //     var successmsg = "You successfully locked the dashboard."
+  //     var errormsg = "Something went wrong, we couldn't lock your dashboard."
+  //   } else {
+  //     var url = options.unlockUrl;
+  //     var successmsg = "You successfully unlocked the dashboard."
+  //     var errormsg = "Something went wrong, we couldn't unlock your dashboard."
+  //   };
 
-    // Call ajax function
-    $.ajax({
-      type: "POST",
-      dataType: 'json',
-      url: url,
-          data: null,
-          success: function(data) {
-            easyGrowl('success', successmsg, 3000);
-          },
-          error: function() {
-            easyGrowl('error', errormsg, 3000);
-            // Revert the process
-            options.isLocked = !toState;
-            handleLock();
-          }
-      });
-  }
+  //   // Call ajax function
+  //   $.ajax({
+  //     type: "POST",
+  //     dataType: 'json',
+  //     url: url,
+  //         data: null,
+  //         success: function(data) {
+  //           easyGrowl('success', successmsg, 3000);
+  //         },
+  //         error: function() {
+  //           easyGrowl('error', errormsg, 3000);
+  //           // Revert the process
+  //           options.isLocked = !toState;
+  //           handleLock();
+  //         }
+  //     });
+  // }
 
   /**
    * @function getDefaultOptions
@@ -364,27 +361,27 @@ function FDGridster(gridsterOptions) {
    * @return this
    * --------------------------------------------------------------------------
    */
-  function getOverflow(widgetsOptions) {
-    // Initialize
-    var lowestRow = 0;
+  // function getOverflow(widgetsOptions) {
+  //   // Initialize
+  //   var lowestRow = 0;
 
-    // Get the lowest row
-    for (var i = widgetsOptions.length - 1; i >= 0; i--) {
-      var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey) - 1;
-      if (localRowMax > lowestRow) {
-        lowestRow = localRowMax;
-      }
-    };
+  //   // Get the lowest row
+  //   for (var i = widgetsOptions.length - 1; i >= 0; i--) {
+  //     var localRowMax = parseInt(widgetsOptions[i].general.row) + parseInt(widgetsOptions[i].general.sizey) - 1;
+  //     if (localRowMax > lowestRow) {
+  //       lowestRow = localRowMax;
+  //     }
+  //   };
 
-    // Send warning if there is an off screen widget
-    if (lowestRow > options.numberOfRows) {
-      var msg = "There is an off-screen widget on your dashboard: " + options.name + ".";
-      easyGrowl('warning', msg, 10000);
-    };
+  //   // Send warning if there is an off screen widget
+  //   if (lowestRow > options.numberOfRows) {
+  //     var msg = "There is an off-screen widget on your dashboard: " + options.name + ".";
+  //     easyGrowl('warning', msg, 10000);
+  //   };
 
-    // Return
-    return this;
-  } 
+  //   // Return
+  //   return this;
+  // } 
 
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
@@ -406,14 +403,14 @@ function FDGridster(gridsterOptions) {
    * Handles the click on the lock icon
    * --------------------------------------------------------------------------
    */
-  $(options.lockIconSelector).click(function() {
-    if($(this).attr("data-dashboard-id") == options.id) {
-      // Set isLocked
-      options.isLocked = $(this).attr("data-lock-direction") == 'lock' ? true : false;
-      // Handle lock process, and send ajax
-      handleLock(true);
-    }
-  });
+  // $(options.lockIconSelector).click(function() {
+  //   if($(this).attr("data-dashboard-id") == options.id) {
+  //     // Set isLocked
+  //     options.isLocked = $(this).attr("data-lock-direction") == 'lock' ? true : false;
+  //     // Handle lock process, and send ajax
+  //     handleLock(true);
+  //   }
+  // });
 
   /**
    * @event $(document).ready()
@@ -421,11 +418,11 @@ function FDGridster(gridsterOptions) {
    * Sets dashboard-lock icon ID to the currently active dashboard
    * --------------------------------------------------------------------------
    */
-  $(document).ready(function () {
-    if ($(options.namespace).parent().hasClass('active')) {
-      $(options.lockIconSelector).attr("data-dashboard-id", options.id);
-    };
-  });
+  // $(document).ready(function () {
+  //   if ($(options.namespace).parent().hasClass('active')) {
+  //     $(options.lockIconSelector).attr("data-dashboard-id", options.id);
+  //   };
+  // });
 
   /**
    * @event $('.carousel').on('slid.bs.carousel')
@@ -433,11 +430,11 @@ function FDGridster(gridsterOptions) {
    * Change the dashboard-lock icon ID on dashboard change
    * --------------------------------------------------------------------------
    */
-  $('.carousel').on('slid.bs.carousel', function () {
-    if ($(options.namespace).parent().hasClass('active')) {
-      $(options.lockIconSelector).attr("data-dashboard-id", options.id);
-      handleLock();
-    };
-  })
+  // $('.carousel').on('slid.bs.carousel', function () {
+  //   if ($(options.namespace).parent().hasClass('active')) {
+  //     $(options.lockIconSelector).attr("data-dashboard-id", options.id);
+  //     handleLock();
+  //   };
+  // })
 
 } // FDGridster
