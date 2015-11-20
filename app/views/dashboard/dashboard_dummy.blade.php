@@ -8,8 +8,6 @@
 @stop
 
 @section('pageContent')
-<div class="carousel-inner">
-  {{-- Here comes the dashboard content --}}
   <div id="gridster-{{ $dashboard['id'] }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard['id'] }}">
 
     {{-- Generate all the widgdets --}}
@@ -24,10 +22,6 @@
     </div> <!-- /.gridster-container -->
 
   </div> <!-- /.gridster -->
-
-</div> <!-- /.item -->
-</div>
-
 
 
 @if (GlobalTracker::isTrackingEnabled() and Input::get('tour'))
@@ -68,10 +62,6 @@
 
   <!-- Dashboard etc scripts -->
   <script type="text/javascript">
-    // Initialize Carousel
-    $('.carousel').carousel({
-      interval: false // stops the auto-cycle
-    })
 
     function showShareModal(widgetId) {
      $('#share-widget-modal').modal('show');

@@ -1,12 +1,3 @@
-<!-- if not on dashboard display the home button -->
-@if (!Request::is('dashboard'))
-    <div class="position-tl drop-shadow z-top">
-      <a href="{{ route('dashboard.dashboard') }}" alt="Dashboard" title="Dashboard">
-        <span class="fa fa-fw fa-home fa-2x fa-inverse color-hovered"></span>
-      </a>
-    </div>
-@endif
-
 <!-- dropdown menu icon -->
 <div class="btn-group position-tr z-top cursor-pointer">
 
@@ -112,14 +103,6 @@
         container: 'body'
       });
 
-      // Skips to the given dashboard (zero based index).
-      goToDashboard = function(index){
-          $('.carousel').carousel(index);
-          $.ajax({
-            type: 'get',
-            url: '{{ route('widget.accept.all') }}' 
-        });
-      };
     })
 </script>
 
