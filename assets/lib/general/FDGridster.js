@@ -70,7 +70,7 @@ function FDGridster(gridsterOptions) {
               );
 
     // Create gridster.js
-    //gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
+    gridster = $(options.namespace + ' ' + options.gridsterSelector).gridster(gridOptions).data('gridster');
 
     // Handle lock based on the default options if this is the active gridster
     // if ($(options.namespace).parent().hasClass('active')) {
@@ -267,7 +267,7 @@ function FDGridster(gridsterOptions) {
     defaultOptions = {
       namespace:                options.namespace,
       widget_selector:          options.widgetsSelector,
-      widget_base_dimensions:   [options.widget_width, options.widget_height],
+      widget_base_dimensions:   [options.widgetWidth, options.widgetHeight],
       widget_margins:           [options.widgetMargin, options.widgetMargin],
       min_cols:                 options.numberOfCols,
       min_rows:                 options.numberOfRows,

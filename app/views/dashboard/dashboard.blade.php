@@ -59,7 +59,7 @@
           </div> <!-- /.fill -->
 
           {{-- Here comes the dashboard content --}}
-          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboardId }}">
+          <div id="gridster-{{ $dashboardId }}" class="gridster grid-base active fill-height not-visible" data-dashboard-id="{{ $dashboardId }}">
 
             {{-- Generate all the widgdets --}}
             <div class="gridster-container">
