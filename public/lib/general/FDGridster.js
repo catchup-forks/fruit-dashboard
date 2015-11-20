@@ -1,4 +1,4 @@
-**
+/**
  * @class FDGridster
  * --------------------------------------------------------------------------
  * Class function for the gridster elements
