@@ -1,7 +1,34 @@
 <?php
 
-class ApiHistogramWidget extends MultipleHistogramWidget
+class ApiHistogramWidget extends HistogramWidget
 {
+    /* Histogram data representation. */
+    use MultipleHistogramWidgetTrait;
+
+    /* Histogram data representation. */
+    use MultipleHistogramChartLayoutTrait;
+    use HistogramTableLayoutTrait;
+
+    /* Data selector. */
+    protected static $dataTypes = array('webhook');
+
+    /* Choice functions */
+    public function type()
+    {
+        return array(
+            SiteConstants::LAYOUT_MULTI_LINE        => 'All your data ',
+            SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'Your data summarized, and diff.',
+            SiteConstants::LAYOUT_TABLE             => 'Table layout',
+        );
+    }
+
+    /* The layout function map. */
+    protected static $functionMap = array(
+        SiteConstants::LAYOUT_MULTI_LINE        => 'getChartData',
+        SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'getChartData',
+        SiteConstants::LAYOUT_TABLE             => 'getTableData',
+    );
+
     /* -- Settings -- */
     private static $APISettings = array(
         'url' => array(
@@ -10,16 +37,9 @@ class ApiHistogramWidget extends MultipleHistogramWidget
             'help_text'  => 'The widget data will be posted to this url.',
             'disabled'   => true
         ),
-        'name' => array(
-            'name'       => 'Name',
-            'type'       => 'TEXT',
-            'validation' => 'required',
-            'help_text'  => 'The name of the widget.',
-        ),
    );
 
     /* The settings to setup in the setup-wizard. */
-    private static $APISetupFields = array('name', 'url');
     private static $APICriteriaFields = array('url');
 
     /* -- Choice functions --
@@ -51,9 +71,13 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$APISettings);
-     }
+    public static function getSettingsFields()
+    {
+        return array(
+            'Chart settings' => static::$histogramSettings,
+            'API settings'   => static::$APISettings
+        );
+    }
 
     /**
      * getSetupFields
@@ -62,9 +86,9 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getSetupFields() {
-        return array_merge(parent::getSetupFields(), self::$APISetupFields);
-     }
+    public static function getSetupFields() {
+       return array_merge(parent::getSetupFields(), self::$APICriteriaFields);
+    }
 
     /**
      * getCriteriaFields
@@ -73,9 +97,56 @@ class ApiHistogramWidget extends MultipleHistogramWidget
      * @return array
      * --------------------------------------------------
      */
-     public static function getCriteriaFields() {
-        return array_merge(parent::getCriteriaFields(), self::$APICriteriaFields);
-     }
+    public static function getCriteriaFields() {
+       return array_merge(parent::getCriteriaFields(), self::$APICriteriaFields);
+    }
+
+    /**
+     * layoutSetup
+     * Set up the widget based on the layout.
+     * --------------------------------------------------
+     * @param layout
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function layoutSetup($layout)
+    {
+        switch ($layout) {
+        case SiteConstants::LAYOUT_MULTI_LINE:
+            $this->setDiff(true);
+            break;
+        case SiteConstants::LAYOUT_COMBINED_BAR_LINE:
+            $this->setDiff(false);
+            $this->setSingle(true);
+            break;
+        case SiteConstants::LAYOUT_TABLE:
+            $this->setDiff(false);
+            $this->setSingle(true);
+            break;
+        default: break;
+        }
+
+        $this->setActiveHistogram($this->buildHistogramEntries());
+    }
+
+    /**
+     * buildHistogramEntries
+     * Build the histogram data.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    private function buildHistogramEntries() 
+    {
+        /* Setting active histogram. */
+        if ($this->toSingle) {
+            /* Transforming to single. */
+            return $this->transformToSingle($this->data['sessions']['data']);
+        } else {
+            /* Multi layout. */
+            return $this->data['sessions'];
+        }
+    }
 
     /**
      * getWidgetApiUrl

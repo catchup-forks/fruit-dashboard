@@ -21,7 +21,7 @@ trait StripeWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return 'Stripe - ' . $this->getDescriptor()->name;
+        return 'Stripe - ';
     }
 }
 

@@ -18,7 +18,7 @@ class GoogleAnalyticsSessionsWidget extends HistogramWidget implements iServiceW
     /* Data attribute. */
     protected static $isCumulative = true;
 
-    /* -- Choice functions -- */
+    /* Choice functions */
     public function type()
     {
         return array(

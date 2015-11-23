@@ -167,7 +167,7 @@ class GoogleAnalyticsDataCollector
      * getMetrics
      * Retrieving specific metrics for the selected property.
      * --------------------------------------------------
-     * @param GoogleAnalyticsProfile $profileId
+     * @param int $profileId
      * @param string $start
      * @param string $end
      * @param array $metrics
@@ -209,6 +209,7 @@ class GoogleAnalyticsDataCollector
             }
             $metricsData = $this->buildSimpleMetricsData($metrics, array($rows));
         }
+
         return $metricsData;
     }
 

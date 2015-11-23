@@ -1,18 +1,33 @@
 <?php
 
-class WebhookHistogramWidget extends DataWidget
+class WebhookHistogramWidget extends HistogramWidget
 {
+    /* Histogram data representation. */
+    use MultipleHistogramWidgetTrait;
+
+    /* Histogram data representation. */
+    use MultipleHistogramChartLayoutTrait;
+    use HistogramTableLayoutTrait;
+
     /* Data selector. */
     protected static $dataTypes = array('webhook');
 
-    /* Data format definer. */
-    use NumericWidgetTrait;
+    /* Choice functions */
+    public function type()
+    {
+        return array(
+            SiteConstants::LAYOUT_MULTI_LINE        => 'All your data ',
+            SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'Your data summarized, and diff.',
+            SiteConstants::LAYOUT_TABLE             => 'Table layout',
+        );
+    }
 
-    /* Histogram layout data handler.  */
-    use HistogramWidgetTrait;
-
-    /* Chart data transformer. */
-    use MultipleChartWidgetTrait;
+    /* The layout function map. */
+    protected static $functionMap = array(
+        SiteConstants::LAYOUT_MULTI_LINE        => 'getChartData',
+        SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'getChartData',
+        SiteConstants::LAYOUT_TABLE             => 'getTableData',
+    );
 
     /* -- Settings -- */
     private static $webhookSettings = array(
@@ -34,7 +49,7 @@ class WebhookHistogramWidget extends DataWidget
     public static function getSettingsFields()
     {
         return array(
-            'Chart settings'   => static::$chartSettings,
+            'Chart settings'   => static::$histogramSettings,
             'Webhook settings' => static::$webhookSettings
         );
     }
@@ -62,34 +77,50 @@ class WebhookHistogramWidget extends DataWidget
      }
 
     /**
-     * getTemplateData
-     * Return all values used in the template.
+     * layoutSetup
+     * Set up the widget based on the layout.
      * --------------------------------------------------
+     * @param layout
      * @return array
      * --------------------------------------------------
     */
-    public function getTemplateData()
+    protected function layoutSetup($layout)
     {
-        return array_merge(parent::getTemplateData(), array(
-            'data'          => $this->buildChartData(),
-            'currentDiff'   => array(0),
-            'currentValue'  => array(0),
-            'format'        => $this->getFormat(),
-        ));
+        switch ($layout) {
+        case SiteConstants::LAYOUT_MULTI_LINE:
+            $this->setDiff(true);
+            break;
+        case SiteConstants::LAYOUT_COMBINED_BAR_LINE:
+            $this->setDiff(false);
+            $this->setSingle(true);
+            break;
+        case SiteConstants::LAYOUT_TABLE:
+            $this->setDiff(false);
+            $this->setSingle(true);
+            break;
+        default: break;
+        }
+
+        $this->setActiveHistogram($this->buildHistogramEntries());
     }
 
     /**
-     * buildChartData
-     * Build the chart data.
+     * buildHistogramEntries
+     * Build the histogram data.
      * --------------------------------------------------
      * @return array
      * --------------------------------------------------
     */
-    private function buildChartData()
+    private function buildHistogramEntries() 
     {
-        /* Building the histograms. */
-        $this->setActiveHistogram($this->transformToSingle($this->data['webhook']['data']));
-        return $this->getChartJSData('Y-m-d', true);
+        /* Setting active histogram. */
+        if ($this->toSingle) {
+            /* Transforming to single. */
+            return $this->transformToSingle($this->data['sessions']['data']);
+        } else {
+            /* Multi layout. */
+            return $this->data['sessions'];
+        }
     }
 }
 ?>

@@ -220,7 +220,7 @@ class DataDescriptorSeeder extends Seeder
                 'type'       => 'quote',
                 'category'   => 'personal',
         ));
-        Log::info('DataDescriptorSeeder | All WidgetDescriptors updated.');
+        Log::info('DataDescriptorSeeder | All DataDescriptors updated.');
     }
 
 } /* WidgetDescriptorSeeder */

@@ -9,7 +9,7 @@ abstract class HistogramWidget extends DataWidget
     use NumericWidgetTrait;
 
     /* -- Settings -- */
-    private static $histogramSettings = array(
+    protected static $histogramSettings = array(
         'resolution' => array(
             'name'       => 'Time-scale',
             'type'       => 'SCHOICE',

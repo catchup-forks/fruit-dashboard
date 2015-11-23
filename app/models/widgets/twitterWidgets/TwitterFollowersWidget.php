@@ -12,20 +12,28 @@ class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
     use TwitterWidgetTrait;
 
     /* Histogram data representation. */
+    use HistogramWidgetTrait;
     use HistogramTableLayoutTrait;
     use HistogramCountLayoutTrait;
     use HistogramChartLayoutTrait;
-    use HistogramWidgetTrait;
 
     /* -- Choice functions -- */
     public function type()
     {
         return array(
-            'chart'  => 'Chart',
-            'table'  => 'Table',
-            'count'  => 'Count'
+            SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'Chart',
+            SiteConstants::LAYOUT_TABLE             => 'Table',
+            SiteConstants::LAYOUT_COUNT             => 'Sum followers'
         );
     }
+
+    /* The layout function map. */
+    protected static $functionMap = array(
+        SiteConstants::LAYOUT_COMBINED_BAR_LINE => 'getChartData',
+        SiteConstants::LAYOUT_TABLE             => 'getTableData',
+        SiteConstants::LAYOUT_COUNT             => 'getCountData'
+    );
+
 
     /**
      * buildHistogramEntries
@@ -37,6 +45,43 @@ class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
     protected function buildHistogramEntries() 
     {
         return $this->data['followers'];
+    }
+
+    /**
+     * layoutSetup
+     * Set up the widget based on the layout.
+     * --------------------------------------------------
+     * @param layout
+     * @return array
+     * --------------------------------------------------
+    */
+    protected function layoutSetup($layout)
+    {
+        $this->setActiveHistogram($this->buildHistogramEntries());
+    }
+
+    /**
+     * getCountDescription
+     * --------------------------------------------------
+     * Return the description for the count widget.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getCountDescription()
+    {
+        return 'The number of likes on your twitter user ' . $this->getUser();
+    }
+
+    /**
+     * getCountFooter
+     * --------------------------------------------------
+     * Return the footer for the count widget.
+     * @return array
+     * --------------------------------------------------
+     */
+    protected function getCountFooter()
+    {
+        return $this->getUser();
     }
 }
 ?>

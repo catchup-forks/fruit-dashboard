@@ -43,6 +43,7 @@ trait GAHistogramBySourceDataCollectorTrait
 
         /* Saving initial data */
         $this->saveInitialData($data, $end->getTimestamp());
+
         /* Collecting diff data. */
         $params = $this->getOptionalParams();
         $params['dimensions'] .= ',ga:date';
@@ -54,7 +55,10 @@ trait GAHistogramBySourceDataCollectorTrait
             $start->toDateString(), $end->toDateString(),
             $metrics, $params, true
         );
+    
+        /* Saving diff data. */
         $this->saveDiffData($data, $start, $end);
+        
         return;
     }
     /**
@@ -67,7 +71,11 @@ trait GAHistogramBySourceDataCollectorTrait
      */
     private function saveInitialData($data, $timestamp) {
         /* Building initial entry. */
-        $entry = array_values($data)[0];
+        if (count($data) > 0) {
+            $entry = array_values($data)[0];
+        } else {
+            $entry = array();
+        }
         $entry['timestamp'] = $timestamp;
         $this->save(self::transformData(array($entry)));
     }

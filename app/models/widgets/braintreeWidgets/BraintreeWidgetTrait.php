@@ -22,7 +22,7 @@ trait BraintreeWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return 'Braintree - ' . $this->getDescriptor()->name;
+        return 'Braintree - ';
     }
 }
 

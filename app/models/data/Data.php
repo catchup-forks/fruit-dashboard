@@ -122,7 +122,12 @@ class Data extends Eloquent
     */
     public function getCriteria()
     {
-        return json_decode($this->criteria, 1);
+        $criteria = json_decode($this->criteria, 1);
+        if ( ! is_array($criteria)) {
+            return array();
+        }
+
+        return $criteria;
     }
 
     /**
@@ -242,7 +247,7 @@ class Data extends Eloquent
             $collector = $this->createCollector();
             return call_user_func_array(array($collector, $method), $args);
         }
-        throw new Exception('Method does not exist');
+        throw new Exception('Method ' . $method . ' does not exist');
     }
 
     /**
