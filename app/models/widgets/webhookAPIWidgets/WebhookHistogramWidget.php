@@ -12,6 +12,9 @@ class WebhookHistogramWidget extends HistogramWidget
     /* Data selector. */
     protected static $dataTypes = array('webhook');
 
+    /* Data attribute. */
+    protected static $isCumulative = true;
+
     /* Choice functions */
     public function type()
     {
@@ -116,10 +119,10 @@ class WebhookHistogramWidget extends HistogramWidget
         /* Setting active histogram. */
         if ($this->toSingle) {
             /* Transforming to single. */
-            return $this->transformToSingle($this->data['sessions']['data']);
+            return $this->transformToSingle($this->data['webhook']['data']);
         } else {
             /* Multi layout. */
-            return $this->data['sessions'];
+            return $this->data['webhook'];
         }
     }
 }

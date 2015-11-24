@@ -176,7 +176,9 @@ abstract class HistogramWidget extends DataWidget
      */
     protected function getResolution()
     {
-        return $this->getSettings()['resolution'];
+        $settings = $this->getSettings();
+
+        return array_key_exists('resolution', $settings) ? $settings['resolution'] : self::$histogramSettings['resolution']['default'];
     }
 
     /**
@@ -188,7 +190,9 @@ abstract class HistogramWidget extends DataWidget
      */
     protected function getLength()
     {
-        return $this->getSettings()['length'];
+        $settings = $this->getSettings();
+
+        return array_key_exists('length', $settings) ? $settings['length'] : self::$histogramSettings['length']['default'];
     }
 
     /**
@@ -201,9 +205,11 @@ abstract class HistogramWidget extends DataWidget
     */
     public function saveSettings(array $inputSettings, $commit=true) {
         $changedFields = parent::saveSettings($inputSettings, $commit);
+
         if ($this->getSettings()['name'] == '') {
             $this->saveSettings(array('name' => $this->getDescriptor()->name), $commit);
         }
+
         return $changedFields;
     }
 

@@ -12,20 +12,6 @@ class GoogleAnalyticsTopSourcesWidget extends TableWidget implements iServiceWid
     use MultipleHistogramWidgetTrait;
 
     /**
-     * getSettingsFields
-     * Returns the SettingsFields
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public static function getSettingsFields()
-    {
-        return array(
-            'Google Analytics Settings' => static::$profileSettings
-        );
-    }
-
-    /**
      * buildHeader
      * Building the table header.
      * --------------------------------------------------

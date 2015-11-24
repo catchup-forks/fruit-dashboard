@@ -69,7 +69,7 @@ class TwitterFollowersWidget extends HistogramWidget implements iServiceWidget
      */
     protected function getCountDescription()
     {
-        return 'The number of likes on your twitter user ' . $this->getUser();
+        return 'The number of followers on your twitter user ' . $this->getUser();
     }
 
     /**

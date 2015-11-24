@@ -127,15 +127,19 @@ abstract class TableWidget extends DataWidget
         }
     }
 
-   /**
-    * getSettingsFields
-    * Returns the SettingsFields
-    * --------------------------------------------------
-    * @return array
-    * --------------------------------------------------
-    */
-    public static function getSettingsFields() {
-       return array_merge(parent::getSettingsFields(), array(self::$tableSettings));
+    /**
+     * getSettingsFields
+     * Returns the SettingsFields
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public static function getSettingsFields()
+    {
+        return array_merge(
+            parent::getSettingsFields(),
+            array('Table settings' => self::$tableSettings)
+        );
     }
 
     /**

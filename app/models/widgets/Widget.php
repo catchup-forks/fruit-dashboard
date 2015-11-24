@@ -236,14 +236,37 @@ class Widget extends Eloquent
      * getSettings
      * Getting the settings from db, and transforming it to assoc.
      * --------------------------------------------------
+     * @param bool $addDefaults
      * @return array
      * --------------------------------------------------
     */
-    public function getSettings() {
+    public function getSettings($addDefaults=true) {
         $settings = json_decode($this->settings, 1);
+
         if ( ! is_array($settings)) {
-            return array();
+            /* No valid array in settings. */
+            $settings = array();
         }
+
+        if ($addDefaults) {
+            /* Adding non-set required/default attributes. */
+            foreach (static::getFlatSettingsFields() as $name=>$setting) {
+                if (array_key_exists($name, $settings)) {
+                    /* Setting already set, nothing to do here. */
+                    continue;
+                }
+                if (array_key_exists('default', $setting)) {
+                    /* Setting default value if exists. */
+                    $settings[$name] = $setting['default'];
+
+                } else if (array_key_exists('validation', $setting) &&
+                    strpos($setting['validation'], 'required') !== false) {
+                    /* Trying empty value on required. */
+                    $settings[$name] = '';
+                }
+            }
+        }
+
         return $settings;
     }
 
@@ -480,7 +503,7 @@ class Widget extends Eloquent
     */
     public function saveSettings(array $inputSettings, $commit=true) {
         $settings = array();
-        $oldSettings = $this->getSettings();
+        $oldSettings = $this->getSettings(false);
         $settingsMeta = $this->getFlatSettingsFields();
 
         // Iterating through the positions.

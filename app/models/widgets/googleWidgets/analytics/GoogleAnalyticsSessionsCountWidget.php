@@ -3,7 +3,7 @@
 class GoogleAnalyticsSessionsCountWidget extends Widget implements iServiceWidget
 {
     use GoogleAnalyticsWidgetTrait;
-    protected static $histogramDescriptor = 'google_analytics_sessions';
+    public static $histogramDescriptor = 'google_analytics_sessions';
 
     /**
      * getTemplateData

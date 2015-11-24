@@ -40,7 +40,6 @@ trait HistogramChartLayoutTrait
         /* Data init. */
         $datetimes = array();
         $dataSets = $this->initializeDataSets();
-        Log::info($dataSets);
 
         /* Data transform, to chartJS ready values. */
         foreach ($this->buildHistogram() as $entry) {

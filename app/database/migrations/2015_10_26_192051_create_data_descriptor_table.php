@@ -23,11 +23,13 @@ class CreateDataDescriptorTable extends Migration
         /* Facebook */
         'facebook_engaged_users' => array(
             'category' => 'facebook',
-            'type'     => 'engaged_users'
+            'type'     => 'engaged_users',
+            'reinit'   => true
         ),
         'facebook_likes' => array(
             'category' => 'facebook',
-            'type'     => 'likes'
+            'type'     => 'likes',
+            'reinit'   => true
         ),
         'facebook_page_impressions' => array(
             'category' => 'facebook',
@@ -60,17 +62,17 @@ class CreateDataDescriptorTable extends Migration
         'google_analytics_goal_completion' => array(
             'category' => 'google_analytics',
             'type'     => 'goal_completion',
-            'reinit'   => true,
+            'reinit'   => true
         ),
         'google_analytics_sessions' => array(
             'category' => 'google_analytics',
             'type'     => 'sessions',
-            'reinit'   => true,
+            'reinit'   => true
         ),
         'google_analytics_users' => array(
             'category' => 'google_analytics',
             'type'     => 'new_users',
-            'reinit'   => true,
+            'reinit'   => true
         ),
 
         /* Personal */
@@ -216,10 +218,8 @@ class CreateDataDescriptorTable extends Migration
     {
         /* Looking for the data in the matching table. */
         if ( ! array_key_exists($descriptorType, self::$matchingTable)) {
-            throw new WidgetException('Warning! No matching record found for data type ' . $descriptorType . '. Data is being deleted!');
+            throw new WidgetException('No matching record found for data type ' . $descriptorType . '. Data is being deleted!');
         }
-        
-
         $descriptorMeta = self::$matchingTable[$descriptorType];
         
         /* Finding the new data descriptor. */
@@ -240,7 +240,7 @@ class CreateDataDescriptorTable extends Migration
         if (isset($descriptorMeta['reinit']) && $descriptorMeta['reinit'] == true) {
             Log::info('Requested reinitializtion of data #' . $dataId . ' (' . $descriptorType . ')');
             try {
-                //Data::find($dataId)->initialize();
+                Data::find($dataId)->initialize();
             } catch (ServiceException $e) {
                 Log::error($e->getMessage());
             }

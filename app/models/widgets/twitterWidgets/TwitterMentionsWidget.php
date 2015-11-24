@@ -51,7 +51,9 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
      * --------------------------------------------------
      */
     public static function getSettingsFields() {
-        return array_merge(parent::getSettingsFields(), self::$rangeSettings);
+        return array(
+            'Range settings' => self::$rangeSettings,
+        );
     }
 
     /**

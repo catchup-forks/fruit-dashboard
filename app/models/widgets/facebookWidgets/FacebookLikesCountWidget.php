@@ -3,7 +3,7 @@
 class FacebookLikesCountWidget extends Widget implements iServiceWidget
 {
     use FacebookWidgetTrait;
-    protected static $histogramDescriptor = 'facebook_likes';
+    public static $histogramDescriptor = 'facebook_likes';
 
     /**
      * getTemplateData

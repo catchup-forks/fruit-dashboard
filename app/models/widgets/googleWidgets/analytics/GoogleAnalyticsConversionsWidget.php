@@ -15,7 +15,7 @@ class GoogleAnalyticsConversionsWidget extends TableWidget implements iServiceWi
     use MultipleHistogramWidgetTrait;
 
     /**
-     * buildTable
+     * buildHeader
      * Building the table header.
      * --------------------------------------------------
      * @return null 

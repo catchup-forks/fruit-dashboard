@@ -17,7 +17,19 @@ class HistogramRefactorTableRename extends Migration
 	 */
 	public function up()
     {
+        /* Cleaning up those goddamn WTF phantom dashboard widgets. */
+        foreach (DB::table('widgets')->get(array('id', 'dashboard_id')) as $widget) {
+            if (is_null(Dashboard::find($widget->dashboard_id))) {
+                DB::table('widgets')->where('id', $widget->id)->delete();
+            }
+        }
+
         foreach (Widget::all() as $widget) {
+
+            if (is_null($widget->dashboard)) {
+                $widget->delete();
+                continue;
+            }
 
             if ( ! $widget->hasValidCriteria()) {
                 continue;
@@ -29,6 +41,7 @@ class HistogramRefactorTableRename extends Migration
 
             /* Transforming countwidgets to histogram */
             if (in_array($widget->getDescriptor()->type, self::$countTypes)) {
+                Log::info("Transforming count widget #" . $widget->id . " to histogram.");
                 $settings = $widget->getSettings();
                 $newDescriptor = WidgetDescriptor::where('type', $widget::$histogramDescriptor)
                     ->first();
@@ -46,13 +59,18 @@ class HistogramRefactorTableRename extends Migration
 
                 /* Removing unnecessary attributes, */
                 unset($settings['period']);
-                unset($settings['resolution']);
+                unset($settings['multiplier']);
 
                 /* Commit changes. */
                 $histogramWidget = Widget::find($widget->id);
                 $histogramWidget->saveSettings(array_merge($newSettings, $settings));
 
             }
+        }
+
+        /* Deleting the count descriptors. */
+        foreach (self::$countTypes as $type) {
+            WidgetDescriptor::where('type', $type)->delete();
         }
 	}
 

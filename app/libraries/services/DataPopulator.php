@@ -35,11 +35,12 @@ class DataPopulator
      */
     public function fire($job, $data) {
         /* Init */
-        Log::info("Starting data collection at " . Carbon::now()->toDateTimeString());
         $time = microtime(true);
         $this->user     = User::find($data['user_id']);
         $this->criteria = $data['criteria'];
         $this->service  = $data['service'];
+
+        Log::info("Starting " . $this->service . " data collection at " . Carbon::now()->toDateTimeString());
 
         /* Getting data objects. */
         $this->dataObjects = $this->getDataObjects();
