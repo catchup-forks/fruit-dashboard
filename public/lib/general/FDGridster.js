@@ -14,6 +14,9 @@ function FDGridster(gridsterOptions) {
   var gridster = null;
   // Widgets related
   var widgets  = [];
+  
+  // Debug
+  var debug = true;
 
   // Public functions
   this.init   = init;
@@ -395,6 +398,22 @@ function FDGridster(gridsterOptions) {
    */
   $(".widget-delete").click(function(e) {
     deleteWidget($(this).attr("data-id"));
+  });
+
+  /**
+   * @event $(".granularity-button").click
+   * --------------------------------------------------------------------------
+   * Handles the granularity selection click event
+   * --------------------------------------------------------------------------
+   */
+  $(".granularity-button").click(function(e) {
+    if (debug) { console.log("[I] Initiated granularity change event | set all to: " + $(this).data('granularity')); };
+    // Remove the active class, if any.
+    $(".granularity-selector > a.active").removeClass('active');
+    // Add the active class for the clicked element.
+    $(this).addClass("active");
+    // Change the granularity here
+    console.log($(this).data('granularity'));
   });
 
   /**

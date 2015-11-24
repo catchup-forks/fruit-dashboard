@@ -8,23 +8,28 @@
   -moz-box-shadow: inset 2px 2px 2px rgba(0,0,0,0.5);
   -webkit-box-shadow: inset 2px 2px 2px rgba(0,0,0,0.5);
   box-shadow: inset 2px 2px 2px rgba(0,0,0,0.5);
-  inset: -2px -2px 2px rgba(255,255,255,1); /*top internal highlight*/
+  inset: -2px -2px 2px rgba(255,255,255,1);
 }
 
 .menu-group {
   .has-padding;
 }
 
-.menu-item {
+.menu-item-design() {
   color: @color-1;
-  position: relative;
-  display: block;
   border: 1px solid @color-2;
   border: 1px solid fade(@color-2, @alpha);
+  text-decoration: none;
+}
+
+.menu-item {
+  
+  position: relative;
+  display: block;
   .has-padding(@padding, 2);
   margin-bottom: -1px;
 
-  text-decoration: none;
+  .menu-item-design;
 
   &:first-child {
     .border-top-radius(@menu-item-border-radius);
@@ -50,6 +55,12 @@
       background: @color-2;
       background: fade(@color-2, @alpha);
     }
+
+  .badge {
+    float: right;
+    margin-right: 1px;
+    background-color: @color-primary;
+  }
 }
 
 .menu-subitem {
@@ -63,6 +74,49 @@
     content: '\21b3';
   }
 }
+
+.granularity-menu {
+  position: fixed;
+  width: @menu-width;
+  bottom: @margin;
+  text-align: center;
+  font-size: 90%;
+  color: @color-1;
+}
+
+.granularity-selector {
+  display: inline;
+}
+
+.granularity-button {
+  .has-padding;
+  .menu-item-design;
+  &:first-child {
+    margin-left: -@padding;
+    .border-left-radius(@menu-item-border-radius);
+  }
+  &:last-child {
+    .border-right-radius(@menu-item-border-radius);
+  }
+  margin-right: -1px;
+  &:hover,
+  &:focus {
+    color: @color-1;
+    background: @color-2;
+    background: fade(@color-2, @alpha);
+    text-decoration: none;
+  }
+
+  &.active,
+    &.active:hover,
+    &.active:focus {
+      z-index: 2;
+      color: @color-1;
+      background: @color-2;
+      background: fade(@color-2, @alpha);
+    }
+}
+
 
 .fill {
   width: 100%;

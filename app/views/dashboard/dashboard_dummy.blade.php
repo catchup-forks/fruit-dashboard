@@ -12,32 +12,56 @@
   <div class="menu">
     <div class="menu-group">
 
-      {{-- FOR EACH DASHBOARD || IF ACTIVE --> ADD CLASS ACTIVE --}}
-      <a href="#" class="menu-item">
-        Menu text
-      </a> <!-- /.menu-item -->
+      {{-- FOR EACH DASHBOARD && IF ACTIVE --> ADD CLASS ACTIVE --}}
+        <a href="#" class="menu-item">
+          Menu text
+          {{-- IF NOTIFICATION (for new shared widget) --}}
+            <span class="badge" data-toggle="tooltip" data-placement="right" title="New widgets have been shared with you">
+              <i class="fa fa-lightbulb-o"></i>
+            </span>
+          {{-- ENDIF --}}
+          {{-- IF ACTIVE --> ADD WIDGETS AS SUBMENU ITEMS --}}
+            {{-- FOREACH WIDGET --}}
+              <a href="#" class="menu-item menu-subitem">
+                submenu text  
+              </a> <!-- /.menu-subitem -->
+            {{-- ENDFOREACH --}}
+          {{-- ENDIF --}}
+        </a> <!-- /.menu-item -->
       {{-- ENDFOREACH --}}
-        
-        <a href="#" class="menu-item menu-subitem">
-          submenu text  
-        </a> <!-- /.menu-subitem -->
-        <a href="#" class="menu-item menu-subitem">
-          another one with a rather long generated name 
-        </a> <!-- /.menu-subitem -->
-
-      {{-- FOR MOCKUP --> DELETE --}}
-      <a href="#" class="menu-item">
-        Middle one
-      </a> <!-- /.menu-item -->
-      <a href="#" class="menu-item active">
-        Active one
-      </a> <!-- /.menu-item -->
-      <a href="#" class="menu-item">
-        Other menu text
-      </a> <!-- /.menu-item -->
-      {{-- ENDFOR MOCKUP --}}
 
     </div> <!-- /.menu-group -->
+
+    <div class="granularity-menu">
+      <p>Set your velocity:</p>
+
+      <div class="granularity-selector">
+
+        {{-- FOR EACH GRANULARITY && IF ACTIVE --> ADD CLASS ACTIVE --}}
+          {{-- <a href="#" class="granularity-button" data-granularity="[[GRANULARITY]]">
+            granularity
+          </a> --}}
+        {{-- ENDFOREACH --}}
+
+        {{-- FOR MOCKUP --> DELETE --}}
+        <a href="#" class="granularity-button active" data-granularity="daily">
+          daily
+        </a>
+        <a href="#" class="granularity-button" data-granularity="weekly">
+          weekly
+        </a>
+        <a href="#" class="granularity-button" data-granularity="monthly">
+          monthly
+        </a>
+        <a href="#" class="granularity-button" data-granularity="yearly">
+          yearly
+        </a>
+        {{-- END FOR MOCKUP --}}
+
+      </div> <!-- /.granularity-selector -->
+
+    </div> <!-- /.granularity-menu -->
+  
   </div> <!-- /.menu -->
   
   <div id="gridster-{{ $dashboard['id'] }}" class="gridster grid-base fill-height not-visible" data-dashboard-id="{{ $dashboard['id'] }}">
