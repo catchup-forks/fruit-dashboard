@@ -31,6 +31,7 @@ class SiteConstants {
         ),
         'social-connections'    => 'social-connections',
         'financial-connections' => 'financial-connections',
+        'slack-integration'     => 'slack-integration',
         'install-extension'     => 'install-extension',
         'finished'              => 'finished',
     );

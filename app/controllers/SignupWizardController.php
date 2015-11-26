@@ -361,6 +361,26 @@ class SignupWizardController extends BaseController
     }
 
     /**
+     * STEP | getSlackIntegration
+     * --------------------------------------------------
+     * @return Handles the extra process for getSlackIntegration
+     * --------------------------------------------------
+     */
+    public function getSlackIntegration() {
+        return array();
+    }
+
+    /**
+     * STEP | postSlackIntegration
+     * --------------------------------------------------
+     * @return Handles the extra process for postSlackIntegration
+     * --------------------------------------------------
+     */
+    public function postSlackIntegration() {
+        return array();
+    }
+
+    /**
      * STEP | getSocialConnections
      * --------------------------------------------------
      * @return Handles the extra process for getSocialConnections
