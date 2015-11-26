@@ -54,35 +54,35 @@ Route::group([
     ]);
 
     /* -- Google -- */
-    Route::any('google_analytics/connect', [
+    Route::any('ga/connect', [
         'before' => 'auth',
         'as'     => 'service.google_analytics.connect',
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsConnect'
     ]);
-    Route::get('google_analytics/get-goals/{profileId}', [
+    Route::get('ga/get-goals/{profileId}', [
         'before' => 'auth',
         'as'     => 'service.google_analytics.get-goals',
         'uses'   => 'ServiceConnectionController@getGoogleAnalyticsGoals'
     ]);
-    Route::any('google_analytics/disconnect', [
+    Route::any('ga/disconnect', [
         'before' => 'auth',
         'as'     => 'service.google_analytics.disconnect',
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsDisconnect'
     ]);
 
-    Route::any('google_analytics/refresh-properties', [
+    Route::any('ga/refresh-properties', [
         'before' => 'auth',
         'as'     => 'service.google_analytics.refresh-properties',
         'uses'   => 'ServiceConnectionController@anyGoogleAnalyticsRefreshProperties'
     ]);
 
-    Route::get('google_analytics/select-properties', array(
+    Route::get('ga/select-properties', array(
         'before' => 'auth',
         'as'     => 'service.google_analytics.select-properties',
         'uses'   => 'ServiceConnectionController@getSelectGoogleAnalyticsProperties'
     ));
 
-    Route::post('google_analytics/select-properties', array(
+    Route::post('ga/select-properties', array(
         'before' => 'auth',
         'as'     => 'service.google_analytics.select-properties',
         'uses'   => 'ServiceConnectionController@postSelectGoogleAnalyticsProperties'
