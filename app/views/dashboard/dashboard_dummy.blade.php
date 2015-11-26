@@ -13,22 +13,25 @@
     <div class="menu-group">
 
       {{-- FOR EACH DASHBOARD && IF ACTIVE --> ADD CLASS ACTIVE --}}
-        <a href="#" class="menu-item">
-          Menu text
+      @foreach ($dashboardList as $iDashboard)
+        <a href="{{ route('dashboard.dashboard', $iDashboard['id']) }}" class="menu-item@if ($iDashboard['active']) active@endif">
+          {{ $dashboard['name'] }}
+
+
           {{-- IF NOTIFICATION (for new shared widget) --}}
             <span class="badge" data-toggle="tooltip" data-placement="right" title="New widgets have been shared with you">
               <i class="fa fa-lightbulb-o"></i>
             </span>
           {{-- ENDIF --}}
-          {{-- IF ACTIVE --> ADD WIDGETS AS SUBMENU ITEMS --}}
-            {{-- FOREACH WIDGET --}}
+          @if ($iDashboard['active'])
+            @foreach ($dashboard['widgets'] as $widget)
               <a href="#" class="menu-item menu-subitem">
-                submenu text  
+              WIDGET 
               </a> <!-- /.menu-subitem -->
-            {{-- ENDFOREACH --}}
-          {{-- ENDIF --}}
-        </a> <!-- /.menu-item -->
-      {{-- ENDFOREACH --}}
+            @endforeach
+          @endif
+      </a> 
+      @endforeach
 
     </div> <!-- /.menu-group -->
 

@@ -224,8 +224,19 @@ class Dashboard extends Eloquent
             ));
         }
 
+        /* Getting a list of the id, names of dashboards. */
+        $dashboards = array();
+        foreach ($this->user->dashboards as $iDashboard) {
+            array_push($dashboards, array(
+                'id'     => $iDashboard->id,
+                'name'   => $iDashboard->name,
+                'active' => $iDashboard->id == $dashboard['id']
+            ));
+        }
+
         return View::make('dashboard.dashboard_dummy')
-            ->with('dashboard', $dashboard);
+            ->with('dashboard', $dashboard)
+            ->with('dashboardList', $dashboards);
     }
 }
 

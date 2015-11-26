@@ -86,7 +86,7 @@ class DashboardController extends BaseController
             /* Error occured, trying to find the widget. */
             $dashboard->turnOffBrokenWidgets();
             /* Recreating view. */
-            $renderedView= $dashboard->createView()->render();
+            $renderedView = $dashboard->createView()->render();
         }
 
         /* Saving the cache, and returning the view. */
