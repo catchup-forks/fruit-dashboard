@@ -75,6 +75,14 @@ class SiteConstants {
     const LAYOUT_MULTI_LINE        = 'multi-line';
     const LAYOUT_SINGLE_LINE       = 'single-line';
 
+    /* Velocities. */
+    private static $velocities = array(
+        'daily'  => 'days',
+        'weekly' => 'weeks',
+        'monthy' => 'months',
+        'yearly' => 'years'
+    );
+
     /* Auto dashboards */
     private static $autoDashboards = array(
         'Big Picture' => array(
@@ -639,6 +647,17 @@ class SiteConstants {
      */
     public static function getDashboardCacheMinutes() {
         return self::$dashboardCacheMinutes;
+    }
+
+    /**
+     * getVelocities:
+     * --------------------------------------------------
+     * Return the velocities for the site.
+     * @return (array) ($velocities) 
+     * --------------------------------------------------
+     */
+    public static function getVelocities() {
+        return self::$velocities;
     }
 
 } /* SiteConstants */

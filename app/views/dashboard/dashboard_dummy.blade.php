@@ -21,6 +21,7 @@
               <i class="fa fa-lightbulb-o"></i>
             </span> --}}
           {{-- ENDIF --}}
+
           @if ($iDashboard['active'])
             @foreach ($dashboard['widgets'] as $widget)
               @if (array_key_exists('statUrl', $widget['meta']['urls']))
@@ -40,26 +41,11 @@
 
       <div class="granularity-selector">
 
-        {{-- FOR EACH GRANULARITY && IF ACTIVE --> ADD CLASS ACTIVE --}}
-          {{-- <a href="#" class="granularity-button" data-granularity="[[GRANULARITY]]">
-            granularity
-          </a> --}}
-        {{-- ENDFOREACH --}}
-
-        {{-- FOR MOCKUP --> DELETE --}}
-        <a href="#" class="granularity-button active" data-granularity="daily">
-          daily
-        </a>
-        <a href="#" class="granularity-button" data-granularity="weekly">
-          weekly
-        </a>
-        <a href="#" class="granularity-button" data-granularity="monthly">
-          monthly
-        </a>
-        <a href="#" class="granularity-button" data-granularity="yearly">
-          yearly
-        </a>
-        {{-- END FOR MOCKUP --}}
+        @foreach (SiteConstants::getVelocities() as $velocityName => $velocityId)
+          <a href="#" class="granularity-button @if($dashboard['velocity'] == $velocityId)active @endif" data-velocity="{{ $velocityId }}">
+            {{ $velocityName }}
+          </a> 
+        @endforeach
 
       </div> <!-- /.granularity-selector -->
 

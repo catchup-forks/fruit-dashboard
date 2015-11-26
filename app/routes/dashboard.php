@@ -45,6 +45,12 @@ Route::group([
         'uses'   => 'DashboardController@anyUnlockDashboard'
     ]);
 
+    Route::post('set-velocity/{dashboardId}', [
+        'before' => 'auth',
+        'as'     => 'dashboard.set-velocity',
+        'uses'   => 'DashboardController@postSetVelocity'
+    ]);
+
     Route::any('makedefault/{dashboardId}', [
         'before' => 'auth',
         'as'     => 'dashboard.makedefault',

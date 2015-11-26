@@ -41,12 +41,7 @@ abstract class HistogramWidget extends DataWidget
     /* -- Choice functions -- */
     public function resolution()
     {
-        return array(
-            'days'   => 'Daily',
-            'weeks'  => 'Weekly',
-            'months' => 'Monthly',
-            'years'  => 'Yearly'
-        );
+        return SiteConstants::getVelocities();
     }
 
     /**
