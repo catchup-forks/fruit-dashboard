@@ -12,25 +12,24 @@
   <div class="menu">
     <div class="menu-group">
 
-      {{-- FOR EACH DASHBOARD && IF ACTIVE --> ADD CLASS ACTIVE --}}
       @foreach ($dashboardList as $iDashboard)
-        <a href="{{ route('dashboard.dashboard', $iDashboard['id']) }}" class="menu-item@if ($iDashboard['active']) active@endif">
-          {{ $dashboard['name'] }}
-
+        <a href="{{ route('dashboard.dashboard', $iDashboard['id']) }}" class="menu-item @if ($iDashboard['active']) active @endif">
+          {{ $iDashboard['name'] }}
 
           {{-- IF NOTIFICATION (for new shared widget) --}}
-            <span class="badge" data-toggle="tooltip" data-placement="right" title="New widgets have been shared with you">
+            {{-- <span class="badge" data-toggle="tooltip" data-placement="right" title="New widgets have been shared with you">
               <i class="fa fa-lightbulb-o"></i>
-            </span>
+            </span> --}}
           {{-- ENDIF --}}
           @if ($iDashboard['active'])
             @foreach ($dashboard['widgets'] as $widget)
               <a href="#" class="menu-item menu-subitem">
+              Link to single stat page
               {{ $widget['meta']['general']['name']; }} 
               </a> <!-- /.menu-subitem -->
             @endforeach
           @endif
-      </a> 
+      </a> <!-- /.menu-item -->
       @endforeach
 
     </div> <!-- /.menu-group -->
