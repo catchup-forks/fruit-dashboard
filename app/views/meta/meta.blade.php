@@ -26,34 +26,22 @@
       <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,400italic,700,800' rel='stylesheet' type='text/css'>
       <!-- /Fonts -->
 
-      <!-- Bootstrap CSS -->
-      {{ HTML::style('css/bootstrap.min.css') }}
-      <!-- /Bootstrap CSS-->
-
-      <!-- Font Awesome CSS -->
-      {{ HTML::style('css/font-awesome.min.css') }}
-      <!-- /FontAwesome CSS-->
-
-      <!-- Gridster CSS -->
-      {{ HTML::style('css/jquery.gridster.min.css') }}
-      <!-- /Gridster CSS-->
-
-      <!-- Growl CSS -->
-      {{ HTML::style('css/jquery.growl.css') }}
-      <!-- /Growl CSS-->
-
-      <!-- Hopscotch CSS -->
-      {{ HTML::style('css/hopscotch.min.css') }}
-      <!-- /Hopscotch CSS-->
+      <!-- General CSS -->
+      {{ Minify::stylesheet(array(
+            '/css/bootstrap.min.css', 
+            '/css/font-awesome.min.css',
+            '/css/jquery.gridster.min.css',
+            '/css/jquery.growl.css',
+            '/css/hopscotch.min.css',
+            '/css/custom.css'
+         )) 
+      }}      
+      <!-- /General CSS -->
 
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <![endif]-->
-
-      <!-- Custom styles -->
-      {{ HTML::style('css/custom.css') }}
-      <!-- /Custom styles -->
 
       <!-- Page specific stylesheet -->
       @section('pageStylesheet')
@@ -68,20 +56,26 @@
   @show
 
   @section('scripts')
-    <!-- Base scripts -->
-    {{ HTML::script('js/jquery.min.js'); }}
-    {{ HTML::script('js/bootstrap.min.js'); }}
-    {{ HTML::script('js/jquery.gridster.min.js'); }}
-    {{ HTML::script('js/underscore-min.js'); }}
-    {{ HTML::script('js/jquery.ba-resize.min.js'); }}
-    {{ HTML::script('js/jquery.fittext-CUSTOM.js'); }}
-    {{ HTML::script('js/jquery.growl.js'); }}
-    {{ HTML::script('js/moment.min.js'); }}
-    {{ HTML::script('js/Chart2.js'); }}
-    {{ HTML::script('js/jstz.min.js') }}
-    {{ HTML::script('js/hopscotch.min.js') }}
-    {{ HTML::script('js/bootbox.min.js') }}
-    <!-- /Base scripts -->
+    <!-- General JS -->
+    {{ Minify::javascript(array(
+          '/js/jquery.min.js',
+          '/js/jquery.fittext-CUSTOM.js',
+          '/js/bootstrap.min.js',
+          '/js/jquery.gridster.min.js',
+          '/js/underscore-min.js',
+       )) 
+    }}      
+    {{ Minify::javascript(array(
+          '/js/jquery.ba-resize.min.js',
+          '/js/jquery.growl.js',
+          '/js/moment.min.js',
+          '/js/Chart2.js',
+          '/js/jstz.min.js',
+          '/js/hopscotch.min.js',
+          '/js/bootbox.min.js'
+       )) 
+    }}      
+    <!-- /General JS -->
 
     <!-- Page specific modals -->
     @section('pageModals')
