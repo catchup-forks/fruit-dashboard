@@ -45,7 +45,7 @@
                 <div class="col-md-10 col-md-offset-1">
                   <div class="form-group">
                     <div class="col-sm-12">
-                      <input name='slack_webhook' type='text' class='form-control' placeholder='https://hooks.slack.com/services/abcd' value="">
+                      <input name='slack_webhook' type='text' class='form-control' placeholder='https://hooks.slack.com/services/abcd' value="{{ $url }}">
                     </div> <!-- /.col-sm-9 -->
                   </div> <!-- /.form-group -->
                 </div> <!-- /.col-md-10 -->
