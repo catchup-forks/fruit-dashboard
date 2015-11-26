@@ -75,12 +75,20 @@ class SiteConstants {
     const LAYOUT_MULTI_LINE        = 'multi-line';
     const LAYOUT_SINGLE_LINE       = 'single-line';
 
+    /* Velocities. */
+    private static $velocities = array(
+        'daily'  => 'days',
+        'weekly' => 'weeks',
+        'monthy' => 'months',
+        'yearly' => 'years'
+    );
+
     /* Auto dashboards */
     private static $autoDashboards = array(
         'Big Picture' => array(
             array(
                 'type'     => 'google_analytics_users',
-                'position' => '{"row":1,"col":1,"size_x":3,"size_y":5}',
+                'position' => '{"row":1,"col":1,"size_x":5,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COMBINED_BAR_LINE,
                     'length' => 5
@@ -89,7 +97,7 @@ class SiteConstants {
             ),
             array(
                 'type'     => 'google_analytics_goal_completion',
-                'position' => '{"row":1,"col":4,"size_x":3,"size_y":5}',
+                'position' => '{"row":1,"col":6,"size_x":5,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COMBINED_BAR_LINE,
                     'length' => 5
@@ -98,7 +106,7 @@ class SiteConstants {
             ),
             array(
                 'type'     => 'facebook_likes',
-                'position' => '{"col":6,"row":1,"size_x":3,"size_y":5}',
+                'position' => '{"row":7,"col":1,"size_x":5,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COMBINED_BAR_LINE,
                     'length' => 5
@@ -107,7 +115,7 @@ class SiteConstants {
             ),
             array(
                 'type'     => 'twitter_followers',
-                'position' => '{"col":6,"row":4,"size_x":3,"size_y":5}',
+                'position' => '{"row":7,"col":5,"size_x":5,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COUNT,
                     'length' => 1
@@ -639,6 +647,17 @@ class SiteConstants {
      */
     public static function getDashboardCacheMinutes() {
         return self::$dashboardCacheMinutes;
+    }
+
+    /**
+     * getVelocities:
+     * --------------------------------------------------
+     * Return the velocities for the site.
+     * @return (array) ($velocities) 
+     * --------------------------------------------------
+     */
+    public static function getVelocities() {
+        return self::$velocities;
     }
 
 } /* SiteConstants */

@@ -240,7 +240,7 @@ class CreateDataDescriptorTable extends Migration
         if (isset($descriptorMeta['reinit']) && $descriptorMeta['reinit'] == true) {
             Log::info('Requested reinitializtion of data #' . $dataId . ' (' . $descriptorType . ')');
             try {
-                Data::find($dataId)->initialize();
+                //Data::find($dataId)->initialize();
             } catch (ServiceException $e) {
                 Log::error($e->getMessage());
             }

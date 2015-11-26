@@ -53,7 +53,13 @@ class DataDescriptor extends Eloquent
     public function getAttributes()
     {
         /* I <3 you Eloquent. */
-        return json_decode($this->attributes['attributes'], true);
+        $attributes = json_decode($this->attributes['attributes'], true);
+
+        if ( ! is_array($attributes)) {
+            return array();
+        }
+
+        return $attributes;
     }
 
 }

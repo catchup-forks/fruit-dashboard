@@ -27,17 +27,15 @@ function FDChart(widgetOptions) {
    */
   function draw(layout, data) {
     // Automatically change the layout to the supplied
-    options.layout = layout;
-    options.selectors.activeLayout = '#widget-layout-' + layout + '-' + options.general.id;
-    chartCanvas.updateActiveLayout(options.selectors.activeLayout);
+    updateActiveLayout(layout);
 
     // Validate data
     if (!validateData(data)) { 
       return this; 
     }
 
-    // Clear the existing chart
-    clear(layout);
+    // Clears the existing chart
+    clear();
 
     // Get Canvas context and validate
     var canvasContext = chartCanvas.get2dContext();
@@ -45,6 +43,7 @@ function FDChart(widgetOptions) {
       if (debug) {console.log('[S] Canvas exists (' + canvasContext.canvas.width + 'x' + canvasContext.canvas.height + ')')};
     } else {
       if (debug) {console.log('[E] Canvas context doesn\'t exist.')};
+      if (debug) {console.log('--- Canvas selector: ' + options.selectors.activeLayout)};
       return;
     }
 
@@ -70,6 +69,25 @@ function FDChart(widgetOptions) {
     }
 
     // return
+    return this;
+  }
+
+  /**
+   * @function updateActiveLayout
+   * --------------------------------------------------------------------------
+   * Updates the active layout selector
+   * @param {string} layout | The new layout
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function updateActiveLayout(layout) {
+    // Update layout and activeLayout selectors
+    options.layout = layout;
+    options.selectors.activeLayout = '#widget-layout-' + options.layout + '-' + options.general.id;
+    // Propagate update to the subclasses
+    chartCanvas.updateActiveLayout(options.layout);
+    chartHandler.updateActiveLayout(options.layout);
+    // Return
     return this;
   }
 
@@ -197,13 +215,14 @@ function FDChartCanvas(widgetOptions) {
    * @function updateActiveLayout
    * --------------------------------------------------------------------------
    * Updates the active layout selector
-   * @param {string} lyaout | The new layout
+   * @param {string} layout | The new layout
    * @return {this}
    * --------------------------------------------------------------------------
    */
-  function updateActiveLayout(activeLayout) {
-    // Update activeLayout selector
-    options.selectors.activeLayout = activeLayout;
+  function updateActiveLayout(layout) {
+    // Update layout and activeLayout selectors
+    options.layout = layout;
+    options.selectors.activeLayout = '#widget-layout-' + options.layout + '-' + options.general.id;
     // Return
     return this;
   }
@@ -228,9 +247,26 @@ function FDChartHandler(widgetOptions) {
   /* -------------------------------------------------------------------------- *
    *                                 FUNCTIONS                                  *
    * -------------------------------------------------------------------------- */
-  this.getChartType       = getChartType
-  this.getChartOptions    = getChartOptions
-  this.transformChartData = transformChartData
+  this.updateActiveLayout = updateActiveLayout;
+  this.getChartType       = getChartType;
+  this.getChartOptions    = getChartOptions;
+  this.transformChartData = transformChartData;
+
+  /**
+   * @function updateActiveLayout
+   * --------------------------------------------------------------------------
+   * Updates the active layout selector
+   * @param {string} layout | The new layout
+   * @return {this}
+   * --------------------------------------------------------------------------
+   */
+  function updateActiveLayout(layout) {
+    // Update layout and activeLayout selectors
+    options.layout = layout;
+    options.selectors.activeLayout = '#widget-layout-' + options.layout + '-' + options.general.id;
+    // Return
+    return this;
+  }
 
   /**
    * @function getChartType

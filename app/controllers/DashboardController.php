@@ -179,6 +179,28 @@ class DashboardController extends BaseController
     }
 
     /**
+     * postSetVelocity
+     * --------------------------------------------------
+     * @return Sets the active velocity for the dashboard.
+     * --------------------------------------------------
+     */
+    public function postSetVelocity($dashboardId) {
+        /* Getting dashboard. */
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(false);
+        }
+
+        try {
+            $success = $dashboard->changeVelocity(Input::get('velocity'));
+        } catch (WidgetException $e) {
+            return Response::json(array('error' => $e->getMessage()));
+        }
+
+        return Response::json($success);
+    }
+
+    /**
      * anyMakeDefault
      * --------------------------------------------------
      * @return Makes a dashboard the default one.

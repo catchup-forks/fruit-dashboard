@@ -108,7 +108,7 @@ class GeneralWidgetController extends BaseController {
         );
 
         /* Return */
-        return Redirect::route('dashboard.dashboard', array('active' => $newDashboard->id))
+        return Redirect::route('dashboard.dashboard', $newDashboard->id)
             ->with('success', "Widget successfully updated.");
     }
 
@@ -172,7 +172,7 @@ class GeneralWidgetController extends BaseController {
         /* Validation successful, ready to save. */
         $widget->saveSettings(Input::all());
 
-        return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
+        return Redirect::route('dashboard.dashboard', $widget->dashboard->id)
             ->with('success', "Widget successfully updated.");
     }
 
@@ -234,7 +234,7 @@ class GeneralWidgetController extends BaseController {
                 return Redirect::route('widget.setup', array($newWidget->id))
                     ->with('success', 'You successfully restored the widget.');
             }
-            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
+            return Redirect::route('dashboard.dashboard', $dashboard->id)
                 ->with('success', 'You successfully restored the widget.');
         }
         return Redirect::route('dashboard.dashboard')
@@ -276,7 +276,7 @@ class GeneralWidgetController extends BaseController {
         }
         /* If widget has no setup fields, redirect to dashboard automatically */
         if ($widget->getSetupFields() == false) {
-            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
+            return Redirect::route('dashboard.dashboard', $dashboard->id)
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
             ->with('success', 'Widget successfully created. You can customize it here.');
@@ -335,7 +335,7 @@ class GeneralWidgetController extends BaseController {
 
         /* If widget has no setup fields, redirect to dashboard automatically */
         if ($widget->getSetupFields() == false) {
-            return Redirect::route('dashboard.dashboard', array('active' => $dashboard->id))
+            return Redirect::route('dashboard.dashboard', $dashboard->id)
                 ->with('success', 'Widget successfully created.'); }
         return Redirect::route('widget.setup', array($widget->id))
             ->with('success', 'Widget successfully created. You can customize it here.');
@@ -362,7 +362,7 @@ class GeneralWidgetController extends BaseController {
         $widget->saveSettings(array('resolution' => $resolution), true);
 
         /* Rendering view. */
-        return Redirect::route('dashboard.dashboard', array('active' => $widget->dashboard->id))
+        return Redirect::route('dashboard.dashboard', $widget->dashboard->id)
             ->with('success', 'Widget pinned successfully.');
     }
 
