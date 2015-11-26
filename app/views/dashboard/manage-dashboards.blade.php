@@ -24,7 +24,7 @@
               @foreach (Auth::user()->dashboards as $dashboard)
                 <div class="col-sm-6 col-md-4">
                   <div class="thumbnail">
-                    <a href="{{ route('dashboard.dashboard', ['active' => $dashboard->id]) }}">
+                    <a href="{{ route('dashboard.dashboard', $dashboard->id) }}">
                     <img src="{{ Auth::user()->background->url }}" alt="{{ $dashboard->name }}" />
                     </a>
                     

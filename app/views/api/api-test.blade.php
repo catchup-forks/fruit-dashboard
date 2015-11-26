@@ -52,7 +52,7 @@
                   {{ Form::submit('Send data' , array(
                     'class' => 'btn btn-primary pull-right',
                     'data-loading-text' => 'Sending...' )) }}
-                    <a class="btn btn-warning pull-left" href="{{ route('dashboard.dashboard',  ['active' => $toDashboard]) }}">Back to your widget</a>
+                    <a class="btn btn-warning pull-left" href="{{ route('dashboard.dashboard',  $toDashboard) }}">Back to your widget</a>
                 </div> <!-- /.col-sm-2 -->
 
               {{ Form::close() }}

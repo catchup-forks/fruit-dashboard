@@ -26,7 +26,7 @@
           @if ($iDashboard['active'])
             @foreach ($dashboard['widgets'] as $widget)
               <a href="#" class="menu-item menu-subitem">
-              WIDGET 
+              {{ $widget['meta']['general']['name']; }} 
               </a> <!-- /.menu-subitem -->
             @endforeach
           @endif
