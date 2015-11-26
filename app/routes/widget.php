@@ -86,7 +86,7 @@ Route::group([
         'uses'  => 'GeneralWidgetController@saveWidgetPosition',
     ]);
 
-    Route::any('/save-layout/{widgetId}/{layout}', [
+    Route::any('/save-layout/{widgetId}', [
         'before' => 'auth',
         'as'    => 'widget.save-layout',
         'uses'  => 'GeneralWidgetController@saveLayout',

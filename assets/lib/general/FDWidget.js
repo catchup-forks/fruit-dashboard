@@ -168,12 +168,36 @@ function FDWidget(widgetOptions) {
     var save = save || false;
     if (save) { 
       specific.reinit(layout);
-      if (debug) {console.log('[S] Layout changed to ' + layout + ' temporarily');}
+      if (debug) {console.log('[S] Layout changed to ' + layout + ' (frontend)');}
     } else {
       specific.refresh(layout);
-      if (debug) {console.log('[S] Layout changed to ' + layout + ' permanently');}
+      if (debug) {console.log('[S] Layout changed to ' + layout + ' (frontend)');}
     }
   };
+
+  /**
+   * @function callAjaxLayoutChange
+   * --------------------------------------------------------------------------
+   * Calls an ajax function to save the selected layout
+   * @param {string} layout | the name of the layout
+   * @return {sends the ajax}
+   * --------------------------------------------------------------------------
+   */
+  function callAjaxLayoutChange(layout) {
+    // Call ajax function
+    $.ajax({
+      type: "POST",
+      dataType: 'json',
+      url: options.urls.layoutUrl,
+          data: {layout: layout},
+          success: function(data) {
+            if (debug) {console.log('[S] Layout changed to' + layout + ' (backend)');}
+          },
+          error: function(data) {
+            if (debug) {console.log('[E] Internal error in layout save ajax');}
+          }
+      });
+  }
 
   /* -------------------------------------------------------------------------- *
    *                                   EVENTS                                   *
@@ -225,8 +249,9 @@ function FDWidget(widgetOptions) {
    * --------------------------------------------------------------------------
    */
   $(options.selectors.layoutSelector + "> .element").click(function() {
-    // Call ajax set to default here
     if (debug) { console.log("[I] Clicked layout change on widget #" + options.general.id + " | " + $(this).data('layout'));}
+    // Call ajax set to default here
+    callAjaxLayoutChange($(this).data('layout'))
     // Remove the active class, if any.
     $(options.selectors.layoutSelector + "> div.active").removeClass('active');
     // Add the active class for the clicked element.
