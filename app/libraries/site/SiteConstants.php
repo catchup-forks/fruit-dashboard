@@ -88,7 +88,7 @@ class SiteConstants {
         'Big Picture' => array(
             array(
                 'type'     => 'google_analytics_users',
-                'position' => '{"row":1,"col":1,"size_x":3,"size_y":5}',
+                'position' => '{"row":1,"col":1,"size_x":4,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COMBINED_BAR_LINE,
                     'length' => 5
@@ -97,7 +97,7 @@ class SiteConstants {
             ),
             array(
                 'type'     => 'google_analytics_goal_completion',
-                'position' => '{"row":1,"col":4,"size_x":3,"size_y":5}',
+                'position' => '{"row":1,"col":7,"size_x":7,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COMBINED_BAR_LINE,
                     'length' => 5
@@ -106,7 +106,7 @@ class SiteConstants {
             ),
             array(
                 'type'     => 'facebook_likes',
-                'position' => '{"col":6,"row":1,"size_x":3,"size_y":5}',
+                'position' => '{"col":6,"row":1,"size_x":4,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COMBINED_BAR_LINE,
                     'length' => 5
@@ -115,7 +115,7 @@ class SiteConstants {
             ),
             array(
                 'type'     => 'twitter_followers',
-                'position' => '{"col":6,"row":4,"size_x":3,"size_y":5}',
+                'position' => '{"col":6,"row":5,"size_x":4,"size_y":6}',
                 'settings' => array(
                     'type' => self::LAYOUT_COUNT,
                     'length' => 1
