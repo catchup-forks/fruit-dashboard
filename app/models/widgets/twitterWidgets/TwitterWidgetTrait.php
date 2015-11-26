@@ -4,14 +4,14 @@ trait TwitterWidgetTrait
 {
 
     /**
-     * getUser
+     * getTwitterUser
      * Return the name of the twitter user.
      * --------------------------------------------------
      * @return string
      * --------------------------------------------------
      */
-    public function getUser() {
-        $this->user()->twitterUsers()->first()->screen_name;
+    public function getTwitterUser() {
+        return $this->user()->twitterUsers()->first()->screen_name;
     }
 
     /**
@@ -33,7 +33,7 @@ trait TwitterWidgetTrait
      * --------------------------------------------------
      */
     public function getServiceSpecificName() {
-        return '@' . $this->getUser();
+        return '@' . $this->getTwitterUser();
     }
 }
 

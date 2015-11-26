@@ -12,23 +12,27 @@
   <div class="menu">
     <div class="menu-group">
 
-      {{-- FOR EACH DASHBOARD && IF ACTIVE --> ADD CLASS ACTIVE --}}
-        <a href="#" class="menu-item">
-          Menu text
+      @foreach ($dashboardList as $iDashboard)
+        <a href="{{ route('dashboard.dashboard', $iDashboard['id']) }}" class="menu-item @if ($iDashboard['active']) active @endif">
+          {{ $iDashboard['name'] }}
+
           {{-- IF NOTIFICATION (for new shared widget) --}}
-            <span class="badge" data-toggle="tooltip" data-placement="right" title="New widgets have been shared with you">
+            {{-- <span class="badge" data-toggle="tooltip" data-placement="right" title="New widgets have been shared with you">
               <i class="fa fa-lightbulb-o"></i>
-            </span>
+            </span> --}}
           {{-- ENDIF --}}
-          {{-- IF ACTIVE --> ADD WIDGETS AS SUBMENU ITEMS --}}
-            {{-- FOREACH WIDGET --}}
-              <a href="#" class="menu-item menu-subitem">
-                submenu text  
-              </a> <!-- /.menu-subitem -->
-            {{-- ENDFOREACH --}}
-          {{-- ENDIF --}}
-        </a> <!-- /.menu-item -->
-      {{-- ENDFOREACH --}}
+
+          @if ($iDashboard['active'])
+            @foreach ($dashboard['widgets'] as $widget)
+              @if (array_key_exists('statUrl', $widget['meta']['urls']))
+                <a href="{{ $widget['meta']['urls']['statUrl'] }}" class="menu-item menu-subitem">
+                  {{ $widget['meta']['general']['name']; }} 
+                </a> <!-- /.menu-subitem -->
+              @endif
+            @endforeach
+          @endif
+      </a> <!-- /.menu-item -->
+      @endforeach
 
     </div> <!-- /.menu-group -->
 
@@ -37,26 +41,11 @@
 
       <div class="granularity-selector">
 
-        {{-- FOR EACH GRANULARITY && IF ACTIVE --> ADD CLASS ACTIVE --}}
-          {{-- <a href="#" class="granularity-button" data-granularity="[[GRANULARITY]]">
-            granularity
-          </a> --}}
-        {{-- ENDFOREACH --}}
-
-        {{-- FOR MOCKUP --> DELETE --}}
-        <a href="#" class="granularity-button active" data-granularity="daily">
-          daily
-        </a>
-        <a href="#" class="granularity-button" data-granularity="weekly">
-          weekly
-        </a>
-        <a href="#" class="granularity-button" data-granularity="monthly">
-          monthly
-        </a>
-        <a href="#" class="granularity-button" data-granularity="yearly">
-          yearly
-        </a>
-        {{-- END FOR MOCKUP --}}
+        @foreach (SiteConstants::getVelocities() as $velocityName => $velocityId)
+          <a href="#" class="granularity-button @if($dashboard['velocity'] == $velocityId)active @endif" data-velocity="{{ $velocityId }}">
+            {{ $velocityName }}
+          </a> 
+        @endforeach
 
       </div> <!-- /.granularity-selector -->
 

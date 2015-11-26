@@ -8,7 +8,8 @@ class Dashboard extends Eloquent
         'background',
         'number',
         'is_locked',
-        'is_default'
+        'is_default',
+        'active_velocity'
     );
     public $timestamps = false;
 
@@ -195,6 +196,7 @@ class Dashboard extends Eloquent
             'id'         => $this->id,
             'is_locked'  => $this->is_locked,
             'is_default' => $this->is_default,
+            'velocity'   => $this->active_velocity,
             'widgets'    => array(),
         );
 
@@ -224,9 +226,48 @@ class Dashboard extends Eloquent
             ));
         }
 
+        /* Getting a list of the id, names of dashboards. */
+        $dashboards = array();
+        foreach ($this->user->dashboards as $iDashboard) {
+            array_push($dashboards, array(
+                'id'     => $iDashboard->id,
+                'name'   => $iDashboard->name,
+                'active' => $iDashboard->id == $dashboard['id']
+            ));
+        }
+
         return View::make('dashboard.dashboard_dummy')
-            ->with('dashboard', $dashboard);
+            ->with('dashboard', $dashboard)
+            ->with('dashboardList', $dashboards);
     }
+
+    /**
+     * changeVelocity
+     * Changing the velocity of all histogram widgets.
+     * --------------------------------------------------
+     * @param string $velocity
+     * @return boolean
+     * @throws WidgetException
+     * --------------------------------------------------
+     */
+    public function changeVelocity($velocity) {
+        if ( ! in_array($velocity, SiteConstants::getVelocities())) {
+            throw new WidgetException('Invalid velocity');
+        }
+        
+        /* Changing all histogram widget's resolution. */
+        foreach ($this->widgets as $widget) {
+            if ($widget instanceof HistogramWidget) {
+                $widget->saveSettings(array('resolution' => $velocity));
+            }
+        }
+        
+        /* Saving velocity. */ 
+        $this->active_velocity = $velocity;
+        $this->save();
+        return true;
+    }
+
 }
 
 ?>

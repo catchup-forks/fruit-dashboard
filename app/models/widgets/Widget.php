@@ -163,15 +163,17 @@ class Widget extends Eloquent
     */
     public function getTemplateMeta() {
         $position = $this->getPosition();
+        $descriptor = $this->getDescriptor();
         return array(
             'general' => array(
                 'id'    => $this->id,
-                'type'  => $this->getDescriptor()->type,
+                'type'  => $descriptor->type,
                 'state' => $this->state,
                 'row'   => $position->row,
                 'col'   => $position->col,
                 'sizex' => $position->size_x,
-                'sizey' => $position->size_y
+                'sizey' => $position->size_y,
+                'name'  => $descriptor->name
             ),
             'features' => array(
                 'drag' => true

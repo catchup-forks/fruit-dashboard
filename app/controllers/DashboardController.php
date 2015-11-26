@@ -86,7 +86,7 @@ class DashboardController extends BaseController
             /* Error occured, trying to find the widget. */
             $dashboard->turnOffBrokenWidgets();
             /* Recreating view. */
-            $renderedView= $dashboard->createView()->render();
+            $renderedView = $dashboard->createView()->render();
         }
 
         /* Saving the cache, and returning the view. */
@@ -176,6 +176,28 @@ class DashboardController extends BaseController
 
         /* Return. */
         return Response::json(true);
+    }
+
+    /**
+     * postSetVelocity
+     * --------------------------------------------------
+     * @return Sets the active velocity for the dashboard.
+     * --------------------------------------------------
+     */
+    public function postSetVelocity($dashboardId) {
+        /* Getting dashboard. */
+        $dashboard = $this->getDashboard($dashboardId);
+        if (is_null($dashboard)) {
+            return Response::json(false);
+        }
+
+        try {
+            $success = $dashboard->changeVelocity(Input::get('velocity'));
+        } catch (WidgetException $e) {
+            return Response::json(array('error' => $e->getMessage()));
+        }
+
+        return Response::json($success);
     }
 
     /**

@@ -407,13 +407,20 @@ function FDGridster(gridsterOptions) {
    * --------------------------------------------------------------------------
    */
   $(".granularity-button").click(function(e) {
-    if (debug) { console.log("[I] Initiated granularity change event | set all to: " + $(this).data('granularity')); };
+    if (debug) { console.log("[I] Initiated velocity change event | set all to: " + $(this).data('velocity')); };
     // Remove the active class, if any.
     $(".granularity-selector > a.active").removeClass('active');
     // Add the active class for the clicked element.
     $(this).addClass("active");
     // Change the granularity here
-    console.log($(this).data('granularity'));
+    $.ajax({
+        type: "post",
+        data: {'velocity': $(this).data('velocity')},
+        url: options.setVelocityUrl
+    }).done(function () {
+        // Reload all widgets.
+        console.log('velocity has changed');
+    });
   });
 
   /**

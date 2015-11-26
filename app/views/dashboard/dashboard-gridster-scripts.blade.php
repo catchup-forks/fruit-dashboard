@@ -21,8 +21,9 @@ gridsterGlobalOptions,
   gridsterSelector: 'div.gridster-container',
   widgetsSelector:  'div.gridster-widget',
   isLocked:  {{ $dashboard["is_locked"] }},
-  lockUrl:   "{{ route('dashboard.lock', $dashboard['id']) }}",
-  unlockUrl: "{{ route('dashboard.unlock', $dashboard['id']) }}",
+  lockUrl:        "{{ route('dashboard.lock', $dashboard['id']) }}",
+  unlockUrl:      "{{ route('dashboard.unlock', $dashboard['id']) }}",
+  setVelocityUrl: "{{ route('dashboard.set-velocity', $dashboard['id']) }}",
 }
 );
 var widgetsOptions{{ $dashboard['id'] }} = [
