@@ -29,7 +29,6 @@
       <!-- General CSS -->
       {{ Minify::stylesheet(array(
             '/css/bootstrap.min.css', 
-            '/css/font-awesome.min.css',
             '/css/jquery.gridster.min.css',
             '/css/jquery.growl.css',
             '/css/hopscotch.min.css',
@@ -37,6 +36,10 @@
          )) 
       }}      
       <!-- /General CSS -->
+
+      <!-- Font Awesome CSS -->
+      {{ HTML::style('css/font-awesome.min.css') }}
+      <!-- /Font Awesome CSS -->
 
       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
       <!--[if lt IE 9]>
