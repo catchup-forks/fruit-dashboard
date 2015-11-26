@@ -23,10 +23,11 @@
           {{-- ENDIF --}}
           @if ($iDashboard['active'])
             @foreach ($dashboard['widgets'] as $widget)
-              <a href="#" class="menu-item menu-subitem">
-              Link to single stat page
-              {{ $widget['meta']['general']['name']; }} 
-              </a> <!-- /.menu-subitem -->
+              @if (array_key_exists('statUrl', $widget['meta']['urls']))
+                <a href="{{ $widget['meta']['urls']['statUrl'] }}" class="menu-item menu-subitem">
+                  {{ $widget['meta']['general']['name']; }} 
+                </a> <!-- /.menu-subitem -->
+              @endif
             @endforeach
           @endif
       </a> <!-- /.menu-item -->
