@@ -165,7 +165,7 @@ class SlackNotification extends Notification
         /* FIXME: This is only to set active histogram */
         $widgetData = $widget->getTemplateData();
         return array(
-            'title'     => $widget->getSettings()['name'],
+            'title'     => $widget->getTemplateMeta()['general']['name'],
             'text'      => 
                 Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat())
                 //"Today: "        . Utilities::formatNumber($widget->getHistory(1, 'days')['value'], $widget->getFormat())
