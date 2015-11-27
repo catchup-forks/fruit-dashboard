@@ -168,6 +168,48 @@
       </div> <!-- /.row -->
       {{-- /General settings --}}
 
+      {{-- Slack Integration --}}
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="panel panel-default panel-transparent">
+            <div class="panel-heading">
+              <h3 class="panel-title">
+                <span class="fa fa-slack"></span>
+                Slack Integration
+              </h3>
+            </div> <!-- /.panel-heading -->
+            <div class="panel-body">
+
+              <div class="row">
+                <div class="col-md-12">
+                  <form class="form-horizontal">
+                    <div class="form-group">
+                      <label for="subscription" class="col-sm-3 control-label">
+                        Integration status
+                      </label>
+                      <div class="col-sm-6">
+                        <p class="form-control-static">
+                          @if (Auth::user()->notifications()->where('type','slack')->first()->is_enabled)
+                            Enabled
+                          @else
+                            Not enabled
+                          @endif
+                        </p>
+                      </div> <!-- /.col-sm-6 -->
+                      <div class="col-sm-2">
+                        <a href="{{ route('notification.configureSlack') }}" class="btn btn-primary">Configure</a>
+                      </div> <!-- /.col-sm-2 -->
+                    </div> <!-- /.form-group -->
+                  </form>
+                </div> <!-- /.col-md-12 -->
+              </div> <!-- /.row -->
+              
+            </div> <!-- /.panel-body -->
+          </div> <!-- /.panel -->
+        </div> <!-- /.col-md-6 -->
+      </div> <!-- /.row -->
+      {{-- /Subscription settings --}}
+
       {{-- Subscription settings --}}
       <div class="row">
         <div class="col-md-8 col-md-offset-2">

@@ -8,6 +8,18 @@ Route::group([
         'prefix'    => 'notification',
     ], function() {
 
+    Route::get('slack/configure', [
+        'before' => 'auth',
+        'as'     => 'notification.configureSlack',
+        'uses'   => 'NotificationController@getConfigureSlack'
+    ]);
+
+    Route::post('slack/configure', [
+        'before' => 'auth',
+        'as'     => 'notification.configureSlack',
+        'uses'   => 'NotificationController@postConfigureSlack'
+    ]);
+
     Route::any('test/', [
         'before' => 'auth',
         'as'     => 'notification.test',

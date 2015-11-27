@@ -27,6 +27,11 @@
             </a>
         </li>
         <li>
+            <a href="{{ route('notification.configureSlack') }}">
+                <span class="fa fa-slack"></span> Slack Integration
+            </a>
+        </li>
+        <li>
             <a href="http://fruitdashboard.tryfruit.com/community/" onclick="trackAll('lazy', {'en': 'clicked_on_community', 'el': '{{ Auth::user()->email }}', });" target="_blank">
                 <span class="fa fa-street-view"></span> Join the Community
             </a>

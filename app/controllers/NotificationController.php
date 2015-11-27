@@ -12,8 +12,36 @@ class NotificationController extends BaseController
      *                   PUBLIC SECTION                   *
      * ================================================== *
      */
+     
+    /**
+     * getConfigureSlack
+     * --------------------------------------------------
+     * @return Renders the Slack configuration page
+     * --------------------------------------------------
+     */
+    public function getConfigureSlack() {
+        /* Get the notification objects for the user */
+        $notifications = Auth::user()->notifications;
 
-     /**
+        /* Render view */
+        return View::make('notification.notification-test', ['notifications' => $notifications]);
+    }
+
+    /**
+     * postConfigureSlack
+     * --------------------------------------------------
+     * @return Renders the Slack configuration page
+     * --------------------------------------------------
+     */
+    public function postConfigureSlack() {
+        /* Get the notification objects for the user */
+        $notifications = Auth::user()->notifications;
+
+        /* Render view */
+        return View::make('notification.notification-test', ['notifications' => $notifications]);
+    }
+
+    /**
      * anyTest
      * --------------------------------------------------
      * @return Renders the test page
@@ -27,7 +55,7 @@ class NotificationController extends BaseController
         return View::make('notification.notification-test', ['notifications' => $notifications]);
     }
 
-     /**
+    /**
      * anySend
      * --------------------------------------------------
      * @param (integer) ($id) The notification id

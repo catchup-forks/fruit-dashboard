@@ -15,7 +15,8 @@ class Notification extends Eloquent
         'send_weekday',
         'send_day',
         'send_month',
-        'selected_widgets'
+        'selected_widgets',
+        'is_enabled'
     );
 
     /* -- No timestamps -- */

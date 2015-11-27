@@ -4,16 +4,16 @@ class SlackNotification extends Notification
 {
     protected $table = 'notifications';
 
-    private static $slackConsts = array(
-        'text'        => "Here are some info about your startup that will make you happy.",
-        'username'    => "Fruit Dashboard",
-        'icon_emoji' => ':tangerine:',
-    );
-
     private static $welcomeMessage = array(
-        'text'       => "Congratulations! You've just connected Fruit Dashboard with Slack. We're very happy to greet you on board.",
+        'text'       => "Congratulations! You've just connected Fruit Dashboard with Slack. We're very happy to welcome you on board.",
         'username'   => "Fruit Dashboard",
         'icon_emoji' => ':peach:',
+    );
+
+    private static $generalMessage = array(
+        'text'        => "Here are your growth numbers for today.",
+        'username'    => "Fruit Dashboard",
+        'icon_emoji' => ':tangerine:',
     );
 
     /**
@@ -25,51 +25,33 @@ class SlackNotification extends Notification
     /**
      * sendWelcome
      * --------------------------------------------------
-     * @return Sends the welcome message to the connected slack channel
+     * Sends the welcome message to the connected slack channel
+     * @return {boolean} result | The execution success
      * --------------------------------------------------
      */
     public function sendWelcome() {
-        /* Initializing cURL */
-        $ch = curl_init($this->address);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        /* Populating POST data */
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
-            self::$welcomeMessage
-        ));
-
-        /* Sending request. */
-        $success = curl_exec($ch);
-
-        /* Cleanup and return. */
-        curl_close($ch);
-        return $success;
+        // Build message
+        $message = self::$welcomeMessage;
+        // Send the message
+        $result = $this->sendMessage($message);
+        // Return
+        return $result;
     }
 
     /**
-     * fire
+     * sendDailyMessage
      * --------------------------------------------------
-     * @return Fires the notification event
+     * Sends the daily message to the connected slack channel
+     * @return {boolean} result | The execution success
      * --------------------------------------------------
      */
-    public function fire() {
-        /* Initializing cURL */
-        $ch = curl_init($this->address);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-
-        /* Populating POST data */
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
-            $this->buildWidgetsData()
-        ));
-
-        /* Sending request. */
-        $success = curl_exec($ch);
-
-        /* Cleanup and return. */
-        curl_close($ch);
-        return $success;
+    public function sendDailyMessage() {
+        // Build message
+        $message = $this->buildDailyData;
+        // Send the message
+        $result = $this->sendMessage($message);
+        // Return
+        return $result;
     }
 
     /**
@@ -92,12 +74,40 @@ class SlackNotification extends Notification
      */
 
     /**
-     * buildWidgetsData
+     * sendMessage
      * --------------------------------------------------
-     * @return Builds the widgets data for the slack notification
+     * Sends the welcome message to the connected slack channel
+     * @param {array} message | The message array
+     * @return {boolean} success | The curl execution success
      * --------------------------------------------------
      */
-    private function buildWidgetsData() {
+    private function sendMessage($message) {
+        /* Initializing cURL */
+        $ch = curl_init($this->address);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+
+        /* Populating POST data */
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(
+            $message
+        ));
+
+        /* Sending request. */
+        $success = curl_exec($ch);
+
+        /* Cleanup and return. */
+        curl_close($ch);
+        return $success;
+    }
+
+    /**
+     * buildDailyData
+     * --------------------------------------------------
+     * Builds the data for the slack notification
+     * @return {array} data | The built data
+     * --------------------------------------------------
+     */
+    private function buildDailyData() {
         $attachments = array();
         /* Iterating throurh the widgets. */
         foreach ($this->getSelectedWidgets() as $i=>$widgetId) {
@@ -128,7 +138,7 @@ class SlackNotification extends Notification
 
         /* Merging attachments with constants. */
         return array_merge(
-            self::$slackConsts,
+            self::$generalMessage,
             array('attachments' => $attachments)
         );
     }
