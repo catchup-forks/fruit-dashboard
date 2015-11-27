@@ -90,10 +90,11 @@
               </div> <!-- /.row -->
 
               <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 text-center">
+                  <a href="{{ route('dashboard.dashboard') }}" class="btn btn-warning pull-left">Cancel</a>
                   <button type="submit" class='btn btn-primary pull-right'>Save</button>
                   @if ($notification->is_enabled)
-                    <a href="{{ route('notification.sendSlackMessage') }}" class='btn btn-primary pull-right'>Send message to slack</a>
+                    <a href="{{ route('notification.sendSlackMessage') }}" class='btn btn-info'>Send message to slack</a>
                   @endif
                 </div> <!-- /.col-md-12 -->
               </div> <!-- /.row -->
