@@ -41,6 +41,13 @@ class SlackNotification extends Notification
             $message = self::$reconnectMessage;
         } else {
             $message = self::$welcomeMessage;
+            
+            /* Track event | SLACK INTEGRATION CONNECTED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Slack integration connected',
+                'el' => $this->address)
+            );
         }
         // Send the message
         $result = $this->sendMessage($message);
