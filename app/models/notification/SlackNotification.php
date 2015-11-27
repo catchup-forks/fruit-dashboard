@@ -10,6 +10,12 @@ class SlackNotification extends Notification
         'icon_emoji' => ':peach:',
     );
 
+    private static $reconnectMessage = array(
+        'text'       => "Hi! You've modified your Slack integration settings on Fruit Dashboard. You see this message, because we're making sure, that everything is still working.",
+        'username'   => "Fruit Dashboard",
+        'icon_emoji' => ':peach:',
+    );
+
     private static $generalMessage = array(
         'text'        => "Here are your growth numbers for today.",
         'username'    => "Fruit Dashboard",
@@ -31,7 +37,11 @@ class SlackNotification extends Notification
      */
     public function sendWelcome() {
         // Build message
-        $message = self::$welcomeMessage;
+        if ($this->is_enabled) {
+            $message = self::$reconnectMessage;
+        } else {
+            $message = self::$welcomeMessage;
+        }
         // Send the message
         $result = $this->sendMessage($message);
         // Return
@@ -47,7 +57,7 @@ class SlackNotification extends Notification
      */
     public function sendDailyMessage() {
         // Build message
-        $message = $this->buildDailyData;
+        $message = $this->buildDailyData();
         // Send the message
         $result = $this->sendMessage($message);
         // Return
@@ -112,8 +122,8 @@ class SlackNotification extends Notification
         /* Iterating throurh the widgets. */
         foreach ($this->getSelectedWidgets() as $i=>$widgetId) {
             $widget = Widget::find($widgetId);
+            /* Widget not found, silent skip */
             if (is_null($widget)) {
-                /* Widget not found */
                 continue;
             }
 
@@ -152,10 +162,16 @@ class SlackNotification extends Notification
      * --------------------------------------------------
      */
     private function buildHistogramWidgetData($widget) {
+        $widgetData = $widget->getTemplateData()['data'];
+        Log::info($widgetData);
         return array(
             'title'     => $widget->getSettings()['name'],
-            'text'      => 'Your latest values: ' . Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat())
-            //'image_url' => 'http://orig14.deviantart.net/1fb5/f/2012/154/2/e/random_candy_bg_twitter__by_sleazyicons-d526c6j.gif'
+            'text'      => 
+                "Today: " . Utilities::formatNumber(array_values($widget->getHistory($multiplier=1, $resolution='days')), $widget->getFormat()) .
+                "\nThis week: " . Utilities::formatNumber(array_values($widget->getHistory($multiplier=1, $resolution='weeks')), $widget->getFormat()) .
+                "\nThis month: " . Utilities::formatNumber(array_values($widget->getHistory($multiplier=1, $resolution='months')), $widget->getFormat()) .
+                "\nThis year: " . Utilities::formatNumber(array_values($widget->getHistory($multiplier=1, $resolution='years')), $widget->getFormat()) .
+                "\nAll time:" . Utilities::formatNumber(array_values($widget->getLatestValues()), $widget->getFormat())
         );
     }
 }

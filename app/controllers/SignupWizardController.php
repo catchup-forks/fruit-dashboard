@@ -378,9 +378,9 @@ class SignupWizardController extends BaseController
         /* Get existing notification */
         $notification = Auth::user()->notifications()->where('type','slack')->first();
         if ($notification) {
-            return array('url' => $notification->address);
+            return array('address' => $notification->address);
         } else {
-            return array('url' => '');
+            return array('address' => '');
         }
     }
 
@@ -391,13 +391,13 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function postSlackIntegration() {
-        /* Get the url from POST */
-        $url = Input::get('slack_webhook');
-        /* Proceed only with provided url */
-        if ($url) {
-            /* Create Slack notification */
+        /* Get the address from POST */
+        $address = Input::get('address');
+        /* Proceed only with provided address */
+        if ($address) {
+            /* Update Slack notification */
             $slackNotification = Auth::user()->notifications()->where('type','slack')->first();
-            $slackNotification->address = $url;
+            $slackNotification->address = $address;
             $slackNotification->save();
 
             /* Try to send welcome message */
@@ -409,8 +409,13 @@ class SignupWizardController extends BaseController
                 /* Return */                
                 return array('success' => 'Slack successfully connected');
             } else {
+                /* Disable notification */
+                $slackNotification->is_enabled = false;
+                $slackNotification->save();
+
+                /* Return */
                 return array('error' => 'We couldn\'t send any message to the provided url. Please check it, and try again');
-            }
+              }
         } else {
             return array('error' => 'Please enter your url to the field to connect with Slack.');
         }

@@ -316,7 +316,7 @@ trait HistogramWidgetTrait
      * @return array
      * --------------------------------------------------
      */
-    protected function getLatestValues()
+    public function getLatestValues()
     {
         $histogram = $this->buildHistogram();
 

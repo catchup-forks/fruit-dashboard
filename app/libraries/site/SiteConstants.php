@@ -132,11 +132,15 @@ class SiteConstants {
     private static $financialServices    = array('braintree', 'stripe');
     private static $socialServices       = array('facebook', 'twitter');
     private static $webAnalyticsServices = array('google_analytics');
-    private static $facebookPopulateDataDays = 60;
+    private static $facebookPopulateDataDays  = 60;
     private static $googleAnalyticsLaunchDate = '2005-01-01';
 
     /* Notifications */
-    private static $skipCategoriesInNotification = array('personal');
+    private static $skipCategoriesInNotification = array(
+        'personal',
+        'hidden'
+    );
+
     private static $slackColors = array(
         '#BADA55',
         '#ABCDE',

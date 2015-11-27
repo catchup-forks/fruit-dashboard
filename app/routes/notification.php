@@ -20,6 +20,12 @@ Route::group([
         'uses'   => 'NotificationController@postConfigureSlack'
     ]);
 
+    Route::any('slack/send', [
+        'before' => 'auth',
+        'as'     => 'notification.sendSlackMessage',
+        'uses'   => 'NotificationController@anySendSlackMessage'
+    ]);
+
     Route::any('test/', [
         'before' => 'auth',
         'as'     => 'notification.test',
