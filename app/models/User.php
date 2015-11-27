@@ -280,6 +280,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
         /* Creating Dashboard. */
         $this->createDefaultDashboards();
+
+        /* Enable all created widget in notifications by default */
+        $emailNotification->addToSelectedWidgets($this->widgets);
+        $slackNotification->addToSelectedWidgets($this->widgets);
     }
 
     /**

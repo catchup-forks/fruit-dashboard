@@ -187,7 +187,21 @@ class GeneralWidgetController extends BaseController {
         /* Find and remove widget */
         $widget = Widget::find($widgetID);
         if (!is_null($widget)) {
+
+            /* Track event | WIDGET DELETED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Widget deleted',
+                'el' => $widget->getDescriptor()->getClassName()
+            ));
+
+            /* Delete widget */
             $widget->delete();
+
+            /* Automatically remove widget from notifications */
+            foreach (Auth::user()->notifications as $notification) {
+                $notification->removeFromSelectedWidgets(array($widget));
+            }
         }
 
         /* USING AJAX */
@@ -571,10 +585,14 @@ class GeneralWidgetController extends BaseController {
         /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
-        /* Associate descriptor and save */
+        /* Save */
         $options = array();
-
         $widget->save($options);
+
+        /* Automatically add widget to notifications */
+        foreach (Auth::user()->notifications as $notification) {
+            $notification->addToSelectedWidgets(array($widget));
+        }
 
         /* Track event | ADD WIDGET */
         $tracker = new GlobalTracker();
