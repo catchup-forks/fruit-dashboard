@@ -515,7 +515,7 @@ class ServiceConnectionController extends BaseController
             /* Iterating through the goals. */
             $goals = $profile->goals;
             $selectedGoals = Input::get('goals');
-            if ($selectedGoals && ! empty($selectedGoals)) {
+            if (is_array($selectedGoals)) {
                 foreach ($selectedGoals as $goalId) {
                     /* Creating data objects. */
                     $settings = array(

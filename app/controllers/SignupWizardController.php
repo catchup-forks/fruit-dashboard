@@ -312,13 +312,14 @@ class SignupWizardController extends BaseController
     public function getGoogleAnalyticsGoal() {
         /* Get the goals of the user */
         $goals = array();
-
         $profileId = Session::get('selectedProfile');
-        if (!is_null($profileId)) {
+
+        if ( ! is_null($profileId)) {
             foreach (Auth::user()->googleAnalyticsProfiles()->where('profile_id', $profileId)->first()->goals as $goal) {
                 $goals[$goal->goal_id] = $goal->name;
             }
         }
+
         return array('goals' => $goals);
     }
 
@@ -329,12 +330,33 @@ class SignupWizardController extends BaseController
      * --------------------------------------------------
      */
     public function postGoogleAnalyticsGoal() {
-        /* Save goal (create datamanagers) */
         $connector = new GoogleAnalyticsConnector(Auth::user());
-        $connector->createDataObjects(array(
-            'profile' => Session::pull('selectedProfile'),
-            'goal'    => Input::get('goals')
-        ));
+        $selectedGoals = Input::get('goals');
+        $profileId = Session::get('selectedProfile');
+
+        /* Save goals. */
+        if ( ! is_array($selectedGoals)) {
+            return array();
+        }
+
+        foreach ($selectedGoals as $goalId) {
+            /* Creating data objects. */
+            $settings = array(
+                'profile'  => $profileId,
+                'goal'     => $goalId
+            );
+
+            try {
+                $connector->createDataObjects($settings);
+            } catch (ServiceException $e) {
+                Log::error($e->getMessage());
+            }
+        }
+        
+        if (count($selectedGoals) > 1) {
+            /* Multiple goal selection, reordering existing widgets. */
+            Auth::user()->addGoalWidgetsToBigPicture($profileId);
+        }
 
         /* Return */
         return array();

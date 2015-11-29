@@ -268,6 +268,18 @@ class Dashboard extends Eloquent
         return true;
     }
 
+    /**
+     * applyLayout
+     * Applying a layout to the dashboard by rearranging the widget.
+     * --------------------------------------------------
+     * @param int $nX
+     * @param int $nY
+     * @param array $preference
+     * --------------------------------------------------
+     */
+    public function applyLayout($nX, $nY, $preference=array()) {
+    }
+
 }
 
 ?>

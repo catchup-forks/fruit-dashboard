@@ -33,9 +33,11 @@
               <div class="form-group">
                 <div class="row">
                   <div class="col-sm-6 col-sm-offset-3">
-                    {{ Form::select('goals', $goals, null, array(
-                        'class' => 'form-control', 
-                        'id'    => 'goal-select'))
+                    {{ Form::select('goals[]', $goals, null, array(
+                        'class'    => 'form-control', 
+                        'size'     => 10,
+                        'multiple' => 'multiple',
+                        'id'       => 'goal-select'))
                     }}
                   </div>
                 </div> <!-- /.row -->

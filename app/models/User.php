@@ -154,7 +154,33 @@ class User extends Eloquent implements UserInterface, RemindableInterface
                 $sharing->autoCreate($sharingDashboard->id);
             }
         }
+    }
 
+    /**
+     * addGoalWidgetsToBigPicture
+     * Adding all selected goals to the Big Picture dashboard.
+     * --------------------------------------------------S
+     * @param int $profileId
+     * @throws ServiceException
+     * --------------------------------------------------
+     */
+    public function addGoalWidgetsToBigPicture($profileId) {
+        $profile = $this->googleAnalyticsProfiles()
+            ->where('profile_id', $profileId)
+            ->first(array('google_analytics_profiles.id'));
+
+        if (is_null($profile)) {
+            /* Profile not found. */
+            throw new ServiceException('Profile not found');
+        }
+    
+        /* Selecting active goals. */
+        $goals = $profile->goals()->where('active', true)->get();
+
+        if (count($goals) < 4) {
+            return $this->applyThreeByTwoLayout($goals);
+        }
+        return applyFourByNLayout($goals);
     }
 
     /**
