@@ -165,22 +165,61 @@ class User extends Eloquent implements UserInterface, RemindableInterface
      * --------------------------------------------------
      */
     public function addGoalWidgetsToBigPicture($profileId) {
+        /* Selecting dashboard. */
+        $dashboard = $this->dashboards()->where('name', 'Big Picture')->first();
+        if (is_null($dashboard)) {
+            /* Dashboard not found. */
+            return null;
+        }
+
+        /* Selecting descriptor. */
+        $goalCompletionDescriptor = WidgetDescriptor::where('type', 'google_analytics_goal_completion')->first();
+
         $profile = $this->googleAnalyticsProfiles()
             ->where('profile_id', $profileId)
-            ->first(array('google_analytics_profiles.id'));
+            ->first(array(
+                'google_analytics_profiles.id', 
+                'google_analytics_profiles.profile_id'
+            ));
 
         if (is_null($profile)) {
             /* Profile not found. */
             throw new ServiceException('Profile not found');
         }
     
+        /* Deleting goal promo widget if exists. */
+        foreach ($dashboard->widgets()
+            ->whereHas('descriptor', function($query) {
+                $query->where('type', 'promo');
+            })
+            ->get() as $promoWidget) {
+            $descriptor = WidgetDescriptor::find($promoWidget->getSettings()['related_descriptor']);
+            if ( ! is_null($descriptor) && $descriptor->id == $goalCompletionDescriptor->id) {
+                $promoWidget->delete();
+            } 
+        }
+
         /* Selecting active goals. */
         $goals = $profile->goals()->where('active', true)->get();
+        
+        /* Adding new goal widgets. */
+        foreach ($goals as $goal) {
+            $widget = new GoogleAnalyticsGoalCompletionWidget(array('state' => 'active'));
+            $widget->dashboard()->associate($dashboard);
+            $widget->position = $dashboard->getNextAvailablePosition(1,1);
+            $widget->saveSettings(array(
+                'type'    => SiteConstants::LAYOUT_COMBINED_BAR_LINE,
+                'profile' => $profile->profile_id,
+                'goal'    => $goal->goal_id
+            )); 
+        }
+
+        $dashboard->save();
 
         if (count($goals) < 4) {
-            return $this->applyThreeByTwoLayout($goals);
+            return $dashboard->applyLayout(3);
         }
-        return applyFourByNLayout($goals);
+        return $dashboard->applyLayout(4);
     }
 
     /**

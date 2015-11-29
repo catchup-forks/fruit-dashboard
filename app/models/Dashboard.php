@@ -43,12 +43,12 @@ class Dashboard extends Eloquent
                     continue;
                 }
                 if ($this->fits($rectangle, $widget)) {
-                    return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col":' . $j . ', "row": '. $i .'}';
+                    return '{"row":' . $i . ',"col":' . $j. ',"size_x":' . $desiredX . ', "size_y": '. $desiredY .'}';
                 }
             }
         }
         /* No match, default positioning. */
-        return '{"size_x":' . $desiredX . ',"size_y":' . $desiredY. ',"col": 11,"row": 11}';
+        return '{"row":' . 11 . ',"col":' . 11 . ',"size_x":' . $desiredX . ', "size_y": '. $desiredY .'}';
     }
 
     /**
@@ -103,10 +103,10 @@ class Dashboard extends Eloquent
      * --------------------------------------------------
     */
     private function inGrid($rectangle) {
-        if ($rectangle['endX'] > SiteConstants::getGridNumberOfCols()) {
+        if ($rectangle['endX'] > SiteConstants::getGridNumberOfCols() + 1) {
             return false;
         }
-        if ($rectangle['endY'] > SiteConstants::getGridNumberOfRows()) {
+        if ($rectangle['endY'] > SiteConstants::getGridNumberOfRows() + 1) {
             return false;
         }
         return true;
@@ -270,14 +270,61 @@ class Dashboard extends Eloquent
 
     /**
      * applyLayout
-     * Applying a layout to the dashboard by rearranging the widget.
+     * Rearranging the HistorgamWidgets.
      * --------------------------------------------------
-     * @param int $nX
-     * @param int $nY
-     * @param array $preference
+     * @param int $widgetPerRow
+     * @param array $preference // not used yet.
      * --------------------------------------------------
      */
-    public function applyLayout($nX, $nY, $preference=array()) {
+    public function applyLayout($widgetPerRow, $preference=array()) {
+        if ($widgetPerRow < 2 || $widgetPerRow > 4) {
+            /* Invalid arguments. */
+            throw new Exception("Invalid arguments", 1);
+        }
+
+        /* Initial calculations. */
+        $widgets = $this->widgets;
+        $oldSizes = array();
+        $notHistogramWidgets = array();
+
+        /* Reset widget positions. */
+        foreach ($widgets as $widget) {
+            $pos = $widget->getPosition(); 
+            $oldSizes[$widget->id] = array(
+                'x' => $pos->size_x,
+                'y' => $pos->size_y,
+            );
+            $widget->position = json_encode(array(
+                'size_x' => 0,
+                'size_y' => 0,
+                'col'    => 0,
+                'row'    => 0,
+            ));
+        }
+
+        /* Reassigning the widgets. */
+        foreach ($widgets as $widget) {
+            if ($widget instanceof HistogramWidget) {
+                switch($widgetPerRow) {
+                case 2: $newX = 6; $newY = 6; break;
+                case 3: $newX = 4; $newY = 5; break;
+                case 4: $newX = 3; $newY = 4; break;
+                default:;
+                }
+                $widget->position = $this->getNextAvailablePosition($newX, $newY);
+                $widget->save();
+            } else {
+                array_push($notHistogramWidgets, $widget);
+            }
+        }
+        /* Appending the rest of the widgets. */
+        foreach ($notHistogramWidgets as $widget) {
+            $sizes = $oldSizes[$widget->id];
+            $widget->position = $this->getNextAvailablePosition(
+                $sizes['x'], $sizes['y']
+            );
+            $widget->save();
+        }
     }
 
 }

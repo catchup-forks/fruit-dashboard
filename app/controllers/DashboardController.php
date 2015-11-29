@@ -46,7 +46,7 @@ class DashboardController extends BaseController
 
             $dashboardId = $dashboard->id;
         } 
-    
+
         /* For debug purposes. */
         if (self::OPTIMIZE) {
             return $this->showOptimizeLog($dashboard);
