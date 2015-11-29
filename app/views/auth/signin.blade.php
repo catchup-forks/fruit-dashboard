@@ -63,7 +63,7 @@
             </form>
             <!-- /Form -->
 
-            <a href="{{ route('signup-wizard.facebook-login') }}">
+            <a id="facebook-login" href="{{ route('signup-wizard.facebook-login') }}">
               <button class="btn btn-primary margin-top-sm">
                  <span class="fa fa-facebook"> | </span> Login with facebook
               </button>
@@ -93,7 +93,18 @@
 @stop
 
 @section('pageScripts')
-
+<script type="text/javascript">
+// Service redirection
+$('#facebook-login').click(function(e) {
+  e.preventDefault();
+  var url = $(this).attr('href');
+  if (window!=window.top) {
+    window.open(url, '_blank');
+  } else {
+    window.location = url;
+  }
+});
+</script>
 @stop
 
 

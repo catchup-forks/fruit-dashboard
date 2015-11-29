@@ -8,21 +8,21 @@ Route::group([
         'prefix'    => 'notification',
     ], function() {
 
-    Route::any('test/', [
+    Route::get('slack/configure', [
         'before' => 'auth',
-        'as'     => 'notification.test',
-        'uses'   => 'NotificationController@anyTest'
+        'as'     => 'notification.configureSlack',
+        'uses'   => 'NotificationController@getConfigureSlack'
     ]);
 
-    Route::any('send/{id}', [
+    Route::post('slack/configure', [
         'before' => 'auth',
-        'as'     => 'notification.send',
-        'uses'   => 'NotificationController@anySend'
+        'as'     => 'notification.configureSlack',
+        'uses'   => 'NotificationController@postConfigureSlack'
     ]);
 
-    Route::post('widgets/{notificationId}', [
+    Route::any('slack/send', [
         'before' => 'auth',
-        'as'     => 'notification.widgets',
-        'uses'   => 'NotificationController@postWidgets'
+        'as'     => 'notification.sendSlackMessage',
+        'uses'   => 'NotificationController@anySendSlackMessage'
     ]);
 });

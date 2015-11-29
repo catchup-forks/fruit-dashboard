@@ -1,5 +1,9 @@
 @extends('meta.base-user')
 
+@section('navbar')
+  @include('meta.navbar-dashboard')
+@overwrite
+
 @section('pageTitle')
   Dashboard
 @stop

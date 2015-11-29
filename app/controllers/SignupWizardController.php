@@ -195,14 +195,22 @@ class SignupWizardController extends BaseController
             $settings->save();
 
             /* Redirect to the dashboard*/
-            return Redirect::route('dashboard.dashboard', array('tour' => true));
+            if (array_key_exists('success', $result)) {
+                return Redirect::route('dashboard.dashboard', array('tour' => true))->with('success', $result['success']);
+            } else {
+                return Redirect::route('dashboard.dashboard', array('tour' => true));
+            }
         } else {
             /* Set onboarding state */
             $settings->onboarding_state = $nextStep;
             $settings->save();
 
             /* Redirect to the next step*/
-            return Redirect::route('signup-wizard.getStep', $nextStep);
+            if (array_key_exists('success', $result)) {
+                return Redirect::route('signup-wizard.getStep', $nextStep)->with('success', $result['success']);
+            } else {
+                return Redirect::route('signup-wizard.getStep', $nextStep);
+            }
         }
     }
 
@@ -380,6 +388,59 @@ class SignupWizardController extends BaseController
      */
     public function postInstallExtension() {
         return array();
+    }
+
+    /**
+     * STEP | getSlackIntegration
+     * --------------------------------------------------
+     * @return Handles the extra process for getSlackIntegration
+     * --------------------------------------------------
+     */
+    public function getSlackIntegration() {
+        /* Get existing notification */
+        $notification = Auth::user()->notifications()->where('type','slack')->first();
+        if ($notification) {
+            return array('address' => $notification->address);
+        } else {
+            return array('address' => '');
+        }
+    }
+
+    /**
+     * STEP | postSlackIntegration
+     * --------------------------------------------------
+     * @return Handles the extra process for postSlackIntegration
+     * --------------------------------------------------
+     */
+    public function postSlackIntegration() {
+        /* Get the address from POST */
+        $address = Input::get('address');
+        /* Proceed only with provided address */
+        if ($address) {
+            /* Update Slack notification */
+            $slackNotification = Auth::user()->notifications()->where('type','slack')->first();
+            $slackNotification->address = $address;
+            $slackNotification->save();
+
+            /* Try to send welcome message */
+            if ($slackNotification->sendWelcome()) {
+                /* Enable notification */
+                $slackNotification->is_enabled = true;
+                $slackNotification->save();
+
+                /* Return */                
+                return array('success' => 'Slack successfully connected');
+            } else {
+                /* Disable notification */
+                $slackNotification->is_enabled = false;
+                $slackNotification->save();
+
+                /* Return */
+                return array('error' => 'We couldn\'t send any message to the provided url. Please check it, and try again');
+              }
+        } else {
+            return array('error' => 'Please enter your url to the field to connect with Slack.');
+        }
     }
 
     /**

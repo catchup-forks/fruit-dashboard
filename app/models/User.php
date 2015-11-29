@@ -253,21 +253,28 @@ class User extends Eloquent implements UserInterface, RemindableInterface
         $settings->user()->associate($this);
         $settings->save();
 
+        /* Set timeZone for notifications */
+        if (Session::get('timeZone')) {
+            $timeZone = Session::get('timeZone');
+        } else {
+            $timeZone = 'Europe/Budapest';
+        }
+
         /* Create default notifications for the user */
-        $emailNotification = new Notification(array(
+        $emailNotification = new EmailNotification(array(
             'type' => 'email',
             'frequency' => 'daily',
             'address' => $this->email,
-            'send_time' => Carbon::createFromTime(7, 0, 0, 'Europe/Budapest')
+            'send_time' => Carbon::createFromTime(7, 0, 0, $timeZone)
         ));
         $emailNotification->user()->associate($this);
         $emailNotification->save();
 
-        $slackNotification = new Notification(array(
+        $slackNotification = new SlackNotification(array(
             'type' => 'slack',
             'frequency' => 'daily',
             'address' => null,
-            'send_time' => Carbon::createFromTime(7, 0, 0, 'Europe/Budapest')
+            'send_time' => Carbon::createFromTime(7, 0, 0, $timeZone)
         ));
         $slackNotification->user()->associate($this);
         $slackNotification->save();
@@ -299,6 +306,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface
 
         /* Creating Dashboard. */
         $this->createDefaultDashboards();
+
+        /* Enable all created widget in notifications by default */
+        $emailNotification->addToSelectedWidgets($this->widgets);
+        $slackNotification->addToSelectedWidgets($this->widgets);
     }
 
     /**

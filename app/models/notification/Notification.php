@@ -15,7 +15,8 @@ class Notification extends Eloquent
         'send_weekday',
         'send_day',
         'send_month',
-        'selected_widgets'
+        'selected_widgets',
+        'is_enabled'
     );
 
     /* -- No timestamps -- */
@@ -49,7 +50,7 @@ class Notification extends Eloquent
      * getSelectedWidgets
      * Returns an array of the selected widgets.
      * --------------------------------------------------
-     * @return array
+     * @return {array} $selectedWidgets
      * --------------------------------------------------
      */
     public function getSelectedWidgets() {
@@ -62,5 +63,59 @@ class Notification extends Eloquent
             }
         }
         return array();
+    }
+
+    /**
+     * addToSelectedWidgets
+     * Adds the given widgets to the selected widgets
+     * --------------------------------------------------
+     * @param {eloquent query or array with Widgets} $widgets | The widgets
+     * @return {true}
+     * --------------------------------------------------
+     */
+    public function addToSelectedWidgets($widgets) {
+        /* Get already selected widgets */
+        $widgetIDs = $this->getSelectedWidgets();
+
+        /* Iterate through the new widgets */
+        foreach ($widgets as $widget) {
+            array_push($widgetIDs, $widget->id);
+        }
+        /* Make list unique */
+        $widgetIDs = array_unique($widgetIDs);
+
+        /* Encode list to json */
+        $widgetIDs = json_encode($widgetIDs);
+
+        /* Save list*/
+        $this->selected_widgets = $widgetIDs;
+        $this->save();
+    }
+
+    /**
+     * removeFromSelectedWidgets
+     * Adds the given widgets to the selected widgets
+     * --------------------------------------------------
+     * @param {eloquent query or array with Widgets} $widgets | The widgets
+     * @return {true}
+     * --------------------------------------------------
+     */
+    public function removeFromSelectedWidgets($widgets) {
+        /* Get already selected widgets */
+        $widgetIDs = $this->getSelectedWidgets();
+
+        /* Iterate through the new widgets */
+        foreach ($widgets as $widget) {
+            $widgetIDs = array_diff($widgetIDs, array($widget->id));
+        }
+        /* Make list unique */
+        $widgetIDs = array_unique($widgetIDs);
+
+        /* Encode list to json */
+        $widgetIDs = json_encode($widgetIDs);
+
+        /* Save list*/
+        $this->selected_widgets = $widgetIDs;
+        $this->save();
     }
 }

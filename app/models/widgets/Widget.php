@@ -180,7 +180,8 @@ class Widget extends Eloquent
             ),
             'urls' => array(
               'deleteUrl' => route('widget.delete', $this->id),
-              'postUrl'   => route('widget.ajax-handler', $this->id) // AjaxWidgeTrait
+              'postUrl'   => route('widget.ajax-handler', $this->id), // AjaxWidgeTrait
+              'layoutUrl' => route('widget.save-layout', $this->id)
             ),
             'selectors' => array(
                 'widget'  => '[data-id=' . $this->id . ']',

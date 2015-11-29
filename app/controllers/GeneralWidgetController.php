@@ -187,7 +187,21 @@ class GeneralWidgetController extends BaseController {
         /* Find and remove widget */
         $widget = Widget::find($widgetID);
         if (!is_null($widget)) {
+
+            /* Track event | WIDGET DELETED */
+            $tracker = new GlobalTracker();
+            $tracker->trackAll('lazy', array(
+                'en' => 'Widget deleted',
+                'el' => $widget->getDescriptor()->getClassName()
+            ));
+
+            /* Delete widget */
             $widget->delete();
+
+            /* Automatically remove widget from notifications */
+            foreach (Auth::user()->notifications as $notification) {
+                $notification->removeFromSelectedWidgets(array($widget));
+            }
         }
 
         /* USING AJAX */
@@ -571,10 +585,14 @@ class GeneralWidgetController extends BaseController {
         /* Finding position. */
         $widget->position = $dashboard->getNextAvailablePosition($descriptor->default_cols, $descriptor->default_rows);
 
-        /* Associate descriptor and save */
+        /* Save */
         $options = array();
-
         $widget->save($options);
+
+        /* Automatically add widget to notifications */
+        foreach (Auth::user()->notifications as $notification) {
+            $notification->addToSelectedWidgets(array($widget));
+        }
 
         /* Track event | ADD WIDGET */
         $tracker = new GlobalTracker();
@@ -698,7 +716,7 @@ class GeneralWidgetController extends BaseController {
      * @return json 
      * --------------------------------------------------
      */
-    public function saveLayout($widgetId, $layout) {
+    public function saveLayout($widgetId) {        
         /* Selecing the widget */
         try {
             $widget = $this->getWidget($widgetId);
@@ -710,9 +728,14 @@ class GeneralWidgetController extends BaseController {
             return Response::json(array('error' => $e));
         }
 
+        Log::info($widget);
+
+        /* Get the provided layout, silent fail if wrong provided */
+        $layout = Input::get('layout');
         if ( ! array_key_exists($layout, $widget->type())) {
             return Response::json(array('error' => 'Invalid layout'));
         }
+        Log::info($layout);
 
         /* Valid parameters, saving settings. */
         $widget->saveSettings(array('type' => $layout));
