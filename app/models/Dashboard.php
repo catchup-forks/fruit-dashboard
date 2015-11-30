@@ -203,8 +203,8 @@ class Dashboard extends Eloquent
         );
 
         /* Populating widget data. */
+        $this->load('widgets');
         foreach ($this->widgets as $widget) {
-
             /* Getting template data for the widget. */
             if ($widget->renderable()) {
                 try {
