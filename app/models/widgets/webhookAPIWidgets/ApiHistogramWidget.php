@@ -10,7 +10,7 @@ class ApiHistogramWidget extends HistogramWidget
     use HistogramTableLayoutTrait;
 
     /* Data selector. */
-    protected static $dataTypes = array('webhook');
+    protected static $dataTypes = array('api');
 
     /* Choice functions */
     public function type()
@@ -47,22 +47,6 @@ class ApiHistogramWidget extends HistogramWidget
         $hourly = array('hours' => 'Hourly');
         return array_merge($hourly, parent::resolution());
     }*/
-
-    /**
-     * getTemplateData
-     * Return the mostly used values in the template.
-     * --------------------------------------------------
-     * @return array
-     * --------------------------------------------------
-     */
-    public function getTemplateData() {
-        if ( ! $this->hasData()) {
-            return array_merge(self::getDefaultTemplateData($this), array(
-                'hasData' => $this->hasData()
-            ));
-        }
-        return parent::getTemplateData();
-    }
 
     /**
      * getSettingsFields
@@ -141,10 +125,10 @@ class ApiHistogramWidget extends HistogramWidget
         /* Setting active histogram. */
         if ($this->toSingle) {
             /* Transforming to single. */
-            return $this->transformToSingle($this->data['sessions']['data']);
+            return $this->transformToSingle($this->data['api']['data']);
         } else {
             /* Multi layout. */
-            return $this->data['sessions'];
+            return $this->data['api'];
         }
     }
 

@@ -233,18 +233,14 @@ abstract class HistogramWidget extends DataWidget
 
     /**
      * getData
-     * Build the chart data.
+     * Build layout specific data.
      * --------------------------------------------------
      * @param array $postData
      * @return array
      * --------------------------------------------------
     */
-    protected function getData(array $postData=array())
+    public function getData(array $postData=array())
     {
-        if (empty($postData)) {
-            $postData = array();
-        }
-
         if (array_key_exists('layout', $postData)) {
             $layout = $postData['layout'];
         } else {

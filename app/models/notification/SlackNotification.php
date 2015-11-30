@@ -169,17 +169,15 @@ class SlackNotification extends Notification
      * --------------------------------------------------
      */
     private function buildHistogramWidgetData($widget) {
-        /* FIXME: This is only to set active histogram */
-        $widgetData = $widget->getTemplateData();
+        $widget->getData(array('layout' => 'count'));
         return array(
             'title'     => $widget->getTemplateMeta()['general']['name'],
             'text'      => 
-                Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat())
-                //"Today: "        . Utilities::formatNumber($widget->getHistory(1, 'days')['value'], $widget->getFormat())
-                //. "\nThis week: "  . Utilities::formatNumber($widget->getHistory(1, 'weeks')['value'], $widget->getFormat()) .
-                //. "\nThis month: " . Utilities::formatNumber($widget->getHistory(1, 'months')['value'], $widget->getFormat()) .
-                //. "\nThis year: "  . Utilities::formatNumber($widget->getHistory(1, 'years')['value'], $widget->getFormat()) .
-                //. "\nAll time:"    . Utilities::formatNumber($widget->getLatestValues(), $widget->getFormat())
+                "Today: "        . Utilities::formatNumber($widget->getHistory(1, 'days')['diff'], $widget->getFormat())
+                . "\nThis week: "  . Utilities::formatNumber($widget->getHistory(1, 'weeks')['diff'], $widget->getFormat())
+                . "\nThis month: " . Utilities::formatNumber($widget->getHistory(1, 'months')['diff'], $widget->getFormat())
+                . "\nThis year: "  . Utilities::formatNumber($widget->getHistory(1, 'years')['diff'], $widget->getFormat())
+                . "\nAll time:"    . Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat())
         );
     }
 }

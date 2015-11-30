@@ -159,20 +159,18 @@ trait HistogramWidgetTrait
      * compare
      * Compare the current value respect to period.
      * --------------------------------------------------
-     * @param int $count
+     * @param array $ds1
+     * @param array $ds2
      * @return array
      * --------------------------------------------------
      */
-    protected function compare($count=1)
+    protected function compare($ds1, $ds2)
     {
-        $start = $this->getValueAt($count);
-        $today = $this->getLatestValues();
-
         /* Creating an array that will hold the values. */
         $values = array();
-        foreach (self::getEntryValues($start) as $dataId=>$value) {
-            if (array_key_exists($dataId, $today)) {
-                $values[$dataId] = $today[$dataId] - $value;
+        foreach ($ds1 as $dataId=>$value) {
+            if (array_key_exists($dataId, $ds2)) {
+                $values[$dataId] = $ds2[$dataId] - $value;
             }
         }
 
@@ -199,7 +197,7 @@ trait HistogramWidgetTrait
             $histogram = $this->buildHistogram();
             $index = 0;
         } else {
-            $index = $this->length - $count;
+            $index = $this->length - $count - 1;
         }
 
         /* Reset length. */
@@ -324,7 +322,7 @@ trait HistogramWidgetTrait
             return array();
         }
 
-        return end($histogram);
+        return self::getEntryValues(end($histogram));
     }
 
     /**
@@ -338,8 +336,12 @@ trait HistogramWidgetTrait
      */
     public function getHistory($multiplier=1, $resolution=null)
     {
+        $currentValue = array_values($this->getLatestValues())[0];
+
         if ( ! is_null($resolution)) {
+            /* Saving old, setting new resolution. */
             $oldResolution = $this->resolution;
+            $this->setResolution($resolution);
         }
 
         $value = array_values($this->getValueAt($multiplier))[0];
@@ -354,10 +356,12 @@ trait HistogramWidgetTrait
             /* Resetting resolution if necessary. */
             $this->setResolution($oldResolution);
         }
+
         return array(
             'value'   => $value,
             'percent' => $percent,
-            'success' => $this->isSuccess($percent)
+            'success' => $this->isSuccess($percent),
+            'diff'    => $currentValue - $value
         );
     }
 

@@ -132,8 +132,10 @@ class Dashboard extends Eloquent
      */
     public function checkWidgetsIntegrity() {
         foreach ($this->widgets as $widget) {
-            /* By default giving every widget a change. */
-            $widget->setState('active');
+            /* By default giving every widget a chance. */
+            if ($widget->state != 'loading') {
+                $widget->setState('active');
+            }
 
             try {
                 $widget->checkIntegrity();
@@ -304,7 +306,14 @@ class Dashboard extends Eloquent
 
         /* Reassigning the widgets. */
         foreach ($widgets as $widget) {
-            if ($widget instanceof HistogramWidget) {
+            /* Getting widget class name. */
+            $className = get_class($widget);
+
+            if ($widget instanceof PromoWidget) {
+                /* Checking related descriptor. */
+                $className = $widget->getRelatedDescriptor()->getClassName();
+            }
+            if (is_a($className, 'HistogramWidget', true)) {
                 switch($widgetPerRow) {
                 case 2: $newX = 6; $newY = 6; break;
                 case 3: $newX = 4; $newY = 5; break;

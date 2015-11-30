@@ -47,7 +47,6 @@ trait MultipleHistogramChartLayoutTrait
             'isCombined'   => 'false',
             'datasets'     => self::selectTopDatasets($dataSets),
             'labels'       => $datetimes,
-            'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
     }

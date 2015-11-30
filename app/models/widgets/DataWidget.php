@@ -3,7 +3,7 @@
 /** All classes that have interaction with data. */
 abstract class DataWidget extends Widget implements iAjaxWidget
 {
-    abstract protected function getData(array $postData=array());
+    abstract public function getData(array $postData=array());
 
     /**
      * An array of the used data types, criteria is being matched automatically.
@@ -159,8 +159,13 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      */
     private function populateData()
     {
+        /* Resetting ids. */
+        $this->dataIds = array();
+
         foreach ($this->getDataObjects() as $dataObject) {
+            /* Getting the related data. */
             $this->data[$dataObject->type] = $dataObject->decode();
+
             array_push($this->dataIds, $dataObject->id);
         }
     }
@@ -182,7 +187,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             ->join('data_descriptors', 'data_descriptors.id', '=' , 'data.descriptor_id')
             ->where('data_descriptors.category', $this->getDescriptor()->category)
             ->whereIn('data_descriptors.type', static::getDataTypes())
-            ->get(array('data.id', 'data.criteria', 'data_descriptors.type')) as $dataObject) {
+            ->get(array('data.id', 'data.criteria', 'data_descriptors.type', 'data.state')) as $dataObject) {
+
             /* Filtering criteria. */
             $dataCriteria = $dataObject->getCriteria();
             if (count(array_intersect($dataCriteria, $widgetCriteria)) ==
@@ -195,6 +201,9 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             throw new WidgetException('Insuficcient data available.');
         }
 
+        /* Handling loading state. */
+        $this->handleLoading($dataObjects);
+
         return $dataObjects;
     }
 
@@ -202,7 +211,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
      * updateData
      * Running collection on all related data.
      * --------------------------------------------------
-     * @param array options
+     * @param array $options
      * @return string
      * --------------------------------------------------
     */
@@ -218,6 +227,31 @@ abstract class DataWidget extends Widget implements iAjaxWidget
 
                 $dataObject->setState('data_source_error');
             }
+        }
+    }
+
+    /**
+     * handleLoading
+     * Setting loading state accordingly.
+     * --------------------------------------------------
+     * @param array $dataObjects
+     * --------------------------------------------------
+    */
+    private function handleLoading(array $dataObjects=array())
+    {
+        $loading = false;
+        foreach ($dataObjects as $data) {
+            if ($data->state == 'loading') {
+                $loading = true;
+            }
+        }
+
+        if ($loading) {
+            /* Still loading. */
+            $this->setState('loading');
+        } else if ($this->state == 'loading') {
+            /* Came back from loading. */
+            $this->setState('active');
         }
     }
 }

@@ -60,7 +60,6 @@ trait HistogramCountLayoutTrait
             'description'  => $this->getCountDescription(),
             'footer'       => $this->getCountFooter(),
             'startDate'    => $this->getStartDate(),
-            'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
 

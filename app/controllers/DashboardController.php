@@ -71,7 +71,7 @@ class DashboardController extends BaseController
 
         /* Checking the user's widgets integrity */
         $dashboard->checkWidgetsIntegrity();
-
+        
         /* Creating view */
         $view = $dashboard->createView();
 

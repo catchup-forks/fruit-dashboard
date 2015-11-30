@@ -71,7 +71,6 @@ trait HistogramChartLayoutTrait
             'isCombined'   => static::$isCumulative ? 'true' : 'false',
             'datasets'     => $dataSets,
             'labels'       => $datetimes,
-            'currentDiff'  => $this->compare(),
             'currentValue' => $this->getLatestValues()
         );
     }

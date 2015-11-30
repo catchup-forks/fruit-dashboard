@@ -213,8 +213,9 @@ class User extends Eloquent implements UserInterface, RemindableInterface
                 'goal'    => $goal->goal_id
             )); 
         }
-
-        $dashboard->save();
+    
+        /* Refresh the relationship. */
+        $dashboard->load('widgets');
 
         if (count($goals) < 4) {
             return $dashboard->applyLayout(3);

@@ -39,6 +39,5 @@ class WebhookDataCollector extends MultipleHistogramDataCollector
 
         return $data;
     }
-
 }
 ?>
