@@ -176,7 +176,7 @@ class SlackNotification extends Notification
                 "Today: "        . Utilities::formatNumber($widget->getHistory(1, 'days')['diff'], $widget->getFormat())
                 . "\nThis week: "  . Utilities::formatNumber($widget->getHistory(1, 'weeks')['diff'], $widget->getFormat())
                 . "\nThis month: " . Utilities::formatNumber($widget->getHistory(1, 'months')['diff'], $widget->getFormat())
-                . "\nThis year: "  . Utilities::formatNumber($widget->getHistory(1, 'years')['diff'], $widget->getFormat())
+                . "\nThis year: "  . Utilities::formatNumber($widget->getHistory(12, 'months')['diff'], $widget->getFormat())
                 . "\nAll time:"    . Utilities::formatNumber($widget->getLatestValues()['value'], $widget->getFormat())
         );
     }
