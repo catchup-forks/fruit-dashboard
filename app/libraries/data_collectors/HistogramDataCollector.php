@@ -34,6 +34,10 @@ abstract class HistogramDataCollector extends DataCollector
         /* Getting the entry */
         $entry = array_key_exists('entry', $options) ? $options['entry'] : $this->getCurrentValue();
 
+        if ( ! is_array($entry)) {
+            return;
+        }
+
         /* Getting db ready entry and entryTime */
         $entryTime = self::getEntryTime($entry);
         $dbEntry = $this->formatData($entryTime, self::getEntryValues($entry));

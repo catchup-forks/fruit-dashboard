@@ -79,6 +79,29 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     }
 
     /**
+     * updateData
+     * Running collection on all related data.
+     * --------------------------------------------------
+     * @param array $options
+     * @return string
+     * --------------------------------------------------
+    */
+    public function updateData(array $options=array())
+    {
+        foreach ($this->dataIds as $dataId) {
+            $dataObject = Data::find($dataId);
+
+            try {
+                $dataObject->collect($options);
+            } catch (ServiceException $e) {
+                Log::error('An error occurred during collecting data on #' . $dataId );
+
+                $dataObject->setState('data_source_error');
+            }
+        }
+    }
+
+    /**
      * refreshWidget
      * Refreshing the widget data.
      * --------------------------------------------------
@@ -205,29 +228,6 @@ abstract class DataWidget extends Widget implements iAjaxWidget
         $this->handleLoading($dataObjects);
 
         return $dataObjects;
-    }
-
-    /**
-     * updateData
-     * Running collection on all related data.
-     * --------------------------------------------------
-     * @param array $options
-     * @return string
-     * --------------------------------------------------
-    */
-    private function updateData(array $options=array())
-    {
-        foreach ($this->dataIds as $dataId) {
-            $dataObject = Data::find($dataId);
-
-            try {
-                $dataObject->collect();
-            } catch (ServiceException $e) {
-                Log::error('An error occurred during collecting data on #' . $dataId );
-
-                $dataObject->setState('data_source_error');
-            }
-        }
     }
 
     /**

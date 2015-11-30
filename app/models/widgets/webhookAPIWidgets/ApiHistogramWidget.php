@@ -12,6 +12,9 @@ class ApiHistogramWidget extends HistogramWidget
     /* Data selector. */
     protected static $dataTypes = array('api');
 
+    /* Data attribute. */
+    protected static $isCumulative = true;
+
     /* Choice functions */
     public function type()
     {
@@ -83,6 +86,27 @@ class ApiHistogramWidget extends HistogramWidget
      */
     public static function getCriteriaFields() {
        return array_merge(parent::getCriteriaFields(), self::$APICriteriaFields);
+    }
+
+    /**
+     * getTemplateData
+     * Adding empty check.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    public function getTemplateData()
+    {
+        $entries = $this->buildHistogramEntries();
+
+        if (empty($entries)) {
+            return array_merge(
+                self::getDefaultTemplateData($this),
+                array('hasData' => false)
+            );
+        }
+
+        return parent::getTemplateData();
     }
 
     /**

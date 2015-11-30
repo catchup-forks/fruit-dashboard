@@ -728,14 +728,11 @@ class GeneralWidgetController extends BaseController {
             return Response::json(array('error' => $e));
         }
 
-        Log::info($widget);
-
         /* Get the provided layout, silent fail if wrong provided */
         $layout = Input::get('layout');
         if ( ! array_key_exists($layout, $widget->type())) {
             return Response::json(array('error' => 'Invalid layout'));
         }
-        Log::info($layout);
 
         /* Valid parameters, saving settings. */
         $widget->saveSettings(array('type' => $layout));
