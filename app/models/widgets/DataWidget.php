@@ -50,6 +50,9 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     public function handleAjax($postData)
     {
         if (isset($postData['state_query']) && $postData['state_query']) {
+            /* Trying to reload the data. */
+            $this->loadData();
+
             /* Got state query signal */
             if ($this->state == 'loading') {
                 return array('ready' => false);
@@ -120,13 +123,14 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     }
 
     /**
-     * onCreate
-     * Creating assigning data.
+     * loadData
+     * Loading the widget data.
      * --------------------------------------------------
      * @param array $attributes
+     * @throws ServiceNotConnected
      * --------------------------------------------------
      */
-    protected function onCreate()
+    public function loadData()
     {
         if ( ! $this->hasValidCriteria()) {
             $this->setState('setup_required');

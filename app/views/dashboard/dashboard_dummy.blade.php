@@ -46,7 +46,7 @@
       <div class="granularity-selector">
 
         @foreach (SiteConstants::getVelocities() as $velocityName => $velocityId)
-          <a href="#" class="granularity-button @if($dashboard['velocity'] == $velocityId)active @endif" data-velocity="{{ $velocityId }}">
+          <a href="{{ route('dashboard.set-velocity', array($iDashboard['id'], $velocityId)) }}" class="granularity-button @if($dashboard['velocity'] == $velocityId)active @endif">
             {{ $velocityName }}
           </a> 
         @endforeach

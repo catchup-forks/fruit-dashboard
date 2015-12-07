@@ -34,7 +34,8 @@ abstract class HistogramWidget extends DataWidget
             'name'       => 'Layout',
             'type'       => 'SCHOICE',
             'validation' => 'required',
-            'help_text'  => 'The layout type of your widget.'
+            'help_text'  => 'The layout type of your widget.',
+            'hidden'     => true
         ),
     );
 
@@ -264,8 +265,6 @@ abstract class HistogramWidget extends DataWidget
      */
     protected function onCreate()
     {
-        parent::onCreate();
-
         $this->setResolution($this->getResolution());
         $this->setLength($this->getLength());
     }

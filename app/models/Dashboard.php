@@ -205,6 +205,20 @@ class Dashboard extends Eloquent
         /* Populating widget data. */
         $this->load('widgets');
         foreach ($this->widgets as $widget) {
+
+            /* Loading data widgets. */
+            if ( $widget instanceof DataWidget) {
+                try {
+                    $widget->loadData();
+                } catch (ServiceNotConnected $e) {
+                    $error = true;
+                    $widget->setState('data_source_error');
+                    $templateData = Widget::getDefaultTemplateData($widget);
+                }
+            }
+
+            $error = false;
+
             /* Getting template data for the widget. */
             if ($widget->renderable()) {
                 try {
@@ -213,6 +227,10 @@ class Dashboard extends Eloquent
                     /* Something went wrong during data build. */
                     Log::error($e->getMessage());
                     $widget->setState('rendering_error');
+                    $error = true;
+                }
+
+                if ($error) {
                     /* Falling back to default template data. */
                     $templateData = Widget::getDefaultTemplateData($widget);
                 }

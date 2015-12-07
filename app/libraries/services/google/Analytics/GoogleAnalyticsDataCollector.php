@@ -304,7 +304,7 @@ class GoogleAnalyticsDataCollector
     public function getSessions($profileId) {
         return $this->getMetrics(
             $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'yesterday',
             'today',
             array('sessions'), array(
                 'dimensions'  => 'ga:source'
@@ -324,7 +324,7 @@ class GoogleAnalyticsDataCollector
     public function getNewUsers($profileId) {
         return $this->getMetrics(
             $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'yesterday',
             'today',
             array('newUsers'), array(
                 'dimensions'  => 'ga:source'
@@ -344,7 +344,7 @@ class GoogleAnalyticsDataCollector
     public function getUsers($profileId) {
         return $this->getMetrics(
             $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'yesterday',
             'today',
             array('users'), array(
                 'dimensions'  => 'ga:source'
@@ -366,7 +366,7 @@ class GoogleAnalyticsDataCollector
         $metricName = 'goal' . $goalId . 'Completions';
         return $this->getMetrics(
             $profileId,
-            SiteConstants::getGoogleAnalyticsLaunchDate()->toDateString(),
+            'yesterday',
             'today',
             array($metricName), array(
                 'dimensions'  => 'ga:source'

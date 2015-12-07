@@ -14,14 +14,14 @@
       <div class="col-md-10 col-md-offset-1">
         <div class="panel panel-default panel-transparent">
           <div class="panel-body">
-            <span class="pull-right" title="Select the conversion goal for the signups. You will be able to add more goals later on. <hr / > If you have no goals set up yet, use Google Analytics to add your first one." data-toggle="tooltip" data-placement="bottom">
+            <span class="pull-right" title="Select the conversion goals you would like to visualize. You will be able to add more goals later on. <hr / > If you have no goals set up yet, use Google Analytics to add your first one." data-toggle="tooltip" data-placement="bottom">
               <sup>
                 <i class="fa fa-2x fa-info-circle text-muted"></i>
               </sup>
             </span>
             
             <h1 class="text-center">
-              Select your Signup conversion goal
+              Select your conversion goals
             </h1> <!-- /.text-center -->
             
             <div class="row margin-top">

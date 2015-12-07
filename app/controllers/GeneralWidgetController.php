@@ -390,7 +390,7 @@ class GeneralWidgetController extends BaseController {
         /* Getting the editable widget. */
         try {
             $widget = $this->getWidget($widgetID);
-            if ( ! $widget instanceof DataWidget) {
+            if ( ! $widget instanceof HistogramWidget) {
                 throw new WidgetDoesNotExist("This widget does not support histograms", 1);
             } else if ($widget->state != 'active') {
                 throw new WidgetDoesNotExist("This widget is not active.", 1);
@@ -407,12 +407,38 @@ class GeneralWidgetController extends BaseController {
             'el' => $widget->getDescriptor()->type)
         );
 
+        /* Loading widget data. */
+        $widget->loadData();
+
+        /* Loading the layouts. */
+        $selectedLayout = "";
+        foreach (array(
+                SiteConstants::LAYOUT_COMBINED_BAR_LINE,
+                SiteConstants::LAYOUT_MULTI_LINE,
+                SiteConstants::LAYOUT_SINGLE_LINE,
+            ) as $layout) {
+            if (array_key_exists($layout, $widget->type())) {
+                $selectedLayout = $layout;
+                break;
+            }
+        }
+    
+        if ($selectedLayout) {
+            $chartData = array();
+            foreach ($widget->resolution() as $resolution) {
+                $chartData[$resolution] = $widget->getData(array(
+                    'layout'     => $selectedLayout,
+                    'resolution' => $resolution
+                ));
+            }
+        } else {
+            /* Widget does not support lines. */
+            return Redirect::route('dashboard.dashboard')
+                ->with('error', 'This widget does not support singlestat.');
+        }
+
         /* Calculating values for rendering. */
         $values = array();
-        /* SINGLE STAT TEMPLATE REQUIRES REFACTORING!! */
-        /* PROBABLY WILL NEED TO ADD SETUPWIDGET FOR LENGTH, RESOLUTION, ETC... */
-        /* isCombined, label, dataset for each resolution, class_name, resolution. */
-        $widget->buildChartData();
 
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
             $values[$resolution] = array();
@@ -420,8 +446,11 @@ class GeneralWidgetController extends BaseController {
                 $values[$resolution][$multiplier] = $widget->getHistory($multiplier, $resolution);
             }
         }
+
         /* Rendering view. */
         return View::make('singlestat.singlestat')
+            ->with('layout', $selectedLayout)
+            ->with('chartData', $chartData)
             ->with('widget', $widget)
             ->with('values', $values);
     }

@@ -49,22 +49,24 @@ abstract class HistogramDataCollector extends DataCollector
         $currentData = $this->sortHistogram($this->getEntries(), false);
         $lastData = end($currentData);
 
-        /* Checking for cumulative. */
         if ( ! empty($lastData)) {
-            if ($this->isCumulative() &&
-                    array_key_exists('sum', $options) &&
-                    $options['sum'] == true) {
-                foreach (self::getEntryValues($dbEntry) as $key=>$value) {
-                    if (array_key_exists($key, $lastData)) {
-                        $dbEntry[$key] += $lastData[$key];
-                    }
-                }
-            }
-            /* Saving data only every 15 minutes. */
-            if (Carbon::createFromTimestamp($lastData['timestamp'])->diffInMinutes($entryTime) < 15) {
+            /* Updating last data. */
+            if (Carbon::createFromTimestamp($lastData['timestamp'])->isSameDay($entryTime)) {
+                /* Forcing daily data collection, could go to data descriptors later. */
                 array_pop($currentData);
             }
         }
+
+        if ( ! empty($currentData) && $this->isCumulative()) {
+            /* Applying cumulativeness. */
+            $lastData = end($currentData);
+            foreach (self::getEntryValues($dbEntry) as $key=>$value) {
+                if (array_key_exists($key, $lastData)) {
+                    $dbEntry[$key] += $lastData[$key];
+                }
+            }
+        }
+
         if (self::getEntryValues($dbEntry) != false) {
             array_push($currentData, $dbEntry);
             $this->save($currentData);

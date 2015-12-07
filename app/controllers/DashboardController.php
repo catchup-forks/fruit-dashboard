@@ -179,25 +179,25 @@ class DashboardController extends BaseController
     }
 
     /**
-     * postSetVelocity
+     * getSetVelocity
      * --------------------------------------------------
      * @return Sets the active velocity for the dashboard.
      * --------------------------------------------------
      */
-    public function postSetVelocity($dashboardId) {
+    public function getSetVelocity($dashboardId, $velocity) {
         /* Getting dashboard. */
         $dashboard = $this->getDashboard($dashboardId);
         if (is_null($dashboard)) {
-            return Response::json(false);
+            return Redirect::back()->with('error', 'Dashboard not found');
         }
 
         try {
-            $success = $dashboard->changeVelocity(Input::get('velocity'));
+            $success = $dashboard->changeVelocity($velocity);
         } catch (WidgetException $e) {
-            return Response::json(array('error' => $e->getMessage()));
+            return Redirect::back()->with('error', $e->getMessage());
         }
 
-        return Response::json($success);
+        return Redirect::back();
     }
 
     /**

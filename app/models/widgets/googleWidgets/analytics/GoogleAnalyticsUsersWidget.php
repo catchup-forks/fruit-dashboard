@@ -14,7 +14,7 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
     use HistogramCountLayoutTrait;
 
     /* Data selector. */
-    protected static $dataTypes = array('users');
+    protected static $dataTypes = array('new_users');
 
     /* Data attribute. */
     protected static $isCumulative = true;
@@ -82,10 +82,10 @@ class GoogleAnalyticsUsersWidget extends HistogramWidget implements iServiceWidg
         /* Setting active histogram. */
         if ($this->toSingle) {
             /* Transforming to single. */
-            return $this->transformToSingle($this->data['users']['data']);
+            return $this->transformToSingle($this->data['new_users']['data']);
         } else {
             /* Multi layout. */
-            return $this->data['users'];
+            return $this->data['new_users'];
         }
     }
 

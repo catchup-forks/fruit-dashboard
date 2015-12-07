@@ -25,6 +25,7 @@ trait HistogramTableLayoutTrait
             'content' => array(
             )
         );
+        $test = 0;
 
         /* Populating table data. */
         for ($i = $this->getLength(); $i > 0; --$i) {

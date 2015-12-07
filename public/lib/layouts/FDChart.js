@@ -409,7 +409,7 @@ function FDChartHandler(widgetOptions) {
             transformedData = transformMultiLineDataSingleStat(data);
             break;
           case 'combined-bar-line':
-            transformedData = transformCombinedBarLineDataSingleStat(data);
+            transformedData = transformCombinedBarLineDataDashboard(data);
             break;
           default:
             if (debug) {console.log('[E] No transformChartData behaviour is defined to this layout: ' + options.layout)};

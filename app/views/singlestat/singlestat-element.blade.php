@@ -24,10 +24,10 @@
        </span>
       </a>
       @endif
-      {{ $value }} statistics
+      {{ Utilities::underscoreToCamelCase($value) }} statistics
     </h3>
   </div> <!-- /.panel-heading -->
-  <div class="panel-body no-padding" id="chart-{{ $resolution }}">
+  <div class="panel-body no-padding" id="widget-layout-{{ $layout }}-{{ $resolution }}">
     <div id="chart-container">
       <canvas class="img-responsive canvas-auto"></canvas>
     </div>
@@ -37,7 +37,7 @@
 
 <div class="panel fill panel-default panel-transparent">
   <div class="panel-heading">
-    <h3 class="panel-title">{{ $value }} data history</h3>
+    <h3 class="panel-title">{{ Utilities::underscoreToCamelCase($value) }} data history</h3>
   </div> <!-- /.panel-heading -->
 
   <div class="panel-body">
@@ -99,36 +99,7 @@
 
 <div class="panel fill panel-default panel-transparent">
   <div class="panel-heading">
-    <h3 class="panel-title">{{ $value }} datatable</h3>
+    <h3 class="panel-title">{{ Utilities::underscoreToCamelCase($value) }} datatable</h3>
   </div> <!-- /.panel-heading -->
 
-  <div class="panel-body">
-    <div class="row">
-      <div class="col-sm-12 table-responsive">
-        <table class="table datatable">
-          <thead>
-            <tr>
-              <th class="col-sm-2"></th>
-              @foreach($widget->getData(['layout' => 'chart', 'resolution' => $resolution, 'length' => 15 ])['labels'] as $datetime)
-                <th>{{ $datetime }}</th>
-              @endforeach
-            </tr>
-          </thead>
-          <tbody>
-            @foreach ($widget->getData(['layout' => 'chart', 'resolution' => $resolution, 'length' => 15])['datasets'] as $dataset)
-              <tr>
-                <td class="col-sm-2 dataset-label">
-                  <span class="fa fa-square" style="color: rgb({{ $dataset['color'] }})"></span>
-                  <span>{{ $dataset['name'] }}</span>
-                </td>
-                @foreach ($dataset['values'] as $value)
-                  <td>{{ Utilities::formatNumber($value, $widget->getFormat()); }}</td>
-                @endforeach
-              </tr> 
-            @endforeach
-          </tbody>
-        </table> <!-- /.table .datatable -->
-      </div> <!-- /.col-sm-12 -->
-    </div> <!-- /.row -->
-  </div> <!-- /.panel-body -->
 </div> <!-- /.panel -->

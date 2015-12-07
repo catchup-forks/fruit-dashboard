@@ -35,14 +35,14 @@ abstract class GeneralServiceConnector
         /* Deleting connection */
         $this->user->connections()->where('service', static::$service)->delete();
 
-        /* Deleting all DataManagers */
+        /* Deleting all related Data */
         foreach ($this->user->dataObjects as $data) {
             if ($data->getDescriptor()->category == static::$service) {
                 $data->delete();
             }
         }
 
-        /* Deleting all widgets*/
+        /* Deleting all widgets */
         foreach ($this->user->widgets as $widget) {
             if ($widget->getDescriptor()->category == static::$service) {
                 $widget->delete();
@@ -107,9 +107,13 @@ abstract class GeneralServiceConnector
      * --------------------------------------------------
      * @param array $criteria
      * @return array
+     * @throws ServiceNotConnected
      * --------------------------------------------------
      */
     public function createDataObjects(array $criteria=array()) {
+        /* Throws ServiceNotConnected. */
+        $this->getConnection();
+
         $dataObjects = array();
         foreach(DataDescriptor::where('category', static::$service)->get() as $descriptor) {
             /* Creating widget instance. */

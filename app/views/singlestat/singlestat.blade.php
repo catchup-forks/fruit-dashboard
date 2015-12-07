@@ -23,8 +23,8 @@ Widget stats
             <!-- Nav tabs -->
             <div class="col-md-12 text-center">
               <ul class="nav nav-pills center-pills" role="tablist">
-                @foreach ($widget->resolution() as $resolution=>$value)
-                    <li role="presentation"><a href="#singlestat-{{ $resolution }}" aria-controls="singlestat-{{ $resolution }}" role="tab" data-toggle="pill" data-resolution="{{$resolution}}">{{$value}}</a></li>
+                @foreach ($widget->resolution() as $resolution)
+                    <li role="presentation"><a href="#singlestat-{{ $resolution }}" aria-controls="singlestat-{{ $resolution }}" role="tab" data-toggle="pill" data-resolution="{{$resolution}}">{{$resolution}}</a></li>
                 @endforeach
               </ul>
             </div> <!-- /.col-md-12 -->
@@ -32,7 +32,7 @@ Widget stats
 
             <!-- Tab panes -->
               <div class="tab-content">
-                @foreach ($widget->resolution() as $resolution=>$value)
+                @foreach ($widget->resolution() as $value=>$resolution)
                   <div role="tabpanel" class="tab-pane fade col-md-12" id="singlestat-{{ $resolution }}">
                     {{-- Check Premium feature and disable charts if needed --}}
                     @if (!Auth::user()->subscription->getSubscriptionInfo()['PE'])
@@ -48,7 +48,7 @@ Widget stats
 
           <div class="row">
             <div class="col-md-12 text-center">
-              <a href="{{ URL::route('dashboard.dashboard') }}?active={{ $widget->dashboard->id }}" class="btn btn-primary">Back to your dashboard</a>
+              <a href="{{ URL::route('dashboard.dashboard', $widget->dashboard->id) }}" class="btn btn-primary">Back to your dashboard</a>
             </div> <!-- /.col-md-12 -->
           </div> <!-- /.row -->
 
@@ -75,11 +75,11 @@ Widget stats
   <!-- /Init FDGlobalChartOptions -->
 
   <script type="text/javascript">
-    @foreach ($widget->resolution() as $resolution=>$value)
+    @foreach ($widget->resolution() as $key=>$resolution)
 
       var widgetOptions{{ $resolution }} = {
           general: {
-            id:    '{{ $widget->id }}',
+            id:    '{{ $resolution }}',
             name:  '{{ $widget->name }}',
             type:  '{{ $widget->getDescriptor()->type }}',
             state: '{{ $widget->state }}',
@@ -96,14 +96,14 @@ Widget stats
             page: 'singlestat',
             init: 'widgetData{{ $resolution }}',
           },
-          layout: 'chart'
+          layout: '{{ $layout }}'
       }
 
-      var widgetData{{ $resolution }} = {
-        'isCombined' : @if($widget->getData(['resolution'=>$resolution])['isCombined']) true @else false @endif,
-        'labels': [@foreach ($widget->getData(['resolution'=>$resolution])['labels'] as $datetime) "{{$datetime}}", @endforeach],
+      var widgetData{{ $resolution }} = {'{{ $layout }}': {
+        'isCombined' : @if($chartData[$resolution]['isCombined']) true @else false @endif,
+        'labels': [@foreach ($chartData[$resolution]['labels'] as $datetime) "{{$datetime}}", @endforeach],
         'datasets': [
-        @foreach ($widget->getData(['resolution'=>$resolution])['datasets'] as $dataset)
+        @foreach ($chartData[$resolution]['datasets'] as $dataset)
           {
               'type' : '{{ $dataset['type'] }}',
               'values' : [{{ implode(',', $dataset['values']) }}],
@@ -112,7 +112,7 @@ Widget stats
           },
         @endforeach
         ]
-      }
+      }}
     @endforeach
 
     $(document).ready(function () {
@@ -126,7 +126,7 @@ Widget stats
       });
 
       // Create graph objects
-      @foreach ($widget->resolution() as $resolution=>$value)
+      @foreach ($widget->resolution() as $resolution)
         FDWidget{{ $resolution }} = new window['FD{{ Utilities::underscoreToCamelCase($widget->getDescriptor()->type)}}Widget'](widgetOptions{{ $resolution }});
       @endforeach
 
