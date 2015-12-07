@@ -117,7 +117,7 @@ trait HistogramChartLayoutTrait
     protected final function dateFormat($resolution=null)
     {
         if (is_null($resolution)) {
-            $resolution = $this->getResolution();
+            $resolution = $this->resolution;
         }
 
         switch ($resolution) {

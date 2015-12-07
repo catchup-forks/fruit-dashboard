@@ -192,7 +192,7 @@ class DashboardController extends BaseController
         }
 
         try {
-            $success = $dashboard->changeVelocity($velocity);
+            $dashboard->changeVelocity($velocity);
         } catch (WidgetException $e) {
             return Redirect::back()->with('error', $e->getMessage());
         }

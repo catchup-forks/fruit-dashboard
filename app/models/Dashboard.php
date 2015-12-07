@@ -285,6 +285,7 @@ class Dashboard extends Eloquent
         /* Saving velocity. */ 
         $this->active_velocity = $velocity;
         $this->save();
+
         return true;
     }
 

@@ -27,7 +27,7 @@ abstract class HistogramWidget extends DataWidget
             'name'       => 'Length',
             'type'       => 'INT',
             'validation' => 'required|min:2',
-            'default'    => 10,
+            'default'    => 5,
             'help_text'  => 'The number of data points on your widget.'
         ),
         'type' => array(
