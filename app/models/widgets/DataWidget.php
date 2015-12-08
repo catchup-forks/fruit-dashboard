@@ -115,6 +115,8 @@ abstract class DataWidget extends Widget implements iAjaxWidget
     {
         $this->setState('loading');
 
+        $this->populateData();
+
         $this->updateData();
 
         $this->populateData();
@@ -195,6 +197,10 @@ abstract class DataWidget extends Widget implements iAjaxWidget
 
             array_push($this->dataIds, $dataObject->id);
         }
+
+        /* Handling data state. */
+        $this->handleStates();
+
     }
 
     /**
@@ -228,34 +234,32 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             throw new WidgetException('Insuficcient data available.');
         }
 
-        /* Handling loading state. */
-        $this->handleLoading($dataObjects);
-
         return $dataObjects;
     }
 
     /**
-     * handleLoading
+     * handleDataStates
      * Setting loading state accordingly.
      * --------------------------------------------------
      * @param array $dataObjects
      * --------------------------------------------------
     */
-    private function handleLoading(array $dataObjects=array())
+    private function handleStates()
     {
-        $loading = false;
-        foreach ($dataObjects as $data) {
+        $state = 'active';
+
+        foreach ($this->dataIds as $id) {
+            $data = Data::find($id);
+
             if ($data->state == 'loading') {
-                $loading = true;
+                $state = 'loading';
+            }
+
+            if ($data->state == 'data_source_error') {
+                $state = 'data_source_error';
             }
         }
 
-        if ($loading) {
-            /* Still loading. */
-            $this->setState('loading');
-        } else if ($this->state == 'loading') {
-            /* Came back from loading. */
-            $this->setState('active');
-        }
+        $this->setState($state);
     }
 }

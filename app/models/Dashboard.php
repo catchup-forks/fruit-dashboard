@@ -224,7 +224,7 @@ class Dashboard extends Eloquent
                 try {
                     $templateData = $widget->getTemplateData();
                 } catch (ServiceException $e) {
-                    /* Something went wrong during data build. */
+                    /* Something went wrong during data building. */
                     Log::error($e->getMessage());
                     $widget->setState('rendering_error');
                     $error = true;

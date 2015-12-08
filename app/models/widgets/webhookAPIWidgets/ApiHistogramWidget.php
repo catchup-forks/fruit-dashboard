@@ -146,6 +146,11 @@ class ApiHistogramWidget extends HistogramWidget
     */
     private function buildHistogramEntries() 
     {
+        if (empty($this->data['api']) || (array_key_exists('data', $this->data['api']) && empty($this->data['api']['data']))) {
+            /* Handling empty data. */
+            return array();
+        }
+
         /* Setting active histogram. */
         if ($this->toSingle) {
             /* Transforming to single. */

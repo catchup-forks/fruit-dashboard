@@ -52,7 +52,7 @@ trait HistogramDataTrait
     protected static final function getEntryValues($entry)
     {
         if ( ! is_array($entry)) {
-            return $entry;
+            return array($entry);
         }
 
         $values = $entry;
