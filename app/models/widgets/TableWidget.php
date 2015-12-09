@@ -55,11 +55,56 @@ abstract class TableWidget extends DataWidget
 
         /* Building the content. */
         $this->buildContent();
-
+    
+        /* Transforming to HTML. */
         return array(
-            'header'  => $this->header,
-            'content' => $this->content
+            'header'  => $this->headerToHTML(),
+            'content' => $this->contentToHTML()
         );
+    }
+
+    /**
+     * headerToHTML
+     * Transforming the header to HTML format.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function headerToHTML()
+    {
+        $html = "<thead>\n";
+
+        foreach ($this->header as $header) {
+            $html .= "\t<th>$header</th>\n";
+        }
+
+        $html .= "</thead>";
+
+        return $html;
+    }
+
+    /**
+     * contentToHTML
+     * Transforming the content to HTML format.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+     */
+    private function contentToHTML()
+    {
+        $html = "<tbody>\n";
+
+        foreach ($this->content as $content) {
+            $html .= "\t<tr>\n";
+            foreach ($content as $cell) {
+                $html .= "\t\t<td>$cell</td>\n";
+            }
+            $html .= "\t</tr>\n";
+        }
+
+        $html .= "</tbody>";
+
+        return $html;
     }
 
     /**
@@ -152,7 +197,8 @@ abstract class TableWidget extends DataWidget
     public function getTemplateData() {
         return array_merge(parent::getTemplateData(), array(
             'name' => $this->getName(),
-            'data' => $this->buildTable()
+            'data' => array(SiteConstants::LAYOUT_TABLE => $this->buildTable()),
+            'possibleLayouts' => array(SiteConstants::LAYOUT_TABLE)
         ));
     }
 
