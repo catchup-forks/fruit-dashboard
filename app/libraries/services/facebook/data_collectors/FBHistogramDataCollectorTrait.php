@@ -32,7 +32,7 @@ trait FBHistogramDataCollectorTrait
                 $date = Carbon::createFromTimestamp(
                     strtotime($dailyData['end_time'])
                 );
-                if (array_key_exists('value', $dailyData) {
+                if (array_key_exists('value', $dailyData)) {
                     array_push($data, array(
                         'value'     => $dailyData['value'],
                         'timestamp' => $date->getTimestamp()
