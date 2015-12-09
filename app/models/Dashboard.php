@@ -205,7 +205,6 @@ class Dashboard extends Eloquent
         /* Populating widget data. */
         $this->load('widgets');
         foreach ($this->widgets as $widget) {
-
             /* Loading data widgets. */
             if ( $widget instanceof DataWidget) {
                 try {

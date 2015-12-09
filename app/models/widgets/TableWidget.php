@@ -37,7 +37,7 @@ abstract class TableWidget extends DataWidget
      * @return array
      * --------------------------------------------------
      */
-    protected function getData(array $postData=array()) {
+    public function getData(array $postData=array()) {
         return $this->buildTable();
     }
 

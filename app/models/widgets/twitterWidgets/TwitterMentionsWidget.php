@@ -26,7 +26,7 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
      * @return array
      * --------------------------------------------------
      */
-    protected function getData(array $postData=array()) {
+    public function getData(array $postData=array()) {
         return $this->data['mentions'];
     }
 
