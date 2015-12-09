@@ -238,7 +238,7 @@ class CreateDataDescriptorTable extends Migration
 
         /* At this point the data should be accessible. */
         if (isset($descriptorMeta['reinit']) && $descriptorMeta['reinit'] == true) {
-            Log::info('Requested reinitializtion of data #' . $dataId . ' (' . $descriptorType . ')');
+            Log::info('Requested reinitializtion of data #' . $dataId . ' (' . $descriptorType . ') used memory:', memory_get_usage());
             try {
                 Data::find($dataId)->initialize();
             } catch (ServiceException $e) {
