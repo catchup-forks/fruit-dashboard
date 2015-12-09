@@ -196,6 +196,7 @@ class CreateDataDescriptorTable extends Migration
         foreach (DB::table('data')
             ->join('widget_descriptors', 'widget_descriptors.id', '=', 'data.descriptor_id')
             ->get(array('data.id', 'widget_descriptors.type')) as $data) {
+            Log::info("Start mem usage: " . memory_get_usage());
 
             try {
                 self::assignDataToDescriptor($data->id, $data->type);
@@ -203,6 +204,8 @@ class CreateDataDescriptorTable extends Migration
                 Log::warning($e->getMessage());
                 DB::table('data')->where('id', $data->id)->delete();
             }
+
+            Log::info("End mem usage: " . memory_get_usage());
         }
     }
 
@@ -238,7 +241,8 @@ class CreateDataDescriptorTable extends Migration
 
         /* At this point the data should be accessible. */
         if (isset($descriptorMeta['reinit']) && $descriptorMeta['reinit'] == true) {
-            Log::info('Requested reinitializtion of data #' . $dataId . ' (' . $descriptorType . ') used memory: ' . memory_get_usage());
+            $memUsed = memory_get_usage();
+            Log::info('Requested reinitializtion of data #' . $dataId . ' (' . $descriptorType);
             try {
                 Data::find($dataId, array(
                         'id', 
@@ -253,6 +257,7 @@ class CreateDataDescriptorTable extends Migration
             } catch (ServiceException $e) {
                 Log::error($e->getMessage());
             }
+            Log::info("Done, used memory: " . $memUsed - memory_get_usage());
         }
     }
 
