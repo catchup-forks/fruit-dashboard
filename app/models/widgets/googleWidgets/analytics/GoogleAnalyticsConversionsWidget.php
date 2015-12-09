@@ -69,7 +69,12 @@ class GoogleAnalyticsConversionsWidget extends TableWidget implements iServiceWi
         $newUsers = end($histogram)[$source];
         
         /* Conversions. */
-        $conversions = $goalCompletion / $newUsers;
+        if ($newUsers == 0) {
+            /* Escaping division by zero. */
+            $conversions = 0; 
+        } else {
+            $conversions = $goalCompletion / $newUsers;
+        }
 
         /* Return the row. */
         return array(
