@@ -54,22 +54,6 @@ class DashboardController extends BaseController
             exit(94);
         }
 
-        /* No caching in local development */
-        if ( ! App::environment('local')) {
-            /* Trying to load from cache. */
-            $cachedDashboard = $this->getCache($dashboardId);
-            if ( ! is_null($cachedDashboard)) {
-                /* Some logging */
-                if ( ! App::environment('production')) {
-                    Log::info("Loading dashboard from cache.");
-                    Log::info("Rendering time:" . (microtime(true) - LARAVEL_START));
-                }
-
-                /* Return the cached dashboard. */
-                return $cachedDashboard;
-            }
-        }
-
         /* Checking the user's widgets integrity */
         $dashboard->checkWidgetsIntegrity();
         
@@ -88,12 +72,6 @@ class DashboardController extends BaseController
             $dashboard->turnOffBrokenWidgets();
             /* Recreating view. */
             $renderedView = $dashboard->createView()->render();
-        }
-
-        /* Saving the cache, and returning the view. */
-        $sessionKeys = array_keys(Session::all());
-        if ( ! (in_array('error', $sessionKeys) || in_array('success', $sessionKeys))) {
-            $this->saveToCache($renderedView, $dashboardId);
         }
 
         return $renderedView;
