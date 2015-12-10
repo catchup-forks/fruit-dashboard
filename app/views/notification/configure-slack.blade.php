@@ -66,7 +66,7 @@
                         @foreach ($notification->user->dashboards as $dashboard)
                           <h4>Dashboard: {{ $dashboard->name }}</h4>
                           @foreach ($dashboard->widgets as $widget)
-                            @if ($widget instanceof HistogramWidget)
+                            @if ($widget instanceof HistogramWidget && array_key_exists(SiteConstants::LAYOUT_COUNT, $widget->type()))
                               <div class="checkbox">
                                 <label>
                                   @if (is_null($notification->selected_widgets))
