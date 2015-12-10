@@ -16,6 +16,7 @@ class GoogleAnalyticsBounceRateWidget extends HistogramWidget implements iServic
 
     /* Data attribute. */
     protected static $isCumulative = false;
+    protected static $format = '%d%%';
 
     /* -- Choice functions -- */
     public function type()
