@@ -93,7 +93,11 @@ class SignupWizardController extends BaseController
     public function anyFacebookLogin() {
         /* Oauth ready. */
         if (Input::get('code', false)) {
-            $userInfo = FacebookConnector::loginWithFacebook();
+            try {
+                $userInfo = FacebookConnector::loginWithFacebook();
+            } catch (ServiceException $e) {
+                return Redirect::back()->with('error', $e->getMessage());
+            }
             if ($userInfo['isNew']) {
                 return Redirect::route('signup-wizard.getStep', SiteConstants::getSignupWizardStep('first'))
                     ->with('success', 'Welcome on board, '. $userInfo['user']->name. '!');
