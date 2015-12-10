@@ -188,16 +188,17 @@ trait HistogramWidgetTrait
     private function getValueAt($count)
     {
         /* Saving length. */
-        $histogram = $this->buildHistogram();
+        $histogram = $this->buildHistogram(array('saveFirst' => true));
 
         if ($count >= $this->length) {
             /* Not in range. */
             $origLength = $this->length;
-            $this->setLength($count);
-            $histogram = $this->buildHistogram();
+            $this->setLength($count + 1);
+            $histogram = $this->buildHistogram(array('saveFirst' => true));
             $index = 0;
         } else {
-            $index = $this->length - $count - 1;
+            /* Data is in range. */
+            $index = $this->length - ($count + 1);
         }
 
         /* Reset length. */
@@ -212,11 +213,11 @@ trait HistogramWidgetTrait
      * buildHistogram
      * Return the Histogram in the range,
      * --------------------------------------------------
-     * @param array $entries
+     * @param array $options
      * @return array
      * --------------------------------------------------
     */
-    public function buildHistogram()
+    public function buildHistogram(array $options=array())
     {
         /* Using cache. */
         if ( ! $this->dirty) {
@@ -228,9 +229,11 @@ trait HistogramWidgetTrait
         }
 
         $recording = empty($this->range) ? true : false;
+        $descHistogram = self::sortHistogram($this->activeHistogram);
+        $lastKey = count($descHistogram) - 1;
         $histogram = array();
 
-        foreach (self::sortHistogram($this->activeHistogram) as $entry) {
+        foreach ($descHistogram as $key=>$entry) {
             $entryTime = self::getEntryTime($entry);
             /* Range conditions */
             if ( ! empty($this->range)) {
@@ -249,6 +252,8 @@ trait HistogramWidgetTrait
                     /* First element always makes it to the final histogram. */
                     $push = true;
                 } else if ($this->isBreakPoint($entryTime, $previousEntryTime)){
+                    $push = true;
+                } else if (array_key_exists('saveFirst', $options) && $lastKey == $key) {
                     $push = true;
                 }
 

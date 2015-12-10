@@ -237,7 +237,7 @@ class Dashboard extends Eloquent
                 /* The widget is not renderable. */
                 $templateData = Widget::getDefaultTemplateData($widget);
             }
-
+            
             /* Adding widget to the dashboard array. */
             array_push($dashboard['widgets'], array(
                 'meta'         => $widget->getTemplateMeta(),

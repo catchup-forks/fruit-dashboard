@@ -140,7 +140,7 @@ abstract class HistogramWidget extends DataWidget
      * @return string
      * --------------------------------------------------
      */
-    protected function getName()
+    public function getName()
     {
         $name = '';
         if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {

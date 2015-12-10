@@ -70,12 +70,12 @@
                               <div class="checkbox">
                                 <label>
                                   @if (is_null($notification->selected_widgets))
-                                    <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
+                                    <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getName() }}</input>
                                   @else
                                     @if (in_array($widget->id, json_decode($notification->selected_widgets)))
-                                      <input name="widget-{{ $widget->id }}" type="checkbox" checked> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
+                                      <input name="widget-{{ $widget->id }}" type="checkbox" checked> {{ $widget->getName() }}</input>
                                     @else
-                                      <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getSettings()['name'] or 'No name provided for this widget (id=' . $widget->id . ')' }}</input>
+                                      <input name="widget-{{ $widget->id }}" type="checkbox"> {{ $widget->getName() }}</input>
                                     @endif
                                   @endif
                                 </label>

@@ -203,6 +203,23 @@ abstract class TableWidget extends DataWidget
     }
 
     /**
+     * getTemplateMeta
+     * Return data for the gridster init template.
+     * --------------------------------------------------
+     * @return array
+     * --------------------------------------------------
+    */
+    public function getTemplateMeta()
+    {
+        $meta = parent::getTemplateMeta();
+
+        $meta['layout'] = 'table';
+        $meta['general']['name'] = $this->getName();
+    
+        return $meta;
+    }
+
+    /**
      * getName
      * Return the name of the widget.
      * --------------------------------------------------

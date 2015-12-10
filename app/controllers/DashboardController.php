@@ -24,6 +24,7 @@ class DashboardController extends BaseController
      */
     public function anyDashboard($dashboardId=null)
     {
+
         /* Get the current user */
         $user = Auth::user();
 
