@@ -177,6 +177,10 @@ class FacebookConnector extends GeneralServiceConnector
         $response = $fb->get('/me?fields=' . implode(',', self::$userInfo), $accessToken);
         $userInfo = $response->getGraphUser();
 
+        if ( ! array_key_exists('email', $userInfo)) {
+            throw new ServiceException("Facebook connection error.", 1);
+        }
+
         /* Saving user/logging in registered. */
         $registeredUser = User::where('email', $userInfo['email'])->first();
         if (is_null($registeredUser)) {

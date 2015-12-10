@@ -33,7 +33,8 @@ class CreateDataDescriptorTable extends Migration
         ),
         'facebook_page_impressions' => array(
             'category' => 'facebook',
-            'type'     => 'page_impressions'
+            'type'     => 'page_impressions',
+            'reinit'   => true,
         ),
 
         /* Twitter */
