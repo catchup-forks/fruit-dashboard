@@ -455,6 +455,7 @@ class GeneralWidgetController extends BaseController {
             ->with('chartData', $chartData)
             ->with('tableValues', $tableValues)
             ->with('widget', $widget)
+            ->with('format', $widget->getFormat())
             ->with('values', $values);
     }
 

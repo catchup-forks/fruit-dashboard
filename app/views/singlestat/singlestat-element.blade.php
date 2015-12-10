@@ -46,7 +46,7 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             @include('singlestat.singlestat-diff',
-              [ 'format'     => $widget->getFormat(),
+              [ 'format'     => $format,
                 'values'     => $values,
                 'resolution' => $resolution,
                 'distance'   => (($resolution=='days') ? 30 : (($resolution=='weeks') ? 12 : (($resolution=='months') ? 6 : 5))) ] )
@@ -57,7 +57,7 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             @include('singlestat.singlestat-diff',
-            [ 'format'     => $widget->getFormat(),
+            [ 'format'     => $format,
               'values'     => $values,
               'resolution' => $resolution,
               'distance'   => (($resolution=='days') ? 7 : (($resolution=='weeks') ? 4 : (($resolution=='months') ? 3 : 3))) ] )
@@ -68,7 +68,7 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             @include('singlestat.singlestat-diff',
-            [ 'format'     => $widget->getFormat(),
+            [ 'format'     => $format,
               'values'     => $values,
               'resolution' => $resolution,
               'distance'   => 1 ] )
@@ -79,7 +79,7 @@
         <div class="panel panel-default panel-transparent">
           <div class="panel-body text-center">
             @if(count($widget->getLatestValues())>0)
-              <h3 class="text-primary">{{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $widget->getFormat()) }}</h3>
+              <h3 class="text-primary">{{ Utilities::formatNumber(array_values($widget->getLatestValues())[0], $format) }}</h3>
               <div class="text-success">
                 <span class="fa fa-check"> </span>
               </div> <!-- /.text-success -->
@@ -115,7 +115,7 @@
         <tr>
           <th style="background-color:rgb({{ $dataset['color'] }})"> {{ $dataset['name'] }} </th>
           @foreach ($dataset['values'] as $key=>$value)
-          <td> {{ $value }}</td>
+          <td> {{ Utilities::formatNumber($value, $format) }}</td>
           @endforeach
         </tr>
       @endforeach
