@@ -144,9 +144,9 @@ abstract class HistogramWidget extends DataWidget
     {
         $name = '';
         if ($this instanceof iServiceWidget && $this->hasValidCriteria()) {
-            $name = $this->getServiceSpecificName();
+            $name = $this->getServiceSpecificName() . ' - ';
         }
-        $name .= ' - ' . $this->getSettings()['name'];
+        $name .= $this->getSettings()['name'];
 
         return $name;
     }

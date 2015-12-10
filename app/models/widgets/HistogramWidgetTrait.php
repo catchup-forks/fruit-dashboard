@@ -189,12 +189,18 @@ trait HistogramWidgetTrait
     {
         /* Saving length. */
         $histogram = $this->buildHistogram(array('saveFirst' => true));
+        $sufficientData = true;
 
         if ($count >= $this->length) {
             /* Not in range. */
             $origLength = $this->length;
             $this->setLength($count + 1);
             $histogram = $this->buildHistogram(array('saveFirst' => true));
+
+            if ($count >= $this->length) {
+                $sufficientData = false;
+            }
+
             $index = 0;
         } else {
             /* Data is in range. */
@@ -205,8 +211,12 @@ trait HistogramWidgetTrait
         if (isset($origLength)) {
             $this->setLength($origLength);
         }
-
-        return self::getEntryValues($histogram[$index]);
+    
+        //if ($sufficientData) {
+            return self::getEntryValues($histogram[$index]);
+        //} else {
+        //    return array(0);
+        //}
     }
 
     /**
