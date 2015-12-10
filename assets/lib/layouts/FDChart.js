@@ -396,20 +396,20 @@ function FDChartHandler(widgetOptions) {
         switch (options.layout) {
           // FIXME: REMOVE CHART LAYOUT
           case 'chart':
-            transformedData = transformChartDataSingleStat(data);
+            transformedData = transformChartDataDashboard(data);
             break;
           case 'combined_chart':
-            transformedData = transformCombinedBarLineDataSingleStat(data);
+            transformedData = transformCombinedBarLineDataDashboard(data);
             break;
           // ENDFIXME
           case 'single-line':
-            transformedData = transformSingleLineDataSingleStat(data);
+            transformedData = transformSingleLineDataDashboard(data);
             break;
           case 'multi-line':
-            transformedData = transformMultiLineDataSingleStat(data);
+            transformedData = transformMultiLineDataDashboard(data);
             break;
           case 'combined-bar-line':
-            transformedData = transformCombinedBarLineDataSingleStat(data);
+            transformedData = transformCombinedBarLineDataDashboard(data);
             break;
           default:
             if (debug) {console.log('[E] No transformChartData behaviour is defined to this layout: ' + options.layout)};

@@ -409,6 +409,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Loading widget data. */
         $widget->loadData();
+        $widget->setLength(10);
 
         /* Loading the layouts. */
         $selectedLayout = "";
@@ -439,6 +440,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Calculating values for rendering. */
         $values = array();
+        $tableValues = array();
 
         foreach (SiteConstants::getSingleStatHistoryDiffs() as $resolution=>$multipliers) {
             $values[$resolution] = array();
@@ -451,6 +453,7 @@ class GeneralWidgetController extends BaseController {
         return View::make('singlestat.singlestat')
             ->with('layout', $selectedLayout)
             ->with('chartData', $chartData)
+            ->with('tableValues', $tableValues)
             ->with('widget', $widget)
             ->with('values', $values);
     }

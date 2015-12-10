@@ -101,5 +101,25 @@
   <div class="panel-heading">
     <h3 class="panel-title">{{ Utilities::underscoreToCamelCase($value) }} datatable</h3>
   </div> <!-- /.panel-heading -->
+  <div class="panel-body">
+    <table class="table table-condensed table-bordered text-center">
+      <thead>
+        <th>Dataset</th>
+      @foreach($chartData[$resolution]['labels'] as $label)
+        <th class="text-center">{{ $label }}</th>
+      @endforeach
 
+      </thead>
+      <tbody>
+      @foreach($chartData[$resolution]['datasets'] as $dataset)
+        <tr>
+          <th style="background-color:rgb({{ $dataset['color'] }})"> {{ $dataset['name'] }} </th>
+          @foreach ($dataset['values'] as $key=>$value)
+          <td> {{ $value }}</td>
+          @endforeach
+        </tr>
+      @endforeach
+      </tbody>
+    </table>
+  </div>
 </div> <!-- /.panel -->
