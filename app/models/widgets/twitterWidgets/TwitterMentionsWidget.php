@@ -89,7 +89,7 @@ class TwitterMentionsWidget extends DataWidget implements iServiceWidget
     public function saveSettings(array $inputSettings, $commit=true) {
         $oldSettings = $this->getSettings();
         $changedFields = parent::saveSettings($inputSettings, $commit);
-        if ($changedFields != false && $this->dataExists()) {
+        if ($changedFields != false && $this->data) {
             $this->updateData();
         }
         return $changedFields;
