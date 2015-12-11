@@ -167,35 +167,6 @@ class Data extends Eloquent
     }
 
     /**
-     * checkIntegrity
-     * Checking the data integrity.
-    */
-    public function checkIntegrity()
-    {
-        $decodedData = json_decode($this->raw_value, 1);
-
-        if ( ! is_array($decodedData) || empty($decodedData) ) {
-            /* No json in data, this is a problem. */
-            try {
-                $this->initialize();
-                $this->setState('active');
-            } catch (ServiceException $e) {
-                Log::error($e->getMessage());
-                $this->setState('data_source_error');
-            }
-        } else if ($this->state == 'data_source_error'){
-            /* Something went wrong with the latest data collection. */
-            try {
-                $this->collect();
-                $this->setState('active');
-            } catch (ServiceException $e) {}
-        } else {
-            /* Everything seems to be well. */
-            $this->setState('active');
-        }
-    }
-
-    /**
      * decode
      * Return the raw data json decoded.
      * --------------------------------------------------
@@ -274,6 +245,7 @@ class Data extends Eloquent
     */
     public function save(array $options=array())
     {
+        $this->setState('active');
         /* Notify user about the change */
         $this->user()->updateDashboardCache();
         return parent::save($options);
