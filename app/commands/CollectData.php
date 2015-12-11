@@ -32,7 +32,7 @@ class CollectData extends Command {
         $time = microtime(true);
         $errors = 0;
         $i = 0;
-        foreach (DB::table('data')->lists('id') as $dataId) {
+        foreach (DB::table('data')->orderBy('descriptor_id', 'asc')->lists('id') as $dataId) {
             $data = Data::find($dataId);
             if (Carbon::now()->diffInMinutes($data->updated_at) >= $data->update_period || $data->state == 'data_source_error') {
 				$i++;
