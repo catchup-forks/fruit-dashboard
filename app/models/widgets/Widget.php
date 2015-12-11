@@ -619,8 +619,13 @@ class Widget extends Eloquent
      */
     public function newFromBuilder($attributes=array()) {
         /* Instantiating widget. */
-        $className = WidgetDescriptor::find($attributes->descriptor_id)
-            ->getClassName();
+        $descriptor = WidgetDescriptor::find($attributes->descriptor_id);
+
+        if (is_null($descriptor)) {
+            throw new DescriptorDoesNotExist;
+        }
+
+        $className = $descriptor->getClassName();
         $instance = new $className;
 
         /* Setting attributes. */

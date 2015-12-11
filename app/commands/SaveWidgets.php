@@ -31,14 +31,15 @@ class SaveWidgets extends Command {
     }
 
     /**
- * Execute the console command.
+     * Execute the console command.
      *
      * @return mixed
      */
     public function fire()
     {
-        foreach (Widget::all() as $widget) {
+        foreach (DB::talbe('widgets')->get(array('id', 'dasboard_id', 'descriptor_id')) as $widgetMeta) {
             try {
+                $widget = Widget::find($widgetMeta->id);
                 if (is_null($widget->dashboard)) {
                     Log::warning("Deleted widget #" . $widget->id . " due to a broken dashboard connection.");
                     $widget->delete();
@@ -48,7 +49,8 @@ class SaveWidgets extends Command {
                 $widget->save();
             } catch (DescriptorDoesNotExist $e) {
                 /* Deleting widget if the descriptor does not exist. */
-                $widget->delete();
+                Log::warning("Deleted widget #" . $widget->id . " due to missing descriptor(" . $widget->descriptor_id . ")");
+                    DB::table('widgets')->where('id', $widget->id)->delete();
             } catch (Exception $e) {
                 Log::error('Error found while running ' . get_class($this) . ' on widget #' . $widget->id . '. message: ' . $e->getMessage());
             }
