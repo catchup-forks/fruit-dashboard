@@ -37,7 +37,7 @@ class SaveWidgets extends Command {
      */
     public function fire()
     {
-        foreach (DB::talbe('widgets')->get(array('id', 'dasboard_id', 'descriptor_id')) as $widgetMeta) {
+        foreach (DB::table('widgets')->get(array('id', 'dashboard_id', 'descriptor_id')) as $widgetMeta) {
             try {
                 $widget = Widget::find($widgetMeta->id);
                 if (is_null($widget->dashboard)) {

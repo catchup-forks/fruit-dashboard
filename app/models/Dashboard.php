@@ -213,6 +213,9 @@ class Dashboard extends Eloquent
                     $error = true;
                     $widget->setState('data_source_error');
                     $templateData = Widget::getDefaultTemplateData($widget);
+                } catch (WidgetException $e) {
+                    Log::warning("Data loading for widget #" . $widget->id . " failed: " . $e->getMessage());
+                    $widget->setState('setup_required');
                 }
             }
 
