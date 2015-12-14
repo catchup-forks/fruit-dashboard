@@ -198,7 +198,6 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
                     }
                     
                     if ($key != self::OTHERSNAME) {
-                        Log::info(count($dbData['datasets']));
                         $newEntry[$dbData['datasets'][$key]] = $value;
                     }
                 }
