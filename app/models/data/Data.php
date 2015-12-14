@@ -143,9 +143,7 @@ class Data extends Eloquent
             return;
         }
 
-        if ( ! App::environment('production')) {
-            Log::info("Changing state of data #" . $this->id . ' from ' . $this->state . ' to '. $state);
-        }
+        Log::info("Changing state of data #" . $this->id . ' from ' . $this->state . ' to '. $state);
 
         $this->state = $state;
 

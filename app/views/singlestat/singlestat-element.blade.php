@@ -113,7 +113,7 @@
       <tbody>
       @foreach($chartData[$resolution]['datasets'] as $dataset)
         <tr>
-          <th style="background-color:rgb({{ $dataset['color'] }})"> {{ $dataset['name'] }} </th>
+          <th> <i class="fa fa-square" style="color:rgb({{ $dataset['color'] }})"></i> {{ $dataset['name'] }} </th>
           @foreach ($dataset['values'] as $key=>$value)
           <td> {{ Utilities::formatNumber($value, $format) }}</td>
           @endforeach
