@@ -3,6 +3,9 @@
 /* This class is responsible for multiple histogram data collection. */
 abstract class MultipleHistogramDataCollector extends HistogramDataCollector
 {
+    const OTHERSNAME    = 'others';
+    const STARTOTHERSAT = 40;
+
     /**
      * formatData
      * Formatting data to the multiple histogram format.
@@ -14,27 +17,46 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
      */
     protected function formatData($date, $data) {
         $dataSets = $this->getDataSets();
+        $others = 0;
         $encodedData = array(
             'timestamp' => $date->getTimestamp()
         );
+
         foreach ($data as $key=>$value) {
             if ( ! array_key_exists($key, $dataSets)) {
                 /* Key did not exist, adding to datasets. */
+                if (count($dataSets) > self::STARTOTHERSAT) {
+                    /* We're not storing over n datasets, sorry about that. */
+                    $key = self::OTHERSNAME;
+                    $others += $value;
+                }
+
+                /* Adding others if did not exist. */
                 $this->addToDataSets($key);
                 $dataSets = $this->getDataSets();
             }
+
             if ( ! is_numeric($value)) {
-                /* Value is not right for histograms, exiting. */
-                return null;
+                /* Value is not right for histograms. */
+                $value = 0;
             }
-            $encodedData[$dataSets[$key]] = $value;
+
+            if ($key != self::OTHERSNAME) {
+                $encodedData[$dataSets[$key]] = $value;
+            }
         }
+
+        if (array_key_exists(self::OTHERSNAME, $dataSets)) {
+            $encodedData[$dataSets[self::OTHERSNAME]] = $others;
+        }
+
         /* Populating zero values to keep integrity. */
         foreach ($dataSets as $dataset) {
             if ( ! in_array($dataset, array_keys($encodedData))) {
                 $encodedData[$dataset] = 0;
             }
         }
+
         return $encodedData;
      }
 
@@ -46,10 +68,12 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
      * --------------------------------------------------
      */
     protected function getEntries() {
+
         if ( (! is_array($this->data)) ||
                 (! array_key_exists('data', $this->data))) {
             return array();
         }
+
         return $this->data['data'];
     }
 
@@ -83,26 +107,32 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
                 'datasets' => array($key => 'data_0'),
                 'data'     => array()
            );
-       } else {
+        } else {
+            /* Checking for existence. */
+            if (array_key_exists($key, $dataSets)) {
+                return;
+            }
+            
             /* Adding to datasets. */
-           $name = 'data_' . count($dataSets);
-           $dataSets[$key] = $name;
+            $name = 'data_' . count($dataSets);
+            $dataSets[$key] = $name;
 
-           /* Adding 0 to previous values. */
-           $newData = array();
-           foreach ($this->getEntries() as $entry) {
+            /* Adding 0 to previous values. */
+            $newData = array();
+            foreach ($this->getEntries() as $entry) {
                 $newEntry = $entry;
                 $newEntry[$name] = 0;
                 array_push($newData, $newEntry);
-           }
+            }
 
-           /* Creating layout. */
-           $this->data = array(
+            /* Creating layout. */
+            $this->data = array(
                 'datasets' => $dataSets,
                 'data'     => $newData
-           );
+            );
         }
-       /* Saving to DB. */
+        /* Saving to DB. */
+
         $this->save();
     }
 
@@ -141,6 +171,7 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
             return json_encode($dbData);
         }
         $i = 0;
+        $others = 0;
         foreach ($histogramData as $entry) {
             /* Creating the new entry */
             $newEntry = array();
@@ -150,14 +181,33 @@ abstract class MultipleHistogramDataCollector extends HistogramDataCollector
                     /* In static fields */
                     $newEntry[$key] = $value;
                 } else {
+                    /* Cleaning value. */
+                    $value = is_numeric($value) ? $value : 0;
+
                     /* In dataset */
                     if ( ! array_key_exists($key, $dbData['datasets'])) {
-                        $dbData['datasets'][$key] = 'data_' . $i++;
+                        if (count($dbData['datasets']) > self::STARTOTHERSAT) {
+                            /* We're not storing over n datasets, sorry about that. */
+                            $key = self::OTHERSNAME;
+                            $others += $value;
+                        }
+                    
+                        if ( ! array_key_exists($key, $dbData['datasets'])) {
+                            $dbData['datasets'][$key] = 'data_' . $i++;
+                        }
                     }
-                    $dataSetKey = $dbData['datasets'][$key];
-                    $newEntry[$dataSetKey] = is_numeric($value) ? $value : 0;
+                    
+                    if ($key != self::OTHERSNAME) {
+                        Log::info(count($dbData['datasets']));
+                        $newEntry[$dbData['datasets'][$key]] = $value;
+                    }
                 }
             }
+
+            if (array_key_exists(self::OTHERSNAME, $dbData['datasets'])) {
+                $newEntry[$dbData['datasets'][self::OTHERSNAME]] = $value;
+            }
+
             /* Final integrity check. */
             if ( ! array_key_exists('timestamp', $newEntry)) {
                 $newEntry['timestamp'] = time();
