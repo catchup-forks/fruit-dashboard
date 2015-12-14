@@ -83,8 +83,6 @@ abstract class DataCollector
             $this->data = $data;
         }
 
-        $dataObject = Data::find($this->data_id);
-
-        $dataObject->saveData($this->data);
+        Data::find($this->data_id)->saveData($this->data);
      }
 }

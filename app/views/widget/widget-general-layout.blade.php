@@ -38,15 +38,6 @@
           </li>
         @endif
 
-        {{-- SHARE --}}
-        @if ( ! is_subclass_of($widget['className'], 'SharedWidget') && ! is_subclass_of($widget['className'], 'PromoWidget'))
-        <li>
-          <a href="#" id="share-{{$widget['id']}}" onclick="showShareModal({{$widget['id']}})">
-            <span class="fa fa-share-alt"> </span>
-            Share widget
-          </a>
-        </li>
-        @endif
         @endif
 
         {{-- DELETE --}}

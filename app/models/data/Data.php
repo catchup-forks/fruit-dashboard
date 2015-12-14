@@ -198,6 +198,7 @@ class Data extends Eloquent
     public function saveData(array $data) {
         $this->raw_value = json_encode($data, 1);
         $this->save();
+        $this->setState('active');
     }
 
     /**
@@ -243,7 +244,6 @@ class Data extends Eloquent
     */
     public function save(array $options=array())
     {
-        $this->setState('active');
         /* Notify user about the change */
         $this->user()->updateDashboardCache();
         return parent::save($options);
