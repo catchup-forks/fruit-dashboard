@@ -97,7 +97,7 @@ abstract class DataWidget extends Widget implements iAjaxWidget
             try {
                 $dataObject->collect($options);
             } catch (ServiceException $e) {
-                Log::error('An error occurred during collecting data on #' . $dataId . " " . $e->getMessage());
+                Log::error('An error occurred during collecting data on #' . $dataId . ": " . $e->getMessage());
 
                 $dataObject->setState('data_source_error');
             }
