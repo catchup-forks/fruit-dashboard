@@ -15,7 +15,7 @@ Widget stats
         <div class="panel-body">
 
           <h1 class="text-center">
-            {{ $widget->getSettings()['name'] }}
+            {{ $widget->getName() }}
           </h1> <!-- /.text-center -->
 
           <div class="row">

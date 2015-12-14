@@ -451,6 +451,7 @@ class GeneralWidgetController extends BaseController {
 
         /* Rendering view. */
         return View::make('singlestat.singlestat')
+            ->with('name', $widget->getName())
             ->with('layout', $selectedLayout)
             ->with('chartData', $chartData)
             ->with('tableValues', $tableValues)
