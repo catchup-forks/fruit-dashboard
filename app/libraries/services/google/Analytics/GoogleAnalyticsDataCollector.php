@@ -455,7 +455,7 @@ class GoogleAnalyticsDataCollector
             $accounts = $this->analytics->management_accounts->listManagementAccounts();
         } catch (Exception $e) {
             Log::error($e->getMessage());
-            throw new ServiceException("Google connection error.", 1);
+            throw new ServiceException("There are no Analytics accounts associated with this user.", 1);
         }
         $items = $accounts->getItems();
         if (count($items) <= 0) {

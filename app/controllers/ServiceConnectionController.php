@@ -676,6 +676,9 @@ class ServiceConnectionController extends BaseController
             } catch (Google_Auth_Exception $e) {
                 return Redirect::route('signup-wizard.getStep', 'google-analytics-connection')
                     ->with('error', 'Invalid token please try again.');
+            } catch (ServiceException $e) {
+                return Redirect::route('signup-wizard.getStep', 'google-analytics-connection')
+                    ->with('error', $e->getMessage());
             }
 
             /* Track event | SERVICE CONNECTED */
